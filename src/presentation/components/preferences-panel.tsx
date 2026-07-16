@@ -8,69 +8,89 @@ interface PreferencesPanelProps {
   update: (preferences: CanvasPreferences) => void;
 }
 
+type Patch = <K extends keyof CanvasPreferences>(key: K, value: CanvasPreferences[K]) => void;
 const sections: PreferenceSection[] = ['canvas', 'nodes', 'wires', 'panel', 'files'];
 
+function CanvasControls({ value, patch }: { value: CanvasPreferences; patch: Patch }) {
+  return <>
+    <Toggle label="Grid" checked={value.canvas.showGrid} onChange={(showGrid) => patch('canvas', { ...value.canvas, showGrid })} />
+    <Toggle label="Snap" checked={value.canvas.snapToGrid} onChange={(snapToGrid) => patch('canvas', { ...value.canvas, snapToGrid })} />
+    <Toggle label="Controls" checked={value.canvas.showControls} onChange={(showControls) => patch('canvas', { ...value.canvas, showControls })} />
+    <Field label={`Grid size · ${value.canvas.gridSize}`}>
+      <input min="4" max="32" type="range" value={value.canvas.gridSize} onChange={(event) => patch('canvas', { ...value.canvas, gridSize: Number(event.target.value) })} />
+    </Field>
+  </>;
+}
+
+function NodeControls({ value, patch }: { value: CanvasPreferences; patch: Patch }) {
+  return <>
+    <Toggle label="Object kinds" checked={value.nodes.showKinds} onChange={(showKinds) => patch('nodes', { ...value.nodes, showKinds })} />
+    <Toggle label="Descriptions" checked={value.nodes.showDescriptions} onChange={(showDescriptions) => patch('nodes', { ...value.nodes, showDescriptions })} />
+    <Toggle label="Types" checked={value.nodes.showTypes} onChange={(showTypes) => patch('nodes', { ...value.nodes, showTypes })} />
+    <Field label="Interfaces">
+      <select value={value.nodes.showInterfaces} onChange={(event) => patch('nodes', { ...value.nodes, showInterfaces: event.target.value as CanvasPreferences['nodes']['showInterfaces'] })}>
+        <option value="always">Always</option><option value="selected">Selected</option><option value="never">Never</option>
+      </select>
+    </Field>
+    <Field label="Ports">
+      <select value={value.nodes.showPorts} onChange={(event) => patch('nodes', { ...value.nodes, showPorts: event.target.value as CanvasPreferences['nodes']['showPorts'] })}>
+        <option value="hover">Hover</option><option value="always">Always</option>
+      </select>
+    </Field>
+  </>;
+}
+
+function WireControls({ value, patch }: { value: CanvasPreferences; patch: Patch }) {
+  return <>
+    <Toggle label="Dim unrelated" checked={value.wires.dimUnrelated} onChange={(dimUnrelated) => patch('wires', { ...value.wires, dimUnrelated })} />
+    <Field label="Labels">
+      <select value={value.wires.showLabels} onChange={(event) => patch('wires', { ...value.wires, showLabels: event.target.value as CanvasPreferences['wires']['showLabels'] })}>
+        <option value="selected">Selected</option><option value="always">Always</option><option value="never">Never</option>
+      </select>
+    </Field>
+    <Field label={`Width · ${value.wires.width}`}>
+      <input min="1" max="4" step="0.25" type="range" value={value.wires.width} onChange={(event) => patch('wires', { ...value.wires, width: Number(event.target.value) })} />
+    </Field>
+  </>;
+}
+
+function PanelControls({ value, patch }: { value: CanvasPreferences; patch: Patch }) {
+  return <>
+    <Field label={`Width · ${value.panel.width}`}>
+      <input min="300" max="560" type="range" value={value.panel.width} onChange={(event) => patch('panel', { ...value.panel, width: Number(event.target.value) })} />
+    </Field>
+    <Toggle label="Empty fields" checked={value.panel.showEmptyFields} onChange={(showEmptyFields) => patch('panel', { ...value.panel, showEmptyFields })} />
+  </>;
+}
+
+function FileControls({ value, patch }: { value: CanvasPreferences; patch: Patch }) {
+  return <>
+    <Toggle label="Auto-save" checked={value.files.autoSave} onChange={(autoSave) => patch('files', { ...value.files, autoSave })} />
+    <Field label={`Delay · ${value.files.saveDelay}ms`}>
+      <input min="100" max="2000" step="100" type="range" value={value.files.saveDelay} onChange={(event) => patch('files', { ...value.files, saveDelay: Number(event.target.value) })} />
+    </Field>
+  </>;
+}
+
+function SectionControls({ section, value, patch }: { section: PreferenceSection; value: CanvasPreferences; patch: Patch }) {
+  if (section === 'canvas') return <CanvasControls value={value} patch={patch} />;
+  if (section === 'nodes') return <NodeControls value={value} patch={patch} />;
+  if (section === 'wires') return <WireControls value={value} patch={patch} />;
+  if (section === 'panel') return <PanelControls value={value} patch={patch} />;
+  return <FileControls value={value} patch={patch} />;
+}
+
+/** Presents one compact preference category at a time. */
 export function PreferencesPanel({ preferences, section, setSection, update }: PreferencesPanelProps) {
-  const patch = <K extends keyof CanvasPreferences>(key: K, value: CanvasPreferences[K]): void => {
-    update({ ...preferences, [key]: value });
-  };
+  const patch: Patch = (key, value) => update({ ...preferences, [key]: value });
   return (
     <div className="preferences-panel">
       <nav className="preference-sections">
         {sections.map((item) => (
-          <button className={item === section ? 'is-active' : ''} key={item} onClick={() => setSection(item)} type="button">
-            {item}
-          </button>
+          <button className={item === section ? 'is-active' : ''} key={item} onClick={() => setSection(item)} type="button">{item}</button>
         ))}
       </nav>
-      <div className="preference-controls">
-        {section === 'canvas' && <>
-          <Toggle label="Grid" checked={preferences.canvas.showGrid} onChange={(showGrid) => patch('canvas', { ...preferences.canvas, showGrid })} />
-          <Toggle label="Snap" checked={preferences.canvas.snapToGrid} onChange={(snapToGrid) => patch('canvas', { ...preferences.canvas, snapToGrid })} />
-          <Toggle label="Controls" checked={preferences.canvas.showControls} onChange={(showControls) => patch('canvas', { ...preferences.canvas, showControls })} />
-          <Field label={`Grid size · ${preferences.canvas.gridSize}`}>
-            <input min="4" max="32" type="range" value={preferences.canvas.gridSize} onChange={(event) => patch('canvas', { ...preferences.canvas, gridSize: Number(event.target.value) })} />
-          </Field>
-        </>}
-        {section === 'nodes' && <>
-          <Toggle label="Object kinds" checked={preferences.nodes.showKinds} onChange={(showKinds) => patch('nodes', { ...preferences.nodes, showKinds })} />
-          <Toggle label="Descriptions" checked={preferences.nodes.showDescriptions} onChange={(showDescriptions) => patch('nodes', { ...preferences.nodes, showDescriptions })} />
-          <Toggle label="Types" checked={preferences.nodes.showTypes} onChange={(showTypes) => patch('nodes', { ...preferences.nodes, showTypes })} />
-          <Field label="Interfaces">
-            <select value={preferences.nodes.showInterfaces} onChange={(event) => patch('nodes', { ...preferences.nodes, showInterfaces: event.target.value as CanvasPreferences['nodes']['showInterfaces'] })}>
-              <option value="always">Always</option><option value="selected">Selected</option><option value="never">Never</option>
-            </select>
-          </Field>
-          <Field label="Ports">
-            <select value={preferences.nodes.showPorts} onChange={(event) => patch('nodes', { ...preferences.nodes, showPorts: event.target.value as CanvasPreferences['nodes']['showPorts'] })}>
-              <option value="hover">Hover</option><option value="always">Always</option>
-            </select>
-          </Field>
-        </>}
-        {section === 'wires' && <>
-          <Toggle label="Dim unrelated" checked={preferences.wires.dimUnrelated} onChange={(dimUnrelated) => patch('wires', { ...preferences.wires, dimUnrelated })} />
-          <Field label="Labels">
-            <select value={preferences.wires.showLabels} onChange={(event) => patch('wires', { ...preferences.wires, showLabels: event.target.value as CanvasPreferences['wires']['showLabels'] })}>
-              <option value="selected">Selected</option><option value="always">Always</option><option value="never">Never</option>
-            </select>
-          </Field>
-          <Field label={`Width · ${preferences.wires.width}`}>
-            <input min="1" max="4" step="0.25" type="range" value={preferences.wires.width} onChange={(event) => patch('wires', { ...preferences.wires, width: Number(event.target.value) })} />
-          </Field>
-        </>}
-        {section === 'panel' && <>
-          <Field label={`Width · ${preferences.panel.width}`}>
-            <input min="300" max="560" type="range" value={preferences.panel.width} onChange={(event) => patch('panel', { ...preferences.panel, width: Number(event.target.value) })} />
-          </Field>
-          <Toggle label="Empty fields" checked={preferences.panel.showEmptyFields} onChange={(showEmptyFields) => patch('panel', { ...preferences.panel, showEmptyFields })} />
-        </>}
-        {section === 'files' && <>
-          <Toggle label="Auto-save" checked={preferences.files.autoSave} onChange={(autoSave) => patch('files', { ...preferences.files, autoSave })} />
-          <Field label={`Delay · ${preferences.files.saveDelay}ms`}>
-            <input min="100" max="2000" step="100" type="range" value={preferences.files.saveDelay} onChange={(event) => patch('files', { ...preferences.files, saveDelay: Number(event.target.value) })} />
-          </Field>
-        </>}
-      </div>
+      <div className="preference-controls"><SectionControls section={section} value={preferences} patch={patch} /></div>
     </div>
   );
 }

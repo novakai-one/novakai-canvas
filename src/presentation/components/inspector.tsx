@@ -18,6 +18,7 @@ interface InspectorProps {
   clearSelection: () => void;
 }
 
+/** Routes universal selection into contextual inspector surfaces. */
 export function Inspector(props: InspectorProps) {
   const [section, setSection] = useState<PreferenceSection>('canvas');
   return (

@@ -1,5 +1,6 @@
 import type { ArchitectureDocument, CanvasPreferences } from './model';
 
+/** Safe empty document used when loading fails. */
 export const emptyArchitecture: ArchitectureDocument = {
   schemaVersion: 1,
   id: 'new-map',
@@ -11,6 +12,7 @@ export const emptyArchitecture: ArchitectureDocument = {
   wires: {},
 };
 
+/** Safe visual defaults used when loading fails. */
 export const defaultPreferences: CanvasPreferences = {
   schemaVersion: 1,
   appearance: { density: 'comfortable', radius: 6 },

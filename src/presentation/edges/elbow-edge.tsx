@@ -3,6 +3,7 @@ import type { ArchitectureEdgeData } from '../projection';
 
 type ElbowFlowEdge = Edge<ArchitectureEdgeData, 'elbow'>;
 
+/** Restrained selectable elbow wire renderer. */
 export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
   const [path, labelX, labelY] = getSmoothStepPath({
     sourceX: props.sourceX, sourceY: props.sourceY, sourcePosition: props.sourcePosition,

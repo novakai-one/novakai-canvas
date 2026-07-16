@@ -3,6 +3,7 @@ import type { ArchitectureNodeData } from '../projection';
 
 type ArchitectureFlowNode = Node<ArchitectureNodeData, 'architecture'>;
 
+/** Selectable architecture node with interface and type children. */
 export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowNode>) {
   const { node, interfaces, types, preferences, selection, select } = data;
   const showInterfaces = preferences.nodes.showInterfaces === 'always'

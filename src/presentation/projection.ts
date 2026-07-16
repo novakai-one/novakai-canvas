@@ -3,6 +3,7 @@ import type {
   ArchitectureDocument, CanvasNode, CanvasPreferences, InterfaceObject, Selection, TypeObject,
 } from '../domain/model';
 
+/** Presentation data required by architecture nodes. */
 export interface ArchitectureNodeData extends Record<string, unknown> {
   node: CanvasNode;
   interfaces: InterfaceObject[];
@@ -12,6 +13,7 @@ export interface ArchitectureNodeData extends Record<string, unknown> {
   select: (selection: Selection) => void;
 }
 
+/** Presentation data required by elbow wires. */
 export interface ArchitectureEdgeData extends Record<string, unknown> {
   label: string;
   preferences: CanvasPreferences;
@@ -43,6 +45,7 @@ function connectedIds(document: ArchitectureDocument, selection: Selection): Set
   return ids;
 }
 
+/** Projects canonical nodes into React Flow nodes. */
 export function projectNodes(
   document: ArchitectureDocument,
   preferences: CanvasPreferences,
@@ -74,6 +77,7 @@ export function projectNodes(
   }));
 }
 
+/** Projects canonical wires into React Flow edges. */
 export function projectEdges(
   document: ArchitectureDocument,
   preferences: CanvasPreferences,

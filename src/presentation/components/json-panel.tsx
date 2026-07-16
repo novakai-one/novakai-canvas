@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { ArchitectureDocument } from '../../domain/model';
 import { architectureDocumentSchema } from '../../domain/schema';
 
+/** Editable validated representation of the canonical document. */
 export function JsonPanel({ document, replace }: { document: ArchitectureDocument; replace: (next: ArchitectureDocument) => void }) {
   const [raw, setRaw] = useState(() => JSON.stringify(document, null, 2));
   const [error, setError] = useState('');

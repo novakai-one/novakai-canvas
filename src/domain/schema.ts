@@ -3,6 +3,7 @@ import { z } from 'zod';
 const position = z.object({ x: z.number(), y: z.number() });
 const size = z.object({ width: z.number().positive(), height: z.number().positive() });
 
+/** Runtime validator for architecture documents. */
 export const architectureDocumentSchema = z.object({
   schemaVersion: z.literal(1),
   id: z.string().min(1),
@@ -32,6 +33,7 @@ export const architectureDocumentSchema = z.object({
   })),
 });
 
+/** Runtime validator for presentation preferences. */
 export const canvasPreferencesSchema = z.object({
   schemaVersion: z.literal(1),
   appearance: z.object({ density: z.enum(['compact', 'comfortable']), radius: z.number().min(0).max(16) }),

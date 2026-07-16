@@ -2,6 +2,7 @@ import { applyCanvasCommand } from '../domain/commands';
 import type { ArchitectureDocument, CanvasCommand } from '../domain/model';
 import type { JsonRepository } from './json-repository';
 
+/** Small interface hiding canvas state lifecycle. */
 export interface CanvasEngine {
   snapshot(): ArchitectureDocument;
   execute(command: CanvasCommand): void;

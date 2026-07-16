@@ -13,6 +13,7 @@ interface AppProps {
   preferencesRepository: JsonRepository<CanvasPreferences>;
 }
 
+/** Composes the canvas engine with replaceable presentation adapters. */
 export default function App({ engine, initialPreferences, preferencesRepository }: AppProps) {
   const document = useCanvasEngine(engine);
   const [preferences, setPreferences] = useState(initialPreferences);
