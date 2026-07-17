@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "novakai-project-model",
   "name": "Novakai project model",
-  "revision": 1,
+  "revision": 577,
   "nodes": {
     "project-scope": {
       "id": "project-scope",
@@ -10,8 +10,8 @@
       "label": "Novakai IDE",
       "description": "Project scope",
       "position": {
-        "x": 80,
-        "y": 60
+        "x": 312,
+        "y": 120
       },
       "size": {
         "width": 1120,
@@ -26,8 +26,8 @@
       "label": "Planning",
       "description": "Plans, milestones, and task assignments",
       "position": {
-        "x": 70,
-        "y": 100
+        "x": 36,
+        "y": 48
       },
       "size": {
         "width": 210,
@@ -46,7 +46,10 @@
       "kind": "module",
       "label": "Threads",
       "description": "Durable work objectives",
-      "position": { "x": 405, "y": 100 },
+      "position": {
+        "x": 432,
+        "y": 12
+      },
       "size": {
         "width": 220,
         "height": 150
@@ -66,8 +69,8 @@
       "label": "Resources",
       "description": "Project-owned files and storyboards",
       "position": {
-        "x": 770,
-        "y": 100
+        "x": 864,
+        "y": 48
       },
       "size": {
         "width": 220,
@@ -88,8 +91,8 @@
       "label": "Task assignment",
       "description": "Connects tasks with working threads",
       "position": {
-        "x": 205,
-        "y": 330
+        "x": 144,
+        "y": 348
       },
       "size": {
         "width": 190,
@@ -107,8 +110,8 @@
       "label": "Agent session",
       "description": "Provider-specific runtime",
       "position": {
-        "x": 465,
-        "y": 330
+        "x": 480,
+        "y": 300
       },
       "size": {
         "width": 190,
@@ -128,8 +131,8 @@
       "label": "Storyboard",
       "description": "Stored inside the project folder",
       "position": {
-        "x": 745,
-        "y": 330
+        "x": 780,
+        "y": 336
       },
       "size": {
         "width": 190,
@@ -168,8 +171,8 @@
       "label": "IDE repository",
       "description": "Version-controlled source",
       "position": {
-        "x": 635,
-        "y": 500
+        "x": 732,
+        "y": 516
       },
       "size": {
         "width": 210,
@@ -186,12 +189,438 @@
       "kind": "comment",
       "label": "Project is the umbrella, not one enormous aggregate.",
       "position": {
-        "x": 1250,
-        "y": 125
+        "x": 1656,
+        "y": 120
       },
       "size": {
         "width": 250,
         "height": 110
+      },
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "messaging-scope": {
+      "id": "messaging-scope",
+      "kind": "scope",
+      "label": "Agent Messaging",
+      "description": "DMs + team channel between live agents",
+      "position": {
+        "x": 312,
+        "y": 870
+      },
+      "size": {
+        "width": 1160,
+        "height": 760
+      },
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "msg-send-api": {
+      "id": "msg-send-api",
+      "kind": "module",
+      "label": "Send API",
+      "description": "POST /api/messages + nvk msg CLI",
+      "position": {
+        "x": 48,
+        "y": 60
+      },
+      "size": {
+        "width": 220,
+        "height": 140
+      },
+      "parentId": "messaging-scope",
+      "interfaceIds": [
+        "msg-send"
+      ],
+      "typeIds": [
+        "send-message"
+      ]
+    },
+    "msg-router": {
+      "id": "msg-router",
+      "kind": "module",
+      "label": "Message router",
+      "description": "Resolves recipients, applies delivery policy",
+      "position": {
+        "x": 460,
+        "y": 60
+      },
+      "size": {
+        "width": 230,
+        "height": 140
+      },
+      "parentId": "messaging-scope",
+      "interfaceIds": [
+        "msg-route"
+      ],
+      "typeIds": [
+        "delivery-receipt"
+      ]
+    },
+    "msg-store": {
+      "id": "msg-store",
+      "kind": "module",
+      "label": "Message store",
+      "description": "Append-only log: audit record of every envelope",
+      "position": {
+        "x": 880,
+        "y": 60
+      },
+      "size": {
+        "width": 230,
+        "height": 150
+      },
+      "parentId": "messaging-scope",
+      "interfaceIds": [
+        "msg-append",
+        "msg-history"
+      ],
+      "typeIds": []
+    },
+    "msg-envelope": {
+      "id": "msg-envelope",
+      "kind": "object",
+      "label": "Message envelope",
+      "description": "Extensible wrapper: permissions & metadata later",
+      "position": {
+        "x": 48,
+        "y": 300
+      },
+      "size": {
+        "width": 220,
+        "height": 130
+      },
+      "parentId": "messaging-scope",
+      "interfaceIds": [],
+      "typeIds": [
+        "message-envelope"
+      ]
+    },
+    "msg-injector": {
+      "id": "msg-injector",
+      "kind": "module",
+      "label": "PTY delivery",
+      "description": "normal: queue-typed; interrupt: Esc then type",
+      "position": {
+        "x": 460,
+        "y": 300
+      },
+      "size": {
+        "width": 230,
+        "height": 140
+      },
+      "parentId": "messaging-scope",
+      "interfaceIds": [
+        "msg-deliver"
+      ],
+      "typeIds": []
+    },
+    "msg-channel": {
+      "id": "msg-channel",
+      "kind": "object",
+      "label": "#team channel",
+      "description": "Fan-out recipient every agent can read",
+      "position": {
+        "x": 880,
+        "y": 300
+      },
+      "size": {
+        "width": 230,
+        "height": 130
+      },
+      "parentId": "messaging-scope",
+      "interfaceIds": [
+        "msg-channel-read"
+      ],
+      "typeIds": []
+    },
+    "msg-agents": {
+      "id": "msg-agents",
+      "kind": "runtime",
+      "label": "Agent PTYs",
+      "description": "Claude + Codex sessions via TerminalManager",
+      "position": {
+        "x": 300,
+        "y": 540
+      },
+      "size": {
+        "width": 240,
+        "height": 150
+      },
+      "parentId": "messaging-scope",
+      "interfaceIds": [],
+      "typeIds": [
+        "agent-address"
+      ]
+    },
+    "msg-briefing": {
+      "id": "msg-briefing",
+      "kind": "object",
+      "label": "Spawn briefing",
+      "description": "Standing instructions: your name + how to message",
+      "position": {
+        "x": 48,
+        "y": 540
+      },
+      "size": {
+        "width": 220,
+        "height": 130
+      },
+      "parentId": "messaging-scope",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "msg-ui": {
+      "id": "msg-ui",
+      "kind": "module",
+      "label": "Messages view",
+      "description": "UI feed of DMs + channel over ws",
+      "position": {
+        "x": 732,
+        "y": 582
+      },
+      "size": {
+        "width": 230,
+        "height": 140
+      },
+      "parentId": "messaging-scope",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "note-messaging": {
+      "id": "note-messaging",
+      "kind": "comment",
+      "label": "Sender decides delivery: normal queues into the turn; interrupt breaks it.",
+      "position": {
+        "x": 1656,
+        "y": 900
+      },
+      "size": {
+        "width": 250,
+        "height": 120
+      },
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "browser-scope": {
+      "id": "browser-scope",
+      "kind": "scope",
+      "label": "Agent Browser Sessions",
+      "description": "Isolated per-agent browser + live off-screen mirror",
+      "position": {
+        "x": 432,
+        "y": 2220
+      },
+      "size": {
+        "width": 1520,
+        "height": 780
+      },
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "bs-cli": {
+      "id": "bs-cli",
+      "kind": "module",
+      "label": "browse CLI",
+      "description": "Agent-facing: browse --session <id> goto|click|shot",
+      "position": {
+        "x": 60,
+        "y": 60
+      },
+      "size": {
+        "width": 230,
+        "height": 132
+      },
+      "parentId": "browser-scope",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "bs-mirror": {
+      "id": "bs-mirror",
+      "kind": "module",
+      "label": "Mirror viewer",
+      "description": "Off-screen screencast grid + copyable page URL",
+      "position": {
+        "x": 852,
+        "y": 0
+      },
+      "size": {
+        "width": 230,
+        "height": 132
+      },
+      "parentId": "browser-scope",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "bs-session": {
+      "id": "bs-session",
+      "kind": "object",
+      "label": "Session",
+      "description": "Agent ↔ instance binding and lifecycle",
+      "position": {
+        "x": 24,
+        "y": 228
+      },
+      "size": {
+        "width": 230,
+        "height": 132
+      },
+      "parentId": "browser-scope",
+      "interfaceIds": [],
+      "typeIds": [
+        "bs-t-session",
+        "bs-t-handle"
+      ]
+    },
+    "bs-broker": {
+      "id": "bs-broker",
+      "kind": "module",
+      "label": "Session broker",
+      "description": "acquire / release / lookup; owns pool state",
+      "position": {
+        "x": 552,
+        "y": 216
+      },
+      "size": {
+        "width": 240,
+        "height": 140
+      },
+      "parentId": "browser-scope",
+      "interfaceIds": [
+        "bs-acquire",
+        "bs-release"
+      ],
+      "typeIds": []
+    },
+    "bs-policy": {
+      "id": "bs-policy",
+      "kind": "object",
+      "label": "Allocation policy",
+      "description": "Pure: choose free instance, grow or evict",
+      "position": {
+        "x": 1236,
+        "y": 216
+      },
+      "size": {
+        "width": 230,
+        "height": 132
+      },
+      "parentId": "browser-scope",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "bs-lease": {
+      "id": "bs-lease",
+      "kind": "object",
+      "label": "Lease",
+      "description": "TTL claim; reclaims a dead agent's instance",
+      "position": {
+        "x": 1272,
+        "y": 456
+      },
+      "size": {
+        "width": 230,
+        "height": 132
+      },
+      "parentId": "browser-scope",
+      "interfaceIds": [],
+      "typeIds": [
+        "bs-t-lease"
+      ]
+    },
+    "bs-pool": {
+      "id": "bs-pool",
+      "kind": "module",
+      "label": "Chrome pool",
+      "description": "Adapter: launches headless Chrome, own user-data-dir + port",
+      "position": {
+        "x": 60,
+        "y": 544
+      },
+      "size": {
+        "width": 240,
+        "height": 140
+      },
+      "parentId": "browser-scope",
+      "interfaceIds": [
+        "bs-launch"
+      ],
+      "typeIds": [
+        "bs-t-instance"
+      ]
+    },
+    "bs-control": {
+      "id": "bs-control",
+      "kind": "module",
+      "label": "CDP control",
+      "description": "Adapter: Playwright over CDP, target-scoped, never bringToFront",
+      "position": {
+        "x": 384,
+        "y": 640
+      },
+      "size": {
+        "width": 240,
+        "height": 140
+      },
+      "parentId": "browser-scope",
+      "interfaceIds": [
+        "bs-act"
+      ],
+      "typeIds": [
+        "bs-t-command"
+      ]
+    },
+    "bs-screencast": {
+      "id": "bs-screencast",
+      "kind": "module",
+      "label": "CDP screencast",
+      "description": "Adapter: Page.startScreencast → JPEG frames",
+      "position": {
+        "x": 852,
+        "y": 516
+      },
+      "size": {
+        "width": 240,
+        "height": 140
+      },
+      "parentId": "browser-scope",
+      "interfaceIds": [
+        "bs-frames"
+      ],
+      "typeIds": [
+        "bs-t-frame"
+      ]
+    },
+    "bs-chrome": {
+      "id": "bs-chrome",
+      "kind": "runtime",
+      "label": "Chrome instances",
+      "description": "N isolated processes, off-screen",
+      "position": {
+        "x": 1272,
+        "y": 648
+      },
+      "size": {
+        "width": 230,
+        "height": 132
+      },
+      "parentId": "browser-scope",
+      "interfaceIds": [],
+      "typeIds": [
+        "bs-t-instance"
+      ]
+    },
+    "note-browser": {
+      "id": "note-browser",
+      "kind": "comment",
+      "label": "One session ⇢ one instance. No shared tab, so nothing to fight over — and it renders off-screen, so your foreground never moves.",
+      "position": {
+        "x": 1900,
+        "y": 1760
+      },
+      "size": {
+        "width": 270,
+        "height": 150
       },
       "interfaceIds": [],
       "typeIds": []
@@ -274,6 +703,129 @@
       "returns": [
         "AgentActivity[]"
       ]
+    },
+    "msg-send": {
+      "id": "msg-send",
+      "ownerId": "msg-send-api",
+      "name": "send",
+      "accepts": [
+        "SendMessage"
+      ],
+      "returns": [
+        "MessageEnvelope"
+      ]
+    },
+    "msg-route": {
+      "id": "msg-route",
+      "ownerId": "msg-router",
+      "name": "route",
+      "accepts": [
+        "MessageEnvelope"
+      ],
+      "returns": [
+        "DeliveryReceipt"
+      ]
+    },
+    "msg-append": {
+      "id": "msg-append",
+      "ownerId": "msg-store",
+      "name": "append",
+      "accepts": [
+        "MessageEnvelope"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "msg-history": {
+      "id": "msg-history",
+      "ownerId": "msg-store",
+      "name": "history",
+      "accepts": [
+        "MessageQuery"
+      ],
+      "returns": [
+        "MessageEnvelope[]"
+      ]
+    },
+    "msg-deliver": {
+      "id": "msg-deliver",
+      "ownerId": "msg-injector",
+      "name": "deliver",
+      "accepts": [
+        "AgentAddress",
+        "MessageEnvelope"
+      ],
+      "returns": [
+        "DeliveryReceipt"
+      ]
+    },
+    "msg-channel-read": {
+      "id": "msg-channel-read",
+      "ownerId": "msg-channel",
+      "name": "read",
+      "accepts": [
+        "ChannelQuery"
+      ],
+      "returns": [
+        "MessageEnvelope[]"
+      ]
+    },
+    "bs-acquire": {
+      "id": "bs-acquire",
+      "ownerId": "bs-broker",
+      "name": "acquire",
+      "accepts": [
+        "AgentId"
+      ],
+      "returns": [
+        "SessionHandle"
+      ]
+    },
+    "bs-release": {
+      "id": "bs-release",
+      "ownerId": "bs-broker",
+      "name": "release",
+      "accepts": [
+        "SessionId"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "bs-launch": {
+      "id": "bs-launch",
+      "ownerId": "bs-pool",
+      "name": "launch",
+      "accepts": [
+        "LaunchSpec"
+      ],
+      "returns": [
+        "BrowserInstance"
+      ]
+    },
+    "bs-act": {
+      "id": "bs-act",
+      "ownerId": "bs-control",
+      "name": "act",
+      "accepts": [
+        "SessionId",
+        "BrowserCommand"
+      ],
+      "returns": [
+        "ActionResult"
+      ]
+    },
+    "bs-frames": {
+      "id": "bs-frames",
+      "ownerId": "bs-screencast",
+      "name": "subscribe",
+      "accepts": [
+        "SessionId"
+      ],
+      "returns": [
+        "Frame[]"
+      ]
     }
   },
   "types": {
@@ -336,6 +888,103 @@
         "id",
         "root",
         "branch"
+      ]
+    },
+    "message-envelope": {
+      "id": "message-envelope",
+      "name": "MessageEnvelope",
+      "fields": [
+        "id",
+        "from",
+        "to",
+        "delivery",
+        "body",
+        "threadId",
+        "createdAt",
+        "status"
+      ]
+    },
+    "send-message": {
+      "id": "send-message",
+      "name": "SendMessage",
+      "fields": [
+        "to",
+        "delivery",
+        "body"
+      ]
+    },
+    "delivery-receipt": {
+      "id": "delivery-receipt",
+      "name": "DeliveryReceipt",
+      "fields": [
+        "messageId",
+        "deliveredAt",
+        "mode"
+      ]
+    },
+    "agent-address": {
+      "id": "agent-address",
+      "name": "AgentAddress",
+      "fields": [
+        "agentId",
+        "name",
+        "provider"
+      ]
+    },
+    "bs-t-session": {
+      "id": "bs-t-session",
+      "name": "Session",
+      "fields": [
+        "id",
+        "agentId",
+        "instancePort",
+        "status"
+      ]
+    },
+    "bs-t-handle": {
+      "id": "bs-t-handle",
+      "name": "SessionHandle",
+      "fields": [
+        "sessionId",
+        "cdpEndpoint",
+        "mirrorUrl",
+        "pageUrl"
+      ]
+    },
+    "bs-t-lease": {
+      "id": "bs-t-lease",
+      "name": "Lease",
+      "fields": [
+        "sessionId",
+        "agentId",
+        "expiresAt"
+      ]
+    },
+    "bs-t-instance": {
+      "id": "bs-t-instance",
+      "name": "BrowserInstance",
+      "fields": [
+        "pid",
+        "port",
+        "userDataDir"
+      ]
+    },
+    "bs-t-command": {
+      "id": "bs-t-command",
+      "name": "BrowserCommand",
+      "fields": [
+        "kind",
+        "selector",
+        "text"
+      ]
+    },
+    "bs-t-frame": {
+      "id": "bs-t-frame",
+      "name": "Frame",
+      "fields": [
+        "sessionId",
+        "seq",
+        "jpeg"
       ]
     }
   },
@@ -402,6 +1051,190 @@
       "target": "repository",
       "label": "indexes",
       "kind": "queries",
+      "routing": "elbow"
+    },
+    "agents-send": {
+      "id": "agents-send",
+      "source": "msg-agents",
+      "target": "msg-send-api",
+      "label": "nvk msg / curl",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "send-envelope": {
+      "id": "send-envelope",
+      "source": "msg-send-api",
+      "target": "msg-envelope",
+      "label": "wraps",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "send-router": {
+      "id": "send-router",
+      "source": "msg-send-api",
+      "target": "msg-router",
+      "label": "submits",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "router-store": {
+      "id": "router-store",
+      "source": "msg-router",
+      "target": "msg-store",
+      "label": "records",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "router-injector": {
+      "id": "router-injector",
+      "source": "msg-router",
+      "target": "msg-injector",
+      "label": "delivers DM",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "router-channel": {
+      "id": "router-channel",
+      "source": "msg-router",
+      "target": "msg-channel",
+      "label": "fans out",
+      "kind": "assigns",
+      "routing": "elbow"
+    },
+    "injector-agents": {
+      "id": "injector-agents",
+      "source": "msg-injector",
+      "target": "msg-agents",
+      "label": "types into PTY",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "briefing-agents": {
+      "id": "briefing-agents",
+      "source": "msg-briefing",
+      "target": "msg-agents",
+      "label": "instructs at spawn",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "ui-store": {
+      "id": "ui-store",
+      "source": "msg-ui",
+      "target": "msg-store",
+      "label": "history",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "ui-channel": {
+      "id": "ui-channel",
+      "source": "msg-ui",
+      "target": "msg-channel",
+      "label": "watches",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "session-agents": {
+      "id": "session-agents",
+      "source": "session",
+      "target": "msg-agents",
+      "label": "is a",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "bs-w-cli-broker": {
+      "id": "bs-w-cli-broker",
+      "source": "bs-cli",
+      "target": "bs-broker",
+      "label": "acquire / release",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "bs-w-cli-control": {
+      "id": "bs-w-cli-control",
+      "source": "bs-cli",
+      "target": "bs-control",
+      "label": "acts via",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "bs-w-mirror-broker": {
+      "id": "bs-w-mirror-broker",
+      "source": "bs-mirror",
+      "target": "bs-broker",
+      "label": "lists sessions",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "bs-w-mirror-screencast": {
+      "id": "bs-w-mirror-screencast",
+      "source": "bs-mirror",
+      "target": "bs-screencast",
+      "label": "streams",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "bs-w-broker-session": {
+      "id": "bs-w-broker-session",
+      "source": "bs-broker",
+      "target": "bs-session",
+      "label": "tracks",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "bs-w-broker-lease": {
+      "id": "bs-w-broker-lease",
+      "source": "bs-broker",
+      "target": "bs-lease",
+      "label": "grants",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "bs-w-broker-policy": {
+      "id": "bs-w-broker-policy",
+      "source": "bs-broker",
+      "target": "bs-policy",
+      "label": "decides via",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "bs-w-broker-pool": {
+      "id": "bs-w-broker-pool",
+      "source": "bs-broker",
+      "target": "bs-pool",
+      "label": "launch / dispose",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "bs-w-control-chrome": {
+      "id": "bs-w-control-chrome",
+      "source": "bs-control",
+      "target": "bs-chrome",
+      "label": "drives target",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "bs-w-screencast-chrome": {
+      "id": "bs-w-screencast-chrome",
+      "source": "bs-screencast",
+      "target": "bs-chrome",
+      "label": "captures",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "bs-w-pool-chrome": {
+      "id": "bs-w-pool-chrome",
+      "source": "bs-pool",
+      "target": "bs-chrome",
+      "label": "spawns",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "bs-w-session-chrome": {
+      "id": "bs-w-session-chrome",
+      "source": "bs-session",
+      "target": "bs-chrome",
+      "label": "endpoint",
+      "kind": "references",
       "routing": "elbow"
     }
   }

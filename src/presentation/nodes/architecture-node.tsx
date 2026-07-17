@@ -30,8 +30,8 @@ export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowN
               onClick={(event) => { event.stopPropagation(); select({ kind: 'interface', id: item.id }); }}
               type="button"
             >
-              <span>{item.name}</span>
-              <span>→ {item.returns[0] ?? 'void'}</span>
+              <span className="iface-name">{item.name}({item.accepts.join(', ')})</span>
+              <span>→ {item.returns.length ? item.returns.join(', ') : 'void'}</span>
             </button>
           ))}
         </div>

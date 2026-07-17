@@ -54,7 +54,7 @@ describe('printScope', () => {
 
     const strip = (input: ArchitectureDocument) => ({
       nodes: Object.fromEntries(Object.entries(input.nodes).map(([id, node]) => {
-        const { position, size, ...rest } = node;
+        const { position: _position, size: _size, ...rest } = node;
         return [id, rest];
       })),
       interfaces: input.interfaces,

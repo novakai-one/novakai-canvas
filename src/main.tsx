@@ -22,6 +22,14 @@ async function bootstrap(): Promise<void> {
   ]);
   const engine = createCanvasEngine(architecture, architectureRepository);
 
+  // External writers (the canvas CLI) touch the data files directly; the dev
+  // bridge notifies us so the open canvas reflects disk without a manual reload.
+  if (import.meta.hot) {
+    import.meta.hot.on('novakai:data-changed', () => {
+      void engine.reload();
+    });
+  }
+
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App engine={engine} initialPreferences={preferences} preferencesRepository={preferencesRepository} />

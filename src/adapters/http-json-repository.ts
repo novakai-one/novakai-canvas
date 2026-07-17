@@ -23,6 +23,7 @@ export function createHttpJsonRepository<T>(
         headers: { 'content-type': 'application/json' },
         body: `${JSON.stringify(schema.parse(value), null, 2)}\n`,
       });
+      if (response.status === 409) throw new Error('stale-revision');
       if (!response.ok) throw new Error(`Unable to save ${endpoint}`);
     },
   };

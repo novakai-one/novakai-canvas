@@ -20,15 +20,21 @@ export default function App({ engine, initialPreferences, preferencesRepository 
   const [selection, setSelection] = useState<Selection>(null);
   const [tab, setTab] = useState<InspectorTab>(initialPreferences.panel.defaultTab);
   const [saveStatus, setSaveStatus] = useState('Saved');
-  const initialRevision = useRef(document.revision);
   const savedPreferences = useRef(JSON.stringify(initialPreferences));
 
   useEffect(() => {
     if (!preferences.files.autoSave) return;
-    if (document.revision === initialRevision.current) return;
+    if (document.revision === engine.persistedRevision()) return;
     setSaveStatus('Saving');
     const timer = window.setTimeout(() => {
-      void engine.save().then(() => setSaveStatus('Saved')).catch(() => setSaveStatus('Local changes'));
+      void engine.save().then(() => setSaveStatus('Saved')).catch((error: unknown) => {
+        if (error instanceof Error && error.message === 'stale-revision') {
+          // Someone else (e.g. the canvas CLI) wrote the file first — their version wins.
+          void engine.reload().then(() => setSaveStatus('Saved'));
+          return;
+        }
+        setSaveStatus('Local changes');
+      });
     }, preferences.files.saveDelay);
     return () => window.clearTimeout(timer);
   }, [document, engine, preferences.files.autoSave, preferences.files.saveDelay]);

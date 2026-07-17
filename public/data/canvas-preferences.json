@@ -7,23 +7,23 @@
   "canvas": {
     "showGrid": false,
     "snapToGrid": true,
-    "gridSize": 8,
+    "gridSize": 12,
     "showControls": true
   },
   "nodes": {
     "showKinds": true,
-    "showDescriptions": false,
+    "showDescriptions": true,
     "showInterfaces": "always",
     "showTypes": true,
     "showPorts": "hover"
   },
   "wires": {
-    "showLabels": "selected",
+    "showLabels": "always",
     "width": 1.25,
     "dimUnrelated": true
   },
   "panel": {
-    "width": 380,
+    "width": 413,
     "defaultTab": "inspect",
     "showEmptyFields": false
   },

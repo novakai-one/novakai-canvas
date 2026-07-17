@@ -72,10 +72,17 @@
   cursor: pointer;
 }
 
-.interface-list button span:last-child {
+.interface-list button .iface-name {
+  flex: 1 1 auto;
+  min-width: 0;
   overflow: hidden;
-  color: #7f7b73;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.interface-list button span:last-child {
+  flex: 0 0 auto;
+  color: #7f7b73;
   white-space: nowrap;
 }
 
