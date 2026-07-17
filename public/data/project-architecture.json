@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "novakai-project-model",
   "name": "Novakai project model",
-  "revision": 577,
+  "revision": 591,
   "nodes": {
     "project-scope": {
       "id": "project-scope",
