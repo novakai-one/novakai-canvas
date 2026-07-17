@@ -150,15 +150,14 @@ export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): Compil
 
     // Wires internal to the replaced scope are regenerated from the DSL; wires from
     // other scopes survive when their endpoint id was reused, otherwise they drop.
+    const droppedCrossScope: { source: string; target: string; label: string }[] = [];
     for (const [wireId, wire] of Object.entries(wires)) {
       const sourceGone = !nodes[wire.source];
       const targetGone = !nodes[wire.target];
       if (sourceGone || targetGone) {
         delete wires[wireId];
         const internal = removedIds.includes(wire.source) && removedIds.includes(wire.target);
-        if (!internal) {
-          warnings.push(`dropped cross-scope wire: ${wire.source} -> ${wire.target} (${wire.label})`);
-        }
+        if (!internal) droppedCrossScope.push({ source: wire.source, target: wire.target, label: wire.label });
       }
     }
 
@@ -190,6 +189,14 @@ export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): Compil
       wires[wireId] = {
         id: wireId, source, target, label: wireAst.contract, kind: wireAst.kind, routing: 'elbow',
       };
+    }
+
+    // Only report cross-scope drops the DSL did not re-establish.
+    const pairs = new Set(Object.values(wires).map((wire) => `${wire.source}->${wire.target}`));
+    for (const dropped of droppedCrossScope) {
+      if (!pairs.has(`${dropped.source}->${dropped.target}`)) {
+        warnings.push(`dropped cross-scope wire: ${dropped.source} -> ${dropped.target} (${dropped.label})`);
+      }
     }
   }
 
