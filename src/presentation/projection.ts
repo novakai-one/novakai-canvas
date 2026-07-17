@@ -65,7 +65,11 @@ export function projectNodes(
     className: preferences.wires.dimUnrelated && selection && !connected.has(node.id) && node.kind !== 'scope'
       ? 'is-dimmed'
       : '',
-    zIndex: node.kind === 'scope' ? -1 : node.kind === 'comment' ? 3 : 2,
+    // A selected scope rises above the interaction layers so its resize
+    // handles are reachable; its body stays click-through (pointer-events).
+    zIndex: node.kind === 'scope'
+      ? (selection?.kind === 'node' && selection.id === node.id ? 4 : -1)
+      : node.kind === 'comment' ? 3 : 2,
     data: {
       node,
       interfaces: node.interfaceIds.flatMap((id) => document.interfaces[id] ? [document.interfaces[id]] : []),
@@ -91,6 +95,7 @@ export function projectEdges(
     target: wire.target,
     type: 'elbow',
     selected: selection?.kind === 'wire' && selection.id === wire.id,
+    zIndex: selection?.kind === 'wire' && selection.id === wire.id ? 1000 : 0,
     className: preferences.wires.dimUnrelated && selection
       && (!connected.has(wire.source) || !connected.has(wire.target)) ? 'is-dimmed' : '',
     data: { label: wire.label, preferences, select: () => select({ kind: 'wire', id: wire.id }) },

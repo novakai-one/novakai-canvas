@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "novakai-project-model",
   "name": "Novakai project model",
-  "revision": 592,
+  "revision": 828,
   "nodes": {
     "project-scope": {
       "id": "project-scope",
@@ -630,12 +630,12 @@
       "kind": "scope",
       "label": "Webhook Relay",
       "position": {
-        "x": 40,
-        "y": 3080
+        "x": -240,
+        "y": 3180
       },
       "size": {
-        "width": 1121,
-        "height": 410
+        "width": 1852,
+        "height": 879
       },
       "interfaceIds": [],
       "typeIds": []
@@ -645,12 +645,28 @@
       "kind": "comment",
       "label": "Failed deliveries retry with backoff.",
       "position": {
-        "x": 801,
-        "y": 88
+        "x": 792,
+        "y": 241
       },
       "size": {
-        "width": 280,
-        "height": 90
+        "width": 388,
+        "height": 174
+      },
+      "parentId": "webhook-relay",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "webhook-relay--note-2-ack-is-not-a-receipt-ack": {
+      "id": "webhook-relay--note-2-ack-is-not-a-receipt-ack",
+      "kind": "comment",
+      "label": "Ack is not a receipt: Ack answers the webhook sender instantly (got it, queued). A DeliveryReceipt records one delivery attempt to one subscriber. relay-log append returns void because logging is fire-and-forget.",
+      "position": {
+        "x": 1332,
+        "y": 192
+      },
+      "size": {
+        "width": 496,
+        "height": 243
       },
       "parentId": "webhook-relay",
       "interfaceIds": [],
@@ -660,58 +676,63 @@
       "id": "webhook-relay--ingress",
       "kind": "module",
       "label": "Ingress",
-      "description": "HTTP endpoint that receives webhooks",
+      "description": "Receives webhooks over HTTP",
       "position": {
-        "x": 478,
-        "y": 68
+        "x": 370,
+        "y": 113
       },
       "size": {
-        "width": 283,
-        "height": 130
+        "width": 382,
+        "height": 250
       },
       "parentId": "webhook-relay",
       "interfaceIds": [
         "webhook-relay--ingress--if-receive"
       ],
-      "typeIds": []
+      "typeIds": [
+        "webhook-relay--ingress--type-ack"
+      ]
     },
     "webhook-relay--signature-check": {
       "id": "webhook-relay--signature-check",
       "kind": "module",
       "label": "Signature check",
       "position": {
-        "x": 467,
-        "y": 280
+        "x": 682,
+        "y": 485
       },
       "size": {
-        "width": 305,
-        "height": 90
+        "width": 605,
+        "height": 234
       },
       "parentId": "webhook-relay",
       "interfaceIds": [
         "webhook-relay--signature-check--if-verify"
       ],
-      "typeIds": []
+      "typeIds": [
+        "webhook-relay--signature-check--type-verdict"
+      ]
     },
     "webhook-relay--fanout": {
       "id": "webhook-relay--fanout",
       "kind": "module",
       "label": "Fanout",
-      "description": "Delivers to subscribers",
+      "description": "Delivers to every subscriber",
       "position": {
-        "x": 40,
-        "y": 56
+        "x": 244,
+        "y": 453
       },
       "size": {
         "width": 398,
-        "height": 154
+        "height": 178
       },
       "parentId": "webhook-relay",
       "interfaceIds": [
         "webhook-relay--fanout--if-deliver"
       ],
       "typeIds": [
-        "webhook-relay--fanout--type-subscriber"
+        "webhook-relay--fanout--type-subscriber",
+        "webhook-relay--fanout--type-deliveryreceipt"
       ]
     },
     "webhook-relay--relay-log-json": {
@@ -719,8 +740,8 @@
       "kind": "resource",
       "label": "relay-log.json",
       "position": {
-        "x": 116,
-        "y": 280
+        "x": 320,
+        "y": 701
       },
       "size": {
         "width": 247,
@@ -1140,12 +1161,37 @@
         "jpeg"
       ]
     },
+    "webhook-relay--ingress--type-ack": {
+      "id": "webhook-relay--ingress--type-ack",
+      "name": "Ack",
+      "fields": [
+        "received",
+        "eventId"
+      ]
+    },
+    "webhook-relay--signature-check--type-verdict": {
+      "id": "webhook-relay--signature-check--type-verdict",
+      "name": "Verdict",
+      "fields": [
+        "valid",
+        "reason"
+      ]
+    },
     "webhook-relay--fanout--type-subscriber": {
       "id": "webhook-relay--fanout--type-subscriber",
       "name": "Subscriber",
       "fields": [
         "url",
         "secret"
+      ]
+    },
+    "webhook-relay--fanout--type-deliveryreceipt": {
+      "id": "webhook-relay--fanout--type-deliveryreceipt",
+      "name": "DeliveryReceipt",
+      "fields": [
+        "subscriberUrl",
+        "status",
+        "attempt"
       ]
     }
   },
@@ -1408,10 +1454,18 @@
     },
     "webhook-relay--wire-2": {
       "id": "webhook-relay--wire-2",
+      "source": "webhook-relay--ingress",
+      "target": "webhook-relay--fanout",
+      "label": "deliver(WebhookEvent, Subscriber) -> DeliveryReceipt",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "webhook-relay--wire-3": {
+      "id": "webhook-relay--wire-3",
       "source": "webhook-relay--fanout",
       "target": "webhook-relay--relay-log-json",
       "label": "append(DeliveryReceipt) -> void",
-      "kind": "assigns",
+      "kind": "owns",
       "routing": "elbow"
     }
   }

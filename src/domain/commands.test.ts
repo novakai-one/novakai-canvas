@@ -19,6 +19,13 @@ describe('applyCanvasCommand', () => {
     expect(next.revision).toBe(1);
   });
 
+  it('resizes a node immutably', () => {
+    const next = applyCanvasCommand(document, { kind: 'node.resize', id: 'one', size: { width: 320, height: 180 } });
+    expect(next.nodes.one.size).toEqual({ width: 320, height: 180 });
+    expect(document.nodes.one.size).toEqual({ width: 100, height: 60 });
+    expect(next.revision).toBe(1);
+  });
+
   it('removes incident wires with a node', () => {
     const wired = structuredClone(document);
     wired.nodes.two = { ...wired.nodes.one, id: 'two', label: 'Two' };

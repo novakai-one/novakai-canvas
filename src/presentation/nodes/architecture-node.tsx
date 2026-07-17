@@ -1,4 +1,4 @@
-import { Handle, Position, type NodeProps, type Node } from '@xyflow/react';
+import { Handle, NodeResizer, Position, type NodeProps, type Node } from '@xyflow/react';
 import type { ArchitectureNodeData } from '../projection';
 
 type ArchitectureFlowNode = Node<ArchitectureNodeData, 'architecture'>;
@@ -12,6 +12,7 @@ export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowN
 
   return (
     <article className={`architecture-node kind-${node.kind} ${portsClass}`}>
+      <NodeResizer isVisible={selected} minHeight={80} minWidth={160} />
       <Handle type="target" position={Position.Left} />
       <header className="node-header">
         <span className="node-label">{node.label}</span>

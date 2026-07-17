@@ -18,9 +18,12 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
       {showLabel && props.data?.label && (
         <EdgeLabelRenderer>
           <button
-            className="wire-label nodrag nopan"
+            className={`wire-label nodrag nopan${props.selected ? ' is-selected' : ''}`}
             onClick={(event) => { event.stopPropagation(); props.data?.select(); }}
-            style={{ transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)` }}
+            style={{
+              transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
+              zIndex: props.selected ? 1001 : undefined,
+            }}
             type="button"
           >{props.data.label}</button>
         </EdgeLabelRenderer>

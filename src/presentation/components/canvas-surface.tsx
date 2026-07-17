@@ -44,6 +44,11 @@ function applyNodeChanges(engine: CanvasEngine, changes: NodeChange[]): void {
     if (change.type === 'position' && change.position) {
       engine.execute({ kind: 'node.move', id: change.id, position: change.position });
     }
+    // Only user-driven resizes (NodeResizer sets resizing) — never React Flow's
+    // initial DOM measurements, which would rewrite every stored size on load.
+    if (change.type === 'dimensions' && change.dimensions && change.resizing) {
+      engine.execute({ kind: 'node.resize', id: change.id, size: change.dimensions });
+    }
     if (change.type === 'remove') engine.execute({ kind: 'node.remove', id: change.id });
   });
 }

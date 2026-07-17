@@ -9,6 +9,7 @@ export function applyCanvasCommand(
   switch (command.kind) {
     case 'node.add': next.nodes[command.node.id] = command.node; break;
     case 'node.move': if (next.nodes[command.id]) next.nodes[command.id].position = command.position; break;
+    case 'node.resize': if (next.nodes[command.id]) next.nodes[command.id].size = command.size; break;
     case 'node.update': if (next.nodes[command.id]) Object.assign(next.nodes[command.id], command.patch); break;
     case 'node.remove':
       delete next.nodes[command.id];

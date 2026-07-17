@@ -95,6 +95,7 @@ export type Selection =
 export type CanvasCommand =
   | { kind: 'node.add'; node: CanvasNode }
   | { kind: 'node.move'; id: string; position: Position }
+  | { kind: 'node.resize'; id: string; size: Size }
   | { kind: 'node.update'; id: string; patch: Partial<Pick<CanvasNode, 'label' | 'description' | 'kind'>> }
   | { kind: 'node.remove'; id: string }
   | { kind: 'wire.add'; wire: CanvasWire }

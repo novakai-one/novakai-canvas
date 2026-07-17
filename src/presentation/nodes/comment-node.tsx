@@ -1,9 +1,14 @@
-import type { Node, NodeProps } from '@xyflow/react';
+import { NodeResizer, type Node, type NodeProps } from '@xyflow/react';
 import type { ArchitectureNodeData } from '../projection';
 
 type CommentFlowNode = Node<ArchitectureNodeData, 'comment'>;
 
-/** Selectable freeform comment renderer. */
-export function CommentNode({ data }: NodeProps<CommentFlowNode>) {
-  return <aside className="comment-node">{data.node.label}</aside>;
+/** Selectable freeform comment renderer; resizable while selected. */
+export function CommentNode({ data, selected }: NodeProps<CommentFlowNode>) {
+  return (
+    <aside className="comment-node">
+      <NodeResizer isVisible={selected} minHeight={60} minWidth={160} />
+      {data.node.label}
+    </aside>
+  );
 }
