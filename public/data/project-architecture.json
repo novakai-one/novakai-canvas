@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "novakai-project-model",
   "name": "Novakai project model",
-  "revision": 591,
+  "revision": 592,
   "nodes": {
     "project-scope": {
       "id": "project-scope",
@@ -624,6 +624,113 @@
       },
       "interfaceIds": [],
       "typeIds": []
+    },
+    "webhook-relay": {
+      "id": "webhook-relay",
+      "kind": "scope",
+      "label": "Webhook Relay",
+      "position": {
+        "x": 40,
+        "y": 3080
+      },
+      "size": {
+        "width": 1121,
+        "height": 410
+      },
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "webhook-relay--note-1-failed-deliveries-retry-": {
+      "id": "webhook-relay--note-1-failed-deliveries-retry-",
+      "kind": "comment",
+      "label": "Failed deliveries retry with backoff.",
+      "position": {
+        "x": 801,
+        "y": 88
+      },
+      "size": {
+        "width": 280,
+        "height": 90
+      },
+      "parentId": "webhook-relay",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "webhook-relay--ingress": {
+      "id": "webhook-relay--ingress",
+      "kind": "module",
+      "label": "Ingress",
+      "description": "HTTP endpoint that receives webhooks",
+      "position": {
+        "x": 478,
+        "y": 68
+      },
+      "size": {
+        "width": 283,
+        "height": 130
+      },
+      "parentId": "webhook-relay",
+      "interfaceIds": [
+        "webhook-relay--ingress--if-receive"
+      ],
+      "typeIds": []
+    },
+    "webhook-relay--signature-check": {
+      "id": "webhook-relay--signature-check",
+      "kind": "module",
+      "label": "Signature check",
+      "position": {
+        "x": 467,
+        "y": 280
+      },
+      "size": {
+        "width": 305,
+        "height": 90
+      },
+      "parentId": "webhook-relay",
+      "interfaceIds": [
+        "webhook-relay--signature-check--if-verify"
+      ],
+      "typeIds": []
+    },
+    "webhook-relay--fanout": {
+      "id": "webhook-relay--fanout",
+      "kind": "module",
+      "label": "Fanout",
+      "description": "Delivers to subscribers",
+      "position": {
+        "x": 40,
+        "y": 56
+      },
+      "size": {
+        "width": 398,
+        "height": 154
+      },
+      "parentId": "webhook-relay",
+      "interfaceIds": [
+        "webhook-relay--fanout--if-deliver"
+      ],
+      "typeIds": [
+        "webhook-relay--fanout--type-subscriber"
+      ]
+    },
+    "webhook-relay--relay-log-json": {
+      "id": "webhook-relay--relay-log-json",
+      "kind": "resource",
+      "label": "relay-log.json",
+      "position": {
+        "x": 116,
+        "y": 280
+      },
+      "size": {
+        "width": 247,
+        "height": 90
+      },
+      "parentId": "webhook-relay",
+      "interfaceIds": [
+        "webhook-relay--relay-log-json--if-append"
+      ],
+      "typeIds": []
     }
   },
   "interfaces": {
@@ -826,6 +933,52 @@
       "returns": [
         "Frame[]"
       ]
+    },
+    "webhook-relay--ingress--if-receive": {
+      "id": "webhook-relay--ingress--if-receive",
+      "ownerId": "webhook-relay--ingress",
+      "name": "receive",
+      "accepts": [
+        "WebhookEvent"
+      ],
+      "returns": [
+        "Ack"
+      ]
+    },
+    "webhook-relay--signature-check--if-verify": {
+      "id": "webhook-relay--signature-check--if-verify",
+      "ownerId": "webhook-relay--signature-check",
+      "name": "verify",
+      "accepts": [
+        "WebhookEvent",
+        "Secret"
+      ],
+      "returns": [
+        "Verdict"
+      ]
+    },
+    "webhook-relay--fanout--if-deliver": {
+      "id": "webhook-relay--fanout--if-deliver",
+      "ownerId": "webhook-relay--fanout",
+      "name": "deliver",
+      "accepts": [
+        "WebhookEvent",
+        "Subscriber"
+      ],
+      "returns": [
+        "DeliveryReceipt"
+      ]
+    },
+    "webhook-relay--relay-log-json--if-append": {
+      "id": "webhook-relay--relay-log-json--if-append",
+      "ownerId": "webhook-relay--relay-log-json",
+      "name": "append",
+      "accepts": [
+        "DeliveryReceipt"
+      ],
+      "returns": [
+        "void"
+      ]
     }
   },
   "types": {
@@ -985,6 +1138,14 @@
         "sessionId",
         "seq",
         "jpeg"
+      ]
+    },
+    "webhook-relay--fanout--type-subscriber": {
+      "id": "webhook-relay--fanout--type-subscriber",
+      "name": "Subscriber",
+      "fields": [
+        "url",
+        "secret"
       ]
     }
   },
@@ -1235,6 +1396,22 @@
       "target": "bs-chrome",
       "label": "endpoint",
       "kind": "references",
+      "routing": "elbow"
+    },
+    "webhook-relay--wire-1": {
+      "id": "webhook-relay--wire-1",
+      "source": "webhook-relay--ingress",
+      "target": "webhook-relay--signature-check",
+      "label": "verify(WebhookEvent, Secret) -> Verdict",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "webhook-relay--wire-2": {
+      "id": "webhook-relay--wire-2",
+      "source": "webhook-relay--fanout",
+      "target": "webhook-relay--relay-log-json",
+      "label": "append(DeliveryReceipt) -> void",
+      "kind": "assigns",
       "routing": "elbow"
     }
   }
