@@ -18,7 +18,10 @@
 - IDs are derived from labels (slugs); agents never see or invent ids.
 - No new runtime dependency other than `@dagrejs/dagre`.
 - All existing tests keep passing; `npm run check` green at the end.
-- Existing document content not named by the DSL is never modified or deleted.
+- Existing document content not named by the DSL is never modified or deleted; **untouched top-level nodes never move**.
+- **Type-only imports MUST use `import type`** (`model.ts` exports only types — a value import crashes under Node type-stripping). Add `tsconfig.tools.json` covering `tools/**` and reference it from `npm run check` so `verbatimModuleSyntax` enforces this (tools are currently in NO tsconfig — `tsc -b` never sees them).
+- Writes are atomic (write temp file in same dir + `rename`); any `fs.watch` therefore watches the **directory**, not the file.
+- **Stable ids on re-apply:** when a re-applied scope contains a node whose slug matches an existing child of the old scope, reuse the existing node id. Cross-scope wires whose endpoint was replaced by a same-slug node are re-pointed, never dropped. (Real case in the data: wire `session-agents` crosses project-scope → messaging-scope.)
 
 ---
 
@@ -95,13 +98,13 @@ export interface ScopeAst { label: string; description?: string; nodes: NodeAst[
 **Interfaces:**
 - Consumes: `ScopeAst`, `slugify` from Task 1; `ArchitectureDocument` type from `src/domain/model.ts`.
 - Produces: `compile(doc: ArchitectureDocument, scopes: ScopeAst[]): { doc: ArchitectureDocument; errors: CompileError[]; touchedScopeIds: string[] }` — pure, no I/O, no layout (positions/sizes zeroed as `{x:0,y:0}` / `{width:1,height:1}` placeholders; Task 3 fills them).
-- ID scheme: scope id = `slug(scopeLabel)`; child id = `slug(scopeLabel)--slug(nodeLabel)`; interface id = `<nodeId>--if-<slug(name)>`; type id = `<nodeId>--type-<slug(name)>`; wire id = `<scopeId>--wire-<n>`.
-- Upsert: match existing top-level scope by `slugify(existing.label) === slugify(ast.label)`; delete it + descendants + their interfaces/types + wires touching any removed node; insert compiled scope.
+- ID scheme: scope id = `slug(scopeLabel)`; child id = `slug(scopeLabel)--slug(nodeLabel)`; interface id = `<nodeId>--if-<slug(name)>`; type id = `<nodeId>--type-<slug(name)>`; wire id = `<scopeId>--wire-<n>`. **Exception (stability):** when replacing an existing scope, a new node whose `slug(label)` matches an old child's `slug(label)` reuses the old child's id verbatim; the scope node itself likewise keeps its existing id (e.g. `browser-scope` stays `browser-scope` even though `slug("Agent Browser Sessions")` differs).
+- Upsert: match existing top-level scope by `slugify(existing.label) === slugify(ast.label)`; delete it + descendants + their interfaces/types + wires **internal to the scope**; insert compiled scope. Wires from OTHER scopes that touch a removed node: if the new scope has a same-slug replacement, re-point them (id reuse makes this automatic); only if no replacement exists are they dropped, and each drop is reported on stderr as `dropped cross-scope wire: <label>`.
 - Wire endpoint resolution: by `slugify(label)` among the new scope's nodes first, then all doc nodes; unresolved endpoint = CompileError naming the label and listing the 5 closest candidates.
 - Duplicate node labels within one scope = CompileError.
 - `revision` untouched here (document-io owns it).
 
-- [ ] **Step 1: Write failing tests** — compile example scope into empty-ish doc (build a minimal valid doc fixture inline): assert node ids, parentId wiring, interfaces attached via `interfaceIds`, wire kind default `references`, contract stored as wire `label`; re-applying a scope with same label replaces old children (old ids gone, no orphan interfaces/wires); unresolved wire target errors with candidate list; cross-scope wire resolves doc-wide; other scopes' nodes byte-identical after compile.
+- [ ] **Step 1: Write failing tests** — compile example scope into empty-ish doc (build a minimal valid doc fixture inline): assert node ids, parentId wiring, interfaces attached via `interfaceIds`, wire kind default `references`, contract stored as wire `label`; re-applying a scope with same label replaces old children with no orphan interfaces/wires; **id stability**: re-applied scope keeps its original scope id, and a child whose slug matches an old child reuses the old id verbatim (fixture uses old-style bare ids like `planning`); **cross-scope wire survival**: a wire from another scope into a re-applied node still resolves after re-apply (same id), and a wire into a node that truly disappeared is dropped WITH a stderr report; unresolved wire target errors with candidate list; cross-scope wire resolves doc-wide; other scopes' nodes byte-identical after compile.
 - [ ] **Step 2: Run** — expect FAIL.
 - [ ] **Step 3: Implement** `compile.ts`.
 - [ ] **Step 4: Run tests** — expect PASS.
@@ -116,12 +119,13 @@ export interface ScopeAst { label: string; description?: string; nodes: NodeAst[
 
 **Interfaces:**
 - Consumes: `ArchitectureDocument`; `touchedScopeIds` from Task 2.
-- Produces: `layoutScopes(doc: ArchitectureDocument, scopeIds: string[]): ArchitectureDocument` — for each named scope: estimate child sizes from content, dagre `TB` layout (`nodesep: 40, ranksep: 70`) using intra-scope wires as edges, child positions **relative to parent**, scope sized to bounding box + padding (56 top for title, 40 sides/bottom); then restack **all** top-level nodes vertically (x = 40, first y = 40, gap 80) so new/regrown scopes never overlap neighbours.
-- Size heuristics: node width `clamp(200, 24 + 7.2 * longestLine, 400)` where longestLine = max chars over label, description, each `name(accepts) → returns` string, each type `Name { fields }` string; node height `= 44 + (description ? 18 : 0) + 20 * interfaceCount + 20 * typeCount + 12`; comment nodes fixed width 280, height `= 40 + 16 * ceil(chars / 38)`.
-- Deterministic: same input → same output (no randomness; dagre is deterministic for fixed insertion order — insert nodes sorted by id).
+- Produces: `layoutScopes(doc: ArchitectureDocument, scopeIds: string[]): ArchitectureDocument` — for each named scope: estimate child sizes from content, dagre `TB` layout (`nodesep: 40, ranksep: 70`) using intra-scope wires as edges, child positions **relative to parent**, scope sized to bounding box + padding (56 top for title, 40 sides/bottom).
+- **Scope placement:** a re-applied existing scope keeps its existing top-left position and grows/shrinks in place. A brand-new scope is placed at `x = 40`, `y = (bottom of lowest existing top-level node) + 80`. **Untouched top-level nodes are never moved** (Chris hand-arranged them). If a regrown scope now overlaps a neighbour, print a warning to stderr (`scope <label> now overlaps <label>; drag or re-apply the neighbour`) — do not move the neighbour.
+- Size heuristics (calibrated against the three real hand-sized cards — `planning` 132px w/ 1 iface + desc, `threads` 150px w/ 2 ifaces + desc, `task-assignment` 112px desc-only; cards render at STORED size with `overflow:hidden`, so under-estimating clips content — always bias generous): node width `clamp(200, 24 + 7.2 * longestLine, 420)`; node height `= 48 + descriptionBlock + 26 * interfaceCount + 24 * typeCount + 16` where `descriptionBlock = description ? 24 + 16 * ceil(description.length / max(30, width/7.2)) : 0`; comment nodes width 280, height `= 48 + 21 * ceil(chars / 34)` (Georgia 14px/1.5).
+- Deterministic: same input → same output (no randomness; dagre is deterministic for fixed insertion order — insert **nodes AND edges** sorted by id).
 
 - [ ] **Step 1:** `npm install -D @dagrejs/dagre` (also add `@types` shim if needed: dagre ships types).
-- [ ] **Step 2: Write failing tests** — layout a compiled 6-node scope: no two sibling rects intersect (write an `intersects()` helper in the test); every child fits inside its scope rect; wire-connected nodes ordered source-above-target (y increases along `browse CLI → Session broker`); calling twice yields identical positions; scopes restacked without overlap when an early scope grows.
+- [ ] **Step 2: Write failing tests** — layout a compiled 6-node scope: no two sibling rects intersect (write an `intersects()` helper in the test); every child fits inside its scope rect; wire-connected nodes ordered source-above-target (y increases along `browse CLI → Session broker`); calling twice yields identical positions; a re-applied scope keeps its prior top-left position; untouched scopes' positions byte-identical; a new scope lands below the lowest existing top-level node; estimated node height ≥ real hand-sized equivalents (assert the heuristic on a desc+2-iface card gives ≥ 150).
 - [ ] **Step 3: Run** — expect FAIL.
 - [ ] **Step 4: Implement** `layout.ts`.
 - [ ] **Step 5: Run tests** — expect PASS.
@@ -155,7 +159,8 @@ export interface ScopeAst { label: string; description?: string; nodes: NodeAst[
 
 **Interfaces:**
 - Consumes: everything from Tasks 1–4; `architectureDocumentSchema` from `src/domain/schema.ts`.
-- Produces: `loadDocument(path: string)`, `saveDocument(path: string, doc)` (validates with zod, bumps `revision` by 1, writes 2-space JSON + trailing `\n`).
+- Produces: `loadDocument(path: string)`, `saveDocument(path: string, doc)` (validates with zod, bumps `revision` by 1, writes 2-space JSON + trailing `\n`, **atomically**: temp file in same dir + `rename`).
+- Also create `tsconfig.tools.json` (extends the app config's strict settings, `include: ["tools"]`, `noEmit`) and add it to the `check` script (`tsc -p tsconfig.tools.json`) so `verbatimModuleSyntax` catches value-imports of type-only modules — the CLI crashes at runtime otherwise (Node strip-types).
 - CLI verbs (default file `public/data/project-architecture.json` resolved from the CLI's own location, overridable with `--file <path>`):
   - `canvas maps` — table: `id  label  nodes  wires`.
   - `canvas read <map>` / `canvas read` — outline DSL to stdout (`<map>` matches scope id or slug of label).
@@ -198,19 +203,24 @@ export interface ScopeAst { label: string; description?: string; nodes: NodeAst[
 - Create: `AGENTS.md` (repo root)
 
 **Interfaces:**
-- Bridge: keep `watcher.unwatch` (prevents vite's default full-reload), add `fs.watch` on both data files, debounce 200ms; **suppress events within 500ms after a bridge PUT** (autosave guard — track `lastBridgeWrite` timestamp); on external change: `server.ws.send({ type: 'custom', event: 'novakai:data-changed', data: { path } })`.
-- Client (in the module that builds the engine):
+- Bridge: keep `watcher.unwatch` (prevents vite's default full-reload), add `fs.watch` on the `public/data` **directory** (atomic renames break per-file watches), debounce 200ms; **suppress events within 500ms after a bridge PUT** (reload-loop guard — track `lastBridgeWrite` timestamp); on external change: `server.ws.send({ type: 'custom', event: 'novakai:data-changed', data: { path } })`.
+- **Bridge PUT gains revision compare-and-swap** (the write race is real: user drags at T0 → autosave PUT in flight at T500 → CLI writes at T510 → stale PUT lands at T520 and silently destroys the CLI's apply). On PUT to `/api/architecture`: parse body, read on-disk doc, if `body.revision <= disk.revision` respond **409** with `{ error: 'stale revision', disk: N }` and do NOT write. Preferences PUT stays as-is (no revision field).
+- **App must not clobber after reload:** two changes in `App.tsx`. (1) The autosave effect currently compares against a mount-time `initialRevision` — replace with a `lastPersistedRevision` ref that updates on every successful save AND on every `engine.replace()` from disk, so a disk-loaded doc does not re-trigger a save of itself. (2) On a 409 from save: skip the write, reload from the repository, `engine.replace()` the fresh doc.
+- Client listener (in the module that builds the engine):
 
 ```ts
 if (import.meta.hot) {
   import.meta.hot.on('novakai:data-changed', () => {
-    void repository.load().then((doc) => engine.replace(doc));
+    void repository.load().then((doc) => {
+      lastPersistedRevision.current = doc.revision;
+      engine.replace(doc);
+    });
   });
 }
 ```
 
-- `AGENTS.md`: ≤ 30 lines — what the tool is, `./canvas help`, the grammar block, apply semantics ("a scope block fully declares that scope"), "never edit `public/data/*.json` by hand", dev server binds IPv6 → use `localhost:5173`.
-- README: fix URL, add 5-verb summary.
+- `AGENTS.md`: ≤ 30 lines — what the tool is, `./canvas help`, the grammar block, apply semantics ("a scope block fully declares that scope"), "never edit `public/data/*.json` by hand", dev server binds IPv6 → use `localhost:5173`. **Steer to `./canvas`, never `npm run canvas`** (npm swallows flags without `--`). Don't rely on AGENTS.md being auto-loaded — the no-arg `./canvas` help is the real safety net.
+- README: fix URL, add 5-verb summary pointing at `./canvas`.
 
 - [ ] **Step 1:** Implement bridge watch + client listener + docs (no unit test for fs.watch — verified live in Task 8).
 - [ ] **Step 2:** `npm run check` — lint + tests + build all green.
@@ -223,6 +233,7 @@ if (import.meta.hot) {
 - [ ] **Step 3:** `./canvas apply` a demo scope (e.g. "CLI Demo" with 3 modules, 2 wires with contracts) — **watch the open page update without manual reload**; screenshot; click the new nodes: selection highlight + inspector must show interfaces; click a wire: contract label visible.
 - [ ] **Step 4:** `./canvas rm cli-demo` — page updates, scope gone; screenshot.
 - [ ] **Step 5:** Confirm in-app drag + autosave does NOT trigger a reload loop (drag a node with autosave on; page must not flicker/reload).
+- [ ] **Step 5b:** Race check: drag a node, then within the 500ms autosave window run a `./canvas apply` — verify the CLI's scope survives on disk (stale PUT must get 409, app must reload instead of clobbering). Check the dev-server log for the 409 and the file for the applied scope.
 - [ ] **Step 6:** Fix anything found; re-verify; commit `test: browser-verified live reload and CLI round trip`.
 
 ### Task 9: Zero-context agent trial (the acceptance test)
