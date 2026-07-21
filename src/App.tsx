@@ -1,11 +1,15 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
 import type { CanvasEngine } from './application/canvas-engine';
 import type { JsonRepository } from './application/json-repository';
 import type { CanvasPreferences, InspectorTab, Selection } from './domain/model';
+import {
+  focusArchitecture, listArchitectureMaps, presentArchitecture, resolveArchitectureMap,
+} from './domain/maps';
 import { CanvasSurface } from './presentation/components/canvas-surface';
 import { Inspector } from './presentation/components/inspector';
 import { useCanvasEngine } from './presentation/use-canvas-engine';
+import { DEFAULT_CANVAS_MODE, type CanvasMode } from './presentation/view-mode';
 
 interface AppProps {
   engine: CanvasEngine;
@@ -20,7 +24,18 @@ export default function App({ engine, initialPreferences, preferencesRepository 
   const [selection, setSelection] = useState<Selection>(null);
   const [tab, setTab] = useState<InspectorTab>(initialPreferences.panel.defaultTab);
   const [saveStatus, setSaveStatus] = useState('Saved');
+  const [mode, setMode] = useState<CanvasMode>(DEFAULT_CANVAS_MODE);
+  const [requestedMapId, setRequestedMapId] = useState(() =>
+    resolveArchitectureMap(engine.snapshot(), undefined));
   const savedPreferences = useRef(JSON.stringify(initialPreferences));
+  const maps = useMemo(() => listArchitectureMaps(document), [document]);
+  const activeMapId = resolveArchitectureMap(document, requestedMapId);
+  const focusedDocument = useMemo(
+    () => mode === 'present'
+      ? presentArchitecture(document, activeMapId)
+      : focusArchitecture(document, activeMapId),
+    [activeMapId, document, mode],
+  );
 
   useEffect(() => {
     if (!preferences.files.autoSave) return;
@@ -53,29 +68,46 @@ export default function App({ engine, initialPreferences, preferencesRepository 
     if (next) setTab('inspect');
   }, []);
 
+  const changeMap = useCallback((mapId: string) => {
+    setRequestedMapId(mapId);
+    setSelection(null);
+  }, []);
+
+  const changeMode = useCallback((next: CanvasMode) => {
+    setMode(next);
+    setSelection(null);
+  }, []);
+
   return (
-    <div className="app-shell" style={{ '--node-radius': `${preferences.appearance.radius}px` } as CSSProperties}>
+    <div className={`app-shell mode-${mode}`} style={{ '--node-radius': `${preferences.appearance.radius}px` } as CSSProperties}>
       <ReactFlowProvider>
         <CanvasSurface
-          document={document}
+          activeMapId={activeMapId}
+          changeMap={changeMap}
+          changeMode={changeMode}
+          document={focusedDocument}
           engine={engine}
+          maps={maps}
+          mode={mode}
           preferences={preferences}
           saveStatus={saveStatus}
           selection={selection}
           setSelection={select}
         />
       </ReactFlowProvider>
-      <Inspector
-        clearSelection={() => setSelection(null)}
-        document={document}
-        execute={engine.execute}
-        preferences={preferences}
-        replace={engine.replace}
-        selection={selection}
-        setTab={setTab}
-        tab={tab}
-        updatePreferences={setPreferences}
-      />
+      {mode === 'edit' && (
+        <Inspector
+          clearSelection={() => setSelection(null)}
+          document={document}
+          execute={engine.execute}
+          preferences={preferences}
+          replace={engine.replace}
+          selection={selection}
+          setTab={setTab}
+          tab={tab}
+          updatePreferences={setPreferences}
+        />
+      )}
     </div>
   );
 }

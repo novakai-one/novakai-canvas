@@ -100,4 +100,5 @@ export type CanvasCommand =
   | { kind: 'node.remove'; id: string }
   | { kind: 'wire.add'; wire: CanvasWire }
   | { kind: 'wire.update'; id: string; patch: Partial<Pick<CanvasWire, 'label' | 'kind'>> }
-  | { kind: 'wire.remove'; id: string };
+  | { kind: 'wire.remove'; id: string }
+  | { kind: 'scope.layout'; id: string };

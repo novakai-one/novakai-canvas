@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "novakai-project-model",
   "name": "Novakai project model",
-  "revision": 828,
+  "revision": 1810,
   "nodes": {
     "project-scope": {
       "id": "project-scope",
@@ -10,12 +10,12 @@
       "label": "Novakai IDE",
       "description": "Project scope",
       "position": {
-        "x": 312,
-        "y": 120
+        "x": 288,
+        "y": 36
       },
       "size": {
-        "width": 1120,
-        "height": 650
+        "width": 1516,
+        "height": 842
       },
       "interfaceIds": [],
       "typeIds": []
@@ -630,8 +630,8 @@
       "kind": "scope",
       "label": "Webhook Relay",
       "position": {
-        "x": -240,
-        "y": 3180
+        "x": 84,
+        "y": 3108
       },
       "size": {
         "width": 1852,
@@ -698,8 +698,8 @@
       "kind": "module",
       "label": "Signature check",
       "position": {
-        "x": 682,
-        "y": 485
+        "x": 744,
+        "y": 516
       },
       "size": {
         "width": 605,
@@ -751,6 +751,360 @@
       "interfaceIds": [
         "webhook-relay--relay-log-json--if-append"
       ],
+      "typeIds": []
+    },
+    "mission-room-human-view": {
+      "id": "mission-room-human-view",
+      "kind": "scope",
+      "label": "Mission Room — Human View",
+      "description": "The simple picture: one Mission, made visible to Chris",
+      "position": {
+        "x": 36,
+        "y": 4140
+      },
+      "size": {
+        "width": 2627,
+        "height": 1306
+      },
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-room-human-view--note-1-the-mission-is-the-durab": {
+      "id": "mission-room-human-view--note-1-the-mission-is-the-durab",
+      "kind": "comment",
+      "label": "The Mission is the durable work. The Mission Room is only the page that makes that work understandable.",
+      "position": {
+        "x": 1008,
+        "y": 84
+      },
+      "size": {
+        "width": 280,
+        "height": 132
+      },
+      "parentId": "mission-room-human-view",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-room-human-view--mission-room": {
+      "id": "mission-room-human-view--mission-room",
+      "kind": "module",
+      "label": "Mission Room",
+      "description": "A read-only page for one mission",
+      "position": {
+        "x": 264,
+        "y": 120
+      },
+      "size": {
+        "width": 420,
+        "height": 154
+      },
+      "parentId": "mission-room-human-view",
+      "interfaceIds": [
+        "mission-room-human-view--mission-room--if-open"
+      ],
+      "typeIds": [
+        "mission-room-human-view--mission-room--type-missionview"
+      ]
+    },
+    "mission-room-human-view--chief-pulse": {
+      "id": "mission-room-human-view--chief-pulse",
+      "kind": "object",
+      "label": "Chief Pulse",
+      "description": "The six-second answer: Are we okay, what changed, and do you need me?",
+      "position": {
+        "x": 168,
+        "y": 552
+      },
+      "size": {
+        "width": 420,
+        "height": 144
+      },
+      "parentId": "mission-room-human-view",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-room-human-view--chief-pulse--type-chiefpulse"
+      ]
+    },
+    "mission-room-human-view--mission": {
+      "id": "mission-room-human-view--mission",
+      "kind": "object",
+      "label": "Mission",
+      "description": "The durable job and intended outcome",
+      "position": {
+        "x": 888,
+        "y": 468
+      },
+      "size": {
+        "width": 370,
+        "height": 128
+      },
+      "parentId": "mission-room-human-view",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-room-human-view--mission--type-mission"
+      ]
+    },
+    "mission-room-human-view--mission-team": {
+      "id": "mission-room-human-view--mission-team",
+      "kind": "object",
+      "label": "Mission Team",
+      "description": "People assigned to this mission with explicit roles and authority",
+      "position": {
+        "x": 1644,
+        "y": 876
+      },
+      "size": {
+        "width": 420,
+        "height": 144
+      },
+      "parentId": "mission-room-human-view",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-room-human-view--mission-team--type-missionassignment"
+      ]
+    },
+    "mission-room-human-view--live-presence": {
+      "id": "mission-room-human-view--live-presence",
+      "kind": "runtime",
+      "label": "Live Presence",
+      "description": "The currently running agent process for a team member; it may come and go",
+      "position": {
+        "x": 2184,
+        "y": 1104
+      },
+      "size": {
+        "width": 420,
+        "height": 144
+      },
+      "parentId": "mission-room-human-view",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-room-human-view--live-presence--type-presence"
+      ]
+    },
+    "mission-room-human-view--mission-thread": {
+      "id": "mission-room-human-view--mission-thread",
+      "kind": "object",
+      "label": "Mission Thread",
+      "description": "The meaningful causal history—not an unfiltered wall of tool calls",
+      "position": {
+        "x": 1044,
+        "y": 1020
+      },
+      "size": {
+        "width": 420,
+        "height": 144
+      },
+      "parentId": "mission-room-human-view",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-room-human-view--mission-thread--type-threaditem"
+      ]
+    },
+    "mission-room-human-view--evidence": {
+      "id": "mission-room-human-view--evidence",
+      "kind": "resource",
+      "label": "Evidence",
+      "description": "Briefs, plans, audits, results, commits and pull requests",
+      "position": {
+        "x": 324,
+        "y": 972
+      },
+      "size": {
+        "width": 420,
+        "height": 128
+      },
+      "parentId": "mission-room-human-view",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-room-human-view--evidence--type-artifact"
+      ]
+    },
+    "mission-room-human-view--note-2-assign-a-person-to-a-mis": {
+      "id": "mission-room-human-view--note-2-assign-a-person-to-a-mis",
+      "kind": "comment",
+      "label": "Assign a Person to a Mission role. Then show their current Presence or Session. Never make a disposable session the team member.",
+      "position": {
+        "x": 1392,
+        "y": 72
+      },
+      "size": {
+        "width": 280,
+        "height": 132
+      },
+      "parentId": "mission-room-human-view",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-room-system-wiring": {
+      "id": "mission-room-system-wiring",
+      "kind": "scope",
+      "label": "Mission Room — System Wiring",
+      "description": "How existing Novakai parts become one trustworthy read-only view",
+      "position": {
+        "x": 0,
+        "y": 5460
+      },
+      "size": {
+        "width": 2663,
+        "height": 1190
+      },
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-room-system-wiring--note-1-exists-means-reusable-to": {
+      "id": "mission-room-system-wiring--note-1-exists-means-reusable-to",
+      "kind": "comment",
+      "label": "EXISTS means reusable today. PARTIAL means present but incomplete. CREATE is the small missing seam.",
+      "position": {
+        "x": 835,
+        "y": 74
+      },
+      "size": {
+        "width": 280,
+        "height": 111
+      },
+      "parentId": "mission-room-system-wiring",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-room-system-wiring--mission-room-ui": {
+      "id": "mission-room-system-wiring--mission-room-ui",
+      "kind": "module",
+      "label": "Mission Room UI",
+      "description": "EXISTS: the current Mission Control shell; rewire it instead of rebuilding it",
+      "position": {
+        "x": 375,
+        "y": 56
+      },
+      "size": {
+        "width": 420,
+        "height": 146
+      },
+      "parentId": "mission-room-system-wiring",
+      "interfaceIds": [
+        "mission-room-system-wiring--mission-room-ui--if-render"
+      ],
+      "typeIds": []
+    },
+    "mission-room-system-wiring--mission-view": {
+      "id": "mission-room-system-wiring--mission-view",
+      "kind": "module",
+      "label": "Mission View",
+      "description": "CREATE: one deep read module that joins the existing islands",
+      "position": {
+        "x": 504,
+        "y": 264
+      },
+      "size": {
+        "width": 420,
+        "height": 170
+      },
+      "parentId": "mission-room-system-wiring",
+      "interfaceIds": [
+        "mission-room-system-wiring--mission-view--if-read"
+      ],
+      "typeIds": [
+        "mission-room-system-wiring--mission-view--type-missionsnapshot"
+      ]
+    },
+    "mission-room-system-wiring--mission-linkage": {
+      "id": "mission-room-system-wiring--mission-linkage",
+      "kind": "object",
+      "label": "Mission Linkage",
+      "description": "CREATE: the canonical links from a mission to its project, thread, room and assigned people",
+      "position": {
+        "x": 1044,
+        "y": 300
+      },
+      "size": {
+        "width": 420,
+        "height": 194
+      },
+      "parentId": "mission-room-system-wiring",
+      "interfaceIds": [
+        "mission-room-system-wiring--mission-linkage--if-resolve"
+      ],
+      "typeIds": [
+        "mission-room-system-wiring--mission-linkage--type-missionlinkage",
+        "mission-room-system-wiring--mission-linkage--type-missionassignment"
+      ]
+    },
+    "mission-room-system-wiring--existing-read-sources": {
+      "id": "mission-room-system-wiring--existing-read-sources",
+      "kind": "module",
+      "label": "Existing Read Sources",
+      "description": "EXISTS: reuse these systems rather than creating parallel stores",
+      "position": {
+        "x": 1080,
+        "y": 600
+      },
+      "size": {
+        "width": 420,
+        "height": 170
+      },
+      "parentId": "mission-room-system-wiring",
+      "interfaceIds": [
+        "mission-room-system-wiring--existing-read-sources--if-collect"
+      ],
+      "typeIds": [
+        "mission-room-system-wiring--existing-read-sources--type-existingsources"
+      ]
+    },
+    "mission-room-system-wiring--transcript-projection": {
+      "id": "mission-room-system-wiring--transcript-projection",
+      "kind": "module",
+      "label": "Transcript Projection",
+      "description": "PARTIAL: Claude and Codex are connected; add the Kimi session adapter",
+      "position": {
+        "x": 600,
+        "y": 636
+      },
+      "size": {
+        "width": 420,
+        "height": 146
+      },
+      "parentId": "mission-room-system-wiring",
+      "interfaceIds": [
+        "mission-room-system-wiring--transcript-projection--if-events"
+      ],
+      "typeIds": []
+    },
+    "mission-room-system-wiring--chief-pulse-projection": {
+      "id": "mission-room-system-wiring--chief-pulse-projection",
+      "kind": "object",
+      "label": "Chief Pulse Projection",
+      "description": "CREATE: derived from MissionSnapshot; it is not another stored record",
+      "position": {
+        "x": 84,
+        "y": 444
+      },
+      "size": {
+        "width": 420,
+        "height": 170
+      },
+      "parentId": "mission-room-system-wiring",
+      "interfaceIds": [
+        "mission-room-system-wiring--chief-pulse-projection--if-derive"
+      ],
+      "typeIds": [
+        "mission-room-system-wiring--chief-pulse-projection--type-chiefpulse"
+      ]
+    },
+    "mission-room-system-wiring--note-2-most-of-the-storage-mess": {
+      "id": "mission-room-system-wiring--note-2-most-of-the-storage-mess",
+      "kind": "comment",
+      "label": "Most of the storage, messaging, sessions, evidence and UI already exist. The real build is Mission Linkage plus the Mission View.",
+      "position": {
+        "x": 1152,
+        "y": 60
+      },
+      "size": {
+        "width": 280,
+        "height": 132
+      },
+      "parentId": "mission-room-system-wiring",
+      "interfaceIds": [],
       "typeIds": []
     }
   },
@@ -1000,6 +1354,83 @@
       "returns": [
         "void"
       ]
+    },
+    "mission-room-human-view--mission-room--if-open": {
+      "id": "mission-room-human-view--mission-room--if-open",
+      "ownerId": "mission-room-human-view--mission-room",
+      "name": "open",
+      "accepts": [
+        "MissionId"
+      ],
+      "returns": [
+        "MissionView"
+      ]
+    },
+    "mission-room-system-wiring--mission-room-ui--if-render": {
+      "id": "mission-room-system-wiring--mission-room-ui--if-render",
+      "ownerId": "mission-room-system-wiring--mission-room-ui",
+      "name": "render",
+      "accepts": [
+        "MissionSnapshot"
+      ],
+      "returns": [
+        "Screen"
+      ]
+    },
+    "mission-room-system-wiring--mission-view--if-read": {
+      "id": "mission-room-system-wiring--mission-view--if-read",
+      "ownerId": "mission-room-system-wiring--mission-view",
+      "name": "read",
+      "accepts": [
+        "MissionId"
+      ],
+      "returns": [
+        "MissionSnapshot"
+      ]
+    },
+    "mission-room-system-wiring--mission-linkage--if-resolve": {
+      "id": "mission-room-system-wiring--mission-linkage--if-resolve",
+      "ownerId": "mission-room-system-wiring--mission-linkage",
+      "name": "resolve",
+      "accepts": [
+        "MissionId"
+      ],
+      "returns": [
+        "MissionLinkage"
+      ]
+    },
+    "mission-room-system-wiring--existing-read-sources--if-collect": {
+      "id": "mission-room-system-wiring--existing-read-sources--if-collect",
+      "ownerId": "mission-room-system-wiring--existing-read-sources",
+      "name": "collect",
+      "accepts": [
+        "MissionLinkage"
+      ],
+      "returns": [
+        "MissionFacts"
+      ]
+    },
+    "mission-room-system-wiring--transcript-projection--if-events": {
+      "id": "mission-room-system-wiring--transcript-projection--if-events",
+      "ownerId": "mission-room-system-wiring--transcript-projection",
+      "name": "events",
+      "accepts": [
+        "ThreadId"
+      ],
+      "returns": [
+        "CanonicalEvent[]"
+      ]
+    },
+    "mission-room-system-wiring--chief-pulse-projection--if-derive": {
+      "id": "mission-room-system-wiring--chief-pulse-projection--if-derive",
+      "ownerId": "mission-room-system-wiring--chief-pulse-projection",
+      "name": "derive",
+      "accepts": [
+        "MissionSnapshot"
+      ],
+      "returns": [
+        "ChiefPulse"
+      ]
     }
   },
   "types": {
@@ -1192,6 +1623,136 @@
         "subscriberUrl",
         "status",
         "attempt"
+      ]
+    },
+    "mission-room-human-view--mission-room--type-missionview": {
+      "id": "mission-room-human-view--mission-room--type-missionview",
+      "name": "MissionView",
+      "fields": [
+        "pulse",
+        "mission",
+        "team",
+        "timeline",
+        "evidence"
+      ]
+    },
+    "mission-room-human-view--chief-pulse--type-chiefpulse": {
+      "id": "mission-room-human-view--chief-pulse--type-chiefpulse",
+      "name": "ChiefPulse",
+      "fields": [
+        "outcome",
+        "phase",
+        "health",
+        "lastUpdate",
+        "nextCheckpoint",
+        "needsChris"
+      ]
+    },
+    "mission-room-human-view--mission--type-mission": {
+      "id": "mission-room-human-view--mission--type-mission",
+      "name": "Mission",
+      "fields": [
+        "id",
+        "outcome",
+        "status",
+        "owner",
+        "priority"
+      ]
+    },
+    "mission-room-human-view--mission-team--type-missionassignment": {
+      "id": "mission-room-human-view--mission-team--type-missionassignment",
+      "name": "MissionAssignment",
+      "fields": [
+        "personId",
+        "role",
+        "authority",
+        "assignedAt"
+      ]
+    },
+    "mission-room-human-view--live-presence--type-presence": {
+      "id": "mission-room-human-view--live-presence--type-presence",
+      "name": "Presence",
+      "fields": [
+        "personId",
+        "agentId",
+        "provider",
+        "sessionId",
+        "status"
+      ]
+    },
+    "mission-room-human-view--mission-thread--type-threaditem": {
+      "id": "mission-room-human-view--mission-thread--type-threaditem",
+      "name": "ThreadItem",
+      "fields": [
+        "author",
+        "kind",
+        "summary",
+        "timestamp",
+        "sourceRef"
+      ]
+    },
+    "mission-room-human-view--evidence--type-artifact": {
+      "id": "mission-room-human-view--evidence--type-artifact",
+      "name": "Artifact",
+      "fields": [
+        "kind",
+        "label",
+        "location",
+        "producedAt"
+      ]
+    },
+    "mission-room-system-wiring--mission-view--type-missionsnapshot": {
+      "id": "mission-room-system-wiring--mission-view--type-missionsnapshot",
+      "name": "MissionSnapshot",
+      "fields": [
+        "mission",
+        "pulse",
+        "participants",
+        "presences",
+        "timeline",
+        "artifacts",
+        "attention"
+      ]
+    },
+    "mission-room-system-wiring--mission-linkage--type-missionlinkage": {
+      "id": "mission-room-system-wiring--mission-linkage--type-missionlinkage",
+      "name": "MissionLinkage",
+      "fields": [
+        "projectId",
+        "threadId",
+        "roomId",
+        "assignments"
+      ]
+    },
+    "mission-room-system-wiring--mission-linkage--type-missionassignment": {
+      "id": "mission-room-system-wiring--mission-linkage--type-missionassignment",
+      "name": "MissionAssignment",
+      "fields": [
+        "personId",
+        "role",
+        "authority"
+      ]
+    },
+    "mission-room-system-wiring--existing-read-sources--type-existingsources": {
+      "id": "mission-room-system-wiring--existing-read-sources--type-existingsources",
+      "name": "ExistingSources",
+      "fields": [
+        "missionStore",
+        "messageStore",
+        "agentRegistry",
+        "missionPackets",
+        "attentionState"
+      ]
+    },
+    "mission-room-system-wiring--chief-pulse-projection--type-chiefpulse": {
+      "id": "mission-room-system-wiring--chief-pulse-projection--type-chiefpulse",
+      "name": "ChiefPulse",
+      "fields": [
+        "phase",
+        "health",
+        "lastMeaningfulUpdate",
+        "nextCheckpoint",
+        "needsChris"
       ]
     }
   },
@@ -1466,6 +2027,102 @@
       "target": "webhook-relay--relay-log-json",
       "label": "append(DeliveryReceipt) -> void",
       "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-room-human-view--wire-1": {
+      "id": "mission-room-human-view--wire-1",
+      "source": "mission-room-human-view--mission-room",
+      "target": "mission-room-human-view--chief-pulse",
+      "label": "displays(ChiefPulse) -> Summary",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "mission-room-human-view--wire-2": {
+      "id": "mission-room-human-view--wire-2",
+      "source": "mission-room-human-view--mission-room",
+      "target": "mission-room-human-view--mission",
+      "label": "renders(MissionId) -> Mission",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "mission-room-human-view--wire-3": {
+      "id": "mission-room-human-view--wire-3",
+      "source": "mission-room-human-view--mission",
+      "target": "mission-room-human-view--mission-team",
+      "label": "assigns(Person, Role) -> MissionAssignment",
+      "kind": "assigns",
+      "routing": "elbow"
+    },
+    "mission-room-human-view--wire-4": {
+      "id": "mission-room-human-view--wire-4",
+      "source": "mission-room-human-view--mission-team",
+      "target": "mission-room-human-view--live-presence",
+      "label": "observes(PersonId) -> Presence",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "mission-room-human-view--wire-5": {
+      "id": "mission-room-human-view--wire-5",
+      "source": "mission-room-human-view--mission",
+      "target": "mission-room-human-view--mission-thread",
+      "label": "owns(ThreadId) -> ThreadItem[]",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-room-human-view--wire-6": {
+      "id": "mission-room-human-view--wire-6",
+      "source": "mission-room-human-view--mission",
+      "target": "mission-room-human-view--evidence",
+      "label": "references(MissionId) -> Artifact[]",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "mission-room-human-view--wire-7": {
+      "id": "mission-room-human-view--wire-7",
+      "source": "mission-room-human-view--chief-pulse",
+      "target": "mission-room-human-view--mission",
+      "label": "summarises(Mission) -> ChiefPulse",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "mission-room-system-wiring--wire-1": {
+      "id": "mission-room-system-wiring--wire-1",
+      "source": "mission-room-system-wiring--mission-room-ui",
+      "target": "mission-room-system-wiring--mission-view",
+      "label": "read(MissionId) -> MissionSnapshot",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "mission-room-system-wiring--wire-2": {
+      "id": "mission-room-system-wiring--wire-2",
+      "source": "mission-room-system-wiring--mission-view",
+      "target": "mission-room-system-wiring--mission-linkage",
+      "label": "resolve(MissionId) -> MissionLinkage",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "mission-room-system-wiring--wire-3": {
+      "id": "mission-room-system-wiring--wire-3",
+      "source": "mission-room-system-wiring--mission-linkage",
+      "target": "mission-room-system-wiring--existing-read-sources",
+      "label": "collect(MissionLinkage) -> MissionFacts",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "mission-room-system-wiring--wire-4": {
+      "id": "mission-room-system-wiring--wire-4",
+      "source": "mission-room-system-wiring--mission-view",
+      "target": "mission-room-system-wiring--transcript-projection",
+      "label": "events(ThreadId) -> CanonicalEvent[]",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "mission-room-system-wiring--wire-5": {
+      "id": "mission-room-system-wiring--wire-5",
+      "source": "mission-room-system-wiring--mission-view",
+      "target": "mission-room-system-wiring--chief-pulse-projection",
+      "label": "derive(MissionSnapshot) -> ChiefPulse",
+      "kind": "executes",
       "routing": "elbow"
     }
   }

@@ -1,4 +1,4 @@
-import type { Edge, Node } from '@xyflow/react';
+import { MarkerType, type Edge, type Node } from '@xyflow/react';
 import type {
   ArchitectureDocument, CanvasNode, CanvasPreferences, InterfaceObject, Selection, TypeObject,
 } from '../domain/model';
@@ -10,6 +10,7 @@ export interface ArchitectureNodeData extends Record<string, unknown> {
   types: TypeObject[];
   preferences: CanvasPreferences;
   selection: Selection;
+  editable: boolean;
   select: (selection: Selection) => void;
 }
 
@@ -17,6 +18,7 @@ export interface ArchitectureNodeData extends Record<string, unknown> {
 export interface ArchitectureEdgeData extends Record<string, unknown> {
   label: string;
   preferences: CanvasPreferences;
+  editable: boolean;
   select: () => void;
 }
 
@@ -50,6 +52,7 @@ export function projectNodes(
   document: ArchitectureDocument,
   preferences: CanvasPreferences,
   selection: Selection,
+  editable: boolean,
   select: (next: Selection) => void,
 ): Node<ArchitectureNodeData>[] {
   const connected = connectedIds(document, selection);
@@ -76,6 +79,7 @@ export function projectNodes(
       types: node.typeIds.flatMap((id) => document.types[id] ? [document.types[id]] : []),
       preferences,
       selection,
+      editable,
       select,
     },
   }));
@@ -86,6 +90,7 @@ export function projectEdges(
   document: ArchitectureDocument,
   preferences: CanvasPreferences,
   selection: Selection,
+  editable: boolean,
   select: (next: Selection) => void,
 ): Edge<ArchitectureEdgeData>[] {
   const connected = connectedIds(document, selection);
@@ -96,8 +101,9 @@ export function projectEdges(
     type: 'elbow',
     selected: selection?.kind === 'wire' && selection.id === wire.id,
     zIndex: selection?.kind === 'wire' && selection.id === wire.id ? 1000 : 0,
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#8b8b94', width: 14, height: 14 },
     className: preferences.wires.dimUnrelated && selection
       && (!connected.has(wire.source) || !connected.has(wire.target)) ? 'is-dimmed' : '',
-    data: { label: wire.label, preferences, select: () => select({ kind: 'wire', id: wire.id }) },
+    data: { label: wire.label, preferences, editable, select: () => select({ kind: 'wire', id: wire.id }) },
   }));
 }

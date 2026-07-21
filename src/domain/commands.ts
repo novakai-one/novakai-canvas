@@ -1,11 +1,12 @@
 import type { ArchitectureDocument, CanvasCommand } from './model';
+import { layoutScopes } from './layout.ts';
 
 /** Applies one intention without mutating the previous document. */
 export function applyCanvasCommand(
   document: ArchitectureDocument,
   command: CanvasCommand,
 ): ArchitectureDocument {
-  const next = structuredClone(document);
+  let next = structuredClone(document);
   switch (command.kind) {
     case 'node.add': next.nodes[command.node.id] = command.node; break;
     case 'node.move': if (next.nodes[command.id]) next.nodes[command.id].position = command.position; break;
@@ -20,6 +21,7 @@ export function applyCanvasCommand(
     case 'wire.add': next.wires[command.wire.id] = command.wire; break;
     case 'wire.update': if (next.wires[command.id]) Object.assign(next.wires[command.id], command.patch); break;
     case 'wire.remove': delete next.wires[command.id]; break;
+    case 'scope.layout': next = layoutScopes(next, [command.id]); break;
   }
   next.revision += 1;
   return next;
