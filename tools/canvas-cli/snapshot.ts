@@ -1,6 +1,7 @@
 /** Dependency-free SVG snapshot of one scope, in Novakai's dark + gold identity. */
 
 import type { ArchitectureDocument } from '../../src/domain/model';
+import { ARCHITECTURE_FLOW } from '../../src/domain/flow.ts';
 
 const COLORS = {
   page: '#0d0d0f',
@@ -40,6 +41,9 @@ function wrap(text: string, charsPerLine: number): string[] {
 }
 
 export function renderScopeSvg(doc: ArchitectureDocument, scopeId: string): string {
+  if (ARCHITECTURE_FLOW.sourcePort !== 'bottom' || ARCHITECTURE_FLOW.targetPort !== 'top') {
+    throw new Error('snapshot renderer requires top-to-bottom architecture flow');
+  }
   const scope = doc.nodes[scopeId];
   if (!scope) throw new Error(`no scope "${scopeId}"`);
   const children = Object.values(doc.nodes)

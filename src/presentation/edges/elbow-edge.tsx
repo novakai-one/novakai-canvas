@@ -11,7 +11,8 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
     borderRadius: 6,
   });
   const visibility = props.data?.preferences.wires.showLabels;
-  const showLabel = visibility === 'always' || (visibility === 'selected' && props.selected);
+  const showLabel = !props.data?.editable || visibility === 'always'
+    || (visibility === 'selected' && props.selected);
   return (
     <>
       <BaseEdge id={props.id} path={path} markerEnd={props.markerEnd} style={{ strokeWidth: props.data?.preferences.wires.width }} />

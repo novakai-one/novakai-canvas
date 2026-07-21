@@ -34,4 +34,26 @@ describe('applyCanvasCommand', () => {
     expect(next.nodes.one).toBeUndefined();
     expect(next.wires.link).toBeUndefined();
   });
+
+  it('lays out one scope without moving another scope', () => {
+    const scoped = structuredClone(document);
+    scoped.nodes.one = { ...scoped.nodes.one, kind: 'scope', size: { width: 400, height: 300 } };
+    scoped.nodes.child = {
+      ...scoped.nodes.one,
+      id: 'child',
+      kind: 'module',
+      parentId: 'one',
+      size: { width: 180, height: 90 },
+    };
+    scoped.nodes.other = {
+      ...scoped.nodes.one,
+      id: 'other',
+      position: { x: 900, y: 700 },
+    };
+    const next = applyCanvasCommand(scoped, { kind: 'scope.layout', id: 'one' });
+    expect(next.nodes.one.position).toEqual(scoped.nodes.one.position);
+    expect(next.nodes.child.position).not.toEqual(scoped.nodes.child.position);
+    expect(next.nodes.other).toEqual(scoped.nodes.other);
+    expect(next.revision).toBe(scoped.revision + 1);
+  });
 });

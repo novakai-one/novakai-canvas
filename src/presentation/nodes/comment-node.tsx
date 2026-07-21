@@ -7,7 +7,7 @@ type CommentFlowNode = Node<ArchitectureNodeData, 'comment'>;
 export function CommentNode({ data, selected }: NodeProps<CommentFlowNode>) {
   return (
     <aside className="comment-node">
-      <NodeResizer isVisible={selected} minHeight={60} minWidth={160} />
+      <NodeResizer isVisible={data.editable && selected} minHeight={60} minWidth={160} />
       {data.node.label}
     </aside>
   );

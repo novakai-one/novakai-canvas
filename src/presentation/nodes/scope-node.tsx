@@ -7,7 +7,7 @@ type ScopeFlowNode = Node<ArchitectureNodeData, 'scope'>;
 export function ScopeNode({ data, selected }: NodeProps<ScopeFlowNode>) {
   return (
     <section className="scope-node">
-      <NodeResizer isVisible={selected} minHeight={160} minWidth={320} />
+      <NodeResizer isVisible={data.editable && selected} minHeight={160} minWidth={320} />
       <span
         onClick={(event) => { event.stopPropagation(); data.select({ kind: 'node', id: data.node.id }); }}
       >{data.node.label}</span>

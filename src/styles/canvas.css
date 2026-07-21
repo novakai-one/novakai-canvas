@@ -233,6 +233,38 @@
   backdrop-filter: blur(16px);
 }
 
+.mode-switch {
+  display: flex;
+  overflow: hidden;
+  border: 1px solid #34312b;
+  border-radius: 4px;
+}
+
+.mode-switch button {
+  padding: 7px 10px;
+  border: 0;
+  color: #777269;
+  background: transparent;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.mode-switch button + button { border-left: 1px solid #34312b; }
+.mode-switch button.is-active { color: #eee8dc; background: #2a261f; }
+
+.map-picker { display: flex; align-items: center; gap: 7px; }
+.map-picker > span { color: #777269; font-size: 9px; }
+
+.map-picker select {
+  max-width: 260px;
+  padding: 7px 28px 7px 9px;
+  border: 1px solid #34312b;
+  border-radius: 4px;
+  color: #d8d1c5;
+  background: #1f1d19;
+  font-size: 10px;
+}
+
 .file-identity { display: flex; align-items: baseline; gap: 7px; white-space: nowrap; }
 .file-identity span { font-size: 12px; font-weight: 600; }
 .file-identity small, .save-status { color: #777269; font-size: 9px; }
@@ -253,7 +285,95 @@
 }
 
 .toolbar-actions button:hover { border-color: #4a4438; background: #24211c; }
+.toolbar-actions button:disabled { opacity: 0.4; cursor: default; }
 .toolbar-actions button span { color: #a8864f; }
+
+/* Presentation is a single-map reading surface, not a disabled editor. */
+.canvas-surface.is-present,
+.canvas-surface.is-present .react-flow { background: #0d0d0f; }
+
+.is-present .scope-node {
+  border-color: #2f2f34;
+  background: #1b1b1e;
+}
+
+.is-present .scope-node > span {
+  color: #d0a14b;
+  font-size: 15px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.is-present .architecture-node {
+  border-color: #2f2f34;
+  background: #252529;
+  box-shadow: none;
+}
+
+.is-present .node-header {
+  min-height: 38px;
+  padding: 4px 14px 0;
+  border-bottom: 0;
+}
+
+.is-present .node-label { color: #ececee; }
+.is-present .node-kind { color: #a2a2aa; }
+
+.is-present .node-description {
+  padding: 2px 14px 8px;
+  border-bottom: 0;
+  color: #a2a2aa;
+  font-size: 11px;
+}
+
+.is-present .interface-list { padding: 0 7px 3px; }
+
+.is-present .interface-list button {
+  color: #ececee;
+  font-size: 11px;
+}
+
+.is-present .interface-list button span:last-child { color: #ececee; }
+
+.is-present .type-list {
+  display: block;
+  padding: 0 14px 10px;
+}
+
+.is-present .type-list button {
+  display: block;
+  width: 100%;
+  padding: 3px 0;
+  border: 0;
+  color: #8b8b94;
+  background: transparent;
+  font-family: inherit;
+  font-size: 11px;
+  text-align: left;
+}
+
+.is-present .comment-node {
+  border-color: #2f2f34;
+  border-style: dashed;
+  color: #a2a2aa;
+  background: transparent;
+  box-shadow: none;
+}
+
+.is-present .react-flow__handle {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.is-present .react-flow__edge-path { stroke: #8b8b94; }
+
+.is-present .wire-label {
+  padding: 2px 5px;
+  border: 0;
+  color: #a2a2aa;
+  background: #1b1b1e;
+  font-size: 10px;
+}
 
 .react-flow__controls {
   overflow: hidden;
