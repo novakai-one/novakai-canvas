@@ -26,12 +26,20 @@ export interface WireAst {
   kind: 'owns' | 'references' | 'assigns' | 'queries' | 'executes' | 'mentions' | 'missing';
   line: number;
 }
-export interface ScopeAst { label: string; description?: string; nodes: NodeAst[]; wires: WireAst[] }
+/** A nested container inside a scope; compiles to a scope node with parentId set. */
+export interface ZoneAst {
+  label: string;
+  description?: string;
+  nodes: NodeAst[];
+  zones: ZoneAst[];
+  line: number;
+}
+export interface ScopeAst { label: string; description?: string; nodes: NodeAst[]; wires: WireAst[]; zones: ZoneAst[] }
 
 const NODE_KEYWORDS = new Set(['module', 'object', 'runtime', 'resource', 'tree']);
 const TREE_ROW_KINDS = new Set(['project', 'mission', 'task', 'bucket']);
 const WIRE_KINDS = new Set(['owns', 'references', 'assigns', 'queries', 'executes', 'mentions', 'missing']);
-const STATEMENTS = 'scope, module, object, runtime, resource, tree, note, row, type, wire';
+const STATEMENTS = 'scope, zone, end, module, object, runtime, resource, tree, note, row, type, wire';
 
 /** Splits a line into tokens, treating double-quoted spans as single tokens. */
 function tokenize(line: string): { tokens: string[]; error?: string } {
@@ -78,6 +86,11 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
   const errors: ParseError[] = [];
   let scope: ScopeAst | null = null;
   let node: NodeAst | null = null;
+  let zoneStack: ZoneAst[] = [];
+
+  /** Nodes attach to the innermost open zone, or the scope itself. */
+  const nodeSink = (): NodeAst[] =>
+    zoneStack.length > 0 ? zoneStack[zoneStack.length - 1].nodes : (scope as ScopeAst).nodes;
 
   const lines = source.split('\n');
   for (let lineNumber = 1; lineNumber <= lines.length; lineNumber += 1) {
@@ -211,9 +224,47 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         fail('scope needs a name', 'scope "My System"');
         continue;
       }
-      scope = { label: tokens[1], description: tokens[2], nodes: [], wires: [] };
+      if (zoneStack.length > 0 && scope) {
+        fail(
+          `unclosed zone "${zoneStack[zoneStack.length - 1].label}" (line ${zoneStack[zoneStack.length - 1].line}) before new scope`,
+          'close every zone with end before starting a new scope',
+        );
+      }
+      scope = { label: tokens[1], description: tokens[2], nodes: [], wires: [], zones: [] };
       node = null;
+      zoneStack = [];
       scopes.push(scope);
+      continue;
+    }
+
+    if (keyword === 'zone') {
+      if (!scope) {
+        fail('zone outside a scope', 'declare a scope first: scope "My System"');
+        continue;
+      }
+      if (tokens.length < 2) {
+        fail('zone needs a name', 'zone "Stores" "optional description"');
+        continue;
+      }
+      const zone: ZoneAst = { label: tokens[1], description: tokens[2], nodes: [], zones: [], line: lineNumber };
+      if (zoneStack.length > 0) zoneStack[zoneStack.length - 1].zones.push(zone);
+      else scope.zones.push(zone);
+      zoneStack.push(zone);
+      node = null;
+      continue;
+    }
+
+    if (keyword === 'end') {
+      if (tokens.length > 1) {
+        fail('end takes no arguments', 'a bare end closes the innermost zone');
+        continue;
+      }
+      if (zoneStack.length === 0) {
+        fail('end without an open zone', 'only close a zone opened with zone "Name"');
+        continue;
+      }
+      zoneStack.pop();
+      node = null;
       continue;
     }
 
@@ -226,7 +277,7 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         fail('note needs text', 'note "Why this shape is load-bearing."');
         continue;
       }
-      scope.nodes.push({ kind: 'comment', label: tokens[1], interfaces: [], types: [], rows: [] });
+      nodeSink().push({ kind: 'comment', label: tokens[1], interfaces: [], types: [], rows: [] });
       node = null;
       continue;
     }
@@ -248,7 +299,7 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         types: [],
         rows: [],
       };
-      scope.nodes.push(node);
+      nodeSink().push(node);
       continue;
     }
 
@@ -256,6 +307,15 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
       `unknown statement "${keyword}"`,
       `valid statements: ${STATEMENTS}; methods look like name(Input) -> Output under a node`,
     );
+  }
+
+  if (zoneStack.length > 0 && scope) {
+    const zone = zoneStack[zoneStack.length - 1];
+    errors.push({
+      line: lines.length,
+      message: `unclosed zone "${zone.label}" (opened line ${zone.line})`,
+      hint: 'close every zone with end',
+    });
   }
 
   return { scopes, errors };

@@ -24,33 +24,42 @@ function wiresOf(doc: ArchitectureDocument, scopeId: string) {
     .sort((a, b) => a.id.localeCompare(b.id));
 }
 
-/** One scope as DSL. */
+/** One scope as DSL. Nested scopes print as zone/end blocks, round-trippable. */
 export function printScope(doc: ArchitectureDocument, scopeId: string): string {
   const scope = doc.nodes[scopeId];
   const lines: string[] = [];
   lines.push(`scope ${quote(scope.label)}${scope.description ? ` ${quote(scope.description)}` : ''}`);
 
-  for (const node of childrenOf(doc, scopeId)) {
-    if (node.kind === 'comment') {
-      lines.push(`  note ${quote(node.label)}`);
-      continue;
+  const emitContainer = (containerId: string, indent: string): void => {
+    for (const node of childrenOf(doc, containerId)) {
+      if (node.kind === 'scope') {
+        lines.push(`${indent}zone ${quote(node.label)}${node.description ? ` ${quote(node.description)}` : ''}`);
+        emitContainer(node.id, `${indent}  `);
+        lines.push(`${indent}end`);
+        continue;
+      }
+      if (node.kind === 'comment') {
+        lines.push(`${indent}note ${quote(node.label)}`);
+        continue;
+      }
+      lines.push(`${indent}${node.kind} ${quote(node.label)}${node.description ? ` ${quote(node.description)}` : ''}`);
+      for (const interfaceId of node.interfaceIds) {
+        const iface = doc.interfaces[interfaceId];
+        lines.push(`${indent}  ${iface.name}(${iface.accepts.join(', ')}) -> ${iface.returns.join(', ')}`);
+      }
+      for (const typeId of node.typeIds) {
+        const type = doc.types[typeId];
+        lines.push(`${indent}  type ${type.name} { ${type.fields.join(', ')} }`);
+      }
+      for (const row of node.rows ?? []) {
+        lines.push(`${indent}  row ${row.id} ${row.kind}${row.status ? ` ${row.status}` : ''}`
+          + `${row.parentRowId ? ` parent=${row.parentRowId}` : ''}`
+          + `${row.badges.length > 0 ? ` badges=${row.badges.join(',')}` : ''}`
+          + `${row.label ? ` label ${quote(row.label)}` : ''}`);
+      }
     }
-    lines.push(`  ${node.kind} ${quote(node.label)}${node.description ? ` ${quote(node.description)}` : ''}`);
-    for (const interfaceId of node.interfaceIds) {
-      const iface = doc.interfaces[interfaceId];
-      lines.push(`    ${iface.name}(${iface.accepts.join(', ')}) -> ${iface.returns.join(', ')}`);
-    }
-    for (const typeId of node.typeIds) {
-      const type = doc.types[typeId];
-      lines.push(`    type ${type.name} { ${type.fields.join(', ')} }`);
-    }
-    for (const row of node.rows ?? []) {
-      lines.push(`    row ${row.id} ${row.kind}${row.status ? ` ${row.status}` : ''}`
-        + `${row.parentRowId ? ` parent=${row.parentRowId}` : ''}`
-        + `${row.badges.length > 0 ? ` badges=${row.badges.join(',')}` : ''}`
-        + `${row.label ? ` label ${quote(row.label)}` : ''}`);
-    }
-  }
+  };
+  emitContainer(scopeId, '  ');
 
   for (const wire of wiresOf(doc, scopeId)) {
     const source = doc.nodes[wire.source];

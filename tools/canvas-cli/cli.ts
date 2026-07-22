@@ -19,7 +19,7 @@ Usage
   ./canvas maps                     list maps (top-level scopes)
   ./canvas read [map]               print a map (or all maps) as DSL
   ./canvas apply [dsl-file]         create/replace maps from DSL (file or stdin)
-  ./canvas rm <map> [node]          remove a node, or a whole map
+  ./canvas rm <map> [node|zone]   remove a node or zone (zones cascade), or a whole map
   ./canvas snapshot <map> [-o out]  render a map to SVG
   ./canvas help                     this text
 
@@ -39,6 +39,8 @@ Layout is automatic: never write coordinates, never edit the JSON by hand.
     wire "browse CLI" -> "Session broker" : acquire(AgentId) -> SessionHandle [queries]
 
   node kinds    module | object | runtime | resource | tree   (note = free-text comment)
+  zones         zone "Stores" ... end                nested containers; zones nest
+                inside scopes and inside each other; labels unique per map
   methods       name(TypeA, TypeB) -> TypeC            under a node; bare type names
   types         type Name { fieldA, fieldB }           under a node
   rows          row <id> <kind> [status] [parent=<id>] [badges=a,b] [label "text"]
@@ -159,12 +161,28 @@ async function main(): Promise<void> {
     let removedLabel: string;
     if (args.positional[1]) {
       const nameSlug = slugify(args.positional[1]);
-      const child = Object.values(nodes).find(
-        (node) => node.parentId === scopeId && slugify(node.label) === nameSlug,
-      );
-      if (!child) fail(`no node "${args.positional[1]}" in ${scopeId}`);
-      removedLabel = child.label;
-      removeNode(child.id);
+      const descendantIds = (rootId: string): string[] => {
+        const result: string[] = [];
+        const queue = [rootId];
+        while (queue.length > 0) {
+          const current = queue.shift() as string;
+          for (const node of Object.values(nodes)) {
+            if (node.parentId === current) {
+              result.push(node.id);
+              queue.push(node.id);
+            }
+          }
+        }
+        return result;
+      };
+      const target = descendantIds(scopeId)
+        .map((id) => nodes[id])
+        .find((node) => slugify(node.label) === nameSlug);
+      if (!target) fail(`no node "${args.positional[1]}" in ${scopeId}`);
+      removedLabel = target.label;
+      // Removing a zone cascades its whole descendant closure (ruling R4).
+      for (const id of descendantIds(target.id)) removeNode(id);
+      removeNode(target.id);
     } else {
       removedLabel = nodes[scopeId].label;
       const queue = [scopeId];

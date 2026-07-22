@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "novakai-project-model",
   "name": "Novakai project model",
-  "revision": 2361,
+  "revision": 2366,
   "nodes": {
     "project-scope": {
       "id": "project-scope",
@@ -2088,140 +2088,174 @@
       "description": "Every box is a real data root; every wire is a link type",
       "position": {
         "x": 40,
-        "y": 11209
+        "y": 12583
       },
       "size": {
-        "width": 1490,
-        "height": 770
+        "width": 1711,
+        "height": 692
       },
       "interfaceIds": [],
       "typeIds": []
     },
-    "mission-object-model--objective-okrs-jsonl": {
-      "id": "mission-object-model--objective-okrs-jsonl",
+    "mission-object-model--stores": {
+      "id": "mission-object-model--stores",
+      "kind": "scope",
+      "label": "Stores",
+      "description": "The real data roots",
+      "position": {
+        "x": 558,
+        "y": 56
+      },
+      "size": {
+        "width": 1113,
+        "height": 596
+      },
+      "parentId": "mission-object-model",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-object-model--stores--objective-okrs-jsonl": {
+      "id": "mission-object-model--stores--objective-okrs-jsonl",
       "kind": "module",
       "label": "objective (okrs.jsonl)",
       "description": "KRs are flat blocks that ref back to their objective",
       "position": {
-        "x": 370,
+        "x": 381,
         "y": 428
       },
       "size": {
         "width": 398,
         "height": 128
       },
-      "parentId": "mission-object-model",
+      "parentId": "mission-object-model--stores",
       "interfaceIds": [],
       "typeIds": [
-        "mission-object-model--objective-okrs-jsonl--type-objective"
+        "mission-object-model--stores--objective-okrs-jsonl--type-objective"
       ]
     },
-    "mission-object-model--project-projects-jsonl": {
-      "id": "mission-object-model--project-projects-jsonl",
+    "mission-object-model--stores--project-projects-jsonl": {
+      "id": "mission-object-model--stores--project-projects-jsonl",
       "kind": "module",
       "label": "project (projects.jsonl)",
       "position": {
-        "x": 808,
+        "x": 65,
         "y": 448
       },
       "size": {
         "width": 276,
         "height": 88
       },
-      "parentId": "mission-object-model",
+      "parentId": "mission-object-model--stores",
       "interfaceIds": [],
       "typeIds": [
-        "mission-object-model--project-projects-jsonl--type-project"
+        "mission-object-model--stores--project-projects-jsonl--type-project"
       ]
     },
-    "mission-object-model--mission-missions-jsonl": {
-      "id": "mission-object-model--mission-missions-jsonl",
+    "mission-object-model--stores--mission-missions-jsonl": {
+      "id": "mission-object-model--stores--mission-missions-jsonl",
       "kind": "module",
       "label": "mission (missions.jsonl)",
-      "description": "optional, not enforced: outcome 6/17, stage 7/17, team 2/17",
+      "description": "optional, not enforced: outcome 6/18, stage 7/18, team 2/18",
       "position": {
-        "x": 889,
+        "x": 370,
         "y": 214
       },
       "size": {
         "width": 420,
         "height": 144
       },
-      "parentId": "mission-object-model",
+      "parentId": "mission-object-model--stores",
       "interfaceIds": [],
       "typeIds": [
-        "mission-object-model--mission-missions-jsonl--type-mission"
+        "mission-object-model--stores--mission-missions-jsonl--type-mission"
       ]
     },
-    "mission-object-model--task-tasks-jsonl": {
-      "id": "mission-object-model--task-tasks-jsonl",
+    "mission-object-model--stores--task-tasks-jsonl": {
+      "id": "mission-object-model--stores--task-tasks-jsonl",
       "kind": "module",
       "label": "task (tasks.jsonl)",
       "position": {
-        "x": 1124,
+        "x": 819,
         "y": 448
       },
       "size": {
         "width": 254,
         "height": 88
       },
-      "parentId": "mission-object-model",
+      "parentId": "mission-object-model--stores",
       "interfaceIds": [],
       "typeIds": [
-        "mission-object-model--task-tasks-jsonl--type-task"
+        "mission-object-model--stores--task-tasks-jsonl--type-task"
       ]
     },
-    "mission-object-model--agent-agents-json": {
-      "id": "mission-object-model--agent-agents-json",
+    "mission-object-model--stores--agent-agents-json": {
+      "id": "mission-object-model--stores--agent-agents-json",
       "kind": "module",
       "label": "agent (agents.json)",
       "position": {
-        "x": 413,
+        "x": 230,
         "y": 56
       },
       "size": {
         "width": 326,
         "height": 88
       },
-      "parentId": "mission-object-model",
+      "parentId": "mission-object-model--stores",
       "interfaceIds": [],
       "typeIds": [
-        "mission-object-model--agent-agents-json--type-agent"
+        "mission-object-model--stores--agent-agents-json--type-agent"
       ]
     },
-    "mission-object-model--journal-messages-jsonl": {
-      "id": "mission-object-model--journal-messages-jsonl",
+    "mission-object-model--stores--journal-messages-jsonl": {
+      "id": "mission-object-model--stores--journal-messages-jsonl",
       "kind": "module",
       "label": "journal (messages.jsonl)",
       "description": "agent-to-agent mail",
       "position": {
         "x": 40,
-        "y": 428
+        "y": 222
       },
       "size": {
         "width": 290,
         "height": 128
       },
-      "parentId": "mission-object-model",
+      "parentId": "mission-object-model--stores",
       "interfaceIds": [],
       "typeIds": [
-        "mission-object-model--journal-messages-jsonl--type-message"
+        "mission-object-model--stores--journal-messages-jsonl--type-message"
       ]
     },
-    "mission-object-model--mission-room": {
-      "id": "mission-object-model--mission-room",
+    "mission-object-model--read-layer": {
+      "id": "mission-object-model--read-layer",
+      "kind": "scope",
+      "label": "Read layer",
+      "description": "Joins the roots; never writes",
+      "position": {
+        "x": 40,
+        "y": 56
+      },
+      "size": {
+        "width": 478,
+        "height": 200
+      },
+      "parentId": "mission-object-model",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-object-model--read-layer--mission-room": {
+      "id": "mission-object-model--read-layer--mission-room",
       "kind": "object",
       "label": "Mission Room",
       "description": "Read-only composition; joins the roots; never writes",
       "position": {
-        "x": 1052,
-        "y": 626
+        "x": 40,
+        "y": 56
       },
       "size": {
         "width": 398,
         "height": 104
       },
-      "parentId": "mission-object-model",
+      "parentId": "mission-object-model--read-layer",
       "interfaceIds": [],
       "typeIds": []
     },
@@ -2235,212 +2269,708 @@
         "y": 10363
       },
       "size": {
-        "width": 508,
-        "height": 766
+        "width": 4103,
+        "height": 2140
       },
       "interfaceIds": [],
       "typeIds": []
     },
-    "mission-data-tree--store-hierarchy": {
-      "id": "mission-data-tree--store-hierarchy",
-      "kind": "tree",
-      "label": "Store hierarchy",
+    "mission-data-tree--proj-novakai-command": {
+      "id": "mission-data-tree--proj-novakai-command",
+      "kind": "scope",
+      "label": "proj_novakai-command",
+      "description": "Novakai Command | status: active",
+      "position": {
+        "x": 40,
+        "y": 382
+      },
+      "size": {
+        "width": 1840,
+        "height": 756
+      },
+      "parentId": "mission-data-tree",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-command--mission-m1-orchestration-tooling": {
+      "id": "mission-data-tree--proj-novakai-command--mission-m1-orchestration-tooling",
+      "kind": "scope",
+      "label": "mission_m1-orchestration-tooling",
+      "description": "status: done | outcome: absent | team: absent",
+      "position": {
+        "x": 760,
+        "y": 56
+      },
+      "size": {
+        "width": 320,
+        "height": 160
+      },
+      "parentId": "mission-data-tree--proj-novakai-command",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-command--mission-m2-plumbing-hardening": {
+      "id": "mission-data-tree--proj-novakai-command--mission-m2-plumbing-hardening",
+      "kind": "scope",
+      "label": "mission_m2-plumbing-hardening",
+      "description": "status: done | outcome: absent | team: absent",
+      "position": {
+        "x": 1120,
+        "y": 56
+      },
+      "size": {
+        "width": 320,
+        "height": 160
+      },
+      "parentId": "mission-data-tree--proj-novakai-command",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-command--mission-m3-dogfood-orchestrator": {
+      "id": "mission-data-tree--proj-novakai-command--mission-m3-dogfood-orchestrator",
+      "kind": "scope",
+      "label": "mission_m3-dogfood-orchestrator",
+      "description": "status: done | outcome: absent | team: absent",
+      "position": {
+        "x": 1480,
+        "y": 56
+      },
+      "size": {
+        "width": 320,
+        "height": 160
+      },
+      "parentId": "mission-data-tree--proj-novakai-command",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-command--mission-m4-ui-glitch-braindump": {
+      "id": "mission-data-tree--proj-novakai-command--mission-m4-ui-glitch-braindump",
+      "kind": "scope",
+      "label": "mission_m4-ui-glitch-braindump",
+      "description": "status: retired | outcome: absent | team: absent",
+      "position": {
+        "x": 40,
+        "y": 286
+      },
+      "size": {
+        "width": 320,
+        "height": 160
+      },
+      "parentId": "mission-data-tree--proj-novakai-command",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-command--mission-review-6hr-kimi-build": {
+      "id": "mission-data-tree--proj-novakai-command--mission-review-6hr-kimi-build",
+      "kind": "scope",
+      "label": "mission_review-6hr-kimi-build",
+      "description": "status: done | outcome: absent | team: absent",
+      "position": {
+        "x": 40,
+        "y": 516
+      },
+      "size": {
+        "width": 320,
+        "height": 160
+      },
+      "parentId": "mission-data-tree--proj-novakai-command",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-command--mission-agent-roles-spike": {
+      "id": "mission-data-tree--proj-novakai-command--mission-agent-roles-spike",
+      "kind": "scope",
+      "label": "mission_agent-roles-spike",
+      "description": "status: todo | outcome: absent | team: absent",
       "position": {
         "x": 40,
         "y": 56
       },
       "size": {
-        "width": 428,
-        "height": 670
+        "width": 320,
+        "height": 160
+      },
+      "parentId": "mission-data-tree--proj-novakai-command",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-command--mission-desktop-live-lanes": {
+      "id": "mission-data-tree--proj-novakai-command--mission-desktop-live-lanes",
+      "kind": "scope",
+      "label": "mission_desktop-live-lanes",
+      "description": "status: done | outcome: present | team: absent",
+      "position": {
+        "x": 400,
+        "y": 56
+      },
+      "size": {
+        "width": 320,
+        "height": 160
+      },
+      "parentId": "mission-data-tree--proj-novakai-command",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-command--mission-store-validator": {
+      "id": "mission-data-tree--proj-novakai-command--mission-store-validator",
+      "kind": "scope",
+      "label": "mission_store-validator",
+      "description": "status: done | outcome: present | team: absent",
+      "position": {
+        "x": 400,
+        "y": 516
+      },
+      "size": {
+        "width": 320,
+        "height": 200
+      },
+      "parentId": "mission-data-tree--proj-novakai-command",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-command--mission-store-validator--task-store-validator": {
+      "id": "mission-data-tree--proj-novakai-command--mission-store-validator--task-store-validator",
+      "kind": "module",
+      "label": "task_store-validator",
+      "description": "status: done",
+      "position": {
+        "x": 40,
+        "y": 56
+      },
+      "size": {
+        "width": 200,
+        "height": 104
+      },
+      "parentId": "mission-data-tree--proj-novakai-command--mission-store-validator",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-command--mission-mission-room-v1": {
+      "id": "mission-data-tree--proj-novakai-command--mission-mission-room-v1",
+      "kind": "scope",
+      "label": "mission_mission-room-v1",
+      "description": "status: done | outcome: present | team: absent",
+      "position": {
+        "x": 1120,
+        "y": 286
+      },
+      "size": {
+        "width": 320,
+        "height": 160
+      },
+      "parentId": "mission-data-tree--proj-novakai-command",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-command--mission-or005-pr41-review-or": {
+      "id": "mission-data-tree--proj-novakai-command--mission-or005-pr41-review-or",
+      "kind": "scope",
+      "label": "mission_or005-pr41-review-or",
+      "description": "status: done | outcome: absent | team: absent",
+      "position": {
+        "x": 1480,
+        "y": 286
+      },
+      "size": {
+        "width": 320,
+        "height": 160
+      },
+      "parentId": "mission-data-tree--proj-novakai-command",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-command--mission-messaging-state-report": {
+      "id": "mission-data-tree--proj-novakai-command--mission-messaging-state-report",
+      "kind": "scope",
+      "label": "mission_messaging-state-report",
+      "description": "status: done | outcome: absent | team: absent",
+      "position": {
+        "x": 760,
+        "y": 286
+      },
+      "size": {
+        "width": 320,
+        "height": 160
+      },
+      "parentId": "mission-data-tree--proj-novakai-command",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-command--mission-messaging-report-v2": {
+      "id": "mission-data-tree--proj-novakai-command--mission-messaging-report-v2",
+      "kind": "scope",
+      "label": "mission_messaging-report-v2",
+      "description": "status: done | outcome: absent | team: absent",
+      "position": {
+        "x": 400,
+        "y": 286
+      },
+      "size": {
+        "width": 320,
+        "height": 160
+      },
+      "parentId": "mission-data-tree--proj-novakai-command",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-html-builder": {
+      "id": "mission-data-tree--proj-html-builder",
+      "kind": "scope",
+      "label": "proj_html-builder",
+      "description": "html-builder | status: active",
+      "position": {
+        "x": 40,
+        "y": 56
+      },
+      "size": {
+        "width": 320,
+        "height": 160
       },
       "parentId": "mission-data-tree",
       "interfaceIds": [],
-      "typeIds": [],
-      "rows": [
-        {
-          "id": "proj_novakai-command",
-          "kind": "project",
-          "status": "active",
-          "badges": []
-        },
-        {
-          "id": "mission_m1-orchestration-tooling",
-          "kind": "mission",
-          "status": "done",
-          "parentRowId": "proj_novakai-command",
-          "badges": []
-        },
-        {
-          "id": "mission_m2-plumbing-hardening",
-          "kind": "mission",
-          "status": "done",
-          "parentRowId": "proj_novakai-command",
-          "badges": []
-        },
-        {
-          "id": "mission_m3-dogfood-orchestrator",
-          "kind": "mission",
-          "status": "done",
-          "parentRowId": "proj_novakai-command",
-          "badges": []
-        },
-        {
-          "id": "mission_m4-ui-glitch-braindump",
-          "kind": "mission",
-          "status": "retired",
-          "parentRowId": "proj_novakai-command",
-          "badges": []
-        },
-        {
-          "id": "mission_review-6hr-kimi-build",
-          "kind": "mission",
-          "status": "done",
-          "parentRowId": "proj_novakai-command",
-          "badges": []
-        },
-        {
-          "id": "mission_agent-roles-spike",
-          "kind": "mission",
-          "status": "todo",
-          "parentRowId": "proj_novakai-command",
-          "badges": []
-        },
-        {
-          "id": "mission_desktop-live-lanes",
-          "kind": "mission",
-          "status": "done",
-          "parentRowId": "proj_novakai-command",
-          "badges": [
-            "outcome"
-          ]
-        },
-        {
-          "id": "mission_store-validator",
-          "kind": "mission",
-          "status": "done",
-          "parentRowId": "proj_novakai-command",
-          "badges": [
-            "outcome"
-          ]
-        },
-        {
-          "id": "task_store-validator",
-          "kind": "task",
-          "status": "done",
-          "parentRowId": "mission_store-validator",
-          "badges": []
-        },
-        {
-          "id": "mission_mission-room-v1",
-          "kind": "mission",
-          "status": "done",
-          "parentRowId": "proj_novakai-command",
-          "badges": [
-            "outcome"
-          ]
-        },
-        {
-          "id": "mission_or005-pr41-review-or",
-          "kind": "mission",
-          "status": "done",
-          "parentRowId": "proj_novakai-command",
-          "badges": []
-        },
-        {
-          "id": "mission_messaging-state-report",
-          "kind": "mission",
-          "status": "done",
-          "parentRowId": "proj_novakai-command",
-          "badges": []
-        },
-        {
-          "id": "mission_messaging-report-v2",
-          "kind": "mission",
-          "status": "in-progress",
-          "parentRowId": "proj_novakai-command",
-          "badges": []
-        },
-        {
-          "id": "proj_html-builder",
-          "kind": "project",
-          "status": "active",
-          "badges": []
-        },
-        {
-          "id": "proj_novakai-docs",
-          "kind": "project",
-          "status": "active",
-          "badges": []
-        },
-        {
-          "id": "mission_hq-desktop-tasks-not-showing",
-          "kind": "mission",
-          "status": "todo",
-          "parentRowId": "proj_novakai-docs",
-          "badges": []
-        },
-        {
-          "id": "task_docs-packaged-patch-handoff",
-          "kind": "task",
-          "status": "todo",
-          "parentRowId": "mission_hq-desktop-tasks-not-showing",
-          "badges": []
-        },
-        {
-          "id": "mission_docs-render-stores",
-          "kind": "mission",
-          "status": "done",
-          "parentRowId": "proj_novakai-docs",
-          "badges": [
-            "outcome",
-            "team"
-          ]
-        },
-        {
-          "id": "mission_docs-viewer-round2",
-          "kind": "mission",
-          "status": "done",
-          "parentRowId": "proj_novakai-docs",
-          "badges": [
-            "outcome",
-            "team"
-          ]
-        },
-        {
-          "id": "proj_novakai-canvas",
-          "kind": "project",
-          "status": "active",
-          "badges": []
-        },
-        {
-          "id": "mission_canvas-mission-view",
-          "kind": "mission",
-          "status": "done",
-          "parentRowId": "proj_novakai-canvas",
-          "badges": [
-            "outcome"
-          ]
-        },
-        {
-          "id": "no-project",
-          "kind": "bucket",
-          "badges": [],
-          "label": "(no project)"
-        },
-        {
-          "id": "mission_slack-visibility-mirror",
-          "kind": "mission",
-          "status": "done",
-          "parentRowId": "no-project",
-          "badges": []
-        },
-        {
-          "id": "no-mission",
-          "kind": "bucket",
-          "badges": [],
-          "label": "(no mission) 15 tasks"
-        }
-      ]
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-docs": {
+      "id": "mission-data-tree--proj-novakai-docs",
+      "kind": "scope",
+      "label": "proj_novakai-docs",
+      "description": "novakai-docs | status: active",
+      "position": {
+        "x": 40,
+        "y": 1208
+      },
+      "size": {
+        "width": 1134,
+        "height": 296
+      },
+      "parentId": "mission-data-tree",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing": {
+      "id": "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing",
+      "kind": "scope",
+      "label": "mission_hq-desktop-tasks-not-showing",
+      "description": "status: todo | outcome: absent | team: absent",
+      "position": {
+        "x": 760,
+        "y": 56
+      },
+      "size": {
+        "width": 334,
+        "height": 200
+      },
+      "parentId": "mission-data-tree--proj-novakai-docs",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing--task-docs-packaged-patch-handoff": {
+      "id": "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing--task-docs-packaged-patch-handoff",
+      "kind": "module",
+      "label": "task_docs-packaged-patch-handoff",
+      "description": "status: todo",
+      "position": {
+        "x": 40,
+        "y": 56
+      },
+      "size": {
+        "width": 254,
+        "height": 104
+      },
+      "parentId": "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-docs--mission-docs-render-stores": {
+      "id": "mission-data-tree--proj-novakai-docs--mission-docs-render-stores",
+      "kind": "scope",
+      "label": "mission_docs-render-stores",
+      "description": "status: done | outcome: present | team: present",
+      "position": {
+        "x": 40,
+        "y": 56
+      },
+      "size": {
+        "width": 320,
+        "height": 160
+      },
+      "parentId": "mission-data-tree--proj-novakai-docs",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-docs--mission-docs-viewer-round2": {
+      "id": "mission-data-tree--proj-novakai-docs--mission-docs-viewer-round2",
+      "kind": "scope",
+      "label": "mission_docs-viewer-round2",
+      "description": "status: done | outcome: present | team: present",
+      "position": {
+        "x": 400,
+        "y": 56
+      },
+      "size": {
+        "width": 320,
+        "height": 160
+      },
+      "parentId": "mission-data-tree--proj-novakai-docs",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-canvas": {
+      "id": "mission-data-tree--proj-novakai-canvas",
+      "kind": "scope",
+      "label": "proj_novakai-canvas",
+      "description": "novakai-canvas | status: active",
+      "position": {
+        "x": 400,
+        "y": 56
+      },
+      "size": {
+        "width": 760,
+        "height": 256
+      },
+      "parentId": "mission-data-tree",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-canvas--mission-canvas-mission-view": {
+      "id": "mission-data-tree--proj-novakai-canvas--mission-canvas-mission-view",
+      "kind": "scope",
+      "label": "mission_canvas-mission-view",
+      "description": "status: done | outcome: present | team: absent",
+      "position": {
+        "x": 40,
+        "y": 56
+      },
+      "size": {
+        "width": 320,
+        "height": 160
+      },
+      "parentId": "mission-data-tree--proj-novakai-canvas",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--proj-novakai-canvas--mission-canvas-zones-v2": {
+      "id": "mission-data-tree--proj-novakai-canvas--mission-canvas-zones-v2",
+      "kind": "scope",
+      "label": "mission_canvas-zones-v2",
+      "description": "status: in-progress | outcome: absent | team: absent",
+      "position": {
+        "x": 400,
+        "y": 56
+      },
+      "size": {
+        "width": 320,
+        "height": 160
+      },
+      "parentId": "mission-data-tree--proj-novakai-canvas",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-project": {
+      "id": "mission-data-tree--standalone-no-project",
+      "kind": "scope",
+      "label": "Standalone — no project",
+      "description": "Missions with no project ref",
+      "position": {
+        "x": 40,
+        "y": 1844
+      },
+      "size": {
+        "width": 400,
+        "height": 256
+      },
+      "parentId": "mission-data-tree",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-project--mission-slack-visibility-mirror": {
+      "id": "mission-data-tree--standalone-no-project--mission-slack-visibility-mirror",
+      "kind": "scope",
+      "label": "mission_slack-visibility-mirror",
+      "description": "status: done | outcome: absent | team: absent",
+      "position": {
+        "x": 40,
+        "y": 56
+      },
+      "size": {
+        "width": 320,
+        "height": 160
+      },
+      "parentId": "mission-data-tree--standalone-no-project",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-mission": {
+      "id": "mission-data-tree--standalone-no-mission",
+      "kind": "scope",
+      "label": "Standalone — no mission",
+      "description": "15 tasks with no mission ref",
+      "position": {
+        "x": 40,
+        "y": 1574
+      },
+      "size": {
+        "width": 4023,
+        "height": 200
+      },
+      "parentId": "mission-data-tree",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-mission--task-fleet-idle-verdict": {
+      "id": "mission-data-tree--standalone-no-mission--task-fleet-idle-verdict",
+      "kind": "module",
+      "label": "task_fleet-idle-verdict",
+      "description": "status: done",
+      "position": {
+        "x": 1095,
+        "y": 56
+      },
+      "size": {
+        "width": 200,
+        "height": 104
+      },
+      "parentId": "mission-data-tree--standalone-no-mission",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-mission--task-onboarding-brief": {
+      "id": "mission-data-tree--standalone-no-mission--task-onboarding-brief",
+      "kind": "module",
+      "label": "task_onboarding-brief",
+      "description": "status: todo",
+      "position": {
+        "x": 2987,
+        "y": 56
+      },
+      "size": {
+        "width": 200,
+        "height": 104
+      },
+      "parentId": "mission-data-tree--standalone-no-mission",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-mission--task-m1-orchestration-tooling": {
+      "id": "mission-data-tree--standalone-no-mission--task-m1-orchestration-tooling",
+      "kind": "module",
+      "label": "task_m1-orchestration-tooling",
+      "description": "status: refiled",
+      "position": {
+        "x": 1939,
+        "y": 56
+      },
+      "size": {
+        "width": 233,
+        "height": 104
+      },
+      "parentId": "mission-data-tree--standalone-no-mission",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-mission--task-m2-plumbing-hardening": {
+      "id": "mission-data-tree--standalone-no-mission--task-m2-plumbing-hardening",
+      "kind": "module",
+      "label": "task_m2-plumbing-hardening",
+      "description": "status: refiled",
+      "position": {
+        "x": 2212,
+        "y": 56
+      },
+      "size": {
+        "width": 211,
+        "height": 104
+      },
+      "parentId": "mission-data-tree--standalone-no-mission",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-mission--task-m3-dogfood-orchestrator": {
+      "id": "mission-data-tree--standalone-no-mission--task-m3-dogfood-orchestrator",
+      "kind": "module",
+      "label": "task_m3-dogfood-orchestrator",
+      "description": "status: refiled",
+      "position": {
+        "x": 2463,
+        "y": 56
+      },
+      "size": {
+        "width": 226,
+        "height": 104
+      },
+      "parentId": "mission-data-tree--standalone-no-mission",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-mission--task-m4-ui-glitch-braindump": {
+      "id": "mission-data-tree--standalone-no-mission--task-m4-ui-glitch-braindump",
+      "kind": "module",
+      "label": "task_m4-ui-glitch-braindump",
+      "description": "status: refiled",
+      "position": {
+        "x": 2729,
+        "y": 56
+      },
+      "size": {
+        "width": 218,
+        "height": 104
+      },
+      "parentId": "mission-data-tree--standalone-no-mission",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-mission--task-agent-roles-spike": {
+      "id": "mission-data-tree--standalone-no-mission--task-agent-roles-spike",
+      "kind": "module",
+      "label": "task_agent-roles-spike",
+      "description": "status: refiled",
+      "position": {
+        "x": 40,
+        "y": 56
+      },
+      "size": {
+        "width": 200,
+        "height": 104
+      },
+      "parentId": "mission-data-tree--standalone-no-mission",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-mission--task-hq-desktop-tasks-not-showing": {
+      "id": "mission-data-tree--standalone-no-mission--task-hq-desktop-tasks-not-showing",
+      "kind": "module",
+      "label": "task_hq-desktop-tasks-not-showing",
+      "description": "status: refiled",
+      "position": {
+        "x": 1637,
+        "y": 56
+      },
+      "size": {
+        "width": 262,
+        "height": 104
+      },
+      "parentId": "mission-data-tree--standalone-no-mission",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-mission--task-review-6hr-kimi-build": {
+      "id": "mission-data-tree--standalone-no-mission--task-review-6hr-kimi-build",
+      "kind": "module",
+      "label": "task_review-6hr-kimi-build",
+      "description": "status: refiled",
+      "position": {
+        "x": 3772,
+        "y": 56
+      },
+      "size": {
+        "width": 211,
+        "height": 104
+      },
+      "parentId": "mission-data-tree--standalone-no-mission",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-mission--task-docs-nav-clipping": {
+      "id": "mission-data-tree--standalone-no-mission--task-docs-nav-clipping",
+      "kind": "module",
+      "label": "task_docs-nav-clipping",
+      "description": "status: done",
+      "position": {
+        "x": 553,
+        "y": 56
+      },
+      "size": {
+        "width": 200,
+        "height": 104
+      },
+      "parentId": "mission-data-tree--standalone-no-mission",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-mission--task-docs-inspector-all-views": {
+      "id": "mission-data-tree--standalone-no-mission--task-docs-inspector-all-views",
+      "kind": "module",
+      "label": "task_docs-inspector-all-views",
+      "description": "status: done",
+      "position": {
+        "x": 280,
+        "y": 56
+      },
+      "size": {
+        "width": 233,
+        "height": 104
+      },
+      "parentId": "mission-data-tree--standalone-no-mission",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-mission--task-docs-subtitle-source-honesty": {
+      "id": "mission-data-tree--standalone-no-mission--task-docs-subtitle-source-honesty",
+      "kind": "module",
+      "label": "task_docs-subtitle-source-honesty",
+      "description": "status: done",
+      "position": {
+        "x": 793,
+        "y": 56
+      },
+      "size": {
+        "width": 262,
+        "height": 104
+      },
+      "parentId": "mission-data-tree--standalone-no-mission",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-mission--task-git-bind-agents-to-worktrees": {
+      "id": "mission-data-tree--standalone-no-mission--task-git-bind-agents-to-worktrees",
+      "kind": "module",
+      "label": "task_git-bind-agents-to-worktrees",
+      "description": "status: todo",
+      "position": {
+        "x": 1335,
+        "y": 56
+      },
+      "size": {
+        "width": 262,
+        "height": 104
+      },
+      "parentId": "mission-data-tree--standalone-no-mission",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-mission--task-processes-store-resume": {
+      "id": "mission-data-tree--standalone-no-mission--task-processes-store-resume",
+      "kind": "module",
+      "label": "task_processes-store-resume",
+      "description": "status: todo",
+      "position": {
+        "x": 3514,
+        "y": 56
+      },
+      "size": {
+        "width": 218,
+        "height": 104
+      },
+      "parentId": "mission-data-tree--standalone-no-mission",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-data-tree--standalone-no-mission--task-org-rails-backend-delivery": {
+      "id": "mission-data-tree--standalone-no-mission--task-org-rails-backend-delivery",
+      "kind": "module",
+      "label": "task_org-rails-backend-delivery",
+      "description": "status: done",
+      "position": {
+        "x": 3227,
+        "y": 56
+      },
+      "size": {
+        "width": 247,
+        "height": 104
+      },
+      "parentId": "mission-data-tree--standalone-no-mission",
+      "interfaceIds": [],
+      "typeIds": []
     },
     "mission-right-now": {
       "id": "mission-right-now",
@@ -2449,148 +2979,114 @@
       "description": "Registry truth: who is linked to what, right now",
       "position": {
         "x": 40,
-        "y": 12059
+        "y": 13355
       },
       "size": {
-        "width": 1821,
-        "height": 564
+        "width": 862,
+        "height": 644
       },
       "interfaceIds": [],
       "typeIds": []
     },
-    "mission-right-now--mission-messaging-report-v2": {
-      "id": "mission-right-now--mission-messaging-report-v2",
-      "kind": "module",
-      "label": "mission_messaging-report-v2",
-      "description": "status: in-progress | owner: manager-kimi-messaging | outcome: absent",
+    "mission-right-now--proj-novakai-canvas": {
+      "id": "mission-right-now--proj-novakai-canvas",
+      "kind": "scope",
+      "label": "proj_novakai-canvas",
+      "description": "novakai-canvas | status: active",
       "position": {
-        "x": 1138,
+        "x": 40,
         "y": 56
       },
       "size": {
-        "width": 420,
-        "height": 120
+        "width": 400,
+        "height": 256
       },
       "parentId": "mission-right-now",
       "interfaceIds": [],
       "typeIds": []
     },
-    "mission-right-now--manager-kimi-messaging": {
-      "id": "mission-right-now--manager-kimi-messaging",
-      "kind": "runtime",
-      "label": "Manager Kimi Messaging",
-      "description": "provider: kimi | status: running",
-      "position": {
-        "x": 919,
-        "y": 420
-      },
-      "size": {
-        "width": 254,
-        "height": 104
-      },
-      "parentId": "mission-right-now",
-      "interfaceIds": [],
-      "typeIds": []
-    },
-    "mission-right-now--process-reviewer-msg": {
-      "id": "mission-right-now--process-reviewer-msg",
-      "kind": "runtime",
-      "label": "Process Reviewer Msg",
-      "description": "provider: codex | status: running",
-      "position": {
-        "x": 1519,
-        "y": 246
-      },
-      "size": {
-        "width": 262,
-        "height": 104
-      },
-      "parentId": "mission-right-now",
-      "interfaceIds": [],
-      "typeIds": []
-    },
-    "mission-right-now--author-vector": {
-      "id": "mission-right-now--author-vector",
-      "kind": "runtime",
-      "label": "Author Vector",
-      "description": "provider: codex | status: running",
-      "position": {
-        "x": 915,
-        "y": 246
-      },
-      "size": {
-        "width": 262,
-        "height": 104
-      },
-      "parentId": "mission-right-now",
-      "interfaceIds": [],
-      "typeIds": []
-    },
-    "mission-right-now--auditor-lens": {
-      "id": "mission-right-now--auditor-lens",
-      "kind": "runtime",
-      "label": "Auditor Lens",
-      "description": "provider: kimi | status: running",
+    "mission-right-now--proj-novakai-canvas--mission-canvas-zones-v2": {
+      "id": "mission-right-now--proj-novakai-canvas--mission-canvas-zones-v2",
+      "kind": "scope",
+      "label": "mission_canvas-zones-v2",
+      "description": "status: in-progress | owner: chief-kimi | outcome: absent",
       "position": {
         "x": 40,
-        "y": 246
+        "y": 56
       },
       "size": {
-        "width": 254,
-        "height": 104
+        "width": 320,
+        "height": 160
+      },
+      "parentId": "mission-right-now--proj-novakai-canvas",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-right-now--standalone-no-mission-link": {
+      "id": "mission-right-now--standalone-no-mission-link",
+      "kind": "scope",
+      "label": "Standalone — no mission link",
+      "description": "Agents linked to no in-progress mission",
+      "position": {
+        "x": 480,
+        "y": 56
+      },
+      "size": {
+        "width": 342,
+        "height": 548
       },
       "parentId": "mission-right-now",
       "interfaceIds": [],
       "typeIds": []
     },
-    "mission-right-now--fable-claude": {
-      "id": "mission-right-now--fable-claude",
+    "mission-right-now--standalone-no-mission-link--manager-kimi-zones": {
+      "id": "mission-right-now--standalone-no-mission-link--manager-kimi-zones",
       "kind": "runtime",
-      "label": "Fable · claude",
-      "description": "provider: claude | status: exited",
+      "label": "Manager Kimi Zones",
+      "description": "provider: kimi | status: running",
       "position": {
-        "x": 1217,
-        "y": 246
+        "x": 44,
+        "y": 230
+      },
+      "size": {
+        "width": 254,
+        "height": 104
+      },
+      "parentId": "mission-right-now--standalone-no-mission-link",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-right-now--standalone-no-mission-link--worker-kimi-zones": {
+      "id": "mission-right-now--standalone-no-mission-link--worker-kimi-zones",
+      "kind": "runtime",
+      "label": "Worker Kimi Zones",
+      "description": "provider: kimi | status: running",
+      "position": {
+        "x": 44,
+        "y": 404
+      },
+      "size": {
+        "width": 254,
+        "height": 104
+      },
+      "parentId": "mission-right-now--standalone-no-mission-link",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "mission-right-now--standalone-no-mission-link--auditor-codex-zones-iii": {
+      "id": "mission-right-now--standalone-no-mission-link--auditor-codex-zones-iii",
+      "kind": "runtime",
+      "label": "Auditor Codex Zones III",
+      "description": "provider: codex | status: running",
+      "position": {
+        "x": 40,
+        "y": 56
       },
       "size": {
         "width": 262,
         "height": 104
       },
-      "parentId": "mission-right-now",
-      "interfaceIds": [],
-      "typeIds": []
-    },
-    "mission-right-now--author-scribe": {
-      "id": "mission-right-now--author-scribe",
-      "kind": "runtime",
-      "label": "Author Scribe",
-      "description": "provider: codex | status: exited",
-      "position": {
-        "x": 621,
-        "y": 246
-      },
-      "size": {
-        "width": 254,
-        "height": 104
-      },
-      "parentId": "mission-right-now",
-      "interfaceIds": [],
-      "typeIds": []
-    },
-    "mission-right-now--auditor-verity": {
-      "id": "mission-right-now--auditor-verity",
-      "kind": "runtime",
-      "label": "Auditor Verity",
-      "description": "provider: kimi | status: exited",
-      "position": {
-        "x": 334,
-        "y": 246
-      },
-      "size": {
-        "width": 247,
-        "height": 104
-      },
-      "parentId": "mission-right-now",
+      "parentId": "mission-right-now--standalone-no-mission-link",
       "interfaceIds": [],
       "typeIds": []
     }
@@ -3808,8 +4304,8 @@
         "evidenceRows"
       ]
     },
-    "mission-object-model--objective-okrs-jsonl--type-objective": {
-      "id": "mission-object-model--objective-okrs-jsonl--type-objective",
+    "mission-object-model--stores--objective-okrs-jsonl--type-objective": {
+      "id": "mission-object-model--stores--objective-okrs-jsonl--type-objective",
       "name": "Objective",
       "fields": [
         "id",
@@ -3817,8 +4313,8 @@
         "horizon"
       ]
     },
-    "mission-object-model--project-projects-jsonl--type-project": {
-      "id": "mission-object-model--project-projects-jsonl--type-project",
+    "mission-object-model--stores--project-projects-jsonl--type-project": {
+      "id": "mission-object-model--stores--project-projects-jsonl--type-project",
       "name": "Project",
       "fields": [
         "id",
@@ -3827,8 +4323,8 @@
         "path"
       ]
     },
-    "mission-object-model--mission-missions-jsonl--type-mission": {
-      "id": "mission-object-model--mission-missions-jsonl--type-mission",
+    "mission-object-model--stores--mission-missions-jsonl--type-mission": {
+      "id": "mission-object-model--stores--mission-missions-jsonl--type-mission",
       "name": "Mission",
       "fields": [
         "id",
@@ -3838,8 +4334,8 @@
         "refs"
       ]
     },
-    "mission-object-model--task-tasks-jsonl--type-task": {
-      "id": "mission-object-model--task-tasks-jsonl--type-task",
+    "mission-object-model--stores--task-tasks-jsonl--type-task": {
+      "id": "mission-object-model--stores--task-tasks-jsonl--type-task",
       "name": "Task",
       "fields": [
         "id",
@@ -3848,8 +4344,8 @@
         "refs"
       ]
     },
-    "mission-object-model--agent-agents-json--type-agent": {
-      "id": "mission-object-model--agent-agents-json--type-agent",
+    "mission-object-model--stores--agent-agents-json--type-agent": {
+      "id": "mission-object-model--stores--agent-agents-json--type-agent",
       "name": "Agent",
       "fields": [
         "agentId",
@@ -3858,8 +4354,8 @@
         "status"
       ]
     },
-    "mission-object-model--journal-messages-jsonl--type-message": {
-      "id": "mission-object-model--journal-messages-jsonl--type-message",
+    "mission-object-model--stores--journal-messages-jsonl--type-message": {
+      "id": "mission-object-model--stores--journal-messages-jsonl--type-message",
       "name": "Message",
       "fields": [
         "from",
@@ -4608,137 +5104,281 @@
     },
     "mission-object-model--wire-1": {
       "id": "mission-object-model--wire-1",
-      "source": "mission-object-model--mission-missions-jsonl",
-      "target": "mission-object-model--project-projects-jsonl",
-      "label": "typed ref (16x)",
+      "source": "mission-object-model--stores--mission-missions-jsonl",
+      "target": "mission-object-model--stores--project-projects-jsonl",
+      "label": "typed ref (17x)",
       "kind": "references",
       "routing": "elbow"
     },
     "mission-object-model--wire-2": {
       "id": "mission-object-model--wire-2",
-      "source": "mission-object-model--mission-missions-jsonl",
-      "target": "mission-object-model--objective-okrs-jsonl",
+      "source": "mission-object-model--stores--mission-missions-jsonl",
+      "target": "mission-object-model--stores--objective-okrs-jsonl",
       "label": "typed ref (2x)",
       "kind": "references",
       "routing": "elbow"
     },
     "mission-object-model--wire-3": {
       "id": "mission-object-model--wire-3",
-      "source": "mission-object-model--mission-missions-jsonl",
-      "target": "mission-object-model--task-tasks-jsonl",
+      "source": "mission-object-model--stores--mission-missions-jsonl",
+      "target": "mission-object-model--stores--task-tasks-jsonl",
       "label": "typed refs, sparse (5x)",
       "kind": "references",
       "routing": "elbow"
     },
     "mission-object-model--wire-4": {
       "id": "mission-object-model--wire-4",
-      "source": "mission-object-model--mission-missions-jsonl",
-      "target": "mission-object-model--agent-agents-json",
+      "source": "mission-object-model--stores--mission-missions-jsonl",
+      "target": "mission-object-model--stores--agent-agents-json",
       "label": "team = free-text strings (2x)",
       "kind": "mentions",
       "routing": "elbow"
     },
     "mission-object-model--wire-5": {
       "id": "mission-object-model--wire-5",
-      "source": "mission-object-model--agent-agents-json",
-      "target": "mission-object-model--mission-missions-jsonl",
+      "source": "mission-object-model--stores--agent-agents-json",
+      "target": "mission-object-model--stores--mission-missions-jsonl",
       "label": "no field either side",
       "kind": "missing",
       "routing": "elbow"
     },
     "mission-object-model--wire-6": {
       "id": "mission-object-model--wire-6",
-      "source": "mission-object-model--agent-agents-json",
-      "target": "mission-object-model--journal-messages-jsonl",
+      "source": "mission-object-model--stores--agent-agents-json",
+      "target": "mission-object-model--stores--journal-messages-jsonl",
       "label": "mail about work, no mission field",
       "kind": "mentions",
       "routing": "elbow"
     },
     "mission-object-model--wire-7": {
       "id": "mission-object-model--wire-7",
-      "source": "mission-object-model--mission-missions-jsonl",
-      "target": "mission-object-model--mission-room",
+      "source": "mission-object-model--stores--mission-missions-jsonl",
+      "target": "mission-object-model--read-layer--mission-room",
       "label": "read-only join",
       "kind": "queries",
       "routing": "elbow"
     },
     "mission-object-model--wire-8": {
       "id": "mission-object-model--wire-8",
-      "source": "mission-object-model--task-tasks-jsonl",
-      "target": "mission-object-model--mission-room",
+      "source": "mission-object-model--stores--task-tasks-jsonl",
+      "target": "mission-object-model--read-layer--mission-room",
       "label": "read-only join",
       "kind": "queries",
       "routing": "elbow"
     },
     "mission-object-model--wire-9": {
       "id": "mission-object-model--wire-9",
-      "source": "mission-object-model--journal-messages-jsonl",
-      "target": "mission-object-model--mission-room",
+      "source": "mission-object-model--stores--journal-messages-jsonl",
+      "target": "mission-object-model--read-layer--mission-room",
       "label": "read-only join",
       "kind": "queries",
       "routing": "elbow"
     },
+    "mission-data-tree--wire-1": {
+      "id": "mission-data-tree--wire-1",
+      "source": "mission-data-tree--proj-novakai-command",
+      "target": "mission-data-tree--proj-novakai-command--mission-m1-orchestration-tooling",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-2": {
+      "id": "mission-data-tree--wire-2",
+      "source": "mission-data-tree--proj-novakai-command",
+      "target": "mission-data-tree--proj-novakai-command--mission-m2-plumbing-hardening",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-3": {
+      "id": "mission-data-tree--wire-3",
+      "source": "mission-data-tree--proj-novakai-command",
+      "target": "mission-data-tree--proj-novakai-command--mission-m3-dogfood-orchestrator",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-4": {
+      "id": "mission-data-tree--wire-4",
+      "source": "mission-data-tree--proj-novakai-command",
+      "target": "mission-data-tree--proj-novakai-command--mission-m4-ui-glitch-braindump",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-5": {
+      "id": "mission-data-tree--wire-5",
+      "source": "mission-data-tree--proj-novakai-command",
+      "target": "mission-data-tree--proj-novakai-command--mission-review-6hr-kimi-build",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-6": {
+      "id": "mission-data-tree--wire-6",
+      "source": "mission-data-tree--proj-novakai-command",
+      "target": "mission-data-tree--proj-novakai-command--mission-agent-roles-spike",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-7": {
+      "id": "mission-data-tree--wire-7",
+      "source": "mission-data-tree--proj-novakai-command",
+      "target": "mission-data-tree--proj-novakai-command--mission-desktop-live-lanes",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-8": {
+      "id": "mission-data-tree--wire-8",
+      "source": "mission-data-tree--proj-novakai-command",
+      "target": "mission-data-tree--proj-novakai-command--mission-store-validator",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-9": {
+      "id": "mission-data-tree--wire-9",
+      "source": "mission-data-tree--proj-novakai-command--mission-store-validator",
+      "target": "mission-data-tree--proj-novakai-command--mission-store-validator--task-store-validator",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-10": {
+      "id": "mission-data-tree--wire-10",
+      "source": "mission-data-tree--proj-novakai-command",
+      "target": "mission-data-tree--proj-novakai-command--mission-mission-room-v1",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-11": {
+      "id": "mission-data-tree--wire-11",
+      "source": "mission-data-tree--proj-novakai-command",
+      "target": "mission-data-tree--proj-novakai-command--mission-or005-pr41-review-or",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-12": {
+      "id": "mission-data-tree--wire-12",
+      "source": "mission-data-tree--proj-novakai-command",
+      "target": "mission-data-tree--proj-novakai-command--mission-messaging-state-report",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-13": {
+      "id": "mission-data-tree--wire-13",
+      "source": "mission-data-tree--proj-novakai-command",
+      "target": "mission-data-tree--proj-novakai-command--mission-messaging-report-v2",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-14": {
+      "id": "mission-data-tree--wire-14",
+      "source": "mission-data-tree--proj-novakai-docs",
+      "target": "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-15": {
+      "id": "mission-data-tree--wire-15",
+      "source": "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing",
+      "target": "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing--task-docs-packaged-patch-handoff",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-16": {
+      "id": "mission-data-tree--wire-16",
+      "source": "mission-data-tree--proj-novakai-docs",
+      "target": "mission-data-tree--proj-novakai-docs--mission-docs-render-stores",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-17": {
+      "id": "mission-data-tree--wire-17",
+      "source": "mission-data-tree--proj-novakai-docs",
+      "target": "mission-data-tree--proj-novakai-docs--mission-docs-viewer-round2",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-18": {
+      "id": "mission-data-tree--wire-18",
+      "source": "mission-data-tree--proj-novakai-canvas",
+      "target": "mission-data-tree--proj-novakai-canvas--mission-canvas-mission-view",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-19": {
+      "id": "mission-data-tree--wire-19",
+      "source": "mission-data-tree--proj-novakai-canvas",
+      "target": "mission-data-tree--proj-novakai-canvas--mission-canvas-zones-v2",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "mission-data-tree--wire-20": {
+      "id": "mission-data-tree--wire-20",
+      "source": "mission-data-tree--standalone-no-project",
+      "target": "mission-data-tree--standalone-no-project--mission-slack-visibility-mirror",
+      "label": "contains",
+      "kind": "owns",
+      "routing": "elbow"
+    },
     "mission-right-now--wire-1": {
       "id": "mission-right-now--wire-1",
-      "source": "mission-right-now--mission-messaging-report-v2",
-      "target": "mission-right-now--manager-kimi-messaging",
-      "label": "name match only (owner is a string)",
-      "kind": "mentions",
+      "source": "mission-right-now--proj-novakai-canvas",
+      "target": "mission-right-now--proj-novakai-canvas--mission-canvas-zones-v2",
+      "label": "contains",
+      "kind": "owns",
       "routing": "elbow"
     },
     "mission-right-now--wire-2": {
       "id": "mission-right-now--wire-2",
-      "source": "mission-right-now--mission-messaging-report-v2",
-      "target": "mission-right-now--process-reviewer-msg",
+      "source": "mission-right-now--proj-novakai-canvas--mission-canvas-zones-v2",
+      "target": "mission-right-now--standalone-no-mission-link--manager-kimi-zones",
       "label": "no link at all",
       "kind": "missing",
       "routing": "elbow"
     },
     "mission-right-now--wire-3": {
       "id": "mission-right-now--wire-3",
-      "source": "mission-right-now--mission-messaging-report-v2",
-      "target": "mission-right-now--author-vector",
+      "source": "mission-right-now--proj-novakai-canvas--mission-canvas-zones-v2",
+      "target": "mission-right-now--standalone-no-mission-link--worker-kimi-zones",
       "label": "no link at all",
       "kind": "missing",
       "routing": "elbow"
     },
     "mission-right-now--wire-4": {
       "id": "mission-right-now--wire-4",
-      "source": "mission-right-now--mission-messaging-report-v2",
-      "target": "mission-right-now--auditor-lens",
+      "source": "mission-right-now--proj-novakai-canvas--mission-canvas-zones-v2",
+      "target": "mission-right-now--standalone-no-mission-link--auditor-codex-zones-iii",
       "label": "no link at all",
       "kind": "missing",
       "routing": "elbow"
     },
     "mission-right-now--wire-5": {
       "id": "mission-right-now--wire-5",
-      "source": "mission-right-now--auditor-verity",
-      "target": "mission-right-now--manager-kimi-messaging",
+      "source": "mission-right-now--standalone-no-mission-link--auditor-codex-zones-iii",
+      "target": "mission-right-now--standalone-no-mission-link--manager-kimi-zones",
       "label": "mail thread (6x)",
       "kind": "mentions",
       "routing": "elbow"
     },
     "mission-right-now--wire-6": {
       "id": "mission-right-now--wire-6",
-      "source": "mission-right-now--author-scribe",
-      "target": "mission-right-now--manager-kimi-messaging",
-      "label": "mail thread (36x)",
-      "kind": "mentions",
-      "routing": "elbow"
-    },
-    "mission-right-now--wire-7": {
-      "id": "mission-right-now--wire-7",
-      "source": "mission-right-now--author-vector",
-      "target": "mission-right-now--manager-kimi-messaging",
-      "label": "mail thread (8x)",
-      "kind": "mentions",
-      "routing": "elbow"
-    },
-    "mission-right-now--wire-8": {
-      "id": "mission-right-now--wire-8",
-      "source": "mission-right-now--fable-claude",
-      "target": "mission-right-now--manager-kimi-messaging",
-      "label": "mail thread (2x)",
+      "source": "mission-right-now--standalone-no-mission-link--manager-kimi-zones",
+      "target": "mission-right-now--standalone-no-mission-link--worker-kimi-zones",
+      "label": "mail thread (18x)",
       "kind": "mentions",
       "routing": "elbow"
     }

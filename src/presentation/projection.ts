@@ -50,6 +50,27 @@ function connectedIds(document: ArchitectureDocument, selection: Selection): Set
   return ids;
 }
 
+/** Nesting depth via the parentId chain; cycles and missing parents stop the walk. */
+export function scopeDepth(nodes: Record<string, CanvasNode>, node: CanvasNode): number {
+  let depth = 0;
+  let current = node;
+  const seen = new Set<string>([node.id]);
+  while (current.parentId && nodes[current.parentId] && !seen.has(current.parentId)) {
+    seen.add(current.parentId);
+    current = nodes[current.parentId];
+    depth += 1;
+  }
+  return depth;
+}
+
+/** Stable parent-first ordering; React Flow renders parents before their children. */
+export function sortParentFirst(nodes: Record<string, CanvasNode>): CanvasNode[] {
+  return Object.values(nodes)
+    .map((node, index) => ({ node, index, depth: scopeDepth(nodes, node) }))
+    .sort((a, b) => a.depth - b.depth || a.index - b.index)
+    .map((entry) => entry.node);
+}
+
 /** Projects canonical nodes into React Flow nodes. */
 export function projectNodes(
   document: ArchitectureDocument,
@@ -59,7 +80,7 @@ export function projectNodes(
   select: (next: Selection) => void,
 ): Node<ArchitectureNodeData>[] {
   const connected = connectedIds(document, selection);
-  return Object.values(document.nodes).map((node) => ({
+  return sortParentFirst(document.nodes).map((node) => ({
     id: node.id,
     type: node.kind === 'comment' ? 'comment'
       : node.kind === 'scope' ? 'scope'
@@ -75,8 +96,10 @@ export function projectNodes(
       : '',
     // A selected scope rises above the interaction layers so its resize
     // handles are reachable; its body stays click-through (pointer-events).
+    // Otherwise a scope sits behind regular nodes by nesting depth, so a
+    // parent zone stays behind the zones it contains.
     zIndex: node.kind === 'scope'
-      ? (selection?.kind === 'node' && selection.id === node.id ? 4 : -1)
+      ? (selection?.kind === 'node' && selection.id === node.id ? 4 : scopeDepth(document.nodes, node) - 1)
       : node.kind === 'comment' ? 3 : 2,
     data: {
       node,

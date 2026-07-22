@@ -238,6 +238,12 @@
 
 .scope-node > span:hover { color: var(--muted-read); }
 
+/* Standalone (orphan-bucket) zones keep the same quiet styling, drawn dashed. */
+.scope-node--standalone { border-style: dashed; }
+
+/* The scope body is click-through; handles and resize controls re-enable it. */
+.scope-node .react-flow__handle { pointer-events: auto; }
+
 /* Resize affordances: quiet until selected, gold while active. */
 .scope-node .react-flow__resize-control { pointer-events: all; }
 .react-flow__resize-control.line { border-color: color-mix(in srgb, var(--accent-strong) 45%, transparent); }

@@ -99,6 +99,48 @@ describe('canvas CLI', () => {
     expect(Object.values(after.wires).some((wire) => wire.source === 'cli-demo--demo-client')).toBe(false);
   });
 
+  it('rm cascades a zone: descendant closure, incident wires, referential integrity', async () => {
+    const zoned = `
+scope "Zoned Demo"
+  zone "Stores"
+    module "missions.jsonl"
+      type Mission { id, title }
+    zone "Archive"
+      module "old store"
+    end
+  end
+  module "Room"
+  wire "missions.jsonl" -> "Room" : read() -> Rows [queries]
+  wire "old store" -> "Room" : read() -> Rows [queries]
+  wire "Stores" -> "Room" : groups [owns]
+`;
+    await runCli(['apply', '--file', dataFile], zoned);
+    const { code, stdout } = await runCli(['rm', 'zoned-demo', 'Stores', '--file', dataFile]);
+    expect(code, stdout).toBe(0);
+    const after = architectureDocumentSchema.parse(JSON.parse(await readFile(dataFile, 'utf8')));
+    // whole closure gone: zone, nested zone, both leaf modules
+    expect(after.nodes['zoned-demo--stores']).toBeUndefined();
+    expect(after.nodes['zoned-demo--stores--archive']).toBeUndefined();
+    expect(after.nodes['zoned-demo--stores--missions-jsonl']).toBeUndefined();
+    expect(after.nodes['zoned-demo--stores--archive--old-store']).toBeUndefined();
+    // sibling untouched
+    expect(after.nodes['zoned-demo--room']).toBeDefined();
+    // referential integrity: no wire or interface or type points at a removed node
+    const nodeIds = new Set(Object.keys(after.nodes));
+    for (const wire of Object.values(after.wires)) {
+      expect(nodeIds.has(wire.source)).toBe(true);
+      expect(nodeIds.has(wire.target)).toBe(true);
+    }
+    for (const iface of Object.values(after.interfaces)) {
+      expect(nodeIds.has(iface.ownerId)).toBe(true);
+    }
+    for (const node of Object.values(after.nodes)) {
+      for (const typeId of node.typeIds) expect(after.types[typeId]).toBeDefined();
+      expect(node.parentId === undefined || nodeIds.has(node.parentId)).toBe(true);
+    }
+    expect(after.types['zoned-demo--stores--missions-jsonl--type-mission']).toBeUndefined();
+  });
+
   it('help teaches the grammar and every verb', async () => {
     const { code, stdout } = await runCli(['help']);
     expect(code).toBe(0);
