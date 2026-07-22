@@ -93,7 +93,7 @@ describe('rightNowSelection', () => {
 describe('storesToDsl', () => {
   it('emits three scopes that parse, compile, and validate cleanly', () => {
     const doc = compiled();
-    const scopes = Object.values(doc.nodes).filter((node) => node.kind === 'scope');
+    const scopes = Object.values(doc.nodes).filter((node) => node.kind === 'scope' && !node.parentId);
     expect(scopes.map((scope) => scope.label).sort()).toEqual(
       ['Mission Data Tree', 'Mission Object Model', 'Mission Right Now'],
     );
@@ -113,19 +113,116 @@ describe('storesToDsl', () => {
     expect(dsl).toContain('outcome 1/3, stage 0/3, team 1/3');
   });
 
-  it('builds the tree with orphan buckets, tombstones, and badges', () => {
+  it('zones the object model into Stores and Read layer', () => {
     const doc = compiled();
-    const tree = Object.values(doc.nodes).find((node) => node.kind === 'tree');
-    expect(tree?.rows).toEqual([
-      { id: 'proj_command', kind: 'project', status: 'active', badges: [] },
-      { id: 'mission_live', kind: 'mission', status: 'in-progress', parentRowId: 'proj_command', badges: [] },
-      { id: 'mission_done', kind: 'mission', status: 'done', parentRowId: 'proj_command', badges: ['outcome', 'team'] },
-      { id: 'task_linked', kind: 'task', status: 'done', parentRowId: 'mission_done', badges: [] },
-      { id: 'proj_docs', kind: 'project', status: 'active', badges: [] },
-      { id: 'no-project', kind: 'bucket', badges: [], label: '(no project)' },
-      { id: 'mission_retired', kind: 'mission', status: 'retired', parentRowId: 'no-project', badges: [] },
-      { id: 'no-mission', kind: 'bucket', badges: [], label: '(no mission) 2 tasks' },
-    ]);
+    const byLabel = new Map(Object.values(doc.nodes).map((node) => [node.label, node]));
+    const stores = byLabel.get('Stores');
+    const readLayer = byLabel.get('Read layer');
+    expect(stores?.kind).toBe('scope');
+    expect(readLayer?.kind).toBe('scope');
+    expect(byLabel.get('mission (missions.jsonl)')?.parentId).toBe(stores?.id);
+    expect(byLabel.get('Mission Room')?.parentId).toBe(readLayer?.id);
+  });
+
+  it('nests the data tree by ownership with row facts preserved as descriptions', () => {
+    const doc = compiled();
+    // no tree node remains — zones carry the hierarchy (ruling R9)
+    expect(Object.values(doc.nodes).some((node) => node.kind === 'tree')).toBe(false);
+    // proj_command zones exist in two maps; scope lookups to the data tree
+    const mapId = Object.values(doc.nodes).find((node) => node.label === 'Mission Data Tree')?.id;
+    const descendantIds = new Set<string>();
+    const queue = [mapId as string];
+    while (queue.length > 0) {
+      const current = queue.shift() as string;
+      for (const node of Object.values(doc.nodes)) {
+        if (node.parentId === current) {
+          descendantIds.add(node.id);
+          queue.push(node.id);
+        }
+      }
+    }
+    const byLabel = new Map(
+      [...descendantIds].map((id) => [doc.nodes[id].label, doc.nodes[id]]),
+    );
+    const project = byLabel.get('proj_command');
+    const missionDone = byLabel.get('mission_done');
+    const taskLinked = byLabel.get('task_linked');
+    expect(missionDone?.parentId).toBe(project?.id);
+    expect(taskLinked?.parentId).toBe(missionDone?.id);
+    // facts: status, outcome badge, team badge survive in descriptions
+    expect(project?.description).toContain('status: active');
+    expect(missionDone?.description).toContain('status: done');
+    expect(missionDone?.description).toContain('outcome: present');
+    expect(missionDone?.description).toContain('team: present');
+    expect(byLabel.get('mission_live')?.description).toContain('outcome: absent');
+    expect(taskLinked?.description).toContain('status: done');
+    // orphans render in explicit standalone zones
+    const noProject = byLabel.get('Standalone — no project');
+    const noMission = byLabel.get('Standalone — no mission');
+    expect(byLabel.get('mission_retired')?.parentId).toBe(noProject?.id);
+    expect(byLabel.get('task_refiled-1')?.parentId).toBe(noMission?.id);
+    expect(byLabel.get('task_refiled-2')?.parentId).toBe(noMission?.id);
+    // containment wires: owns, parents above children
+    const owns = Object.values(doc.wires).filter((wire) => wire.kind === 'owns');
+    const pair = (wire: (typeof owns)[number]) =>
+      `${doc.nodes[wire.source].label} -> ${doc.nodes[wire.target].label}`;
+    expect(owns.map(pair)).toContain('proj_command -> mission_done');
+    expect(owns.map(pair)).toContain('mission_done -> task_linked');
+  });
+
+  it('zones right-now by ownership; unmatched agents render standalone', () => {
+    const doc = compiled();
+    // mission_live and proj_command zones exist in two maps; scope lookups to right-now
+    const mapId = Object.values(doc.nodes).find((node) => node.label === 'Mission Right Now')?.id;
+    const descendantIds = new Set<string>();
+    const queue = [mapId as string];
+    while (queue.length > 0) {
+      const current = queue.shift() as string;
+      for (const node of Object.values(doc.nodes)) {
+        if (node.parentId === current) {
+          descendantIds.add(node.id);
+          queue.push(node.id);
+        }
+      }
+    }
+    const byLabel = new Map(
+      [...descendantIds].map((id) => [doc.nodes[id].label, doc.nodes[id]]),
+    );
+    const missionLive = byLabel.get('mission_live');
+    // soft owner match earns containment: Manager sits inside its mission zone
+    expect(byLabel.get('Manager Kimi Messaging')?.parentId).toBe(missionLive?.id);
+    // mission_live refs proj_command, so the mission zone nests under the project zone
+    expect(missionLive?.parentId).toBe(byLabel.get('proj_command')?.id);
+    // unmatched running and mail-pulled exited agents go standalone
+    const standalone = byLabel.get('Standalone — no mission link');
+    expect(byLabel.get('Author Scribe')?.parentId).toBe(standalone?.id);
+    expect(byLabel.get('Auditor Verity')?.parentId).toBe(standalone?.id);
+  });
+
+  it('canonical container is the first matching mission by sorted id (ruling R8)', () => {
+    const stores = fixture();
+    stores.missions = [
+      { id: 'mission_b', title: 'B', status: 'in-progress', owner: 'Author Scribe', refs: [] },
+      { id: 'mission_a', title: 'A', status: 'in-progress', owner: 'Author Scribe', refs: [] },
+    ];
+    stores.projects = [];
+    const dsl = storesToDsl(stores);
+    const { scopes, errors } = parseDsl(dsl);
+    expect(errors).toEqual([]);
+    const result = compile({
+      schemaVersion: 1, id: 'doc', name: 'Doc', revision: 1,
+      nodes: {}, interfaces: {}, types: {}, wires: {},
+    }, scopes);
+    expect(result.errors).toEqual([]);
+    const byLabel = new Map(Object.values(result.doc.nodes).map((node) => [node.label, node]));
+    // mission_a sorts first — it owns the agent; both missions soft-match so both
+    // keep their mentions wires, but only mission_a owns the node.
+    expect(byLabel.get('Author Scribe')?.parentId).toBe(byLabel.get('mission_a')?.id);
+    const wirePairs = Object.values(result.doc.wires)
+      .map((wire) => `${result.doc.nodes[wire.source].label} -> ${result.doc.nodes[wire.target].label} [${wire.kind}]`);
+    expect(wirePairs).toContain('mission_a -> Author Scribe [owns]');
+    expect(wirePairs).toContain('mission_b -> Author Scribe [mentions]');
+    expect(wirePairs).not.toContain('mission_b -> Author Scribe [owns]');
   });
 
   it('classifies right-now edges: soft name match, missing link, mail thread with count', () => {

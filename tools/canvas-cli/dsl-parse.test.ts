@@ -109,4 +109,62 @@ describe('parseDsl', () => {
       name: 'merge', accepts: ['Left', 'Right'], returns: ['Merged', 'Report'],
     });
   });
+
+  it('parses nested zones with nodes attaching to the innermost zone', () => {
+    const { scopes, errors } = parseDsl(
+      'scope Demo\n'
+      + '  module Top\n'
+      + '  zone "Stores" "the data roots"\n'
+      + '    module "missions.jsonl"\n'
+      + '      type Mission { id, title }\n'
+      + '    zone "Archive"\n'
+      + '      module "old store"\n'
+      + '    end\n'
+      + '  end\n'
+      + '  wire Top -> "missions.jsonl" : read() -> Rows [queries]\n',
+    );
+    expect(errors).toEqual([]);
+    const scope = scopes[0];
+    expect(scope.nodes.map((node) => node.label)).toEqual(['Top']);
+    expect(scope.zones).toHaveLength(1);
+    const stores = scope.zones[0];
+    expect(stores.label).toBe('Stores');
+    expect(stores.description).toBe('the data roots');
+    expect(stores.nodes.map((node) => node.label)).toEqual(['missions.jsonl']);
+    expect(stores.nodes[0].types).toEqual([{ name: 'Mission', fields: ['id', 'title'] }]);
+    expect(stores.zones.map((zone) => zone.label)).toEqual(['Archive']);
+    expect(stores.zones[0].nodes.map((node) => node.label)).toEqual(['old store']);
+    expect(scope.wires).toHaveLength(1);
+  });
+
+  it('rejects end without an open zone', () => {
+    const { errors } = parseDsl('scope Demo\n  module A\n  end\n');
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toContain('end without an open zone');
+  });
+
+  it('rejects end with arguments', () => {
+    const { errors } = parseDsl('scope Demo\n  zone A\n  end A\n');
+    expect(errors.some((error) => error.message.includes('takes no arguments'))).toBe(true);
+  });
+
+  it('rejects a zone outside a scope', () => {
+    const { errors } = parseDsl('zone "Stores"\n');
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toContain('outside a scope');
+  });
+
+  it('reports an unclosed zone at end of input', () => {
+    const { errors } = parseDsl('scope Demo\n  zone "Stores"\n    module A\n');
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toContain('unclosed zone "Stores"');
+    expect(errors[0].message).toContain('line 2');
+  });
+
+  it('reports an unclosed zone when a new scope starts', () => {
+    const { scopes, errors } = parseDsl('scope One\n  zone A\nscope Two\n  end\n');
+    expect(scopes).toHaveLength(2);
+    expect(errors.some((error) => error.message.includes('unclosed zone "A"'))).toBe(true);
+    expect(errors.some((error) => error.message.includes('end without an open zone'))).toBe(true);
+  });
 });

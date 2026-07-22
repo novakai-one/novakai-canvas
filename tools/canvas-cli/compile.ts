@@ -1,7 +1,7 @@
 /** Compiles parsed scope ASTs into an ArchitectureDocument via scope-granular upsert. */
 
 import type { ArchitectureDocument } from '../../src/domain/model';
-import type { ScopeAst } from './dsl-parse.ts';
+import type { NodeAst, ScopeAst, ZoneAst } from './dsl-parse.ts';
 import { slugify } from './slug.ts';
 
 export interface CompileError { message: string; hint: string }
@@ -100,60 +100,99 @@ export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): Compil
       typeIds: [],
     };
 
-    // Children.
+    // Children, with zones nesting to any depth. Labels are unique per map so
+    // wires can resolve endpoints by label alone (ruling R7).
     const idByLabelSlug = new Map<string, string>();
+    const mapLabelSlugs = new Map<string, string>();
     let commentCount = 0;
-    for (const nodeAst of scopeAst.nodes) {
-      const labelSlug = nodeAst.kind === 'comment'
-        ? `note-${(commentCount += 1)}-${slugify(nodeAst.label).slice(0, 24)}`
-        : slugify(nodeAst.label);
-      if (idByLabelSlug.has(labelSlug)) {
-        errors.push({
-          message: `duplicate node "${nodeAst.label}" in scope "${scopeAst.label}"`,
-          hint: 'node names must be unique within a scope',
-        });
-        continue;
-      }
-      const nodeId = oldIdBySlug.get(labelSlug) ?? `${scopeId}--${labelSlug}`;
-      idByLabelSlug.set(labelSlug, nodeId);
 
-      const interfaceIds: string[] = [];
-      for (const interfaceAst of nodeAst.interfaces) {
-        let interfaceId = `${nodeId}--if-${slugify(interfaceAst.name)}`;
-        while (interfaces[interfaceId]) interfaceId += '-x';
-        interfaces[interfaceId] = {
-          id: interfaceId, ownerId: nodeId,
-          name: interfaceAst.name, accepts: interfaceAst.accepts, returns: interfaceAst.returns,
-        };
-        interfaceIds.push(interfaceId);
-      }
-      const typeIds: string[] = [];
-      for (const typeAst of nodeAst.types) {
-        let typeId = `${nodeId}--type-${slugify(typeAst.name)}`;
-        while (types[typeId]) typeId += '-x';
-        types[typeId] = { id: typeId, name: typeAst.name, fields: typeAst.fields };
-        typeIds.push(typeId);
-      }
-
-      const rowIds = new Set(nodeAst.rows.map((row) => row.id));
-      for (const row of nodeAst.rows) {
-        if (row.parentRowId && !rowIds.has(row.parentRowId)) {
-          warnings.push(`row "${row.id}" names missing parent "${row.parentRowId}" — rendered top-level`);
+    const compileNodes = (nodeAsts: NodeAst[], parentId: string): void => {
+      for (const nodeAst of nodeAsts) {
+        const isComment = nodeAst.kind === 'comment';
+        const labelSlug = isComment
+          ? `note-${(commentCount += 1)}-${slugify(nodeAst.label).slice(0, 24)}`
+          : slugify(nodeAst.label);
+        if (!isComment && mapLabelSlugs.has(labelSlug)) {
+          errors.push({
+            message: `duplicate label "${nodeAst.label}" in map "${scopeAst.label}"`,
+            hint: 'labels must be unique within a map — wires resolve endpoints by label',
+          });
+          continue;
         }
+        if (!isComment) mapLabelSlugs.set(labelSlug, nodeAst.label);
+        const nodeId = oldIdBySlug.get(labelSlug) ?? `${parentId}--${labelSlug}`;
+        idByLabelSlug.set(labelSlug, nodeId);
+
+        const interfaceIds: string[] = [];
+        for (const interfaceAst of nodeAst.interfaces) {
+          let interfaceId = `${nodeId}--if-${slugify(interfaceAst.name)}`;
+          while (interfaces[interfaceId]) interfaceId += '-x';
+          interfaces[interfaceId] = {
+            id: interfaceId, ownerId: nodeId,
+            name: interfaceAst.name, accepts: interfaceAst.accepts, returns: interfaceAst.returns,
+          };
+          interfaceIds.push(interfaceId);
+        }
+        const typeIds: string[] = [];
+        for (const typeAst of nodeAst.types) {
+          let typeId = `${nodeId}--type-${slugify(typeAst.name)}`;
+          while (types[typeId]) typeId += '-x';
+          types[typeId] = { id: typeId, name: typeAst.name, fields: typeAst.fields };
+          typeIds.push(typeId);
+        }
+
+        const rowIds = new Set(nodeAst.rows.map((row) => row.id));
+        for (const row of nodeAst.rows) {
+          if (row.parentRowId && !rowIds.has(row.parentRowId)) {
+            warnings.push(`row "${row.id}" names missing parent "${row.parentRowId}" — rendered top-level`);
+          }
+        }
+        nodes[nodeId] = {
+          id: nodeId,
+          kind: nodeAst.kind,
+          label: nodeAst.label,
+          ...(nodeAst.description ? { description: nodeAst.description } : {}),
+          position: { ...PLACEHOLDER_POSITION },
+          size: { ...PLACEHOLDER_SIZE },
+          parentId,
+          interfaceIds,
+          typeIds,
+          ...(nodeAst.rows.length > 0 ? { rows: nodeAst.rows } : {}),
+        };
       }
-      nodes[nodeId] = {
-        id: nodeId,
-        kind: nodeAst.kind,
-        label: nodeAst.label,
-        ...(nodeAst.description ? { description: nodeAst.description } : {}),
-        position: { ...PLACEHOLDER_POSITION },
-        size: { ...PLACEHOLDER_SIZE },
-        parentId: scopeId,
-        interfaceIds,
-        typeIds,
-        ...(nodeAst.rows.length > 0 ? { rows: nodeAst.rows } : {}),
-      };
-    }
+    };
+
+    const compileZones = (zoneAsts: ZoneAst[], parentId: string): void => {
+      for (const zoneAst of zoneAsts) {
+        const labelSlug = slugify(zoneAst.label);
+        if (mapLabelSlugs.has(labelSlug)) {
+          errors.push({
+            message: `duplicate label "${zoneAst.label}" in map "${scopeAst.label}"`,
+            hint: 'labels must be unique within a map — wires resolve endpoints by label',
+          });
+          continue;
+        }
+        mapLabelSlugs.set(labelSlug, zoneAst.label);
+        const zoneId = oldIdBySlug.get(labelSlug) ?? `${parentId}--${labelSlug}`;
+        idByLabelSlug.set(labelSlug, zoneId);
+        nodes[zoneId] = {
+          id: zoneId,
+          kind: 'scope',
+          label: zoneAst.label,
+          ...(zoneAst.description ? { description: zoneAst.description } : {}),
+          position: { ...PLACEHOLDER_POSITION },
+          size: { ...PLACEHOLDER_SIZE },
+          parentId,
+          interfaceIds: [],
+          typeIds: [],
+        };
+        compileNodes(zoneAst.nodes, zoneId);
+        compileZones(zoneAst.zones, zoneId);
+      }
+    };
+
+    compileNodes(scopeAst.nodes, scopeId);
+    compileZones(scopeAst.zones, scopeId);
 
     // Wires internal to the replaced scope are regenerated from the DSL; wires from
     // other scopes survive when their endpoint id was reused, otherwise they drop.

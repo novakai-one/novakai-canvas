@@ -74,19 +74,25 @@ function objectModelScope(stores: MissionStores): string[] {
   const taskLinks = missions.reduce((sum, mission) => sum + refs(mission, 'task', 'task_').length, 0)
     + stores.tasks.reduce((sum, task) => sum + refs(task, 'mission', 'mission_').length, 0);
 
-  const box = (label: string, description: string | undefined, typeLine: string): string[] => [
-    `  module ${q(label)}${description ? ` ${q(description)}` : ''}`,
-    `    ${typeLine}`,
+  const box = (indent: string, label: string, description: string | undefined, typeLine: string): string[] => [
+    `${indent}module ${q(label)}${description ? ` ${q(description)}` : ''}`,
+    `${indent}  ${typeLine}`,
   ];
+  const store = (label: string, description: string | undefined, typeLine: string): string[] =>
+    box('    ', label, description, typeLine);
   return [
     `scope ${q(OBJECT_MODEL)} ${q('Every box is a real data root; every wire is a link type')}`,
-    ...box('objective (okrs.jsonl)', 'KRs are flat blocks that ref back to their objective', 'type Objective { id, title, horizon }'),
-    ...box('project (projects.jsonl)', undefined, 'type Project { id, title, status, path }'),
-    ...box('mission (missions.jsonl)', `optional, not enforced: outcome ${count('outcome')}/${total}, stage ${count('stage')}/${total}, team ${teamCount}/${total}`, 'type Mission { id, title, status, owner, refs }'),
-    ...box('task (tasks.jsonl)', undefined, 'type Task { id, title, status, refs }'),
-    ...box('agent (agents.json)', undefined, 'type Agent { agentId, title, provider, status }'),
-    ...box('journal (messages.jsonl)', 'agent-to-agent mail', 'type Message { from, to, body, createdAt }'),
-    `  object ${q('Mission Room')} ${q('Read-only composition; joins the roots; never writes')}`,
+    `  zone ${q('Stores')} ${q('The real data roots')}`,
+    ...store('objective (okrs.jsonl)', 'KRs are flat blocks that ref back to their objective', 'type Objective { id, title, horizon }'),
+    ...store('project (projects.jsonl)', undefined, 'type Project { id, title, status, path }'),
+    ...store('mission (missions.jsonl)', `optional, not enforced: outcome ${count('outcome')}/${total}, stage ${count('stage')}/${total}, team ${teamCount}/${total}`, 'type Mission { id, title, status, owner, refs }'),
+    ...store('task (tasks.jsonl)', undefined, 'type Task { id, title, status, refs }'),
+    ...store('agent (agents.json)', undefined, 'type Agent { agentId, title, provider, status }'),
+    ...store('journal (messages.jsonl)', 'agent-to-agent mail', 'type Message { from, to, body, createdAt }'),
+    '  end',
+    `  zone ${q('Read layer')} ${q('Joins the roots; never writes')}`,
+    `    object ${q('Mission Room')} ${q('Read-only composition; joins the roots; never writes')}`,
+    '  end',
     `  wire ${q('mission (missions.jsonl)')} -> ${q('project (projects.jsonl)')} : typed ref (${projectRefs}x) [references]`,
     `  wire ${q('mission (missions.jsonl)')} -> ${q('objective (okrs.jsonl)')} : typed ref (${objectiveRefs}x) [references]`,
     `  wire ${q('mission (missions.jsonl)')} -> ${q('task (tasks.jsonl)')} : typed refs, sparse (${taskLinks}x) [references]`,
@@ -101,21 +107,22 @@ function objectModelScope(stores: MissionStores): string[] {
 
 // ---------------------------------------------------------------- diagram 2
 
-function rowLine(id: string, kind: string, status?: string, parent?: string, badges?: string[], label?: string): string {
-  return `    row ${id} ${kind}${status ? ` ${status}` : ''}${parent ? ` parent=${parent}` : ''}`
-    + `${badges && badges.length > 0 ? ` badges=${badges.join(',')}` : ''}${label ? ` label ${q(label)}` : ''}`;
+/** Row facts survive as descriptions (ruling R9): status plus outcome/team badges. */
+function missionDescription(mission: StoreBlock): string {
+  return `status: ${mission.status ?? 'absent'}`
+    + ` | outcome: ${mission.outcome ? 'present' : 'absent'}`
+    + ` | team: ${teamEntries(mission).length > 0 ? 'present' : 'absent'}`;
+}
+
+function taskDescription(task: StoreBlock): string {
+  return `status: ${task.status ?? 'absent'}`;
 }
 
 function dataTreeScope(stores: MissionStores): string[] {
   const lines = [
     `scope ${q(DATA_TREE)} ${q('What is actually in the stores — hierarchy of live blocks')}`,
-    `  tree ${q('Store hierarchy')}`,
   ];
-  const missionIdsInTree = new Set<string>();
-  const missionBadges = (mission: StoreBlock): string[] => [
-    ...(mission.outcome ? ['outcome'] : []),
-    ...(teamEntries(mission).length > 0 ? ['team'] : []),
-  ];
+  const wires: string[] = [];
   const tasksByMission = new Map<string, StoreBlock[]>();
   const orphanTasks: StoreBlock[] = [];
   for (const task of stores.tasks) {
@@ -128,29 +135,38 @@ function dataTreeScope(stores: MissionStores): string[] {
       orphanTasks.push(task);
     }
   }
-  const emitMission = (mission: StoreBlock, parent: string): void => {
-    missionIdsInTree.add(mission.id);
-    lines.push(rowLine(mission.id, 'mission', mission.status, parent, missionBadges(mission)));
+  const emitMission = (mission: StoreBlock, parentLabel: string, indent: string): void => {
+    lines.push(`${indent}zone ${q(mission.id)} ${q(missionDescription(mission))}`);
+    wires.push(`  wire ${q(parentLabel)} -> ${q(mission.id)} : contains [owns]`);
     for (const task of tasksByMission.get(mission.id) ?? []) {
-      lines.push(rowLine(task.id, 'task', task.status, mission.id));
+      lines.push(`${indent}  module ${q(task.id)} ${q(taskDescription(task))}`);
+      wires.push(`  wire ${q(mission.id)} -> ${q(task.id)} : contains [owns]`);
     }
+    lines.push(`${indent}end`);
   };
   for (const project of stores.projects) {
-    lines.push(rowLine(project.id, 'project', project.status));
+    lines.push(`  zone ${q(project.id)} ${q(`${project.title ?? project.id} | status: ${project.status ?? 'absent'}`)}`);
     for (const mission of stores.missions) {
-      if (refs(mission, 'project', 'proj_')[0] === project.id) emitMission(mission, project.id);
+      if (refs(mission, 'project', 'proj_')[0] === project.id) emitMission(mission, project.id, '    ');
     }
+    lines.push('  end');
   }
-  const orphanMissions = stores.missions.filter((mission) => !missionIdsInTree.has(mission.id));
+  const orphanMissions = stores.missions.filter(
+    (mission) => !stores.projects.some((project) => refs(mission, 'project', 'proj_')[0] === project.id),
+  );
   if (orphanMissions.length > 0) {
-    lines.push(rowLine('no-project', 'bucket', undefined, undefined, [], '(no project)'));
-    for (const mission of orphanMissions) emitMission(mission, 'no-project');
+    lines.push(`  zone ${q('Standalone — no project')} ${q('Missions with no project ref')}`);
+    for (const mission of orphanMissions) emitMission(mission, 'Standalone — no project', '    ');
+    lines.push('  end');
   }
   if (orphanTasks.length > 0) {
-    lines.push(rowLine('no-mission', 'bucket', undefined, undefined, [],
-      `(no mission) ${orphanTasks.length} task${orphanTasks.length === 1 ? '' : 's'}`));
+    lines.push(`  zone ${q('Standalone — no mission')} ${q(`${orphanTasks.length} task${orphanTasks.length === 1 ? '' : 's'} with no mission ref`)}`);
+    for (const task of orphanTasks) {
+      lines.push(`    module ${q(task.id)} ${q(taskDescription(task))}`);
+    }
+    lines.push('  end');
   }
-  return lines;
+  return [...lines, ...wires];
 }
 
 // ---------------------------------------------------------------- diagram 3
@@ -220,39 +236,81 @@ function agentMatch(mission: StoreBlock, title: string): 'hard' | 'soft' | 'none
 
 function rightNowScope(stores: MissionStores): string[] {
   const { missions, running, exited, mailCounts } = rightNowSelection(stores);
+  const allAgents = [...running, ...exited];
+  // Canonical container: first matching mission by sorted mission id (ruling R8);
+  // other matches stay cross-zone wires, unmatched agents go Standalone.
+  const sortedMissions = [...missions].sort((a, b) => a.id.localeCompare(b.id));
+  const canonicalMission = new Map<string, StoreBlock>();
+  for (const { label, agent } of allAgents) {
+    const match = sortedMissions.find((mission) => agentMatch(mission, agent.title as string) !== 'none');
+    if (match) canonicalMission.set(label, match);
+  }
+  const projectOf = (mission: StoreBlock): string | undefined => refs(mission, 'project', 'proj_')[0];
+  const projectIds = [...new Set(sortedMissions.map(projectOf).filter((id): id is string => id !== undefined))].sort();
+  const orphanMissions = sortedMissions.filter((mission) => projectOf(mission) === undefined
+    || !stores.projects.some((project) => project.id === projectOf(mission)));
+
   const lines = [`scope ${q(RIGHT_NOW)} ${q('Registry truth: who is linked to what, right now')}`];
-  for (const mission of missions) {
-    lines.push(`  module ${q(mission.id)} ${q(`status: in-progress | owner: ${mission.owner ?? 'absent'} | outcome: ${mission.outcome ? 'present' : 'absent'}`)}`);
+  const wires: string[] = [];
+  const agentLine = ({ label, agent }: RightNowAgent, indent: string): string =>
+    `${indent}runtime ${q(label)} ${q(`provider: ${agent.provider ?? '?'} | status: ${agent.status === 'running' ? 'running' : 'exited'}`)}`;
+  const missionZone = (mission: StoreBlock, indent: string): void => {
+    lines.push(`${indent}zone ${q(mission.id)} ${q(`status: in-progress | owner: ${mission.owner ?? 'absent'} | outcome: ${mission.outcome ? 'present' : 'absent'}`)}`);
+    for (const entry of allAgents) {
+      if (canonicalMission.get(entry.label) === mission) {
+        lines.push(agentLine(entry, `${indent}  `));
+        wires.push(`  wire ${q(mission.id)} -> ${q(entry.label)} : contains [owns]`);
+      }
+    }
+    lines.push(`${indent}end`);
+  };
+  for (const projectId of projectIds) {
+    const project = stores.projects.find((candidate) => candidate.id === projectId);
+    if (!project) continue;
+    const projectMissions = sortedMissions.filter((mission) => projectOf(mission) === projectId);
+    if (projectMissions.length === 0) continue;
+    lines.push(`  zone ${q(projectId)} ${q(`${project.title ?? projectId} | status: ${project.status ?? 'absent'}`)}`);
+    for (const mission of projectMissions) {
+      wires.push(`  wire ${q(projectId)} -> ${q(mission.id)} : contains [owns]`);
+      missionZone(mission, '    ');
+    }
+    lines.push('  end');
   }
-  for (const { label, agent } of running) {
-    lines.push(`  runtime ${q(label)} ${q(`provider: ${agent.provider ?? '?'} | status: running`)}`);
+  if (orphanMissions.length > 0) {
+    lines.push(`  zone ${q('Standalone — no project')} ${q('In-progress missions with no project ref')}`);
+    for (const mission of orphanMissions) missionZone(mission, '    ');
+    lines.push('  end');
   }
-  for (const { label, agent } of exited) {
-    lines.push(`  runtime ${q(label)} ${q(`provider: ${agent.provider ?? '?'} | status: exited`)}`);
+  const unmatched = allAgents.filter((entry) => !canonicalMission.has(entry.label));
+  if (unmatched.length > 0) {
+    lines.push(`  zone ${q('Standalone — no mission link')} ${q('Agents linked to no in-progress mission')}`);
+    for (const entry of unmatched) lines.push(agentLine(entry, '    '));
+    lines.push('  end');
   }
+
   for (const mission of missions) {
     for (const { label, agent } of running) {
       const match = agentMatch(mission, agent.title as string);
-      if (match === 'hard') lines.push(`  wire ${q(mission.id)} -> ${q(label)} : typed ref [references]`);
-      else if (match === 'soft') lines.push(`  wire ${q(mission.id)} -> ${q(label)} : name match only (owner is a string) [mentions]`);
-      else lines.push(`  wire ${q(mission.id)} -> ${q(label)} : no link at all [missing]`);
+      if (match === 'hard') wires.push(`  wire ${q(mission.id)} -> ${q(label)} : typed ref [references]`);
+      else if (match === 'soft') wires.push(`  wire ${q(mission.id)} -> ${q(label)} : name match only (owner is a string) [mentions]`);
+      else wires.push(`  wire ${q(mission.id)} -> ${q(label)} : no link at all [missing]`);
     }
     // Exited agents are present only via mail; a name match still earns its edge.
     for (const { label, agent } of exited) {
       const match = agentMatch(mission, agent.title as string);
-      if (match === 'hard') lines.push(`  wire ${q(mission.id)} -> ${q(label)} : typed ref [references]`);
-      else if (match === 'soft') lines.push(`  wire ${q(mission.id)} -> ${q(label)} : name match only (owner is a string) [mentions]`);
+      if (match === 'hard') wires.push(`  wire ${q(mission.id)} -> ${q(label)} : typed ref [references]`);
+      else if (match === 'soft') wires.push(`  wire ${q(mission.id)} -> ${q(label)} : name match only (owner is a string) [mentions]`);
     }
   }
-  const bySlug = new Map([...running, ...exited].map((entry) => [slug(entry.agent.title as string), entry.label]));
+  const bySlug = new Map(allAgents.map((entry) => [slug(entry.agent.title as string), entry.label]));
   for (const [key, count] of [...mailCounts.entries()].sort(([a], [b]) => a.localeCompare(b))) {
     const [a, b] = key.split('|');
     const labelA = bySlug.get(a);
     const labelB = bySlug.get(b);
     if (!labelA || !labelB) continue;
-    lines.push(`  wire ${q(labelA)} -> ${q(labelB)} : mail thread (${count}x) [mentions]`);
+    wires.push(`  wire ${q(labelA)} -> ${q(labelB)} : mail thread (${count}x) [mentions]`);
   }
-  return lines;
+  return [...lines, ...wires];
 }
 
 /** Three scopes, ready for `./canvas apply`. */

@@ -123,4 +123,111 @@ describe('layoutScopes', () => {
     const relaid = layoutScopes(again.doc, again.touchedScopeIds);
     expect(relaid.nodes['browser-sessions'].position).toEqual(once.nodes['browser-sessions'].position);
   });
+
+  it('flat container: query-only wires still drive dagre rank (status quo)', () => {
+    const { scopes, errors } = parseDsl(
+      'scope Flat\n  module A\n  module B\n  wire A -> B : read() -> Rows [queries]\n',
+    );
+    expect(errors).toEqual([]);
+    const result = compile(baseDoc(), scopes);
+    const laid = layoutScopes(result.doc, result.touchedScopeIds);
+    expect(laid.nodes['flat--a'].position.y).toBeLessThan(laid.nodes['flat--b'].position.y);
+  });
+
+  it('zoned container: owns wires rank parents above children, non-owns stay rank-free', () => {
+    const { scopes, errors } = parseDsl(
+      'scope Zoned\n'
+      + '  zone "Parent"\n    module "p1"\n  end\n'
+      + '  zone "Child"\n    module "c1"\n  end\n'
+      + '  module "Loose"\n'
+      + '  wire "Parent" -> "Child" : contains [owns]\n'
+      + '  wire "Child" -> "Parent" : reads [queries]\n'
+      + '  wire "Loose" -> "Parent" : mentions [mentions]\n',
+    );
+    expect(errors).toEqual([]);
+    const result = compile(baseDoc(), scopes);
+    const laid = layoutScopes(result.doc, result.touchedScopeIds);
+    const parent = laid.nodes['zoned--parent'];
+    const child = laid.nodes['zoned--child'];
+    expect(parent.position.y).toBeLessThan(child.position.y);
+    // every grid child sits inside the container, no overlaps
+    const scope = laid.nodes.zoned;
+    const childIds = ['zoned--parent', 'zoned--child', 'zoned--loose'];
+    for (const a of childIds) {
+      const ra = rect(laid, a);
+      expect(ra.x).toBeGreaterThanOrEqual(0);
+      expect(ra.y).toBeGreaterThanOrEqual(0);
+      expect(ra.x + ra.width).toBeLessThanOrEqual(scope.size.width);
+      expect(ra.y + ra.height).toBeLessThanOrEqual(scope.size.height);
+      for (const b of childIds) {
+        if (a < b) expect(intersects(ra, rect(laid, b)), `${a} vs ${b}`).toBe(false);
+      }
+    }
+  });
+
+  it('zoned container with no owns wires still packs without overlap (R5 fixture)', () => {
+    const { scopes, errors } = parseDsl(
+      'scope "No Owns"\n'
+      + '  zone "One"\n    module "a"\n  end\n'
+      + '  zone "Two"\n    module "b"\n  end\n'
+      + '  zone "Three"\n    module "c"\n  end\n'
+      + '  wire "a" -> "b" : q [queries]\n',
+    );
+    expect(errors).toEqual([]);
+    const result = compile(baseDoc(), scopes);
+    const laid = layoutScopes(result.doc, result.touchedScopeIds);
+    const scope = laid.nodes['no-owns'];
+    const zoneIds = ['no-owns--one', 'no-owns--two', 'no-owns--three'];
+    for (const a of zoneIds) {
+      const ra = rect(laid, a);
+      expect(ra.x + ra.width).toBeLessThanOrEqual(scope.size.width);
+      expect(ra.y + ra.height).toBeLessThanOrEqual(scope.size.height);
+      for (const b of zoneIds) {
+        if (a < b) expect(intersects(ra, rect(laid, b)), `${a} vs ${b}`).toBe(false);
+      }
+    }
+  });
+
+  it('nested zones size bottom-up so deep children stay inside every ancestor', () => {
+    const { scopes, errors } = parseDsl(
+      'scope Deep\n'
+      + '  zone "Outer"\n'
+      + '    zone "Inner"\n'
+      + '      module "leaf one"\n'
+      + '      module "leaf two"\n'
+      + '    end\n'
+      + '    module "sibling"\n'
+      + '  end\n',
+    );
+    expect(errors).toEqual([]);
+    const result = compile(baseDoc(), scopes);
+    const laid = layoutScopes(result.doc, result.touchedScopeIds);
+    const outer = laid.nodes['deep--outer'];
+    const inner = laid.nodes['deep--outer--inner'];
+    const leaf = laid.nodes['deep--outer--inner--leaf-one'];
+    // inner contains its leaves
+    expect(inner.size.width).toBeGreaterThanOrEqual(leaf.position.x + leaf.size.width);
+    expect(inner.size.height).toBeGreaterThanOrEqual(leaf.position.y + leaf.size.height);
+    // outer contains inner and sibling
+    expect(outer.size.width).toBeGreaterThanOrEqual(inner.position.x + inner.size.width);
+    expect(outer.size.height).toBeGreaterThanOrEqual(inner.position.y + inner.size.height);
+    const sibling = laid.nodes['deep--outer--sibling'];
+    expect(outer.size.height).toBeGreaterThanOrEqual(sibling.position.y + sibling.size.height);
+    expect(intersects(rect(laid, 'deep--outer--inner'), rect(laid, 'deep--outer--sibling'))).toBe(false);
+  });
+
+  it('grid layout is deterministic and keeps a bounded aspect ratio', () => {
+    const zones = Array.from({ length: 8 }, (_, index) =>
+      `  zone "Z${index}"\n    module "m${index}"\n  end\n`).join('');
+    const { scopes, errors } = parseDsl(`scope Wide\n${zones}`);
+    expect(errors).toEqual([]);
+    const result = compile(baseDoc(), scopes);
+    const first = layoutScopes(result.doc, result.touchedScopeIds);
+    const second = layoutScopes(result.doc, result.touchedScopeIds);
+    expect(second).toEqual(first);
+    const scope = first.nodes.wide;
+    // 8 zones must wrap before the width runs away; aspect stays bounded
+    expect(scope.size.width).toBeLessThanOrEqual(2000 + 320 + 40);
+    expect(scope.size.height).toBeGreaterThan(160);
+  });
 });
