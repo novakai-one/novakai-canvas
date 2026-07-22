@@ -11,7 +11,7 @@ export const architectureDocumentSchema = z.object({
   revision: z.number().int().nonnegative(),
   nodes: z.record(z.string(), z.object({
     id: z.string().min(1),
-    kind: z.enum(['scope', 'module', 'object', 'runtime', 'resource', 'comment']),
+    kind: z.enum(['scope', 'module', 'object', 'runtime', 'resource', 'comment', 'tree']),
     label: z.string(),
     description: z.string().optional(),
     position,
@@ -19,6 +19,14 @@ export const architectureDocumentSchema = z.object({
     parentId: z.string().optional(),
     interfaceIds: z.array(z.string()),
     typeIds: z.array(z.string()),
+    rows: z.array(z.object({
+      id: z.string().min(1),
+      kind: z.enum(['project', 'mission', 'task', 'bucket']),
+      status: z.string().optional(),
+      parentRowId: z.string().optional(),
+      badges: z.array(z.string()),
+      label: z.string().optional(),
+    })).optional(),
   })),
   interfaces: z.record(z.string(), z.object({
     id: z.string().min(1), ownerId: z.string().min(1), name: z.string(),
@@ -29,16 +37,24 @@ export const architectureDocumentSchema = z.object({
   })),
   wires: z.record(z.string(), z.object({
     id: z.string().min(1), source: z.string().min(1), target: z.string().min(1), label: z.string(),
-    kind: z.enum(['owns', 'references', 'assigns', 'queries', 'executes']), routing: z.literal('elbow'),
+    kind: z.enum(['owns', 'references', 'assigns', 'queries', 'executes', 'mentions', 'missing']),
+    routing: z.literal('elbow'),
   })),
 });
 
 /** Runtime validator for presentation preferences. */
 export const canvasPreferencesSchema = z.object({
   schemaVersion: z.literal(1),
-  appearance: z.object({ density: z.enum(['compact', 'comfortable']), radius: z.number().min(0).max(16) }),
+  appearance: z.object({
+    density: z.enum(['compact', 'comfortable']),
+    radius: z.number().min(0).max(16),
+    // Defaults keep preference files written before theming valid.
+    theme: z.enum(['dark', 'light']).default('dark'),
+    accent: z.enum(['gold', 'sage', 'slate']).default('gold'),
+  }),
   canvas: z.object({
     showGrid: z.boolean(), snapToGrid: z.boolean(), gridSize: z.number().min(4).max(32), showControls: z.boolean(),
+    showLegend: z.boolean().default(true),
   }),
   nodes: z.object({
     showKinds: z.boolean(), showDescriptions: z.boolean(),

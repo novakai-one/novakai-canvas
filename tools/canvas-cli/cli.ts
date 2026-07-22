@@ -38,10 +38,13 @@ Layout is automatic: never write coordinates, never edit the JSON by hand.
     resource "sessions.json"
     wire "browse CLI" -> "Session broker" : acquire(AgentId) -> SessionHandle [queries]
 
-  node kinds    module | object | runtime | resource   (note = free-text comment)
+  node kinds    module | object | runtime | resource | tree   (note = free-text comment)
   methods       name(TypeA, TypeB) -> TypeC            under a node; bare type names
   types         type Name { fieldA, fieldB }           under a node
-  wires         wire A -> B : <the actual call> [kind] kind: owns|references|assigns|queries|executes
+  rows          row <id> <kind> [status] [parent=<id>] [badges=a,b] [label "text"]
+                under a tree node; kind: project|mission|task|bucket
+  wires         wire A -> B : <the actual call> [kind]
+                kind: owns|references|assigns|queries|executes|mentions|missing
   names         quote multi-word names: "browse CLI"; single tokens can go bare
 `;
 

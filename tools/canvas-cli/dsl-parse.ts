@@ -3,25 +3,35 @@
 export interface ParseError { line: number; message: string; hint: string }
 export interface InterfaceAst { name: string; accepts: string[]; returns: string[] }
 export interface TypeAst { name: string; fields: string[] }
+export interface TreeRowAst {
+  id: string;
+  kind: 'project' | 'mission' | 'task' | 'bucket';
+  status?: string;
+  parentRowId?: string;
+  badges: string[];
+  label?: string;
+}
 export interface NodeAst {
-  kind: 'module' | 'object' | 'runtime' | 'resource' | 'comment';
+  kind: 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree';
   label: string;
   description?: string;
   interfaces: InterfaceAst[];
   types: TypeAst[];
+  rows: TreeRowAst[];
 }
 export interface WireAst {
   source: string;
   target: string;
   contract: string;
-  kind: 'owns' | 'references' | 'assigns' | 'queries' | 'executes';
+  kind: 'owns' | 'references' | 'assigns' | 'queries' | 'executes' | 'mentions' | 'missing';
   line: number;
 }
 export interface ScopeAst { label: string; description?: string; nodes: NodeAst[]; wires: WireAst[] }
 
-const NODE_KEYWORDS = new Set(['module', 'object', 'runtime', 'resource']);
-const WIRE_KINDS = new Set(['owns', 'references', 'assigns', 'queries', 'executes']);
-const STATEMENTS = 'scope, module, object, runtime, resource, note, type, wire';
+const NODE_KEYWORDS = new Set(['module', 'object', 'runtime', 'resource', 'tree']);
+const TREE_ROW_KINDS = new Set(['project', 'mission', 'task', 'bucket']);
+const WIRE_KINDS = new Set(['owns', 'references', 'assigns', 'queries', 'executes', 'mentions', 'missing']);
+const STATEMENTS = 'scope, module, object, runtime, resource, tree, note, row, type, wire';
 
 /** Splits a line into tokens, treating double-quoted spans as single tokens. */
 function tokenize(line: string): { tokens: string[]; error?: string } {
@@ -130,6 +140,46 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
       continue;
     }
 
+    if (line.startsWith('row ') || line === 'row') {
+      if (!node || node.kind !== 'tree') {
+        fail('row outside a tree node', 'declare a tree first: tree "Store hierarchy"');
+        continue;
+      }
+      const { tokens, error } = tokenize(line);
+      if (error) {
+        fail(`${error} in "${line}"`, 'close the double quote');
+        continue;
+      }
+      if (tokens.length < 3) {
+        fail('row needs an id and a kind', 'row mission_x mission [status] [parent=<id>] [badges=a,b] [label "text"]');
+        continue;
+      }
+      if (!TREE_ROW_KINDS.has(tokens[2])) {
+        fail(`unknown row kind "${tokens[2]}"`, `use one of: ${[...TREE_ROW_KINDS].join(', ')}`);
+        continue;
+      }
+      const row: TreeRowAst = { id: tokens[1], kind: tokens[2] as TreeRowAst['kind'], badges: [] };
+      let invalid = false;
+      for (let index = 3; index < tokens.length; index += 1) {
+        const token = tokens[index];
+        if (token === 'label' && tokens[index + 1] !== undefined) {
+          row.label = tokens[(index += 1)];
+        } else if (token.startsWith('parent=')) {
+          row.parentRowId = token.slice('parent='.length);
+        } else if (token.startsWith('badges=')) {
+          row.badges = token.slice('badges='.length).split(',').filter((badge) => badge.length > 0);
+        } else if (row.status === undefined && !token.includes('=')) {
+          row.status = token;
+        } else {
+          fail(`unexpected "${token}" in row`, 'row <id> <kind> [status] [parent=<id>] [badges=a,b] [label "text"]');
+          invalid = true;
+          break;
+        }
+      }
+      if (!invalid) node.rows.push(row);
+      continue;
+    }
+
     if (line.startsWith('type ') && parseTypeLine(line)) {
       if (!node) {
         fail('type outside a node', 'declare a module/object first, then indent its types under it');
@@ -176,7 +226,7 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         fail('note needs text', 'note "Why this shape is load-bearing."');
         continue;
       }
-      scope.nodes.push({ kind: 'comment', label: tokens[1], interfaces: [], types: [] });
+      scope.nodes.push({ kind: 'comment', label: tokens[1], interfaces: [], types: [], rows: [] });
       node = null;
       continue;
     }
@@ -196,6 +246,7 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         description: tokens[2],
         interfaces: [],
         types: [],
+        rows: [],
       };
       scope.nodes.push(node);
       continue;

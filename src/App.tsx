@@ -9,6 +9,7 @@ import {
 import { CanvasSurface } from './presentation/components/canvas-surface';
 import { Inspector } from './presentation/components/inspector';
 import { useCanvasEngine } from './presentation/use-canvas-engine';
+import { wireToneCssVariables } from './presentation/wire-styles';
 import { DEFAULT_CANVAS_MODE, type CanvasMode } from './presentation/view-mode';
 
 interface AppProps {
@@ -58,7 +59,9 @@ export default function App({ engine, initialPreferences, preferencesRepository 
     const serialized = JSON.stringify(preferences);
     if (serialized === savedPreferences.current) return;
     const timer = window.setTimeout(() => {
-      void preferencesRepository.save(preferences).then(() => { savedPreferences.current = serialized; });
+      void preferencesRepository.save(preferences)
+        .then(() => { savedPreferences.current = serialized; })
+        .catch(() => setSaveStatus('Preferences not saved'));
     }, preferences.files.saveDelay);
     return () => window.clearTimeout(timer);
   }, [preferences, preferencesRepository]);
@@ -78,8 +81,17 @@ export default function App({ engine, initialPreferences, preferencesRepository 
     setSelection(null);
   }, []);
 
+  const shellStyle = {
+    '--node-radius': `${preferences.appearance.radius}px`,
+    ...wireToneCssVariables(preferences.appearance.theme),
+  } as CSSProperties;
   return (
-    <div className={`app-shell mode-${mode}`} style={{ '--node-radius': `${preferences.appearance.radius}px` } as CSSProperties}>
+    <div
+      className={`app-shell mode-${mode}`}
+      data-accent={preferences.appearance.accent}
+      data-theme={preferences.appearance.theme}
+      style={shellStyle}
+    >
       <ReactFlowProvider>
         <CanvasSurface
           activeMapId={activeMapId}

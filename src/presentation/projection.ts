@@ -1,7 +1,8 @@
 import { MarkerType, type Edge, type Node } from '@xyflow/react';
 import type {
-  ArchitectureDocument, CanvasNode, CanvasPreferences, InterfaceObject, Selection, TypeObject,
+  ArchitectureDocument, CanvasNode, CanvasPreferences, InterfaceObject, Selection, TypeObject, WireKind,
 } from '../domain/model';
+import { wireKindColor } from './wire-styles';
 
 /** Presentation data required by architecture nodes. */
 export interface ArchitectureNodeData extends Record<string, unknown> {
@@ -17,6 +18,7 @@ export interface ArchitectureNodeData extends Record<string, unknown> {
 /** Presentation data required by elbow wires. */
 export interface ArchitectureEdgeData extends Record<string, unknown> {
   label: string;
+  kind: WireKind;
   preferences: CanvasPreferences;
   editable: boolean;
   select: () => void;
@@ -25,6 +27,7 @@ export interface ArchitectureEdgeData extends Record<string, unknown> {
 function selectedOwner(document: ArchitectureDocument, selection: Selection): string | null {
   if (!selection) return null;
   if (selection.kind === 'node') return selection.id;
+  if (selection.kind === 'tree-row') return selection.nodeId;
   if (selection.kind === 'interface') return document.interfaces[selection.id]?.ownerId ?? null;
   if (selection.kind === 'type') {
     return Object.values(document.nodes).find((node) => node.typeIds.includes(selection.id))?.id ?? null;
@@ -58,7 +61,9 @@ export function projectNodes(
   const connected = connectedIds(document, selection);
   return Object.values(document.nodes).map((node) => ({
     id: node.id,
-    type: node.kind === 'comment' ? 'comment' : node.kind === 'scope' ? 'scope' : 'architecture',
+    type: node.kind === 'comment' ? 'comment'
+      : node.kind === 'scope' ? 'scope'
+        : node.kind === 'tree' ? 'tree' : 'architecture',
     position: node.position,
     parentId: node.parentId,
     extent: node.parentId ? 'parent' : undefined,
@@ -101,9 +106,20 @@ export function projectEdges(
     type: 'elbow',
     selected: selection?.kind === 'wire' && selection.id === wire.id,
     zIndex: selection?.kind === 'wire' && selection.id === wire.id ? 1000 : 0,
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#8b8b94', width: 14, height: 14 },
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+      color: wireKindColor(wire.kind, preferences.appearance.theme),
+      width: 14,
+      height: 14,
+    },
     className: preferences.wires.dimUnrelated && selection
       && (!connected.has(wire.source) || !connected.has(wire.target)) ? 'is-dimmed' : '',
-    data: { label: wire.label, preferences, editable, select: () => select({ kind: 'wire', id: wire.id }) },
+    data: {
+      label: wire.label,
+      kind: wire.kind,
+      preferences,
+      editable,
+      select: () => select({ kind: 'wire', id: wire.id }),
+    },
   }));
 }

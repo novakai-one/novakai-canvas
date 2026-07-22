@@ -15,15 +15,106 @@ button, input, textarea, select { font: inherit; }
 button { color: inherit; }
 
 button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
-  outline: 1px solid #a8864f;
+  outline: 1px solid var(--accent, #a8864f);
   outline-offset: 2px;
 }
 
+/* Theme tokens. Wire/tree tone variables arrive as inline style from
+   wire-styles.ts; everything else themes here. Dark is the identity default. */
 .app-shell {
   display: flex;
   width: 100%;
   height: 100%;
-  background: #11110f;
+  color: var(--ink);
+  background: var(--bg);
+
+  --bg: #11110f;
+  --bg-read: #0d0d0f;
+  --panel: #151411;
+  --card: #191816;
+  --card-2: #1f1d19;
+  --card-3: #1b1916;
+  --hover: #24211c;
+  --overlay: rgba(24, 23, 20, 0.94);
+  --scope-fill: rgba(20, 19, 16, 0.52);
+  --border: #302e29;
+  --border-soft: #2b2925;
+  --ink: #e8e3d8;
+  --ink-strong: #eee8dc;
+  --ink-soft: #d3ccc0;
+  --muted: #9b968c;
+  --faint: #777269;
+  --panel-read: #1b1b1e;
+  --card-read: #252529;
+  --border-read: #2f2f34;
+  --ink-read: #ececee;
+  --muted-read: #a2a2aa;
+  --faint-read: #8b8b94;
+  --accent: #a8864f;
+  --accent-strong: #d0a14b;
+  --accent-bright: #e2ba6e;
+  --accent-dim: #8e754a;
+  --danger: #5a433a;
+  --danger-strong: #c8a798;
+}
+
+.app-shell[data-accent='sage'] {
+  --accent: #6f9c7d;
+  --accent-strong: #78a886;
+  --accent-bright: #93bfa1;
+  --accent-dim: #5c8168;
+}
+
+.app-shell[data-accent='slate'] {
+  --accent: #75879a;
+  --accent-strong: #7d8fa0;
+  --accent-bright: #9db0c2;
+  --accent-dim: #64758a;
+}
+
+.app-shell[data-theme='light'] {
+  --bg: #f2efe7;
+  --bg-read: #f7f5ef;
+  --panel: #eae6db;
+  --card: #fbf9f4;
+  --card-2: #f1ede2;
+  --card-3: #f3efe5;
+  --hover: #e7e1d2;
+  --overlay: rgba(250, 248, 243, 0.94);
+  --scope-fill: rgba(255, 255, 255, 0.5);
+  --border: #c9c2b1;
+  --border-soft: #dcd6c7;
+  --ink: #2e2a23;
+  --ink-strong: #1f1c16;
+  --ink-soft: #4a4438;
+  --muted: #6b6558;
+  --faint: #8b8478;
+  --panel-read: #f0ede5;
+  --card-read: #ffffff;
+  --border-read: #d8d3c8;
+  --ink-read: #22211e;
+  --muted-read: #5f5d57;
+  --faint-read: #7e7b73;
+  --accent: #8a6b36;
+  --accent-strong: #9c7a40;
+  --accent-bright: #75592c;
+  --accent-dim: #9c8258;
+  --danger: #b08578;
+  --danger-strong: #8c4f3d;
+}
+
+.app-shell[data-theme='light'][data-accent='sage'] {
+  --accent: #4f7d60;
+  --accent-strong: #5c8f6e;
+  --accent-bright: #3f6b50;
+  --accent-dim: #6f9c7d;
+}
+
+.app-shell[data-theme='light'][data-accent='slate'] {
+  --accent: #5c7186;
+  --accent-strong: #68809a;
+  --accent-bright: #4a5d70;
+  --accent-dim: #7d8fa0;
 }
 
 .is-dimmed { opacity: 0.22; }

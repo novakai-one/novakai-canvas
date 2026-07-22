@@ -2,6 +2,8 @@
 
 import type { ArchitectureDocument } from '../../src/domain/model';
 import { ARCHITECTURE_FLOW } from '../../src/domain/flow.ts';
+import { orderedTreeRows, treeRowDepth, treeRowText } from '../../src/domain/tree.ts';
+import { TREE_TONE_COLORS, wireKindColor, wireKindDashArray } from '../../src/presentation/wire-styles.ts';
 
 const COLORS = {
   page: '#0d0d0f',
@@ -81,8 +83,10 @@ export function renderScopeSvg(doc: ArchitectureDocument, scopeId: string): stri
     const endX = to.x + target.size.width / 2;
     const endY = to.y;
     const midY = startY + Math.max(16, (endY - startY) / 2);
+    const stroke = wireKindColor(wire.kind, 'dark');
+    const dash = wireKindDashArray(wire.kind);
     parts.push(
-      `<polyline points="${startX},${startY} ${startX},${midY} ${endX},${midY} ${endX},${endY}" fill="none" stroke="${COLORS.faint}" stroke-width="1.4" marker-end="url(#arrow)"/>`,
+      `<polyline points="${startX},${startY} ${startX},${midY} ${endX},${midY} ${endX},${endY}" fill="none" stroke="${stroke}"${dash ? ` stroke-dasharray="${dash}"` : ''} stroke-width="1.4" marker-end="url(#arrow)"/>`,
       `<text x="${(startX + endX) / 2}" y="${midY - 6}" fill="${COLORS.muted}" font-family="${FONT}" font-size="11" text-anchor="middle">${esc(wire.label)}</text>`,
     );
   }
@@ -94,6 +98,25 @@ export function renderScopeSvg(doc: ArchitectureDocument, scopeId: string): stri
       parts.push(`<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="none" stroke="${COLORS.border}" stroke-dasharray="4 4" rx="6"/>`);
       wrap(node.label, 34).forEach((line, index) => {
         parts.push(`<text x="${x + 14}" y="${y + 26 + index * 21}" fill="${COLORS.muted}" font-family="Georgia, serif" font-size="13" font-style="italic">${esc(line)}</text>`);
+      });
+      continue;
+    }
+    if (node.kind === 'tree') {
+      parts.push(
+        `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="${COLORS.card}" stroke="${COLORS.border}" rx="6"/>`,
+        `<text x="${x + 14}" y="${y + 24}" fill="${COLORS.ink}" font-family="${FONT}" font-size="13" font-weight="600">${esc(node.label)}</text>`,
+      );
+      const rows = node.rows ?? [];
+      orderedTreeRows(rows).forEach((row, index) => {
+        const tone = row.kind === 'project' ? 'project'
+          : row.kind === 'bucket' ? 'muted'
+            : row.status === 'done' ? 'done'
+              : row.status === 'in-progress' ? 'active'
+                : row.status === 'todo' || row.status === 'retired' ? 'muted' : 'tombstone';
+        const fill = TREE_TONE_COLORS[tone].dark;
+        const rowX = x + 16 + treeRowDepth(rows, row) * 20;
+        const weight = row.kind === 'project' || row.kind === 'bucket' ? ' font-weight="600"' : '';
+        parts.push(`<text x="${rowX}" y="${y + 48 + index * 24}" fill="${fill}" font-family="SFMono-Regular, Consolas, monospace" font-size="11"${weight}>${esc(treeRowText(row))}</text>`);
       });
       continue;
     }
