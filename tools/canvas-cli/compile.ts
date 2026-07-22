@@ -135,6 +135,12 @@ export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): Compil
         typeIds.push(typeId);
       }
 
+      const rowIds = new Set(nodeAst.rows.map((row) => row.id));
+      for (const row of nodeAst.rows) {
+        if (row.parentRowId && !rowIds.has(row.parentRowId)) {
+          warnings.push(`row "${row.id}" names missing parent "${row.parentRowId}" — rendered top-level`);
+        }
+      }
       nodes[nodeId] = {
         id: nodeId,
         kind: nodeAst.kind,
@@ -145,6 +151,7 @@ export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): Compil
         parentId: scopeId,
         interfaceIds,
         typeIds,
+        ...(nodeAst.rows.length > 0 ? { rows: nodeAst.rows } : {}),
       };
     }
 

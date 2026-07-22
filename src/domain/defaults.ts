@@ -15,8 +15,8 @@ export const emptyArchitecture: ArchitectureDocument = {
 /** Safe visual defaults used when loading fails. */
 export const defaultPreferences: CanvasPreferences = {
   schemaVersion: 1,
-  appearance: { density: 'comfortable', radius: 6 },
-  canvas: { showGrid: false, snapToGrid: true, gridSize: 8, showControls: true },
+  appearance: { density: 'comfortable', radius: 6, theme: 'dark', accent: 'gold' },
+  canvas: { showGrid: false, snapToGrid: true, gridSize: 8, showControls: true, showLegend: true },
   nodes: {
     showKinds: true,
     showDescriptions: false,

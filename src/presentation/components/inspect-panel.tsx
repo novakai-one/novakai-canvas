@@ -1,5 +1,8 @@
-import type { ArchitectureDocument, CanvasCommand, Selection } from '../../domain/model';
+import type { ArchitectureDocument, CanvasCommand, Selection, WireKind } from '../../domain/model';
+import { WIRE_KIND_STYLES } from '../wire-styles';
 import { Field } from './field';
+
+const WIRE_KINDS = Object.keys(WIRE_KIND_STYLES) as WireKind[];
 
 interface InspectPanelProps {
   document: ArchitectureDocument;
@@ -71,10 +74,34 @@ function WireInspection({ props, id }: { props: InspectPanelProps; id: string })
     <div className="inspection">
       <div className="object-identity"><span>wire · {wire.kind}</span><strong>{wire.label || 'Unlabelled'}</strong></div>
       <Field label="Label"><input value={wire.label} onChange={(event) => props.execute({ kind: 'wire.update', id, patch: { label: event.target.value } })} /></Field>
+      <Field label="Kind">
+        <select value={wire.kind} onChange={(event) => props.execute({ kind: 'wire.update', id, patch: { kind: event.target.value as WireKind } })}>
+          {WIRE_KINDS.map((kind) => <option key={kind} value={kind}>{kind}</option>)}
+        </select>
+      </Field>
       <Field label="From"><output>{props.document.nodes[wire.source]?.label ?? wire.source}</output></Field>
       <Field label="To"><output>{props.document.nodes[wire.target]?.label ?? wire.target}</output></Field>
       <Field label="Routing"><output>Elbow</output></Field>
       <button className="danger-action" onClick={() => { props.execute({ kind: 'wire.remove', id }); props.clearSelection(); }} type="button">Delete wire</button>
+    </div>
+  );
+}
+
+function TreeRowInspection({ props, nodeId, rowId }: { props: InspectPanelProps; nodeId: string; rowId: string }) {
+  const node = props.document.nodes[nodeId];
+  const row = node?.rows?.find((item) => item.id === rowId);
+  if (!node || !row) return <EmptySelection />;
+  const parent = row.parentRowId ? node.rows?.find((item) => item.id === row.parentRowId) : undefined;
+  return (
+    <div className="inspection">
+      <div className="object-identity"><span>{row.kind}</span><strong>{row.label ?? row.id}</strong></div>
+      <Field label="Status"><output>{row.status ?? '—'}</output></Field>
+      <Field label="Parent"><output>{parent ? parent.id : 'top level'}</output></Field>
+      <Field label="In tree"><output>{node.label}</output></Field>
+      {row.badges.length > 0 && (
+        <div className="token-list">{row.badges.map((badge) => <span key={badge}>◆ {badge}</span>)}</div>
+      )}
+      <pre className="object-json">{JSON.stringify(row, null, 2)}</pre>
     </div>
   );
 }
@@ -86,5 +113,6 @@ export function InspectPanel(props: InspectPanelProps) {
   if (selection.kind === 'node') return <NodeInspection props={props} id={selection.id} />;
   if (selection.kind === 'interface') return <InterfaceInspection props={props} id={selection.id} />;
   if (selection.kind === 'type') return <TypeInspection props={props} id={selection.id} />;
+  if (selection.kind === 'tree-row') return <TreeRowInspection props={props} nodeId={selection.nodeId} rowId={selection.rowId} />;
   return <WireInspection props={props} id={selection.id} />;
 }

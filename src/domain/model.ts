@@ -1,16 +1,34 @@
 /** Stable, serialisable vocabulary shared across every module. */
 
-type NodeKind = 'scope' | 'module' | 'object' | 'runtime' | 'resource' | 'comment';
-type WireKind = 'owns' | 'references' | 'assigns' | 'queries' | 'executes';
+type NodeKind = 'scope' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree';
+
+/** Relationship vocabulary carried by wires; renderers style each kind distinctly. */
+export type WireKind =
+  | 'owns' | 'references' | 'assigns' | 'queries' | 'executes'
+  | 'mentions' | 'missing';
 
 /** Available inspector surfaces. */
 export type InspectorTab = 'inspect' | 'preferences' | 'json';
 
 /** Compact preference categories. */
-export type PreferenceSection = 'canvas' | 'nodes' | 'wires' | 'panel' | 'files';
+export type PreferenceSection = 'theme' | 'canvas' | 'nodes' | 'wires' | 'panel' | 'files';
 
 interface Position { x: number; y: number; }
 interface Size { width: number; height: number; }
+
+/** Row kinds a tree node can carry. */
+type TreeRowKind = 'project' | 'mission' | 'task' | 'bucket';
+
+/** One semantic row inside a tree node — identity only; looks derive in presentation. */
+export interface TreeRow {
+  id: string;
+  kind: TreeRowKind;
+  status?: string;
+  parentRowId?: string;
+  badges: string[];
+  /** Display override for aggregate rows (e.g. "(no mission) 15 tasks"). */
+  label?: string;
+}
 
 /** One positioned, selectable architecture object. */
 export interface CanvasNode {
@@ -23,6 +41,8 @@ export interface CanvasNode {
   parentId?: string;
   interfaceIds: string[];
   typeIds: string[];
+  /** Semantic hierarchy rows; present only on kind "tree". */
+  rows?: TreeRow[];
 }
 
 /** One selectable interface exposed by a node. */
@@ -62,11 +82,26 @@ export interface ArchitectureDocument {
   wires: Record<string, CanvasWire>;
 }
 
+/** App colour theme choices. */
+export type CanvasTheme = 'dark' | 'light';
+type CanvasAccent = 'gold' | 'sage' | 'slate';
+
 /** User-controlled visual and interaction preferences. */
 export interface CanvasPreferences {
   schemaVersion: 1;
-  appearance: { density: 'compact' | 'comfortable'; radius: number };
-  canvas: { showGrid: boolean; snapToGrid: boolean; gridSize: number; showControls: boolean };
+  appearance: {
+    density: 'compact' | 'comfortable';
+    radius: number;
+    theme: CanvasTheme;
+    accent: CanvasAccent;
+  };
+  canvas: {
+    showGrid: boolean;
+    snapToGrid: boolean;
+    gridSize: number;
+    showControls: boolean;
+    showLegend: boolean;
+  };
   nodes: {
     showKinds: boolean;
     showDescriptions: boolean;
@@ -89,6 +124,7 @@ export type Selection =
   | { kind: 'interface'; id: string }
   | { kind: 'type'; id: string }
   | { kind: 'wire'; id: string }
+  | { kind: 'tree-row'; nodeId: string; rowId: string }
   | null;
 
 /** Complete set of supported domain intentions. */

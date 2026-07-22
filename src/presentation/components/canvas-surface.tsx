@@ -11,9 +11,11 @@ import type { CanvasMode } from '../view-mode';
 import { ArchitectureNode } from '../nodes/architecture-node';
 import { CommentNode } from '../nodes/comment-node';
 import { ScopeNode } from '../nodes/scope-node';
+import { TreeNode } from '../nodes/tree-node';
 import { ElbowEdge } from '../edges/elbow-edge';
+import { Legend } from './legend';
 
-const nodeTypes = { architecture: ArchitectureNode, comment: CommentNode, scope: ScopeNode };
+const nodeTypes = { architecture: ArchitectureNode, comment: CommentNode, scope: ScopeNode, tree: TreeNode };
 const edgeTypes = { elbow: ElbowEdge };
 
 interface CanvasSurfaceProps {
@@ -115,7 +117,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
     <main className={`canvas-surface is-${props.mode}`}>
       <ReactFlow
         key={`${props.mode}:${props.activeMapId ?? 'empty'}:${fitRevision}`}
-        colorMode="dark" deleteKeyCode={editable ? ['Backspace', 'Delete'] : null} edgeTypes={edgeTypes} edges={edges}
+        colorMode={props.preferences.appearance.theme} deleteKeyCode={editable ? ['Backspace', 'Delete'] : null} edgeTypes={edgeTypes} edges={edges}
         elementsSelectable fitView fitViewOptions={{ padding: editable ? 0.12 : 0.05, maxZoom: 1 }} minZoom={0.35}
         nodeTypes={nodeTypes} nodes={nodes} nodesConnectable={editable} nodesDraggable={editable}
         onConnect={(connection) => { if (!editable) return; const id = connect(props.engine, connection); if (id) props.setSelection({ kind: 'wire', id }); }}
@@ -125,9 +127,10 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         selectionOnDrag={editable} snapGrid={[props.preferences.canvas.gridSize, props.preferences.canvas.gridSize]}
         snapToGrid={editable && props.preferences.canvas.snapToGrid}
       >
-        {props.preferences.canvas.showGrid && editable && <Background color="#34312b" gap={props.preferences.canvas.gridSize * 2} variant={BackgroundVariant.Dots} />}
+        {props.preferences.canvas.showGrid && editable && <Background color={props.preferences.appearance.theme === 'light' ? '#d9d4c8' : '#34312b'} gap={props.preferences.canvas.gridSize * 2} variant={BackgroundVariant.Dots} />}
         {props.preferences.canvas.showControls && <Controls position="bottom-left" showInteractive={false} />}
       </ReactFlow>
+      <Legend document={props.document} preferences={props.preferences} />
       <CanvasToolbar layout={layout} props={props} />
     </main>
   );

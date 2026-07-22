@@ -2,13 +2,16 @@
   "schemaVersion": 1,
   "appearance": {
     "density": "comfortable",
-    "radius": 6
+    "radius": 6,
+    "theme": "dark",
+    "accent": "gold"
   },
   "canvas": {
     "showGrid": false,
     "snapToGrid": true,
     "gridSize": 12,
-    "showControls": true
+    "showControls": true,
+    "showLegend": true
   },
   "nodes": {
     "showKinds": true,

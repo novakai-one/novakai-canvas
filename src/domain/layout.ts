@@ -2,7 +2,8 @@
 
 import dagre from '@dagrejs/dagre';
 import { ARCHITECTURE_FLOW } from './flow.ts';
-import type { ArchitectureDocument } from './model.ts';
+import type { ArchitectureDocument, TreeRow } from './model.ts';
+import { orderedTreeRows, treeRowDepth, treeRowText } from './tree.ts';
 
 const PADDING_TOP = 56;
 const PADDING_SIDE = 40;
@@ -37,9 +38,21 @@ function estimateCommentSize(label: string): Size {
   return { width: 280, height: 48 + 21 * Math.ceil(label.length / 34) };
 }
 
+function estimateTreeSize(rows: TreeRow[]): Size {
+  const ordered = orderedTreeRows(rows);
+  const longest = Math.max(0, ...ordered.map(
+    (row) => treeRowDepth(rows, row) * 20 + treeRowText(row).length * 7.6,
+  ));
+  return {
+    width: Math.min(640, Math.max(280, Math.round(36 + longest))),
+    height: 56 + ordered.length * 24 + 14,
+  };
+}
+
 function contentSize(document: ArchitectureDocument, nodeId: string): Size {
   const node = document.nodes[nodeId];
   if (node.kind === 'comment') return estimateCommentSize(node.label);
+  if (node.kind === 'tree') return estimateTreeSize(node.rows ?? []);
   const interfaceLines = node.interfaceIds.map((id) => {
     const item = document.interfaces[id];
     return `${item.name}(${item.accepts.join(', ')}) -> ${item.returns.join(', ')}`;

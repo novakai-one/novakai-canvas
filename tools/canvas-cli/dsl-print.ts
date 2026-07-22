@@ -44,6 +44,12 @@ export function printScope(doc: ArchitectureDocument, scopeId: string): string {
       const type = doc.types[typeId];
       lines.push(`    type ${type.name} { ${type.fields.join(', ')} }`);
     }
+    for (const row of node.rows ?? []) {
+      lines.push(`    row ${row.id} ${row.kind}${row.status ? ` ${row.status}` : ''}`
+        + `${row.parentRowId ? ` parent=${row.parentRowId}` : ''}`
+        + `${row.badges.length > 0 ? ` badges=${row.badges.join(',')}` : ''}`
+        + `${row.label ? ` label ${quote(row.label)}` : ''}`);
+    }
   }
 
   for (const wire of wiresOf(doc, scopeId)) {
