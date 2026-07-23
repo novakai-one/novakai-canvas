@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "novakai-project-model",
   "name": "Novakai project model",
-  "revision": 2368,
+  "revision": 2370,
   "nodes": {
     "project-scope": {
       "id": "project-scope",
@@ -3132,8 +3132,8 @@
         "y": 15913
       },
       "size": {
-        "width": 1960,
-        "height": 1684
+        "width": 2232,
+        "height": 1748
       },
       "interfaceIds": [],
       "typeIds": []
@@ -4250,115 +4250,115 @@
         "y": 56
       },
       "size": {
-        "width": 1824,
-        "height": 1032
+        "width": 2121,
+        "height": 1080
       },
       "parentId": "command-mission-model",
       "interfaceIds": [],
       "typeIds": []
     },
-    "command-mission-model--durable-hierarchy--project-projects-jsonl": {
-      "id": "command-mission-model--durable-hierarchy--project-projects-jsonl",
+    "command-mission-model--durable-hierarchy--project": {
+      "id": "command-mission-model--durable-hierarchy--project",
       "kind": "object",
-      "label": "project (projects.jsonl)",
-      "description": "required: title, status, path | status: free-form",
+      "label": "Project",
+      "description": "projects.jsonl — required: title, status, path | status: free-form",
       "position": {
-        "x": 844,
-        "y": 468
+        "x": 970,
+        "y": 484
       },
       "size": {
-        "width": 377,
+        "width": 420,
+        "height": 144
+      },
+      "parentId": "command-mission-model--durable-hierarchy",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--project--type-project"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--objective": {
+      "id": "command-mission-model--durable-hierarchy--objective",
+      "kind": "object",
+      "label": "Objective",
+      "description": "okrs.jsonl — required: title, horizon | status: free-form",
+      "position": {
+        "x": 1216,
+        "y": 706
+      },
+      "size": {
+        "width": 420,
         "height": 128
       },
       "parentId": "command-mission-model--durable-hierarchy",
       "interfaceIds": [],
       "typeIds": [
-        "command-mission-model--durable-hierarchy--project-projects-jsonl--type-project"
+        "command-mission-model--durable-hierarchy--objective--type-objective"
       ]
     },
-    "command-mission-model--durable-hierarchy--objective-okrs-jsonl": {
-      "id": "command-mission-model--durable-hierarchy--objective-okrs-jsonl",
+    "command-mission-model--durable-hierarchy--kr": {
+      "id": "command-mission-model--durable-hierarchy--kr",
       "kind": "object",
-      "label": "objective (okrs.jsonl)",
-      "description": "required: title, horizon | status: free-form",
+      "label": "KR",
+      "description": "okrs.jsonl — required: objective, body | status: free-form",
       "position": {
-        "x": 1081,
-        "y": 666
+        "x": 1430,
+        "y": 492
       },
       "size": {
-        "width": 341,
+        "width": 420,
         "height": 128
       },
       "parentId": "command-mission-model--durable-hierarchy",
       "interfaceIds": [],
       "typeIds": [
-        "command-mission-model--durable-hierarchy--objective-okrs-jsonl--type-objective"
+        "command-mission-model--durable-hierarchy--kr--type-kr"
       ]
     },
-    "command-mission-model--durable-hierarchy--kr-okrs-jsonl": {
-      "id": "command-mission-model--durable-hierarchy--kr-okrs-jsonl",
+    "command-mission-model--durable-hierarchy--mission": {
+      "id": "command-mission-model--durable-hierarchy--mission",
       "kind": "object",
-      "label": "kr (okrs.jsonl)",
-      "description": "required: objective, body | status: free-form",
+      "label": "Mission",
+      "description": "missions.jsonl — required: title, owner | status: free-form",
       "position": {
-        "x": 1261,
-        "y": 468
+        "x": 500,
+        "y": 698
       },
       "size": {
-        "width": 348,
+        "width": 420,
+        "height": 144
+      },
+      "parentId": "command-mission-model--durable-hierarchy",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--mission--type-mission"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--team": {
+      "id": "command-mission-model--durable-hierarchy--team",
+      "kind": "object",
+      "label": "Team",
+      "description": "teams.jsonl — required: name | status: free-form",
+      "position": {
+        "x": 1711,
+        "y": 912
+      },
+      "size": {
+        "width": 370,
         "height": 128
       },
       "parentId": "command-mission-model--durable-hierarchy",
       "interfaceIds": [],
       "typeIds": [
-        "command-mission-model--durable-hierarchy--kr-okrs-jsonl--type-kr"
+        "command-mission-model--durable-hierarchy--team--type-team"
       ]
     },
-    "command-mission-model--durable-hierarchy--mission-missions-jsonl": {
-      "id": "command-mission-model--durable-hierarchy--mission-missions-jsonl",
+    "command-mission-model--durable-hierarchy--agent": {
+      "id": "command-mission-model--durable-hierarchy--agent",
       "kind": "object",
-      "label": "mission (missions.jsonl)",
-      "description": "required: title, owner | status: free-form",
+      "label": "Agent",
+      "description": "agents.jsonl — required: name, provider | status: spawning|live|failed|retired",
       "position": {
-        "x": 458,
-        "y": 666
-      },
-      "size": {
-        "width": 326,
-        "height": 128
-      },
-      "parentId": "command-mission-model--durable-hierarchy",
-      "interfaceIds": [],
-      "typeIds": [
-        "command-mission-model--durable-hierarchy--mission-missions-jsonl--type-mission"
-      ]
-    },
-    "command-mission-model--durable-hierarchy--team-teams-jsonl": {
-      "id": "command-mission-model--durable-hierarchy--team-teams-jsonl",
-      "kind": "object",
-      "label": "team (teams.jsonl)",
-      "description": "required: name | status: free-form",
-      "position": {
-        "x": 1515,
-        "y": 864
-      },
-      "size": {
-        "width": 269,
-        "height": 128
-      },
-      "parentId": "command-mission-model--durable-hierarchy",
-      "interfaceIds": [],
-      "typeIds": [
-        "command-mission-model--durable-hierarchy--team-teams-jsonl--type-team"
-      ]
-    },
-    "command-mission-model--durable-hierarchy--agent-agents-jsonl": {
-      "id": "command-mission-model--durable-hierarchy--agent-agents-jsonl",
-      "kind": "object",
-      "label": "agent (agents.jsonl)",
-      "description": "required: name, provider | status: spawning|live|failed|retired",
-      "position": {
-        "x": 621,
+        "x": 730,
         "y": 56
       },
       "size": {
@@ -4368,55 +4368,55 @@
       "parentId": "command-mission-model--durable-hierarchy",
       "interfaceIds": [],
       "typeIds": [
-        "command-mission-model--durable-hierarchy--agent-agents-jsonl--type-agent"
+        "command-mission-model--durable-hierarchy--agent--type-agent"
       ]
     },
-    "command-mission-model--durable-hierarchy--task-tasks-jsonl": {
-      "id": "command-mission-model--durable-hierarchy--task-tasks-jsonl",
+    "command-mission-model--durable-hierarchy--task": {
+      "id": "command-mission-model--durable-hierarchy--task",
       "kind": "object",
-      "label": "task (tasks.jsonl)",
-      "description": "required: title | status: todo|doing|done|blocked",
+      "label": "Task",
+      "description": "tasks.jsonl — required: title | status: todo|doing|done|blocked",
       "position": {
-        "x": 407,
+        "x": 483,
         "y": 270
       },
       "size": {
-        "width": 377,
-        "height": 128
+        "width": 420,
+        "height": 144
       },
       "parentId": "command-mission-model--durable-hierarchy",
       "interfaceIds": [],
       "typeIds": [
-        "command-mission-model--durable-hierarchy--task-tasks-jsonl--type-task"
+        "command-mission-model--durable-hierarchy--task--type-task"
       ]
     },
-    "command-mission-model--durable-hierarchy--artifact-artifacts-jsonl": {
-      "id": "command-mission-model--durable-hierarchy--artifact-artifacts-jsonl",
+    "command-mission-model--durable-hierarchy--artifact": {
+      "id": "command-mission-model--durable-hierarchy--artifact",
       "kind": "object",
-      "label": "artifact (artifacts.jsonl)",
-      "description": "required: title | status: free-form",
+      "label": "Artifact",
+      "description": "artifacts.jsonl — required: title | status: free-form",
       "position": {
         "x": 500,
-        "y": 468
+        "y": 492
       },
       "size": {
-        "width": 276,
+        "width": 406,
         "height": 128
       },
       "parentId": "command-mission-model--durable-hierarchy",
       "interfaceIds": [],
       "typeIds": [
-        "command-mission-model--durable-hierarchy--artifact-artifacts-jsonl--type-artifact"
+        "command-mission-model--durable-hierarchy--artifact--type-artifact"
       ]
     },
-    "command-mission-model--durable-hierarchy--thread-threads-jsonl": {
-      "id": "command-mission-model--durable-hierarchy--thread-threads-jsonl",
+    "command-mission-model--durable-hierarchy--thread": {
+      "id": "command-mission-model--durable-hierarchy--thread",
       "kind": "object",
-      "label": "thread (threads.jsonl)",
-      "description": "mission-to-messaging link: roomId + mission ref | required: roomId | status: free-form",
+      "label": "Thread",
+      "description": "threads.jsonl — mission-to-messaging link: roomId + mission ref | required: roomId | status: free-form",
       "position": {
         "x": 40,
-        "y": 472
+        "y": 496
       },
       "size": {
         "width": 420,
@@ -4433,96 +4433,96 @@
       "description": "Flat append-only records outside the hierarchy",
       "position": {
         "x": 40,
-        "y": 1158
+        "y": 1206
       },
       "size": {
-        "width": 1710,
-        "height": 200
+        "width": 2152,
+        "height": 216
       },
       "parentId": "command-mission-model",
       "interfaceIds": [],
       "typeIds": []
     },
-    "command-mission-model--journal-stores--decision-decisions-jsonl": {
-      "id": "command-mission-model--journal-stores--decision-decisions-jsonl",
+    "command-mission-model--journal-stores--decision": {
+      "id": "command-mission-model--journal-stores--decision",
       "kind": "object",
-      "label": "decision (decisions.jsonl)",
-      "description": "required: title, body | status: free-form",
+      "label": "Decision",
+      "description": "decisions.jsonl — required: title, body | status: free-form",
       "position": {
         "x": 40,
         "y": 56
       },
       "size": {
-        "width": 319,
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-mission-model--journal-stores",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-mission-model--journal-stores--issue": {
+      "id": "command-mission-model--journal-stores--issue",
+      "kind": "object",
+      "label": "Issue",
+      "description": "issues.jsonl — status: free-form",
+      "position": {
+        "x": 500,
+        "y": 64
+      },
+      "size": {
+        "width": 254,
         "height": 104
       },
       "parentId": "command-mission-model--journal-stores",
       "interfaceIds": [],
       "typeIds": []
     },
-    "command-mission-model--journal-stores--issue-issues-jsonl": {
-      "id": "command-mission-model--journal-stores--issue-issues-jsonl",
+    "command-mission-model--journal-stores--learning": {
+      "id": "command-mission-model--journal-stores--learning",
       "kind": "object",
-      "label": "issue (issues.jsonl)",
-      "description": "status: free-form",
+      "label": "Learning",
+      "description": "learnings.jsonl — required: body | status: free-form",
       "position": {
-        "x": 399,
-        "y": 56
+        "x": 794,
+        "y": 64
       },
       "size": {
-        "width": 200,
+        "width": 398,
         "height": 104
       },
       "parentId": "command-mission-model--journal-stores",
       "interfaceIds": [],
       "typeIds": []
     },
-    "command-mission-model--journal-stores--learning-learnings-jsonl": {
-      "id": "command-mission-model--journal-stores--learning-learnings-jsonl",
+    "command-mission-model--journal-stores--log": {
+      "id": "command-mission-model--journal-stores--log",
       "kind": "object",
-      "label": "learning (learnings.jsonl)",
-      "description": "required: body | status: free-form",
+      "label": "Log",
+      "description": "captains-log.jsonl — required: body | status: free-form",
       "position": {
-        "x": 639,
-        "y": 56
+        "x": 1232,
+        "y": 64
       },
       "size": {
-        "width": 269,
+        "width": 420,
         "height": 104
       },
       "parentId": "command-mission-model--journal-stores",
       "interfaceIds": [],
       "typeIds": []
     },
-    "command-mission-model--journal-stores--log-captains-log-jsonl": {
-      "id": "command-mission-model--journal-stores--log-captains-log-jsonl",
+    "command-mission-model--journal-stores--request": {
+      "id": "command-mission-model--journal-stores--request",
       "kind": "object",
-      "label": "log (captains-log.jsonl)",
-      "description": "required: body | status: free-form",
+      "label": "Request",
+      "description": "requests.jsonl — required: question, options | status: pending|answered",
       "position": {
-        "x": 948,
+        "x": 1692,
         "y": 56
       },
       "size": {
-        "width": 269,
-        "height": 104
-      },
-      "parentId": "command-mission-model--journal-stores",
-      "interfaceIds": [],
-      "typeIds": []
-    },
-    "command-mission-model--journal-stores--request-requests-jsonl": {
-      "id": "command-mission-model--journal-stores--request-requests-jsonl",
-      "kind": "object",
-      "label": "request (requests.jsonl)",
-      "description": "required: question, options | status: pending|answered",
-      "position": {
-        "x": 1257,
-        "y": 56
-      },
-      "size": {
-        "width": 413,
-        "height": 104
+        "width": 420,
+        "height": 120
       },
       "parentId": "command-mission-model--journal-stores",
       "interfaceIds": [],
@@ -4535,7 +4535,7 @@
       "description": "Modules allowed to touch the stores",
       "position": {
         "x": 40,
-        "y": 1428
+        "y": 1492
       },
       "size": {
         "width": 1880,
@@ -5887,8 +5887,8 @@
         "createdAt"
       ]
     },
-    "command-mission-model--durable-hierarchy--project-projects-jsonl--type-project": {
-      "id": "command-mission-model--durable-hierarchy--project-projects-jsonl--type-project",
+    "command-mission-model--durable-hierarchy--project--type-project": {
+      "id": "command-mission-model--durable-hierarchy--project--type-project",
       "name": "project",
       "fields": [
         "title",
@@ -5896,54 +5896,54 @@
         "path"
       ]
     },
-    "command-mission-model--durable-hierarchy--objective-okrs-jsonl--type-objective": {
-      "id": "command-mission-model--durable-hierarchy--objective-okrs-jsonl--type-objective",
+    "command-mission-model--durable-hierarchy--objective--type-objective": {
+      "id": "command-mission-model--durable-hierarchy--objective--type-objective",
       "name": "objective",
       "fields": [
         "title",
         "horizon"
       ]
     },
-    "command-mission-model--durable-hierarchy--kr-okrs-jsonl--type-kr": {
-      "id": "command-mission-model--durable-hierarchy--kr-okrs-jsonl--type-kr",
+    "command-mission-model--durable-hierarchy--kr--type-kr": {
+      "id": "command-mission-model--durable-hierarchy--kr--type-kr",
       "name": "kr",
       "fields": [
         "objective",
         "body"
       ]
     },
-    "command-mission-model--durable-hierarchy--mission-missions-jsonl--type-mission": {
-      "id": "command-mission-model--durable-hierarchy--mission-missions-jsonl--type-mission",
+    "command-mission-model--durable-hierarchy--mission--type-mission": {
+      "id": "command-mission-model--durable-hierarchy--mission--type-mission",
       "name": "mission",
       "fields": [
         "title",
         "owner"
       ]
     },
-    "command-mission-model--durable-hierarchy--team-teams-jsonl--type-team": {
-      "id": "command-mission-model--durable-hierarchy--team-teams-jsonl--type-team",
+    "command-mission-model--durable-hierarchy--team--type-team": {
+      "id": "command-mission-model--durable-hierarchy--team--type-team",
       "name": "team",
       "fields": [
         "name"
       ]
     },
-    "command-mission-model--durable-hierarchy--agent-agents-jsonl--type-agent": {
-      "id": "command-mission-model--durable-hierarchy--agent-agents-jsonl--type-agent",
+    "command-mission-model--durable-hierarchy--agent--type-agent": {
+      "id": "command-mission-model--durable-hierarchy--agent--type-agent",
       "name": "agent",
       "fields": [
         "name",
         "provider"
       ]
     },
-    "command-mission-model--durable-hierarchy--task-tasks-jsonl--type-task": {
-      "id": "command-mission-model--durable-hierarchy--task-tasks-jsonl--type-task",
+    "command-mission-model--durable-hierarchy--task--type-task": {
+      "id": "command-mission-model--durable-hierarchy--task--type-task",
       "name": "task",
       "fields": [
         "title"
       ]
     },
-    "command-mission-model--durable-hierarchy--artifact-artifacts-jsonl--type-artifact": {
-      "id": "command-mission-model--durable-hierarchy--artifact-artifacts-jsonl--type-artifact",
+    "command-mission-model--durable-hierarchy--artifact--type-artifact": {
+      "id": "command-mission-model--durable-hierarchy--artifact--type-artifact",
       "name": "artifact",
       "fields": [
         "title"
@@ -8071,134 +8071,6 @@
       "kind": "queries",
       "routing": "elbow"
     },
-    "command-mission-model--wire-1": {
-      "id": "command-mission-model--wire-1",
-      "source": "command-mission-model--durable-hierarchy--project-projects-jsonl",
-      "target": "command-mission-model--durable-hierarchy--objective-okrs-jsonl",
-      "label": "owns",
-      "kind": "owns",
-      "routing": "elbow"
-    },
-    "command-mission-model--wire-2": {
-      "id": "command-mission-model--wire-2",
-      "source": "command-mission-model--durable-hierarchy--objective-okrs-jsonl",
-      "target": "command-mission-model--durable-hierarchy--kr-okrs-jsonl",
-      "label": "owns",
-      "kind": "owns",
-      "routing": "elbow"
-    },
-    "command-mission-model--wire-3": {
-      "id": "command-mission-model--wire-3",
-      "source": "command-mission-model--durable-hierarchy--kr-okrs-jsonl",
-      "target": "command-mission-model--durable-hierarchy--mission-missions-jsonl",
-      "label": "owns",
-      "kind": "owns",
-      "routing": "elbow"
-    },
-    "command-mission-model--wire-4": {
-      "id": "command-mission-model--wire-4",
-      "source": "command-mission-model--durable-hierarchy--mission-missions-jsonl",
-      "target": "command-mission-model--durable-hierarchy--team-teams-jsonl",
-      "label": "owns",
-      "kind": "owns",
-      "routing": "elbow"
-    },
-    "command-mission-model--wire-5": {
-      "id": "command-mission-model--wire-5",
-      "source": "command-mission-model--durable-hierarchy--team-teams-jsonl",
-      "target": "command-mission-model--durable-hierarchy--agent-agents-jsonl",
-      "label": "owns",
-      "kind": "owns",
-      "routing": "elbow"
-    },
-    "command-mission-model--wire-6": {
-      "id": "command-mission-model--wire-6",
-      "source": "command-mission-model--durable-hierarchy--agent-agents-jsonl",
-      "target": "command-mission-model--durable-hierarchy--task-tasks-jsonl",
-      "label": "owns",
-      "kind": "owns",
-      "routing": "elbow"
-    },
-    "command-mission-model--wire-7": {
-      "id": "command-mission-model--wire-7",
-      "source": "command-mission-model--durable-hierarchy--task-tasks-jsonl",
-      "target": "command-mission-model--durable-hierarchy--artifact-artifacts-jsonl",
-      "label": "owns",
-      "kind": "owns",
-      "routing": "elbow"
-    },
-    "command-mission-model--wire-8": {
-      "id": "command-mission-model--wire-8",
-      "source": "command-mission-model--durable-hierarchy--agent-agents-jsonl",
-      "target": "command-mission-model--durable-hierarchy--mission-missions-jsonl",
-      "label": "typed ref (1..1)",
-      "kind": "references",
-      "routing": "elbow"
-    },
-    "command-mission-model--wire-9": {
-      "id": "command-mission-model--wire-9",
-      "source": "command-mission-model--durable-hierarchy--agent-agents-jsonl",
-      "target": "command-mission-model--durable-hierarchy--team-teams-jsonl",
-      "label": "typed ref (1..1)",
-      "kind": "references",
-      "routing": "elbow"
-    },
-    "command-mission-model--wire-10": {
-      "id": "command-mission-model--wire-10",
-      "source": "command-mission-model--durable-hierarchy--task-tasks-jsonl",
-      "target": "command-mission-model--durable-hierarchy--agent-agents-jsonl",
-      "label": "typed ref (0..1)",
-      "kind": "references",
-      "routing": "elbow"
-    },
-    "command-mission-model--wire-11": {
-      "id": "command-mission-model--wire-11",
-      "source": "command-mission-model--durable-hierarchy--task-tasks-jsonl",
-      "target": "command-mission-model--durable-hierarchy--mission-missions-jsonl",
-      "label": "typed ref (0..1)",
-      "kind": "references",
-      "routing": "elbow"
-    },
-    "command-mission-model--wire-12": {
-      "id": "command-mission-model--wire-12",
-      "source": "command-mission-model--durable-hierarchy--team-teams-jsonl",
-      "target": "command-mission-model--durable-hierarchy--mission-missions-jsonl",
-      "label": "typed ref (1..1)",
-      "kind": "references",
-      "routing": "elbow"
-    },
-    "command-mission-model--wire-13": {
-      "id": "command-mission-model--wire-13",
-      "source": "command-mission-model--durable-hierarchy--thread-threads-jsonl",
-      "target": "command-mission-model--durable-hierarchy--mission-missions-jsonl",
-      "label": "typed ref (1..1)",
-      "kind": "references",
-      "routing": "elbow"
-    },
-    "command-mission-model--wire-14": {
-      "id": "command-mission-model--wire-14",
-      "source": "command-mission-model--durable-hierarchy--kr-okrs-jsonl",
-      "target": "command-mission-model--durable-hierarchy--objective-okrs-jsonl",
-      "label": "objective back-ref (required)",
-      "kind": "references",
-      "routing": "elbow"
-    },
-    "command-mission-model--wire-15": {
-      "id": "command-mission-model--wire-15",
-      "source": "command-mission-model--durable-hierarchy--artifact-artifacts-jsonl",
-      "target": "command-mission-model--durable-hierarchy--mission-missions-jsonl",
-      "label": "anchor ref (at least one)",
-      "kind": "references",
-      "routing": "elbow"
-    },
-    "command-mission-model--wire-16": {
-      "id": "command-mission-model--wire-16",
-      "source": "command-mission-model--durable-hierarchy--artifact-artifacts-jsonl",
-      "target": "command-mission-model--durable-hierarchy--task-tasks-jsonl",
-      "label": "anchor ref (at least one)",
-      "kind": "references",
-      "routing": "elbow"
-    },
     "command-mission-model--wire-17": {
       "id": "command-mission-model--wire-17",
       "source": "command-mission-model--readers-and-writers--object-model-facade",
@@ -8223,10 +8095,138 @@
       "kind": "queries",
       "routing": "elbow"
     },
+    "command-mission-model--wire-1": {
+      "id": "command-mission-model--wire-1",
+      "source": "command-mission-model--durable-hierarchy--project",
+      "target": "command-mission-model--durable-hierarchy--objective",
+      "label": "owns",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-2": {
+      "id": "command-mission-model--wire-2",
+      "source": "command-mission-model--durable-hierarchy--objective",
+      "target": "command-mission-model--durable-hierarchy--kr",
+      "label": "owns",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-3": {
+      "id": "command-mission-model--wire-3",
+      "source": "command-mission-model--durable-hierarchy--kr",
+      "target": "command-mission-model--durable-hierarchy--mission",
+      "label": "owns",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-4": {
+      "id": "command-mission-model--wire-4",
+      "source": "command-mission-model--durable-hierarchy--mission",
+      "target": "command-mission-model--durable-hierarchy--team",
+      "label": "owns",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-5": {
+      "id": "command-mission-model--wire-5",
+      "source": "command-mission-model--durable-hierarchy--team",
+      "target": "command-mission-model--durable-hierarchy--agent",
+      "label": "owns",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-6": {
+      "id": "command-mission-model--wire-6",
+      "source": "command-mission-model--durable-hierarchy--agent",
+      "target": "command-mission-model--durable-hierarchy--task",
+      "label": "owns",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-7": {
+      "id": "command-mission-model--wire-7",
+      "source": "command-mission-model--durable-hierarchy--task",
+      "target": "command-mission-model--durable-hierarchy--artifact",
+      "label": "owns",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-8": {
+      "id": "command-mission-model--wire-8",
+      "source": "command-mission-model--durable-hierarchy--agent",
+      "target": "command-mission-model--durable-hierarchy--mission",
+      "label": "typed ref (1..1)",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-9": {
+      "id": "command-mission-model--wire-9",
+      "source": "command-mission-model--durable-hierarchy--agent",
+      "target": "command-mission-model--durable-hierarchy--team",
+      "label": "typed ref (1..1)",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-10": {
+      "id": "command-mission-model--wire-10",
+      "source": "command-mission-model--durable-hierarchy--task",
+      "target": "command-mission-model--durable-hierarchy--agent",
+      "label": "typed ref (0..1)",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-11": {
+      "id": "command-mission-model--wire-11",
+      "source": "command-mission-model--durable-hierarchy--task",
+      "target": "command-mission-model--durable-hierarchy--mission",
+      "label": "typed ref (0..1)",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-12": {
+      "id": "command-mission-model--wire-12",
+      "source": "command-mission-model--durable-hierarchy--team",
+      "target": "command-mission-model--durable-hierarchy--mission",
+      "label": "typed ref (1..1)",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-13": {
+      "id": "command-mission-model--wire-13",
+      "source": "command-mission-model--durable-hierarchy--thread",
+      "target": "command-mission-model--durable-hierarchy--mission",
+      "label": "typed ref (1..1)",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-14": {
+      "id": "command-mission-model--wire-14",
+      "source": "command-mission-model--durable-hierarchy--kr",
+      "target": "command-mission-model--durable-hierarchy--objective",
+      "label": "objective back-ref (required)",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-15": {
+      "id": "command-mission-model--wire-15",
+      "source": "command-mission-model--durable-hierarchy--artifact",
+      "target": "command-mission-model--durable-hierarchy--mission",
+      "label": "anchor ref (at least one)",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-16": {
+      "id": "command-mission-model--wire-16",
+      "source": "command-mission-model--durable-hierarchy--artifact",
+      "target": "command-mission-model--durable-hierarchy--task",
+      "label": "anchor ref (at least one)",
+      "kind": "references",
+      "routing": "elbow"
+    },
     "command-mission-model--wire-20": {
       "id": "command-mission-model--wire-20",
       "source": "command-mission-model--readers-and-writers--messaging-identity",
-      "target": "command-mission-model--durable-hierarchy--agent-agents-jsonl",
+      "target": "command-mission-model--durable-hierarchy--agent",
       "label": "resolves durable agent id",
       "kind": "queries",
       "routing": "elbow"
@@ -8234,7 +8234,7 @@
     "command-mission-model--wire-21": {
       "id": "command-mission-model--wire-21",
       "source": "command-mission-model--readers-and-writers--messaging-identity",
-      "target": "command-mission-model--durable-hierarchy--thread-threads-jsonl",
+      "target": "command-mission-model--durable-hierarchy--thread",
       "label": "stamps missionId via thread link",
       "kind": "assigns",
       "routing": "elbow"
@@ -8242,7 +8242,7 @@
     "command-mission-model--wire-22": {
       "id": "command-mission-model--wire-22",
       "source": "command-mission-model--readers-and-writers--external-sessions",
-      "target": "command-mission-model--durable-hierarchy--agent-agents-jsonl",
+      "target": "command-mission-model--durable-hierarchy--agent",
       "label": "registers Agent + Presence",
       "kind": "assigns",
       "routing": "elbow"
