@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "novakai-project-model",
   "name": "Novakai project model",
-  "revision": 2366,
+  "revision": 2368,
   "nodes": {
     "project-scope": {
       "id": "project-scope",
@@ -3089,6 +3089,1529 @@
       "parentId": "mission-right-now--standalone-no-mission-link",
       "interfaceIds": [],
       "typeIds": []
+    },
+    "command-overview": {
+      "id": "command-overview",
+      "kind": "scope",
+      "label": "Command Overview",
+      "description": "Novakai Command subdomains: folded import edges vs contract.json — red (missing) wires are drift",
+      "position": {
+        "x": 40,
+        "y": 17677
+      },
+      "size": {
+        "width": 4610,
+        "height": 2768
+      },
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging": {
+      "id": "command-messaging",
+      "kind": "scope",
+      "label": "Command Messaging",
+      "description": "Inside src/backend/messaging and its direct neighbours — docs/agent-messaging.md",
+      "position": {
+        "x": 40,
+        "y": 14079
+      },
+      "size": {
+        "width": 3029,
+        "height": 1754
+      },
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-mission-model": {
+      "id": "command-mission-model",
+      "kind": "scope",
+      "label": "Command Mission Model",
+      "description": "Schema law of .novakai/stores (src/backend/stores/schema.mjs) plus every module that reads or writes it",
+      "position": {
+        "x": 40,
+        "y": 15913
+      },
+      "size": {
+        "width": 1960,
+        "height": 1684
+      },
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend": {
+      "id": "command-overview--backend",
+      "kind": "scope",
+      "label": "Backend",
+      "position": {
+        "x": 40,
+        "y": 56
+      },
+      "size": {
+        "width": 4530,
+        "height": 1182
+      },
+      "parentId": "command-overview",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--agent-orchestration": {
+      "id": "command-overview--backend--agent-orchestration",
+      "kind": "module",
+      "label": "Agent orchestration",
+      "description": "Coordinator + executor: spawns and supervises provider CLI agents",
+      "position": {
+        "x": 3215,
+        "y": 848
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--analytics-engine": {
+      "id": "command-overview--backend--analytics-engine",
+      "kind": "module",
+      "label": "Analytics engine",
+      "description": "Repo/session analytics computation behind the analytics studio",
+      "position": {
+        "x": 40,
+        "y": 262
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--browser-engine": {
+      "id": "command-overview--backend--browser-engine",
+      "kind": "module",
+      "label": "Browser engine",
+      "description": "Isolated per-agent headless Chrome host driven by tools/browse (no src imports either way — reached by CLI, not import)",
+      "position": {
+        "x": 1785,
+        "y": 56
+      },
+      "size": {
+        "width": 420,
+        "height": 136
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--canvas-store": {
+      "id": "command-overview--backend--canvas-store",
+      "kind": "module",
+      "label": "Canvas store",
+      "description": "Architecture-canvas document store + file watch for the canvas studio",
+      "position": {
+        "x": 500,
+        "y": 262
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--config": {
+      "id": "command-overview--backend--config",
+      "kind": "module",
+      "label": "Config",
+      "description": "Runtime configuration manager",
+      "position": {
+        "x": 2218,
+        "y": 1038
+      },
+      "size": {
+        "width": 233,
+        "height": 104
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--design-bridge": {
+      "id": "command-overview--backend--design-bridge",
+      "kind": "module",
+      "label": "Design bridge",
+      "description": "Backend for the design studio",
+      "position": {
+        "x": 960,
+        "y": 270
+      },
+      "size": {
+        "width": 233,
+        "height": 104
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--external-sessions": {
+      "id": "command-overview--backend--external-sessions",
+      "kind": "module",
+      "label": "External sessions",
+      "description": "Registers terminal-spawned sessions into the durable mission graph (Agent + Presence + mailbox)",
+      "position": {
+        "x": 3225,
+        "y": 262
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--file-system-api": {
+      "id": "command-overview--backend--file-system-api",
+      "kind": "module",
+      "label": "File system API",
+      "description": "Workspace file tree access for the frontend",
+      "position": {
+        "x": 1249,
+        "y": 468
+      },
+      "size": {
+        "width": 334,
+        "height": 104
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--messaging-tunnel": {
+      "id": "command-overview--backend--messaging-tunnel",
+      "kind": "module",
+      "label": "Messaging tunnel",
+      "description": "Agent-to-agent DM + #team channel: REST send surface, router, append-only store, PTY delivery — see docs/agent-messaging.md",
+      "position": {
+        "x": 3055,
+        "y": 452
+      },
+      "size": {
+        "width": 420,
+        "height": 136
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--mission-view": {
+      "id": "command-overview--backend--mission-view",
+      "kind": "module",
+      "label": "Mission view",
+      "description": "Mission Room read-only snapshot composition over stores, journal and live presence",
+      "position": {
+        "x": 2745,
+        "y": 262
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--object-model": {
+      "id": "command-overview--backend--object-model",
+      "kind": "module",
+      "label": "Object model",
+      "description": "The ONE write interface for the durable mission graph; callers never touch stores directly",
+      "position": {
+        "x": 2195,
+        "y": 658
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--project-registry": {
+      "id": "command-overview--backend--project-registry",
+      "kind": "module",
+      "label": "Project registry",
+      "description": "Project records and workspace roots",
+      "position": {
+        "x": 1619,
+        "y": 270
+      },
+      "size": {
+        "width": 276,
+        "height": 104
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--provider-adapters": {
+      "id": "command-overview--backend--provider-adapters",
+      "kind": "module",
+      "label": "Provider adapters",
+      "description": "Claude/Codex CLI session adapters",
+      "position": {
+        "x": 3996,
+        "y": 468
+      },
+      "size": {
+        "width": 262,
+        "height": 104
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--ruleset": {
+      "id": "command-overview--backend--ruleset",
+      "kind": "module",
+      "label": "Ruleset",
+      "description": "Agent ruleset storage",
+      "position": {
+        "x": 1935,
+        "y": 270
+      },
+      "size": {
+        "width": 200,
+        "height": 104
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--server-core": {
+      "id": "command-overview--backend--server-core",
+      "kind": "module",
+      "label": "Server core",
+      "description": "Express + ws composition root: builds every hub, injects roots and seams, registers routes",
+      "position": {
+        "x": 2245,
+        "y": 64
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--state-manager": {
+      "id": "command-overview--backend--state-manager",
+      "kind": "module",
+      "label": "State manager",
+      "description": "Persisted backend state",
+      "position": {
+        "x": 3445,
+        "y": 1038
+      },
+      "size": {
+        "width": 200,
+        "height": 104
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--durable-stores": {
+      "id": "command-overview--backend--durable-stores",
+      "kind": "module",
+      "label": "Durable stores",
+      "description": ".novakai/stores engine: schema law, locking, CAS, append-only writer (facade store.mjs)",
+      "position": {
+        "x": 2195,
+        "y": 848
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--terminal-host": {
+      "id": "command-overview--backend--terminal-host",
+      "kind": "module",
+      "label": "Terminal host",
+      "description": "PTY-per-agent TerminalManager: spawns, buffers and addresses live agent terminals",
+      "position": {
+        "x": 3435,
+        "y": 658
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--threads": {
+      "id": "command-overview--backend--threads",
+      "kind": "module",
+      "label": "Threads",
+      "description": "Durable work objectives bound to provider sessions",
+      "position": {
+        "x": 3935,
+        "y": 270
+      },
+      "size": {
+        "width": 384,
+        "height": 104
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--transcript-parser": {
+      "id": "command-overview--backend--transcript-parser",
+      "kind": "module",
+      "label": "Transcript parser",
+      "description": "Provider JSONL transcript parsing",
+      "position": {
+        "x": 4228,
+        "y": 1038
+      },
+      "size": {
+        "width": 262,
+        "height": 104
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--version-control": {
+      "id": "command-overview--backend--version-control",
+      "kind": "module",
+      "label": "Version control",
+      "description": "Git status/diff surface for the files view",
+      "position": {
+        "x": 1253,
+        "y": 270
+      },
+      "size": {
+        "width": 326,
+        "height": 104
+      },
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend": {
+      "id": "command-overview--frontend",
+      "kind": "scope",
+      "label": "Frontend",
+      "position": {
+        "x": 40,
+        "y": 1308
+      },
+      "size": {
+        "width": 3630,
+        "height": 1118
+      },
+      "parentId": "command-overview",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--agents-ui": {
+      "id": "command-overview--frontend--agents-ui",
+      "kind": "module",
+      "label": "Agents UI",
+      "description": "Agent list and session inspection views",
+      "position": {
+        "x": 1823,
+        "y": 56
+      },
+      "size": {
+        "width": 305,
+        "height": 104
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--analytics-studio": {
+      "id": "command-overview--frontend--analytics-studio",
+      "kind": "module",
+      "label": "Analytics studio",
+      "description": "Analytics workspace lens",
+      "position": {
+        "x": 551,
+        "y": 784
+      },
+      "size": {
+        "width": 200,
+        "height": 104
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--board": {
+      "id": "command-overview--frontend--board",
+      "kind": "module",
+      "label": "Board",
+      "description": "Agent board + transcript timeline widgets",
+      "position": {
+        "x": 1588,
+        "y": 230
+      },
+      "size": {
+        "width": 319,
+        "height": 104
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--canvas-studio": {
+      "id": "command-overview--frontend--canvas-studio",
+      "kind": "module",
+      "label": "Canvas studio",
+      "description": "Architecture canvas lens",
+      "position": {
+        "x": 811,
+        "y": 784
+      },
+      "size": {
+        "width": 200,
+        "height": 104
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--debug-panel": {
+      "id": "command-overview--frontend--debug-panel",
+      "kind": "module",
+      "label": "Debug panel",
+      "description": "Build/debug messages panel",
+      "position": {
+        "x": 40,
+        "y": 602
+      },
+      "size": {
+        "width": 211,
+        "height": 104
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--design-studio": {
+      "id": "command-overview--frontend--design-studio",
+      "kind": "module",
+      "label": "Design studio",
+      "description": "Design workspace lens",
+      "position": {
+        "x": 291,
+        "y": 602
+      },
+      "size": {
+        "width": 200,
+        "height": 104
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--details-panel": {
+      "id": "command-overview--frontend--details-panel",
+      "kind": "module",
+      "label": "Details panel",
+      "description": "Selected-item inspector",
+      "position": {
+        "x": 1749,
+        "y": 784
+      },
+      "size": {
+        "width": 200,
+        "height": 104
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--files-view": {
+      "id": "command-overview--frontend--files-view",
+      "kind": "module",
+      "label": "Files view",
+      "description": "Workspace file browser",
+      "position": {
+        "x": 1066,
+        "y": 602
+      },
+      "size": {
+        "width": 200,
+        "height": 104
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--frontend-models": {
+      "id": "command-overview--frontend--frontend-models",
+      "kind": "module",
+      "label": "Frontend models",
+      "description": "src/frontend/lib: socket, chat, tunnel, mission room, attention, canvas models",
+      "position": {
+        "x": 2000,
+        "y": 958
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--ruleset-ui": {
+      "id": "command-overview--frontend--ruleset-ui",
+      "kind": "module",
+      "label": "Ruleset UI",
+      "description": "Ruleset inspector",
+      "position": {
+        "x": 1306,
+        "y": 602
+      },
+      "size": {
+        "width": 200,
+        "height": 104
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--session-bar": {
+      "id": "command-overview--frontend--session-bar",
+      "kind": "module",
+      "label": "Session bar",
+      "description": "Session switcher strip",
+      "position": {
+        "x": 2615,
+        "y": 602
+      },
+      "size": {
+        "width": 200,
+        "height": 104
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--settings": {
+      "id": "command-overview--frontend--settings",
+      "kind": "module",
+      "label": "Settings",
+      "description": "Settings panel",
+      "position": {
+        "x": 3345,
+        "y": 602
+      },
+      "size": {
+        "width": 200,
+        "height": 104
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--app-shell": {
+      "id": "command-overview--frontend--app-shell",
+      "kind": "module",
+      "label": "App shell",
+      "description": "main.tsx + components/index.tsx: mounts every view and owns top-level state",
+      "position": {
+        "x": 1872,
+        "y": 404
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--side-panel": {
+      "id": "command-overview--frontend--side-panel",
+      "kind": "module",
+      "label": "Side panel",
+      "description": "Right-hand side panel chrome",
+      "position": {
+        "x": 1546,
+        "y": 602
+      },
+      "size": {
+        "width": 226,
+        "height": 104
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--studio-chat": {
+      "id": "command-overview--frontend--studio-chat",
+      "kind": "module",
+      "label": "Studio chat",
+      "description": "Studio layout: rail, work head, AI chat panel, tunnel lens",
+      "position": {
+        "x": 2608,
+        "y": 784
+      },
+      "size": {
+        "width": 420,
+        "height": 104
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--subagent-view": {
+      "id": "command-overview--frontend--subagent-view",
+      "kind": "module",
+      "label": "Subagent view",
+      "description": "Subagent timeline + inspector",
+      "position": {
+        "x": 2192,
+        "y": 602
+      },
+      "size": {
+        "width": 233,
+        "height": 104
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--ui-kit": {
+      "id": "command-overview--frontend--ui-kit",
+      "kind": "module",
+      "label": "UI kit",
+      "description": "Shared presentational widgets",
+      "position": {
+        "x": 1169,
+        "y": 784
+      },
+      "size": {
+        "width": 233,
+        "height": 104
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--view-panel": {
+      "id": "command-overview--frontend--view-panel",
+      "kind": "module",
+      "label": "View panel",
+      "description": "Timeline view filters and panel state",
+      "position": {
+        "x": 3300,
+        "y": 784
+      },
+      "size": {
+        "width": 290,
+        "height": 104
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--workspace": {
+      "id": "command-overview--frontend--workspace",
+      "kind": "module",
+      "label": "Workspace",
+      "description": "Dominant workspace lenses: messages, organization, mission control",
+      "position": {
+        "x": 2855,
+        "y": 594
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--shared": {
+      "id": "command-overview--shared",
+      "kind": "scope",
+      "label": "Shared",
+      "position": {
+        "x": 40,
+        "y": 2496
+      },
+      "size": {
+        "width": 500,
+        "height": 232
+      },
+      "parentId": "command-overview",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--shared--shared-contracts": {
+      "id": "command-overview--shared--shared-contracts",
+      "kind": "module",
+      "label": "Shared contracts",
+      "description": "src/shared: the only legal frontend/backend meeting point — project, provider, missionView, canvas, analytics schemas",
+      "position": {
+        "x": 40,
+        "y": 56
+      },
+      "size": {
+        "width": 420,
+        "height": 136
+      },
+      "parentId": "command-overview--shared",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--messaging-tunnel": {
+      "id": "command-messaging--messaging-tunnel",
+      "kind": "scope",
+      "label": "Messaging tunnel",
+      "description": "src/backend/messaging — one module per seam",
+      "position": {
+        "x": 40,
+        "y": 56
+      },
+      "size": {
+        "width": 2949,
+        "height": 1182
+      },
+      "parentId": "command-messaging",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--messaging-tunnel--actors": {
+      "id": "command-messaging--messaging-tunnel--actors",
+      "kind": "module",
+      "label": "Actors",
+      "description": "Sender/recipient actor resolution",
+      "position": {
+        "x": 2647,
+        "y": 856
+      },
+      "size": {
+        "width": 262,
+        "height": 104
+      },
+      "parentId": "command-messaging--messaging-tunnel",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--messaging-tunnel--address-book": {
+      "id": "command-messaging--messaging-tunnel--address-book",
+      "kind": "module",
+      "label": "Address book",
+      "description": "Agent roster + spawn briefing composition — see docs/agent-messaging.md",
+      "position": {
+        "x": 840,
+        "y": 848
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-messaging--messaging-tunnel",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--messaging-tunnel--delivery-confirm": {
+      "id": "command-messaging--messaging-tunnel--delivery-confirm",
+      "kind": "module",
+      "label": "Delivery confirm",
+      "description": "Delivery confirmation tracking",
+      "position": {
+        "x": 40,
+        "y": 666
+      },
+      "size": {
+        "width": 240,
+        "height": 104
+      },
+      "parentId": "command-messaging--messaging-tunnel",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--messaging-tunnel--pty-delivery": {
+      "id": "command-messaging--messaging-tunnel--pty-delivery",
+      "kind": "module",
+      "label": "PTY delivery",
+      "description": "normal: type + submit; interrupt: Esc, settle, type — per-provider quirks live here — see docs/agent-messaging.md",
+      "position": {
+        "x": 1090,
+        "y": 658
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-messaging--messaging-tunnel",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--messaging-tunnel--messaging-hub": {
+      "id": "command-messaging--messaging-tunnel--messaging-hub",
+      "kind": "module",
+      "label": "Messaging hub",
+      "description": "index.ts — REST surface (POST/GET /api/messages), ws push, spawn briefing into new PTYs — see docs/agent-messaging.md",
+      "position": {
+        "x": 1521,
+        "y": 56
+      },
+      "size": {
+        "width": 420,
+        "height": 136
+      },
+      "parentId": "command-messaging--messaging-tunnel",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--messaging-tunnel--identity-stamping": {
+      "id": "command-messaging--messaging-tunnel--identity-stamping",
+      "kind": "module",
+      "label": "Identity stamping",
+      "description": "Server-derived envelope identity: durable agent ids + mission link, never client-trusted",
+      "position": {
+        "x": 2167,
+        "y": 658
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-messaging--messaging-tunnel",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--messaging-tunnel--mailbox-registry": {
+      "id": "command-messaging--messaging-tunnel--mailbox-registry",
+      "kind": "module",
+      "label": "Mailbox registry",
+      "description": "Pull mailboxes — delivery path for external sessions",
+      "position": {
+        "x": 1938,
+        "y": 856
+      },
+      "size": {
+        "width": 398,
+        "height": 104
+      },
+      "parentId": "command-messaging--messaging-tunnel",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--messaging-tunnel--rooms": {
+      "id": "command-messaging--messaging-tunnel--rooms",
+      "kind": "module",
+      "label": "Rooms",
+      "description": "Room/channel membership and state",
+      "position": {
+        "x": 1777,
+        "y": 666
+      },
+      "size": {
+        "width": 262,
+        "height": 104
+      },
+      "parentId": "command-messaging--messaging-tunnel",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--messaging-tunnel--message-router": {
+      "id": "command-messaging--messaging-tunnel--message-router",
+      "kind": "module",
+      "label": "Message router",
+      "description": "Records every envelope first, then delivers via adapter seam; failures land as status amendments — see docs/agent-messaging.md",
+      "position": {
+        "x": 1321,
+        "y": 452
+      },
+      "size": {
+        "width": 420,
+        "height": 136
+      },
+      "parentId": "command-messaging--messaging-tunnel",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--messaging-tunnel--send-api": {
+      "id": "command-messaging--messaging-tunnel--send-api",
+      "kind": "module",
+      "label": "Send API",
+      "description": "Wraps SendMessage into an envelope and submits to the router — see docs/agent-messaging.md",
+      "position": {
+        "x": 1220,
+        "y": 262
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-messaging--messaging-tunnel",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--messaging-tunnel--message-store": {
+      "id": "command-messaging--messaging-tunnel--message-store",
+      "kind": "module",
+      "label": "Message store",
+      "description": "Append-only JSONL; amendments re-append same id, readers fold, last line wins — see docs/agent-messaging.md",
+      "position": {
+        "x": 340,
+        "y": 658
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-messaging--messaging-tunnel",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--messaging-tunnel--thread-links": {
+      "id": "command-messaging--messaging-tunnel--thread-links",
+      "kind": "module",
+      "label": "Thread links",
+      "description": "Mission-thread linkage over rooms",
+      "position": {
+        "x": 1680,
+        "y": 270
+      },
+      "size": {
+        "width": 262,
+        "height": 104
+      },
+      "parentId": "command-messaging--messaging-tunnel",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--messaging-tunnel--envelope-types": {
+      "id": "command-messaging--messaging-tunnel--envelope-types",
+      "kind": "module",
+      "label": "Envelope types",
+      "description": "MessageEnvelope, addresses, delivery modes",
+      "position": {
+        "x": 897,
+        "y": 1038
+      },
+      "size": {
+        "width": 326,
+        "height": 104
+      },
+      "parentId": "command-messaging--messaging-tunnel",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--neighbours": {
+      "id": "command-messaging--neighbours",
+      "kind": "scope",
+      "label": "Neighbours",
+      "description": "What the tunnel touches beyond its own directory",
+      "position": {
+        "x": 40,
+        "y": 1308
+      },
+      "size": {
+        "width": 2268,
+        "height": 406
+      },
+      "parentId": "command-messaging",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--neighbours--agent-ptys": {
+      "id": "command-messaging--neighbours--agent-ptys",
+      "kind": "runtime",
+      "label": "Agent PTYs",
+      "description": "Claude + Codex sessions hosted by TerminalManager (src/backend/terminal)",
+      "position": {
+        "x": 40,
+        "y": 56
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-messaging--neighbours",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--neighbours--messages-jsonl": {
+      "id": "command-messaging--neighbours--messages-jsonl",
+      "kind": "resource",
+      "label": "messages.jsonl",
+      "description": "Append-only envelope journal — the permanent audit record",
+      "position": {
+        "x": 500,
+        "y": 64
+      },
+      "size": {
+        "width": 420,
+        "height": 104
+      },
+      "parentId": "command-messaging--neighbours",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--neighbours--ws-broadcast": {
+      "id": "command-messaging--neighbours--ws-broadcast",
+      "kind": "module",
+      "label": "ws broadcast",
+      "description": "Server WebSocket fan-out (src/backend/server)",
+      "position": {
+        "x": 1880,
+        "y": 64
+      },
+      "size": {
+        "width": 348,
+        "height": 104
+      },
+      "parentId": "command-messaging--neighbours",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--neighbours--tunnelmodel": {
+      "id": "command-messaging--neighbours--tunnelmodel",
+      "kind": "module",
+      "label": "tunnelModel",
+      "description": "src/frontend/lib/tunnelModel — folds the envelope stream for the UI",
+      "position": {
+        "x": 1420,
+        "y": 246
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-messaging--neighbours",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--neighbours--studio-chat": {
+      "id": "command-messaging--neighbours--studio-chat",
+      "kind": "module",
+      "label": "Studio chat",
+      "description": "Studio layout: rail, work head, AI chat panel, tunnel lens — subscribes to the tunnel feed",
+      "position": {
+        "x": 1420,
+        "y": 56
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-messaging--neighbours",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-messaging--neighbours--workspace": {
+      "id": "command-messaging--neighbours--workspace",
+      "kind": "module",
+      "label": "Workspace",
+      "description": "Dominant workspace lenses: messages, organization, mission control — subscribes to the tunnel feed",
+      "position": {
+        "x": 960,
+        "y": 56
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-messaging--neighbours",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-mission-model--durable-hierarchy": {
+      "id": "command-mission-model--durable-hierarchy",
+      "kind": "scope",
+      "label": "Durable hierarchy",
+      "description": "Documented chain: Project -> Objective -> KR -> Mission -> Team -> Agent -> Task -> Artifact",
+      "position": {
+        "x": 40,
+        "y": 56
+      },
+      "size": {
+        "width": 1824,
+        "height": 1032
+      },
+      "parentId": "command-mission-model",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-mission-model--durable-hierarchy--project-projects-jsonl": {
+      "id": "command-mission-model--durable-hierarchy--project-projects-jsonl",
+      "kind": "object",
+      "label": "project (projects.jsonl)",
+      "description": "required: title, status, path | status: free-form",
+      "position": {
+        "x": 844,
+        "y": 468
+      },
+      "size": {
+        "width": 377,
+        "height": 128
+      },
+      "parentId": "command-mission-model--durable-hierarchy",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--project-projects-jsonl--type-project"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--objective-okrs-jsonl": {
+      "id": "command-mission-model--durable-hierarchy--objective-okrs-jsonl",
+      "kind": "object",
+      "label": "objective (okrs.jsonl)",
+      "description": "required: title, horizon | status: free-form",
+      "position": {
+        "x": 1081,
+        "y": 666
+      },
+      "size": {
+        "width": 341,
+        "height": 128
+      },
+      "parentId": "command-mission-model--durable-hierarchy",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--objective-okrs-jsonl--type-objective"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--kr-okrs-jsonl": {
+      "id": "command-mission-model--durable-hierarchy--kr-okrs-jsonl",
+      "kind": "object",
+      "label": "kr (okrs.jsonl)",
+      "description": "required: objective, body | status: free-form",
+      "position": {
+        "x": 1261,
+        "y": 468
+      },
+      "size": {
+        "width": 348,
+        "height": 128
+      },
+      "parentId": "command-mission-model--durable-hierarchy",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--kr-okrs-jsonl--type-kr"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--mission-missions-jsonl": {
+      "id": "command-mission-model--durable-hierarchy--mission-missions-jsonl",
+      "kind": "object",
+      "label": "mission (missions.jsonl)",
+      "description": "required: title, owner | status: free-form",
+      "position": {
+        "x": 458,
+        "y": 666
+      },
+      "size": {
+        "width": 326,
+        "height": 128
+      },
+      "parentId": "command-mission-model--durable-hierarchy",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--mission-missions-jsonl--type-mission"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--team-teams-jsonl": {
+      "id": "command-mission-model--durable-hierarchy--team-teams-jsonl",
+      "kind": "object",
+      "label": "team (teams.jsonl)",
+      "description": "required: name | status: free-form",
+      "position": {
+        "x": 1515,
+        "y": 864
+      },
+      "size": {
+        "width": 269,
+        "height": 128
+      },
+      "parentId": "command-mission-model--durable-hierarchy",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--team-teams-jsonl--type-team"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--agent-agents-jsonl": {
+      "id": "command-mission-model--durable-hierarchy--agent-agents-jsonl",
+      "kind": "object",
+      "label": "agent (agents.jsonl)",
+      "description": "required: name, provider | status: spawning|live|failed|retired",
+      "position": {
+        "x": 621,
+        "y": 56
+      },
+      "size": {
+        "width": 420,
+        "height": 144
+      },
+      "parentId": "command-mission-model--durable-hierarchy",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--agent-agents-jsonl--type-agent"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--task-tasks-jsonl": {
+      "id": "command-mission-model--durable-hierarchy--task-tasks-jsonl",
+      "kind": "object",
+      "label": "task (tasks.jsonl)",
+      "description": "required: title | status: todo|doing|done|blocked",
+      "position": {
+        "x": 407,
+        "y": 270
+      },
+      "size": {
+        "width": 377,
+        "height": 128
+      },
+      "parentId": "command-mission-model--durable-hierarchy",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--task-tasks-jsonl--type-task"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--artifact-artifacts-jsonl": {
+      "id": "command-mission-model--durable-hierarchy--artifact-artifacts-jsonl",
+      "kind": "object",
+      "label": "artifact (artifacts.jsonl)",
+      "description": "required: title | status: free-form",
+      "position": {
+        "x": 500,
+        "y": 468
+      },
+      "size": {
+        "width": 276,
+        "height": 128
+      },
+      "parentId": "command-mission-model--durable-hierarchy",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--artifact-artifacts-jsonl--type-artifact"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--thread-threads-jsonl": {
+      "id": "command-mission-model--durable-hierarchy--thread-threads-jsonl",
+      "kind": "object",
+      "label": "thread (threads.jsonl)",
+      "description": "mission-to-messaging link: roomId + mission ref | required: roomId | status: free-form",
+      "position": {
+        "x": 40,
+        "y": 472
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-mission-model--durable-hierarchy",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-mission-model--journal-stores": {
+      "id": "command-mission-model--journal-stores",
+      "kind": "scope",
+      "label": "Journal stores",
+      "description": "Flat append-only records outside the hierarchy",
+      "position": {
+        "x": 40,
+        "y": 1158
+      },
+      "size": {
+        "width": 1710,
+        "height": 200
+      },
+      "parentId": "command-mission-model",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-mission-model--journal-stores--decision-decisions-jsonl": {
+      "id": "command-mission-model--journal-stores--decision-decisions-jsonl",
+      "kind": "object",
+      "label": "decision (decisions.jsonl)",
+      "description": "required: title, body | status: free-form",
+      "position": {
+        "x": 40,
+        "y": 56
+      },
+      "size": {
+        "width": 319,
+        "height": 104
+      },
+      "parentId": "command-mission-model--journal-stores",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-mission-model--journal-stores--issue-issues-jsonl": {
+      "id": "command-mission-model--journal-stores--issue-issues-jsonl",
+      "kind": "object",
+      "label": "issue (issues.jsonl)",
+      "description": "status: free-form",
+      "position": {
+        "x": 399,
+        "y": 56
+      },
+      "size": {
+        "width": 200,
+        "height": 104
+      },
+      "parentId": "command-mission-model--journal-stores",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-mission-model--journal-stores--learning-learnings-jsonl": {
+      "id": "command-mission-model--journal-stores--learning-learnings-jsonl",
+      "kind": "object",
+      "label": "learning (learnings.jsonl)",
+      "description": "required: body | status: free-form",
+      "position": {
+        "x": 639,
+        "y": 56
+      },
+      "size": {
+        "width": 269,
+        "height": 104
+      },
+      "parentId": "command-mission-model--journal-stores",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-mission-model--journal-stores--log-captains-log-jsonl": {
+      "id": "command-mission-model--journal-stores--log-captains-log-jsonl",
+      "kind": "object",
+      "label": "log (captains-log.jsonl)",
+      "description": "required: body | status: free-form",
+      "position": {
+        "x": 948,
+        "y": 56
+      },
+      "size": {
+        "width": 269,
+        "height": 104
+      },
+      "parentId": "command-mission-model--journal-stores",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-mission-model--journal-stores--request-requests-jsonl": {
+      "id": "command-mission-model--journal-stores--request-requests-jsonl",
+      "kind": "object",
+      "label": "request (requests.jsonl)",
+      "description": "required: question, options | status: pending|answered",
+      "position": {
+        "x": 1257,
+        "y": 56
+      },
+      "size": {
+        "width": 413,
+        "height": 104
+      },
+      "parentId": "command-mission-model--journal-stores",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-mission-model--readers-and-writers": {
+      "id": "command-mission-model--readers-and-writers",
+      "kind": "scope",
+      "label": "Readers and writers",
+      "description": "Modules allowed to touch the stores",
+      "position": {
+        "x": 40,
+        "y": 1428
+      },
+      "size": {
+        "width": 1880,
+        "height": 216
+      },
+      "parentId": "command-mission-model",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-mission-model--readers-and-writers--object-model-facade": {
+      "id": "command-mission-model--readers-and-writers--object-model-facade",
+      "kind": "module",
+      "label": "Object model facade",
+      "description": "src/backend/objectModel — the ONE write interface; domain intent in, validated typed blocks out",
+      "position": {
+        "x": 1420,
+        "y": 56
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-mission-model--readers-and-writers",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-mission-model--readers-and-writers--mission-view": {
+      "id": "command-mission-model--readers-and-writers--mission-view",
+      "kind": "module",
+      "label": "Mission view",
+      "description": "src/backend/missionView — read-only snapshot composition; no writes anywhere in the module",
+      "position": {
+        "x": 960,
+        "y": 56
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-mission-model--readers-and-writers",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-mission-model--readers-and-writers--messaging-identity": {
+      "id": "command-mission-model--readers-and-writers--messaging-identity",
+      "kind": "module",
+      "label": "Messaging identity",
+      "description": "src/backend/messaging/identity — stamps durable agent ids + mission link on envelopes, server-side",
+      "position": {
+        "x": 500,
+        "y": 56
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-mission-model--readers-and-writers",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-mission-model--readers-and-writers--external-sessions": {
+      "id": "command-mission-model--readers-and-writers--external-sessions",
+      "kind": "module",
+      "label": "External sessions",
+      "description": "src/backend/externalSessions — registers outside-spawned sessions as Agent + Presence + mailbox",
+      "position": {
+        "x": 40,
+        "y": 56
+      },
+      "size": {
+        "width": 420,
+        "height": 120
+      },
+      "parentId": "command-mission-model--readers-and-writers",
+      "interfaceIds": [],
+      "typeIds": []
     }
   },
   "interfaces": {
@@ -4363,6 +5886,68 @@
         "body",
         "createdAt"
       ]
+    },
+    "command-mission-model--durable-hierarchy--project-projects-jsonl--type-project": {
+      "id": "command-mission-model--durable-hierarchy--project-projects-jsonl--type-project",
+      "name": "project",
+      "fields": [
+        "title",
+        "status",
+        "path"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--objective-okrs-jsonl--type-objective": {
+      "id": "command-mission-model--durable-hierarchy--objective-okrs-jsonl--type-objective",
+      "name": "objective",
+      "fields": [
+        "title",
+        "horizon"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--kr-okrs-jsonl--type-kr": {
+      "id": "command-mission-model--durable-hierarchy--kr-okrs-jsonl--type-kr",
+      "name": "kr",
+      "fields": [
+        "objective",
+        "body"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--mission-missions-jsonl--type-mission": {
+      "id": "command-mission-model--durable-hierarchy--mission-missions-jsonl--type-mission",
+      "name": "mission",
+      "fields": [
+        "title",
+        "owner"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--team-teams-jsonl--type-team": {
+      "id": "command-mission-model--durable-hierarchy--team-teams-jsonl--type-team",
+      "name": "team",
+      "fields": [
+        "name"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--agent-agents-jsonl--type-agent": {
+      "id": "command-mission-model--durable-hierarchy--agent-agents-jsonl--type-agent",
+      "name": "agent",
+      "fields": [
+        "name",
+        "provider"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--task-tasks-jsonl--type-task": {
+      "id": "command-mission-model--durable-hierarchy--task-tasks-jsonl--type-task",
+      "name": "task",
+      "fields": [
+        "title"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--artifact-artifacts-jsonl--type-artifact": {
+      "id": "command-mission-model--durable-hierarchy--artifact-artifacts-jsonl--type-artifact",
+      "name": "artifact",
+      "fields": [
+        "title"
+      ]
     }
   },
   "wires": {
@@ -5380,6 +6965,1286 @@
       "target": "mission-right-now--standalone-no-mission-link--worker-kimi-zones",
       "label": "mail thread (18x)",
       "kind": "mentions",
+      "routing": "elbow"
+    },
+    "command-overview--wire-1": {
+      "id": "command-overview--wire-1",
+      "source": "command-overview--backend--agent-orchestration",
+      "target": "command-overview--backend--config",
+      "label": "reads runtime config",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-2": {
+      "id": "command-overview--wire-2",
+      "source": "command-overview--backend--agent-orchestration",
+      "target": "command-overview--backend--state-manager",
+      "label": "persists coordinator state",
+      "kind": "assigns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-3": {
+      "id": "command-overview--wire-3",
+      "source": "command-overview--backend--agent-orchestration",
+      "target": "command-overview--backend--transcript-parser",
+      "label": "reads session transcripts",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-4": {
+      "id": "command-overview--wire-4",
+      "source": "command-overview--backend--analytics-engine",
+      "target": "command-overview--shared--shared-contracts",
+      "label": "analytics types",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-5": {
+      "id": "command-overview--wire-5",
+      "source": "command-overview--backend--canvas-store",
+      "target": "command-overview--shared--shared-contracts",
+      "label": "canvas model + validation",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-6": {
+      "id": "command-overview--wire-6",
+      "source": "command-overview--backend--external-sessions",
+      "target": "command-overview--backend--messaging-tunnel",
+      "label": "mailbox registration + send seam",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "command-overview--wire-7": {
+      "id": "command-overview--wire-7",
+      "source": "command-overview--backend--external-sessions",
+      "target": "command-overview--shared--shared-contracts",
+      "label": "project schema",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-8": {
+      "id": "command-overview--wire-8",
+      "source": "command-overview--backend--messaging-tunnel",
+      "target": "command-overview--backend--terminal-host",
+      "label": "types into PTY",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "command-overview--wire-9": {
+      "id": "command-overview--wire-9",
+      "source": "command-overview--backend--messaging-tunnel",
+      "target": "command-overview--shared--shared-contracts",
+      "label": "project schema",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-10": {
+      "id": "command-overview--wire-10",
+      "source": "command-overview--backend--mission-view",
+      "target": "command-overview--backend--messaging-tunnel",
+      "label": "reads message journal",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-11": {
+      "id": "command-overview--wire-11",
+      "source": "command-overview--backend--mission-view",
+      "target": "command-overview--backend--terminal-host",
+      "label": "live presence lookup",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-12": {
+      "id": "command-overview--wire-12",
+      "source": "command-overview--backend--mission-view",
+      "target": "command-overview--shared--shared-contracts",
+      "label": "missionView snapshot schema",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-13": {
+      "id": "command-overview--wire-13",
+      "source": "command-overview--backend--object-model",
+      "target": "command-overview--backend--durable-stores",
+      "label": "validated append via store facade",
+      "kind": "assigns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-14": {
+      "id": "command-overview--wire-14",
+      "source": "command-overview--backend--project-registry",
+      "target": "command-overview--shared--shared-contracts",
+      "label": "project schema",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-15": {
+      "id": "command-overview--wire-15",
+      "source": "command-overview--backend--provider-adapters",
+      "target": "command-overview--backend--transcript-parser",
+      "label": "parses provider transcripts",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-16": {
+      "id": "command-overview--wire-16",
+      "source": "command-overview--backend--provider-adapters",
+      "target": "command-overview--shared--shared-contracts",
+      "label": "provider schema",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-17": {
+      "id": "command-overview--wire-17",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--agent-orchestration",
+      "label": "composes at boot",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-18": {
+      "id": "command-overview--wire-18",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--analytics-engine",
+      "label": "composes at boot",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-19": {
+      "id": "command-overview--wire-19",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--canvas-store",
+      "label": "composes at boot",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-20": {
+      "id": "command-overview--wire-20",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--config",
+      "label": "composes at boot",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-21": {
+      "id": "command-overview--wire-21",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--design-bridge",
+      "label": "composes at boot",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-22": {
+      "id": "command-overview--wire-22",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--external-sessions",
+      "label": "composes at boot",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-23": {
+      "id": "command-overview--wire-23",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--file-system-api",
+      "label": "composes at boot",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-24": {
+      "id": "command-overview--wire-24",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--messaging-tunnel",
+      "label": "composes hub, injects seams",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-25": {
+      "id": "command-overview--wire-25",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--mission-view",
+      "label": "composes hub, injects roots",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-26": {
+      "id": "command-overview--wire-26",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--object-model",
+      "label": "builds the ONE writer",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-27": {
+      "id": "command-overview--wire-27",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--project-registry",
+      "label": "composes at boot",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-28": {
+      "id": "command-overview--wire-28",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--provider-adapters",
+      "label": "composes at boot",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-29": {
+      "id": "command-overview--wire-29",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--ruleset",
+      "label": "composes at boot",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-30": {
+      "id": "command-overview--wire-30",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--state-manager",
+      "label": "composes at boot",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-31": {
+      "id": "command-overview--wire-31",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--terminal-host",
+      "label": "owns TerminalManager",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-32": {
+      "id": "command-overview--wire-32",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--threads",
+      "label": "composes at boot",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-33": {
+      "id": "command-overview--wire-33",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--transcript-parser",
+      "label": "composes at boot",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-34": {
+      "id": "command-overview--wire-34",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--backend--version-control",
+      "label": "composes at boot",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-35": {
+      "id": "command-overview--wire-35",
+      "source": "command-overview--backend--server-core",
+      "target": "command-overview--shared--shared-contracts",
+      "label": "serves shared schemas",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-36": {
+      "id": "command-overview--wire-36",
+      "source": "command-overview--backend--terminal-host",
+      "target": "command-overview--backend--agent-orchestration",
+      "label": "resolves provider CLI launch",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-37": {
+      "id": "command-overview--wire-37",
+      "source": "command-overview--backend--terminal-host",
+      "target": "command-overview--backend--config",
+      "label": "reads terminal config",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-38": {
+      "id": "command-overview--wire-38",
+      "source": "command-overview--backend--terminal-host",
+      "target": "command-overview--backend--transcript-parser",
+      "label": "encodes cwd for transcript match",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-39": {
+      "id": "command-overview--wire-39",
+      "source": "command-overview--backend--terminal-host",
+      "target": "command-overview--shared--shared-contracts",
+      "label": "provider ids",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-40": {
+      "id": "command-overview--wire-40",
+      "source": "command-overview--backend--threads",
+      "target": "command-overview--backend--provider-adapters",
+      "label": "provider session control",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "command-overview--wire-41": {
+      "id": "command-overview--wire-41",
+      "source": "command-overview--backend--threads",
+      "target": "command-overview--shared--shared-contracts",
+      "label": "project schema",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-42": {
+      "id": "command-overview--wire-42",
+      "source": "command-overview--backend--transcript-parser",
+      "target": "command-overview--shared--shared-contracts",
+      "label": "provider ids",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-43": {
+      "id": "command-overview--wire-43",
+      "source": "command-overview--backend--version-control",
+      "target": "command-overview--backend--file-system-api",
+      "label": "file tree access",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-44": {
+      "id": "command-overview--wire-44",
+      "source": "command-overview--frontend--agents-ui",
+      "target": "command-overview--frontend--board",
+      "label": "timeline widgets",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-45": {
+      "id": "command-overview--wire-45",
+      "source": "command-overview--frontend--agents-ui",
+      "target": "command-overview--frontend--frontend-models",
+      "label": "session + socket models",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-46": {
+      "id": "command-overview--wire-46",
+      "source": "command-overview--frontend--agents-ui",
+      "target": "command-overview--frontend--ui-kit",
+      "label": "shared widgets",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-47": {
+      "id": "command-overview--wire-47",
+      "source": "command-overview--frontend--agents-ui",
+      "target": "command-overview--frontend--view-panel",
+      "label": "filter panel state",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-48": {
+      "id": "command-overview--wire-48",
+      "source": "command-overview--frontend--analytics-studio",
+      "target": "command-overview--frontend--frontend-models",
+      "label": "analytics model",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-49": {
+      "id": "command-overview--wire-49",
+      "source": "command-overview--frontend--board",
+      "target": "command-overview--frontend--frontend-models",
+      "label": "highlight + session models",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-50": {
+      "id": "command-overview--wire-50",
+      "source": "command-overview--frontend--board",
+      "target": "command-overview--frontend--app-shell",
+      "label": "undeclared import (2 files)",
+      "kind": "missing",
+      "routing": "elbow"
+    },
+    "command-overview--wire-51": {
+      "id": "command-overview--wire-51",
+      "source": "command-overview--frontend--board",
+      "target": "command-overview--frontend--ui-kit",
+      "label": "shared widgets",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-52": {
+      "id": "command-overview--wire-52",
+      "source": "command-overview--frontend--canvas-studio",
+      "target": "command-overview--frontend--frontend-models",
+      "label": "canvas engine + projection",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-53": {
+      "id": "command-overview--wire-53",
+      "source": "command-overview--frontend--canvas-studio",
+      "target": "command-overview--shared--shared-contracts",
+      "label": "canvas commands + model",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-54": {
+      "id": "command-overview--wire-54",
+      "source": "command-overview--frontend--details-panel",
+      "target": "command-overview--frontend--board",
+      "label": "timeline model",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-55": {
+      "id": "command-overview--wire-55",
+      "source": "command-overview--frontend--details-panel",
+      "target": "command-overview--frontend--frontend-models",
+      "label": "models",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-56": {
+      "id": "command-overview--wire-56",
+      "source": "command-overview--frontend--details-panel",
+      "target": "command-overview--frontend--app-shell",
+      "label": "undeclared import (1 file)",
+      "kind": "missing",
+      "routing": "elbow"
+    },
+    "command-overview--wire-57": {
+      "id": "command-overview--wire-57",
+      "source": "command-overview--frontend--files-view",
+      "target": "command-overview--frontend--app-shell",
+      "label": "undeclared import (1 file)",
+      "kind": "missing",
+      "routing": "elbow"
+    },
+    "command-overview--wire-58": {
+      "id": "command-overview--wire-58",
+      "source": "command-overview--frontend--files-view",
+      "target": "command-overview--frontend--ui-kit",
+      "label": "shared widgets",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-59": {
+      "id": "command-overview--wire-59",
+      "source": "command-overview--frontend--frontend-models",
+      "target": "command-overview--shared--shared-contracts",
+      "label": "shared schemas over HTTP/ws payloads",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-60": {
+      "id": "command-overview--wire-60",
+      "source": "command-overview--frontend--ruleset-ui",
+      "target": "command-overview--frontend--ui-kit",
+      "label": "shared widgets",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-61": {
+      "id": "command-overview--wire-61",
+      "source": "command-overview--frontend--session-bar",
+      "target": "command-overview--frontend--board",
+      "label": "timeline model",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-62": {
+      "id": "command-overview--wire-62",
+      "source": "command-overview--frontend--session-bar",
+      "target": "command-overview--frontend--frontend-models",
+      "label": "models",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-63": {
+      "id": "command-overview--wire-63",
+      "source": "command-overview--frontend--session-bar",
+      "target": "command-overview--frontend--app-shell",
+      "label": "undeclared import (1 file)",
+      "kind": "missing",
+      "routing": "elbow"
+    },
+    "command-overview--wire-64": {
+      "id": "command-overview--wire-64",
+      "source": "command-overview--frontend--session-bar",
+      "target": "command-overview--frontend--view-panel",
+      "label": "view panel state",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-65": {
+      "id": "command-overview--wire-65",
+      "source": "command-overview--frontend--settings",
+      "target": "command-overview--frontend--view-panel",
+      "label": "panel state",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-66": {
+      "id": "command-overview--wire-66",
+      "source": "command-overview--frontend--app-shell",
+      "target": "command-overview--frontend--agents-ui",
+      "label": "mounts",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-67": {
+      "id": "command-overview--wire-67",
+      "source": "command-overview--frontend--app-shell",
+      "target": "command-overview--frontend--analytics-studio",
+      "label": "mounts",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-68": {
+      "id": "command-overview--wire-68",
+      "source": "command-overview--frontend--app-shell",
+      "target": "command-overview--frontend--board",
+      "label": "mounts",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-69": {
+      "id": "command-overview--wire-69",
+      "source": "command-overview--frontend--app-shell",
+      "target": "command-overview--frontend--canvas-studio",
+      "label": "mounts",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-70": {
+      "id": "command-overview--wire-70",
+      "source": "command-overview--frontend--app-shell",
+      "target": "command-overview--frontend--debug-panel",
+      "label": "mounts",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-71": {
+      "id": "command-overview--wire-71",
+      "source": "command-overview--frontend--app-shell",
+      "target": "command-overview--frontend--design-studio",
+      "label": "mounts",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-72": {
+      "id": "command-overview--wire-72",
+      "source": "command-overview--frontend--app-shell",
+      "target": "command-overview--frontend--details-panel",
+      "label": "mounts",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-73": {
+      "id": "command-overview--wire-73",
+      "source": "command-overview--frontend--app-shell",
+      "target": "command-overview--frontend--files-view",
+      "label": "mounts",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-74": {
+      "id": "command-overview--wire-74",
+      "source": "command-overview--frontend--app-shell",
+      "target": "command-overview--frontend--frontend-models",
+      "label": "wires models into views",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-75": {
+      "id": "command-overview--wire-75",
+      "source": "command-overview--frontend--app-shell",
+      "target": "command-overview--frontend--ruleset-ui",
+      "label": "mounts",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-76": {
+      "id": "command-overview--wire-76",
+      "source": "command-overview--frontend--app-shell",
+      "target": "command-overview--frontend--session-bar",
+      "label": "mounts",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-77": {
+      "id": "command-overview--wire-77",
+      "source": "command-overview--frontend--app-shell",
+      "target": "command-overview--frontend--settings",
+      "label": "mounts",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-78": {
+      "id": "command-overview--wire-78",
+      "source": "command-overview--frontend--app-shell",
+      "target": "command-overview--frontend--side-panel",
+      "label": "mounts",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-79": {
+      "id": "command-overview--wire-79",
+      "source": "command-overview--frontend--app-shell",
+      "target": "command-overview--frontend--studio-chat",
+      "label": "mounts studio layout",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-80": {
+      "id": "command-overview--wire-80",
+      "source": "command-overview--frontend--app-shell",
+      "target": "command-overview--frontend--subagent-view",
+      "label": "mounts",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-81": {
+      "id": "command-overview--wire-81",
+      "source": "command-overview--frontend--app-shell",
+      "target": "command-overview--frontend--view-panel",
+      "label": "mounts",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-82": {
+      "id": "command-overview--wire-82",
+      "source": "command-overview--frontend--app-shell",
+      "target": "command-overview--frontend--workspace",
+      "label": "mounts workspace lenses",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-overview--wire-83": {
+      "id": "command-overview--wire-83",
+      "source": "command-overview--frontend--side-panel",
+      "target": "command-overview--frontend--ui-kit",
+      "label": "shared widgets",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-84": {
+      "id": "command-overview--wire-84",
+      "source": "command-overview--frontend--studio-chat",
+      "target": "command-overview--frontend--frontend-models",
+      "label": "chat + tunnel models",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-85": {
+      "id": "command-overview--wire-85",
+      "source": "command-overview--frontend--studio-chat",
+      "target": "command-overview--shared--shared-contracts",
+      "label": "missionView + provider schemas",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-86": {
+      "id": "command-overview--wire-86",
+      "source": "command-overview--frontend--subagent-view",
+      "target": "command-overview--frontend--board",
+      "label": "timeline widgets",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-87": {
+      "id": "command-overview--wire-87",
+      "source": "command-overview--frontend--subagent-view",
+      "target": "command-overview--frontend--details-panel",
+      "label": "inspector reuse",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-88": {
+      "id": "command-overview--wire-88",
+      "source": "command-overview--frontend--subagent-view",
+      "target": "command-overview--frontend--frontend-models",
+      "label": "models",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-89": {
+      "id": "command-overview--wire-89",
+      "source": "command-overview--frontend--subagent-view",
+      "target": "command-overview--frontend--app-shell",
+      "label": "undeclared import (1 file)",
+      "kind": "missing",
+      "routing": "elbow"
+    },
+    "command-overview--wire-90": {
+      "id": "command-overview--wire-90",
+      "source": "command-overview--frontend--view-panel",
+      "target": "command-overview--frontend--board",
+      "label": "timeline model",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-91": {
+      "id": "command-overview--wire-91",
+      "source": "command-overview--frontend--view-panel",
+      "target": "command-overview--frontend--frontend-models",
+      "label": "models",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-92": {
+      "id": "command-overview--wire-92",
+      "source": "command-overview--frontend--view-panel",
+      "target": "command-overview--frontend--app-shell",
+      "label": "undeclared import (1 file)",
+      "kind": "missing",
+      "routing": "elbow"
+    },
+    "command-overview--wire-93": {
+      "id": "command-overview--wire-93",
+      "source": "command-overview--frontend--workspace",
+      "target": "command-overview--frontend--frontend-models",
+      "label": "mission room + tunnel models",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-overview--wire-94": {
+      "id": "command-overview--wire-94",
+      "source": "command-overview--frontend--workspace",
+      "target": "command-overview--frontend--studio-chat",
+      "label": "embeds chat panel",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-95": {
+      "id": "command-overview--wire-95",
+      "source": "command-overview--frontend--workspace",
+      "target": "command-overview--frontend--ui-kit",
+      "label": "shared widgets",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-96": {
+      "id": "command-overview--wire-96",
+      "source": "command-overview--frontend--workspace",
+      "target": "command-overview--shared--shared-contracts",
+      "label": "missionView schema",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-overview--wire-97": {
+      "id": "command-overview--wire-97",
+      "source": "command-overview--backend--messaging-tunnel",
+      "target": "command-overview--backend--object-model",
+      "label": "stamps durable ids + missionId (identity seam) — declared, not in code",
+      "kind": "missing",
+      "routing": "elbow"
+    },
+    "command-overview--wire-98": {
+      "id": "command-overview--wire-98",
+      "source": "command-overview--backend--mission-view",
+      "target": "command-overview--backend--object-model",
+      "label": "reads mission graph — declared, not in code",
+      "kind": "missing",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-1": {
+      "id": "command-messaging--wire-1",
+      "source": "command-messaging--messaging-tunnel--actors",
+      "target": "command-messaging--messaging-tunnel--envelope-types",
+      "label": "imports",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-2": {
+      "id": "command-messaging--wire-2",
+      "source": "command-messaging--messaging-tunnel--address-book",
+      "target": "command-messaging--messaging-tunnel--envelope-types",
+      "label": "imports",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-3": {
+      "id": "command-messaging--wire-3",
+      "source": "command-messaging--messaging-tunnel--pty-delivery",
+      "target": "command-messaging--messaging-tunnel--actors",
+      "label": "resolves recipient actor",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-4": {
+      "id": "command-messaging--wire-4",
+      "source": "command-messaging--messaging-tunnel--pty-delivery",
+      "target": "command-messaging--messaging-tunnel--envelope-types",
+      "label": "imports",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-5": {
+      "id": "command-messaging--wire-5",
+      "source": "command-messaging--messaging-tunnel--messaging-hub",
+      "target": "command-messaging--messaging-tunnel--actors",
+      "label": "imports",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-6": {
+      "id": "command-messaging--wire-6",
+      "source": "command-messaging--messaging-tunnel--messaging-hub",
+      "target": "command-messaging--messaging-tunnel--address-book",
+      "label": "composes spawn briefing",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-7": {
+      "id": "command-messaging--wire-7",
+      "source": "command-messaging--messaging-tunnel--messaging-hub",
+      "target": "command-messaging--messaging-tunnel--delivery-confirm",
+      "label": "imports",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-8": {
+      "id": "command-messaging--wire-8",
+      "source": "command-messaging--messaging-tunnel--messaging-hub",
+      "target": "command-messaging--messaging-tunnel--pty-delivery",
+      "label": "constructs PTY adapter",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-9": {
+      "id": "command-messaging--wire-9",
+      "source": "command-messaging--messaging-tunnel--messaging-hub",
+      "target": "command-messaging--messaging-tunnel--identity-stamping",
+      "label": "wires identity seam",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-10": {
+      "id": "command-messaging--wire-10",
+      "source": "command-messaging--messaging-tunnel--messaging-hub",
+      "target": "command-messaging--messaging-tunnel--mailbox-registry",
+      "label": "shares durable registry",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-11": {
+      "id": "command-messaging--wire-11",
+      "source": "command-messaging--messaging-tunnel--messaging-hub",
+      "target": "command-messaging--messaging-tunnel--rooms",
+      "label": "imports",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-12": {
+      "id": "command-messaging--wire-12",
+      "source": "command-messaging--messaging-tunnel--messaging-hub",
+      "target": "command-messaging--messaging-tunnel--message-router",
+      "label": "routes every send",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-13": {
+      "id": "command-messaging--wire-13",
+      "source": "command-messaging--messaging-tunnel--messaging-hub",
+      "target": "command-messaging--messaging-tunnel--send-api",
+      "label": "exposes send API",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-14": {
+      "id": "command-messaging--wire-14",
+      "source": "command-messaging--messaging-tunnel--messaging-hub",
+      "target": "command-messaging--messaging-tunnel--message-store",
+      "label": "owns the journal",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-15": {
+      "id": "command-messaging--wire-15",
+      "source": "command-messaging--messaging-tunnel--messaging-hub",
+      "target": "command-messaging--messaging-tunnel--thread-links",
+      "label": "imports",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-16": {
+      "id": "command-messaging--wire-16",
+      "source": "command-messaging--messaging-tunnel--messaging-hub",
+      "target": "command-messaging--messaging-tunnel--envelope-types",
+      "label": "imports",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-17": {
+      "id": "command-messaging--wire-17",
+      "source": "command-messaging--messaging-tunnel--identity-stamping",
+      "target": "command-messaging--messaging-tunnel--envelope-types",
+      "label": "imports",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-18": {
+      "id": "command-messaging--wire-18",
+      "source": "command-messaging--messaging-tunnel--mailbox-registry",
+      "target": "command-messaging--messaging-tunnel--envelope-types",
+      "label": "imports",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-19": {
+      "id": "command-messaging--wire-19",
+      "source": "command-messaging--messaging-tunnel--rooms",
+      "target": "command-messaging--messaging-tunnel--envelope-types",
+      "label": "imports",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-20": {
+      "id": "command-messaging--wire-20",
+      "source": "command-messaging--messaging-tunnel--message-router",
+      "target": "command-messaging--messaging-tunnel--actors",
+      "label": "imports",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-21": {
+      "id": "command-messaging--wire-21",
+      "source": "command-messaging--messaging-tunnel--message-router",
+      "target": "command-messaging--messaging-tunnel--delivery-confirm",
+      "label": "tracks delivery outcome",
+      "kind": "assigns",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-22": {
+      "id": "command-messaging--wire-22",
+      "source": "command-messaging--messaging-tunnel--message-router",
+      "target": "command-messaging--messaging-tunnel--pty-delivery",
+      "label": "delivers DM into PTY",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-23": {
+      "id": "command-messaging--wire-23",
+      "source": "command-messaging--messaging-tunnel--message-router",
+      "target": "command-messaging--messaging-tunnel--identity-stamping",
+      "label": "stamps envelope identity",
+      "kind": "assigns",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-24": {
+      "id": "command-messaging--wire-24",
+      "source": "command-messaging--messaging-tunnel--message-router",
+      "target": "command-messaging--messaging-tunnel--rooms",
+      "label": "fans out channel posts",
+      "kind": "assigns",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-25": {
+      "id": "command-messaging--wire-25",
+      "source": "command-messaging--messaging-tunnel--message-router",
+      "target": "command-messaging--messaging-tunnel--message-store",
+      "label": "records envelope first",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-26": {
+      "id": "command-messaging--wire-26",
+      "source": "command-messaging--messaging-tunnel--message-router",
+      "target": "command-messaging--messaging-tunnel--envelope-types",
+      "label": "imports",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-27": {
+      "id": "command-messaging--wire-27",
+      "source": "command-messaging--messaging-tunnel--send-api",
+      "target": "command-messaging--messaging-tunnel--message-router",
+      "label": "submits envelope",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-28": {
+      "id": "command-messaging--wire-28",
+      "source": "command-messaging--messaging-tunnel--send-api",
+      "target": "command-messaging--messaging-tunnel--envelope-types",
+      "label": "imports",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-29": {
+      "id": "command-messaging--wire-29",
+      "source": "command-messaging--messaging-tunnel--message-store",
+      "target": "command-messaging--messaging-tunnel--envelope-types",
+      "label": "imports",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-30": {
+      "id": "command-messaging--wire-30",
+      "source": "command-messaging--messaging-tunnel--thread-links",
+      "target": "command-messaging--messaging-tunnel--identity-stamping",
+      "label": "mission link stamping",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-31": {
+      "id": "command-messaging--wire-31",
+      "source": "command-messaging--messaging-tunnel--thread-links",
+      "target": "command-messaging--messaging-tunnel--message-router",
+      "label": "posts into thread rooms",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-32": {
+      "id": "command-messaging--wire-32",
+      "source": "command-messaging--messaging-tunnel--thread-links",
+      "target": "command-messaging--messaging-tunnel--envelope-types",
+      "label": "imports",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-33": {
+      "id": "command-messaging--wire-33",
+      "source": "command-messaging--messaging-tunnel--address-book",
+      "target": "command-messaging--neighbours--agent-ptys",
+      "label": "reads AgentInfo roster",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-34": {
+      "id": "command-messaging--wire-34",
+      "source": "command-messaging--messaging-tunnel--messaging-hub",
+      "target": "command-messaging--neighbours--agent-ptys",
+      "label": "reads agent roster, types briefing",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-35": {
+      "id": "command-messaging--wire-35",
+      "source": "command-messaging--messaging-tunnel--message-store",
+      "target": "command-messaging--neighbours--messages-jsonl",
+      "label": "appends every envelope",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-36": {
+      "id": "command-messaging--wire-36",
+      "source": "command-messaging--messaging-tunnel--pty-delivery",
+      "target": "command-messaging--neighbours--agent-ptys",
+      "label": "types into PTY (normal queues, interrupt Esc first)",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-37": {
+      "id": "command-messaging--wire-37",
+      "source": "command-messaging--messaging-tunnel--messaging-hub",
+      "target": "command-messaging--neighbours--ws-broadcast",
+      "label": "pushes appended envelopes",
+      "kind": "executes",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-38": {
+      "id": "command-messaging--wire-38",
+      "source": "command-messaging--neighbours--ws-broadcast",
+      "target": "command-messaging--neighbours--tunnelmodel",
+      "label": "envelope stream over ws",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-39": {
+      "id": "command-messaging--wire-39",
+      "source": "command-messaging--neighbours--studio-chat",
+      "target": "command-messaging--neighbours--tunnelmodel",
+      "label": "renders the folded tunnel feed",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-messaging--wire-40": {
+      "id": "command-messaging--wire-40",
+      "source": "command-messaging--neighbours--workspace",
+      "target": "command-messaging--neighbours--tunnelmodel",
+      "label": "renders the folded tunnel feed",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-1": {
+      "id": "command-mission-model--wire-1",
+      "source": "command-mission-model--durable-hierarchy--project-projects-jsonl",
+      "target": "command-mission-model--durable-hierarchy--objective-okrs-jsonl",
+      "label": "owns",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-2": {
+      "id": "command-mission-model--wire-2",
+      "source": "command-mission-model--durable-hierarchy--objective-okrs-jsonl",
+      "target": "command-mission-model--durable-hierarchy--kr-okrs-jsonl",
+      "label": "owns",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-3": {
+      "id": "command-mission-model--wire-3",
+      "source": "command-mission-model--durable-hierarchy--kr-okrs-jsonl",
+      "target": "command-mission-model--durable-hierarchy--mission-missions-jsonl",
+      "label": "owns",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-4": {
+      "id": "command-mission-model--wire-4",
+      "source": "command-mission-model--durable-hierarchy--mission-missions-jsonl",
+      "target": "command-mission-model--durable-hierarchy--team-teams-jsonl",
+      "label": "owns",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-5": {
+      "id": "command-mission-model--wire-5",
+      "source": "command-mission-model--durable-hierarchy--team-teams-jsonl",
+      "target": "command-mission-model--durable-hierarchy--agent-agents-jsonl",
+      "label": "owns",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-6": {
+      "id": "command-mission-model--wire-6",
+      "source": "command-mission-model--durable-hierarchy--agent-agents-jsonl",
+      "target": "command-mission-model--durable-hierarchy--task-tasks-jsonl",
+      "label": "owns",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-7": {
+      "id": "command-mission-model--wire-7",
+      "source": "command-mission-model--durable-hierarchy--task-tasks-jsonl",
+      "target": "command-mission-model--durable-hierarchy--artifact-artifacts-jsonl",
+      "label": "owns",
+      "kind": "owns",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-8": {
+      "id": "command-mission-model--wire-8",
+      "source": "command-mission-model--durable-hierarchy--agent-agents-jsonl",
+      "target": "command-mission-model--durable-hierarchy--mission-missions-jsonl",
+      "label": "typed ref (1..1)",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-9": {
+      "id": "command-mission-model--wire-9",
+      "source": "command-mission-model--durable-hierarchy--agent-agents-jsonl",
+      "target": "command-mission-model--durable-hierarchy--team-teams-jsonl",
+      "label": "typed ref (1..1)",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-10": {
+      "id": "command-mission-model--wire-10",
+      "source": "command-mission-model--durable-hierarchy--task-tasks-jsonl",
+      "target": "command-mission-model--durable-hierarchy--agent-agents-jsonl",
+      "label": "typed ref (0..1)",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-11": {
+      "id": "command-mission-model--wire-11",
+      "source": "command-mission-model--durable-hierarchy--task-tasks-jsonl",
+      "target": "command-mission-model--durable-hierarchy--mission-missions-jsonl",
+      "label": "typed ref (0..1)",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-12": {
+      "id": "command-mission-model--wire-12",
+      "source": "command-mission-model--durable-hierarchy--team-teams-jsonl",
+      "target": "command-mission-model--durable-hierarchy--mission-missions-jsonl",
+      "label": "typed ref (1..1)",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-13": {
+      "id": "command-mission-model--wire-13",
+      "source": "command-mission-model--durable-hierarchy--thread-threads-jsonl",
+      "target": "command-mission-model--durable-hierarchy--mission-missions-jsonl",
+      "label": "typed ref (1..1)",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-14": {
+      "id": "command-mission-model--wire-14",
+      "source": "command-mission-model--durable-hierarchy--kr-okrs-jsonl",
+      "target": "command-mission-model--durable-hierarchy--objective-okrs-jsonl",
+      "label": "objective back-ref (required)",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-15": {
+      "id": "command-mission-model--wire-15",
+      "source": "command-mission-model--durable-hierarchy--artifact-artifacts-jsonl",
+      "target": "command-mission-model--durable-hierarchy--mission-missions-jsonl",
+      "label": "anchor ref (at least one)",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-16": {
+      "id": "command-mission-model--wire-16",
+      "source": "command-mission-model--durable-hierarchy--artifact-artifacts-jsonl",
+      "target": "command-mission-model--durable-hierarchy--task-tasks-jsonl",
+      "label": "anchor ref (at least one)",
+      "kind": "references",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-17": {
+      "id": "command-mission-model--wire-17",
+      "source": "command-mission-model--readers-and-writers--object-model-facade",
+      "target": "command-mission-model--durable-hierarchy",
+      "label": "validated append + CAS state transitions",
+      "kind": "assigns",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-18": {
+      "id": "command-mission-model--wire-18",
+      "source": "command-mission-model--readers-and-writers--object-model-facade",
+      "target": "command-mission-model--journal-stores",
+      "label": "appends journal records",
+      "kind": "assigns",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-19": {
+      "id": "command-mission-model--wire-19",
+      "source": "command-mission-model--readers-and-writers--mission-view",
+      "target": "command-mission-model--durable-hierarchy",
+      "label": "read-only snapshot join",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-20": {
+      "id": "command-mission-model--wire-20",
+      "source": "command-mission-model--readers-and-writers--messaging-identity",
+      "target": "command-mission-model--durable-hierarchy--agent-agents-jsonl",
+      "label": "resolves durable agent id",
+      "kind": "queries",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-21": {
+      "id": "command-mission-model--wire-21",
+      "source": "command-mission-model--readers-and-writers--messaging-identity",
+      "target": "command-mission-model--durable-hierarchy--thread-threads-jsonl",
+      "label": "stamps missionId via thread link",
+      "kind": "assigns",
+      "routing": "elbow"
+    },
+    "command-mission-model--wire-22": {
+      "id": "command-mission-model--wire-22",
+      "source": "command-mission-model--readers-and-writers--external-sessions",
+      "target": "command-mission-model--durable-hierarchy--agent-agents-jsonl",
+      "label": "registers Agent + Presence",
+      "kind": "assigns",
       "routing": "elbow"
     }
   }
