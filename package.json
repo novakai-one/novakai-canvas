@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "test": "vitest run",
     "check": "npm run lint && npm run test && tsc -p tsconfig.tools.json && npm run build",
-    "canvas": "node tools/canvas-cli/cli.ts"
+    "canvas": "node tools/canvas-cli/cli.ts",
+    "report:poc": "npm run check && node tools/report-session/cli.ts generate --verified",
+    "report:poc:fast": "node tools/report-session/cli.ts generate",
+    "report:show": "node tools/report-session/cli.ts show"
   },
   "dependencies": {
     "@xyflow/react": "^12.11.2",
