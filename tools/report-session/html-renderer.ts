@@ -20,7 +20,9 @@ function receiptCards(receipts: readonly PublishedReceipt[], empty: string): str
       <h3>${escape(receipt.title)}</h3>
       <p>${escape(receipt.summary)}</p>
       <div class="evidence">${receipt.evidence.map((item) =>
-        `<span>${escape(item.kind)} · ${escape(item.label)}</span>`).join('')}</div>
+        item.href
+          ? `<a href="../../../${escape(item.href)}">${escape(item.kind)} · ${escape(item.label)}</a>`
+          : `<span>${escape(item.kind)} · ${escape(item.label)}</span>`).join('')}</div>
     </article>`).join('');
 }
 
@@ -58,7 +60,7 @@ export function renderStandaloneReport(projection: PublishedReportProjection): s
     .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0 30px}.stat{padding:16px;border:1px solid var(--line);border-radius:15px;background:#fff}.stat b{display:block;font-size:28px;color:var(--blue)}section{margin-top:30px}section>h2{margin:0 0 12px;font-size:30px;letter-spacing:-.03em}
     .map-nodes,.cards,.workflow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.map-node,.receipt,.step{padding:17px;border:1px solid var(--line);border-radius:15px;background:#fff}.map-node span{color:var(--muted);font-size:11px;font-weight:800}.map-node strong,.map-node small{display:block}.map-node strong{margin:8px 0}.map-node[data-role=module]{border-top:4px solid var(--green)}.map-node[data-role=adapter]{border-top:4px solid var(--violet)}.map-node[data-role=caller]{border-top:4px solid var(--blue)}
     .edge-list{margin:12px 0 0;padding:0;list-style:none}.edge-list li{padding:9px 0;border-bottom:1px solid var(--line)}.edge-list strong{margin-left:10px}.step{position:relative;padding-left:54px}.step b{position:absolute;left:16px;top:16px;display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:var(--blue2);color:var(--blue)}.step span{display:block;color:var(--muted);font-size:13px}
-    .receipt h3{margin:10px 0 5px}.receipt p{color:var(--muted)}.evidence{display:flex;flex-wrap:wrap;gap:6px}.evidence span{padding:4px 7px;border-radius:7px;background:#f1f5f9;font-size:11px}.next{display:grid;gap:8px}.next div{padding:13px;border-left:4px solid var(--blue);border-radius:8px;background:#fff}.empty{padding:18px;border:1px dashed var(--line);border-radius:14px;color:var(--muted)}
+    .receipt h3{margin:10px 0 5px}.receipt p{color:var(--muted)}.evidence{display:flex;flex-wrap:wrap;gap:6px}.evidence span,.evidence a{padding:4px 7px;border-radius:7px;background:#f1f5f9;font-size:11px}.evidence a{color:var(--blue)}.next{display:grid;gap:8px}.next div{padding:13px;border-left:4px solid var(--blue);border-radius:8px;background:#fff}.empty{padding:18px;border:1px dashed var(--line);border-radius:14px;color:var(--muted)}
     footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font:12px ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere}
     @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.map-nodes,.cards,.workflow{grid-template-columns:1fr}}
   </style>
@@ -91,5 +93,6 @@ export function renderStandaloneReport(projection: PublishedReportProjection): s
   <footer>reportRevisionId=${escape(projection.reportRevisionId)} · sourceDigest=${escape(projection.sourceDigest)} · renderer=standalone-html-v1</footer>
 </main>
 </body>
-</html>`;
+</html>
+`;
 }

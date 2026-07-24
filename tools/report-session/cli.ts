@@ -362,9 +362,10 @@ function show(args: Args): void {
     reportRevisionId: envelope.reportRevisionId,
     sourceDigest: envelope.sourceDigest,
     receiptsDigest: envelope.receiptsDigest,
+    publicProjectionDigest: envelope.publicProjectionDigest,
     evidenceHead: envelope.evidenceHead,
-    headline: envelope.projection.outcome.headline,
-    stats: envelope.projection.stats,
+    outcome: envelope.projection.outcome,
+    counts: envelope.projection.stats,
     html: envelope.html.path,
   }, null, 2)}\n`);
 }

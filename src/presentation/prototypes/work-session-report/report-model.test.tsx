@@ -97,8 +97,11 @@ describe('report prototype state selection', () => {
     );
     const empty = renderToStaticMarkup(<ReportStatePanel state="empty" />);
     expect(loading).toContain('Loading the public report projection');
+    expect(loading).toContain('role="status"');
     expect(invalid).toContain('Retry public report');
     expect(invalid).toContain('projection: invalid');
+    expect(invalid).toContain('role="alert"');
     expect(empty).toContain('Generate a report with structured receipts');
+    expect(empty).toContain('role="status"');
   });
 });

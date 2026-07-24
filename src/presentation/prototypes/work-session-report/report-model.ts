@@ -1,5 +1,5 @@
 import {
-  publishedAcceptedReportEnvelopeSchema,
+  verifyPublishedProjectionEnvelope,
   type PublishedAcceptedReportEnvelope,
   type PublishedReceipt,
   type PublishedReportProjection,
@@ -69,16 +69,17 @@ export function selectPrototypeReport(
 
 /** Runtime-validates untrusted HTTP JSON at the public reporting seam. */
 export function hydratePublishedReport(input: unknown): ReportHydrationResult {
-  const parsed = publishedAcceptedReportEnvelopeSchema.safeParse(input);
-  if (!parsed.success) {
-    const issue = parsed.error.issues[0];
-    const path = issue?.path.length ? `${issue.path.join('.')}: ` : '';
+  try {
+    const envelope = verifyPublishedProjectionEnvelope(input);
+    return { ok: true, report: selectPrototypeReport(envelope) };
+  } catch (error) {
     return {
       ok: false,
-      message: `${path}${issue?.message ?? 'The publication does not match the public contract.'}`,
+      message: error instanceof Error
+        ? error.message
+        : 'The publication does not match the public contract.',
     };
   }
-  return { ok: true, report: selectPrototypeReport(parsed.data) };
 }
 
 export function variantFromSearch(search: string): ReportVariant {

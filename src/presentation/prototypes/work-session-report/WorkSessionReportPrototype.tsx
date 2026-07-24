@@ -50,9 +50,21 @@ function dateLabel(value?: string): string {
 }
 
 function isEditableTarget(target: EventTarget | null): boolean {
-  return target instanceof HTMLElement
-    && (target.matches('input, textarea, [contenteditable]')
-      || target.closest('[contenteditable="true"]') !== null);
+  if (!(target instanceof HTMLElement)) return false;
+  return target.closest([
+    'a',
+    'button',
+    'input',
+    'select',
+    'textarea',
+    '[contenteditable]',
+    '[role="menuitem"]',
+    '[role="option"]',
+    '[role="slider"]',
+    '[role="spinbutton"]',
+    '[role="tab"]',
+    '[role="treeitem"]',
+  ].join(', ')) !== null;
 }
 
 function StatusMark({ status }: { status: string }) {
@@ -99,11 +111,18 @@ function IdentityStrip({ report }: { report: PrototypeReport }) {
         <code>{report.publicProjectionDigest}</code>
       </div>
       <div>
-        <span>Captured proof state</span>
+        <span>Report-wide proof state</span>
         <strong data-proof-state={report.proofState.status}>
           {report.proofState.status} · exit {report.proofState.exitCode ?? '—'}
         </strong>
         <small>{report.proofState.command ?? report.proofState.label}</small>
+        <a
+          href={`/${report.envelope.html.path}`}
+          rel="noreferrer"
+          target="_blank"
+        >
+          Open accepted standalone report HTML
+        </a>
       </div>
     </section>
   );
@@ -129,7 +148,7 @@ function OutcomeBrief({ projection }: { projection: PublishedReportProjection })
   );
 }
 
-function EvidencePath({
+function ReportAcceptanceContext({
   origin,
   report,
 }: {
@@ -137,35 +156,59 @@ function EvidencePath({
   report: PrototypeReport;
 }) {
   return (
-    <div className="report-evidence-path" aria-label="Evidence path">
+    <section
+      className="report-evidence-path"
+      aria-label="Report-level acceptance context"
+    >
+      <span className="report-section-label">Report-level acceptance context</span>
+      <div className="report-acceptance-nodes">
       <span className="path-node">
-        <small>Selected context</small>
+        <small>Selected viewing context</small>
         <strong>{origin}</strong>
       </span>
-      <span className="path-connector" aria-hidden="true">→</span>
+      <span className="path-connector" aria-hidden="true">∈</span>
       <span className="path-node">
-        <small>Accepted public projection</small>
+        <small>Contained in accepted public projection</small>
         <strong>{compactIdentity(report.reportRevisionId)}</strong>
       </span>
-      <span className="path-connector" aria-hidden="true">→</span>
+      <span className="path-connector" aria-hidden="true">+</span>
       <span className="path-node is-proof">
-        <small>{report.proofState.status} proof</small>
+        <small>Report-wide acceptance proof — does not assert item-level causality</small>
         <strong>{report.proofState.label}</strong>
       </span>
-    </div>
+      </div>
+    </section>
   );
+}
+
+function EvidenceReference({
+  evidence,
+}: {
+  evidence: PublishedReceipt['evidence'][number];
+}) {
+  const label = `${evidence.kind} · ${evidence.label}`;
+  return evidence.href ? (
+    <a href={`/${evidence.href}`} rel="noreferrer" target="_blank">{label}</a>
+  ) : <span>{label}</span>;
 }
 
 function ProofReceipt({
   receipt,
   compact = false,
+  primary = false,
 }: {
   receipt: PublishedReceipt;
   compact?: boolean;
+  primary?: boolean;
 }) {
   return (
     <article className={`report-proof-receipt ${compact ? 'is-compact' : ''}`}>
-      <span className="receipt-kind">{receipt.type} receipt</span>
+      <span className="receipt-kind">
+        {primary ? 'Primary report-wide proof' : `${receipt.type} receipt`}
+      </span>
+      <small className="receipt-scope">
+        Report-wide acceptance proof — does not assert item-level causality
+      </small>
       <h3>{receipt.title}</h3>
       <p>{receipt.summary}</p>
       {receipt.proof && (
@@ -178,12 +221,70 @@ function ProofReceipt({
       )}
       <div className="receipt-evidence">
         {receipt.evidence.map((evidence, index) => (
-          <span key={`${evidence.kind}:${evidence.label}:${index}`}>
-            {evidence.kind} · {evidence.label}
-          </span>
+          <EvidenceReference
+            evidence={evidence}
+            key={`${evidence.kind}:${evidence.label}:${index}`}
+          />
         ))}
       </div>
     </article>
+  );
+}
+
+function ReportProofs({
+  projection,
+  compact = false,
+}: {
+  projection: PublishedReportProjection;
+  compact?: boolean;
+}) {
+  if (projection.proofs.length === 0) {
+    return <p className="report-inline-empty">No report-wide proof receipt is present.</p>;
+  }
+  return (
+    <div className="report-proof-stack">
+      {projection.proofs.map((proof, index) => (
+        <ProofReceipt
+          compact={compact}
+          key={proof.id}
+          primary={index === 0}
+          receipt={proof}
+        />
+      ))}
+      {projection.proofs.length > 1 && (
+        <p className="report-remaining-count">
+          {projection.proofs.length - 1} additional report-wide proof receipt
+          {projection.proofs.length === 2 ? '' : 's'} shown.
+        </p>
+      )}
+    </div>
+  );
+}
+
+function ValidationLadder({ report }: { report: PrototypeReport }) {
+  const { envelope, projection } = report;
+  const proof = projection.proofs.find((receipt) => receipt.proof?.exitCode === 0);
+  const steps = [
+    ['Source bound', compactIdentity(envelope.sourceDigest)],
+    ['Receipts bound', `${envelope.receiptIds.length} authoritative references`],
+    ['Executed proof exit state', proof ? `exit ${proof.proof?.exitCode}` : 'missing'],
+    ['Accepted revision', compactIdentity(envelope.reportRevisionId)],
+  ] as const;
+  return (
+    <section className="report-validation-ladder" aria-label="Report-level validation ladder">
+      <span className="report-section-label">Report-level validation</span>
+      <ol>
+        {steps.map(([label, detail], index) => (
+          <li key={label}>
+            <b>{index + 1}</b>
+            <span><strong>{label}</strong><small>{detail}</small></span>
+          </li>
+        ))}
+      </ol>
+      <p>
+        Gate policy: digest mismatch → reject · completion proof non-zero or source warning → reject.
+      </p>
+    </section>
   );
 }
 
@@ -205,9 +306,10 @@ function DecisionList({ projection }: { projection: PublishedReportProjection })
 
 function NextAction({ projection }: { projection: PublishedReportProjection }) {
   const action = projection.nextActions[0];
+  const remaining = Math.max(0, projection.nextActions.length - 1);
   return (
     <section className="report-next-action">
-      <span className="report-section-label">Next dependency</span>
+      <span className="report-section-label">Primary next action</span>
       {action ? (
         <>
           <StatusMark status={action.status} />
@@ -217,6 +319,11 @@ function NextAction({ projection }: { projection: PublishedReportProjection }) {
               ? `Depends on ${action.dependsOn.join(', ')}.`
               : 'Ready without a recorded dependency.'}
           </p>
+          {remaining > 0 && (
+            <small className="report-remaining-count">
+              +{remaining} remaining action{remaining === 1 ? '' : 's'}
+            </small>
+          )}
         </>
       ) : <p className="report-inline-empty">No next action is recorded.</p>}
     </section>
@@ -241,18 +348,21 @@ function VariantA({ report }: { report: PrototypeReport }) {
             <span>Primary navigation</span>
             <strong>Report playback</strong>
           </div>
-          {projection.workflow.map((step, index) => (
-            <button
-              aria-pressed={selectedStep?.id === step.id}
-              className={selectedStep?.id === step.id ? 'is-selected' : ''}
-              key={step.id}
-              onClick={() => setSelectedStepId(step.id)}
-              type="button"
-            >
-              <b>{String(index + 1).padStart(2, '0')}</b>
-              <span><strong>{step.label}</strong><small>{step.status}</small></span>
-            </button>
-          ))}
+          <div className="playback-step-list">
+            {projection.workflow.map((step, index) => (
+              <button
+                aria-label={`${step.label}${selectedStep?.id === step.id ? ', selected' : ''}`}
+                aria-pressed={selectedStep?.id === step.id}
+                className={selectedStep?.id === step.id ? 'is-selected' : ''}
+                key={step.id}
+                onClick={() => setSelectedStepId(step.id)}
+                type="button"
+              >
+                <b>{String(index + 1).padStart(2, '0')}</b>
+                <span><strong>{step.label}</strong><small>{step.status}</small></span>
+              </button>
+            ))}
+          </div>
           <div className="playback-module-index">
             <span className="report-section-label">Changed modules</span>
             {projection.changeMap.nodes.map((node) => (
@@ -284,7 +394,11 @@ function VariantA({ report }: { report: PrototypeReport }) {
               <strong>{next?.label ?? compactIdentity(report.reportRevisionId)}</strong>
             </div>
           </div>
-          <EvidencePath origin={selectedStep?.label ?? 'No workflow step'} report={report} />
+          <ReportAcceptanceContext
+            origin={selectedStep?.label ?? 'No workflow step'}
+            report={report}
+          />
+          <ValidationLadder report={report} />
           <div className="playback-decisions">
             <DecisionList projection={projection} />
             <NextAction projection={projection} />
@@ -292,10 +406,10 @@ function VariantA({ report }: { report: PrototypeReport }) {
         </section>
         <aside className="playback-proof-dock">
           <div className="report-panel-heading">
-            <span>Evidence dock</span>
-            <strong>{report.proofState.status} proof</strong>
+            <span>Report validation dock</span>
+            <strong>{report.proofState.status} report-wide proof</strong>
           </div>
-          {projection.proofs.map((proof) => <ProofReceipt key={proof.id} receipt={proof} />)}
+          <ReportProofs projection={projection} />
           <div className="proof-provenance">
             <span className="report-section-label">Evidence head</span>
             <code>{report.envelope.evidenceHead.commit}</code>
@@ -323,7 +437,7 @@ function ChangeMapSurface({
 }: {
   projection: PublishedReportProjection;
   selectedNodeId?: string;
-  selectNode: (id: string) => void;
+  selectNode?: (id: string) => void;
   compact?: boolean;
 }) {
   const positions = Object.fromEntries(
@@ -337,7 +451,7 @@ function ChangeMapSurface({
       {!compact && (
         <div className="change-map-heading">
           <div><span>Dominant surface</span><strong>Accepted change map</strong></div>
-          <small>Select a module to trace its acceptance evidence</small>
+          <small>Select a module to inspect connected wires and report context</small>
         </div>
       )}
       <div className="change-map-plot">
@@ -368,19 +482,33 @@ function ChangeMapSurface({
         {projection.changeMap.nodes.map((node, index) => {
           const position = MAP_POSITIONS[index % MAP_POSITIONS.length];
           const selected = node.id === selectedNodeId;
-          return (
-            <button
-              aria-pressed={selected}
-              className={selected ? 'is-selected' : ''}
-              key={node.id}
-              onClick={() => selectNode(node.id)}
-              style={{ left: `${position.left}%`, top: `${position.top}%` }}
-              type="button"
-            >
+          const content = (
+            <>
               <span>«{node.role}»</span>
               <strong>{node.label}</strong>
               {!compact && <small>{node.receiptCount} direct receipt{node.receiptCount === 1 ? '' : 's'}</small>}
-              {selected && <b>Selected</b>}
+              {selected && !compact && <b>Selected</b>}
+            </>
+          );
+          return compact ? (
+            <article
+              className="change-map-node"
+              key={node.id}
+              style={{ left: `${position.left}%`, top: `${position.top}%` }}
+            >
+              {content}
+            </article>
+          ) : (
+            <button
+              aria-label={`${node.label}${selected ? ', selected' : ''}`}
+              aria-pressed={selected}
+              className={`change-map-node ${selected ? 'is-selected' : ''}`}
+              key={node.id}
+              onClick={() => selectNode?.(node.id)}
+              style={{ left: `${position.left}%`, top: `${position.top}%` }}
+              type="button"
+            >
+              {content}
             </button>
           );
         })}
@@ -443,8 +571,9 @@ function VariantB({ report }: { report: PrototypeReport }) {
               </div>
             ))}
           </div>
-          <EvidencePath origin={selectedNode?.label ?? 'No module'} report={report} />
-          {projection.proofs.map((proof) => <ProofReceipt compact key={proof.id} receipt={proof} />)}
+          <ReportAcceptanceContext origin={selectedNode?.label ?? 'No module'} report={report} />
+          <ValidationLadder report={report} />
+          <ReportProofs compact projection={projection} />
         </aside>
       </div>
       <div className="map-first-footer">
@@ -466,14 +595,18 @@ function ReceiptCard({
   select: (id: string) => void;
 }) {
   return (
-    <button
-      aria-pressed={selected}
+    <article
       className={`evidence-wall-card is-${receipt.type} ${selected ? 'is-selected' : ''}`}
-      onClick={() => select(receipt.id)}
-      type="button"
     >
-      <span>{receipt.type} receipt</span>
-      <strong>{receipt.title}</strong>
+      <button
+        aria-label={`${receipt.title}${selected ? ', selected' : ''}`}
+        aria-pressed={selected}
+        onClick={() => select(receipt.id)}
+        type="button"
+      >
+        <span>{receipt.type} receipt</span>
+        <strong>{receipt.title}</strong>
+      </button>
       <p>{receipt.summary}</p>
       {receipt.proof && (
         <div className="wall-proof-state">
@@ -482,7 +615,7 @@ function ReceiptCard({
         </div>
       )}
       <small>{receipt.evidence.length} evidence reference{receipt.evidence.length === 1 ? '' : 's'}</small>
-    </button>
+    </article>
   );
 }
 
@@ -501,7 +634,7 @@ function VariantC({ report }: { report: PrototypeReport }) {
         <section className="evidence-wall">
           <div className="wall-heading">
             <div><span>Primary surface</span><strong>Accepted receipts</strong></div>
-            <small>Proof and artifacts first · select any receipt for its public evidence path</small>
+            <small>Proof and artifacts first · select a receipt to inspect its published evidence</small>
           </div>
           <div className="evidence-wall-grid">
             {receipts.map((receipt) => (
@@ -523,13 +656,24 @@ function VariantC({ report }: { report: PrototypeReport }) {
           <div className="wall-evidence-list">
             {selectedReceipt?.evidence.map((evidence, index) => (
               <div key={`${evidence.kind}:${evidence.label}:${index}`}>
-                <span>{evidence.kind}</span>
-                <strong>{evidence.label}</strong>
+                <EvidenceReference evidence={evidence} />
               </div>
             ))}
           </div>
-          <EvidencePath origin={selectedReceipt?.title ?? 'No receipt'} report={report} />
         </aside>
+      </div>
+      <div className="wall-report-gates">
+        <div className="wall-report-validation">
+          <ReportAcceptanceContext
+            origin={selectedReceipt?.title ?? 'No receipt'}
+            report={report}
+          />
+          <ValidationLadder report={report} />
+        </div>
+        <section className="wall-report-proof">
+            <span className="report-section-label">Separate report-wide proof</span>
+            <ReportProofs compact projection={projection} />
+        </section>
       </div>
       <div className="wall-context-maps">
         <section>
@@ -540,7 +684,6 @@ function VariantC({ report }: { report: PrototypeReport }) {
           <ChangeMapSurface
             compact
             projection={projection}
-            selectNode={() => undefined}
           />
         </section>
         <section className="wall-workflow">
@@ -593,7 +736,10 @@ export function ReportStatePanel({
     },
   }[state];
   return (
-    <main className={`report-state-panel is-${state}`}>
+    <main
+      className={`report-state-panel is-${state}`}
+      role={state === 'invalid' ? 'alert' : 'status'}
+    >
       <span>{content.label}</span>
       <h1>{content.title}</h1>
       <p>{content.body}</p>
@@ -611,7 +757,11 @@ function PrototypeSwitcher({
   setVariant: (next: ReportVariant) => void;
 }) {
   return (
-    <div className="report-prototype-switcher" aria-label="Prototype variant switcher">
+    <div
+      className="report-prototype-switcher"
+      aria-label="Prototype variant switcher"
+      role="group"
+    >
       <button
         aria-label="Previous report variant"
         onClick={() => setVariant(cycleVariant(variant, -1))}

@@ -181,7 +181,7 @@ function repositoryIdentity(
         evidenceHead.commit,
         '--',
         ...files,
-      ], { cwd: repoRoot }));
+      ], { cwd: repoRoot, maxBuffer: 64 * 1024 * 1024 }));
   const contentDigest = sha256(JSON.stringify({
     patchDigest,
     files: files.map((path) => ({

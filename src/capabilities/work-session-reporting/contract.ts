@@ -282,7 +282,38 @@ export const reportingSnapshotSchema = z.object({
 }).strict();
 export type ReportingSnapshot = z.infer<typeof reportingSnapshotSchema>;
 
-const publishedEvidenceSchema = evidenceRefSchema.pick({ kind: true, label: true }).strict();
+const visualHandoverPath = 'docs/visual-reporting/Novakai-Visual-Reporting-Handover.html';
+const acceptedReportHtmlPathPattern =
+  /^docs\/visual-reporting\/reports\/report-[0-9a-f]{64}\.html$/;
+
+const repositoryRelativeHtmlPathSchema = z.string()
+  .min(1)
+  .max(500)
+  .regex(/^[A-Za-z0-9._/-]+$/)
+  .refine((value) => !value.startsWith('/') && !value.split('/').includes('..'), {
+    message: 'Published artifact links must be repository-relative.',
+  })
+  .refine((value) => value.endsWith('.html'), {
+    message: 'Published artifact links must select local HTML.',
+  });
+
+export const publishedArtifactHrefSchema = repositoryRelativeHtmlPathSchema
+  .refine(
+    (value) => value === visualHandoverPath || acceptedReportHtmlPathPattern.test(value),
+    { message: 'Published artifact links must select an approved local HTML artifact.' },
+  );
+
+const publishedEvidenceSchema = evidenceRefSchema.pick({ kind: true, label: true }).extend({
+  href: publishedArtifactHrefSchema.optional(),
+}).strict().superRefine((value, context) => {
+  if (value.href && value.kind !== 'artifact' && value.kind !== 'file') {
+    context.addIssue({
+      code: 'custom',
+      path: ['href'],
+      message: 'Only published file or artifact evidence may link to approved local HTML.',
+    });
+  }
+});
 export type PublishedEvidence = z.infer<typeof publishedEvidenceSchema>;
 
 const publishedExecutedProofSchema = executedProofSchema.omit({ outputExcerpt: true }).strict();
@@ -353,14 +384,6 @@ export const publishedReportProjectionSchema = reportProjectionSchema.omit({
 }).strict();
 export type PublishedReportProjection = z.infer<typeof publishedReportProjectionSchema>;
 
-const relativeArtifactPathSchema = z.string()
-  .min(1)
-  .max(500)
-  .regex(/^[A-Za-z0-9._/-]+$/)
-  .refine((value) => !value.startsWith('/') && !value.split('/').includes('..'), {
-    message: 'Publication paths must be repository-relative.',
-  });
-
 export const publishedEvidenceHeadSchema = z.object({
   commit: z.string().regex(/^[0-9a-f]{40}(?:[0-9a-f]{24})?$/),
   tree: z.string().regex(/^[0-9a-f]{40}(?:[0-9a-f]{24})?$/),
@@ -382,7 +405,7 @@ export const publishedAcceptedReportEnvelopeSchema = z.object({
   acceptedAt: timestampSchema,
   evidenceHead: publishedEvidenceHeadSchema,
   html: z.object({
-    path: relativeArtifactPathSchema,
+    path: repositoryRelativeHtmlPathSchema,
     digest: digestSchema,
   }).strict(),
   projection: publishedReportProjectionSchema,

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "kind": "accepted-report-publication",
-  "publicationDigest": "sha256:632074b70e85880d921c97c1af53a320d4a0896d1c006459dbb4f40ec99e7afd",
+  "publicationDigest": "sha256:f2f3ef744678e2671ed626b9fc64d50ed829e6b9e8dafe702eddf7232f2d45af",
   "publishedAt": "2026-07-24T21:55:35.733Z",
   "reportRevisionId": "report:71adacbefcd482ba0d120cbcc662f32d8de8d97e8eadc3a1ffeac0abed802ce6",
   "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
@@ -59,7 +59,7 @@
   ],
   "receiptsDigest": "sha256:aac7cc8526162a3ee7eb75c3478c8b1349c0c739bfde5a554d7d48c608a3f4ae",
   "authoritativeProjectionDigest": "sha256:6d3f6d5a9bd9ab47f3cb155b3ef8a0e8296313171e0aa2a7420908f2b1bc3cb0",
-  "publicProjectionDigest": "sha256:b0c67c76d78a51fc35450025ed65124f094f17f2203a59e3a3317b5764d2d8db",
+  "publicProjectionDigest": "sha256:b24eb131d547a6500f6f1e06f7c503c2e7a0ab960aa93b52a7999a438156b070",
   "acceptedAt": "2026-07-24T21:55:35.733Z",
   "evidenceHead": {
     "commit": "6ea8948d698999f88ac9f47bd2a805b3d6ee3baa",
@@ -67,7 +67,7 @@
   },
   "html": {
     "path": "docs/visual-reporting/reports/report-71adacbefcd482ba0d120cbcc662f32d8de8d97e8eadc3a1ffeac0abed802ce6.html",
-    "digest": "sha256:2a51edace12bd215fcc98f2a2aa631d3dbda820ddcae3366416bc545e9a779ad"
+    "digest": "sha256:22e43ead9f1a95cf08cc5d6e23fcf4937ef50534bcb148bd2cddcdb23fea67c5"
   },
   "projection": {
     "schemaVersion": 1,
@@ -224,7 +224,8 @@
         "evidence": [
           {
             "kind": "file",
-            "label": "Visual implementation handover"
+            "label": "Visual implementation handover",
+            "href": "docs/visual-reporting/Novakai-Visual-Reporting-Handover.html"
           },
           {
             "kind": "commit",
@@ -293,7 +294,8 @@
         "evidence": [
           {
             "kind": "artifact",
-            "label": "Open visual handover"
+            "label": "Open visual handover",
+            "href": "docs/visual-reporting/Novakai-Visual-Reporting-Handover.html"
           },
           {
             "kind": "commit",
@@ -325,7 +327,8 @@
       },
       {
         "kind": "artifact",
-        "label": "Open visual handover"
+        "label": "Open visual handover",
+        "href": "docs/visual-reporting/Novakai-Visual-Reporting-Handover.html"
       },
       {
         "kind": "file",
@@ -401,7 +404,8 @@
       },
       {
         "kind": "file",
-        "label": "Visual implementation handover"
+        "label": "Visual implementation handover",
+        "href": "docs/visual-reporting/Novakai-Visual-Reporting-Handover.html"
       }
     ]
   }

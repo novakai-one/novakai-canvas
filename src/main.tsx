@@ -1,14 +1,54 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import '@xyflow/react/dist/style.css';
-import App from './App';
-import { createCanvasEngine } from './application/canvas-engine';
-import { createHttpJsonRepository } from './adapters/http-json-repository';
-import { architectureDocumentSchema, canvasPreferencesSchema } from './domain/schema';
-import { defaultPreferences, emptyArchitecture } from './domain/defaults';
-import './styles.css';
 
-async function bootstrap(): Promise<void> {
+const root = createRoot(document.getElementById('root')!);
+const workSessionPrototype = import.meta.env.DEV
+  && new URLSearchParams(window.location.search).get('prototype') === 'work-session-report';
+
+async function bootstrapWorkSessionPrototype(): Promise<void> {
+  root.render(
+    <StrictMode>
+      <main
+        role="status"
+        style={{
+          display: 'grid',
+          width: '100%',
+          minHeight: '100vh',
+          placeItems: 'center',
+          color: '#edf1f4',
+          background: '#0d1117',
+        }}
+      >
+        Loading work-session report prototype…
+      </main>
+    </StrictMode>,
+  );
+  const { WorkSessionReportPrototype } = await import(
+    './presentation/prototypes/work-session-report/WorkSessionReportPrototype'
+  );
+  root.render(
+    <StrictMode>
+      <WorkSessionReportPrototype />
+    </StrictMode>,
+  );
+}
+
+async function bootstrapCanvas(): Promise<void> {
+  const [
+    { default: App },
+    { createCanvasEngine },
+    { createHttpJsonRepository },
+    { architectureDocumentSchema, canvasPreferencesSchema },
+    { defaultPreferences, emptyArchitecture },
+  ] = await Promise.all([
+    import('./App'),
+    import('./application/canvas-engine'),
+    import('./adapters/http-json-repository'),
+    import('./domain/schema'),
+    import('./domain/defaults'),
+    import('@xyflow/react/dist/style.css'),
+    import('./styles.css'),
+  ]);
   const architectureEndpoint = import.meta.env.DEV ? '/api/architecture' : './data/project-architecture.json';
   const preferencesEndpoint = import.meta.env.DEV ? '/api/preferences' : './data/canvas-preferences.json';
   const architectureRepository = createHttpJsonRepository(
@@ -30,11 +70,11 @@ async function bootstrap(): Promise<void> {
     });
   }
 
-  createRoot(document.getElementById('root')!).render(
+  root.render(
     <StrictMode>
       <App engine={engine} initialPreferences={preferences} preferencesRepository={preferencesRepository} />
     </StrictMode>,
   );
 }
 
-void bootstrap();
+void (workSessionPrototype ? bootstrapWorkSessionPrototype() : bootstrapCanvas());
