@@ -7,6 +7,7 @@ import {
   type EvidenceRef,
   type PublishedAcceptedReportEnvelope,
   type PublishedEvidence,
+  type PublishedEvidenceHead,
   type PublishedReceipt,
   type PublishedReportProjection,
   type WorkReceipt,
@@ -31,6 +32,7 @@ function canonical(value: unknown): string {
 function redactText(value: string): string {
   return value
     .replaceAll(/\/Users\/[^/\s]+(?:\/[^\s<>"']*)?/g, '[redacted-path]')
+    .replaceAll(/\/home\/[^/\s]+(?:\/[^\s<>"']*)?/g, '[redacted-path]')
     .replaceAll(/[A-Za-z]:\\Users\\[^\\\s]+(?:\\[^\s<>"']*)?/g, '[redacted-path]')
     .replaceAll(/\$HOME(?:\/[^\s<>"']*)?/g, '[redacted-path]')
     .replaceAll(/\$CODEX_HOME(?:\/[^\s<>"']*)?/g, '[redacted-path]');
@@ -68,7 +70,7 @@ function publicReceipt(receipt: WorkReceipt): PublishedReceipt {
     ...(receipt.proof
       ? {
           proof: {
-            command: receipt.proof.command,
+            command: redactText(receipt.proof.command),
             exitCode: receipt.proof.exitCode,
             executedAt: receipt.proof.executedAt,
             outputDigest: receipt.proof.outputDigest,
@@ -187,6 +189,7 @@ export function createPublishedEnvelope(
   reportInput: AcceptedReport,
   receiptInputs: readonly WorkReceipt[],
   html: { path: string; content: string },
+  evidenceHead: PublishedEvidenceHead,
 ): PublishedAcceptedReportEnvelope {
   const { report, receipts } = authoritativeReceiptsFor(reportInput, receiptInputs);
   const projection = createPublishedProjection(report, receipts);
@@ -201,7 +204,7 @@ export function createPublishedEnvelope(
     ...(receipt.proof
       ? {
           proof: {
-            command: receipt.proof.command,
+            command: redactText(receipt.proof.command),
             exitCode: receipt.proof.exitCode,
             executedAt: receipt.proof.executedAt,
             outputDigest: receipt.proof.outputDigest,
@@ -221,6 +224,7 @@ export function createPublishedEnvelope(
     authoritativeProjectionDigest: report.projectionDigest,
     publicProjectionDigest: digest(canonical(projection)),
     acceptedAt: report.acceptedAt,
+    evidenceHead: structuredClone(evidenceHead),
     html: {
       path: html.path,
       digest: digest(html.content),

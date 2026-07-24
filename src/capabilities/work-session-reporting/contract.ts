@@ -361,6 +361,12 @@ const relativeArtifactPathSchema = z.string()
     message: 'Publication paths must be repository-relative.',
   });
 
+export const publishedEvidenceHeadSchema = z.object({
+  commit: z.string().regex(/^[0-9a-f]{40}(?:[0-9a-f]{24})?$/),
+  tree: z.string().regex(/^[0-9a-f]{40}(?:[0-9a-f]{24})?$/),
+}).strict();
+export type PublishedEvidenceHead = z.infer<typeof publishedEvidenceHeadSchema>;
+
 export const publishedAcceptedReportEnvelopeSchema = z.object({
   schemaVersion: z.literal(1),
   kind: z.literal('accepted-report-publication'),
@@ -374,6 +380,7 @@ export const publishedAcceptedReportEnvelopeSchema = z.object({
   authoritativeProjectionDigest: digestSchema,
   publicProjectionDigest: digestSchema,
   acceptedAt: timestampSchema,
+  evidenceHead: publishedEvidenceHeadSchema,
   html: z.object({
     path: relativeArtifactPathSchema,
     digest: digestSchema,

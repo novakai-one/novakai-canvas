@@ -1,7 +1,6 @@
 import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import {
-  chmodSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -30,6 +29,10 @@ const repoRoot = new URL('../..', import.meta.url).pathname;
 const fixture = new URL('./fixtures/codex-session.jsonl', import.meta.url).pathname;
 const cli = new URL('./cli.ts', import.meta.url).pathname;
 const NOW = '2026-07-25T00:00:00.000Z';
+const TEST_EVIDENCE_HEAD = {
+  commit: '1'.repeat(40),
+  tree: '2'.repeat(40),
+};
 
 function digestBytes(value: string): string {
   return `sha256:${createHash('sha256').update(value).digest('hex')}`;
@@ -115,11 +118,13 @@ describe('report session adapters', () => {
     const olderBase = collectRepositoryReceipts({
       repoRoot,
       baseRef: '31792d15f564a67729535ca275dc56826a85750b',
+      evidenceHeadRef: 'HEAD',
       sessionId,
     });
     const newerBase = collectRepositoryReceipts({
       repoRoot,
       baseRef: '283af7b',
+      evidenceHeadRef: 'HEAD',
       sessionId,
     });
 
@@ -189,7 +194,7 @@ describe('report session adapters', () => {
     );
   });
 
-  it('warns for unsupported content-bearing top-level records and blocks final completion', () => {
+  it('denies unknown top-level and response-item types even when one event is valid', () => {
     const directory = privateTemp('top-level-content-test-');
     const path = join(directory, 'unsupported-top-level.jsonl');
     const metadata = JSON.stringify({
@@ -197,22 +202,67 @@ describe('report session adapters', () => {
       type: 'session_meta',
       payload: { id: 'top-level-content-session', timestamp: NOW },
     });
-    const unsupported = JSON.stringify({
+    const valid = JSON.stringify({
       timestamp: NOW,
-      type: 'user',
-      content: [{ type: 'input_text', text: 'content that must not silently disappear' }],
+      type: 'response_item',
+      payload: {
+        type: 'message',
+        id: 'valid-message',
+        role: 'user',
+        content: [{ type: 'input_text', text: 'one valid normalized event' }],
+      },
     });
-    writeFileSync(path, `${metadata}\n${unsupported}\n`, 'utf8');
+    const unknownTopLevel = JSON.stringify({
+      timestamp: NOW,
+      type: 'future_user_record',
+      payload: { body: 'content that silently disappears' },
+    });
+    const unknownResponseItem = JSON.stringify({
+      timestamp: NOW,
+      type: 'response_item',
+      payload: { type: 'future_content', body: 'content that silently disappears' },
+    });
+    writeFileSync(
+      path,
+      `${metadata}\n${valid}\n${unknownTopLevel}\n${unknownResponseItem}\n`,
+      'utf8',
+    );
 
     const parsed = parseCodexSessionFile(path, { confirmComplete: true });
-    expect(parsed.events).toEqual([]);
-    expect(parsed.warnings).toContainEqual(expect.objectContaining({
-      code: 'UnsupportedContent',
-      line: 2,
-    }));
+    expect(parsed.events).toHaveLength(1);
+    expect(parsed.warnings).toEqual([
+      {
+        code: 'UnsupportedContent',
+        line: 3,
+        message: 'Unsupported top-level record type future_user_record.',
+      },
+      {
+        code: 'UnsupportedContent',
+        line: 4,
+        message: 'Unsupported response item payload type future_content.',
+      },
+    ]);
     const reporting = createReportingEngine({ now: () => NOW });
     const imported = reporting.importSession(parsed);
     if (!imported.ok) throw new Error(imported.error.message);
+    const proof = reporting.recordReceipt({
+      sessionId: imported.value.id,
+      type: 'proof',
+      title: 'Parser warning gate proof',
+      summary: 'A successful command cannot override an unsupported-record warning.',
+      occurredAt: NOW,
+      evidence: [{ kind: 'test', label: 'parser warning test', uri: 'test:parser-warning' }],
+      relatedModules: [],
+      tags: [],
+      proof: {
+        command: 'npm run check',
+        exitCode: 0,
+        executedAt: NOW,
+        outputDigest: `sha256:${'1'.repeat(64)}`,
+        outputExcerpt: 'passed',
+      },
+    });
+    if (!proof.ok) throw new Error(proof.error.message);
     expect(reporting.compileReport({
       sessionId: imported.value.id,
       outcome: { status: 'complete', headline: 'Unsafe.', summary: 'Content disappeared.' },
@@ -266,7 +316,7 @@ describe('report session adapters', () => {
     const envelope = createPublishedEnvelope(report, receipts, {
       path: `docs/visual-reporting/reports/${report.id.replace(':', '-')}.html`,
       content: html,
-    });
+    }, TEST_EVIDENCE_HEAD);
     const publicBytes = `${JSON.stringify(envelope)}\n${html}`;
     expect(publishedAcceptedReportEnvelopeSchema.parse(envelope)).toEqual(envelope);
     expect(html).toContain('&lt;One report &amp; two hosts&gt;');
@@ -280,6 +330,7 @@ describe('report session adapters', () => {
       'I will establish one reporting authority',
       'sourceRef',
       '/Users/',
+      '/home/',
       '$HOME',
       '$CODEX_HOME',
       '"events"',
@@ -296,6 +347,108 @@ describe('report session adapters', () => {
     expect(() => verifyPublishedEnvelope(envelope, `${html}\nchanged`)).toThrow(/HTML digest/);
   });
 
+  it('redacts every supported home-path form from every public text surface', () => {
+    const reporting = createReportingEngine({ now: () => NOW });
+    const imported = reporting.importSession(parseCodexSessionFile(fixture, { confirmComplete: true }));
+    if (!imported.ok) throw new Error(imported.error.message);
+    const privateHomes = '/Users/alice/a /home/alice/b C:\\Users\\alice\\c $HOME/d $CODEX_HOME/e';
+    const change = reporting.recordReceipt({
+      sessionId: imported.value.id,
+      type: 'change',
+      title: `Change ${privateHomes}`,
+      summary: `Summary ${privateHomes}`,
+      occurredAt: NOW,
+      module: {
+        id: '/home/alice/map-id',
+        label: '/home/alice/map-label',
+        role: 'module',
+      },
+      relatedModules: [],
+      evidence: [{
+        kind: 'file',
+        label: `/home/alice/evidence-label ${privateHomes}`,
+        uri: 'file:///home/alice/private-source',
+      }],
+      tags: [],
+    });
+    if (!change.ok) throw new Error(change.error.message);
+    const proof = reporting.recordReceipt({
+      sessionId: imported.value.id,
+      type: 'proof',
+      title: 'Private proof',
+      summary: `Proof summary ${privateHomes}`,
+      occurredAt: NOW,
+      evidence: [{
+        kind: 'test',
+        label: `/home/alice/proof-evidence ${privateHomes}`,
+        uri: 'test:private-home-proof',
+      }],
+      relatedModules: [],
+      tags: [],
+      proof: {
+        command: `cat /home/alice/proof-command ${privateHomes}`,
+        exitCode: 0,
+        executedAt: NOW,
+        outputDigest: `sha256:${'4'.repeat(64)}`,
+        outputExcerpt: `proof output text /home/alice/proof-output ${privateHomes}`,
+      },
+    });
+    if (!proof.ok) throw new Error(proof.error.message);
+    const draft = reporting.compileReport({
+      sessionId: imported.value.id,
+      outcome: {
+        status: 'partial',
+        headline: `Title ${privateHomes}`,
+        summary: `Outcome ${privateHomes}`,
+      },
+      nextActions: [{
+        id: '/home/alice/next-id',
+        label: `Next ${privateHomes}`,
+        status: 'next',
+        dependsOn: ['/home/alice/dependency'],
+      }],
+    });
+    if (!draft.ok) throw new Error(draft.error.message);
+    const accepted = reporting.acceptReport({
+      reportRevisionId: draft.value.id,
+      expectedSourceDigest: draft.value.sourceDigest,
+      expectedReceiptsDigest: draft.value.receiptsDigest,
+    });
+    if (!accepted.ok) throw new Error(accepted.error.message);
+    const receipts = reporting.snapshot().receipts;
+    const projection = createPublishedProjection(accepted.value, receipts);
+    const html = renderStandaloneReport(projection);
+    const envelope = createPublishedEnvelope(accepted.value, receipts, {
+      path: `docs/visual-reporting/reports/${accepted.value.id.replace(':', '-')}.html`,
+      content: html,
+    }, TEST_EVIDENCE_HEAD);
+    const publicBytes = `${JSON.stringify(envelope)}\n${html}`;
+
+    for (const forbidden of ['/Users/', '/home/', 'C:\\Users\\', '$HOME', '$CODEX_HOME']) {
+      expect(publicBytes, `must redact ${forbidden}`).not.toContain(forbidden);
+    }
+    expect(publicBytes).not.toContain('proof output text');
+    expect(projection.title).toContain('[redacted-path]');
+    expect(projection.outcome.summary).toContain('[redacted-path]');
+    expect(projection.evidence[0]?.label).toContain('[redacted-path]');
+    expect(projection.proofs[0]?.proof?.command).toContain('[redacted-path]');
+    expect(projection.changeMap.nodes[0]).toMatchObject({
+      id: '[redacted-path]',
+      label: '[redacted-path]',
+    });
+    expect(projection.workflow.at(-1)).toMatchObject({
+      id: '[redacted-path]',
+      label: expect.stringContaining('[redacted-path]'),
+      detail: expect.stringContaining('[redacted-path]'),
+    });
+    expect(projection.nextActions[0]).toMatchObject({
+      id: '[redacted-path]',
+      label: expect.stringContaining('[redacted-path]'),
+      dependsOn: ['[redacted-path]'],
+    });
+    expect(verifyPublishedEnvelope(envelope, html)).toEqual(envelope);
+  });
+
   it('rejects the exact public revision/count tamper and non-renderer HTML after digest recomputation', () => {
     const { report, receipts } = prepareAcceptedReport();
     const projection = createPublishedProjection(report, receipts);
@@ -303,7 +456,7 @@ describe('report session adapters', () => {
     const envelope = createPublishedEnvelope(report, receipts, {
       path: `docs/visual-reporting/reports/${report.id.replace(':', '-')}.html`,
       content: html,
-    });
+    }, TEST_EVIDENCE_HEAD);
 
     const tamperedProjection = structuredClone(envelope);
     tamperedProjection.projection.reportRevisionId =
@@ -343,7 +496,7 @@ describe('report session adapters', () => {
     const envelope = createPublishedEnvelope(report, receipts, {
       path: `docs/visual-reporting/reports/${report.id.replace(':', '-')}.html`,
       content: html,
-    });
+    }, TEST_EVIDENCE_HEAD);
     const hostile = structuredClone(envelope);
     const artifact = hostile.projection.artifacts[0]!;
     hostile.projection.artifacts = [];
@@ -379,6 +532,7 @@ describe('report session adapters', () => {
       'I will establish one reporting authority',
       'sourceRef',
       '/Users/',
+      '/home/',
       '$HOME',
       '$CODEX_HOME',
       '"events"',
@@ -452,8 +606,12 @@ describe('report session adapters', () => {
       publicEnvelope,
       '--report',
       envelope.reportRevisionId,
-    ], { cwd: repoRoot, encoding: 'utf8' })) as { reportRevisionId: string };
+    ], { cwd: repoRoot, encoding: 'utf8' })) as {
+      reportRevisionId: string;
+      evidenceHead: { commit: string; tree: string };
+    };
     expect(shown.reportRevisionId).toBe(envelope.reportRevisionId);
+    expect(shown.evidenceHead).toEqual(envelope.evidenceHead);
     const staleSelection = spawnSync(process.execPath, [
       cli,
       'show',
@@ -466,23 +624,27 @@ describe('report session adapters', () => {
     expect(staleSelection.stderr).toContain('not available');
   });
 
-  it('repeats final generation byte-idempotently when source, base, and code are unchanged', () => {
+  it('names the intended evidence commit and repeats generation byte-idempotently', () => {
     const directory = privateTemp('final-idempotency-test-');
     const state = join(directory, 'state.json');
     const publicEnvelope = join(directory, 'accepted-report.json');
     const htmlDirectory = join(directory, 'html');
-    const binDirectory = join(directory, 'bin');
-    const npmStub = join(binDirectory, 'npm');
-    mkdirSync(binDirectory, { recursive: true });
-    writeFileSync(npmStub, '#!/bin/sh\nprintf "repository checks passed\\n"\nexit 0\n', 'utf8');
-    chmodSync(npmStub, 0o755);
+    const evidenceCommit = execFileSync('git', ['rev-parse', 'HEAD^{commit}'], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+    }).trim();
+    const evidenceTree = execFileSync('git', ['rev-parse', `${evidenceCommit}^{tree}`], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+    }).trim();
     const args = [
       cli,
       'generate',
-      '--final',
       '--session',
       fixture,
       '--complete',
+      '--evidence-head',
+      evidenceCommit,
       '--state',
       state,
       '--public',
@@ -490,10 +652,6 @@ describe('report session adapters', () => {
       '--html-directory',
       htmlDirectory,
     ];
-    const environment = {
-      ...process.env,
-      PATH: `${binDirectory}:${process.env.PATH ?? ''}`,
-    };
     const trackedBefore = execFileSync('git', ['status', '--short'], {
       cwd: repoRoot,
       encoding: 'utf8',
@@ -501,7 +659,6 @@ describe('report session adapters', () => {
     const first = JSON.parse(execFileSync(process.execPath, args, {
       cwd: repoRoot,
       encoding: 'utf8',
-      env: environment,
     })) as { reportRevisionId: string; html: string };
     const firstEnvelope = readFileSync(publicEnvelope, 'utf8');
     const firstHtml = readFileSync(join(repoRoot, first.html), 'utf8');
@@ -509,10 +666,13 @@ describe('report session adapters', () => {
     const second = JSON.parse(execFileSync(process.execPath, args, {
       cwd: repoRoot,
       encoding: 'utf8',
-      env: environment,
     })) as { reportRevisionId: string; html: string };
+    const envelope = publishedAcceptedReportEnvelopeSchema.parse(
+      JSON.parse(readFileSync(publicEnvelope, 'utf8')),
+    );
 
     expect(second.reportRevisionId).toBe(first.reportRevisionId);
+    expect(envelope.evidenceHead).toEqual({ commit: evidenceCommit, tree: evidenceTree });
     expect(readFileSync(publicEnvelope, 'utf8')).toBe(firstEnvelope);
     expect(readFileSync(join(repoRoot, second.html), 'utf8')).toBe(firstHtml);
     expect(readFileSync(state, 'utf8')).toBe(firstState);
@@ -558,6 +718,24 @@ describe('report session adapters', () => {
     ], { cwd: repoRoot, encoding: 'utf8' });
     expect(noExplicitSession.status).toBe(1);
     expect(noExplicitSession.stderr).toContain('requires an explicit --session');
+
+    const noEvidenceHead = spawnSync(process.execPath, [
+      cli,
+      'generate',
+      '--final',
+      '--session',
+      fixture,
+      '--complete',
+    ], { cwd: repoRoot, encoding: 'utf8' });
+    expect(noEvidenceHead.status).toBe(1);
+    expect(noEvidenceHead.stderr).toContain('requires an explicit --evidence-head');
+
+    const help = execFileSync(process.execPath, [cli, 'help'], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+    });
+    expect(help).toContain('evidence commit');
+    expect(help).toContain('publication commit');
   });
 });
 

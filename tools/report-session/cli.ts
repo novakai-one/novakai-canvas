@@ -32,7 +32,11 @@ import {
   createPublishedProjection,
   verifyPublishedEnvelope,
 } from './publish-report.ts';
-import { collectRepositoryReceipts } from './repository-evidence.ts';
+import {
+  assertFinalEvidenceState,
+  collectRepositoryReceipts,
+  resolveRepositoryEvidenceHead,
+} from './repository-evidence.ts';
 
 const REPO_ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const DEFAULT_STATE = join(REPO_ROOT, '.novakai-reports/reporting-state.json');
@@ -46,6 +50,7 @@ interface Args {
   publicEnvelope: string;
   htmlDirectory: string;
   base: string;
+  evidenceHead?: string;
   final: boolean;
   complete: boolean;
   report?: string;
@@ -69,6 +74,7 @@ function parseArgs(argv: string[]): Args {
     else if (value === '--public') args.publicEnvelope = resolve(argv[(index += 1)]);
     else if (value === '--html-directory') args.htmlDirectory = resolve(argv[(index += 1)]);
     else if (value === '--base') args.base = argv[(index += 1)];
+    else if (value === '--evidence-head') args.evidenceHead = argv[(index += 1)];
     else if (value === '--report') args.report = argv[(index += 1)];
     else if (value === '--final') args.final = true;
     else if (value === '--complete') args.complete = true;
@@ -244,6 +250,11 @@ function generate(args: Args): void {
   if (args.final && !args.complete) {
     throw new Error('Final verified generation requires explicit --complete confirmation.');
   }
+  if (args.final && !args.evidenceHead) {
+    throw new Error('Final verified generation requires an explicit --evidence-head commit.');
+  }
+  const evidenceHead = resolveRepositoryEvidenceHead(REPO_ROOT, args.evidenceHead ?? 'HEAD');
+  if (args.final) assertFinalEvidenceState(REPO_ROOT, evidenceHead.commit);
   withStateLock(args.state, () => {
     const initialSnapshot = loadSnapshot(args.state);
     const reporting = createReportingEngine({ initialSnapshot });
@@ -255,6 +266,7 @@ function generate(args: Args): void {
     const receipts = collectRepositoryReceipts({
       repoRoot: REPO_ROOT,
       baseRef: args.base,
+      evidenceHeadRef: evidenceHead.commit,
       sessionId: session.id,
     });
     const repositoryReceipts = receipts.map((receipt) =>
@@ -318,7 +330,7 @@ function generate(args: Args): void {
     const envelope = createPublishedEnvelope(accepted, authoritativeSnapshot.receipts, {
       path: htmlRelative,
       content: html,
-    });
+    }, evidenceHead);
     writeImmutable(htmlPath, html);
     writeSnapshotCas(args.state, authoritativeSnapshot, initialSnapshot.revision);
     writeAtomic(args.publicEnvelope, `${JSON.stringify(envelope, null, 2)}\n`);
@@ -327,6 +339,7 @@ function generate(args: Args): void {
       sourceDigest: accepted.sourceDigest,
       receiptsDigest: accepted.receiptsDigest,
       publicationDigest: envelope.publicationDigest,
+      evidenceHead: envelope.evidenceHead,
       publicEnvelope: relative(REPO_ROOT, args.publicEnvelope),
       html: htmlRelative,
       final: args.final,
@@ -349,6 +362,7 @@ function show(args: Args): void {
     reportRevisionId: envelope.reportRevisionId,
     sourceDigest: envelope.sourceDigest,
     receiptsDigest: envelope.receiptsDigest,
+    evidenceHead: envelope.evidenceHead,
     headline: envelope.projection.outcome.headline,
     stats: envelope.projection.stats,
     html: envelope.html.path,
@@ -360,7 +374,7 @@ function help(): void {
 
 Usage
   node tools/report-session/cli.ts generate [--session file] [--complete]
-  node tools/report-session/cli.ts generate --final --session file --complete
+  node tools/report-session/cli.ts generate --final --session file --complete --evidence-head commit
   node tools/report-session/cli.ts show [--report report:<sha256>]
 
 Options
@@ -371,10 +385,16 @@ Options
   --public <path>          Runtime-validated public accepted-report envelope
   --html-directory <path>  Immutable HTML revision output directory
   --base <ref>             Git base used by the evidence adapter
+  --evidence-head <commit> Immutable committed code/tree inspected by the report
   --report <id>            Show this exact accepted revision
 
 Acceptance is a local operator decision. It does not claim an authenticated actor
 or provide multi-user authorization.
+
+Provenance convention:
+  evidence commit    = the named committed code/tree inspected by the report
+  publication commit = a following docs/artifact-only commit, necessarily excluded
+                       from its own evidence
 `);
 }
 

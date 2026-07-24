@@ -1,7 +1,5 @@
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { lstatSync, readFileSync, readlinkSync } from 'node:fs';
-import { join } from 'node:path';
 import type {
   EvidenceRef,
   ModuleRef,
@@ -12,7 +10,13 @@ import type {
 interface EvidenceOptions {
   repoRoot: string;
   baseRef: string;
+  evidenceHeadRef: string;
   sessionId: WorkSessionId;
+}
+
+export interface RepositoryEvidenceHead {
+  commit: string;
+  tree: string;
 }
 
 interface Area {
@@ -81,24 +85,79 @@ function sha256(value: string | Buffer): string {
   return `sha256:${createHash('sha256').update(value).digest('hex')}`;
 }
 
-function changedFiles(repoRoot: string, baseRef: string): string[] {
-  const committed = git(repoRoot, ['diff', '--name-only', `${baseRef}..HEAD`]).split('\n');
-  const working = git(repoRoot, ['diff', '--name-only', baseRef]).split('\n');
-  const untracked = git(repoRoot, ['ls-files', '--others', '--exclude-standard']).split('\n');
-  return [...new Set([...committed, ...working, ...untracked].filter(Boolean))]
-    .filter((path) => path !== 'public/reports/accepted-report.json'
-      && path !== '.superpowers/sdd/Novakai-Visual-Reporting-Handover.html/task-1-fix2-report.md'
-      && !/^docs\/visual-reporting\/reports\/report-[0-9a-f]{64}\.html$/.test(path))
+export function isGeneratedOrAdministrativePath(path: string): boolean {
+  return path === 'public/reports/accepted-report.json'
+    || /^docs\/visual-reporting\/reports\/report-[0-9a-f]{64}\.html$/.test(path)
+    || /^\.superpowers\/sdd\/Novakai-Visual-Reporting-Handover\.html\/task-1-fix(?:\d+)?-report\.md$/
+      .test(path);
+}
+
+export function resolveRepositoryEvidenceHead(
+  repoRoot: string,
+  evidenceHeadRef: string,
+): RepositoryEvidenceHead {
+  const commit = git(repoRoot, ['rev-parse', `${evidenceHeadRef}^{commit}`]);
+  return {
+    commit,
+    tree: git(repoRoot, ['rev-parse', `${commit}^{tree}`]),
+  };
+}
+
+function changedFiles(repoRoot: string, baseCommit: string, evidenceHeadCommit: string): string[] {
+  const committed = git(repoRoot, [
+    'diff',
+    '--name-only',
+    `${baseCommit}..${evidenceHeadCommit}`,
+  ]).split('\n');
+  return [...new Set(committed.filter(Boolean))]
+    .filter((path) => !isGeneratedOrAdministrativePath(path))
     .sort();
 }
 
-function currentContentDigest(repoRoot: string, path: string): string {
-  const absolutePath = join(repoRoot, path);
+function workingChanges(repoRoot: string): string[] {
+  const unstaged = git(repoRoot, ['diff', '--name-only']).split('\n');
+  const staged = git(repoRoot, ['diff', '--cached', '--name-only']).split('\n');
+  const untracked = git(repoRoot, ['ls-files', '--others', '--exclude-standard']).split('\n');
+  return [...new Set([...unstaged, ...staged, ...untracked].filter(Boolean))].sort();
+}
+
+/** Requires final generation to execute from the named code commit plus publication-only changes. */
+export function assertFinalEvidenceState(repoRoot: string, evidenceHeadCommit: string): void {
+  const currentCommit = git(repoRoot, ['rev-parse', 'HEAD^{commit}']);
+  if (currentCommit !== evidenceHeadCommit) {
+    try {
+      execFileSync('git', ['merge-base', '--is-ancestor', evidenceHeadCommit, currentCommit], {
+        cwd: repoRoot,
+        stdio: 'ignore',
+      });
+    } catch {
+      throw new Error('The evidence head must be the current commit or its publication-only ancestor.');
+    }
+    const committedAfterEvidence = git(repoRoot, [
+      'diff',
+      '--name-only',
+      `${evidenceHeadCommit}..${currentCommit}`,
+    ]).split('\n').filter(Boolean);
+    const sourceCommits = committedAfterEvidence.filter((path) => !isGeneratedOrAdministrativePath(path));
+    if (sourceCommits.length > 0) {
+      throw new Error(
+        `Commits after the evidence head change source files: ${sourceCommits.join(', ')}.`,
+      );
+    }
+  }
+  const dirtySource = workingChanges(repoRoot)
+    .filter((path) => !isGeneratedOrAdministrativePath(path));
+  if (dirtySource.length > 0) {
+    throw new Error(`Final generation requires clean evidence-source files: ${dirtySource.join(', ')}.`);
+  }
+}
+
+function committedContentDigest(repoRoot: string, commit: string, path: string): string {
   try {
-    const metadata = lstatSync(absolutePath);
-    if (metadata.isSymbolicLink()) return sha256(`symlink:${readlinkSync(absolutePath)}`);
-    if (metadata.isFile()) return sha256(readFileSync(absolutePath));
-    return sha256(`non-file:${metadata.mode}`);
+    const identity = git(repoRoot, ['ls-tree', commit, '--', path]);
+    if (!identity) return sha256('deleted');
+    const content = execFileSync('git', ['show', `${commit}:${path}`], { cwd: repoRoot });
+    return sha256(Buffer.concat([Buffer.from(`${identity}\n`), content]));
   } catch {
     return sha256('deleted');
   }
@@ -106,13 +165,11 @@ function currentContentDigest(repoRoot: string, path: string): string {
 
 function repositoryIdentity(
   repoRoot: string,
-  baseRef: string,
+  baseCommit: string,
+  evidenceHead: RepositoryEvidenceHead,
   files: readonly string[],
 ): EvidenceRef[] {
-  const baseCommit = git(repoRoot, ['rev-parse', `${baseRef}^{commit}`]);
   const baseTree = git(repoRoot, ['rev-parse', `${baseCommit}^{tree}`]);
-  const headCommit = git(repoRoot, ['rev-parse', 'HEAD^{commit}']);
-  const headTree = git(repoRoot, ['rev-parse', `${headCommit}^{tree}`]);
   const patchDigest = files.length === 0
     ? sha256('')
     : sha256(execFileSync('git', [
@@ -121,6 +178,7 @@ function repositoryIdentity(
         '--full-index',
         '--no-ext-diff',
         baseCommit,
+        evidenceHead.commit,
         '--',
         ...files,
       ], { cwd: repoRoot }));
@@ -128,14 +186,22 @@ function repositoryIdentity(
     patchDigest,
     files: files.map((path) => ({
       path,
-      digest: currentContentDigest(repoRoot, path),
+      digest: committedContentDigest(repoRoot, evidenceHead.commit, path),
     })),
   }));
   return [
     { kind: 'commit', label: `Repository base commit ${baseCommit}`, uri: `git:${baseCommit}` },
     { kind: 'commit', label: `Repository base tree ${baseTree}`, uri: `git-tree:${baseTree}` },
-    { kind: 'commit', label: `Repository HEAD commit ${headCommit}`, uri: `git:${headCommit}` },
-    { kind: 'commit', label: `Repository HEAD tree ${headTree}`, uri: `git-tree:${headTree}` },
+    {
+      kind: 'commit',
+      label: `Repository evidence commit ${evidenceHead.commit}`,
+      uri: `git:${evidenceHead.commit}`,
+    },
+    {
+      kind: 'commit',
+      label: `Repository evidence tree ${evidenceHead.tree}`,
+      uri: `git-tree:${evidenceHead.tree}`,
+    },
     {
       kind: 'commit',
       label: `Repository content digest ${contentDigest}`,
@@ -177,8 +243,10 @@ function changeReceipt(
 
 /** Turns the actual git change set and accepted architecture choices into structured receipts. */
 export function collectRepositoryReceipts(options: EvidenceOptions): RecordReceiptInput[] {
-  const files = changedFiles(options.repoRoot, options.baseRef);
-  const identityEvidence = repositoryIdentity(options.repoRoot, options.baseRef, files);
+  const baseCommit = git(options.repoRoot, ['rev-parse', `${options.baseRef}^{commit}`]);
+  const evidenceHead = resolveRepositoryEvidenceHead(options.repoRoot, options.evidenceHeadRef);
+  const files = changedFiles(options.repoRoot, baseCommit, evidenceHead.commit);
+  const identityEvidence = repositoryIdentity(options.repoRoot, baseCommit, evidenceHead, files);
   const receipts = areas.flatMap((area) => {
     const matching = files.filter(area.matches);
     return matching.length > 0

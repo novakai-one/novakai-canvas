@@ -803,6 +803,10 @@
           <h3>Export rule</h3>
           <p><strong>Rendered HTML never owns report state.</strong> It records the accepted report revision and source digest, and can always be discarded and rebuilt.</p>
         </div>
+        <div class="card">
+          <h3>Tracked publication provenance</h3>
+          <p><strong>Evidence commit</strong> means the explicitly named committed code and tree inspected by the report. <strong>Publication commit</strong> means the following docs/artifact-only commit; it is necessarily excluded from its own evidence. Final generation names the immutable evidence commit rather than ambient <span class="mono">HEAD</span>.</p>
+        </div>
       </div>
     </section>
 

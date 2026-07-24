@@ -148,21 +148,7 @@ const ignoredEventTypes = new Set([
   'context_compacted',
 ]);
 
-function contentBearing(value: unknown): boolean {
-  if (!value || typeof value !== 'object') return false;
-  if (Array.isArray(value)) return value.some(contentBearing);
-  const record = value as Record<string, unknown>;
-  if (record.role === 'user' || record.role === 'assistant') return true;
-  if (record.type === 'user' || record.type === 'assistant' || record.type === 'message') return true;
-  if (
-    ('content' in record && record.content !== null)
-    || ('text' in record && typeof record.text === 'string')
-    || ('message' in record && record.message !== null)
-  ) {
-    return true;
-  }
-  return Object.values(record).some(contentBearing);
-}
+const ignoredTopLevelTypes = new Set(['turn_context', 'session_end']);
 
 /** Parses one real Codex JSONL session into the reporting capability's public import contract. */
 export function parseCodexSessionFile(
@@ -187,42 +173,64 @@ export function parseCodexSessionFile(
   }
 
   for (const record of parsed.records) {
-    const response = responseItemSchema.safeParse(record.value);
-    if (!response.success) {
-      if (record.value.type === 'session_meta' || record.value.type === 'turn_context'
-        || record.value.type === 'session_end') {
-        continue;
-      }
-      if (record.value.type === 'event_msg') {
-        const event = z.object({
-          payload: z.object({ type: z.string() }).passthrough(),
-        }).safeParse(record.value);
-        if (event.success && ignoredEventTypes.has(event.data.payload.type)) continue;
-      }
-      if (contentBearing(record.value)) {
+    if (record.value.type === 'session_meta') {
+      if (!sessionMetaSchema.safeParse(record.value).success) {
         warnings.push({
           code: 'UnsupportedContent',
           line: record.line,
-          message: `Unsupported content-bearing top-level record ${record.value.type}.`,
+          message: 'A session metadata record could not be normalized.',
         });
       }
       continue;
     }
+    if (ignoredTopLevelTypes.has(record.value.type)) continue;
+    if (record.value.type === 'event_msg') {
+      const event = z.object({
+        payload: z.object({ type: z.string() }).passthrough(),
+      }).safeParse(record.value);
+      if (event.success && ignoredEventTypes.has(event.data.payload.type)) continue;
+      warnings.push({
+        code: 'UnsupportedContent',
+        line: record.line,
+        message: event.success
+          ? `Unsupported event payload type ${event.data.payload.type}.`
+          : 'An event record could not be normalized.',
+      });
+      continue;
+    }
+    if (record.value.type !== 'response_item') {
+      warnings.push({
+        code: 'UnsupportedContent',
+        line: record.line,
+        message: `Unsupported top-level record type ${record.value.type}.`,
+      });
+      continue;
+    }
+
+    const response = responseItemSchema.safeParse(record.value);
+    if (!response.success) {
+      warnings.push({
+        code: 'UnsupportedContent',
+        line: record.line,
+        message: 'A response item record could not be normalized.',
+      });
+      continue;
+    }
     const message = messagePayloadSchema.safeParse(response.data.payload);
     if (!message.success) {
-      const payloadIdentity = z.object({ type: z.string().optional() })
+      const payloadIdentity = z.object({ type: z.string() })
         .passthrough()
         .safeParse(response.data.payload);
-      if (payloadIdentity.success && ignoredResponseItemTypes.has(payloadIdentity.data.type ?? '')) {
+      if (payloadIdentity.success && ignoredResponseItemTypes.has(payloadIdentity.data.type)) {
         continue;
       }
-      if (contentBearing(response.data.payload)) {
-        warnings.push({
-          code: 'UnsupportedContent',
-          line: record.line,
-          message: 'A content-bearing response item could not be normalized.',
-        });
-      }
+      warnings.push({
+        code: 'UnsupportedContent',
+        line: record.line,
+        message: payloadIdentity.success
+          ? `Unsupported response item payload type ${payloadIdentity.data.type}.`
+          : 'A response item payload could not be normalized.',
+      });
       continue;
     }
     for (const [blockIndex, block] of message.data.content.entries()) {
