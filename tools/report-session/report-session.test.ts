@@ -17,6 +17,7 @@ import {
   type WorkSessionId,
 } from '../../src/capabilities/work-session-reporting/index.ts';
 import { parseCodexSessionFile } from './codex-session-source.ts';
+import { reportGenerationPolicy } from './generation-policy.ts';
 import { renderStandaloneReport } from './html-renderer.ts';
 import {
   createPublishedEnvelope,
@@ -546,16 +547,6 @@ describe('report session adapters', () => {
     expect(envelope.projection.decisions.map((decision) => decision.summary).join('\n'))
       .not.toContain('Canvas');
     expect(html).not.toContain('embedded Canvas');
-    if (envelope.projection.outcome.status === 'complete') {
-      expect(envelope.projection.nextActions).toContainEqual({
-        id: 'canvas-host-pending',
-        label: 'Canvas host pending',
-        status: 'queued',
-        dependsOn: ['accepted-public-projection'],
-      });
-      expect((JSON.stringify(envelope).match(/Canvas/g) ?? [])).toHaveLength(1);
-      expect((html.match(/Canvas/g) ?? [])).toHaveLength(1);
-    }
   });
 
   it('retains private history, publishes one atomic revision pointer, and shows the selected report', () => {
@@ -677,6 +668,7 @@ describe('report session adapters', () => {
 
     expect(second.reportRevisionId).toBe(first.reportRevisionId);
     expect(envelope.evidenceHead).toEqual({ commit: evidenceCommit, tree: evidenceTree });
+    expect(reportGenerationPolicy(true).nextActions).toEqual([]);
     expect(readFileSync(publicEnvelope, 'utf8')).toBe(firstEnvelope);
     expect(readFileSync(join(repoRoot, second.html), 'utf8')).toBe(firstHtml);
     expect(readFileSync(state, 'utf8')).toBe(firstState);

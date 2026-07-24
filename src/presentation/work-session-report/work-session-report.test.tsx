@@ -1,16 +1,12 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import acceptedReport from '../../../../public/reports/accepted-report.json';
-import { publishedAcceptedReportEnvelopeSchema } from '../../../capabilities/work-session-reporting/index.ts';
-import { ReportStatePanel } from './WorkSessionReportPrototype.tsx';
+import acceptedReport from '../../../public/reports/accepted-report.json';
+import { publishedAcceptedReportEnvelopeSchema } from '../../capabilities/work-session-reporting/index.ts';
+import { ReportStatePanel } from './WorkSessionReport.tsx';
 import {
-  cycleVariant,
   hydratePublishedReport,
   projectionIsEmpty,
-  selectChangeNode,
   selectReceipt,
-  selectWorkflowStep,
-  variantFromSearch,
 } from './report-model.ts';
 
 function checkedReport() {
@@ -72,20 +68,9 @@ describe('public work-session report hydration', () => {
   });
 });
 
-describe('report prototype state selection', () => {
-  it('normalises and cycles shareable A/B/C variant state', () => {
-    expect(variantFromSearch('?prototype=work-session-report&variant=C')).toBe('C');
-    expect(variantFromSearch('?variant=unknown')).toBe('A');
-    expect(cycleVariant('A', -1)).toBe('C');
-    expect(cycleVariant('C', 1)).toBe('A');
-  });
-
-  it('selects real workflow, module, and receipt state with stable fallbacks', () => {
+describe('stable report state selection', () => {
+  it('selects real receipts with a stable fallback', () => {
     const projection = checkedReport().projection;
-    expect(selectWorkflowStep(projection, 'compile-report')?.label).toBe('Compile visual report');
-    expect(selectWorkflowStep(projection, 'missing')?.id).toBe('import-session');
-    expect(selectChangeNode(projection, 'reporting.core')?.label).toBe('Reporting core');
-    expect(selectChangeNode(projection, 'missing')?.id).toBe('adapter.codex');
     expect(selectReceipt(projection, projection.artifacts[0]?.id)?.type).toBe('artifact');
     expect(selectReceipt(projection, 'missing')?.type).toBe('proof');
   });

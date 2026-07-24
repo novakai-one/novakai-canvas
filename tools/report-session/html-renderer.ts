@@ -88,7 +88,7 @@ export function renderStandaloneReport(projection: PublishedReportProjection): s
   <section><h2>What proves it?</h2><div class="cards">${receiptCards(projection.proofs, 'No proof receipts were recorded.')}</div></section>
   <section><h2>Which decisions matter?</h2><div class="cards">${receiptCards(projection.decisions, 'No architectural decisions were recorded.')}</div></section>
   <section><h2>What remains?</h2><div class="next">
-    ${projection.nextActions.length === 0 ? '<p class="empty">Nothing remains inside the POC scope.</p>' : projection.nextActions.map((action) => `<div><strong>${escape(action.label)}</strong> · ${escape(action.status)}</div>`).join('')}
+    ${projection.nextActions.length === 0 ? '<p class="empty">No further action is recorded for this completed report.</p>' : projection.nextActions.map((action) => `<div><strong>${escape(action.label)}</strong> · ${escape(action.status)}</div>`).join('')}
   </div></section>
   <footer>reportRevisionId=${escape(projection.reportRevisionId)} · sourceDigest=${escape(projection.sourceDigest)} · renderer=standalone-html-v1</footer>
 </main>

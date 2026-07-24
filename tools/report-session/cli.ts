@@ -26,6 +26,7 @@ import {
   type ReportingSnapshot,
 } from '../../src/capabilities/work-session-reporting/index.ts';
 import { parseCodexSessionFile } from './codex-session-source.ts';
+import { reportGenerationPolicy } from './generation-policy.ts';
 import { renderStandaloneReport } from './html-renderer.ts';
 import {
   createPublishedEnvelope,
@@ -293,28 +294,7 @@ function generate(args: Args): void {
     }
     const draft = valueOrThrow(reporting.compileReport({
       sessionId: session.id,
-      outcome: {
-        status: args.final ? 'complete' : 'partial',
-        headline: args.final
-          ? 'One session now becomes one accepted visual report.'
-          : 'The visual reporting proof of concept is taking shape.',
-        summary: args.final
-          ? 'A completed Codex session and executed repository proof now produce one immutable local report revision.'
-          : 'This local preview is intentionally not a verified completion report.',
-      },
-      nextActions: args.final
-        ? [{
-            id: 'canvas-host-pending',
-            label: 'Canvas host pending',
-            status: 'queued',
-            dependsOn: ['accepted-public-projection'],
-          }]
-        : [{
-            id: 'run-final-generation',
-            label: 'Generate with an explicit session, completion confirmation, and executed proof',
-            status: 'next',
-            dependsOn: [],
-          }],
+      ...reportGenerationPolicy(args.final),
     }));
     const accepted = valueOrThrow(reporting.acceptReport({
       reportRevisionId: draft.id,

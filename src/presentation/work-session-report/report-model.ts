@@ -4,10 +4,7 @@ import {
   type PublishedReceipt,
   type PublishedReportVerificationFailureCode,
   type PublishedReportProjection,
-} from '../../../capabilities/work-session-reporting/index.ts';
-
-export const REPORT_VARIANTS = ['A', 'B', 'C'] as const;
-export type ReportVariant = (typeof REPORT_VARIANTS)[number];
+} from '../../capabilities/work-session-reporting/index.ts';
 
 export interface CapturedProofState {
   status: 'captured' | 'failed' | 'missing';
@@ -18,7 +15,7 @@ export interface CapturedProofState {
   outputDigest?: string;
 }
 
-export interface PrototypeReport {
+export interface WorkSessionReportViewModel {
   envelope: PublishedAcceptedReportEnvelope;
   projection: PublishedReportProjection;
   reportRevisionId: string;
@@ -27,7 +24,7 @@ export interface PrototypeReport {
 }
 
 export type ReportHydrationResult =
-  | { ok: true; report: PrototypeReport }
+  | { ok: true; report: WorkSessionReportViewModel }
   | {
       ok: false;
       code: PublishedReportVerificationFailureCode;
@@ -58,10 +55,10 @@ function proofState(projection: PublishedReportProjection): CapturedProofState {
   };
 }
 
-/** Selects the immutable, public-only model shared by all prototype renderers. */
-export function selectPrototypeReport(
+/** Selects the immutable, public-only model consumed by stable report hosts. */
+export function selectWorkSessionReport(
   envelope: PublishedAcceptedReportEnvelope,
-): PrototypeReport {
+): WorkSessionReportViewModel {
   const frozenEnvelope = deepFreeze(envelope);
   return Object.freeze({
     envelope: frozenEnvelope,
@@ -76,24 +73,12 @@ export function selectPrototypeReport(
 export function hydratePublishedReport(input: unknown): ReportHydrationResult {
   const verified = safeVerifyPublishedProjectionEnvelope(input);
   return verified.ok
-    ? { ok: true, report: selectPrototypeReport(verified.value) }
+    ? { ok: true, report: selectWorkSessionReport(verified.value) }
     : {
         ok: false,
         code: verified.error.code,
         message: verified.error.message,
       };
-}
-
-export function variantFromSearch(search: string): ReportVariant {
-  const value = new URLSearchParams(search).get('variant');
-  return value === 'B' || value === 'C' ? value : 'A';
-}
-
-export function cycleVariant(current: ReportVariant, amount: -1 | 1): ReportVariant {
-  const index = REPORT_VARIANTS.indexOf(current);
-  return REPORT_VARIANTS[
-    (index + amount + REPORT_VARIANTS.length) % REPORT_VARIANTS.length
-  ];
 }
 
 export function projectionIsEmpty(projection: PublishedReportProjection): boolean {
@@ -108,24 +93,6 @@ export function projectionIsEmpty(projection: PublishedReportProjection): boolea
     && projection.nextActions.length === 0
     && receiptCount === 0
     && statCount === 0;
-}
-
-export function selectWorkflowStep(
-  projection: PublishedReportProjection,
-  requestedId?: string,
-): PublishedReportProjection['workflow'][number] | null {
-  return projection.workflow.find((step) => step.id === requestedId)
-    ?? projection.workflow[0]
-    ?? null;
-}
-
-export function selectChangeNode(
-  projection: PublishedReportProjection,
-  requestedId?: string,
-): PublishedReportProjection['changeMap']['nodes'][number] | null {
-  return projection.changeMap.nodes.find((node) => node.id === requestedId)
-    ?? projection.changeMap.nodes[0]
-    ?? null;
 }
 
 export function reportReceipts(projection: PublishedReportProjection): PublishedReceipt[] {

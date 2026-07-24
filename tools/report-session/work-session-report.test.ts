@@ -13,8 +13,8 @@ import {
 } from '../../src/capabilities/work-session-reporting/index.ts';
 import {
   hydratePublishedReport,
-  selectPrototypeReport,
-} from '../../src/presentation/prototypes/work-session-report/report-model.ts';
+  selectWorkSessionReport,
+} from '../../src/presentation/work-session-report/report-model.ts';
 import { verifyPublishedEnvelope } from './publish-report.ts';
 
 const repoRoot = new URL('../..', import.meta.url).pathname;
@@ -96,12 +96,12 @@ function withMixedProofOutcomes(
   return hostile;
 }
 
-describe('embedded report public contract', () => {
+describe('stable work-session report public contract', () => {
   it('selects the same full projection identity, outcome, and counts shown by report:show', () => {
     const envelope = checkedEnvelope();
     const hydrated = hydratePublishedReport(envelope);
     if (!hydrated.ok) throw new Error(hydrated.message);
-    const selected = selectPrototypeReport(envelope);
+    const selected = selectWorkSessionReport(envelope);
     const shown = JSON.parse(execFileSync('npm', [
       'run',
       '--silent',
@@ -326,44 +326,33 @@ describe('embedded report public contract', () => {
     );
   });
 
-  it('keeps truthful report-level semantics, responsive content, and early dev isolation in source', () => {
-    const prototypePath = join(
+  it('keeps truthful report semantics and resolves the stable route before Canvas bootstrap', () => {
+    const reportPath = join(
       repoRoot,
-      'src/presentation/prototypes/work-session-report/WorkSessionReportPrototype.tsx',
+      'src/presentation/work-session-report/WorkSessionReport.tsx',
     );
     const cssPath = join(
       repoRoot,
-      'src/presentation/prototypes/work-session-report/work-session-report-prototype.css',
+      'src/presentation/work-session-report/work-session-report.css',
     );
-    const prototype = readFileSync(prototypePath, 'utf8');
+    const report = readFileSync(reportPath, 'utf8');
     const css = readFileSync(cssPath, 'utf8');
     const main = readFileSync(join(repoRoot, 'src/main.tsx'), 'utf8');
     const app = readFileSync(join(repoRoot, 'src/App.tsx'), 'utf8');
     const publisher = readFileSync(join(repoRoot, 'tools/report-session/publish-report.ts'), 'utf8');
 
-    expect(prototype).toContain('Report-level acceptance context');
-    expect(prototype).toContain(
+    expect(report).toContain('Report-level acceptance context');
+    expect(report).toContain(
       'Report-wide acceptance proof — does not assert item-level causality',
     );
-    expect(prototype).toContain('Primary next action');
-    expect(prototype).toContain('Report-level validation');
-    expect(prototype).toContain('Primary executed proof');
-    expect(prototype).toContain('any proof non-zero or source warning');
-    expect(prototype).toContain('role="group"');
-    expect(prototype).not.toContain('selectNode={() => undefined}');
-    expect(css).not.toMatch(/\.playback-proof-dock\s*\{\s*display:\s*none/);
-    expect(css).not.toMatch(/\.playback-module-index\s*\{\s*display:\s*none/);
-    expect(css).not.toMatch(/pointer-events:\s*none/);
-    const wireLedgerStart = css.indexOf('.change-map-edge-ledger');
-    const wireLedgerCss = css.slice(
-      wireLedgerStart,
-      css.indexOf('.map-inspector {', wireLedgerStart),
-    );
-    expect(wireLedgerCss).not.toContain('opacity');
-    expect(wireLedgerCss).toContain('background: #11171e');
-
+    expect(report).toContain('Primary next action');
+    expect(report).toContain('Report-level validation');
+    expect(report).not.toMatch(/Variant[ABC]|PrototypeSwitcher|cycleVariant|data-variant/);
+    expect(css).not.toMatch(/playback-|map-first|report-prototype-switcher|report-variant/);
+    expect(main).toContain("get('report') === 'work-session'");
     expect(main.indexOf('work-session-report')).toBeLessThan(main.indexOf("import('./App')"));
-    expect(app).not.toContain('WorkSessionReportPrototype');
+    expect(main).not.toContain("get('prototype') === 'work-session-report'");
+    expect(app).not.toContain('WorkSessionReport');
     expect(publisher).toContain('verifyPublishedProjectionEnvelope(input)');
     expect(publisher).not.toContain('function verifyPublicProjection');
   });

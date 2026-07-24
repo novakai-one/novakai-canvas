@@ -1,42 +1,22 @@
-/**
- * THROWAWAY UI PROTOTYPE
- *
- * Question: which of three report hierarchies lets a visual thinker understand
- * one accepted work-session report in roughly 30 seconds?
- *
- * A makes workflow playback primary, B makes the change map primary, and C
- * makes public proof/artifact receipts primary. Switch with `?variant=A|B|C`.
- */
-import { useCallback, useEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useState } from 'react';
 import type {
   PublishedReceipt,
   PublishedReportProjection,
-} from '../../../capabilities/work-session-reporting/index.ts';
+} from '../../capabilities/work-session-reporting/index.ts';
 import {
-  cycleVariant,
   hydratePublishedReport,
   projectionIsEmpty,
   reportReceipts,
-  selectChangeNode,
   selectReceipt,
-  selectWorkflowStep,
-  variantFromSearch,
-  type PrototypeReport,
-  type ReportVariant,
+  type WorkSessionReportViewModel,
 } from './report-model.ts';
-import './work-session-report-prototype.css';
+import './work-session-report.css';
 
 type ReportScreenState =
   | { status: 'loading' }
   | { status: 'invalid'; message: string }
-  | { status: 'empty'; report: PrototypeReport }
-  | { status: 'ready'; report: PrototypeReport };
-
-const VARIANT_NAMES: Record<ReportVariant, string> = {
-  A: 'Playback room',
-  B: 'Change-map first',
-  C: 'Evidence wall',
-};
+  | { status: 'empty'; report: WorkSessionReportViewModel }
+  | { status: 'ready'; report: WorkSessionReportViewModel };
 
 function compactIdentity(value: string): string {
   const [kind, digest] = value.split(':');
@@ -49,40 +29,16 @@ function dateLabel(value?: string): string {
   return value.replace('T', ' · ').replace(/\.\d{3}Z$/, ' UTC');
 }
 
-function isEditableTarget(target: EventTarget | null): boolean {
-  if (!(target instanceof HTMLElement)) return false;
-  return target.closest([
-    'a',
-    'button',
-    'input',
-    'select',
-    'textarea',
-    '[contenteditable]',
-    '[role="menuitem"]',
-    '[role="option"]',
-    '[role="slider"]',
-    '[role="spinbutton"]',
-    '[role="tab"]',
-    '[role="treeitem"]',
-  ].join(', ')) !== null;
-}
-
 function StatusMark({ status }: { status: string }) {
   return <span className={`report-status-mark is-${status}`}>{status}</span>;
 }
 
-function ReportHeader({
-  report,
-  variant,
-}: {
-  report: PrototypeReport;
-  variant: ReportVariant;
-}) {
+function ReportHeader({ report }: { report: WorkSessionReportViewModel }) {
   const { envelope, projection } = report;
   return (
-    <header className="report-prototype-header">
-      <div className="report-prototype-title">
-        <span className="report-kicker">THROWAWAY PROTOTYPE · ACCEPTED WORK SESSION</span>
+    <header className="report-header">
+      <div className="report-title">
+        <span className="report-kicker">WORK SESSION REPORT · ACCEPTED PUBLICATION</span>
         <div>
           <StatusMark status={projection.outcome.status} />
           <h1>{projection.outcome.headline}</h1>
@@ -93,13 +49,13 @@ function ReportHeader({
         <code title={envelope.reportRevisionId}>
           {compactIdentity(envelope.reportRevisionId)}
         </code>
-        <strong>{variant} · {VARIANT_NAMES[variant]}</strong>
+        <strong>Evidence-led report</strong>
       </div>
     </header>
   );
 }
 
-function IdentityStrip({ report }: { report: PrototypeReport }) {
+function IdentityStrip({ report }: { report: WorkSessionReportViewModel }) {
   return (
     <section className="report-identity-strip" aria-label="Accepted publication identity">
       <div>
@@ -153,7 +109,7 @@ function ReportAcceptanceContext({
   report,
 }: {
   origin: string;
-  report: PrototypeReport;
+  report: WorkSessionReportViewModel;
 }) {
   return (
     <section
@@ -261,7 +217,7 @@ function ReportProofs({
   );
 }
 
-function ValidationLadder({ report }: { report: PrototypeReport }) {
+function ValidationLadder({ report }: { report: WorkSessionReportViewModel }) {
   const { envelope, projection } = report;
   const proof = projection.proofs[0];
   const successfulProofs = projection.proofs.filter(
@@ -296,22 +252,6 @@ function ValidationLadder({ report }: { report: PrototypeReport }) {
   );
 }
 
-function DecisionList({ projection }: { projection: PublishedReportProjection }) {
-  return (
-    <section className="report-decision-list">
-      <span className="report-section-label">Report-wide decisions</span>
-      {projection.decisions.length === 0 ? (
-        <p className="report-inline-empty">No decision receipts are present.</p>
-      ) : projection.decisions.map((decision, index) => (
-        <article key={decision.id}>
-          <b>{String(index + 1).padStart(2, '0')}</b>
-          <div><strong>{decision.title}</strong><p>{decision.summary}</p></div>
-        </article>
-      ))}
-    </section>
-  );
-}
-
 function NextAction({ projection }: { projection: PublishedReportProjection }) {
   const action = projection.nextActions[0];
   const remaining = Math.max(0, projection.nextActions.length - 1);
@@ -338,98 +278,6 @@ function NextAction({ projection }: { projection: PublishedReportProjection }) {
   );
 }
 
-function VariantA({ report }: { report: PrototypeReport }) {
-  const { projection } = report;
-  const [selectedStepId, setSelectedStepId] = useState(projection.workflow[0]?.id);
-  const selectedStep = selectWorkflowStep(projection, selectedStepId);
-  const selectedIndex = selectedStep
-    ? projection.workflow.findIndex((step) => step.id === selectedStep.id)
-    : 0;
-  const previous = projection.workflow[selectedIndex - 1];
-  const next = projection.workflow[selectedIndex + 1];
-  return (
-    <main className="report-variant report-variant-a">
-      <OutcomeBrief projection={projection} />
-      <div className="playback-room">
-        <nav className="playback-rail" aria-label="Report workflow">
-          <div className="report-panel-heading">
-            <span>Primary navigation</span>
-            <strong>Report playback</strong>
-          </div>
-          <div className="playback-step-list">
-            {projection.workflow.map((step, index) => (
-              <button
-                aria-label={`${step.label}${selectedStep?.id === step.id ? ', selected' : ''}`}
-                aria-pressed={selectedStep?.id === step.id}
-                className={selectedStep?.id === step.id ? 'is-selected' : ''}
-                key={step.id}
-                onClick={() => setSelectedStepId(step.id)}
-                type="button"
-              >
-                <b>{String(index + 1).padStart(2, '0')}</b>
-                <span><strong>{step.label}</strong><small>{step.status}</small></span>
-              </button>
-            ))}
-          </div>
-          <div className="playback-module-index">
-            <span className="report-section-label">Changed modules</span>
-            {projection.changeMap.nodes.map((node) => (
-              <div key={node.id}>
-                <span>«{node.role}»</span>
-                <strong>{node.label}</strong>
-                <small>{node.receiptCount} receipt{node.receiptCount === 1 ? '' : 's'}</small>
-              </div>
-            ))}
-          </div>
-        </nav>
-        <section className="playback-stage">
-          <div className="playback-progress">
-            <span style={{ '--step-progress': `${((selectedIndex + 1) / Math.max(1, projection.workflow.length)) * 100}%` } as CSSProperties} />
-            <small>Step {selectedIndex + 1} of {projection.workflow.length}</small>
-          </div>
-          <div className="playback-sequence">
-            <div className="sequence-context is-before">
-              <span>{previous ? 'Previous' : 'Source'}</span>
-              <strong>{previous?.label ?? `${projection.source.provider} session`}</strong>
-            </div>
-            <article className="sequence-focus">
-              <span>Now playing · {selectedStep?.status ?? 'empty'}</span>
-              <h2>{selectedStep?.label ?? 'No workflow step'}</h2>
-              <p>{selectedStep?.detail ?? 'This projection carries no workflow detail.'}</p>
-            </article>
-            <div className="sequence-context is-after">
-              <span>{next ? 'Next' : 'Accepted state'}</span>
-              <strong>{next?.label ?? compactIdentity(report.reportRevisionId)}</strong>
-            </div>
-          </div>
-          <ReportAcceptanceContext
-            origin={selectedStep?.label ?? 'No workflow step'}
-            report={report}
-          />
-          <ValidationLadder report={report} />
-          <div className="playback-decisions">
-            <DecisionList projection={projection} />
-            <NextAction projection={projection} />
-          </div>
-        </section>
-        <aside className="playback-proof-dock">
-          <div className="report-panel-heading">
-            <span>Report validation dock</span>
-            <strong>{report.proofState.status} report-wide proof</strong>
-          </div>
-          <ReportProofs projection={projection} />
-          <div className="proof-provenance">
-            <span className="report-section-label">Evidence head</span>
-            <code>{report.envelope.evidenceHead.commit}</code>
-            <small>tree {report.envelope.evidenceHead.tree}</small>
-          </div>
-        </aside>
-      </div>
-      <IdentityStrip report={report} />
-    </main>
-  );
-}
-
 const MAP_POSITIONS = [
   { left: 8, top: 13 },
   { left: 62, top: 11 },
@@ -437,17 +285,7 @@ const MAP_POSITIONS = [
   { left: 65, top: 63 },
 ] as const;
 
-function ChangeMapSurface({
-  projection,
-  selectedNodeId,
-  selectNode,
-  compact = false,
-}: {
-  projection: PublishedReportProjection;
-  selectedNodeId?: string;
-  selectNode?: (id: string) => void;
-  compact?: boolean;
-}) {
+function CompactChangeMap({ projection }: { projection: PublishedReportProjection }) {
   const positions = Object.fromEntries(
     projection.changeMap.nodes.map((node, index) => [
       node.id,
@@ -455,17 +293,11 @@ function ChangeMapSurface({
     ]),
   );
   return (
-    <section className={`report-change-map ${compact ? 'is-compact' : ''}`}>
-      {!compact && (
-        <div className="change-map-heading">
-          <div><span>Dominant surface</span><strong>Accepted change map</strong></div>
-          <small>Select a module to inspect connected wires and report context</small>
-        </div>
-      )}
+    <section className="report-change-map">
       <div className="change-map-plot">
         <svg aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 100 100">
           <defs>
-            <marker id={`report-map-arrow-${compact ? 'compact' : 'full'}`} markerHeight="5" markerWidth="5" orient="auto" refX="4" refY="2.5">
+            <marker id="report-map-arrow" markerHeight="5" markerWidth="5" orient="auto" refX="4" refY="2.5">
               <path d="M0,0 L5,2.5 L0,5 z" />
             </marker>
           </defs>
@@ -473,12 +305,10 @@ function ChangeMapSurface({
             const source = positions[edge.source];
             const target = positions[edge.target];
             if (!source || !target) return null;
-            const connected = edge.source === selectedNodeId || edge.target === selectedNodeId;
             return (
               <line
-                className={connected ? 'is-connected' : ''}
                 key={edge.id}
-                markerEnd={`url(#report-map-arrow-${compact ? 'compact' : 'full'})`}
+                markerEnd="url(#report-map-arrow)"
                 x1={source.left + 12}
                 x2={target.left + 12}
                 y1={source.top + 10}
@@ -489,107 +319,19 @@ function ChangeMapSurface({
         </svg>
         {projection.changeMap.nodes.map((node, index) => {
           const position = MAP_POSITIONS[index % MAP_POSITIONS.length];
-          const selected = node.id === selectedNodeId;
-          const content = (
-            <>
-              <span>«{node.role}»</span>
-              <strong>{node.label}</strong>
-              {!compact && <small>{node.receiptCount} direct receipt{node.receiptCount === 1 ? '' : 's'}</small>}
-              {selected && !compact && <b>Selected</b>}
-            </>
-          );
-          return compact ? (
+          return (
             <article
               className="change-map-node"
               key={node.id}
               style={{ left: `${position.left}%`, top: `${position.top}%` }}
             >
-              {content}
+              <span>«{node.role}»</span>
+              <strong>{node.label}</strong>
             </article>
-          ) : (
-            <button
-              aria-label={`${node.label}${selected ? ', selected' : ''}`}
-              aria-pressed={selected}
-              className={`change-map-node ${selected ? 'is-selected' : ''}`}
-              key={node.id}
-              onClick={() => selectNode?.(node.id)}
-              style={{ left: `${position.left}%`, top: `${position.top}%` }}
-              type="button"
-            >
-              {content}
-            </button>
           );
         })}
       </div>
-      {!compact && (
-        <div className="change-map-edge-ledger">
-          {projection.changeMap.edges.map((edge) => {
-            const connected = edge.source === selectedNodeId || edge.target === selectedNodeId;
-            return (
-              <div className={connected ? 'is-connected' : ''} key={edge.id}>
-                <span>{connected ? 'Connected' : edge.kind}</span>
-                <code>{edge.source} → {edge.target}</code>
-                <strong>{edge.label}</strong>
-              </div>
-            );
-          })}
-        </div>
-      )}
     </section>
-  );
-}
-
-function VariantB({ report }: { report: PrototypeReport }) {
-  const { projection } = report;
-  const [selectedNodeId, setSelectedNodeId] = useState(projection.changeMap.nodes[0]?.id);
-  const selectedNode = selectChangeNode(projection, selectedNodeId);
-  const connectedEdges = projection.changeMap.edges.filter((edge) =>
-    edge.source === selectedNode?.id || edge.target === selectedNode?.id);
-  return (
-    <main className="report-variant report-variant-b">
-      <div className="map-first-overview">
-        <OutcomeBrief projection={projection} />
-        <div className="map-first-source">
-          <span>{projection.source.provider} source</span>
-          <strong>{projection.source.eventCount} normalized events</strong>
-          <small>{projection.source.complete ? 'Complete source' : 'Incomplete source'}</small>
-        </div>
-      </div>
-      <div className="map-first-layout">
-        <ChangeMapSurface
-          projection={projection}
-          selectNode={setSelectedNodeId}
-          selectedNodeId={selectedNode?.id}
-        />
-        <aside className="map-inspector">
-          <span className="report-section-label">Selected module</span>
-          <p className="map-role">«{selectedNode?.role ?? 'none'}»</p>
-          <h2>{selectedNode?.label ?? 'No changed module'}</h2>
-          <code>{selectedNode?.id}</code>
-          <dl>
-            <div><dt>Direct receipts</dt><dd>{selectedNode?.receiptCount ?? 0}</dd></div>
-            <div><dt>Connected wires</dt><dd>{connectedEdges.length}</dd></div>
-          </dl>
-          <div className="map-connection-list">
-            {connectedEdges.map((edge) => (
-              <div key={edge.id}>
-                <span>{edge.kind}</span>
-                <strong>{edge.label}</strong>
-                <code>{edge.source} → {edge.target}</code>
-              </div>
-            ))}
-          </div>
-          <ReportAcceptanceContext origin={selectedNode?.label ?? 'No module'} report={report} />
-          <ValidationLadder report={report} />
-          <ReportProofs compact projection={projection} />
-        </aside>
-      </div>
-      <div className="map-first-footer">
-        <DecisionList projection={projection} />
-        <NextAction projection={projection} />
-      </div>
-      <IdentityStrip report={report} />
-    </main>
   );
 }
 
@@ -627,13 +369,13 @@ function ReceiptCard({
   );
 }
 
-function VariantC({ report }: { report: PrototypeReport }) {
+function WorkSessionReportView({ report }: { report: WorkSessionReportViewModel }) {
   const { projection } = report;
   const receipts = reportReceipts(projection);
   const [selectedReceiptId, setSelectedReceiptId] = useState<string | undefined>(receipts[0]?.id);
   const selectedReceipt = selectReceipt(projection, selectedReceiptId);
   return (
-    <main className="report-variant report-variant-c">
+    <main className="report-view">
       <div className="evidence-wall-intro">
         <OutcomeBrief projection={projection} />
         <NextAction projection={projection} />
@@ -689,10 +431,7 @@ function VariantC({ report }: { report: PrototypeReport }) {
             <span>Compact map</span>
             <strong>Where the accepted change landed</strong>
           </div>
-          <ChangeMapSurface
-            compact
-            projection={projection}
-          />
+          <CompactChangeMap projection={projection} />
         </section>
         <section className="wall-workflow">
           <div className="report-panel-heading">
@@ -740,7 +479,7 @@ export function ReportStatePanel({
       label: 'Accepted projection is empty',
       title: 'There is no report evidence to arrange yet.',
       body: 'The envelope is valid, but it contains no workflow, changed modules, receipts, or next action.',
-      action: 'Generate a report with structured receipts before comparing these layouts.',
+      action: 'Generate a report with structured receipts to populate this view.',
     },
   }[state];
   return (
@@ -757,43 +496,9 @@ export function ReportStatePanel({
   );
 }
 
-function PrototypeSwitcher({
-  variant,
-  setVariant,
-}: {
-  variant: ReportVariant;
-  setVariant: (next: ReportVariant) => void;
-}) {
-  return (
-    <div
-      className="report-prototype-switcher"
-      aria-label="Prototype variant switcher"
-      role="group"
-    >
-      <button
-        aria-label="Previous report variant"
-        onClick={() => setVariant(cycleVariant(variant, -1))}
-        type="button"
-      >
-        ←
-      </button>
-      <span><b>{variant}</b> · {VARIANT_NAMES[variant]}</span>
-      <button
-        aria-label="Next report variant"
-        onClick={() => setVariant(cycleVariant(variant, 1))}
-        type="button"
-      >
-        →
-      </button>
-    </div>
-  );
-}
-
-export function WorkSessionReportPrototype() {
+export function WorkSessionReport() {
   const [screen, setScreen] = useState<ReportScreenState>({ status: 'loading' });
   const [attempt, setAttempt] = useState(0);
-  const [variant, setVariantState] = useState<ReportVariant>(() =>
-    variantFromSearch(window.location.search));
 
   useEffect(() => {
     const controller = new AbortController();
@@ -823,26 +528,6 @@ export function WorkSessionReportPrototype() {
     return () => controller.abort();
   }, [attempt]);
 
-  const setVariant = useCallback((next: ReportVariant) => {
-    const url = new URL(window.location.href);
-    url.searchParams.set('prototype', 'work-session-report');
-    url.searchParams.set('variant', next);
-    window.history.replaceState({}, '', url);
-    setVariantState(next);
-  }, []);
-
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (isEditableTarget(event.target)) return;
-      if (event.key === 'ArrowLeft') setVariant(cycleVariant(variant, -1));
-      else if (event.key === 'ArrowRight') setVariant(cycleVariant(variant, 1));
-      else return;
-      event.preventDefault();
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [setVariant, variant]);
-
   if (screen.status === 'loading') return <ReportStatePanel state="loading" />;
   if (screen.status === 'invalid') {
     return (
@@ -855,12 +540,9 @@ export function WorkSessionReportPrototype() {
   }
   if (screen.status === 'empty') return <ReportStatePanel state="empty" />;
   return (
-    <div className="work-session-report-prototype" data-variant={variant}>
-      <ReportHeader report={screen.report} variant={variant} />
-      {variant === 'A' && <VariantA report={screen.report} />}
-      {variant === 'B' && <VariantB report={screen.report} />}
-      {variant === 'C' && <VariantC report={screen.report} />}
-      <PrototypeSwitcher setVariant={setVariant} variant={variant} />
+    <div className="work-session-report">
+      <ReportHeader report={screen.report} />
+      <WorkSessionReportView report={screen.report} />
     </div>
   );
 }

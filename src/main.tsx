@@ -2,10 +2,10 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 const root = createRoot(document.getElementById('root')!);
-const workSessionPrototype = import.meta.env.DEV
-  && new URLSearchParams(window.location.search).get('prototype') === 'work-session-report';
+const workSessionReport =
+  new URLSearchParams(window.location.search).get('report') === 'work-session';
 
-async function bootstrapWorkSessionPrototype(): Promise<void> {
+async function bootstrapWorkSessionReport(): Promise<void> {
   root.render(
     <StrictMode>
       <main
@@ -19,16 +19,16 @@ async function bootstrapWorkSessionPrototype(): Promise<void> {
           background: '#0d1117',
         }}
       >
-        Loading work-session report prototype…
+        Loading work-session report…
       </main>
     </StrictMode>,
   );
-  const { WorkSessionReportPrototype } = await import(
-    './presentation/prototypes/work-session-report/WorkSessionReportPrototype'
+  const { WorkSessionReport } = await import(
+    './presentation/work-session-report/WorkSessionReport'
   );
   root.render(
     <StrictMode>
-      <WorkSessionReportPrototype />
+      <WorkSessionReport />
     </StrictMode>,
   );
 }
@@ -77,4 +77,4 @@ async function bootstrapCanvas(): Promise<void> {
   );
 }
 
-void (workSessionPrototype ? bootstrapWorkSessionPrototype() : bootstrapCanvas());
+void (workSessionReport ? bootstrapWorkSessionReport() : bootstrapCanvas());
