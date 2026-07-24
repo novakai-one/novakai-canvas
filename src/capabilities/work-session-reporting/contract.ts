@@ -241,6 +241,10 @@ export const reportProjectionSchema = z.object({
   nextActions: z.array(nextActionSchema),
   evidence: z.array(evidenceRefSchema),
 }).strict();
+/**
+ * Disposable projection. Embedded receipts are immutable derived copies and
+ * must reconcile byte-for-byte with the authoritative receipt IDs on the owner.
+ */
 export type ReportProjection = z.infer<typeof reportProjectionSchema>;
 
 export const reportDraftSchema = authoritativeRecordSchema.extend({
@@ -248,6 +252,7 @@ export const reportDraftSchema = authoritativeRecordSchema.extend({
   kind: z.literal('report-draft'),
   sessionId: workSessionIdSchema,
   sourceDigest: digestSchema,
+  receiptIds: z.array(receiptIdSchema).max(10_000),
   receiptsDigest: digestSchema,
   projectionDigest: digestSchema,
   projection: reportProjectionSchema,
@@ -259,6 +264,7 @@ export const acceptedReportSchema = authoritativeRecordSchema.extend({
   kind: z.literal('accepted-report'),
   sessionId: workSessionIdSchema,
   sourceDigest: digestSchema,
+  receiptIds: z.array(receiptIdSchema).max(10_000),
   receiptsDigest: digestSchema,
   projectionDigest: digestSchema,
   acceptedAt: timestampSchema,
@@ -279,13 +285,57 @@ export type ReportingSnapshot = z.infer<typeof reportingSnapshotSchema>;
 const publishedEvidenceSchema = evidenceRefSchema.pick({ kind: true, label: true }).strict();
 export type PublishedEvidence = z.infer<typeof publishedEvidenceSchema>;
 
-const publishedReceiptSchema = z.object({
+const publishedExecutedProofSchema = executedProofSchema.omit({ outputExcerpt: true }).strict();
+export type PublishedExecutedProof = z.infer<typeof publishedExecutedProofSchema>;
+
+export const publishedReceiptSchema = z.object({
+  id: receiptIdSchema,
+  sourceDigest: digestSchema,
   type: receiptTypeSchema,
   title: z.string().min(1).max(180),
   summary: z.string().min(1).max(1_200),
   evidence: z.array(publishedEvidenceSchema),
-}).strict();
+  proof: publishedExecutedProofSchema.optional(),
+}).strict().superRefine((value, context) => {
+  if (value.type === 'proof' && value.proof === undefined) {
+    context.addIssue({
+      code: 'custom',
+      path: ['proof'],
+      message: 'Published proof receipts require structured executed proof.',
+    });
+  }
+  if (value.type !== 'proof' && value.proof !== undefined) {
+    context.addIssue({
+      code: 'custom',
+      path: ['proof'],
+      message: 'Only published proof receipts may carry executed proof.',
+    });
+  }
+});
 export type PublishedReceipt = z.infer<typeof publishedReceiptSchema>;
+
+export const publishedReceiptClaimSchema = z.object({
+  id: receiptIdSchema,
+  sourceDigest: digestSchema,
+  type: receiptTypeSchema,
+  proof: publishedExecutedProofSchema.optional(),
+}).strict().superRefine((value, context) => {
+  if (value.type === 'proof' && value.proof === undefined) {
+    context.addIssue({
+      code: 'custom',
+      path: ['proof'],
+      message: 'Published proof claims require structured executed proof.',
+    });
+  }
+  if (value.type !== 'proof' && value.proof !== undefined) {
+    context.addIssue({
+      code: 'custom',
+      path: ['proof'],
+      message: 'Only published proof claims may carry executed proof.',
+    });
+  }
+});
+export type PublishedReceiptClaim = z.infer<typeof publishedReceiptClaimSchema>;
 
 export const publishedReportProjectionSchema = reportProjectionSchema.omit({
   sessionId: true,
@@ -318,8 +368,11 @@ export const publishedAcceptedReportEnvelopeSchema = z.object({
   publishedAt: timestampSchema,
   reportRevisionId: reportRevisionIdSchema,
   sourceDigest: digestSchema,
+  receiptIds: z.array(receiptIdSchema).max(10_000),
+  receiptClaims: z.array(publishedReceiptClaimSchema).max(10_000),
   receiptsDigest: digestSchema,
-  projectionDigest: digestSchema,
+  authoritativeProjectionDigest: digestSchema,
+  publicProjectionDigest: digestSchema,
   acceptedAt: timestampSchema,
   html: z.object({
     path: relativeArtifactPathSchema,

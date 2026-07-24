@@ -74,7 +74,7 @@ export function renderStandaloneReport(projection: PublishedReportProjection): s
     <span>${projection.source.complete ? 'complete source' : 'incomplete source'}</span>
     <span>${escape(projection.source.updatedAt ?? 'time unavailable')}</span>
   </div>
-  <div class="hero"><span class="status">${escape(status)}</span><h2>${escape(projection.title)}</h2><p>One accepted revision drives this page and the embedded Canvas view.</p></div>
+  <div class="hero"><span class="status">${escape(status)}</span><h2>${escape(projection.title)}</h2><p>One accepted revision deterministically drives this standalone page.</p></div>
   <div class="stats">
     ${Object.entries(projection.stats).map(([label, value]) => `<div class="stat"><b>${value}</b>${escape(label)}</div>`).join('')}
   </div>

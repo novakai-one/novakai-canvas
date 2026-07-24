@@ -7,9 +7,11 @@ import {
   type ReportingSnapshot,
   type WorkSessionId,
 } from './index';
+import { stableHash } from './core/stable-value';
 
 const NOW = '2026-07-25T00:00:00.000Z';
 const digest = (character: string) => `sha256:${character.repeat(64)}`;
+const projectionDigest = (projection: unknown) => `sha256:${stableHash(projection)}`;
 
 function source(
   sourceDigest = digest('a'),
@@ -288,6 +290,16 @@ describe('work-session reporting public contract', () => {
       nextActions: [],
     })).toMatchObject({ ok: false, error: { code: 'CompletionPolicyFailed' } });
 
+    const noEventsSource = source(digest('2'));
+    noEventsSource.events = [];
+    const noEvents = setup(noEventsSource);
+    recordSuccessfulProof(noEvents.reporting, noEvents.sessionId);
+    expect(noEvents.reporting.compileReport({
+      sessionId: noEvents.sessionId,
+      outcome: { status: 'complete', headline: 'Empty.', summary: 'No normalized events.' },
+      nextActions: [],
+    })).toMatchObject({ ok: false, error: { code: 'CompletionPolicyFailed' } });
+
     const blocked = setup(source(digest('1')));
     recordSuccessfulProof(blocked.reporting, blocked.sessionId);
     blocked.reporting.recordReceipt({
@@ -403,6 +415,78 @@ describe('work-session reporting public contract', () => {
     duplicateKey.acceptedReports[1]!.projection.reportRevisionId = duplicateKey.acceptedReports[1]!.id;
     expect(() => createReportingEngine({ initialSnapshot: duplicateKey }))
       .toThrow(/Duplicate accepted key/);
+  });
+
+  it('re-derives every hydrated projection from referenced authoritative receipts', () => {
+    const { reporting, sessionId } = setup();
+    const proof = recordSuccessfulProof(reporting, sessionId);
+    if (!proof.ok) throw new Error(proof.error.message);
+    const draft = reporting.compileReport({
+      sessionId,
+      outcome: { status: 'complete', headline: 'Derived.', summary: 'Authority is reconciled.' },
+      nextActions: [],
+    });
+    if (!draft.ok) throw new Error(draft.error.message);
+    const accepted = accept(reporting, draft.value);
+    if (!accepted.ok) throw new Error(accepted.error.message);
+    const base = structuredClone(reporting.snapshot());
+
+    const receiptsDeleted = structuredClone(base);
+    receiptsDeleted.receipts = [];
+    expect(() => createReportingEngine({ initialSnapshot: receiptsDeleted }))
+      .toThrow(/missing authoritative receipt/);
+
+    const hostileStats = structuredClone(base);
+    hostileStats.acceptedReports[0]!.projection.stats.proofs = 999;
+    hostileStats.acceptedReports[0]!.projectionDigest =
+      projectionDigest(hostileStats.acceptedReports[0]!.projection);
+    expect(() => createReportingEngine({ initialSnapshot: hostileStats }))
+      .toThrow(/exact immutable derived copy/);
+
+    const hostileDraftStats = structuredClone(base);
+    hostileDraftStats.drafts[0]!.projection.stats.proofs = 999;
+    hostileDraftStats.drafts[0]!.projectionDigest =
+      projectionDigest(hostileDraftStats.drafts[0]!.projection);
+    expect(() => createReportingEngine({ initialSnapshot: hostileDraftStats }))
+      .toThrow(/exact immutable derived copy/);
+
+    const byteDifferentProof = structuredClone(base);
+    byteDifferentProof.acceptedReports[0]!.projection.proofs[0]!.proof!.command = 'echo forged';
+    byteDifferentProof.acceptedReports[0]!.projectionDigest =
+      projectionDigest(byteDifferentProof.acceptedReports[0]!.projection);
+    expect(() => createReportingEngine({ initialSnapshot: byteDifferentProof }))
+      .toThrow(/exact immutable derived copy/);
+
+    const wrongSessionProof = structuredClone(base);
+    wrongSessionProof.acceptedReports[0]!.projection.proofs[0]!.sessionId =
+      `session:${'9'.repeat(64)}` as WorkSessionId;
+    wrongSessionProof.acceptedReports[0]!.projectionDigest =
+      projectionDigest(wrongSessionProof.acceptedReports[0]!.projection);
+    expect(() => createReportingEngine({ initialSnapshot: wrongSessionProof }))
+      .toThrow(/exact immutable derived copy/);
+
+    const wrongSourceProof = structuredClone(base);
+    wrongSourceProof.acceptedReports[0]!.projection.proofs[0]!.sourceDigest = digest('9');
+    wrongSourceProof.acceptedReports[0]!.projectionDigest =
+      projectionDigest(wrongSourceProof.acceptedReports[0]!.projection);
+    expect(() => createReportingEngine({ initialSnapshot: wrongSourceProof }))
+      .toThrow(/exact immutable derived copy/);
+
+    const duplicateProofCopy = structuredClone(base);
+    duplicateProofCopy.acceptedReports[0]!.projection.proofs.push(
+      structuredClone(duplicateProofCopy.acceptedReports[0]!.projection.proofs[0]!),
+    );
+    duplicateProofCopy.acceptedReports[0]!.projectionDigest =
+      projectionDigest(duplicateProofCopy.acceptedReports[0]!.projection);
+    expect(() => createReportingEngine({ initialSnapshot: duplicateProofCopy }))
+      .toThrow(/exact immutable derived copy/);
+
+    const duplicateReceiptReference = structuredClone(base);
+    duplicateReceiptReference.acceptedReports[0]!.receiptIds.push(
+      duplicateReceiptReference.acceptedReports[0]!.receiptIds[0]!,
+    );
+    expect(() => createReportingEngine({ initialSnapshot: duplicateReceiptReference }))
+      .toThrow(/duplicate authoritative receipt reference/);
   });
 
   it('rehydrates the selected accepted revision for an independent second host', () => {

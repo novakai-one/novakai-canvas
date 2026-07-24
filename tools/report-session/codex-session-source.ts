@@ -128,6 +128,42 @@ function hasTerminalSignal(records: readonly ParsedLine[]): boolean {
   });
 }
 
+const ignoredResponseItemTypes = new Set([
+  'function_call',
+  'function_call_output',
+  'custom_tool_call',
+  'custom_tool_call_output',
+  'computer_call',
+  'computer_call_output',
+  'reasoning',
+  'web_search_call',
+]);
+
+const ignoredEventTypes = new Set([
+  'task_started',
+  'turn_started',
+  'task_complete',
+  'turn_complete',
+  'token_count',
+  'context_compacted',
+]);
+
+function contentBearing(value: unknown): boolean {
+  if (!value || typeof value !== 'object') return false;
+  if (Array.isArray(value)) return value.some(contentBearing);
+  const record = value as Record<string, unknown>;
+  if (record.role === 'user' || record.role === 'assistant') return true;
+  if (record.type === 'user' || record.type === 'assistant' || record.type === 'message') return true;
+  if (
+    ('content' in record && record.content !== null)
+    || ('text' in record && typeof record.text === 'string')
+    || ('message' in record && record.message !== null)
+  ) {
+    return true;
+  }
+  return Object.values(record).some(contentBearing);
+}
+
 /** Parses one real Codex JSONL session into the reporting capability's public import contract. */
 export function parseCodexSessionFile(
   filePath: string,
@@ -152,22 +188,39 @@ export function parseCodexSessionFile(
 
   for (const record of parsed.records) {
     const response = responseItemSchema.safeParse(record.value);
-    if (!response.success) continue;
-    const message = messagePayloadSchema.safeParse(response.data.payload);
-    if (!message.success) {
-      const payloadIdentity = z.object({
-        type: z.string().optional(),
-        role: z.string().optional(),
-      }).safeParse(response.data.payload);
-      if (
-        payloadIdentity.success
-        && payloadIdentity.data.type === 'message'
-        && ['user', 'assistant'].includes(payloadIdentity.data.role ?? '')
-      ) {
+    if (!response.success) {
+      if (record.value.type === 'session_meta' || record.value.type === 'turn_context'
+        || record.value.type === 'session_end') {
+        continue;
+      }
+      if (record.value.type === 'event_msg') {
+        const event = z.object({
+          payload: z.object({ type: z.string() }).passthrough(),
+        }).safeParse(record.value);
+        if (event.success && ignoredEventTypes.has(event.data.payload.type)) continue;
+      }
+      if (contentBearing(record.value)) {
         warnings.push({
           code: 'UnsupportedContent',
           line: record.line,
-          message: 'A user or assistant message could not be normalized.',
+          message: `Unsupported content-bearing top-level record ${record.value.type}.`,
+        });
+      }
+      continue;
+    }
+    const message = messagePayloadSchema.safeParse(response.data.payload);
+    if (!message.success) {
+      const payloadIdentity = z.object({ type: z.string().optional() })
+        .passthrough()
+        .safeParse(response.data.payload);
+      if (payloadIdentity.success && ignoredResponseItemTypes.has(payloadIdentity.data.type ?? '')) {
+        continue;
+      }
+      if (contentBearing(response.data.payload)) {
+        warnings.push({
+          code: 'UnsupportedContent',
+          line: record.line,
+          message: 'A content-bearing response item could not be normalized.',
         });
       }
       continue;

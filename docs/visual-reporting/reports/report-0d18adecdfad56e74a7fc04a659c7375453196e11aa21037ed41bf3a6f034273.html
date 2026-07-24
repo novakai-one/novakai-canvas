@@ -29,9 +29,9 @@
     <span>complete source</span>
     <span>2026-07-24T10:03:00.000Z</span>
   </div>
-  <div class="hero"><span class="status">complete</span><h2>One session now becomes one accepted visual report.</h2><p>One accepted revision drives this page and the embedded Canvas view.</p></div>
+  <div class="hero"><span class="status">complete</span><h2>One session now becomes one accepted visual report.</h2><p>One accepted revision deterministically drives this standalone page.</p></div>
   <div class="stats">
-    <div class="stat"><b>5</b>changes</div><div class="stat"><b>2</b>decisions</div><div class="stat"><b>2</b>proofs</div><div class="stat"><b>0</b>blockers</div><div class="stat"><b>1</b>artifacts</div>
+    <div class="stat"><b>3</b>changes</div><div class="stat"><b>2</b>decisions</div><div class="stat"><b>1</b>proofs</div><div class="stat"><b>0</b>blockers</div><div class="stat"><b>1</b>artifacts</div>
   </div>
 
   <section><h2>What changed?</h2><div class="map-nodes">
@@ -39,11 +39,6 @@
       <span>«adapter»</span>
       <strong>Codex session adapter</strong>
       <small>1 direct change receipt</small>
-    </article>
-    <article class="map-node" data-role="caller">
-      <span>«caller»</span>
-      <strong>Novakai Canvas</strong>
-      <small>0 direct change receipts</small>
     </article>
     <article class="map-node" data-role="module">
       <span>«module»</span>
@@ -58,53 +53,43 @@
     <article class="map-node" data-role="projection">
       <span>«projection»</span>
       <strong>Visual report projection</strong>
-      <small>2 direct change receipts</small>
+      <small>0 direct change receipts</small>
     </article></div><ul class="edge-list">
-    <li><code>reporting.contract</code> → <code>host.canvas</code>
-      <strong>Build Reporting public contract</strong></li>
     <li><code>reporting.contract</code> → <code>reporting.core</code>
       <strong>Build Reporting public contract</strong></li>
     <li><code>reporting.core</code> → <code>reporting.contract</code>
       <strong>Build Reporting core</strong></li>
-    <li><code>projection.report</code> → <code>host.canvas</code>
-      <strong>Build Visual report projection</strong></li>
     <li><code>reporting.core</code> → <code>projection.report</code>
       <strong>Build Reporting core</strong></li>
     <li><code>adapter.codex</code> → <code>reporting.contract</code>
       <strong>Build Codex session adapter</strong></li></ul></section>
   <section><h2>How did the report become trustworthy?</h2><div class="workflow">
-    <article class="step"><b>1</b><strong>Import session</strong><span>Normalize provider events and bind the source digest.</span></article><article class="step"><b>2</b><strong>Capture structured receipts</strong><span>10 change, decision, proof, blocker, and artifact receipts recorded.</span></article><article class="step"><b>3</b><strong>Compile visual report</strong><span>Build one deterministic projection from authoritative session evidence.</span></article><article class="step"><b>4</b><strong>Seal immutable report revision</strong><span>Hash the projection bytes before local acceptance.</span></article>
+    <article class="step"><b>1</b><strong>Import session</strong><span>Normalize provider events and bind the source digest.</span></article><article class="step"><b>2</b><strong>Capture structured receipts</strong><span>7 change, decision, proof, blocker, and artifact receipts recorded.</span></article><article class="step"><b>3</b><strong>Compile visual report</strong><span>Build one deterministic projection from authoritative session evidence.</span></article><article class="step"><b>4</b><strong>Seal immutable report revision</strong><span>Hash the projection bytes before local acceptance.</span></article>
   </div></section>
   <section><h2>What proves it?</h2><div class="cards">
     <article class="receipt">
       <span class="receipt-type">proof</span>
       <h3>Repository acceptance suite passed</h3>
       <p>The local npm run check command executed and exited with code 0.</p>
-      <div class="evidence"><span>test · npm run check</span></div>
-    </article>
-    <article class="receipt">
-      <span class="receipt-type">proof</span>
-      <h3>Repository acceptance suite passed</h3>
-      <p>The local npm run check command executed and exited with code 0.</p>
-      <div class="evidence"><span>test · npm run check</span></div>
+      <div class="evidence"><span>test · npm run check</span><span>commit · Repository receipt set sha256:e42b0dc82ffeadf983bcc9248cbae5fe16e95e3481cd729fda5b3683cb830e94</span></div>
     </article></div></section>
   <section><h2>Which decisions matter?</h2><div class="cards">
     <article class="receipt">
       <span class="receipt-type">decision</span>
       <h3>Keep renderers disposable</h3>
-      <p>Canvas and standalone HTML consume the same accepted report projection and cannot mutate report truth.</p>
-      <div class="evidence"><span>file · Visual implementation handover</span></div>
+      <p>Standalone HTML consumes a derived public projection and cannot mutate report truth.</p>
+      <div class="evidence"><span>file · Visual implementation handover</span><span>commit · Repository base commit 31792d15f564a67729535ca275dc56826a85750b</span><span>commit · Repository base tree 45974aef598575b61d49fbc73ed43d439b31c008</span><span>commit · Repository HEAD commit 5b4780bf9dacf4e995e88217cb50a611ac59a764</span><span>commit · Repository HEAD tree 0b9ad6efa2a8f3a8d1eae306f40ca136e17124fb</span><span>commit · Repository content digest sha256:ac0b269f27e9ce9a35a366f456303a0b79d89cbe03589971b493566b6346ba00</span></div>
     </article>
     <article class="receipt">
       <span class="receipt-type">decision</span>
       <h3>Keep one reporting authority</h3>
       <p>WorkSession, WorkReceipt, ReportDraft, and AcceptedReport remain owned by one host-neutral capability.</p>
-      <div class="evidence"><span>file · Reporting contract</span></div>
+      <div class="evidence"><span>file · Reporting contract</span><span>commit · Repository base commit 31792d15f564a67729535ca275dc56826a85750b</span><span>commit · Repository base tree 45974aef598575b61d49fbc73ed43d439b31c008</span><span>commit · Repository HEAD commit 5b4780bf9dacf4e995e88217cb50a611ac59a764</span><span>commit · Repository HEAD tree 0b9ad6efa2a8f3a8d1eae306f40ca136e17124fb</span><span>commit · Repository content digest sha256:ac0b269f27e9ce9a35a366f456303a0b79d89cbe03589971b493566b6346ba00</span></div>
     </article></div></section>
   <section><h2>What remains?</h2><div class="next">
-    <p class="empty">Nothing remains inside the POC scope.</p>
+    <div><strong>Canvas host pending</strong> · queued</div>
   </div></section>
-  <footer>reportRevisionId=report:742fe1231ecb031b7225eef851e382a74fae4dcea55698b00693fa3343309163 · sourceDigest=sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444 · renderer=standalone-html-v1</footer>
+  <footer>reportRevisionId=report:0d18adecdfad56e74a7fc04a659c7375453196e11aa21037ed41bf3a6f034273 · sourceDigest=sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444 · renderer=standalone-html-v1</footer>
 </main>
 </body>
 </html>

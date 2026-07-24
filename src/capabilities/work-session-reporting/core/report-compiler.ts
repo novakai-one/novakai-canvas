@@ -86,14 +86,16 @@ function workflow(receipts: readonly WorkReceipt[], nextActions: CompileReportIn
   ];
   return [
     ...steps,
-    ...nextActions.map((action) => ({
-      id: action.id,
-      label: action.label,
-      detail: action.dependsOn.length > 0
-        ? `Depends on ${action.dependsOn.join(', ')}.`
-        : 'No remaining dependency.',
-      status: action.status === 'queued' ? 'next' as const : action.status,
-    })),
+    ...nextActions.flatMap((action) => action.status === 'queued'
+      ? []
+      : [{
+          id: action.id,
+          label: action.label,
+          detail: action.dependsOn.length > 0
+            ? `Depends on ${action.dependsOn.join(', ')}.`
+            : 'No remaining dependency.',
+          status: action.status,
+        }]),
   ];
 }
 

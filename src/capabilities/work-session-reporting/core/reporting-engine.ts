@@ -135,53 +135,121 @@ function duplicateValues<T extends { id: string }>(records: readonly T[], label:
   return errors;
 }
 
-function assertProjectionIntegrity(
+function completionIssues(
+  session: WorkSession,
+  receipts: readonly WorkReceipt[],
   projection: ReportProjection,
+): string[] {
+  if (projection.outcome.status !== 'complete') return [];
+  const errors: string[] = [];
+  if (!session.complete) errors.push('claims completion for an incomplete source');
+  if (session.events.length === 0) errors.push('claims completion with zero normalized events');
+  if (session.warnings.length > 0) errors.push('claims completion with parser warnings');
+  if (!receipts.some((receipt) => receipt.type === 'proof' && receipt.proof?.exitCode === 0)) {
+    errors.push('claims completion without successful executed proof reconciled to authority');
+  }
+  if (receipts.some((receipt) => receipt.type === 'blocker')) {
+    errors.push('claims completion with authoritative blockers');
+  }
+  if (projection.nextActions.some((action) => action.status === 'next' || action.status === 'blocked')) {
+    errors.push('claims completion with unresolved next actions');
+  }
+  return errors;
+}
+
+function assertStoredProjection(
   owner: {
     id: ReportRevisionId;
     sessionId: WorkSessionId;
     sourceDigest: string;
+    receiptIds: readonly ReceiptId[];
     receiptsDigest: string;
     projectionDigest: string;
+    projection: ReportProjection;
   },
   label: string,
+  sessions: ReadonlyMap<WorkSessionId, WorkSession>,
+  authoritativeReceipts: ReadonlyMap<ReceiptId, WorkReceipt>,
 ): string[] {
-  const errors: string[] = [
+  const projection = owner.projection;
+  const errors = [
     ...duplicateValues(projection.changeMap.nodes, `${label} node`),
     ...duplicateValues(projection.changeMap.edges, `${label} edge`),
     ...duplicateValues(projection.workflow, `${label} workflow step`),
     ...duplicateValues(projection.nextActions, `${label} next action`),
   ];
-  if (projection.reportRevisionId !== owner.id) errors.push(`${label} projection report id disagrees.`);
-  if (projection.sessionId !== owner.sessionId) errors.push(`${label} projection session id disagrees.`);
-  if (projection.sourceDigest !== owner.sourceDigest) errors.push(`${label} projection source digest disagrees.`);
-  if (projection.receiptsDigest !== owner.receiptsDigest) errors.push(`${label} projection receipts digest disagrees.`);
-  if (projectionDigest(projection) !== owner.projectionDigest) errors.push(`${label} projection digest disagrees.`);
+  const session = sessions.get(owner.sessionId);
+  if (!session) {
+    errors.push(`${label} references a missing session.`);
+    return errors;
+  }
+  if (owner.sourceDigest !== session.sourceDigest) {
+    errors.push(`${label} source digest disagrees with its authoritative session.`);
+  }
+  if (projection.reportRevisionId !== owner.id) {
+    errors.push(`${label} projection report id disagrees.`);
+  }
+  if (projection.sessionId !== owner.sessionId) {
+    errors.push(`${label} projection session id disagrees.`);
+  }
+  if (projection.sourceDigest !== owner.sourceDigest) {
+    errors.push(`${label} projection source digest disagrees.`);
+  }
+  if (projection.receiptsDigest !== owner.receiptsDigest) {
+    errors.push(`${label} projection receipts digest disagrees.`);
+  }
   const nodeIds = new Set(projection.changeMap.nodes.map((node) => node.id));
   for (const edge of projection.changeMap.edges) {
     if (!nodeIds.has(edge.source)) errors.push(`${label} edge ${edge.id} has dangling source ${edge.source}.`);
     if (!nodeIds.has(edge.target)) errors.push(`${label} edge ${edge.id} has dangling target ${edge.target}.`);
   }
-  for (const receipt of [
-    ...projection.proofs,
-    ...projection.decisions,
-    ...projection.blockers,
-    ...projection.artifacts,
-  ]) {
-    if (receipt.sessionId !== owner.sessionId) errors.push(`${label} embeds a receipt for another session.`);
-    if (receipt.sourceDigest !== owner.sourceDigest) errors.push(`${label} embeds a stale receipt.`);
-  }
-  if (projection.outcome.status === 'complete') {
-    if (!projection.source.complete) errors.push(`${label} claims completion for an incomplete source.`);
-    if (projection.source.warningCount > 0) errors.push(`${label} claims completion with parser warnings.`);
-    if (!projection.proofs.some((receipt) => receipt.proof?.exitCode === 0)) {
-      errors.push(`${label} claims completion without successful executed proof.`);
+  const seenReceiptIds = new Set<ReceiptId>();
+  const receipts: WorkReceipt[] = [];
+  for (const receiptIdValue of owner.receiptIds) {
+    if (seenReceiptIds.has(receiptIdValue)) {
+      errors.push(`${label} has duplicate authoritative receipt reference ${receiptIdValue}.`);
+      continue;
     }
-    if (projection.blockers.length > 0) errors.push(`${label} claims completion with blockers.`);
-    if (projection.nextActions.some((action) => action.status === 'next' || action.status === 'blocked')) {
-      errors.push(`${label} claims completion with unresolved next actions.`);
+    seenReceiptIds.add(receiptIdValue);
+    const receipt = authoritativeReceipts.get(receiptIdValue);
+    if (!receipt) {
+      errors.push(`${label} references missing authoritative receipt ${receiptIdValue}.`);
+      continue;
     }
+    if (receipt.sessionId !== owner.sessionId) {
+      errors.push(`${label} references a receipt for another session.`);
+    }
+    if (receipt.sourceDigest !== owner.sourceDigest) {
+      errors.push(`${label} references a receipt for another source.`);
+    }
+    receipts.push(receipt);
   }
+  const sortedReceiptIds = [...owner.receiptIds].sort((left, right) => left.localeCompare(right));
+  if (stableJson(owner.receiptIds) !== stableJson(sortedReceiptIds)) {
+    errors.push(`${label} authoritative receipt references are not canonical.`);
+  }
+  if (errors.some((error) => error.includes('receipt'))) return errors;
+
+  const expectedProjection = compileProjection(session, receipts, {
+    sessionId: owner.sessionId,
+    outcome: projection.outcome,
+    nextActions: projection.nextActions,
+  });
+  const expectedReceiptsDigest = receiptsDigest(receipts);
+  const expectedProjectionDigest = projectionDigest(expectedProjection);
+  if (owner.receiptsDigest !== expectedReceiptsDigest) {
+    errors.push(`${label} receipts digest disagrees with authoritative receipts.`);
+  }
+  if (owner.id !== expectedProjection.reportRevisionId) {
+    errors.push(`${label} report identity disagrees with authoritative inputs.`);
+  }
+  if (owner.projectionDigest !== expectedProjectionDigest) {
+    errors.push(`${label} projection digest disagrees with authoritative inputs.`);
+  }
+  if (stableJson(projection) !== stableJson(expectedProjection)) {
+    errors.push(`${label} projection is not the exact immutable derived copy of authoritative inputs.`);
+  }
+  errors.push(...completionIssues(session, receipts, projection).map((error) => `${label} ${error}.`));
   return errors;
 }
 
@@ -193,6 +261,7 @@ function snapshotIntegrity(snapshot: ReportingSnapshot): string[] {
     ...duplicateValues(snapshot.acceptedReports, 'accepted report'),
   ];
   const sessions = new Map(snapshot.sessions.map((session) => [session.id, session]));
+  const receipts = new Map(snapshot.receipts.map((receipt) => [receipt.id, receipt]));
   const providerIdentities = new Set<string>();
   for (const session of snapshot.sessions) {
     if (session.id !== sessionId(session.provider, session.nativeSessionId)) {
@@ -212,20 +281,22 @@ function snapshotIntegrity(snapshot: ReportingSnapshot): string[] {
     }
   }
   for (const receipt of snapshot.receipts) {
-    if (!sessions.has(receipt.sessionId)) errors.push(`Receipt ${receipt.id} references a missing session.`);
+    const session = sessions.get(receipt.sessionId);
+    if (!session) errors.push(`Receipt ${receipt.id} references a missing session.`);
+    if (session && receipt.sourceDigest !== session.sourceDigest) {
+      errors.push(`Receipt ${receipt.id} references a non-authoritative source version.`);
+    }
     if (receipt.id !== receiptId(receipt)) errors.push(`Receipt ${receipt.id} conflicts with its content identity.`);
   }
   for (const draft of snapshot.drafts) {
-    if (!sessions.has(draft.sessionId)) errors.push(`Draft ${draft.id} references a missing session.`);
-    errors.push(...assertProjectionIntegrity(draft.projection, draft, `Draft ${draft.id}`));
+    errors.push(...assertStoredProjection(draft, `Draft ${draft.id}`, sessions, receipts));
   }
   const acceptedKeys = new Set<string>();
   for (const report of snapshot.acceptedReports) {
-    if (!sessions.has(report.sessionId)) errors.push(`Accepted report ${report.id} references a missing session.`);
     const key = acceptedKey(report.sessionId, report.sourceDigest, report.receiptsDigest);
     if (acceptedKeys.has(key)) errors.push(`Duplicate accepted key ${key}.`);
     acceptedKeys.add(key);
-    errors.push(...assertProjectionIntegrity(report.projection, report, `Accepted report ${report.id}`));
+    errors.push(...assertStoredProjection(report, `Accepted report ${report.id}`, sessions, receipts));
   }
   return errors;
 }
@@ -300,6 +371,15 @@ export function createReportingEngine(options: ReportingOptions = {}): WorkSessi
     revision += 1;
   }
 
+  function discardSupersededSourceVersion(sessionIdValue: WorkSessionId): void {
+    for (const [id, receipt] of receipts) {
+      if (receipt.sessionId === sessionIdValue) receipts.delete(id);
+    }
+    for (const [key, report] of accepted) {
+      if (report.sessionId === sessionIdValue) accepted.delete(key);
+    }
+  }
+
   const api: WorkSessionReporting = {
     importSession(input) {
       const parsed = importSessionInputSchema.safeParse(input);
@@ -329,6 +409,7 @@ export function createReportingEngine(options: ReportingOptions = {}): WorkSessi
         }
         return { ok: true, value: cloneFrozen(existing) };
       }
+      if (existing) discardSupersededSourceVersion(id);
       const session = cloneFrozen<WorkSession>({
         schemaVersion: 1,
         id,
@@ -382,22 +463,13 @@ export function createReportingEngine(options: ReportingOptions = {}): WorkSessi
       }
       const sessionReceipts = receiptsFor(receipts, session);
       if (parsed.data.outcome.status === 'complete') {
-        const completionIssues: string[] = [];
-        if (session.warnings.length > 0) completionIssues.push('The parser reported unresolved warnings.');
-        if (!sessionReceipts.some((receipt) => receipt.type === 'proof' && receipt.proof?.exitCode === 0)) {
-          completionIssues.push('No successful executed proof receipt exists.');
-        }
-        if (sessionReceipts.some((receipt) => receipt.type === 'blocker')) {
-          completionIssues.push('At least one unresolved blocker remains.');
-        }
-        if (parsed.data.nextActions.some((action) => action.status === 'next' || action.status === 'blocked')) {
-          completionIssues.push('A next or blocked action remains.');
-        }
-        if (completionIssues.length > 0) {
+        const candidateProjection = compileProjection(session, sessionReceipts, parsed.data);
+        const policyIssues = completionIssues(session, sessionReceipts, candidateProjection);
+        if (policyIssues.length > 0) {
           return failure(
             'CompletionPolicyFailed',
             'A complete outcome requires successful proof and no unresolved work.',
-            { issues: completionIssues },
+            { issues: policyIssues },
           );
         }
       }
@@ -417,6 +489,7 @@ export function createReportingEngine(options: ReportingOptions = {}): WorkSessi
         createdAt: session.updatedAt ?? session.createdAt,
         sessionId: session.id,
         sourceDigest: session.sourceDigest,
+        receiptIds: sessionReceipts.map((receipt) => receipt.id),
         receiptsDigest: projection.receiptsDigest,
         projectionDigest: digest,
         projection,
@@ -473,6 +546,7 @@ export function createReportingEngine(options: ReportingOptions = {}): WorkSessi
         acceptedAt: now(),
         sessionId: draft.sessionId,
         sourceDigest: draft.sourceDigest,
+        receiptIds: draft.receiptIds,
         receiptsDigest: draft.receiptsDigest,
         projectionDigest: draft.projectionDigest,
         projection: draft.projection,
@@ -511,7 +585,9 @@ export function createReportingEngine(options: ReportingOptions = {}): WorkSessi
         revision,
         sessions: [...sessions.values()].sort((left, right) => left.id.localeCompare(right.id)),
         receipts: [...receipts.values()].sort((left, right) => left.id.localeCompare(right.id)),
-        drafts: [...drafts.values()].sort((left, right) => left.id.localeCompare(right.id)),
+        drafts: [...drafts.values()]
+          .filter((draft) => sessions.get(draft.sessionId)?.sourceDigest === draft.sourceDigest)
+          .sort((left, right) => left.id.localeCompare(right.id)),
         acceptedReports: [...accepted.values()].sort((left, right) => left.id.localeCompare(right.id)),
       });
     },

@@ -145,6 +145,18 @@ function loadSnapshot(path: string): ReportingSnapshot {
   return reportingSnapshotSchema.parse(JSON.parse(readFileSync(path, 'utf8')) as unknown);
 }
 
+function canonicalJsonValue(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(canonicalJsonValue);
+  if (value !== null && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([key, entry]) => [key, canonicalJsonValue(entry)]),
+    );
+  }
+  return value;
+}
+
 function writeSnapshotCas(path: string, snapshot: ReportingSnapshot, expectedRevision: number): void {
   const currentRevision = existsSync(path) ? loadSnapshot(path).revision : 0;
   if (currentRevision !== expectedRevision) {
@@ -152,7 +164,7 @@ function writeSnapshotCas(path: string, snapshot: ReportingSnapshot, expectedRev
       `Reporting state changed concurrently (expected revision ${expectedRevision}, found ${currentRevision}).`,
     );
   }
-  writeAtomic(path, `${JSON.stringify(snapshot, null, 2)}\n`);
+  writeAtomic(path, `${JSON.stringify(canonicalJsonValue(snapshot), null, 2)}\n`);
 }
 
 function withStateLock<T>(statePath: string, action: () => T): T {
@@ -181,7 +193,10 @@ function boundedOutput(value: string): string {
   return `${value.slice(0, 1_900)}\n… output redacted to 4,000 characters …\n${value.slice(-1_900)}`;
 }
 
-function executeCheckProof(sessionId: RecordReceiptInput['sessionId']): RecordReceiptInput {
+function executeCheckProof(
+  sessionId: RecordReceiptInput['sessionId'],
+  repositoryReceiptsDigest: string,
+): RecordReceiptInput {
   const executedAt = new Date().toISOString();
   const command = 'npm run check';
   const result = spawnSync('npm', ['run', 'check'], {
@@ -197,12 +212,19 @@ function executeCheckProof(sessionId: RecordReceiptInput['sessionId']): RecordRe
     title: exitCode === 0 ? 'Repository acceptance suite passed' : 'Repository acceptance suite failed',
     summary: `The local ${command} command executed and exited with code ${exitCode}.`,
     occurredAt: executedAt,
-    evidence: [{
-      kind: 'test',
-      label: command,
-      uri: 'command:npm-run-check',
-      detail: digest(output),
-    }],
+    evidence: [
+      {
+        kind: 'test',
+        label: command,
+        uri: 'command:npm-run-check',
+        detail: digest(output),
+      },
+      {
+        kind: 'commit',
+        label: `Repository receipt set ${repositoryReceiptsDigest}`,
+        uri: `digest:${repositoryReceiptsDigest}`,
+      },
+    ],
     relatedModules: [],
     tags: ['verification', 'executed-command'],
     proof: {
@@ -235,9 +257,24 @@ function generate(args: Args): void {
       baseRef: args.base,
       sessionId: session.id,
     });
-    for (const receipt of receipts) valueOrThrow(reporting.recordReceipt(receipt));
+    const repositoryReceipts = receipts.map((receipt) =>
+      valueOrThrow(reporting.recordReceipt(receipt)));
+    const repositoryReceiptsDigest = digest(JSON.stringify(
+      repositoryReceipts.map((receipt) => receipt.id).sort(),
+    ));
     if (args.final) {
-      const proof = valueOrThrow(reporting.recordReceipt(executeCheckProof(session.id)));
+      const reusableProof = reporting.snapshot().receipts.find((receipt) =>
+        receipt.sessionId === session.id
+        && receipt.sourceDigest === session.sourceDigest
+        && receipt.type === 'proof'
+        && receipt.proof?.command === 'npm run check'
+        && receipt.proof.exitCode === 0
+        && receipt.evidence.some((evidence) =>
+          evidence.uri === `digest:${repositoryReceiptsDigest}`));
+      const proof = reusableProof
+        ?? valueOrThrow(reporting.recordReceipt(
+          executeCheckProof(session.id, repositoryReceiptsDigest),
+        ));
       if (proof.proof?.exitCode !== 0) {
         throw new Error(`VerificationFailed: ${proof.proof?.command} exited ${proof.proof?.exitCode}.`);
       }
@@ -253,12 +290,19 @@ function generate(args: Args): void {
           ? 'A completed Codex session and executed repository proof now produce one immutable local report revision.'
           : 'This local preview is intentionally not a verified completion report.',
       },
-      nextActions: args.final ? [] : [{
-        id: 'run-final-generation',
-        label: 'Generate with an explicit session, completion confirmation, and executed proof',
-        status: 'next',
-        dependsOn: [],
-      }],
+      nextActions: args.final
+        ? [{
+            id: 'canvas-host-pending',
+            label: 'Canvas host pending',
+            status: 'queued',
+            dependsOn: ['accepted-public-projection'],
+          }]
+        : [{
+            id: 'run-final-generation',
+            label: 'Generate with an explicit session, completion confirmation, and executed proof',
+            status: 'next',
+            dependsOn: [],
+          }],
     }));
     const accepted = valueOrThrow(reporting.acceptReport({
       reportRevisionId: draft.id,
@@ -266,16 +310,17 @@ function generate(args: Args): void {
       expectedReceiptsDigest: draft.receiptsDigest,
     }));
 
-    const publicProjection = createPublishedProjection(accepted);
+    const authoritativeSnapshot = reporting.snapshot();
+    const publicProjection = createPublishedProjection(accepted, authoritativeSnapshot.receipts);
     const htmlPath = join(args.htmlDirectory, `${accepted.id.replace(':', '-')}.html`);
     const htmlRelative = relative(REPO_ROOT, htmlPath);
     const html = renderStandaloneReport(publicProjection);
-    const envelope = createPublishedEnvelope(accepted, {
+    const envelope = createPublishedEnvelope(accepted, authoritativeSnapshot.receipts, {
       path: htmlRelative,
       content: html,
     });
     writeImmutable(htmlPath, html);
-    writeSnapshotCas(args.state, reporting.snapshot(), initialSnapshot.revision);
+    writeSnapshotCas(args.state, authoritativeSnapshot, initialSnapshot.revision);
     writeAtomic(args.publicEnvelope, `${JSON.stringify(envelope, null, 2)}\n`);
     process.stdout.write(`${JSON.stringify({
       reportRevisionId: accepted.id,
