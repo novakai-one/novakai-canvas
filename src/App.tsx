@@ -1,4 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
 import type { CanvasEngine } from './application/canvas-engine';
 import type { JsonRepository } from './application/json-repository';
@@ -11,6 +20,15 @@ import { Inspector } from './presentation/components/inspector';
 import { useCanvasEngine } from './presentation/use-canvas-engine';
 import { wireToneCssVariables } from './presentation/wire-styles';
 import { DEFAULT_CANVAS_MODE, type CanvasMode } from './presentation/view-mode';
+
+const WorkSessionReportPrototype = import.meta.env.DEV
+  ? lazy(async () => {
+      const module = await import(
+        './presentation/prototypes/work-session-report/WorkSessionReportPrototype'
+      );
+      return { default: module.WorkSessionReportPrototype };
+    })
+  : null;
 
 interface AppProps {
   engine: CanvasEngine;
@@ -85,6 +103,27 @@ export default function App({ engine, initialPreferences, preferencesRepository 
     '--node-radius': `${preferences.appearance.radius}px`,
     ...wireToneCssVariables(preferences.appearance.theme),
   } as CSSProperties;
+  const prototype = import.meta.env.DEV
+    ? new URLSearchParams(window.location.search).get('prototype')
+    : null;
+  if (prototype === 'work-session-report' && WorkSessionReportPrototype) {
+    return (
+      <Suspense fallback={(
+        <div style={{
+          display: 'grid',
+          width: '100%',
+          height: '100%',
+          placeItems: 'center',
+          color: '#edf1f4',
+          background: '#0d1117',
+        }}>
+          Loading work-session report prototype…
+        </div>
+      )}>
+        <WorkSessionReportPrototype />
+      </Suspense>
+    );
+  }
   return (
     <div
       className={`app-shell mode-${mode}`}
