@@ -1,85 +1,85 @@
 {
   "schemaVersion": 1,
   "kind": "accepted-report-publication",
-  "publicationDigest": "sha256:f2f3ef744678e2671ed626b9fc64d50ed829e6b9e8dafe702eddf7232f2d45af",
-  "publishedAt": "2026-07-24T21:55:35.733Z",
-  "reportRevisionId": "report:71adacbefcd482ba0d120cbcc662f32d8de8d97e8eadc3a1ffeac0abed802ce6",
-  "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
+  "publicationDigest": "sha256:da48f43d1405be0667e4f56bb306eb0e0f8cc876e210dcea208979a61a01d990",
+  "publishedAt": "2026-07-24T23:49:32.176Z",
+  "reportRevisionId": "report:dcc4a98d5d37a06d481f8f720a033b302336c5bd515db1a0f2aa6beecdbd6779",
+  "sourceDigest": "sha256:4acb8b876fa51fa1dbc5feb0849c220edc6db09b0cb6c7ea753d1512a070d4d9",
   "receiptIds": [
-    "receipt:6516a752dcfa1c5c39b6eb920a93977deaed12f704e8b4bf7ce446b598b7216d",
-    "receipt:95415797ec498365160a90a14859db37864753a0152694fd36bb23bb4c03265f",
-    "receipt:ca978b1d751d912b74efe920c2dcbe140e48d4b02e733bced6eedc1bc8149cf3",
-    "receipt:d647d480b67e770e66a4097ccda7d5866dde250460f6cf104d54438ba8035e2d",
-    "receipt:d6b6a79f8b7545abd7aeb5d82816539b67d33a1109c2a1354ae81a27a17a72f3",
-    "receipt:d8c0a8412281e0876f19c01ea4cb04f2da7731553b93fe915db010c19ccf4b27",
-    "receipt:dc3ac702f2c7957e044e4adca1b91622f36e63ac446c2b288f40db2150127a44"
+    "receipt:114bd3a20067c928e64fdb9f20b88fb3ca12bceee3e002ce6229ef7fdfa961cc",
+    "receipt:23e34aa0cefa64f0c23b7208663fec3ce65717615881e2874a3b283b69180093",
+    "receipt:30e4bafdf1426f7650dcb8c628f5d847186e7c641b0e7fef2ac532e6cbd0f778",
+    "receipt:4c2224a9d03e0e910284a00e4a78037c328ca96f6a57b24fcb7d13875d44f9e5",
+    "receipt:b8f660aa49b73b6076c7857e66bb1a727607d9bd9f41682be7c26b1947821fea",
+    "receipt:c9653e46facdc222f43ff475fa538851ab713d3dec5bf96470d89cd669752557",
+    "receipt:e98d5df5aea67538e52bca00b41271e15cd0983baee989badb2df34f866a5637"
   ],
   "receiptClaims": [
     {
-      "id": "receipt:6516a752dcfa1c5c39b6eb920a93977deaed12f704e8b4bf7ce446b598b7216d",
-      "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
-      "type": "artifact"
-    },
-    {
-      "id": "receipt:95415797ec498365160a90a14859db37864753a0152694fd36bb23bb4c03265f",
-      "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
+      "id": "receipt:114bd3a20067c928e64fdb9f20b88fb3ca12bceee3e002ce6229ef7fdfa961cc",
+      "sourceDigest": "sha256:4acb8b876fa51fa1dbc5feb0849c220edc6db09b0cb6c7ea753d1512a070d4d9",
       "type": "change"
     },
     {
-      "id": "receipt:ca978b1d751d912b74efe920c2dcbe140e48d4b02e733bced6eedc1bc8149cf3",
-      "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
-      "type": "decision"
+      "id": "receipt:23e34aa0cefa64f0c23b7208663fec3ce65717615881e2874a3b283b69180093",
+      "sourceDigest": "sha256:4acb8b876fa51fa1dbc5feb0849c220edc6db09b0cb6c7ea753d1512a070d4d9",
+      "type": "change"
     },
     {
-      "id": "receipt:d647d480b67e770e66a4097ccda7d5866dde250460f6cf104d54438ba8035e2d",
-      "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
+      "id": "receipt:30e4bafdf1426f7650dcb8c628f5d847186e7c641b0e7fef2ac532e6cbd0f778",
+      "sourceDigest": "sha256:4acb8b876fa51fa1dbc5feb0849c220edc6db09b0cb6c7ea753d1512a070d4d9",
+      "type": "artifact"
+    },
+    {
+      "id": "receipt:4c2224a9d03e0e910284a00e4a78037c328ca96f6a57b24fcb7d13875d44f9e5",
+      "sourceDigest": "sha256:4acb8b876fa51fa1dbc5feb0849c220edc6db09b0cb6c7ea753d1512a070d4d9",
+      "type": "change"
+    },
+    {
+      "id": "receipt:b8f660aa49b73b6076c7857e66bb1a727607d9bd9f41682be7c26b1947821fea",
+      "sourceDigest": "sha256:4acb8b876fa51fa1dbc5feb0849c220edc6db09b0cb6c7ea753d1512a070d4d9",
       "type": "proof",
       "proof": {
         "command": "npm run check",
         "exitCode": 0,
-        "executedAt": "2026-07-24T21:55:18.364Z",
-        "outputDigest": "sha256:83b51e17e80c618abe4c0cc94bb134442fc34eb728a312085ddcbb6d272b07d2"
+        "executedAt": "2026-07-24T23:49:08.165Z",
+        "outputDigest": "sha256:9a643f2aeb0e71ce179319c82de15d16d02d866652189743450f49ead22f116e"
       }
     },
     {
-      "id": "receipt:d6b6a79f8b7545abd7aeb5d82816539b67d33a1109c2a1354ae81a27a17a72f3",
-      "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
-      "type": "change"
+      "id": "receipt:c9653e46facdc222f43ff475fa538851ab713d3dec5bf96470d89cd669752557",
+      "sourceDigest": "sha256:4acb8b876fa51fa1dbc5feb0849c220edc6db09b0cb6c7ea753d1512a070d4d9",
+      "type": "decision"
     },
     {
-      "id": "receipt:d8c0a8412281e0876f19c01ea4cb04f2da7731553b93fe915db010c19ccf4b27",
-      "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
-      "type": "change"
-    },
-    {
-      "id": "receipt:dc3ac702f2c7957e044e4adca1b91622f36e63ac446c2b288f40db2150127a44",
-      "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
+      "id": "receipt:e98d5df5aea67538e52bca00b41271e15cd0983baee989badb2df34f866a5637",
+      "sourceDigest": "sha256:4acb8b876fa51fa1dbc5feb0849c220edc6db09b0cb6c7ea753d1512a070d4d9",
       "type": "decision"
     }
   ],
-  "receiptsDigest": "sha256:aac7cc8526162a3ee7eb75c3478c8b1349c0c739bfde5a554d7d48c608a3f4ae",
-  "authoritativeProjectionDigest": "sha256:6d3f6d5a9bd9ab47f3cb155b3ef8a0e8296313171e0aa2a7420908f2b1bc3cb0",
-  "publicProjectionDigest": "sha256:b24eb131d547a6500f6f1e06f7c503c2e7a0ab960aa93b52a7999a438156b070",
-  "acceptedAt": "2026-07-24T21:55:35.733Z",
+  "receiptsDigest": "sha256:f8aeba7fe360fb8ff1e6e48339868adc1bdabcb271583c799d051013ac9acc13",
+  "authoritativeProjectionDigest": "sha256:03133673655902e244812048b34a02c5f56ad70336da0094b34ef17a349b8cd4",
+  "publicProjectionDigest": "sha256:a0c89f4a55fb2abe4d0ca31aa45d5f80a5f86d91053998508b517422adc1efda",
+  "acceptedAt": "2026-07-24T23:49:32.176Z",
   "evidenceHead": {
-    "commit": "6ea8948d698999f88ac9f47bd2a805b3d6ee3baa",
-    "tree": "83bf6b97d7ffd9d386850dda9b1179c6e9d98324"
+    "commit": "08ff7b172aabfa7ee92c2c2b7e0f39d3fbc88f55",
+    "tree": "1d86a9e232d1b09de9526392dd2e6fe04f630de3"
   },
   "html": {
-    "path": "docs/visual-reporting/reports/report-71adacbefcd482ba0d120cbcc662f32d8de8d97e8eadc3a1ffeac0abed802ce6.html",
-    "digest": "sha256:22e43ead9f1a95cf08cc5d6e23fcf4937ef50534bcb148bd2cddcdb23fea67c5"
+    "path": "docs/visual-reporting/reports/report-dcc4a98d5d37a06d481f8f720a033b302336c5bd515db1a0f2aa6beecdbd6779.html",
+    "digest": "sha256:6e3365728d19ce431030d66b0373b6adfbbd1c9555d1e0e9cc47fa3b69d470c6"
   },
   "projection": {
     "schemaVersion": 1,
-    "reportRevisionId": "report:71adacbefcd482ba0d120cbcc662f32d8de8d97e8eadc3a1ffeac0abed802ce6",
-    "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
-    "receiptsDigest": "sha256:aac7cc8526162a3ee7eb75c3478c8b1349c0c739bfde5a554d7d48c608a3f4ae",
+    "reportRevisionId": "report:dcc4a98d5d37a06d481f8f720a033b302336c5bd515db1a0f2aa6beecdbd6779",
+    "sourceDigest": "sha256:4acb8b876fa51fa1dbc5feb0849c220edc6db09b0cb6c7ea753d1512a070d4d9",
+    "receiptsDigest": "sha256:f8aeba7fe360fb8ff1e6e48339868adc1bdabcb271583c799d051013ac9acc13",
     "title": "One session now becomes one accepted visual report.",
     "source": {
       "provider": "codex",
-      "startedAt": "2026-07-24T10:00:00.000Z",
-      "updatedAt": "2026-07-24T10:03:00.000Z",
-      "eventCount": 2,
+      "startedAt": "2026-07-24T11:01:06.205Z",
+      "updatedAt": "2026-07-24T23:49:06.364Z",
+      "eventCount": 126,
       "complete": true,
       "warningCount": 0
     },
@@ -179,20 +179,11 @@
         "status": "done"
       }
     ],
-    "nextActions": [
-      {
-        "id": "canvas-host-pending",
-        "label": "Canvas host pending",
-        "status": "queued",
-        "dependsOn": [
-          "accepted-public-projection"
-        ]
-      }
-    ],
+    "nextActions": [],
     "proofs": [
       {
-        "id": "receipt:d647d480b67e770e66a4097ccda7d5866dde250460f6cf104d54438ba8035e2d",
-        "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
+        "id": "receipt:b8f660aa49b73b6076c7857e66bb1a727607d9bd9f41682be7c26b1947821fea",
+        "sourceDigest": "sha256:4acb8b876fa51fa1dbc5feb0849c220edc6db09b0cb6c7ea753d1512a070d4d9",
         "type": "proof",
         "title": "Repository acceptance suite passed",
         "summary": "The local npm run check command executed and exited with code 0.",
@@ -203,21 +194,54 @@
           },
           {
             "kind": "commit",
-            "label": "Repository receipt set sha256:d1d2ca334e1c5833a396ba7d533964aa3fe13c0e1ababc372fb8aca0e414e08b"
+            "label": "Repository receipt set sha256:577384666b8b4d03b4fc6b3c1629fa5c3a83268e1ec3b23934a9ffffe638b5ce"
           }
         ],
         "proof": {
           "command": "npm run check",
           "exitCode": 0,
-          "executedAt": "2026-07-24T21:55:18.364Z",
-          "outputDigest": "sha256:83b51e17e80c618abe4c0cc94bb134442fc34eb728a312085ddcbb6d272b07d2"
+          "executedAt": "2026-07-24T23:49:08.165Z",
+          "outputDigest": "sha256:9a643f2aeb0e71ce179319c82de15d16d02d866652189743450f49ead22f116e"
         }
       }
     ],
     "decisions": [
       {
-        "id": "receipt:ca978b1d751d912b74efe920c2dcbe140e48d4b02e733bced6eedc1bc8149cf3",
-        "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
+        "id": "receipt:c9653e46facdc222f43ff475fa538851ab713d3dec5bf96470d89cd669752557",
+        "sourceDigest": "sha256:4acb8b876fa51fa1dbc5feb0849c220edc6db09b0cb6c7ea753d1512a070d4d9",
+        "type": "decision",
+        "title": "Keep one reporting authority",
+        "summary": "WorkSession, WorkReceipt, ReportDraft, and AcceptedReport remain owned by one host-neutral capability.",
+        "evidence": [
+          {
+            "kind": "file",
+            "label": "Reporting contract"
+          },
+          {
+            "kind": "commit",
+            "label": "Repository base commit 31792d15f564a67729535ca275dc56826a85750b"
+          },
+          {
+            "kind": "commit",
+            "label": "Repository base tree 45974aef598575b61d49fbc73ed43d439b31c008"
+          },
+          {
+            "kind": "commit",
+            "label": "Repository evidence commit 08ff7b172aabfa7ee92c2c2b7e0f39d3fbc88f55"
+          },
+          {
+            "kind": "commit",
+            "label": "Repository evidence tree 1d86a9e232d1b09de9526392dd2e6fe04f630de3"
+          },
+          {
+            "kind": "commit",
+            "label": "Repository content digest sha256:c821e32b72219e67426e5ba38e81b7ac1791b27f5c7fd7c84dafd9700cc20045"
+          }
+        ]
+      },
+      {
+        "id": "receipt:e98d5df5aea67538e52bca00b41271e15cd0983baee989badb2df34f866a5637",
+        "sourceDigest": "sha256:4acb8b876fa51fa1dbc5feb0849c220edc6db09b0cb6c7ea753d1512a070d4d9",
         "type": "decision",
         "title": "Keep renderers disposable",
         "summary": "Standalone HTML consumes a derived public projection and cannot mutate report truth.",
@@ -237,48 +261,15 @@
           },
           {
             "kind": "commit",
-            "label": "Repository evidence commit 6ea8948d698999f88ac9f47bd2a805b3d6ee3baa"
+            "label": "Repository evidence commit 08ff7b172aabfa7ee92c2c2b7e0f39d3fbc88f55"
           },
           {
             "kind": "commit",
-            "label": "Repository evidence tree 83bf6b97d7ffd9d386850dda9b1179c6e9d98324"
+            "label": "Repository evidence tree 1d86a9e232d1b09de9526392dd2e6fe04f630de3"
           },
           {
             "kind": "commit",
-            "label": "Repository content digest sha256:dc8007d3a2655b5faad0a698045ca6c0787a1efd4ac48226c904a76b9d4827be"
-          }
-        ]
-      },
-      {
-        "id": "receipt:dc3ac702f2c7957e044e4adca1b91622f36e63ac446c2b288f40db2150127a44",
-        "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
-        "type": "decision",
-        "title": "Keep one reporting authority",
-        "summary": "WorkSession, WorkReceipt, ReportDraft, and AcceptedReport remain owned by one host-neutral capability.",
-        "evidence": [
-          {
-            "kind": "file",
-            "label": "Reporting contract"
-          },
-          {
-            "kind": "commit",
-            "label": "Repository base commit 31792d15f564a67729535ca275dc56826a85750b"
-          },
-          {
-            "kind": "commit",
-            "label": "Repository base tree 45974aef598575b61d49fbc73ed43d439b31c008"
-          },
-          {
-            "kind": "commit",
-            "label": "Repository evidence commit 6ea8948d698999f88ac9f47bd2a805b3d6ee3baa"
-          },
-          {
-            "kind": "commit",
-            "label": "Repository evidence tree 83bf6b97d7ffd9d386850dda9b1179c6e9d98324"
-          },
-          {
-            "kind": "commit",
-            "label": "Repository content digest sha256:dc8007d3a2655b5faad0a698045ca6c0787a1efd4ac48226c904a76b9d4827be"
+            "label": "Repository content digest sha256:c821e32b72219e67426e5ba38e81b7ac1791b27f5c7fd7c84dafd9700cc20045"
           }
         ]
       }
@@ -286,8 +277,8 @@
     "blockers": [],
     "artifacts": [
       {
-        "id": "receipt:6516a752dcfa1c5c39b6eb920a93977deaed12f704e8b4bf7ce446b598b7216d",
-        "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
+        "id": "receipt:30e4bafdf1426f7650dcb8c628f5d847186e7c641b0e7fef2ac532e6cbd0f778",
+        "sourceDigest": "sha256:4acb8b876fa51fa1dbc5feb0849c220edc6db09b0cb6c7ea753d1512a070d4d9",
         "type": "artifact",
         "title": "Visual implementation handover",
         "summary": "The visual architecture, assumptions, fallbacks, AI instructions, and delivery gates live with the isolated worktree.",
@@ -307,15 +298,15 @@
           },
           {
             "kind": "commit",
-            "label": "Repository evidence commit 6ea8948d698999f88ac9f47bd2a805b3d6ee3baa"
+            "label": "Repository evidence commit 08ff7b172aabfa7ee92c2c2b7e0f39d3fbc88f55"
           },
           {
             "kind": "commit",
-            "label": "Repository evidence tree 83bf6b97d7ffd9d386850dda9b1179c6e9d98324"
+            "label": "Repository evidence tree 1d86a9e232d1b09de9526392dd2e6fe04f630de3"
           },
           {
             "kind": "commit",
-            "label": "Repository content digest sha256:dc8007d3a2655b5faad0a698045ca6c0787a1efd4ac48226c904a76b9d4827be"
+            "label": "Repository content digest sha256:c821e32b72219e67426e5ba38e81b7ac1791b27f5c7fd7c84dafd9700cc20045"
           }
         ]
       }
@@ -344,19 +335,19 @@
       },
       {
         "kind": "commit",
-        "label": "Repository content digest sha256:dc8007d3a2655b5faad0a698045ca6c0787a1efd4ac48226c904a76b9d4827be"
+        "label": "Repository content digest sha256:c821e32b72219e67426e5ba38e81b7ac1791b27f5c7fd7c84dafd9700cc20045"
       },
       {
         "kind": "commit",
-        "label": "Repository evidence commit 6ea8948d698999f88ac9f47bd2a805b3d6ee3baa"
+        "label": "Repository evidence commit 08ff7b172aabfa7ee92c2c2b7e0f39d3fbc88f55"
       },
       {
         "kind": "commit",
-        "label": "Repository evidence tree 83bf6b97d7ffd9d386850dda9b1179c6e9d98324"
+        "label": "Repository evidence tree 1d86a9e232d1b09de9526392dd2e6fe04f630de3"
       },
       {
         "kind": "commit",
-        "label": "Repository receipt set sha256:d1d2ca334e1c5833a396ba7d533964aa3fe13c0e1ababc372fb8aca0e414e08b"
+        "label": "Repository receipt set sha256:577384666b8b4d03b4fc6b3c1629fa5c3a83268e1ec3b23934a9ffffe638b5ce"
       },
       {
         "kind": "file",
@@ -384,11 +375,27 @@
       },
       {
         "kind": "file",
+        "label": "tools/report-session/codex-session-current-format.test.ts"
+      },
+      {
+        "kind": "file",
         "label": "tools/report-session/codex-session-source.ts"
       },
       {
         "kind": "file",
+        "label": "tools/report-session/generation-policy.ts"
+      },
+      {
+        "kind": "file",
         "label": "tools/report-session/html-renderer.ts"
+      },
+      {
+        "kind": "file",
+        "label": "tools/report-session/migrate-reporting-snapshot.test.ts"
+      },
+      {
+        "kind": "file",
+        "label": "tools/report-session/migrate-reporting-snapshot.ts"
       },
       {
         "kind": "file",
@@ -401,6 +408,10 @@
       {
         "kind": "file",
         "label": "tools/report-session/repository-evidence.ts"
+      },
+      {
+        "kind": "file",
+        "label": "tools/report-session/work-session-report.test.ts"
       },
       {
         "kind": "file",
