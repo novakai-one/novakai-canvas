@@ -28,6 +28,7 @@ import {
 import { parseCodexSessionFile } from './codex-session-source.ts';
 import { reportGenerationPolicy } from './generation-policy.ts';
 import { renderStandaloneReport } from './html-renderer.ts';
+import { migrateReportingSnapshot } from './migrate-reporting-snapshot.ts';
 import {
   createPublishedEnvelope,
   createPublishedProjection,
@@ -149,7 +150,8 @@ function loadSnapshot(path: string): ReportingSnapshot {
       acceptedReports: [],
     };
   }
-  return reportingSnapshotSchema.parse(JSON.parse(readFileSync(path, 'utf8')) as unknown);
+  const input = JSON.parse(readFileSync(path, 'utf8')) as unknown;
+  return reportingSnapshotSchema.parse(migrateReportingSnapshot(input));
 }
 
 function canonicalJsonValue(value: unknown): unknown {
