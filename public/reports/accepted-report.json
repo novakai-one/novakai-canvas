@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 1,
+  "kind": "accepted-report-publication",
+  "publicationDigest": "sha256:6ab8bc4e487a5e2cdced3a3099301c2c2980c58f2d494f23106787c745a50faf",
+  "publishedAt": "2026-07-24T20:52:47.083Z",
+  "reportRevisionId": "report:742fe1231ecb031b7225eef851e382a74fae4dcea55698b00693fa3343309163",
+  "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
+  "receiptsDigest": "sha256:20e27b35413c3756ba6afbced8fbca5261d9a38d2238dca17c26897d8814b77c",
+  "projectionDigest": "sha256:e937eec151e4d4ab38d52005c855b14cb46c34caa61de70072b635bf65ab67cd",
+  "acceptedAt": "2026-07-24T20:52:47.083Z",
+  "html": {
+    "path": "docs/visual-reporting/reports/report-742fe1231ecb031b7225eef851e382a74fae4dcea55698b00693fa3343309163.html",
+    "digest": "sha256:4dc979caaeb3539a86b66fa66b0ee7f0cea90299b8c592c26003bbee03d8ef92"
+  },
+  "projection": {
+    "schemaVersion": 1,
+    "reportRevisionId": "report:742fe1231ecb031b7225eef851e382a74fae4dcea55698b00693fa3343309163",
+    "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
+    "receiptsDigest": "sha256:20e27b35413c3756ba6afbced8fbca5261d9a38d2238dca17c26897d8814b77c",
+    "title": "One session now becomes one accepted visual report.",
+    "source": {
+      "provider": "codex",
+      "startedAt": "2026-07-24T10:00:00.000Z",
+      "updatedAt": "2026-07-24T10:03:00.000Z",
+      "eventCount": 2,
+      "complete": true,
+      "warningCount": 0
+    },
+    "outcome": {
+      "status": "complete",
+      "headline": "One session now becomes one accepted visual report.",
+      "summary": "A completed Codex session and executed repository proof now produce one immutable local report revision."
+    },
+    "stats": {
+      "changes": 5,
+      "decisions": 2,
+      "proofs": 2,
+      "blockers": 0,
+      "artifacts": 1
+    },
+    "changeMap": {
+      "nodes": [
+        {
+          "id": "adapter.codex",
+          "label": "Codex session adapter",
+          "role": "adapter",
+          "receiptCount": 1
+        },
+        {
+          "id": "host.canvas",
+          "label": "Novakai Canvas",
+          "role": "caller",
+          "receiptCount": 0
+        },
+        {
+          "id": "reporting.core",
+          "label": "Reporting core",
+          "role": "module",
+          "receiptCount": 1
+        },
+        {
+          "id": "reporting.contract",
+          "label": "Reporting public contract",
+          "role": "interface",
+          "receiptCount": 1
+        },
+        {
+          "id": "projection.report",
+          "label": "Visual report projection",
+          "role": "projection",
+          "receiptCount": 2
+        }
+      ],
+      "edges": [
+        {
+          "id": "edge:0558f125311c9ed5136f8ad335f21c1f5087920ba4a06eb962fcbcafc0b6bec7",
+          "source": "reporting.contract",
+          "target": "host.canvas",
+          "label": "Build Reporting public contract",
+          "kind": "changes"
+        },
+        {
+          "id": "edge:4182281d55ec0b8505b191379271cd67a79b2074ca407da8488bd0f740bdc325",
+          "source": "reporting.contract",
+          "target": "reporting.core",
+          "label": "Build Reporting public contract",
+          "kind": "changes"
+        },
+        {
+          "id": "edge:b31e5877fb77554e39e0c32c17b83068c6049e6a9de22bf81aa008b9d4689ddb",
+          "source": "reporting.core",
+          "target": "reporting.contract",
+          "label": "Build Reporting core",
+          "kind": "changes"
+        },
+        {
+          "id": "edge:b965f590faf4831895c3f90ecfebb91b9d95fd3cbe1773564fbb2a3a7072d8c0",
+          "source": "projection.report",
+          "target": "host.canvas",
+          "label": "Build Visual report projection",
+          "kind": "changes"
+        },
+        {
+          "id": "edge:bc85b0da72b5afb244e44e8e2e0397d417a235ba201d2ce1c3621bdaf318e34a",
+          "source": "reporting.core",
+          "target": "projection.report",
+          "label": "Build Reporting core",
+          "kind": "changes"
+        },
+        {
+          "id": "edge:fb089a26d44d83083139c589083a9c5071d1a483fe70bf3dbe3519a3e7ee32e7",
+          "source": "adapter.codex",
+          "target": "reporting.contract",
+          "label": "Build Codex session adapter",
+          "kind": "calls"
+        }
+      ]
+    },
+    "workflow": [
+      {
+        "id": "import-session",
+        "label": "Import session",
+        "detail": "Normalize provider events and bind the source digest.",
+        "status": "done"
+      },
+      {
+        "id": "capture-receipts",
+        "label": "Capture structured receipts",
+        "detail": "10 change, decision, proof, blocker, and artifact receipts recorded.",
+        "status": "done"
+      },
+      {
+        "id": "compile-report",
+        "label": "Compile visual report",
+        "detail": "Build one deterministic projection from authoritative session evidence.",
+        "status": "done"
+      },
+      {
+        "id": "immutable-revision",
+        "label": "Seal immutable report revision",
+        "detail": "Hash the projection bytes before local acceptance.",
+        "status": "done"
+      }
+    ],
+    "nextActions": [],
+    "proofs": [
+      {
+        "type": "proof",
+        "title": "Repository acceptance suite passed",
+        "summary": "The local npm run check command executed and exited with code 0.",
+        "evidence": [
+          {
+            "kind": "test",
+            "label": "npm run check"
+          }
+        ]
+      },
+      {
+        "type": "proof",
+        "title": "Repository acceptance suite passed",
+        "summary": "The local npm run check command executed and exited with code 0.",
+        "evidence": [
+          {
+            "kind": "test",
+            "label": "npm run check"
+          }
+        ]
+      }
+    ],
+    "decisions": [
+      {
+        "type": "decision",
+        "title": "Keep renderers disposable",
+        "summary": "Canvas and standalone HTML consume the same accepted report projection and cannot mutate report truth.",
+        "evidence": [
+          {
+            "kind": "file",
+            "label": "Visual implementation handover"
+          }
+        ]
+      },
+      {
+        "type": "decision",
+        "title": "Keep one reporting authority",
+        "summary": "WorkSession, WorkReceipt, ReportDraft, and AcceptedReport remain owned by one host-neutral capability.",
+        "evidence": [
+          {
+            "kind": "file",
+            "label": "Reporting contract"
+          }
+        ]
+      }
+    ],
+    "blockers": [],
+    "artifacts": [
+      {
+        "type": "artifact",
+        "title": "Visual implementation handover",
+        "summary": "The visual architecture, assumptions, fallbacks, AI instructions, and delivery gates live with the isolated worktree.",
+        "evidence": [
+          {
+            "kind": "artifact",
+            "label": "Open visual handover"
+          }
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "kind": "file",
+        "label": "docs/visual-reporting/POC-Work-Session-Report.html"
+      },
+      {
+        "kind": "test",
+        "label": "npm run check"
+      },
+      {
+        "kind": "artifact",
+        "label": "Open visual handover"
+      },
+      {
+        "kind": "file",
+        "label": "public/reports/accepted-report.json"
+      },
+      {
+        "kind": "file",
+        "label": "Reporting contract"
+      },
+      {
+        "kind": "file",
+        "label": "src/capabilities/work-session-reporting/core/report-compiler.ts"
+      },
+      {
+        "kind": "file",
+        "label": "src/capabilities/work-session-reporting/core/reporting-engine.ts"
+      },
+      {
+        "kind": "file",
+        "label": "src/capabilities/work-session-reporting/core/stable-value.ts"
+      },
+      {
+        "kind": "file",
+        "label": "src/capabilities/work-session-reporting/index.ts"
+      },
+      {
+        "kind": "file",
+        "label": "src/capabilities/work-session-reporting/reporting-engine.test.ts"
+      },
+      {
+        "kind": "file",
+        "label": "tools/report-session/cli.ts"
+      },
+      {
+        "kind": "file",
+        "label": "tools/report-session/codex-session-source.ts"
+      },
+      {
+        "kind": "file",
+        "label": "tools/report-session/html-renderer.ts"
+      },
+      {
+        "kind": "file",
+        "label": "tools/report-session/publish-report.ts"
+      },
+      {
+        "kind": "file",
+        "label": "tools/report-session/report-session.test.ts"
+      },
+      {
+        "kind": "file",
+        "label": "tools/report-session/repository-evidence.ts"
+      },
+      {
+        "kind": "file",
+        "label": "Visual implementation handover"
+      }
+    ]
+  }
+}

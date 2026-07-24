@@ -1,4 +1,7 @@
-import type { ReportProjection, WorkReceipt } from '../../src/capabilities/work-session-reporting/contract.ts';
+import type {
+  PublishedReceipt,
+  PublishedReportProjection,
+} from '../../src/capabilities/work-session-reporting/index.ts';
 
 function escape(value: string): string {
   return value
@@ -9,7 +12,7 @@ function escape(value: string): string {
     .replaceAll("'", '&#039;');
 }
 
-function receiptCards(receipts: readonly WorkReceipt[], empty: string): string {
+function receiptCards(receipts: readonly PublishedReceipt[], empty: string): string {
   if (receipts.length === 0) return `<p class="empty">${escape(empty)}</p>`;
   return receipts.map((receipt) => `
     <article class="receipt">
@@ -21,7 +24,7 @@ function receiptCards(receipts: readonly WorkReceipt[], empty: string): string {
     </article>`).join('');
 }
 
-function changeMap(projection: ReportProjection): string {
+function changeMap(projection: PublishedReportProjection): string {
   if (projection.changeMap.nodes.length === 0) {
     return '<p class="empty">No changed modules were recorded.</p>';
   }
@@ -38,7 +41,7 @@ function changeMap(projection: ReportProjection): string {
 }
 
 /** Deterministic, dependency-free second-host rendering of an accepted report projection. */
-export function renderStandaloneReport(projection: ReportProjection): string {
+export function renderStandaloneReport(projection: PublishedReportProjection): string {
   const status = projection.outcome.status;
   return `<!doctype html>
 <html lang="en">

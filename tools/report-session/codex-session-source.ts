@@ -2,7 +2,11 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { basename } from 'node:path';
 import { z } from 'zod';
-import type { ImportSessionInput, SessionEvent } from '../../src/capabilities/work-session-reporting/contract.ts';
+import type {
+  ImportSessionInput,
+  SessionEvent,
+  SessionWarning,
+} from '../../src/capabilities/work-session-reporting/index.ts';
 
 const textBlockSchema = z.object({
   type: z.enum(['input_text', 'output_text', 'text']),
@@ -46,20 +50,34 @@ interface ParsedLine {
   value: z.infer<typeof genericRecordSchema>;
 }
 
-function parseLines(source: string): { records: ParsedLine[]; complete: boolean } {
+interface ParseOptions {
+  confirmComplete?: boolean;
+}
+
+function parseLines(source: string): { records: ParsedLine[]; warnings: SessionWarning[] } {
   const records: ParsedLine[] = [];
-  let complete = true;
+  const warnings: SessionWarning[] = [];
   for (const [index, line] of source.split('\n').entries()) {
     if (!line.trim()) continue;
     try {
       const parsed = genericRecordSchema.safeParse(JSON.parse(line) as unknown);
       if (parsed.success) records.push({ line: index + 1, value: parsed.data });
-      else complete = false;
+      else {
+        warnings.push({
+          code: 'MalformedLine',
+          line: index + 1,
+          message: 'The JSON record did not match the Codex envelope.',
+        });
+      }
     } catch {
-      complete = false;
+      warnings.push({
+        code: 'MalformedLine',
+        line: index + 1,
+        message: 'The line is not valid JSON.',
+      });
     }
   }
-  return { records, complete };
+  return { records, warnings };
 }
 
 function textFromBlock(block: z.infer<typeof contentBlockSchema>): string {
@@ -97,8 +115,24 @@ function sourceRef(filePath: string): string {
   return index >= 0 ? `$CODEX_HOME${filePath.slice(index)}` : `$CODEX_HOME/${basename(filePath)}`;
 }
 
+function hasTerminalSignal(records: readonly ParsedLine[]): boolean {
+  return records.some(({ value }) => {
+    if (value.type === 'session_end') return true;
+    const parsed = z.object({
+      type: z.literal('event_msg'),
+      payload: z.object({
+        type: z.enum(['task_complete', 'turn_complete']),
+      }).passthrough(),
+    }).safeParse(value);
+    return parsed.success;
+  });
+}
+
 /** Parses one real Codex JSONL session into the reporting capability's public import contract. */
-export function parseCodexSessionFile(filePath: string): ImportSessionInput {
+export function parseCodexSessionFile(
+  filePath: string,
+  options: ParseOptions = {},
+): ImportSessionInput {
   const source = readFileSync(filePath, 'utf8');
   const parsed = parseLines(source);
   const metaRecord = parsed.records
@@ -107,7 +141,14 @@ export function parseCodexSessionFile(filePath: string): ImportSessionInput {
   const metadata = metaRecord?.success ? metaRecord.data.payload : undefined;
   const nativeSessionId = metadata?.id ?? metadata?.session_id ?? fallbackId(filePath);
   const events: SessionEvent[] = [];
-  let complete = parsed.complete && metadata !== undefined;
+  const warnings = [...parsed.warnings];
+  if (metadata === undefined) {
+    warnings.push({
+      code: 'MissingMetadata',
+      line: null,
+      message: 'No Codex session metadata record was found.',
+    });
+  }
 
   for (const record of parsed.records) {
     const response = responseItemSchema.safeParse(record.value);
@@ -122,19 +163,50 @@ export function parseCodexSessionFile(filePath: string): ImportSessionInput {
         payloadIdentity.success
         && payloadIdentity.data.type === 'message'
         && ['user', 'assistant'].includes(payloadIdentity.data.role ?? '')
-      ) complete = false;
+      ) {
+        warnings.push({
+          code: 'UnsupportedContent',
+          line: record.line,
+          message: 'A user or assistant message could not be normalized.',
+        });
+      }
       continue;
     }
     for (const [blockIndex, block] of message.data.content.entries()) {
       const content = textFromBlock(block);
-      if (!content || isSynthetic(content)) continue;
+      if (!content) {
+        if (block.type !== 'input_text' && block.type !== 'output_text' && block.type !== 'text') {
+          warnings.push({
+            code: 'UnsupportedContent',
+            line: record.line,
+            message: `Unsupported message content block ${block.type}.`,
+          });
+        }
+        continue;
+      }
+      if (isSynthetic(content)) continue;
       events.push({
-        providerEventId: `${message.data.id ?? nativeSessionId}:${record.line}#${blockIndex}`,
+        providerEventId: message.data.id
+          ? `${message.data.id}#${blockIndex}`
+          : `${nativeSessionId}:${record.line}#${blockIndex}`,
         role: message.data.role,
         timestamp: response.data.timestamp ?? null,
         summary: compact(content),
       });
     }
+  }
+
+  const eventIdentities = new Map<string, SessionEvent>();
+  for (const event of events) {
+    const existing = eventIdentities.get(event.providerEventId);
+    if (existing && JSON.stringify(existing) !== JSON.stringify(event)) {
+      warnings.push({
+        code: 'ConflictingEventId',
+        line: null,
+        message: `Provider event id ${event.providerEventId} identifies conflicting content.`,
+      });
+    }
+    eventIdentities.set(event.providerEventId, event);
   }
 
   const timestamps = parsed.records
@@ -149,7 +221,8 @@ export function parseCodexSessionFile(filePath: string): ImportSessionInput {
     title: compact(firstUser ?? `Codex session ${nativeSessionId.slice(0, 8)}`, 180),
     startedAt: metadata?.timestamp ?? timestamps[0] ?? null,
     updatedAt: timestamps.at(-1) ?? metadata?.timestamp ?? null,
-    complete,
+    complete: options.confirmComplete === true || hasTerminalSignal(parsed.records),
+    warnings,
     events,
   };
 }

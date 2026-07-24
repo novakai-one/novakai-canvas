@@ -78,10 +78,10 @@ function workflow(receipts: readonly WorkReceipt[], nextActions: CompileReportIn
       status: 'done' as const,
     },
     {
-      id: 'accept-report',
-      label: 'Accept report revision',
-      detail: 'Require the source digest to remain unchanged before acceptance.',
-      status: 'active' as const,
+      id: 'immutable-revision',
+      label: 'Seal immutable report revision',
+      detail: 'Hash the projection bytes before local acceptance.',
+      status: 'done' as const,
     },
   ];
   return [
@@ -103,10 +103,13 @@ export function compileProjection(
   receipts: readonly WorkReceipt[],
   input: CompileReportInput,
 ): ReportProjection {
+  const receiptsDigest = `sha256:${stableHash(
+    receipts.map((receipt) => ({ id: receipt.id, sourceDigest: receipt.sourceDigest })),
+  )}`;
   const revisionId = `report:${stableHash({
     sessionId: session.id,
     sourceDigest: session.sourceDigest,
-    receipts,
+    receiptsDigest,
     outcome: input.outcome,
     nextActions: input.nextActions,
   })}` as ReportRevisionId;
@@ -115,14 +118,15 @@ export function compileProjection(
     reportRevisionId: revisionId,
     sessionId: session.id,
     sourceDigest: session.sourceDigest,
-    title: session.title,
+    receiptsDigest,
+    title: input.outcome.headline,
     source: {
       provider: session.provider,
-      sourceRef: session.sourceRef,
       startedAt: session.startedAt,
       updatedAt: session.updatedAt,
       eventCount: session.events.length,
       complete: session.complete,
+      warningCount: session.warnings.length,
     },
     outcome: input.outcome,
     stats: {

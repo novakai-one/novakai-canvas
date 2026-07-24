@@ -3,13 +3,12 @@ import type {
   ModuleRef,
   RecordReceiptInput,
   WorkSessionId,
-} from '../../src/capabilities/work-session-reporting/contract.ts';
+} from '../../src/capabilities/work-session-reporting/index.ts';
 
 interface EvidenceOptions {
   repoRoot: string;
   baseRef: string;
   sessionId: WorkSessionId;
-  verified: boolean;
 }
 
 interface Area {
@@ -170,21 +169,5 @@ export function collectRepositoryReceipts(options: EvidenceOptions): RecordRecei
       tags: ['handover'],
     },
   );
-  if (options.verified) {
-    receipts.push({
-      sessionId: options.sessionId,
-      type: 'proof',
-      title: 'Repository acceptance suite passed',
-      summary: 'Lint, contract tests, tool type-check, application type-check, and production build completed before report generation.',
-      occurredAt: null,
-      evidence: [{
-        kind: 'test',
-        label: 'npm run check',
-        uri: 'command:npm-run-check',
-      }],
-      relatedModules: [],
-      tags: ['verification'],
-    });
-  }
   return receipts;
 }
