@@ -1,7 +1,8 @@
 import {
-  verifyPublishedProjectionEnvelope,
+  safeVerifyPublishedProjectionEnvelope,
   type PublishedAcceptedReportEnvelope,
   type PublishedReceipt,
+  type PublishedReportVerificationFailureCode,
   type PublishedReportProjection,
 } from '../../../capabilities/work-session-reporting/index.ts';
 
@@ -27,7 +28,11 @@ export interface PrototypeReport {
 
 export type ReportHydrationResult =
   | { ok: true; report: PrototypeReport }
-  | { ok: false; message: string };
+  | {
+      ok: false;
+      code: PublishedReportVerificationFailureCode;
+      message: string;
+    };
 
 function deepFreeze<T>(value: T): T {
   if (value === null || typeof value !== 'object' || Object.isFrozen(value)) return value;
@@ -69,17 +74,14 @@ export function selectPrototypeReport(
 
 /** Runtime-validates untrusted HTTP JSON at the public reporting seam. */
 export function hydratePublishedReport(input: unknown): ReportHydrationResult {
-  try {
-    const envelope = verifyPublishedProjectionEnvelope(input);
-    return { ok: true, report: selectPrototypeReport(envelope) };
-  } catch (error) {
-    return {
-      ok: false,
-      message: error instanceof Error
-        ? error.message
-        : 'The publication does not match the public contract.',
-    };
-  }
+  const verified = safeVerifyPublishedProjectionEnvelope(input);
+  return verified.ok
+    ? { ok: true, report: selectPrototypeReport(verified.value) }
+    : {
+        ok: false,
+        code: verified.error.code,
+        message: verified.error.message,
+      };
 }
 
 export function variantFromSearch(search: string): ReportVariant {

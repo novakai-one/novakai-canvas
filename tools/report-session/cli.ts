@@ -15,12 +15,12 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { homedir } from 'node:os';
-import { dirname, join, relative, resolve } from 'node:path';
+import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   createReportingEngine,
-  publishedAcceptedReportEnvelopeSchema,
   reportingSnapshotSchema,
+  verifyPublishedProjectionEnvelope,
   type RecordReceiptInput,
   type ReportingResult,
   type ReportingSnapshot,
@@ -324,11 +324,13 @@ function generate(args: Args): void {
 
     const authoritativeSnapshot = reporting.snapshot();
     const publicProjection = createPublishedProjection(accepted, authoritativeSnapshot.receipts);
-    const htmlPath = join(args.htmlDirectory, `${accepted.id.replace(':', '-')}.html`);
+    const htmlName = `${accepted.id.replace(':', '-')}.html`;
+    const htmlPath = join(args.htmlDirectory, htmlName);
     const htmlRelative = relative(REPO_ROOT, htmlPath);
+    const reportHtmlPath = `docs/visual-reporting/reports/${htmlName}`;
     const html = renderStandaloneReport(publicProjection);
     const envelope = createPublishedEnvelope(accepted, authoritativeSnapshot.receipts, {
-      path: htmlRelative,
+      path: reportHtmlPath,
       content: html,
     }, evidenceHead);
     writeImmutable(htmlPath, html);
@@ -349,10 +351,10 @@ function generate(args: Args): void {
 
 function show(args: Args): void {
   const input = JSON.parse(readFileSync(args.publicEnvelope, 'utf8')) as unknown;
-  const shaped = publishedAcceptedReportEnvelopeSchema.parse(input);
+  const shaped = verifyPublishedProjectionEnvelope(input);
   const envelope = verifyPublishedEnvelope(
-    input,
-    readFileSync(join(REPO_ROOT, shaped.html.path), 'utf8'),
+    shaped,
+    readFileSync(join(args.htmlDirectory, basename(shaped.html.path)), 'utf8'),
   );
   const selectedRevision = args.report ?? envelope.reportRevisionId;
   if (selectedRevision !== envelope.reportRevisionId) {

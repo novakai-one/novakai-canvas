@@ -75,6 +75,29 @@ function recordSuccessfulProof(
   });
 }
 
+function recordFailedProof(
+  reporting: ReturnType<typeof createReportingEngine>,
+  sessionId: WorkSessionId,
+) {
+  return reporting.recordReceipt({
+    sessionId,
+    type: 'proof',
+    title: 'Focused verification failed',
+    summary: 'The command executed and returned a non-zero exit.',
+    occurredAt: NOW,
+    evidence: [{ kind: 'test', label: 'npm run focused-check', uri: 'command:focused-check' }],
+    relatedModules: [],
+    tags: ['verification'],
+    proof: {
+      command: 'npm run focused-check',
+      exitCode: 1,
+      executedAt: NOW,
+      outputDigest: digest('9'),
+      outputExcerpt: '1 test failed',
+    },
+  });
+}
+
 function compileComplete(
   reporting: ReturnType<typeof createReportingEngine>,
   sessionId: WorkSessionId,
@@ -317,6 +340,51 @@ describe('work-session reporting public contract', () => {
       outcome: { status: 'complete', headline: 'Blocked.', summary: 'Cannot be complete.' },
       nextActions: [{ id: 'next', label: 'Do work', status: 'next', dependsOn: [] }],
     })).toMatchObject({ ok: false, error: { code: 'CompletionPolicyFailed' } });
+  });
+
+  it('rejects exact mixed [0,1] authoritative proof outcomes at compile and accept', () => {
+    const compileCase = setup(source(digest('6'), true, 'mixed-proof-compile'));
+    expect(recordSuccessfulProof(compileCase.reporting, compileCase.sessionId).ok).toBe(true);
+    expect(recordFailedProof(compileCase.reporting, compileCase.sessionId).ok).toBe(true);
+    expect(
+      compileCase.reporting.snapshot().receipts
+        .map((receipt) => receipt.proof?.exitCode)
+        .filter((exitCode): exitCode is number => exitCode !== undefined)
+        .sort(),
+    ).toEqual([0, 1]);
+    expect(compileCase.reporting.compileReport({
+      sessionId: compileCase.sessionId,
+      outcome: {
+        status: 'complete',
+        headline: 'Mixed proof cannot compile.',
+        summary: 'Every authoritative proof must succeed.',
+      },
+      nextActions: [],
+    })).toMatchObject({
+      ok: false,
+      error: {
+        code: 'CompletionPolicyFailed',
+        issues: [expect.stringContaining('non-successful executed proof')],
+      },
+    });
+
+    const acceptCase = setup(source(digest('7'), true, 'mixed-proof-accept'));
+    const draft = compileComplete(acceptCase.reporting, acceptCase.sessionId);
+    if (!draft.ok) throw new Error(draft.error.message);
+    expect(recordFailedProof(acceptCase.reporting, acceptCase.sessionId).ok).toBe(true);
+    expect(
+      acceptCase.reporting.snapshot().receipts
+        .map((receipt) => receipt.proof?.exitCode)
+        .filter((exitCode): exitCode is number => exitCode !== undefined)
+        .sort(),
+    ).toEqual([0, 1]);
+    expect(accept(acceptCase.reporting, draft.value)).toMatchObject({
+      ok: false,
+      error: {
+        code: 'CompletionPolicyFailed',
+        issues: [expect.stringContaining('non-successful executed proof')],
+      },
+    });
   });
 
   it('requires proof receipts to carry executed evidence', () => {

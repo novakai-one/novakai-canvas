@@ -263,11 +263,19 @@ function ReportProofs({
 
 function ValidationLadder({ report }: { report: PrototypeReport }) {
   const { envelope, projection } = report;
-  const proof = projection.proofs.find((receipt) => receipt.proof?.exitCode === 0);
+  const proof = projection.proofs[0];
+  const successfulProofs = projection.proofs.filter(
+    (receipt) => receipt.proof?.exitCode === 0,
+  ).length;
   const steps = [
     ['Source bound', compactIdentity(envelope.sourceDigest)],
     ['Receipts bound', `${envelope.receiptIds.length} authoritative references`],
-    ['Executed proof exit state', proof ? `exit ${proof.proof?.exitCode}` : 'missing'],
+    [
+      'Primary executed proof',
+      proof
+        ? `exit ${proof.proof?.exitCode} · ${successfulProofs}/${projection.proofs.length} proofs successful`
+        : 'missing',
+    ],
     ['Accepted revision', compactIdentity(envelope.reportRevisionId)],
   ] as const;
   return (
@@ -282,7 +290,7 @@ function ValidationLadder({ report }: { report: PrototypeReport }) {
         ))}
       </ol>
       <p>
-        Gate policy: digest mismatch → reject · completion proof non-zero or source warning → reject.
+        Gate policy: digest mismatch → reject · any proof non-zero or source warning → reject.
       </p>
     </section>
   );

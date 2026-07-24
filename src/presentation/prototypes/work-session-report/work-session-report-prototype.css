@@ -782,11 +782,14 @@ body,
   min-width: 0;
   gap: 3px;
   padding: 9px 12px;
-  border-right: 1px solid var(--report-line-soft);
-  border-bottom: 1px solid var(--report-line-soft);
-  opacity: 0.52;
+  border-right: 1px solid #26313c;
+  border-bottom: 1px solid #26313c;
+  background: #11171e;
 }
-.change-map-edge-ledger > div.is-connected { opacity: 1; background: var(--report-blue-soft); }
+.change-map-edge-ledger > div.is-connected {
+  border-color: var(--report-line);
+  background: var(--report-blue-soft);
+}
 .change-map-edge-ledger span { color: var(--report-faint); font-size: 7px; text-transform: uppercase; }
 .change-map-edge-ledger code { overflow: hidden; color: var(--report-muted); font-size: 7px; text-overflow: ellipsis; white-space: nowrap; }
 .change-map-edge-ledger strong { font-size: 8px; }

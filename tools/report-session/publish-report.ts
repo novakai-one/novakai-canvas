@@ -1,8 +1,8 @@
 import { createHash } from 'node:crypto';
 import {
   acceptedReportSchema,
+  PublishedReportVerificationError,
   publishedArtifactHrefSchema,
-  publishedAcceptedReportEnvelopeSchema,
   verifyPublishedProjectionEnvelope,
   workReceiptSchema,
   type AcceptedReport,
@@ -131,11 +131,14 @@ function authoritativeReceiptsFor(
       throw new Error(`Accepted report ${type} copies disagree with authoritative receipts.`);
     }
   }
-  if (
-    report.projection.outcome.status === 'complete'
-    && !selected.some((receipt) => receipt.type === 'proof' && receipt.proof?.exitCode === 0)
-  ) {
-    throw new Error('Accepted completion lacks a successful authoritative command proof.');
+  if (report.projection.outcome.status === 'complete') {
+    const proofs = selected.filter((receipt) => receipt.type === 'proof');
+    if (proofs.length === 0) {
+      throw new Error('Accepted completion lacks an authoritative command proof.');
+    }
+    if (proofs.some((receipt) => receipt.proof?.exitCode !== 0)) {
+      throw new Error('Accepted completion contains a non-successful authoritative command proof.');
+    }
   }
   return { report, receipts: selected };
 }
@@ -204,7 +207,10 @@ export function createPublishedEnvelope(
   const projection = createPublishedProjection(report, receipts);
   const deterministicHtml = renderStandaloneReport(projection);
   if (html.content !== deterministicHtml) {
-    throw new Error('Published HTML must be the deterministic renderer output for its public projection.');
+    throw new PublishedReportVerificationError({
+      code: 'HtmlRendererMismatch',
+      message: 'Published HTML must be the deterministic renderer output for its public projection.',
+    });
   }
   const receiptClaims = receipts.map((receipt) => ({
     id: receipt.id,
@@ -240,7 +246,7 @@ export function createPublishedEnvelope(
     },
     projection,
   };
-  return deepFreeze(publishedAcceptedReportEnvelopeSchema.parse({
+  return deepFreeze(verifyPublishedProjectionEnvelope({
     ...unsigned,
     publicationDigest: digest(canonical(unsigned)),
   }));
@@ -253,10 +259,16 @@ export function verifyPublishedEnvelope(
 ): PublishedAcceptedReportEnvelope {
   const envelope = verifyPublishedProjectionEnvelope(input);
   if (digest(htmlContent) !== envelope.html.digest) {
-    throw new Error('Published HTML digest does not match the selected accepted revision.');
+    throw new PublishedReportVerificationError({
+      code: 'HtmlDigestMismatch',
+      message: 'Published HTML digest does not match the selected accepted revision.',
+    });
   }
   if (htmlContent !== renderStandaloneReport(envelope.projection)) {
-    throw new Error('Published HTML is not the deterministic renderer output for its public projection.');
+    throw new PublishedReportVerificationError({
+      code: 'HtmlRendererMismatch',
+      message: 'Published HTML is not the deterministic renderer output for its public projection.',
+    });
   }
   return deepFreeze(envelope);
 }

@@ -8,7 +8,7 @@ import {
   statSync,
   writeFileSync,
 } from 'node:fs';
-import { join, relative } from 'node:path';
+import { basename, join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   createReportingEngine,
@@ -592,7 +592,7 @@ describe('report session adapters', () => {
     const envelope = publishedAcceptedReportEnvelopeSchema.parse(
       JSON.parse(readFileSync(publicEnvelope, 'utf8')),
     );
-    const html = readFileSync(join(repoRoot, envelope.html.path), 'utf8');
+    const html = readFileSync(join(htmlDirectory, basename(envelope.html.path)), 'utf8');
     expect(snapshot.sessions).toHaveLength(2);
     expect(snapshot.acceptedReports).toHaveLength(2);
     expect(snapshot.revision).toBeGreaterThan(0);
@@ -604,6 +604,8 @@ describe('report session adapters', () => {
       'show',
       '--public',
       publicEnvelope,
+      '--html-directory',
+      htmlDirectory,
       '--report',
       envelope.reportRevisionId,
     ], { cwd: repoRoot, encoding: 'utf8' })) as {
@@ -617,6 +619,8 @@ describe('report session adapters', () => {
       'show',
       '--public',
       publicEnvelope,
+      '--html-directory',
+      htmlDirectory,
       '--report',
       `report:${'0'.repeat(64)}`,
     ], { cwd: repoRoot, encoding: 'utf8' });

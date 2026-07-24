@@ -145,8 +145,11 @@ function completionIssues(
   if (!session.complete) errors.push('claims completion for an incomplete source');
   if (session.events.length === 0) errors.push('claims completion with zero normalized events');
   if (session.warnings.length > 0) errors.push('claims completion with parser warnings');
-  if (!receipts.some((receipt) => receipt.type === 'proof' && receipt.proof?.exitCode === 0)) {
+  const proofs = receipts.filter((receipt) => receipt.type === 'proof');
+  if (proofs.length === 0) {
     errors.push('claims completion without successful executed proof reconciled to authority');
+  } else if (proofs.some((receipt) => receipt.proof?.exitCode !== 0)) {
+    errors.push('claims completion with a non-successful executed proof reconciled to authority');
   }
   if (receipts.some((receipt) => receipt.type === 'blocker')) {
     errors.push('claims completion with authoritative blockers');
@@ -468,7 +471,7 @@ export function createReportingEngine(options: ReportingOptions = {}): WorkSessi
         if (policyIssues.length > 0) {
           return failure(
             'CompletionPolicyFailed',
-            'A complete outcome requires successful proof and no unresolved work.',
+            'A complete outcome requires every executed proof to succeed and no unresolved work.',
             { issues: policyIssues },
           );
         }
@@ -518,7 +521,16 @@ export function createReportingEngine(options: ReportingOptions = {}): WorkSessi
           currentSourceDigest: session.sourceDigest,
         });
       }
-      const currentReceiptsDigest = receiptsDigest(receiptsFor(receipts, session));
+      const currentReceipts = receiptsFor(receipts, session);
+      const policyIssues = completionIssues(session, currentReceipts, draft.projection);
+      if (policyIssues.length > 0) {
+        return failure(
+          'CompletionPolicyFailed',
+          'A complete outcome requires every executed proof to succeed and no unresolved work.',
+          { issues: policyIssues },
+        );
+      }
+      const currentReceiptsDigest = receiptsDigest(currentReceipts);
       if (
         currentReceiptsDigest !== parsed.data.expectedReceiptsDigest
         || draft.receiptsDigest !== parsed.data.expectedReceiptsDigest
