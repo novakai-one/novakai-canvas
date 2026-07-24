@@ -129,6 +129,7 @@ function hasTerminalSignal(records: readonly ParsedLine[]): boolean {
 }
 
 const ignoredResponseItemTypes = new Set([
+  'agent_message',
   'function_call',
   'function_call_output',
   'custom_tool_call',
@@ -136,19 +137,38 @@ const ignoredResponseItemTypes = new Set([
   'computer_call',
   'computer_call_output',
   'reasoning',
+  'tool_search_call',
+  'tool_search_output',
   'web_search_call',
 ]);
 
 const ignoredEventTypes = new Set([
+  'agent_message',
+  'mcp_tool_call_end',
+  'patch_apply_end',
+  'sub_agent_activity',
   'task_started',
   'turn_started',
   'task_complete',
   'turn_complete',
   'token_count',
   'context_compacted',
+  'thread_goal_updated',
+  'thread_settings_applied',
+  'turn_aborted',
+  'user_message',
+  'web_search_end',
 ]);
 
-const ignoredTopLevelTypes = new Set(['turn_context', 'session_end']);
+const ignoredTopLevelTypes = new Set([
+  'compacted',
+  'inter_agent_communication_metadata',
+  'session_end',
+  'turn_context',
+  'world_state',
+]);
+
+const ignoredMessageRoles = new Set(['developer', 'system']);
 
 /** Parses one real Codex JSONL session into the reporting capability's public import contract. */
 export function parseCodexSessionFile(
@@ -218,6 +238,14 @@ export function parseCodexSessionFile(
     }
     const message = messagePayloadSchema.safeParse(response.data.payload);
     if (!message.success) {
+      const ignoredMessage = z.object({
+        type: z.literal('message'),
+        role: z.string(),
+        content: z.array(contentBlockSchema),
+      }).safeParse(response.data.payload);
+      if (ignoredMessage.success && ignoredMessageRoles.has(ignoredMessage.data.role)) {
+        continue;
+      }
       const payloadIdentity = z.object({ type: z.string() })
         .passthrough()
         .safeParse(response.data.payload);
