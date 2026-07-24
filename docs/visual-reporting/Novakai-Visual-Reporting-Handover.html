@@ -188,6 +188,32 @@
     .notice .icon { font-size: 24px; line-height: 1; }
     .notice strong { display: block; margin-bottom: 4px; }
     .notice p { margin: 0; color: #6c3548; }
+    .notice.done {
+      border-color: #9fd6bd;
+      border-left-color: var(--green);
+      background: var(--green-soft);
+    }
+    .notice.done p { color: #165c40; }
+
+    .visual-proof {
+      margin: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: white;
+      box-shadow: var(--shadow);
+    }
+    .visual-proof img {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #0d1117;
+    }
+    .visual-proof figcaption {
+      padding: 12px 14px;
+      color: var(--muted);
+      font-size: 12px;
+    }
 
     .route {
       display: grid;
@@ -423,6 +449,7 @@
     <div class="shell topbar-inner">
       <div class="brand">Novakai Visual Reporting · Handover</div>
       <nav aria-label="Document sections">
+        <a href="#complete">POC complete</a>
         <a href="#start">Start</a>
         <a href="#mission">Mission</a>
         <a href="#change">Before → after</a>
@@ -436,37 +463,205 @@
   </div>
 
   <header class="shell">
-    <span class="eyebrow"><span class="dot"></span> Single source of truth · 25 July 2026</span>
-    <h1>Make agents show the work.</h1>
-    <p class="lead">A visual implementation handover for turning one agent work session into one accepted, reproducible report—viewable inside Novakai Canvas and outside it.</p>
+    <span class="eyebrow"><span class="dot"></span> Proof of concept complete · 25 July 2026</span>
+    <h1>The agent work is now a visual artifact.</h1>
+    <p class="lead">One actual Codex session snapshot became one accepted, reproducible report revision—shown through the stable Novakai Canvas route and an independent standalone HTML host.</p>
 
     <div class="hero-grid">
       <div class="hero-card">
-        <h2>The intended design</h2>
-        <p><strong>One authoritative Work Session Reporting capability.</strong> Existing repositories provide proven renderers, parsers, and mapping tools through adapters. Canvas is a host—not the conductor of everyone else’s private internals.</p>
+        <h2>What exists now</h2>
+        <p><strong>Actual Codex JSONL → private reporting authority → accepted public envelope → two visual hosts.</strong> Open <span class="mono">?report=work-session</span> for the Canvas evidence wall or the immutable report HTML for the standalone view.</p>
       </div>
       <div class="answer-card">
-        <div class="big">8–12h</div>
-        <strong>smart proof of concept</strong>
-        <span>One real Codex session → visual report → Canvas + standalone proof. Production-shaped v1: roughly 16–27 AI-hours.</span>
+        <div class="big">2 hosts</div>
+        <strong>one exact revision</strong>
+        <span>126 normalized events · 0 parser warnings · 127 repository tests at promotion</span>
       </div>
     </div>
 
-    <div class="notice">
-      <div class="icon">⚠</div>
+    <div class="notice done">
+      <div class="icon">✓</div>
       <div>
-        <strong>Authority boundary for the next agent</strong>
-        <p>This document is a design and execution handover. Do not modify code until Chris explicitly says “build” or otherwise authorises implementation. When activated, follow the build contract below without silently widening scope.</p>
+        <strong>Hard stop reached</strong>
+        <p>C was promoted; A/B were deleted; the actual-session report was generated and verified once in both hosts. Do not restart design rounds or expand this into a reporting platform without a new request from Chris.</p>
       </div>
     </div>
   </header>
 
   <main class="shell">
-    <section id="start">
+    <section id="complete">
       <div class="section-head">
         <div>
-          <span class="pill mandated">Read first</span>
-          <h2>What should the next agent understand in 30 seconds?</h2>
+          <span class="pill observed">Delivered</span>
+          <h2>The exact thing that shipped</h2>
+        </div>
+        <p>This is the current operational handover. The original mission contract remains below as historical design evidence, not as unfinished work.</p>
+      </div>
+
+      <div class="route" aria-label="Delivered reporting pipeline">
+        <div class="route-node">
+          <span class="pill observed">Actual source</span>
+          <strong>Codex session snapshot</strong>
+          <small>126 normalized events · 0 warnings</small>
+        </div>
+        <div class="arrow">→</div>
+        <div class="route-node">
+          <span class="pill observed">Private authority</span>
+          <strong>Reporting capability</strong>
+          <small>Session · receipts · draft · acceptance</small>
+        </div>
+        <div class="arrow">→</div>
+        <div class="route-node">
+          <span class="pill observed">Public contract</span>
+          <strong>Accepted envelope</strong>
+          <small>Redacted · digest-bound · runtime-validated</small>
+        </div>
+        <div class="arrow">→</div>
+        <div class="route-node">
+          <span class="pill observed">Same revision</span>
+          <strong>Canvas + HTML</strong>
+          <small>Evidence wall · standalone report</small>
+        </div>
+      </div>
+
+      <div class="grid-4" style="margin-top:16px">
+        <div class="card">
+          <h3>Stable Canvas route</h3>
+          <p><a href="../../?report=work-session"><span class="mono">?report=work-session</span></a></p>
+        </div>
+        <div class="card">
+          <h3>Selected visual</h3>
+          <p>C · Evidence wall. Proof and artifact receipts lead; map and workflow remain supporting context.</p>
+        </div>
+        <div class="card">
+          <h3>Removed</h3>
+          <p>A, B, the variant switcher, arrow-key cycling, prototype query route, notes, CSS, and losing tests.</p>
+        </div>
+        <div class="card">
+          <h3>Normal Canvas</h3>
+          <p>Unchanged. The report route lazy-loads before the ordinary Canvas application bootstrap.</p>
+        </div>
+      </div>
+
+      <div class="diagram" style="margin-top:16px">
+        <div class="diagram-title">
+          <div>
+            <h3>Accepted identity chain</h3>
+            <p>The visible report is bound to one source snapshot, one receipt set, one public projection, one publication, and one evidence commit.</p>
+          </div>
+          <span class="pill observed">Verified once</span>
+        </div>
+        <div class="route" aria-label="Accepted report identity chain">
+          <div class="route-node">
+            <small>Source digest</small>
+            <strong class="mono">4acb8b87…a070d4d9</strong>
+          </div>
+          <div class="arrow">→</div>
+          <div class="route-node">
+            <small>Receipts digest</small>
+            <strong class="mono">f8aeba7f…c9acc13</strong>
+          </div>
+          <div class="arrow">→</div>
+          <div class="route-node">
+            <small>Report revision</small>
+            <strong class="mono">dcc4a98d…cdbd6779</strong>
+          </div>
+          <div class="arrow">→</div>
+          <div class="route-node">
+            <small>Publication digest</small>
+            <strong class="mono">da48f43d…a01d990</strong>
+          </div>
+        </div>
+        <div class="legend">
+          <span><b>Evidence commit:</b> <span class="mono">08ff7b172aabfa7ee92c2c2b7e0f39d3fbc88f55</span></span>
+          <span><b>Evidence tree:</b> <span class="mono">1d86a9e232d1b09de9526392dd2e6fe04f630de3</span></span>
+          <span><b>Publication commit:</b> <span class="mono">32059ee19c0105e9b71577a10da4a6c059ff8ba8</span></span>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:16px">
+        <figure class="visual-proof">
+          <img src="screenshots/final/actual-session-canvas.png" alt="Stable Canvas evidence-wall route rendering the accepted actual-session report" />
+          <figcaption><strong>Canvas host.</strong> Stable evidence-wall route, complete state, no next action, accepted revision visible.</figcaption>
+        </figure>
+        <figure class="visual-proof">
+          <img src="screenshots/final/actual-session-standalone.png" alt="Standalone HTML rendering the same accepted actual-session report" />
+          <figcaption><strong>Standalone host.</strong> Same report revision, 126 normalized events, complete source, no Canvas runtime dependency.</figcaption>
+        </figure>
+      </div>
+
+      <div class="grid-2" style="margin-top:16px">
+        <div class="card">
+          <span class="pill mandated">Use it</span>
+          <h3 style="margin-top:10px">Generate and open the report</h3>
+          <pre class="tree"># Generate from an explicitly selected Codex session
+npm run report:poc -- --session &lt;session.jsonl&gt; --evidence-head &lt;commit&gt;
+
+# Verify/show the selected immutable revision
+npm run report:show -- --report report:dcc4a98d…cdbd6779
+
+# Start Canvas, then open:
+npm run dev
+http://127.0.0.1:5173/?report=work-session</pre>
+        </div>
+        <div class="card">
+          <span class="pill observed">Exact artifacts</span>
+          <h3 style="margin-top:10px">Where the proof lives</h3>
+          <ul class="list path">
+            <li><a href="reports/report-dcc4a98d5d37a06d481f8f720a033b302336c5bd515db1a0f2aa6beecdbd6779.html">Immutable standalone report</a></li>
+            <li><a href="../../public/reports/accepted-report.json">Current accepted public envelope</a></li>
+            <li><a href="screenshots/final/actual-session-canvas.png">Canvas verification screenshot</a></li>
+            <li><a href="screenshots/final/actual-session-standalone.png">Standalone verification screenshot</a></li>
+          </ul>
+          <p class="path" style="margin-top:12px"><strong>Revision:</strong><br /><span class="mono">report:dcc4a98d5d37a06d481f8f720a033b302336c5bd515db1a0f2aa6beecdbd6779</span></p>
+          <p class="path" style="margin-top:8px"><strong>Public projection:</strong><br /><span class="mono">sha256:a0c89f4a55fb2abe4d0ca31aa45d5f80a5f86d91053998508b517422adc1efda</span></p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:16px">
+        <div class="card">
+          <h3>Skills actually applied</h3>
+          <ul class="list compact">
+            <li><strong><span class="mono">$compile-mission-brief</span></strong> — converted the initial brain-dump into the execution contract and hard-stop plan.</li>
+            <li><strong><span class="mono">$elite-codebase-engineering</span></strong> — enforced one authority, stable contracts, adapter seams, and second-host proof.</li>
+            <li><strong><span class="mono">$create-architecture-diagrams</span></strong> — kept current/target/data-flow diagrams evidence-backed and visual.</li>
+            <li><strong>Handoff, prototype, and browser workflows</strong> — maintained continuity, compared A/B/C, and verified the selected host output.</li>
+            <li><strong>Explicitly excluded:</strong> Anthropic frontend-design. It was not used.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>POC assumptions and boundaries</h3>
+          <ul class="list compact">
+            <li>Local, trusted, single-writer use; no authentication or cryptographic signer.</li>
+            <li><span class="mono">--complete</span> is an explicit operator confirmation of the selected session snapshot.</li>
+            <li>Private authority remains under ignored <span class="mono">.novakai-reports/</span>; only the redacted accepted envelope is public.</li>
+            <li>Reports are generated on demand; there is no watcher, service, team dashboard, or generic plugin platform.</li>
+            <li>The report binds evidence to an explicit commit; later publication/handover commits are intentionally outside that evidence tree.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="notice done">
+        <div class="icon">■</div>
+        <div>
+          <strong>Stop boundary for the next agent</strong>
+          <p>Maintain or consume this POC only when asked. Do not reintroduce variants, add iterative polish rounds, or generalise it into a reporting product. Reopen only for privacy loss, broken functionality, false claims, data corruption, or a new explicit product request.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="start">
+      <div class="notice">
+        <div class="icon">↺</div>
+        <div>
+          <strong>Historical execution contract begins here</strong>
+          <p>The sections below preserve the reasoning, architecture, assumptions, fallbacks, and AI instructions used to build the POC. They are retained for understanding—not a queue of unfinished work.</p>
+        </div>
+      </div>
+      <div class="section-head">
+        <div>
+          <span class="pill observed">Original brief</span>
+          <h2>What did the implementation agent need to understand?</h2>
         </div>
         <p>The proof is not “a prettier page.” It is a repeatable pipeline from trustworthy session evidence to a visual artifact with one owner.</p>
       </div>
@@ -1230,10 +1425,10 @@
     <section id="ai">
       <div class="section-head">
         <div>
-          <span class="pill mandated">AI execution brief</span>
-          <h2>What must the next agent do before touching code?</h2>
+          <span class="pill observed">AI execution record</span>
+          <h2>Which instructions governed the completed build?</h2>
         </div>
-        <p>The skills are architectural guardrails, not optional flavour. If a mandatory skill is unavailable, say so instead of silently approximating it.</p>
+        <p>This preserved brief explains how continuity and scope were maintained. It is not permission to restart implementation.</p>
       </div>
 
       <div class="grid-2">
@@ -1262,6 +1457,7 @@
       </div>
 
       <h3 style="margin:24px 0 10px">Copy/paste prompt for the next agent</h3>
+      <p class="takeaway">Historical only. Do not run this prompt unless Chris explicitly reopens the mission.</p>
       <pre class="prompt">You are continuing the Novakai Visual Reporting mission.
 
 FIRST: open and read this entire handover:
@@ -1387,7 +1583,7 @@ First return a compact visual read-back containing selected base/worktree, contr
 
   <footer class="footer">
     <div class="shell">
-      <strong>Document role:</strong> visual implementation handover and execution source of truth. Generated 25 July 2026 from inspected local revisions and prior visual architecture artifacts. Target architecture is proposed unless explicitly labelled observed or mandated.
+      <strong>Document role:</strong> completed POC handover, operational map, and preserved execution record. Finalised 25 July 2026 from the actual accepted report, exact host screenshots, inspected commits, and prior visual architecture artifacts. The completion section is observed implementation evidence; the remaining sections preserve the original plan.
     </div>
   </footer>
 </body>
