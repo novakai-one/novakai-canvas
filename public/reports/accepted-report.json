@@ -1,75 +1,79 @@
 {
   "schemaVersion": 1,
   "kind": "accepted-report-publication",
-  "publicationDigest": "sha256:1eb8c1e4fcdb560f958f2b575797d184902ee5b2416a24183094d34dc0499d61",
-  "publishedAt": "2026-07-24T21:34:58.394Z",
-  "reportRevisionId": "report:0d18adecdfad56e74a7fc04a659c7375453196e11aa21037ed41bf3a6f034273",
+  "publicationDigest": "sha256:632074b70e85880d921c97c1af53a320d4a0896d1c006459dbb4f40ec99e7afd",
+  "publishedAt": "2026-07-24T21:55:35.733Z",
+  "reportRevisionId": "report:71adacbefcd482ba0d120cbcc662f32d8de8d97e8eadc3a1ffeac0abed802ce6",
   "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
   "receiptIds": [
-    "receipt:167cdd52ef040ac600d7e291524bd4ba68ece76560efe5e6144763576ad5a4a3",
-    "receipt:1b5d85d0620efd79281a87a9efa3f806ab362e05d820e11435334e423ea182b4",
-    "receipt:30f428edd893672b00d9b87c6c8eb9151319d10e2d167d8ec11609de368df94b",
-    "receipt:5deed160789a4624406a618dd80745b1e07c8a9c4b0ef2c88746a225f1ff0f4f",
-    "receipt:66397383c52948dfcc3e68bfeebaaa351f56bd9c6a956927d9a165c803f3991c",
-    "receipt:bc99e5dc79f19f5e55e7fdc6c64d4241adae24333379a2e44a62dda653128e1b",
-    "receipt:da4be81c75809c5ccd66edef46ea69b0548b26c3bba3498edd44f62f265cfdcc"
+    "receipt:6516a752dcfa1c5c39b6eb920a93977deaed12f704e8b4bf7ce446b598b7216d",
+    "receipt:95415797ec498365160a90a14859db37864753a0152694fd36bb23bb4c03265f",
+    "receipt:ca978b1d751d912b74efe920c2dcbe140e48d4b02e733bced6eedc1bc8149cf3",
+    "receipt:d647d480b67e770e66a4097ccda7d5866dde250460f6cf104d54438ba8035e2d",
+    "receipt:d6b6a79f8b7545abd7aeb5d82816539b67d33a1109c2a1354ae81a27a17a72f3",
+    "receipt:d8c0a8412281e0876f19c01ea4cb04f2da7731553b93fe915db010c19ccf4b27",
+    "receipt:dc3ac702f2c7957e044e4adca1b91622f36e63ac446c2b288f40db2150127a44"
   ],
   "receiptClaims": [
     {
-      "id": "receipt:167cdd52ef040ac600d7e291524bd4ba68ece76560efe5e6144763576ad5a4a3",
+      "id": "receipt:6516a752dcfa1c5c39b6eb920a93977deaed12f704e8b4bf7ce446b598b7216d",
       "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
       "type": "artifact"
     },
     {
-      "id": "receipt:1b5d85d0620efd79281a87a9efa3f806ab362e05d820e11435334e423ea182b4",
+      "id": "receipt:95415797ec498365160a90a14859db37864753a0152694fd36bb23bb4c03265f",
       "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
       "type": "change"
     },
     {
-      "id": "receipt:30f428edd893672b00d9b87c6c8eb9151319d10e2d167d8ec11609de368df94b",
+      "id": "receipt:ca978b1d751d912b74efe920c2dcbe140e48d4b02e733bced6eedc1bc8149cf3",
       "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
-      "type": "change"
+      "type": "decision"
     },
     {
-      "id": "receipt:5deed160789a4624406a618dd80745b1e07c8a9c4b0ef2c88746a225f1ff0f4f",
+      "id": "receipt:d647d480b67e770e66a4097ccda7d5866dde250460f6cf104d54438ba8035e2d",
       "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
       "type": "proof",
       "proof": {
         "command": "npm run check",
         "exitCode": 0,
-        "executedAt": "2026-07-24T21:34:43.346Z",
-        "outputDigest": "sha256:985498429c0d5a10eeb437154365285cbcfd5d3d0c5eebcd863d2c1b4aa01a89"
+        "executedAt": "2026-07-24T21:55:18.364Z",
+        "outputDigest": "sha256:83b51e17e80c618abe4c0cc94bb134442fc34eb728a312085ddcbb6d272b07d2"
       }
     },
     {
-      "id": "receipt:66397383c52948dfcc3e68bfeebaaa351f56bd9c6a956927d9a165c803f3991c",
-      "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
-      "type": "decision"
-    },
-    {
-      "id": "receipt:bc99e5dc79f19f5e55e7fdc6c64d4241adae24333379a2e44a62dda653128e1b",
-      "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
-      "type": "decision"
-    },
-    {
-      "id": "receipt:da4be81c75809c5ccd66edef46ea69b0548b26c3bba3498edd44f62f265cfdcc",
+      "id": "receipt:d6b6a79f8b7545abd7aeb5d82816539b67d33a1109c2a1354ae81a27a17a72f3",
       "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
       "type": "change"
+    },
+    {
+      "id": "receipt:d8c0a8412281e0876f19c01ea4cb04f2da7731553b93fe915db010c19ccf4b27",
+      "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
+      "type": "change"
+    },
+    {
+      "id": "receipt:dc3ac702f2c7957e044e4adca1b91622f36e63ac446c2b288f40db2150127a44",
+      "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
+      "type": "decision"
     }
   ],
-  "receiptsDigest": "sha256:8e507e7efae13c70a5c6bdd3709b23cf221d0d7ad857dd205e5af3979d2f4d8f",
-  "authoritativeProjectionDigest": "sha256:1455bcd7812eedc3f2ba7890c2603d58c6dac59b0cc21462050779e2d69fc9b6",
-  "publicProjectionDigest": "sha256:a9a1fbc16a15fa3eaaa0c6aedb8166ba8d277e9c4be3877a85af1438c3e3e984",
-  "acceptedAt": "2026-07-24T21:34:58.394Z",
+  "receiptsDigest": "sha256:aac7cc8526162a3ee7eb75c3478c8b1349c0c739bfde5a554d7d48c608a3f4ae",
+  "authoritativeProjectionDigest": "sha256:6d3f6d5a9bd9ab47f3cb155b3ef8a0e8296313171e0aa2a7420908f2b1bc3cb0",
+  "publicProjectionDigest": "sha256:b0c67c76d78a51fc35450025ed65124f094f17f2203a59e3a3317b5764d2d8db",
+  "acceptedAt": "2026-07-24T21:55:35.733Z",
+  "evidenceHead": {
+    "commit": "6ea8948d698999f88ac9f47bd2a805b3d6ee3baa",
+    "tree": "83bf6b97d7ffd9d386850dda9b1179c6e9d98324"
+  },
   "html": {
-    "path": "docs/visual-reporting/reports/report-0d18adecdfad56e74a7fc04a659c7375453196e11aa21037ed41bf3a6f034273.html",
-    "digest": "sha256:7debd43d8a988f6a4bacbe2d80df6ce928cb9e443d6ec07a3ba644c2f7cbfac2"
+    "path": "docs/visual-reporting/reports/report-71adacbefcd482ba0d120cbcc662f32d8de8d97e8eadc3a1ffeac0abed802ce6.html",
+    "digest": "sha256:2a51edace12bd215fcc98f2a2aa631d3dbda820ddcae3366416bc545e9a779ad"
   },
   "projection": {
     "schemaVersion": 1,
-    "reportRevisionId": "report:0d18adecdfad56e74a7fc04a659c7375453196e11aa21037ed41bf3a6f034273",
+    "reportRevisionId": "report:71adacbefcd482ba0d120cbcc662f32d8de8d97e8eadc3a1ffeac0abed802ce6",
     "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
-    "receiptsDigest": "sha256:8e507e7efae13c70a5c6bdd3709b23cf221d0d7ad857dd205e5af3979d2f4d8f",
+    "receiptsDigest": "sha256:aac7cc8526162a3ee7eb75c3478c8b1349c0c739bfde5a554d7d48c608a3f4ae",
     "title": "One session now becomes one accepted visual report.",
     "source": {
       "provider": "codex",
@@ -187,7 +191,7 @@
     ],
     "proofs": [
       {
-        "id": "receipt:5deed160789a4624406a618dd80745b1e07c8a9c4b0ef2c88746a225f1ff0f4f",
+        "id": "receipt:d647d480b67e770e66a4097ccda7d5866dde250460f6cf104d54438ba8035e2d",
         "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
         "type": "proof",
         "title": "Repository acceptance suite passed",
@@ -199,20 +203,20 @@
           },
           {
             "kind": "commit",
-            "label": "Repository receipt set sha256:e42b0dc82ffeadf983bcc9248cbae5fe16e95e3481cd729fda5b3683cb830e94"
+            "label": "Repository receipt set sha256:d1d2ca334e1c5833a396ba7d533964aa3fe13c0e1ababc372fb8aca0e414e08b"
           }
         ],
         "proof": {
           "command": "npm run check",
           "exitCode": 0,
-          "executedAt": "2026-07-24T21:34:43.346Z",
-          "outputDigest": "sha256:985498429c0d5a10eeb437154365285cbcfd5d3d0c5eebcd863d2c1b4aa01a89"
+          "executedAt": "2026-07-24T21:55:18.364Z",
+          "outputDigest": "sha256:83b51e17e80c618abe4c0cc94bb134442fc34eb728a312085ddcbb6d272b07d2"
         }
       }
     ],
     "decisions": [
       {
-        "id": "receipt:66397383c52948dfcc3e68bfeebaaa351f56bd9c6a956927d9a165c803f3991c",
+        "id": "receipt:ca978b1d751d912b74efe920c2dcbe140e48d4b02e733bced6eedc1bc8149cf3",
         "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
         "type": "decision",
         "title": "Keep renderers disposable",
@@ -232,20 +236,20 @@
           },
           {
             "kind": "commit",
-            "label": "Repository HEAD commit 5b4780bf9dacf4e995e88217cb50a611ac59a764"
+            "label": "Repository evidence commit 6ea8948d698999f88ac9f47bd2a805b3d6ee3baa"
           },
           {
             "kind": "commit",
-            "label": "Repository HEAD tree 0b9ad6efa2a8f3a8d1eae306f40ca136e17124fb"
+            "label": "Repository evidence tree 83bf6b97d7ffd9d386850dda9b1179c6e9d98324"
           },
           {
             "kind": "commit",
-            "label": "Repository content digest sha256:ac0b269f27e9ce9a35a366f456303a0b79d89cbe03589971b493566b6346ba00"
+            "label": "Repository content digest sha256:dc8007d3a2655b5faad0a698045ca6c0787a1efd4ac48226c904a76b9d4827be"
           }
         ]
       },
       {
-        "id": "receipt:bc99e5dc79f19f5e55e7fdc6c64d4241adae24333379a2e44a62dda653128e1b",
+        "id": "receipt:dc3ac702f2c7957e044e4adca1b91622f36e63ac446c2b288f40db2150127a44",
         "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
         "type": "decision",
         "title": "Keep one reporting authority",
@@ -265,15 +269,15 @@
           },
           {
             "kind": "commit",
-            "label": "Repository HEAD commit 5b4780bf9dacf4e995e88217cb50a611ac59a764"
+            "label": "Repository evidence commit 6ea8948d698999f88ac9f47bd2a805b3d6ee3baa"
           },
           {
             "kind": "commit",
-            "label": "Repository HEAD tree 0b9ad6efa2a8f3a8d1eae306f40ca136e17124fb"
+            "label": "Repository evidence tree 83bf6b97d7ffd9d386850dda9b1179c6e9d98324"
           },
           {
             "kind": "commit",
-            "label": "Repository content digest sha256:ac0b269f27e9ce9a35a366f456303a0b79d89cbe03589971b493566b6346ba00"
+            "label": "Repository content digest sha256:dc8007d3a2655b5faad0a698045ca6c0787a1efd4ac48226c904a76b9d4827be"
           }
         ]
       }
@@ -281,7 +285,7 @@
     "blockers": [],
     "artifacts": [
       {
-        "id": "receipt:167cdd52ef040ac600d7e291524bd4ba68ece76560efe5e6144763576ad5a4a3",
+        "id": "receipt:6516a752dcfa1c5c39b6eb920a93977deaed12f704e8b4bf7ce446b598b7216d",
         "sourceDigest": "sha256:7bac2a35a5557310c92797d388d85551f93719fb9bbe8ebca9d4faf2cecf2444",
         "type": "artifact",
         "title": "Visual implementation handover",
@@ -301,15 +305,15 @@
           },
           {
             "kind": "commit",
-            "label": "Repository HEAD commit 5b4780bf9dacf4e995e88217cb50a611ac59a764"
+            "label": "Repository evidence commit 6ea8948d698999f88ac9f47bd2a805b3d6ee3baa"
           },
           {
             "kind": "commit",
-            "label": "Repository HEAD tree 0b9ad6efa2a8f3a8d1eae306f40ca136e17124fb"
+            "label": "Repository evidence tree 83bf6b97d7ffd9d386850dda9b1179c6e9d98324"
           },
           {
             "kind": "commit",
-            "label": "Repository content digest sha256:ac0b269f27e9ce9a35a366f456303a0b79d89cbe03589971b493566b6346ba00"
+            "label": "Repository content digest sha256:dc8007d3a2655b5faad0a698045ca6c0787a1efd4ac48226c904a76b9d4827be"
           }
         ]
       }
@@ -337,19 +341,19 @@
       },
       {
         "kind": "commit",
-        "label": "Repository content digest sha256:ac0b269f27e9ce9a35a366f456303a0b79d89cbe03589971b493566b6346ba00"
+        "label": "Repository content digest sha256:dc8007d3a2655b5faad0a698045ca6c0787a1efd4ac48226c904a76b9d4827be"
       },
       {
         "kind": "commit",
-        "label": "Repository HEAD commit 5b4780bf9dacf4e995e88217cb50a611ac59a764"
+        "label": "Repository evidence commit 6ea8948d698999f88ac9f47bd2a805b3d6ee3baa"
       },
       {
         "kind": "commit",
-        "label": "Repository HEAD tree 0b9ad6efa2a8f3a8d1eae306f40ca136e17124fb"
+        "label": "Repository evidence tree 83bf6b97d7ffd9d386850dda9b1179c6e9d98324"
       },
       {
         "kind": "commit",
-        "label": "Repository receipt set sha256:e42b0dc82ffeadf983bcc9248cbae5fe16e95e3481cd729fda5b3683cb830e94"
+        "label": "Repository receipt set sha256:d1d2ca334e1c5833a396ba7d533964aa3fe13c0e1ababc372fb8aca0e414e08b"
       },
       {
         "kind": "file",
