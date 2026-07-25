@@ -42,12 +42,20 @@ const genericRecordSchema = z.object({ type: z.string() }).passthrough();
 const ignoredTopLevelTypes = new Set([
   'config.update',
   'context.append_message',
+  'context.apply_compaction',
+  'full_compaction.begin',
+  'full_compaction.complete',
+  'goal.clear',
+  'goal.create',
+  'goal.update',
   'llm.request',
   'llm.tools_snapshot',
   'metadata',
   'permission.set_mode',
   'tools.set_active_tools',
   'tools.update_store',
+  'turn.cancel',
+  'turn.steer',
   'usage.record',
 ]);
 const ignoredLoopEventTypes = new Set(['step.begin', 'step.end', 'tool.call', 'tool.result']);

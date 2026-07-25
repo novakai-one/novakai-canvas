@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Novakai Messaging rebuild is finished: all four slices sealed, all six proof scenarios passing, 253 of 253 tests green. · Novakai Work Session</title>
+  <style>
+    :root{--ink:#132033;--muted:#607086;--paper:#f3f6fb;--card:#fff;--line:#ccd6e4;--blue:#245bb5;--blue2:#e9f1ff;--violet:#6947b8;--violet2:#f1ecff;--green:#18764f;--green2:#e9f8f1;--rose:#a33d5e;--rose2:#fff0f4}
+    *{box-sizing:border-box}body{margin:0;color:var(--ink);background:radial-gradient(circle at 8% 0%,#dce8ff 0,transparent 32rem),var(--paper);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,sans-serif}
+    main{width:min(1180px,calc(100% - 32px));margin:auto;padding:42px 0 70px}.eyebrow,.receipt-type{display:inline-flex;padding:5px 9px;border-radius:999px;background:var(--violet2);color:var(--violet);font-size:11px;font-weight:850;text-transform:uppercase;letter-spacing:.04em}
+    h1{max-width:880px;margin:16px 0 10px;font-size:clamp(38px,6vw,72px);line-height:1;letter-spacing:-.05em}.lead{max-width:820px;color:var(--muted);font-size:20px}.meta{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}.meta span{padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px}
+    .hero{padding:24px;border-radius:22px;background:linear-gradient(135deg,#17335f,#275db7 60%,#6848b8);color:#fff}.hero p{max-width:800px;color:#e8efff;font-size:18px}.status{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--green2);color:var(--green);font-weight:850;text-transform:uppercase;font-size:11px}
+    .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0 30px}.stat{padding:16px;border:1px solid var(--line);border-radius:15px;background:#fff}.stat b{display:block;font-size:28px;color:var(--blue)}section{margin-top:30px}section>h2{margin:0 0 12px;font-size:30px;letter-spacing:-.03em}
+    .map-nodes,.cards,.workflow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.map-node,.receipt,.step{padding:17px;border:1px solid var(--line);border-radius:15px;background:#fff}.map-node span{color:var(--muted);font-size:11px;font-weight:800}.map-node strong,.map-node small{display:block}.map-node strong{margin:8px 0}.map-node[data-role=module]{border-top:4px solid var(--green)}.map-node[data-role=adapter]{border-top:4px solid var(--violet)}.map-node[data-role=caller]{border-top:4px solid var(--blue)}
+    .edge-list{margin:12px 0 0;padding:0;list-style:none}.edge-list li{padding:9px 0;border-bottom:1px solid var(--line)}.edge-list strong{margin-left:10px}.step{position:relative;padding-left:54px}.step b{position:absolute;left:16px;top:16px;display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:var(--blue2);color:var(--blue)}.step span{display:block;color:var(--muted);font-size:13px}
+    .receipt h3{margin:10px 0 5px}.receipt p{color:var(--muted)}.evidence{display:flex;flex-wrap:wrap;gap:6px}.evidence span,.evidence a{padding:4px 7px;border-radius:7px;background:#f1f5f9;font-size:11px}.evidence a{color:var(--blue)}.next{display:grid;gap:8px}.next div{padding:13px;border-left:4px solid var(--blue);border-radius:8px;background:#fff}.empty{padding:18px;border:1px dashed var(--line);border-radius:14px;color:var(--muted)}
+    footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font:12px ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere}
+    @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.map-nodes,.cards,.workflow{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<main>
+  <span class="eyebrow">Accepted work-session report · standalone host</span>
+  <h1>The Novakai Messaging rebuild is finished: all four slices sealed, all six proof scenarios passing, 253 of 253 tests green.</h1>
+  <p class="lead">This session built the whole messaging capability from the frozen contracts: direct messages, rooms, push subscriptions, templates, two storage adapters, three transport adapters, and a standalone WebSocket mode for external chiefs. Every slice was pressure-tested by a fresh zero-context auditor before it was sealed, and every finding was fixed at the source with a regression test. The work is merged to main via PR #59.</p>
+  <div class="meta">
+    <span>kimi</span>
+    <span>88 normalized events</span>
+    <span>complete source</span>
+    <span>2026-07-25T06:51:44.196Z</span>
+  </div>
+  <div class="hero"><span class="status">complete</span><h2>The Novakai Messaging rebuild is finished: all four slices sealed, all six proof scenarios passing, 253 of 253 tests green.</h2><p>One accepted revision deterministically drives this standalone page.</p></div>
+  <div class="stats">
+    <div class="stat"><b>6</b>changes</div><div class="stat"><b>6</b>decisions</div><div class="stat"><b>1</b>proofs</div><div class="stat"><b>0</b>blockers</div><div class="stat"><b>5</b>artifacts</div>
+  </div>
+
+  <section><h2>What changed?</h2><div class="map-nodes">
+    <article class="map-node" data-role="module">
+      <span>«module»</span>
+      <strong>Events, subscriptions, protocol</strong>
+      <small>1 direct change receipt</small>
+    </article>
+    <article class="map-node" data-role="module">
+      <span>«module»</span>
+      <strong>Messaging core</strong>
+      <small>1 direct change receipt</small>
+    </article>
+    <article class="map-node" data-role="interface">
+      <span>«interface»</span>
+      <strong>Public contract</strong>
+      <small>1 direct change receipt</small>
+    </article>
+    <article class="map-node" data-role="module">
+      <span>«module»</span>
+      <strong>Rooms and membership</strong>
+      <small>1 direct change receipt</small>
+    </article>
+    <article class="map-node" data-role="module">
+      <span>«module»</span>
+      <strong>Store seam and adapters</strong>
+      <small>1 direct change receipt</small>
+    </article>
+    <article class="map-node" data-role="module">
+      <span>«module»</span>
+      <strong>Templates and PTY transport</strong>
+      <small>1 direct change receipt</small>
+    </article></div><ul class="edge-list"></ul></section>
+  <section><h2>How did the report become trustworthy?</h2><div class="workflow">
+    <article class="step"><b>1</b><strong>Import session</strong><span>Normalize provider events and bind the source digest.</span></article><article class="step"><b>2</b><strong>Capture structured receipts</strong><span>18 change, decision, proof, blocker, and artifact receipts recorded.</span></article><article class="step"><b>3</b><strong>Compile visual report</strong><span>Build one deterministic projection from authoritative session evidence.</span></article><article class="step"><b>4</b><strong>Seal immutable report revision</strong><span>Hash the projection bytes before local acceptance.</span></article>
+  </div></section>
+  <section><h2>What proves it?</h2><div class="cards">
+    <article class="receipt">
+      <span class="receipt-type">proof</span>
+      <h3>Repository acceptance suite passed</h3>
+      <p>The local npm run build &amp;&amp; npm run test command executed and exited with code 0.</p>
+      <div class="evidence"><span>test · npm run build &amp;&amp; npm run test</span><span>commit · Repository receipt set sha256:397fe65e6a89576ac1c3556f029a7a5a3dd7c146d754a64fe83d083675ff1390</span></div>
+    </article></div></section>
+  <section><h2>Which decisions matter?</h2><div class="cards">
+    <article class="receipt">
+      <span class="receipt-type">decision</span>
+      <h3>Problem resolved — Template field checks could be bypassed through JavaScript&#039;s prototype chain, letting a declared field silently vanish at render time.</h3>
+      <p>Problem — Template field checks could be bypassed through JavaScript&#039;s prototype chain, letting a declared field silently vanish at render time. Resolution — The S4 auditor reproduced it. Field matching now uses own-key checks and prototype-related names are rejected from the allowlist, with regression tests.</p>
+      <div class="evidence"><span>test · Prototype-chain regression tests</span></div>
+    </article>
+    <article class="receipt">
+      <span class="receipt-type">decision</span>
+      <h3>One runtime dependency</h3>
+      <p>The whole package runs on a single dependency (the ws WebSocket library). Everything else is Node built-ins, which keeps the supply chain small and the harness dependency-free.</p>
+      <div class="evidence"></div>
+    </article>
+    <article class="receipt">
+      <span class="receipt-type">decision</span>
+      <h3>Blocked room messages fail at commit time, not afterwards</h3>
+      <p>The S2 auditor proved a blocked recipient could still receive a message in the gap between commit and the post-commit effect pass. The fix makes the block terminal inside the same atomic commit, so no later code path can ever see the blocked delivery as sendable.</p>
+      <div class="evidence"><span>test · Terminal-at-commit regression tests</span></div>
+    </article>
+    <article class="receipt">
+      <span class="receipt-type">decision</span>
+      <h3>Problem resolved — A ContactPolicy-blocked room recipient could still be delivered the message through two ordinary timing interleavings.</h3>
+      <p>Problem — A ContactPolicy-blocked room recipient could still be delivered the message through two ordinary timing interleavings. Resolution — The S2 auditor reproduced both paths. The block is now applied terminally inside the atomic commit, which removes the vulnerable window entirely.</p>
+      <div class="evidence"><span>test · Blocked-recipient interleaving tests</span></div>
+    </article>
+    <article class="receipt">
+      <span class="receipt-type">decision</span>
+      <h3>The contract JSON stayed frozen after Step 2</h3>
+      <p>Everything the build later needed was added as numbered, dated errata in the store-seam document instead of editing the frozen contract. The drift guard and codegen kept one source of truth the whole way through.</p>
+      <div class="evidence"></div>
+    </article>
+    <article class="receipt">
+      <span class="receipt-type">decision</span>
+      <h3>Problem resolved — The JSONL store adapter was not atomic under concurrency: two retries of the same message could both be accepted.</h3>
+      <p>Problem — The JSONL store adapter was not atomic under concurrency: two retries of the same message could both be accepted. Resolution — The S1 auditor reproduced it with real concurrent calls. Every store mutation now goes through a per-store queue, and the regression tests were shown to fail before the fix and pass after.</p>
+      <div class="evidence"><span>test · Concurrent atomicity tests</span></div>
+    </article></div></section>
+  <section><h2>What remains?</h2><div class="next">
+    <p class="empty">No further action is recorded for this completed report.</p>
+  </div></section>
+  <footer>reportRevisionId=report:a00cdb0de640678bbd3bbd9a12025f88519b4cac3f76fca404320fbe21d1c945 · sourceDigest=sha256:21d93e8f6917a9fad62de56a35310bbfebb2899cf374907afe1c48a7d68f7461 · renderer=standalone-html-v1</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 2,
+  "source": {
+    "provider": "kimi",
+    "nativeSessionId": "19186b5b-bad6-4915-ab63-4b5a17ba1a44"
+  },
+  "outcome": {
+    "status": "complete",
+    "headline": "The Novakai Messaging rebuild is finished: all four slices sealed, all six proof scenarios passing, 253 of 253 tests green.",
+    "summary": "This session built the whole messaging capability from the frozen contracts: direct messages, rooms, push subscriptions, templates, two storage adapters, three transport adapters, and a standalone WebSocket mode for external chiefs. Every slice was pressure-tested by a fresh zero-context auditor before it was sealed, and every finding was fixed at the source with a regression test. The work is merged to main via PR #59."
+  },
+  "changes": [
+    {
+      "title": "Contract types generated from one machine-readable source",
+      "module": { "id": "messaging.contract", "label": "Public contract", "role": "interface" },
+      "relatedModules": [],
+      "files": [
+        "tools/generate-ts.mjs",
+        "public/contract/generated.ts",
+        "public/contract/records.ts"
+      ],
+      "why": "The project law is that every shape is defined once, so docs, code, and the visual map cannot drift apart.",
+      "before": "Contract shapes existed only in the design documents.",
+      "after": "TypeScript types and enums are generated from messaging-contract.json, and a test fails the build if the generated file drifts from the source.",
+      "occurredAt": null,
+      "evidence": [
+        { "kind": "test", "label": "Codegen freshness test", "uri": "repo:tests/contract/codegen-freshness.test.ts" }
+      ],
+      "tags": ["single-source-of-truth"]
+    },
+    {
+      "title": "Durable store seam with memory and JSONL adapters",
+      "module": { "id": "messaging.store", "label": "Store seam and adapters", "role": "module" },
+      "relatedModules": [],
+      "files": [
+        "seams/store.ts",
+        "adapters/store-shared.ts",
+        "adapters/store-memory.ts",
+        "adapters/store-jsonl.ts"
+      ],
+      "why": "Message acceptance has to be atomic and survive crashes; idempotent retry depends on it.",
+      "before": "There was no implementation at all.",
+      "after": "One atomic acceptance transaction, global sequence ordering, cursor pagination, and crash recovery support. The same contract test suite runs against both adapters, including concurrent-writer cases.",
+      "occurredAt": null,
+      "evidence": [
+        { "kind": "test", "label": "Shared store contract suite", "uri": "repo:tests/adapters/store-contract.test.ts" }
+      ],
+      "tags": ["deep-module", "durability"]
+    },
+    {
+      "title": "Core send path with one decision point",
+      "module": { "id": "messaging.core", "label": "Messaging core", "role": "module" },
+      "relatedModules": [],
+      "files": [
+        "core/decideSend.ts",
+        "core/sendPipeline.ts",
+        "core/deliveryOrchestrator.ts",
+        "core/presenceRegistry.ts"
+      ],
+      "why": "All policy decisions belong in one place so no caller can accidentally bypass them.",
+      "before": "Nothing existed.",
+      "after": "Sends are parsed from unknown input at the door, decided in one module, committed atomically, and delivered through the R5 state machine with DND holds, retries, and terminal failure.",
+      "occurredAt": null,
+      "evidence": [
+        { "kind": "test", "label": "Send-path rejection tests", "uri": "repo:tests/core/send-rejections.test.ts" }
+      ],
+      "tags": ["single-decision-point"]
+    },
+    {
+      "title": "Push subscriptions and standalone WebSocket mode",
+      "module": { "id": "messaging.push", "label": "Events, subscriptions, protocol", "role": "module" },
+      "relatedModules": [],
+      "files": [
+        "core/eventBus.ts",
+        "core/subscriptions.ts",
+        "protocol/frames.ts",
+        "protocol/connection.ts",
+        "composition/standalone.ts"
+      ],
+      "why": "The whole point of the rebuild: external chiefs get pushed events and never poll.",
+      "before": "The old app made chiefs run 20-minute mailbox-scan crons.",
+      "after": "Events are emitted only after they are durable, subscribers replay from a cursor after disconnect, and a standalone WebSocket server lets any external terminal connect.",
+      "occurredAt": null,
+      "evidence": [
+        { "kind": "test", "label": "External chief proof (P2)", "uri": "repo:tests/standalone/p2-external-chief.test.ts" }
+      ],
+      "tags": ["push-not-polling"]
+    },
+    {
+      "title": "Rooms through the membership seam",
+      "module": { "id": "messaging.rooms", "label": "Rooms and membership", "role": "module" },
+      "relatedModules": [],
+      "files": [
+        "seams/membership.ts",
+        "adapters/membership-config.ts",
+        "core/decideSend.ts"
+      ],
+      "why": "Team and mission messages need one message with a frozen snapshot of who was a member at send time.",
+      "before": "Only one-to-one messages worked.",
+      "after": "Room sends resolve membership fresh at acceptance, freeze the recipient snapshot, and blocked recipients fail terminally at commit time rather than ever receiving the message.",
+      "occurredAt": null,
+      "evidence": [
+        { "kind": "test", "label": "Rooms test suite", "uri": "repo:tests/core/rooms.test.ts" },
+        { "kind": "test", "label": "Mission Rooms capability proof (P4)", "uri": "repo:tests/capability/p4-mission-rooms.test.ts" }
+      ],
+      "tags": ["rooms"]
+    },
+    {
+      "title": "Templates and the PTY transport adapter",
+      "module": { "id": "messaging.templates", "label": "Templates and PTY transport", "role": "module" },
+      "relatedModules": [],
+      "files": [
+        "core/templates.ts",
+        "adapters/presence-transport-pty.ts"
+      ],
+      "why": "Templates complete the public contract, and the PTY adapter finishes the adapter-swap proof.",
+      "before": "Template commands were defined in the contract but not implemented.",
+      "after": "Templates render only into allowlisted message paths, retirement is permanent, and one shared transport test suite passes unchanged against the memory, PTY, and WebSocket adapters.",
+      "occurredAt": null,
+      "evidence": [
+        { "kind": "test", "label": "Adapter swap proof (P5)", "uri": "repo:tests/adapters/p5-adapter-swap.test.ts" }
+      ],
+      "tags": ["templates", "adapter-swap"]
+    }
+  ],
+  "decisions": [
+    {
+      "title": "The contract JSON stayed frozen after Step 2",
+      "rationale": "Everything the build later needed was added as numbered, dated errata in the store-seam document instead of editing the frozen contract. The drift guard and codegen kept one source of truth the whole way through.",
+      "occurredAt": null,
+      "evidence": [],
+      "tags": ["frozen-contract"]
+    },
+    {
+      "title": "Blocked room messages fail at commit time, not afterwards",
+      "rationale": "The S2 auditor proved a blocked recipient could still receive a message in the gap between commit and the post-commit effect pass. The fix makes the block terminal inside the same atomic commit, so no later code path can ever see the blocked delivery as sendable.",
+      "occurredAt": null,
+      "evidence": [
+        { "kind": "test", "label": "Terminal-at-commit regression tests", "uri": "repo:tests/core/rooms.test.ts" }
+      ],
+      "tags": ["safety"]
+    },
+    {
+      "title": "One runtime dependency",
+      "rationale": "The whole package runs on a single dependency (the ws WebSocket library). Everything else is Node built-ins, which keeps the supply chain small and the harness dependency-free.",
+      "occurredAt": null,
+      "evidence": [],
+      "tags": ["dependencies"]
+    }
+  ],
+  "problems": [
+    {
+      "problem": "The JSONL store adapter was not atomic under concurrency: two retries of the same message could both be accepted.",
+      "resolution": "The S1 auditor reproduced it with real concurrent calls. Every store mutation now goes through a per-store queue, and the regression tests were shown to fail before the fix and pass after.",
+      "occurredAt": null,
+      "evidence": [
+        { "kind": "test", "label": "Concurrent atomicity tests", "uri": "repo:tests/adapters/store-contract.test.ts" }
+      ],
+      "tags": ["audit-finding"]
+    },
+    {
+      "problem": "A ContactPolicy-blocked room recipient could still be delivered the message through two ordinary timing interleavings.",
+      "resolution": "The S2 auditor reproduced both paths. The block is now applied terminally inside the atomic commit, which removes the vulnerable window entirely.",
+      "occurredAt": null,
+      "evidence": [
+        { "kind": "test", "label": "Blocked-recipient interleaving tests", "uri": "repo:tests/core/rooms.test.ts" }
+      ],
+      "tags": ["audit-finding"]
+    },
+    {
+      "problem": "Template field checks could be bypassed through JavaScript's prototype chain, letting a declared field silently vanish at render time.",
+      "resolution": "The S4 auditor reproduced it. Field matching now uses own-key checks and prototype-related names are rejected from the allowlist, with regression tests.",
+      "occurredAt": null,
+      "evidence": [
+        { "kind": "test", "label": "Prototype-chain regression tests", "uri": "repo:tests/core/templates.test.ts" }
+      ],
+      "tags": ["audit-finding"]
+    }
+  ],
+  "artifacts": [
+    {
+      "title": "A runnable messaging package with 253 green tests",
+      "whatYouHaveNow": "The @novakai/messaging package works in two modes: embedded in a host app, or standalone over WebSocket for external chiefs. All six planned proof scenarios pass, including crash-recovery tests that SIGKILL the server mid-flight.",
+      "occurredAt": null,
+      "evidence": [
+        { "kind": "test", "label": "Crash-retry proof (W2)", "uri": "repo:tests/standalone/w2-crash-retry.test.ts" }
+      ],
+      "tags": ["deliverable"]
+    },
+    {
+      "title": "A second-host example messenger",
+      "whatYouHaveNow": "examples/messenger-cli is a small terminal messenger that talks to the standalone server using only the published protocol. It proves a second host can use the capability without importing any of its code.",
+      "occurredAt": null,
+      "evidence": [
+        { "kind": "test", "label": "Second-host proof (P1)", "uri": "repo:tests/standalone/p1-messenger-app.test.ts" }
+      ],
+      "tags": ["deliverable"]
+    },
+    {
+      "title": "Audit records and the quality scorecard",
+      "whatYouHaveNow": "Every slice has a written audit record (Messaging-S1 through S4 review documents) showing what the independent auditor found and how each finding was fixed. The final scorecard rates the capability 97.0 out of 100 against the elite rubric.",
+      "occurredAt": null,
+      "evidence": [],
+      "tags": ["governance"]
+    },
+    {
+      "title": "Merged to main",
+      "whatYouHaveNow": "The full program is on the main branch of novakai-command via pull request #59, with one commit per sealed slice so the history stays readable.",
+      "occurredAt": null,
+      "evidence": [],
+      "tags": ["deliverable"]
+    }
+  ],
+  "remainingWork": []
+}
