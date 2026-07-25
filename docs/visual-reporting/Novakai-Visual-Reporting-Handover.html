@@ -26,7 +26,7 @@
     }
 
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: auto; }
     body {
       margin: 0;
       color: var(--ink);
@@ -446,27 +446,35 @@
     .orientation-hero {
       max-width: 1040px;
       margin: 0 auto;
-      padding-top: 68px;
+      padding-top: 40px;
     }
     .orientation-hero h1 {
       max-width: 920px;
-      font-size: clamp(40px, 5.5vw, 68px);
+      margin-top: 14px;
+      font-size: clamp(40px, 5vw, 60px);
       line-height: 1.02;
       letter-spacing: -.045em;
     }
-    .orientation-hero .lead { max-width: 880px; }
+    .orientation-hero .lead {
+      max-width: 880px;
+      font-size: clamp(17px, 1.8vw, 21px);
+    }
 
     .context-list {
-      margin: 34px 0 0;
-      border-top: 1px solid var(--line);
-    }
-    .context-list div {
       display: grid;
-      grid-template-columns: 150px 1fr;
-      gap: 20px;
-      padding: 13px 0;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin: 24px 0 0;
+      border-top: 1px solid var(--line);
       border-bottom: 1px solid var(--line);
     }
+    .context-list div {
+      display: block;
+      padding: 13px 16px;
+      border-right: 1px solid var(--line);
+      border-bottom: 0;
+    }
+    .context-list div:first-child { padding-left: 0; }
+    .context-list div:last-child { padding-right: 0; border-right: 0; }
     .context-list dt {
       color: var(--muted);
       font-size: 12px;
@@ -474,7 +482,16 @@
       letter-spacing: .05em;
       text-transform: uppercase;
     }
-    .context-list dd { margin: 0; font-weight: 700; }
+    .context-list dd { margin: 3px 0 0; font-weight: 700; }
+
+    .orientation-label {
+      margin: 24px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
 
     .focus-section {
       width: min(980px, 100%);
@@ -509,7 +526,7 @@
     .plain-panel > :last-child { margin-bottom: 0; }
 
     .first-things {
-      margin: 28px 0 0;
+      margin: 6px 0 0;
       padding: 0;
       list-style: none;
       counter-reset: first-things;
@@ -519,7 +536,7 @@
       display: grid;
       grid-template-columns: 42px 1fr;
       gap: 16px;
-      padding: 18px 0;
+      padding: 13px 0;
       border-bottom: 1px solid #e6ecf3;
     }
     .first-things li:last-child { border-bottom: 0; }
@@ -534,7 +551,7 @@
       background: var(--blue);
       font-weight: 900;
     }
-    .first-things strong { display: block; margin-bottom: 4px; font-size: 18px; }
+    .first-things strong { display: block; margin-bottom: 2px; font-size: 17px; }
     .first-things span { color: var(--muted); }
 
     .contents-map {
@@ -650,8 +667,9 @@
     .open-report .secondary { color: var(--blue); border: 1px solid #a9c2ed; background: white; }
 
     .detail-gate {
-      width: min(1100px, 100%);
+      width: min(980px, 100%);
       margin: 52px auto 0;
+      scroll-margin-top: 82px;
       border: 1px solid var(--line);
       border-radius: 20px;
       background: rgba(255, 255, 255, .7);
@@ -687,6 +705,63 @@
       font-weight: 500;
     }
     .detail-body { padding: 0 clamp(18px, 3vw, 30px) 30px; }
+
+    .detail-intro {
+      padding: 24px 0 18px;
+      border-bottom: 1px solid #e6ecf3;
+    }
+    .detail-intro strong { display: block; font-size: 19px; }
+    .detail-intro p { max-width: 720px; margin: 4px 0 0; color: var(--muted); }
+    .detail-topic { border-bottom: 1px solid #e6ecf3; }
+    .detail-topic:last-child { border-bottom: 0; }
+    .detail-topic > summary {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 20px;
+      align-items: center;
+      padding: 19px 0;
+      cursor: pointer;
+      list-style: none;
+    }
+    .detail-topic > summary::-webkit-details-marker { display: none; }
+    .detail-topic > summary::after {
+      content: "Open";
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 850;
+    }
+    .detail-topic[open] > summary::after { content: "Close"; }
+    .detail-topic-title { display: block; font-size: 17px; font-weight: 850; }
+    .detail-topic-note { display: block; margin-top: 2px; color: var(--muted); font-size: 13px; }
+    .detail-topic-body { padding: 2px 0 26px; }
+    .detail-topic-body > :first-child { margin-top: 0; }
+    .detail-topic-body > :last-child { margin-bottom: 0; }
+
+    .fact-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid #e6ecf3;
+    }
+    .fact-list li {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 20px;
+      padding: 15px 0;
+      border-bottom: 1px solid #e6ecf3;
+    }
+    .fact-list strong { font-size: 14px; }
+    .fact-list span { color: var(--muted); }
+    .proof-note {
+      margin: 16px 0 0;
+      padding: 14px 16px;
+      border-left: 4px solid var(--green);
+      border-radius: 0 12px 12px 0;
+      background: var(--green-soft);
+      color: #165c40;
+    }
+    .detail-subhead { margin: 24px 0 10px; font-size: 18px; }
+    .operator-stack { display: grid; gap: 16px; }
 
     @media (max-width: 900px) {
       .topbar-inner { display: block; padding: 10px 0 8px; }
@@ -754,12 +829,13 @@
       </div>
       <nav class="page-nav" aria-label="Page contents">
         <a data-section="overview" href="#overview">Overview</a>
-        <a data-section="contents" href="#contents">Contents</a>
-        <a data-section="repository-map" href="#repository-map">Repo map</a>
-        <a data-section="done" href="#done">Done</a>
+        <a data-section="contents" href="#contents">Page map</a>
+        <a data-section="repository-map" href="#repository-map">Repository map</a>
+        <a data-section="done" href="#done">Work completed</a>
         <a data-section="roadmap" href="#roadmap">Roadmap</a>
-        <a data-section="open-result" href="#open-result">Open result</a>
-        <a data-section="technical-detail" href="#technical-detail">Detail</a>
+        <a data-section="open-result" href="#open-result">Open report</a>
+        <a data-section="technical-detail" href="#technical-detail">Technical detail</a>
+        <a data-section="historical-detail" href="#historical-detail">Original plan</a>
       </nav>
     </div>
   </div>
@@ -788,6 +864,7 @@
       </div>
     </dl>
 
+    <h2 class="orientation-label">Three things to know</h2>
     <ol class="first-things" aria-label="Three things to know first">
       <li>
         <div>
@@ -851,7 +928,13 @@
           </li>
           <li>
             <a href="#technical-detail">
-              <span><strong>Optional detail</strong><small>Proof, screenshots, architecture, original plan, assumptions, and AI instructions.</small></span>
+              <span><strong>Technical detail</strong><small>How it works, what shipped, verification, commands, desktop screenshots, and operating boundaries.</small></span>
+              <span class="map-action">Open ↓</span>
+            </a>
+          </li>
+          <li>
+            <a href="#historical-detail">
+              <span><strong>Original plan</strong><small>The mission contract, alternatives, architecture diagrams, assumptions, and AI handover instructions.</small></span>
               <span class="map-action">Open ↓</span>
             </a>
           </li>
@@ -975,15 +1058,16 @@
         <span>Technical proof and operator detail<span class="detail-summary-note">Digests, screenshots, commands, boundaries, and applied skills.</span></span>
       </summary>
       <div class="detail-body">
-    <section id="complete">
-      <div class="section-head">
-        <div>
-          <span class="pill observed">Delivered</span>
-          <h2>The exact thing that shipped</h2>
-        </div>
-        <p>This is the current operational handover. The original mission contract remains below as historical design evidence, not as unfinished work.</p>
+      <div class="detail-intro">
+        <strong>Choose one topic.</strong>
+        <p>Each section stays closed until you ask for it. Opening another section closes the previous one.</p>
       </div>
 
+      <details class="detail-topic">
+        <summary>
+          <span><span class="detail-topic-title">How the report moves</span><span class="detail-topic-note">The four-step path from a Codex session to Canvas and standalone HTML.</span></span>
+        </summary>
+        <div class="detail-topic-body">
       <div class="route" aria-label="Delivered reporting pipeline">
         <div class="route-node">
           <span class="pill observed">Actual source</span>
@@ -1009,26 +1093,28 @@
           <small>Evidence wall · standalone report</small>
         </div>
       </div>
+        </div>
+      </details>
 
-      <div class="grid-4" style="margin-top:16px">
-        <div class="card">
-          <h3>Stable Canvas route</h3>
-          <p><a href="../../?report=work-session"><span class="mono">?report=work-session</span></a></p>
+      <details class="detail-topic">
+        <summary>
+          <span><span class="detail-topic-title">What shipped</span><span class="detail-topic-note">The selected report, its route, and what was deliberately removed.</span></span>
+        </summary>
+        <div class="detail-topic-body">
+          <ul class="fact-list">
+            <li><strong>Canvas route</strong><span><a href="../../?report=work-session"><span class="mono">?report=work-session</span></a></span></li>
+            <li><strong>Selected report</strong><span>C · Evidence Wall, with concrete before-and-after changes followed by artifacts, decisions, proof, map, and workflow.</span></li>
+            <li><strong>Normal Canvas</strong><span>Unchanged. The report route loads before the ordinary Canvas application starts.</span></li>
+            <li><strong>Removed</strong><span>Prototype A, prototype B, the variant switcher, keyboard cycling, prototype query route, unused notes, CSS, and tests.</span></li>
+          </ul>
         </div>
-        <div class="card">
-          <h3>Selected visual</h3>
-          <p>C · Evidence wall, upgraded with a concrete before→after change story ahead of artifacts, decisions, proof, map, and workflow.</p>
-        </div>
-        <div class="card">
-          <h3>Removed</h3>
-          <p>A, B, the variant switcher, arrow-key cycling, prototype query route, notes, CSS, and losing tests.</p>
-        </div>
-        <div class="card">
-          <h3>Normal Canvas</h3>
-          <p>Unchanged. The report route lazy-loads before the ordinary Canvas application bootstrap.</p>
-        </div>
-      </div>
+      </details>
 
+      <details class="detail-topic">
+        <summary>
+          <span><span class="detail-topic-title">Verification and report identity</span><span class="detail-topic-note">How the visible report is tied to its source, repository proof, and publication.</span></span>
+        </summary>
+        <div class="detail-topic-body">
       <div class="diagram" style="margin-top:16px">
         <div class="diagram-title">
           <div>
@@ -1064,7 +1150,15 @@
           <span><b>Publication commit:</b> <span class="mono">634ae26fafbc5520d7af1350ed6a20afeb8cfeff</span></span>
         </div>
       </div>
+          <p class="proof-note"><strong>Verification:</strong> 133 checks passed. Both earlier report files kept their original hashes.</p>
+        </div>
+      </details>
 
+      <details class="detail-topic">
+        <summary>
+          <span><span class="detail-topic-title">Who is allowed to claim proof?</span><span class="detail-topic-note">The agent explains the work; executed repository checks provide the proof.</span></span>
+        </summary>
+        <div class="detail-topic-body">
       <div class="diagram" style="margin-top:16px">
         <div class="diagram-title">
           <div>
@@ -1099,17 +1193,18 @@
           </div>
         </div>
       </div>
+        </div>
+      </details>
 
-      <div class="grid-3" style="margin-top:16px">
-        <div class="card"><span class="pill observed">Changes</span><h3 style="margin-top:10px">Specific, not generic</h3><p>Five claims name the changed module, exact repository files, the prior state, new state, and reason.</p></div>
-        <div class="card"><span class="pill observed">Problems</span><h3 style="margin-top:10px">Resolution is visible</h3><p>Generic content, live-session format drift, and ambiguous evidence state are recorded with their actual resolutions.</p></div>
-        <div class="card"><span class="pill observed">What you have now</span><h3 style="margin-top:10px">Five delivered artifacts</h3><p>Canvas Evidence Wall, real-session pipeline, agent receipt contract, immutable HTML, and this visual handover.</p></div>
-      </div>
-
-      <div class="grid-2" style="margin-top:16px">
+      <details class="detail-topic">
+        <summary>
+          <span><span class="detail-topic-title">Generate or inspect a report</span><span class="detail-topic-note">Commands, report links, screenshots, and exact revision identifiers.</span></span>
+        </summary>
+        <div class="detail-topic-body">
+      <div class="operator-stack">
         <div class="card">
           <span class="pill mandated">Use it</span>
-          <h3 style="margin-top:10px">Generate and open the report</h3>
+          <h3 style="margin-top:10px">Commands</h3>
           <pre class="tree"># Generate from an explicitly selected Codex session
 npm run report:poc -- --session &lt;session.jsonl&gt; --brief docs/visual-reporting/briefs/poc-work-session-brief.json --evidence-head &lt;commit&gt;
 
@@ -1122,7 +1217,7 @@ http://localhost:5173/?report=work-session</pre>
         </div>
         <div class="card">
           <span class="pill observed">Exact artifacts</span>
-          <h3 style="margin-top:10px">Where the proof lives</h3>
+          <h3 style="margin-top:10px">Files and identifiers</h3>
           <ul class="list path">
             <li><a href="reports/report-6bddf213b159419f7175dcf9c3f8bc4aea43d72f915d0c7b813e785409ff885a.html">Immutable standalone report</a></li>
             <li><a href="../../public/reports/accepted-report.json">Current accepted public envelope</a></li>
@@ -1135,14 +1230,14 @@ http://localhost:5173/?report=work-session</pre>
           <p class="path" style="margin-top:8px"><strong>Public projection:</strong><br /><span class="mono">sha256:4eeebc3efc9ec05dc5a519ed718ddeced4a51b7c04db68529e9566a15e40fbb2</span></p>
         </div>
       </div>
-
-      <div class="section-head" style="margin-top:28px">
-        <div>
-          <span class="pill observed">Chrome proof</span>
-          <h2>Same accepted revision, four real viewports</h2>
         </div>
-        <p>Captured from the running local application with Chrome’s responsive viewport. Device pixel ratio 2 explains the 2× PNG dimensions.</p>
-      </div>
+      </details>
+
+      <details class="detail-topic">
+        <summary>
+          <span><span class="detail-topic-title">Desktop screenshots</span><span class="detail-topic-note">The same accepted revision in Canvas and standalone HTML.</span></span>
+        </summary>
+        <div class="detail-topic-body">
       <div class="grid-2">
         <figure class="visual-proof">
           <img src="screenshots/final-v2/canvas-desktop.png" alt="Canvas-hosted accepted report at a 1280 by 844 desktop viewport" />
@@ -1152,47 +1247,34 @@ http://localhost:5173/?report=work-session</pre>
           <img src="screenshots/final-v2/standalone-desktop.png" alt="Standalone accepted report at a 1280 by 844 desktop viewport" />
           <figcaption><strong>Standalone HTML · desktop</strong> — the independent renderer opens the same accepted work story without React or Canvas.</figcaption>
         </figure>
-        <figure class="visual-proof mobile">
-          <img src="screenshots/final-v2/canvas-mobile.png" alt="Canvas-hosted accepted report at a 390 by 844 mobile viewport" />
-          <figcaption><strong>Canvas · mobile</strong> — responsive single-column flow; no horizontal clipping or unreadable evidence labels observed.</figcaption>
-        </figure>
-        <figure class="visual-proof mobile">
-          <img src="screenshots/final-v2/standalone-mobile.png" alt="Standalone accepted report at a 390 by 844 mobile viewport" />
-          <figcaption><strong>Standalone HTML · mobile</strong> — title, summary, identity, and first evidence surface remain readable without transcript context.</figcaption>
-        </figure>
       </div>
+        </div>
+      </details>
 
-      <div class="grid-2" style="margin-top:16px">
-        <div class="card">
-          <h3>Skills actually applied</h3>
-          <ul class="list compact">
-            <li><strong><span class="mono">$compile-mission-brief</span></strong> — converted the initial brain-dump into the execution contract and hard-stop plan.</li>
-            <li><strong><span class="mono">$elite-codebase-engineering</span></strong> — enforced one authority, stable contracts, adapter seams, and second-host proof.</li>
-            <li><strong><span class="mono">$create-architecture-diagrams</span></strong> — kept current/target/data-flow diagrams evidence-backed and visual.</li>
-            <li><strong>Handoff, prototype, browser, and computer-use workflows</strong> — maintained continuity, compared A/B/C, and verified the selected host output directly in Chrome.</li>
-            <li><strong>Explicitly excluded:</strong> Anthropic frontend-design. It was not used.</li>
+      <details class="detail-topic">
+        <summary>
+          <span><span class="detail-topic-title">Operating boundaries and applied skills</span><span class="detail-topic-note">What the POC assumes, what it does not do, and the guidance used to build it.</span></span>
+        </summary>
+        <div class="detail-topic-body">
+          <h3 class="detail-subhead">POC boundaries</h3>
+          <ul class="fact-list">
+            <li><strong>Users</strong><span>Local, trusted, single-writer use. There is no authentication or cryptographic signer.</span></li>
+            <li><strong>Completion</strong><span><span class="mono">--complete</span> is an operator confirmation of the selected session snapshot.</span></li>
+            <li><strong>Private evidence</strong><span>Authority stays under ignored <span class="mono">.novakai-reports/</span>. Only the redacted accepted envelope is public.</span></li>
+            <li><strong>Automation</strong><span>Reports are generated on demand. There is no watcher, service, team dashboard, or plugin platform.</span></li>
+            <li><strong>Evidence boundary</strong><span>The report binds evidence to one explicit commit. Later publication and handover commits sit outside that evidence tree.</span></li>
+          </ul>
+          <h3 class="detail-subhead">Guidance used</h3>
+          <ul class="fact-list">
+            <li><strong>Mission brief</strong><span>Turned the initial brain-dump into the execution contract and hard stop.</span></li>
+            <li><strong>Codebase engineering</strong><span>Kept one authority, stable contracts, adapter seams, and a second host.</span></li>
+            <li><strong>Architecture diagrams</strong><span>Kept system maps and data flows tied to repository evidence.</span></li>
+            <li><strong>Prototype and browser work</strong><span>Compared A, B, and C, then verified the selected result directly in Chrome.</span></li>
           </ul>
         </div>
-        <div class="card">
-          <h3>POC assumptions and boundaries</h3>
-          <ul class="list compact">
-            <li>Local, trusted, single-writer use; no authentication or cryptographic signer.</li>
-            <li><span class="mono">--complete</span> is an explicit operator confirmation of the selected session snapshot.</li>
-            <li>Private authority remains under ignored <span class="mono">.novakai-reports/</span>; only the redacted accepted envelope is public.</li>
-            <li>Reports are generated on demand; there is no watcher, service, team dashboard, or generic plugin platform.</li>
-            <li>The report binds evidence to an explicit commit; later publication/handover commits are intentionally outside that evidence tree.</li>
-          </ul>
-        </div>
-      </div>
+      </details>
 
-      <div class="notice done">
-        <div class="icon">■</div>
-        <div>
-          <strong>Stop boundary</strong>
-          <p>The seam is proven and every authorised final gate is green. No hostile review was run because the latest operator instruction says “no extra reviews unless I ask.” Stop here: no design rounds, navigation, libraries, watchers, composer, or second visual type.</p>
-        </div>
-      </div>
-    </section>
+      <p class="proof-note"><strong>Current stop point:</strong> the seam is proven. Run the three-session pilot before deciding whether to build anything larger.</p>
       </div>
     </details>
 
@@ -2144,8 +2226,9 @@ First return a compact visual read-back containing selected base/worktree, contr
     const trackedSections = pageLinks
       .map((link) => document.getElementById(link.dataset.section))
       .filter(Boolean);
+    const topbar = document.querySelector(".topbar");
 
-    const markCurrentSection = (sectionId) => {
+    const markCurrentSection = (sectionId, updateHash = false) => {
       pageLinks.forEach((link) => {
         if (link.dataset.section === sectionId) {
           link.setAttribute("aria-current", "location");
@@ -2153,28 +2236,112 @@ First return a compact visual read-back containing selected base/worktree, contr
           link.removeAttribute("aria-current");
         }
       });
+      if (updateHash && window.location.hash !== `#${sectionId}`) {
+        window.history.replaceState(null, "", `#${sectionId}`);
+      }
     };
 
-    const sectionObserver = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible) markCurrentSection(visible.target.id);
-      },
-      { rootMargin: "-18% 0px -68% 0px", threshold: [0, 0.2, 0.6] },
-    );
+    const sectionForTarget = (target) =>
+      trackedSections.find((section) => section === target || section.contains(target));
 
-    trackedSections.forEach((section) => sectionObserver.observe(section));
-    markCurrentSection("overview");
+    const scrollToTarget = (target) => {
+      const topbarHeight = topbar?.offsetHeight ?? 0;
+      const top = target.getBoundingClientRect().top + window.scrollY - topbarHeight - 20;
+      window.scrollTo({ top, behavior: "auto" });
+    };
+
+    const openParentDetails = (target) => {
+      if (target instanceof HTMLDetailsElement) target.open = true;
+      let parent = target.closest("details");
+      while (parent) {
+        parent.open = true;
+        parent = parent.parentElement?.closest("details");
+      }
+    };
+
+    const currentSection = () => {
+      const marker = (topbar?.offsetHeight ?? 0) + 64;
+      let current = trackedSections[0];
+      for (const section of trackedSections) {
+        if (section.getBoundingClientRect().top <= marker) {
+          current = section;
+        } else {
+          break;
+        }
+      }
+      return current;
+    };
+
+    let scrollFrame;
+    const syncCurrentSection = (updateHash = true) => {
+      window.cancelAnimationFrame(scrollFrame);
+      scrollFrame = window.requestAnimationFrame(() => {
+        const current = currentSection();
+        if (current) markCurrentSection(current.id, updateHash);
+      });
+    };
 
     document.querySelectorAll('a[href^="#"]').forEach((link) => {
-      link.addEventListener("click", () => {
+      link.addEventListener("click", (event) => {
         const target = document.querySelector(link.getAttribute("href"));
-        if (target instanceof HTMLDetailsElement) target.open = true;
-        target?.closest("details")?.setAttribute("open", "");
+        if (!target) return;
+        event.preventDefault();
+        openParentDetails(target);
+        window.requestAnimationFrame(() => {
+          window.history.pushState(null, "", link.getAttribute("href"));
+          scrollToTarget(target);
+          const section = sectionForTarget(target);
+          if (section) markCurrentSection(section.id);
+        });
       });
     });
+
+    const detailGates = [...document.querySelectorAll(".detail-gate")];
+    detailGates.forEach((gate) => {
+      gate.addEventListener("toggle", () => {
+        if (gate.open) {
+          detailGates.filter((other) => other !== gate).forEach((other) => {
+            other.open = false;
+          });
+          window.requestAnimationFrame(() => {
+            window.history.replaceState(null, "", `#${gate.id}`);
+            scrollToTarget(gate);
+            markCurrentSection(gate.id);
+          });
+        } else {
+          syncCurrentSection();
+        }
+      });
+    });
+
+    const detailTopics = [...document.querySelectorAll(".detail-topic")];
+    detailTopics.forEach((topic) => {
+      topic.addEventListener("toggle", () => {
+        if (!topic.open) return;
+        detailTopics
+          .filter((other) => other !== topic && other.parentElement === topic.parentElement)
+          .forEach((other) => {
+            other.open = false;
+          });
+      });
+    });
+
+    window.addEventListener("scroll", () => syncCurrentSection(), { passive: true });
+    window.addEventListener("resize", () => syncCurrentSection(false));
+
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+
+    const initialTarget = document.querySelector(window.location.hash || "#overview");
+    if (initialTarget) {
+      openParentDetails(initialTarget);
+      window.requestAnimationFrame(() => {
+        scrollToTarget(initialTarget);
+        const section = sectionForTarget(initialTarget) ?? trackedSections[0];
+        if (section) markCurrentSection(section.id);
+      });
+    }
   </script>
 </body>
 </html>
