@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Novakai Visual Reporting — Implementation Handover</title>
+  <title>Novakai Canvas visual work reports — Handover</title>
   <style>
     :root {
       --ink: #142033;
@@ -428,8 +428,277 @@
       font-size: 13px;
     }
 
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .breadcrumb strong { color: var(--ink); }
+    .page-nav a[aria-current="location"] {
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .orientation-hero {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding-top: 68px;
+    }
+    .orientation-hero h1 {
+      max-width: 920px;
+      font-size: clamp(40px, 5.5vw, 68px);
+      line-height: 1.02;
+      letter-spacing: -.045em;
+    }
+    .orientation-hero .lead { max-width: 880px; }
+
+    .context-list {
+      margin: 34px 0 0;
+      border-top: 1px solid var(--line);
+    }
+    .context-list div {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 20px;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .context-list dt {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .context-list dd { margin: 0; font-weight: 700; }
+
+    .focus-section {
+      width: min(980px, 100%);
+      margin-inline: auto;
+      padding-top: 54px;
+    }
+    .question-head {
+      margin-bottom: 20px;
+    }
+    .question-head h2 {
+      max-width: 820px;
+      margin: 8px 0 6px;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.08;
+      letter-spacing: -.035em;
+    }
+    .question-head p {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .plain-panel {
+      padding: clamp(22px, 4vw, 38px);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+    .plain-panel > :first-child { margin-top: 0; }
+    .plain-panel > :last-child { margin-bottom: 0; }
+
+    .first-things {
+      margin: 28px 0 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: first-things;
+    }
+    .first-things li {
+      counter-increment: first-things;
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 16px;
+      padding: 18px 0;
+      border-bottom: 1px solid #e6ecf3;
+    }
+    .first-things li:last-child { border-bottom: 0; }
+    .first-things li::before {
+      content: counter(first-things);
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      color: white;
+      background: var(--blue);
+      font-weight: 900;
+    }
+    .first-things strong { display: block; margin-bottom: 4px; font-size: 18px; }
+    .first-things span { color: var(--muted); }
+
+    .contents-map {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: contents;
+    }
+    .contents-map li { counter-increment: contents; border-bottom: 1px solid #e6ecf3; }
+    .contents-map li:last-child { border-bottom: 0; }
+    .contents-map a {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 17px 0;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .contents-map a::before {
+      content: "0" counter(contents);
+      color: var(--blue);
+      font: 800 13px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .contents-map strong { display: block; font-size: 17px; }
+    .contents-map small { display: block; margin-top: 2px; color: var(--muted); }
+    .contents-map .map-action { color: var(--blue); font-weight: 850; }
+
+    .repo-tree {
+      margin: 0;
+      padding: clamp(20px, 4vw, 34px);
+      border-radius: 16px;
+      background: #142033;
+      color: #dbe7fa;
+      overflow-x: auto;
+      font-size: clamp(12px, 1.5vw, 15px);
+      line-height: 1.8;
+    }
+    .repo-tree .owner { color: #91c5ff; }
+    .repo-tree .purpose { color: #aebdd2; }
+
+    .map-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .map-legend strong { color: var(--ink); }
+
+    .progress-list,
+    .roadmap-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .progress-list li,
+    .roadmap-list li {
+      display: grid;
+      grid-template-columns: 92px 1fr auto;
+      gap: 20px;
+      align-items: start;
+      padding: 20px 0;
+      border-bottom: 1px solid #e6ecf3;
+    }
+    .progress-list li:last-child,
+    .roadmap-list li:last-child { border-bottom: 0; }
+    .row-status {
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .row-status.next { color: var(--blue); }
+    .row-status.later { color: var(--violet); }
+    .progress-list strong,
+    .roadmap-list strong { display: block; margin-bottom: 4px; font-size: 18px; }
+    .progress-list p,
+    .roadmap-list p { margin: 0; color: var(--muted); }
+    .row-time {
+      min-width: 112px;
+      color: var(--ink);
+      font-weight: 850;
+      text-align: right;
+    }
+    .roadmap-total {
+      margin: 20px 0 0;
+      padding: 16px 18px;
+      border-radius: 14px;
+      background: var(--blue-soft);
+      color: #1d477f;
+    }
+
+    .open-report {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .open-report a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 18px;
+      border-radius: 12px;
+      font-weight: 850;
+      text-decoration: none;
+    }
+    .open-report .primary { color: white; background: var(--blue); }
+    .open-report .secondary { color: var(--blue); border: 1px solid #a9c2ed; background: white; }
+
+    .detail-gate {
+      width: min(1100px, 100%);
+      margin: 52px auto 0;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, .7);
+      overflow: clip;
+    }
+    .detail-gate > summary {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 22px 26px;
+      cursor: pointer;
+      list-style: none;
+      font-size: 18px;
+      font-weight: 850;
+    }
+    .detail-gate > summary::-webkit-details-marker { display: none; }
+    .detail-gate > summary::after {
+      content: "Open";
+      color: var(--blue);
+      font-size: 13px;
+    }
+    .detail-gate[open] > summary {
+      border-bottom: 1px solid var(--line);
+      background: white;
+    }
+    .detail-gate[open] > summary::after { content: "Close"; }
+    .detail-summary-note {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .detail-body { padding: 0 clamp(18px, 3vw, 30px) 30px; }
+
     @media (max-width: 900px) {
-      nav { display: none; }
+      .topbar-inner { display: block; padding: 10px 0 8px; }
+      .page-nav {
+        display: flex;
+        gap: 5px;
+        margin-top: 6px;
+        padding-bottom: 2px;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+      }
+      .page-nav a { flex: 0 0 auto; }
       .hero-grid, .grid-2, .grid-3, .grid-4, .compare, .contract-grid { grid-template-columns: 1fr; }
       .span-2 { grid-column: auto; }
       .stage { grid-template-columns: 1fr; }
@@ -437,6 +706,29 @@
       .arrow { transform: rotate(90deg); }
       .section-head { display: block; }
       .section-head p { margin-top: 8px; }
+      .orientation-hero { padding-top: 40px; }
+      .orientation-hero h1 {
+        font-size: clamp(34px, 10vw, 42px);
+        overflow-wrap: anywhere;
+      }
+      .orientation-hero .lead,
+      .context-list dd { overflow-wrap: anywhere; }
+      .context-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .context-list div {
+        display: block;
+        padding: 14px 10px;
+      }
+      .context-list div:nth-child(odd) { border-right: 1px solid var(--line); }
+      .context-list dd { margin-top: 3px; }
+      .contents-map a { grid-template-columns: 34px 1fr; }
+      .contents-map .map-action { display: none; }
+      .progress-list li,
+      .roadmap-list li { grid-template-columns: 1fr; gap: 5px; }
+      .row-time { min-width: 0; text-align: left; }
+      .detail-gate > summary { padding: 18px; }
     }
 
     @media print {
@@ -453,48 +745,236 @@
 <body>
   <div class="topbar">
     <div class="shell topbar-inner">
-      <div class="brand">Novakai Visual Reporting · Handover</div>
-      <nav aria-label="Document sections">
-        <a href="#complete">POC complete</a>
-        <a href="#start">Start</a>
-        <a href="#mission">Mission</a>
-        <a href="#change">Before → after</a>
-        <a href="#architecture">Architecture</a>
-        <a href="#contract">Contract</a>
-        <a href="#sequence">Workflow</a>
-        <a href="#plan">Build plan</a>
-        <a href="#ai">AI brief</a>
+      <div class="breadcrumb" aria-label="Document location">
+        <span>Novakai Canvas</span>
+        <span aria-hidden="true">/</span>
+        <strong>Visual work reports</strong>
+        <span aria-hidden="true">/</span>
+        <span>Handover</span>
+      </div>
+      <nav class="page-nav" aria-label="Page contents">
+        <a data-section="overview" href="#overview">Overview</a>
+        <a data-section="contents" href="#contents">Contents</a>
+        <a data-section="repository-map" href="#repository-map">Repo map</a>
+        <a data-section="done" href="#done">Done</a>
+        <a data-section="roadmap" href="#roadmap">Roadmap</a>
+        <a data-section="open-result" href="#open-result">Open result</a>
+        <a data-section="technical-detail" href="#technical-detail">Detail</a>
       </nav>
     </div>
   </div>
 
-  <header class="shell">
-    <span class="eyebrow"><span class="dot"></span> Useful real-session report published · 25 July 2026</span>
-    <h1>The report now tells the work story—not just the pipeline story.</h1>
-    <p class="lead">One actual Codex session became a concrete before→after report: named files and modules, reasons, decisions, resolved problems, delivered artifacts, remaining work, and repository-owned proof.</p>
+  <header class="shell orientation-hero" id="overview">
+    <span class="eyebrow"><span class="dot"></span> Handover · updated 25 July 2026</span>
+    <h1>Novakai Canvas visual work reports</h1>
+    <p class="lead">This is the handover for a small reporting feature. It explains what we built, where it lives, what is finished, and what happens next.</p>
 
-    <div class="hero-grid">
-      <div class="hero-card">
-        <h2>What exists now</h2>
-        <p><strong>Agent claims explain the work. Repository execution proves it. One accepted projection feeds both visual hosts.</strong> Open <span class="mono">?report=work-session</span> for Canvas or the immutable HTML below for the standalone report.</p>
-      </div>
-      <div class="answer-card">
-        <div class="big">5 changes</div>
-        <strong>each with before → after → why</strong>
-        <span>156 normalized events · 0 parser warnings · 133 tests at the accepted evidence commit</span>
-      </div>
-    </div>
-
-    <div class="notice done">
-      <div class="icon">✓</div>
+    <dl class="context-list" aria-label="Project context">
       <div>
-        <strong>Hard stop reached: exact-revision Chrome QA passed</strong>
-        <p>The accepted revision below was inspected in Canvas and standalone HTML at 1280×844 desktop and 390×844 mobile viewports. The four unedited page captures are embedded below. No further platform work is authorised.</p>
+        <dt>Project</dt>
+        <dd>Novakai Canvas</dd>
       </div>
-    </div>
+      <div>
+        <dt>Owner</dt>
+        <dd>Chris Dasca</dd>
+      </div>
+      <div>
+        <dt>Author</dt>
+        <dd>Codex, working with Chris</dd>
+      </div>
+      <div>
+        <dt>Status</dt>
+        <dd>Proof of concept complete. The next step is a three-session pilot.</dd>
+      </div>
+    </dl>
+
+    <ol class="first-things" aria-label="Three things to know first">
+      <li>
+        <div>
+          <strong>The basic reporting flow works.</strong>
+          <span>One real Codex session produced the same accepted report in Canvas and standalone HTML.</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>The agent explains; the repository proves.</strong>
+          <span>Agent-written summaries cannot claim test proof. Executed checks and repository evidence are kept separate.</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Do not build the platform yet.</strong>
+          <span>Use this workflow on three genuine sessions, then decide whether navigation, a report library, or more visual types are worth building.</span>
+        </div>
+      </li>
+    </ol>
   </header>
 
   <main class="shell">
+    <section class="focus-section" id="contents">
+      <div class="question-head">
+        <span class="pill observed">Page map</span>
+        <h2>What is on this page?</h2>
+        <p>Read the first five sections in order. Open the technical or historical detail only when you need it.</p>
+      </div>
+      <div class="plain-panel">
+        <ol class="contents-map">
+          <li>
+            <a href="#overview">
+              <span><strong>Project overview</strong><small>What this is, who owns it, and the three things to remember.</small></span>
+              <span class="map-action">Go up ↑</span>
+            </a>
+          </li>
+          <li>
+            <a href="#repository-map">
+              <span><strong>Repository map</strong><small>Where the reporting capability, adapters, outputs, and handover live.</small></span>
+              <span class="map-action">Next ↓</span>
+            </a>
+          </li>
+          <li>
+            <a href="#done">
+              <span><strong>Work completed</strong><small>The concrete pieces that now exist.</small></span>
+              <span class="map-action">View ↓</span>
+            </a>
+          </li>
+          <li>
+            <a href="#roadmap">
+              <span><strong>Roadmap and time</strong><small>The next stage, the end of this roadmap, and the current estimates.</small></span>
+              <span class="map-action">View ↓</span>
+            </a>
+          </li>
+          <li>
+            <a href="#open-result">
+              <span><strong>Open the result</strong><small>Canvas report, standalone report, and the accepted revision.</small></span>
+              <span class="map-action">View ↓</span>
+            </a>
+          </li>
+          <li>
+            <a href="#technical-detail">
+              <span><strong>Optional detail</strong><small>Proof, screenshots, architecture, original plan, assumptions, and AI instructions.</small></span>
+              <span class="map-action">Open ↓</span>
+            </a>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="focus-section" id="repository-map">
+      <div class="question-head">
+        <span class="pill observed">Observed map</span>
+        <h2>Where does this live in the repo?</h2>
+        <p>This is the useful ownership map—not a dump of every file.</p>
+      </div>
+      <div class="plain-panel">
+        <pre class="repo-tree" aria-label="Novakai Canvas visual reporting repository tree">Novakai-Canvas/
+├── <span class="owner">src/capabilities/work-session-reporting/</span>
+│   └── <span class="purpose">owns report rules, compilation, acceptance, and identity</span>
+├── <span class="owner">src/presentation/work-session-report/</span>
+│   └── <span class="purpose">renders the accepted report inside Canvas</span>
+├── <span class="owner">tools/report-session/</span>
+│   └── <span class="purpose">imports sessions, reads agent briefs, proves, and publishes</span>
+├── <span class="owner">public/reports/accepted-report.json</span>
+│   └── <span class="purpose">current redacted projection read by Canvas</span>
+└── <span class="owner">docs/visual-reporting/</span>
+    ├── <span class="purpose">reports/       immutable standalone HTML</span>
+    ├── <span class="purpose">briefs/        structured agent handover input</span>
+    ├── <span class="purpose">screenshots/   Chrome visual proof</span>
+    └── <span class="purpose">this file      project handover and roadmap</span></pre>
+        <div class="map-legend">
+          <span><strong>Blue path</strong> — repository location</span>
+          <span><strong>Muted line</strong> — what that location owns</span>
+          <span><strong>Evidence base</strong> — commit <span class="mono">101593b</span></span>
+        </div>
+        <p class="takeaway"><strong>Plain version:</strong> one capability owns the meaning; Canvas and standalone HTML only present the accepted result.</p>
+      </div>
+    </section>
+
+    <section class="focus-section" id="done">
+      <div class="question-head">
+        <span class="pill observed">Current state</span>
+        <h2>What have we done so far?</h2>
+        <p>The POC is finished. These are the pieces now available.</p>
+      </div>
+      <div class="plain-panel">
+        <ul class="progress-list">
+          <li>
+            <span class="row-status">Done</span>
+            <div><strong>Defined one reporting capability</strong><p>The report rules and identities live outside Canvas, so another host can use them.</p></div>
+            <span></span>
+          </li>
+          <li>
+            <span class="row-status">Done</span>
+            <div><strong>Added a structured agent handover</strong><p>Agents provide outcome, changes, decisions, problems, artifacts, and remaining work—but not proof.</p></div>
+            <span></span>
+          </li>
+          <li>
+            <span class="row-status">Done</span>
+            <div><strong>Generated a report from a real Codex session</strong><p>The accepted report came from 156 normalized session events, not the test fixture.</p></div>
+            <span></span>
+          </li>
+          <li>
+            <span class="row-status">Done</span>
+            <div><strong>Rendered the same report in two places</strong><p>Canvas and immutable standalone HTML show the same accepted revision.</p></div>
+            <span></span>
+          </li>
+          <li>
+            <span class="row-status">Done</span>
+            <div><strong>Checked the proof and protected old reports</strong><p>133 tests passed, desktop/mobile Chrome views were inspected, and both v1 report hashes stayed unchanged.</p></div>
+            <span></span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="focus-section" id="roadmap">
+      <div class="question-head">
+        <span class="pill proposed">Current roadmap</span>
+        <h2>Where are we going next?</h2>
+        <p>The roadmap deliberately ends with a decision. It does not assume we should build a reporting platform.</p>
+      </div>
+      <div class="plain-panel">
+        <ol class="roadmap-list">
+          <li>
+            <span class="row-status">Stage 1 · Done</span>
+            <div><strong>Prove the seam with one real session</strong><p>Capability, agent brief, repository proof, Canvas host, standalone host, and visual QA are complete.</p></div>
+            <span class="row-time">Complete</span>
+          </li>
+          <li>
+            <span class="row-status next">Stage 2 · Next</span>
+            <div><strong>Use it on three genuine work sessions</strong><p>Generate each report, note where the structure helps or gets in the way, and make only small corrections needed to complete the pilot.</p></div>
+            <span class="row-time">2–4 AI hours</span>
+          </li>
+          <li>
+            <span class="row-status later">Stage 3 · Finish</span>
+            <div><strong>Make a go / change / stop decision</strong><p>Review the three reports and decide whether the next investment is navigation, a report library, another visual type, or nothing.</p></div>
+            <span class="row-time">30–60 minutes</span>
+          </li>
+        </ol>
+        <p class="roadmap-total"><strong>Estimated time to the end of the current roadmap: 3–5 AI working hours.</strong> That estimate assumes three supported Codex sessions are available and excludes any later product build.</p>
+      </div>
+    </section>
+
+    <section class="focus-section" id="open-result">
+      <div class="question-head">
+        <span class="pill observed">The result</span>
+        <h2>What can I open now?</h2>
+        <p>Both links show revision <span class="mono">report:6bddf213…09ff885a</span>.</p>
+      </div>
+      <div class="plain-panel">
+        <h3>Start with the Canvas report.</h3>
+        <p>Use the standalone file when you want the same report without the Canvas application.</p>
+        <div class="open-report">
+          <a class="primary" href="../../?report=work-session">Open in Canvas</a>
+          <a class="secondary" href="reports/report-6bddf213b159419f7175dcf9c3f8bc4aea43d72f915d0c7b813e785409ff885a.html">Open standalone HTML</a>
+        </div>
+      </div>
+    </section>
+
+    <details class="detail-gate" id="technical-detail">
+      <summary>
+        <span>Technical proof and operator detail<span class="detail-summary-note">Digests, screenshots, commands, boundaries, and applied skills.</span></span>
+      </summary>
+      <div class="detail-body">
     <section id="complete">
       <div class="section-head">
         <div>
@@ -713,7 +1193,14 @@ http://localhost:5173/?report=work-session</pre>
         </div>
       </div>
     </section>
+      </div>
+    </details>
 
+    <details class="detail-gate" id="historical-detail">
+      <summary>
+        <span>Original planning record<span class="detail-summary-note">Mission contract, alternatives, architecture diagrams, build plan, assumptions, and AI handover instructions.</span></span>
+      </summary>
+      <div class="detail-body">
     <section id="start">
       <div class="notice">
         <div class="icon">↺</div>
@@ -1643,12 +2130,51 @@ First return a compact visual read-back containing selected base/worktree, contr
         </div>
       </div>
     </section>
+      </div>
+    </details>
   </main>
 
   <footer class="footer">
     <div class="shell">
-      <strong>Document role:</strong> completed POC handover, operational map, and preserved execution record. Finalised 25 July 2026 from the actual accepted report, exact host screenshots, inspected commits, and prior visual architecture artifacts. The completion section is observed implementation evidence; the remaining sections preserve the original plan.
+      <strong>About this page:</strong> the opening sections are the current handover. The two optional panels preserve technical proof and the original planning record without putting that detail in the default reading path.
     </div>
   </footer>
+  <script>
+    const pageLinks = [...document.querySelectorAll(".page-nav [data-section]")];
+    const trackedSections = pageLinks
+      .map((link) => document.getElementById(link.dataset.section))
+      .filter(Boolean);
+
+    const markCurrentSection = (sectionId) => {
+      pageLinks.forEach((link) => {
+        if (link.dataset.section === sectionId) {
+          link.setAttribute("aria-current", "location");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      });
+    };
+
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) markCurrentSection(visible.target.id);
+      },
+      { rootMargin: "-18% 0px -68% 0px", threshold: [0, 0.2, 0.6] },
+    );
+
+    trackedSections.forEach((section) => sectionObserver.observe(section));
+    markCurrentSection("overview");
+
+    document.querySelectorAll('a[href^="#"]').forEach((link) => {
+      link.addEventListener("click", () => {
+        const target = document.querySelector(link.getAttribute("href"));
+        if (target instanceof HTMLDetailsElement) target.open = true;
+        target?.closest("details")?.setAttribute("open", "");
+      });
+    });
+  </script>
 </body>
 </html>
