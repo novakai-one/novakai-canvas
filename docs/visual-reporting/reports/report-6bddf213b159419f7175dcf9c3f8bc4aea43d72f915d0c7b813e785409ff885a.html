@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Novakai Canvas now explains agent work with evidence, not transcript prose. · Novakai Work Session</title>
+  <style>
+    :root{--ink:#132033;--muted:#607086;--paper:#f3f6fb;--card:#fff;--line:#ccd6e4;--blue:#245bb5;--blue2:#e9f1ff;--violet:#6947b8;--violet2:#f1ecff;--green:#18764f;--green2:#e9f8f1;--rose:#a33d5e;--rose2:#fff0f4}
+    *{box-sizing:border-box}body{margin:0;color:var(--ink);background:radial-gradient(circle at 8% 0%,#dce8ff 0,transparent 32rem),var(--paper);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,sans-serif}
+    main{width:min(1180px,calc(100% - 32px));margin:auto;padding:42px 0 70px}.eyebrow,.receipt-type{display:inline-flex;padding:5px 9px;border-radius:999px;background:var(--violet2);color:var(--violet);font-size:11px;font-weight:850;text-transform:uppercase;letter-spacing:.04em}
+    h1{max-width:880px;margin:16px 0 10px;font-size:clamp(38px,6vw,72px);line-height:1;letter-spacing:-.05em}.lead{max-width:820px;color:var(--muted);font-size:20px}.meta{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}.meta span{padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px}
+    .hero{padding:24px;border-radius:22px;background:linear-gradient(135deg,#17335f,#275db7 60%,#6848b8);color:#fff}.hero p{max-width:800px;color:#e8efff;font-size:18px}.status{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--green2);color:var(--green);font-weight:850;text-transform:uppercase;font-size:11px}
+    .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0 30px}.stat{padding:16px;border:1px solid var(--line);border-radius:15px;background:#fff}.stat b{display:block;font-size:28px;color:var(--blue)}section{margin-top:30px}section>h2{margin:0 0 12px;font-size:30px;letter-spacing:-.03em}
+    .map-nodes,.cards,.workflow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.map-node,.receipt,.step{padding:17px;border:1px solid var(--line);border-radius:15px;background:#fff}.map-node span{color:var(--muted);font-size:11px;font-weight:800}.map-node strong,.map-node small{display:block}.map-node strong{margin:8px 0}.map-node[data-role=module]{border-top:4px solid var(--green)}.map-node[data-role=adapter]{border-top:4px solid var(--violet)}.map-node[data-role=caller]{border-top:4px solid var(--blue)}
+    .edge-list{margin:12px 0 0;padding:0;list-style:none}.edge-list li{padding:9px 0;border-bottom:1px solid var(--line)}.edge-list strong{margin-left:10px}.step{position:relative;padding-left:54px}.step b{position:absolute;left:16px;top:16px;display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:var(--blue2);color:var(--blue)}.step span{display:block;color:var(--muted);font-size:13px}
+    .receipt h3{margin:10px 0 5px}.receipt p{color:var(--muted)}.evidence{display:flex;flex-wrap:wrap;gap:6px}.evidence span,.evidence a{padding:4px 7px;border-radius:7px;background:#f1f5f9;font-size:11px}.evidence a{color:var(--blue)}.next{display:grid;gap:8px}.next div{padding:13px;border-left:4px solid var(--blue);border-radius:8px;background:#fff}.empty{padding:18px;border:1px dashed var(--line);border-radius:14px;color:var(--muted)}
+    .change-stories{display:grid;gap:12px}.change-story{padding:18px;border:1px solid var(--line);border-top:4px solid var(--blue);border-radius:15px;background:#fff}.change-story h3{margin:10px 0 12px}.before-after{display:grid;align-items:stretch;gap:9px;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}.before-after>div{padding:13px;border:1px solid var(--line);border-radius:10px;background:#f8fafc}.before-after>div:last-child{border-color:#b8ddca;background:var(--green2)}.before-after>b{display:grid;place-items:center;color:var(--blue);font-size:22px}.before-after small,.why strong{display:block;color:var(--blue);font-weight:850;text-transform:uppercase;font-size:10px;letter-spacing:.05em}.before-after p{margin:5px 0 0;color:var(--muted)}.why{color:var(--muted)}.why strong{margin-bottom:4px;color:var(--violet)}
+    footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font:12px ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere}
+    @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.map-nodes,.cards,.workflow{grid-template-columns:1fr}.before-after{grid-template-columns:1fr}.before-after>b{transform:rotate(90deg)}}
+  </style>
+</head>
+<body>
+<main>
+  <span class="eyebrow">Accepted work-session report · standalone host</span>
+  <h1>Novakai Canvas now explains agent work with evidence, not transcript prose.</h1>
+  <p class="lead">A real Codex session now compiles into a visual before-to-after work report. It names the files and modules changed, records decisions and resolved problems, links delivered artifacts, and keeps repository-executed proof separate from agent claims.</p>
+  <div class="meta">
+    <span>codex</span>
+    <span>156 normalized events</span>
+    <span>complete source</span>
+    <span>2026-07-25T01:52:10.507Z</span>
+  </div>
+  <div class="hero"><span class="status">complete</span><h2>Novakai Canvas now explains agent work with evidence, not transcript prose.</h2><p>One accepted revision deterministically drives this standalone page.</p></div>
+  <div class="stats">
+    <div class="stat"><b>8</b>changes</div><div class="stat"><b>7</b>decisions</div><div class="stat"><b>1</b>proofs</div><div class="stat"><b>0</b>blockers</div><div class="stat"><b>5</b>artifacts</div>
+  </div>
+
+  <section><h2>What changed — before → after?</h2><div class="change-stories">
+    <article class="change-story">
+      <span class="receipt-type">change</span>
+      <h3>Import the actual Codex session through one strict adapter</h3>
+      <div class="before-after">
+        <div><small>Before</small><p>The POC could prove its pipeline with a small fixture but could not safely normalize the changing live Codex JSONL shape.</p></div>
+        <b>→</b>
+        <div><small>After</small><p>An explicitly selected real session is classified, normalized, source-digested, and rejected when identity or supported content is uncertain.</p></div>
+      </div>
+      <p class="why"><strong>Why</strong>A useful report must describe the genuine work session while failing closed on unknown or malformed source records.</p>
+      <div class="evidence"><span>file · tools/report-session/codex-session-source.ts</span><span>file · tools/report-session/codex-session-current-format.test.ts</span><span>file · tools/report-session/cli.ts</span></div>
+    </article>
+    <article class="change-story">
+      <span class="receipt-type">change</span>
+      <h3>Give agents a source-bound end-session receipt</h3>
+      <div class="before-after">
+        <div><small>Before</small><p>Repository receipts could prove changed areas, but the human-facing explanation remained generic and omitted why, before-to-after, and resolved problems.</p></div>
+        <b>→</b>
+        <div><small>After</small><p>The agent supplies Outcome, Changes, Decisions, Problems, Artifacts, and Remaining work; each change names files, module, reason, before, and after, while Proof is structurally impossible.</p></div>
+      </div>
+      <p class="why"><strong>Why</strong>Agents need a compact structured handoff that creates useful narrative without being allowed to certify its own claims.</p>
+      <div class="evidence"><span>file · tools/report-session/agent-work-brief.ts</span><span>file · tools/report-session/agent-work-brief.test.ts</span><span>file · docs/visual-reporting/briefs/poc-work-session-brief.json</span></div>
+    </article>
+    <article class="change-story">
+      <span class="receipt-type">change</span>
+      <h3>Promote one Evidence Wall inside Canvas</h3>
+      <div class="before-after">
+        <div><small>Before</small><p>Three comparison variants and a prototype switcher made the POC itself the main thing the user had to understand.</p></div>
+        <b>→</b>
+        <div><small>After</small><p>One stable report route leads with outcome, concrete accepted receipts, repository proof, the module map, and remaining work; the ordinary architecture canvas remains unchanged.</p></div>
+      </div>
+      <p class="why"><strong>Why</strong>The report should answer what changed and what exists now at a glance, without forcing the reader through transcript prose.</p>
+      <div class="evidence"><span>file · src/main.tsx</span><span>file · src/presentation/work-session-report/WorkSessionReport.tsx</span><span>file · src/presentation/work-session-report/report-model.ts</span><span>file · src/presentation/work-session-report/work-session-report.css</span></div>
+    </article>
+    <article class="change-story">
+      <span class="receipt-type">change</span>
+      <h3>Render the same accepted revision as immutable standalone HTML</h3>
+      <div class="before-after">
+        <div><small>Before</small><p>The visual report was coupled to the application host and had no independently verifiable artifact.</p></div>
+        <b>→</b>
+        <div><small>After</small><p>One deterministic renderer produces immutable HTML whose digest, source, receipts, projection, and evidence commit are verified at the publication boundary.</p></div>
+      </div>
+      <p class="why"><strong>Why</strong>The reporting capability is only genuinely reusable if a second host can render the accepted projection without Canvas or React.</p>
+      <div class="evidence"><span>file · tools/report-session/html-renderer.ts</span><span>file · tools/report-session/publish-report.ts</span><span>file · src/capabilities/work-session-reporting/published-envelope-verifier.ts</span></div>
+    </article>
+    <article class="change-story">
+      <span class="receipt-type">change</span>
+      <h3>Turn work-session reporting into a host-neutral capability</h3>
+      <div class="before-after">
+        <div><small>Before</small><p>Session facts, report policy, and rendered content had no shared immutable domain contract.</p></div>
+        <b>→</b>
+        <div><small>After</small><p>WorkSession, WorkReceipt, ReportDraft, and AcceptedReport form one deterministic capability with stable IDs and acceptance gates.</p></div>
+      </div>
+      <p class="why"><strong>Why</strong>Canvas and standalone HTML need one trustworthy report authority instead of two renderers inventing their own story.</p>
+      <div class="evidence"><span>file · src/capabilities/work-session-reporting/contract.ts</span><span>file · src/capabilities/work-session-reporting/core/report-compiler.ts</span><span>file · src/capabilities/work-session-reporting/core/reporting-engine.ts</span></div>
+    </article></div></section>
+  <section><h2>Where did it land?</h2><div class="map-nodes">
+    <article class="map-node" data-role="adapter">
+      <span>«adapter»</span>
+      <strong>Agent work-brief adapter</strong>
+      <small>1 direct change receipt</small>
+    </article>
+    <article class="map-node" data-role="projection">
+      <span>«projection»</span>
+      <strong>Canvas work-session report</strong>
+      <small>1 direct change receipt</small>
+    </article>
+    <article class="map-node" data-role="adapter">
+      <span>«adapter»</span>
+      <strong>Codex session adapter</strong>
+      <small>2 direct change receipts</small>
+    </article>
+    <article class="map-node" data-role="module">
+      <span>«module»</span>
+      <strong>Reporting core</strong>
+      <small>2 direct change receipts</small>
+    </article>
+    <article class="map-node" data-role="interface">
+      <span>«interface»</span>
+      <strong>Reporting public contract</strong>
+      <small>1 direct change receipt</small>
+    </article>
+    <article class="map-node" data-role="adapter">
+      <span>«adapter»</span>
+      <strong>Standalone report renderer</strong>
+      <small>1 direct change receipt</small>
+    </article></div><ul class="edge-list">
+    <li><code>adapter.agent-brief</code> → <code>reporting.contract</code>
+      <strong>Give agents a source-bound end-session receipt</strong></li>
+    <li><code>reporting.contract</code> → <code>reporting.core</code>
+      <strong>Build Reporting public contract</strong></li>
+    <li><code>reporting.core</code> → <code>reporting.contract</code>
+      <strong>Turn work-session reporting into a host-neutral capability</strong></li>
+    <li><code>adapter.standalone-html</code> → <code>projection.report</code>
+      <strong>Render the same accepted revision as immutable standalone HTML</strong></li>
+    <li><code>reporting.core</code> → <code>reporting.contract</code>
+      <strong>Build Reporting core</strong></li>
+    <li><code>reporting.core</code> → <code>projection.report</code>
+      <strong>Turn work-session reporting into a host-neutral capability</strong></li>
+    <li><code>reporting.core</code> → <code>projection.report</code>
+      <strong>Build Reporting core</strong></li>
+    <li><code>adapter.codex</code> → <code>reporting.contract</code>
+      <strong>Import the actual Codex session through one strict adapter</strong></li>
+    <li><code>adapter.codex</code> → <code>reporting.contract</code>
+      <strong>Build Codex session adapter</strong></li></ul></section>
+  <section><h2>How did the report become trustworthy?</h2><div class="workflow">
+    <article class="step"><b>1</b><strong>Import session</strong><span>Normalize provider events and bind the source digest.</span></article><article class="step"><b>2</b><strong>Capture structured receipts</strong><span>21 change, decision, proof, blocker, and artifact receipts recorded.</span></article><article class="step"><b>3</b><strong>Compile visual report</strong><span>Build one deterministic projection from authoritative session evidence.</span></article><article class="step"><b>4</b><strong>Seal immutable report revision</strong><span>Hash the projection bytes before local acceptance.</span></article>
+  </div></section>
+  <section><h2>What did you get?</h2><div class="cards">
+    <article class="receipt">
+      <span class="receipt-type">artifact</span>
+      <h3>Stable Evidence Wall in Novakai Canvas</h3>
+      <p>You now have — A production report route that visually leads with the session outcome, concrete changed work, delivered artifacts, important decisions, and repository-owned proof.</p>
+      <div class="evidence"><span>file · Evidence-wall host</span><span>file · Report visual system</span></div>
+    </article>
+    <article class="receipt">
+      <span class="receipt-type">artifact</span>
+      <h3>Agent end-session receipt contract</h3>
+      <p>You now have — A small source-bound JSON protocol for Outcome, Changes, Decisions, Problems, Artifacts, and Remaining work. Agent-supplied proof is rejected.</p>
+      <div class="evidence"><span>file · Agent work-brief contract</span><span>test · Protocol and proof-separation tests</span></div>
+    </article>
+    <article class="receipt">
+      <span class="receipt-type">artifact</span>
+      <h3>Real Codex session reporting pipeline</h3>
+      <p>You now have — A command that imports a selected Codex JSONL session, binds structured claims to it, derives repository evidence, runs the acceptance gate, and publishes one accepted revision.</p>
+      <div class="evidence"><span>file · Report CLI composition root</span><span>file · Codex source adapter</span></div>
+    </article>
+    <article class="receipt">
+      <span class="receipt-type">artifact</span>
+      <h3>Independent immutable HTML report</h3>
+      <p>You now have — A shareable no-React rendering of the exact accepted public projection, with a deterministic byte digest and historical v1 pages left untouched.</p>
+      <div class="evidence"><span>file · Standalone renderer</span><span>file · Publication verifier</span></div>
+    </article>
+    <article class="receipt">
+      <span class="receipt-type">artifact</span>
+      <h3>Visual operating handover</h3>
+      <p>You now have — One HTML handover that shows the delivered pipeline, protocol boundary, exact report identities, verified desktop/mobile views, operating commands, assumptions, and deliberately unbuilt scope.</p>
+      <div class="evidence"><a href="../../../docs/visual-reporting/Novakai-Visual-Reporting-Handover.html">artifact · Open the visual handover</a></div>
+    </article></div></section>
+  <section><h2>What proves it?</h2><div class="cards">
+    <article class="receipt">
+      <span class="receipt-type">proof</span>
+      <h3>Repository acceptance suite passed</h3>
+      <p>The local npm run check command executed and exited with code 0.</p>
+      <div class="evidence"><span>test · npm run check</span><span>commit · Repository receipt set sha256:4229d225ba4b95c8767cf8ca845c1f83643dfd1b15a9c2b1fcb770f4f7fdec04</span></div>
+    </article></div></section>
+  <section><h2>Which decisions matter?</h2><div class="cards">
+    <article class="receipt">
+      <span class="receipt-type">decision</span>
+      <h3>Problem resolved — A report generated from dirty or ambiguous repository state could make a true test result appear to prove different code.</h3>
+      <p>Problem — A report generated from dirty or ambiguous repository state could make a true test result appear to prove different code. Resolution — Final generation requires a named clean evidence commit, records its tree, rejects changed source after that commit, and writes only publication artifacts afterward.</p>
+      <div class="evidence"><span>file · Evidence-head gate</span><span>test · Evidence-head regression tests</span></div>
+    </article>
+    <article class="receipt">
+      <span class="receipt-type">decision</span>
+      <h3>Problem resolved — Live Codex sessions contained current runtime record shapes that the original parser did not classify.</h3>
+      <p>Problem — Live Codex sessions contained current runtime record shapes that the original parser did not classify. Resolution — The source adapter was expanded with an explicit current-format contract and tests; genuinely unsupported content still fails closed instead of being silently ignored.</p>
+      <div class="evidence"><span>test · Current Codex format regression suite</span></div>
+    </article>
+    <article class="receipt">
+      <span class="receipt-type">decision</span>
+      <h3>Promote the Evidence Wall and delete the comparison variants</h3>
+      <p>Variant C made delivered artifacts and proof primary. A, B, the switcher, prototype route, keyboard cycling, and losing tests were deleted instead of retained as permanent prototype debris.</p>
+      <div class="evidence"><span>file · Stable Evidence Wall</span><span>test · Stable-route deletion gate</span></div>
+    </article>
+    <article class="receipt">
+      <span class="receipt-type">decision</span>
+      <h3>Treat reporting as one Canvas mode, not the Canvas redesign</h3>
+      <p>This POC proves a Work Session Report capability inside the existing application. It does not propose global navigation, a new architecture editor, or the final visual language for every future Canvas mode.</p>
+      <div class="evidence"><span>file · Report-route composition</span><a href="../../../docs/visual-reporting/Novakai-Visual-Reporting-Handover.html">artifact · Roadmap boundary</a></div>
+    </article>
+    <article class="receipt">
+      <span class="receipt-type">decision</span>
+      <h3>Problem resolved — The first real report was technically true but too generic to replace reading the session transcript.</h3>
+      <p>Problem — The first real report was technically true but too generic to replace reading the session transcript. Resolution — A versioned evidence-led projection now publishes the agent-authored change story and artifacts while retaining repository receipts and executed proof as separate authority.</p>
+      <div class="evidence"><span>file · Versioned renderer profile</span><span>file · Public projection adapter</span></div>
+    </article>
+    <article class="receipt">
+      <span class="receipt-type">decision</span>
+      <h3>Stop at the usefulness gate before building a reporting platform</h3>
+      <p>The next decision is whether reports from three different real sessions remove the need to read transcripts. Navigation, report libraries, live streaming, generic composition, and a second visual product remain deliberately unbuilt.</p>
+      <div class="evidence"><a href="../../../docs/visual-reporting/Novakai-Visual-Reporting-Handover.html">artifact · POC boundary and roadmap</a></div>
+    </article>
+    <article class="receipt">
+      <span class="receipt-type">decision</span>
+      <h3>Keep agent claims separate from acceptance proof</h3>
+      <p>The brief may explain work but cannot author proof. Final generation executes npm run check inside the repository, binds its output to the evidence receipts, and refuses completion when proof fails.</p>
+      <div class="evidence"><span>file · Brief schema excludes proof</span><span>file · Executed proof composition</span></div>
+    </article></div></section>
+  <section><h2>What remains?</h2><div class="next">
+    <div><strong>Use this exact reporting workflow on three genuine sessions before building navigation, a report library, or another visual type</strong> · queued</div>
+  </div></section>
+  <footer>reportRevisionId=report:6bddf213b159419f7175dcf9c3f8bc4aea43d72f915d0c7b813e785409ff885a · sourceDigest=sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c · renderer=standalone-html-v1</footer>
+</main>
+</body>
+</html>
