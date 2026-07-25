@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 2,
+  "source": {
+    "provider": "claude",
+    "nativeSessionId": "197515eb-e825-45be-b485-6bfcd8398966",
+    "expectedSourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d"
+  },
+  "outcome": {
+    "status": "complete",
+    "headline": "Claude turned live mission state into three explorable Canvas maps.",
+    "summary": "The session added semantic wire styles, a selectable tree node, an in-canvas legend, persisted themes, and a read-only translator from Novakai mission stores. Claude then drove the running app, corrected a dropped-wire regression, assembled visual evidence, and opened PR #2 after independent manager verification."
+  },
+  "changes": [
+    {
+      "title": "Give every wire kind one visible meaning",
+      "module": {
+        "id": "canvas.wire-semantics",
+        "label": "Canvas wire semantics",
+        "role": "module"
+      },
+      "relatedModules": [
+        {
+          "id": "canvas.edge-renderer",
+          "label": "Canvas edge renderer",
+          "role": "projection"
+        },
+        {
+          "id": "canvas.snapshot",
+          "label": "SVG snapshot adapter",
+          "role": "adapter"
+        }
+      ],
+      "files": [
+        "src/domain/model.ts",
+        "src/domain/schema.ts",
+        "src/presentation/wire-styles.ts",
+        "src/presentation/edges/elbow-edge.tsx",
+        "tools/canvas-cli/snapshot.ts"
+      ],
+      "why": "The approved mission diagrams needed distinct link meanings without duplicating colour and dash rules across renderers.",
+      "before": "All wires inherited one global width and the available verbs could not honestly express mentions or missing links.",
+      "after": "Seven wire kinds derive their dash and colour from one presentation-owned style map shared by Canvas, the legend, and SVG snapshots.",
+      "occurredAt": "2026-07-22T04:10:18.128Z",
+      "evidence": [],
+      "tags": [
+        "wire-semantics",
+        "single-style-authority"
+      ]
+    },
+    {
+      "title": "Add a selectable semantic tree node",
+      "module": {
+        "id": "canvas.tree-node",
+        "label": "Canvas tree node",
+        "role": "module"
+      },
+      "relatedModules": [
+        {
+          "id": "canvas.inspector",
+          "label": "Canvas inspector",
+          "role": "projection"
+        }
+      ],
+      "files": [
+        "src/domain/tree.ts",
+        "src/domain/layout.ts",
+        "src/presentation/nodes/tree-node.tsx",
+        "src/presentation/components/inspect-panel.tsx"
+      ],
+      "why": "Repository and mission hierarchies needed to remain compact without violating the rule that meaningful objects stay selectable.",
+      "before": "The first plan flattened tree rows into presentation text with no stable identity or inspection path.",
+      "after": "Rows carry semantic identity and clicking a row selects its underlying block in the inspector.",
+      "occurredAt": "2026-07-22T04:14:31.360Z",
+      "evidence": [],
+      "tags": [
+        "tree",
+        "selectable"
+      ]
+    },
+    {
+      "title": "Translate real mission stores into Canvas maps",
+      "module": {
+        "id": "adapter.mission-view",
+        "label": "Mission-store translator",
+        "role": "adapter"
+      },
+      "relatedModules": [
+        {
+          "id": "canvas.cli",
+          "label": "Canvas CLI",
+          "role": "interface"
+        }
+      ],
+      "files": [
+        "tools/mission-view/stores-to-dsl.ts",
+        "tools/mission-view/stores-to-dsl.test.ts",
+        "tools/mission-view/translate.ts",
+        "tools/canvas-cli/mission-vocabulary.test.ts"
+      ],
+      "why": "The diagrams needed to show current Novakai missions, agents, and messages from their real stores rather than a hand-authored mock.",
+      "before": "Canvas could author maps but had no read-only path from production-shaped mission data.",
+      "after": "One translator reads both supported store shapes, applies a ruled relevance algorithm, and sends three generated scopes through the existing Canvas CLI.",
+      "occurredAt": "2026-07-22T04:21:38.467Z",
+      "evidence": [],
+      "tags": [
+        "live-data",
+        "translator"
+      ]
+    },
+    {
+      "title": "Add an honest legend and persisted themes",
+      "module": {
+        "id": "canvas.presentation-preferences",
+        "label": "Canvas presentation preferences",
+        "role": "module"
+      },
+      "relatedModules": [
+        {
+          "id": "canvas.legend",
+          "label": "Canvas legend",
+          "role": "projection"
+        }
+      ],
+      "files": [
+        "src/presentation/components/legend.tsx",
+        "src/presentation/components/preferences-panel.tsx",
+        "src/styles/base.css",
+        "src/styles/canvas.css",
+        "public/data/canvas-preferences.json"
+      ],
+      "why": "Readers needed to decode only the wire kinds present on the active map and keep their chosen presentation after reload.",
+      "before": "No in-canvas legend existed and the mission view had no verified light-theme persistence path.",
+      "after": "The active map derives its legend from used wire kinds, while dark and light theme preferences persist through reload.",
+      "occurredAt": "2026-07-22T04:29:30.353Z",
+      "evidence": [],
+      "tags": [
+        "legend",
+        "theme"
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "title": "Keep meaning in the domain and appearance in presentation",
+      "rationale": "Wire kinds are domain meaning. Their colours and dash patterns live in one presentation map, so the domain does not absorb visual policy and every renderer uses the same visible vocabulary.",
+      "occurredAt": "2026-07-22T04:05:13.029Z",
+      "evidence": [],
+      "tags": [
+        "dependency-direction",
+        "audit-ruling"
+      ]
+    },
+    {
+      "title": "Make tree rows selectable instead of decorative",
+      "rationale": "The audit correctly rejected pre-rendered tree rows because they hid identity. The amended design preserves row IDs, block kind, status, parent relationship, and badges for inspection.",
+      "occurredAt": "2026-07-22T04:05:13.029Z",
+      "evidence": [],
+      "tags": [
+        "selection",
+        "audit-ruling"
+      ]
+    }
+  ],
+  "problems": [
+    {
+      "problem": "Re-applying the right-now map dropped wires even though the nodes remained.",
+      "resolution": "Claude stopped during visual verification, corrected the translator output, and re-ran the statement comparison until all three generated scopes were stable.",
+      "occurredAt": "2026-07-22T04:32:20.232Z",
+      "evidence": [],
+      "tags": [
+        "translator",
+        "resolved"
+      ]
+    },
+    {
+      "problem": "The first plan assumed the live agent registry was a dictionary and would have silently omitted relevant mail edges.",
+      "resolution": "After audit, the translator normalized both observed array and dictionary shapes and used an explicit relevance rule for running and connected exited agents.",
+      "occurredAt": "2026-07-22T04:05:13.029Z",
+      "evidence": [],
+      "tags": [
+        "source-shape",
+        "resolved"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "title": "Three live mission-view maps",
+      "whatYouHaveNow": "Object model, data tree, and right-now mission maps generated from real stores and opened through the existing Canvas application.",
+      "occurredAt": "2026-07-22T04:28:37.825Z",
+      "evidence": [],
+      "tags": [
+        "canvas",
+        "live-maps"
+      ]
+    },
+    {
+      "title": "Verified mission-view implementation",
+      "whatYouHaveNow": "Commit 8681eee with 28 changed files, eight live screenshots, a clean test suite, and independent manager verification before PR #2 was opened.",
+      "occurredAt": "2026-07-22T04:50:21.338Z",
+      "evidence": [
+        {
+          "kind": "commit",
+          "label": "Claude mission-view commit 8681eee",
+          "uri": "git:8681eeec18981907612810686b7eea5ade8dcdaa"
+        },
+        {
+          "kind": "url",
+          "label": "Pull request #2",
+          "uri": "https://github.com/novakai-one/novakai-canvas/pull/2"
+        }
+      ],
+      "tags": [
+        "verified",
+        "pull-request"
+      ]
+    }
+  ],
+  "remainingWork": [
+    {
+      "id": "merge-pr-2",
+      "label": "At session end, PR #2 awaited Chris's merge decision",
+      "status": "queued",
+      "dependsOn": []
+    }
+  ],
+  "renderingProfile": "evidence-led-v2"
+}

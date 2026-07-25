@@ -1,287 +1,223 @@
 {
   "schemaVersion": 1,
   "kind": "accepted-report-publication",
-  "publicationDigest": "sha256:0d12b0d68fbfe6a596dcde0bb41d0dd28c2526762fb54cb835170df3d05a7e6a",
-  "publishedAt": "2026-07-25T01:52:34.784Z",
-  "reportRevisionId": "report:6bddf213b159419f7175dcf9c3f8bc4aea43d72f915d0c7b813e785409ff885a",
-  "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+  "publicationDigest": "sha256:1499e4c86586f0eef4045556bb87ee110a09432642696ded5a89dcc2cfd8c3e8",
+  "publishedAt": "2026-07-25T04:55:02.359Z",
+  "reportRevisionId": "report:353b0f075854566d5aa6b9e18748526fb8d089d3f752d54ab4da0dc0b4fe50cb",
+  "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
   "receiptIds": [
-    "receipt:32605a95de94b88e58977cc78b3cabd460a6755db6a8138ef0e81c878f2a003a",
-    "receipt:39451da3dbe980963d6a04f5ad50d5089e7803ad6ee42c7875e76247bcd28870",
-    "receipt:3cd7a4c4fb4a9741a205528cd287c2268654cd1cb60a999c3801786dbba053c4",
-    "receipt:558f9f0beaa621140914c77594b7caa5ee421027899acdcf53c788af13392422",
-    "receipt:575e2f745efbf632fb42bfe9d94dcacb15bb06d7fc9619e1220f966e7ea5813d",
-    "receipt:637837bed36386ed39759db72ed0579445f603b906545c86d39fd3b59a5ad353",
-    "receipt:72d5e01d5a671b1d250787a253b6388b1a530fc959e1bf6b3c94fc156a5c0868",
-    "receipt:7882876fd51f04fcec74b6256c44f8a546f7d34f597fa0ac7db26f268744a59d",
-    "receipt:7938aa5bab3a3ea59da8e23e960dd0b1acab2d7edcfcb0c3feac29a3fe002d01",
-    "receipt:9ef05911f9f9bc298491ac26fb75e17174171954a36d71d8bfce0ed16e80bcc1",
-    "receipt:9f4954d36fa9c121b4646e3438cfecff0d0c56623660891183b03c459b5d9705",
-    "receipt:a22b30acdc601e75296d2a68c04123d4e0555879909dcf7c78341e42cca0e5c6",
-    "receipt:a7e785285c1d1dd1eb89754ee1499c15f4f48b2d58af033548c43d400bfc3580",
-    "receipt:abfd343eeeb3cf45381a2092008c29b9804bbf1f6efb14abcdecbad3c384941e",
-    "receipt:b7c4ed21d93c4aee969277e61b1c48d58437e65af9db70b786b6d8bd1258481e",
-    "receipt:c82ab601028b78d02eb797d75391fcf2d7512aac65cfff64fd6babfaf41725af",
-    "receipt:e5a913d7132b0eb28ed106a94961bbd78c48ed77bc1e1100cc3a0732d50ee5d5",
-    "receipt:ed12b2338a76f8e2648de4c7e2015cc8664e1e50f2bad501c7f0e1033d9ea922",
-    "receipt:f182e38c820ebe3debd82a94dc32d47908572ab5bc58af8f4b4227fef09d12d7",
-    "receipt:f6337533770a64de1874d896325da3b510e9010ce0eaf3d635378e3c70fe82b4",
-    "receipt:f9a93dc4be9c2006b5810a268687c0fab4bd4e8c3e1c1de7faff6c75726f285b"
+    "receipt:07de693d0fff31664de40153c64d3bd0d65b016667123a98ac0e5a421560bd5c",
+    "receipt:37fd7de1e91db7c2f60681c34243d92d9bda659fc2a5d9a3edce4d854a416512",
+    "receipt:40e200953e2f3d05058800bb67adee686cd5efbf6884a74c68c93c8cc830fd1f",
+    "receipt:6bbdfcb3d1b5a39fe6735e7c243050948ddc65d98616387aa3f4a663a90f1225",
+    "receipt:817e33cffb4bfd7d9df820a9fd8d0d513f36f84b8115b2130b4335dc346aa8b5",
+    "receipt:86357e1059348510aa49a2783ea3d5e8798e42cef1f14d68471d2406e2d05362",
+    "receipt:8c4416d14bd796875ca5063bd25b3f648615ad0f3955247d2295bc5252a1c341",
+    "receipt:99b2238675ec760db6e61bb4887e6bea35a08e019f4943054bba90574ae0a2f3",
+    "receipt:ade5721d2b22cecbff1c058a145857a8ce0faae537697843b0913f29edb72bd4",
+    "receipt:b7a92cf569b062c17fdb3598abc80a48ea912a887a580bdf85e16ef850037e2f",
+    "receipt:d52095824e16f16942e93d2d4f62490a17fea20cff09553eab727db7842946c3",
+    "receipt:ecaf1214b83012ee9867b1f4e4d7692896fbf23f0ccde12fad1b047f69e68f30"
   ],
   "receiptClaims": [
     {
-      "id": "receipt:32605a95de94b88e58977cc78b3cabd460a6755db6a8138ef0e81c878f2a003a",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-      "type": "change"
+      "id": "receipt:07de693d0fff31664de40153c64d3bd0d65b016667123a98ac0e5a421560bd5c",
+      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+      "type": "decision"
     },
     {
-      "id": "receipt:39451da3dbe980963d6a04f5ad50d5089e7803ad6ee42c7875e76247bcd28870",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-      "type": "change"
-    },
-    {
-      "id": "receipt:3cd7a4c4fb4a9741a205528cd287c2268654cd1cb60a999c3801786dbba053c4",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+      "id": "receipt:37fd7de1e91db7c2f60681c34243d92d9bda659fc2a5d9a3edce4d854a416512",
+      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
       "type": "artifact"
     },
     {
-      "id": "receipt:558f9f0beaa621140914c77594b7caa5ee421027899acdcf53c788af13392422",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-      "type": "artifact"
-    },
-    {
-      "id": "receipt:575e2f745efbf632fb42bfe9d94dcacb15bb06d7fc9619e1220f966e7ea5813d",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-      "type": "artifact"
-    },
-    {
-      "id": "receipt:637837bed36386ed39759db72ed0579445f603b906545c86d39fd3b59a5ad353",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-      "type": "change"
-    },
-    {
-      "id": "receipt:72d5e01d5a671b1d250787a253b6388b1a530fc959e1bf6b3c94fc156a5c0868",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-      "type": "change"
-    },
-    {
-      "id": "receipt:7882876fd51f04fcec74b6256c44f8a546f7d34f597fa0ac7db26f268744a59d",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+      "id": "receipt:40e200953e2f3d05058800bb67adee686cd5efbf6884a74c68c93c8cc830fd1f",
+      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
       "type": "decision"
     },
     {
-      "id": "receipt:7938aa5bab3a3ea59da8e23e960dd0b1acab2d7edcfcb0c3feac29a3fe002d01",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-      "type": "change"
-    },
-    {
-      "id": "receipt:9ef05911f9f9bc298491ac26fb75e17174171954a36d71d8bfce0ed16e80bcc1",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-      "type": "change"
-    },
-    {
-      "id": "receipt:9f4954d36fa9c121b4646e3438cfecff0d0c56623660891183b03c459b5d9705",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-      "type": "decision"
-    },
-    {
-      "id": "receipt:a22b30acdc601e75296d2a68c04123d4e0555879909dcf7c78341e42cca0e5c6",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-      "type": "decision"
-    },
-    {
-      "id": "receipt:a7e785285c1d1dd1eb89754ee1499c15f4f48b2d58af033548c43d400bfc3580",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-      "type": "decision"
-    },
-    {
-      "id": "receipt:abfd343eeeb3cf45381a2092008c29b9804bbf1f6efb14abcdecbad3c384941e",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+      "id": "receipt:6bbdfcb3d1b5a39fe6735e7c243050948ddc65d98616387aa3f4a663a90f1225",
+      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
       "type": "proof",
       "proof": {
         "command": "npm run check",
         "exitCode": 0,
-        "executedAt": "2026-07-25T01:52:12.298Z",
-        "outputDigest": "sha256:f3ed9a056e97321d23a374efb631b9ca2ed64424d7cbb79c8bfd2aef422c6177"
+        "executedAt": "2026-07-25T04:54:48.019Z",
+        "outputDigest": "sha256:859de5b9ae31cdcab2011ec21fc5e9000139de8cc6343542ca66847d0ed428bf"
       }
     },
     {
-      "id": "receipt:b7c4ed21d93c4aee969277e61b1c48d58437e65af9db70b786b6d8bd1258481e",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-      "type": "decision"
-    },
-    {
-      "id": "receipt:c82ab601028b78d02eb797d75391fcf2d7512aac65cfff64fd6babfaf41725af",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-      "type": "decision"
-    },
-    {
-      "id": "receipt:e5a913d7132b0eb28ed106a94961bbd78c48ed77bc1e1100cc3a0732d50ee5d5",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-      "type": "decision"
-    },
-    {
-      "id": "receipt:ed12b2338a76f8e2648de4c7e2015cc8664e1e50f2bad501c7f0e1033d9ea922",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-      "type": "artifact"
-    },
-    {
-      "id": "receipt:f182e38c820ebe3debd82a94dc32d47908572ab5bc58af8f4b4227fef09d12d7",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+      "id": "receipt:817e33cffb4bfd7d9df820a9fd8d0d513f36f84b8115b2130b4335dc346aa8b5",
+      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
       "type": "change"
     },
     {
-      "id": "receipt:f6337533770a64de1874d896325da3b510e9010ce0eaf3d635378e3c70fe82b4",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+      "id": "receipt:86357e1059348510aa49a2783ea3d5e8798e42cef1f14d68471d2406e2d05362",
+      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+      "type": "decision"
+    },
+    {
+      "id": "receipt:8c4416d14bd796875ca5063bd25b3f648615ad0f3955247d2295bc5252a1c341",
+      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
       "type": "artifact"
     },
     {
-      "id": "receipt:f9a93dc4be9c2006b5810a268687c0fab4bd4e8c3e1c1de7faff6c75726f285b",
-      "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+      "id": "receipt:99b2238675ec760db6e61bb4887e6bea35a08e019f4943054bba90574ae0a2f3",
+      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+      "type": "change"
+    },
+    {
+      "id": "receipt:ade5721d2b22cecbff1c058a145857a8ce0faae537697843b0913f29edb72bd4",
+      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+      "type": "decision"
+    },
+    {
+      "id": "receipt:b7a92cf569b062c17fdb3598abc80a48ea912a887a580bdf85e16ef850037e2f",
+      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+      "type": "change"
+    },
+    {
+      "id": "receipt:d52095824e16f16942e93d2d4f62490a17fea20cff09553eab727db7842946c3",
+      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+      "type": "artifact"
+    },
+    {
+      "id": "receipt:ecaf1214b83012ee9867b1f4e4d7692896fbf23f0ccde12fad1b047f69e68f30",
+      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
       "type": "change"
     }
   ],
-  "receiptsDigest": "sha256:791c4891d3b3e2f68d48fb1bfcc31b8f1392bae1245ba1c310e5740636fe560d",
-  "authoritativeProjectionDigest": "sha256:b89ff32482cc003a90c2a5a88a2dd070b0059c7a014ce1237b6cd423b5df6161",
-  "publicProjectionDigest": "sha256:4eeebc3efc9ec05dc5a519ed718ddeced4a51b7c04db68529e9566a15e40fbb2",
-  "acceptedAt": "2026-07-25T01:52:34.784Z",
+  "receiptsDigest": "sha256:45e37f5493f7ffa2c2d3dea0bf62470d86b4b24d7d7bdf05975cd6257b7fda46",
+  "authoritativeProjectionDigest": "sha256:9a21d3ae69ca7c0aad5dd1cf6bb5f13bf9d8f297228783458da76e880a9465a4",
+  "publicProjectionDigest": "sha256:31f6ca0f5ee78c2313fd3fd198a70325bd21c4c18062778489b0106b1c551f0f",
+  "acceptedAt": "2026-07-25T04:55:02.359Z",
   "evidenceHead": {
-    "commit": "e4c43963a9922b84f6db9ce440f62e3b6cdff148",
-    "tree": "a2f32744e8ce15e70603e1f40172ea4f8028ba5d"
+    "commit": "8681eeec18981907612810686b7eea5ade8dcdaa",
+    "tree": "04ec773f57f2e10a932dd989de16c4997be2933c"
   },
   "html": {
-    "path": "docs/visual-reporting/reports/report-6bddf213b159419f7175dcf9c3f8bc4aea43d72f915d0c7b813e785409ff885a.html",
-    "digest": "sha256:e85e1872fd17aa81da2a9ec601b2e000fc2db97415e2dc6bb9e3cdaae2575b7e"
+    "path": "docs/visual-reporting/reports/report-353b0f075854566d5aa6b9e18748526fb8d089d3f752d54ab4da0dc0b4fe50cb.html",
+    "digest": "sha256:856ebc6abc051896c91a6f64bdc5e731f04d1259871a08f9926984b476dfc26f"
   },
   "projection": {
     "schemaVersion": 1,
-    "reportRevisionId": "report:6bddf213b159419f7175dcf9c3f8bc4aea43d72f915d0c7b813e785409ff885a",
-    "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-    "receiptsDigest": "sha256:791c4891d3b3e2f68d48fb1bfcc31b8f1392bae1245ba1c310e5740636fe560d",
+    "reportRevisionId": "report:353b0f075854566d5aa6b9e18748526fb8d089d3f752d54ab4da0dc0b4fe50cb",
+    "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+    "receiptsDigest": "sha256:45e37f5493f7ffa2c2d3dea0bf62470d86b4b24d7d7bdf05975cd6257b7fda46",
     "renderingProfile": "evidence-led-v2",
-    "title": "Novakai Canvas now explains agent work with evidence, not transcript prose.",
+    "title": "Claude turned live mission state into three explorable Canvas maps.",
     "source": {
-      "provider": "codex",
-      "startedAt": "2026-07-24T11:01:06.205Z",
-      "updatedAt": "2026-07-25T01:52:10.507Z",
-      "eventCount": 156,
+      "provider": "claude",
+      "startedAt": "2026-07-22T03:28:02.180Z",
+      "updatedAt": "2026-07-22T04:50:21.338Z",
+      "eventCount": 41,
       "complete": true,
       "warningCount": 0
     },
     "outcome": {
       "status": "complete",
-      "headline": "Novakai Canvas now explains agent work with evidence, not transcript prose.",
-      "summary": "A real Codex session now compiles into a visual before-to-after work report. It names the files and modules changed, records decisions and resolved problems, links delivered artifacts, and keeps repository-executed proof separate from agent claims."
+      "headline": "Claude turned live mission state into three explorable Canvas maps.",
+      "summary": "The session added semantic wire styles, a selectable tree node, an in-canvas legend, persisted themes, and a read-only translator from Novakai mission stores. Claude then drove the running app, corrected a dropped-wire regression, assembled visual evidence, and opened PR #2 after independent manager verification."
     },
     "stats": {
-      "changes": 8,
-      "decisions": 7,
+      "changes": 4,
+      "decisions": 4,
       "proofs": 1,
       "blockers": 0,
-      "artifacts": 5
+      "artifacts": 3
     },
     "changeMap": {
       "nodes": [
         {
-          "id": "adapter.agent-brief",
-          "label": "Agent work-brief adapter",
-          "role": "adapter",
-          "receiptCount": 1
-        },
-        {
-          "id": "projection.report",
-          "label": "Canvas work-session report",
-          "role": "projection",
-          "receiptCount": 1
-        },
-        {
-          "id": "adapter.codex",
-          "label": "Codex session adapter",
-          "role": "adapter",
-          "receiptCount": 2
-        },
-        {
-          "id": "reporting.core",
-          "label": "Reporting core",
-          "role": "module",
-          "receiptCount": 2
-        },
-        {
-          "id": "reporting.contract",
-          "label": "Reporting public contract",
+          "id": "canvas.cli",
+          "label": "Canvas CLI",
           "role": "interface",
+          "receiptCount": 0
+        },
+        {
+          "id": "canvas.edge-renderer",
+          "label": "Canvas edge renderer",
+          "role": "projection",
+          "receiptCount": 0
+        },
+        {
+          "id": "canvas.inspector",
+          "label": "Canvas inspector",
+          "role": "projection",
+          "receiptCount": 0
+        },
+        {
+          "id": "canvas.legend",
+          "label": "Canvas legend",
+          "role": "projection",
+          "receiptCount": 0
+        },
+        {
+          "id": "canvas.presentation-preferences",
+          "label": "Canvas presentation preferences",
+          "role": "module",
           "receiptCount": 1
         },
         {
-          "id": "adapter.standalone-html",
-          "label": "Standalone report renderer",
+          "id": "canvas.tree-node",
+          "label": "Canvas tree node",
+          "role": "module",
+          "receiptCount": 1
+        },
+        {
+          "id": "canvas.wire-semantics",
+          "label": "Canvas wire semantics",
+          "role": "module",
+          "receiptCount": 1
+        },
+        {
+          "id": "adapter.mission-view",
+          "label": "Mission-store translator",
           "role": "adapter",
           "receiptCount": 1
+        },
+        {
+          "id": "canvas.snapshot",
+          "label": "SVG snapshot adapter",
+          "role": "adapter",
+          "receiptCount": 0
         }
       ],
       "edges": [
         {
-          "id": "edge:0507c3d1d20249a662b13907004ae90362d881079c10d5620d8d2f1909fd009f",
-          "source": "adapter.agent-brief",
-          "target": "reporting.contract",
-          "label": "Give agents a source-bound end-session receipt",
+          "id": "edge:075012664b815c33364db1ba8162a6e5366e0a84e0d32108e54305ea6b919d9a",
+          "source": "canvas.presentation-preferences",
+          "target": "canvas.legend",
+          "label": "Add an honest legend and persisted themes",
+          "kind": "changes"
+        },
+        {
+          "id": "edge:54f1ccf567926659224b580a481f58972288f983c3693b88e548e15f0a977b8e",
+          "source": "adapter.mission-view",
+          "target": "canvas.cli",
+          "label": "Translate real mission stores into Canvas maps",
           "kind": "calls"
         },
         {
-          "id": "edge:4182281d55ec0b8505b191379271cd67a79b2074ca407da8488bd0f740bdc325",
-          "source": "reporting.contract",
-          "target": "reporting.core",
-          "label": "Build Reporting public contract",
+          "id": "edge:7f5ff98f2f487dd0373584b5a57612e85e203f750421cf76d41708918f51fd1d",
+          "source": "canvas.tree-node",
+          "target": "canvas.inspector",
+          "label": "Add a selectable semantic tree node",
           "kind": "changes"
         },
         {
-          "id": "edge:458150a23e291031f8037d865c0b064bd5a40c37d1c3c94c0139cb63da48de72",
-          "source": "reporting.core",
-          "target": "reporting.contract",
-          "label": "Turn work-session reporting into a host-neutral capability",
+          "id": "edge:99e5f1b2e50884e065b9aa654dd9d285c99a6c10de10c16a671cdc4213ac4e47",
+          "source": "canvas.wire-semantics",
+          "target": "canvas.snapshot",
+          "label": "Give every wire kind one visible meaning",
           "kind": "changes"
         },
         {
-          "id": "edge:84f0f23d961c20ce62c70c4231178237bd20ad93626fb43d7b37ba344875ea59",
-          "source": "adapter.standalone-html",
-          "target": "projection.report",
-          "label": "Render the same accepted revision as immutable standalone HTML",
-          "kind": "calls"
-        },
-        {
-          "id": "edge:b31e5877fb77554e39e0c32c17b83068c6049e6a9de22bf81aa008b9d4689ddb",
-          "source": "reporting.core",
-          "target": "reporting.contract",
-          "label": "Build Reporting core",
+          "id": "edge:ef7beb4a0e89234971ae1c9125e9ecde108f6a4cc5e959d71e8cfcfafe9a5600",
+          "source": "canvas.wire-semantics",
+          "target": "canvas.edge-renderer",
+          "label": "Give every wire kind one visible meaning",
           "kind": "changes"
-        },
-        {
-          "id": "edge:b476b999fbfca38eea79c37afca18c4b327da515273e5eb3a818a9f637ce5f42",
-          "source": "reporting.core",
-          "target": "projection.report",
-          "label": "Turn work-session reporting into a host-neutral capability",
-          "kind": "changes"
-        },
-        {
-          "id": "edge:bc85b0da72b5afb244e44e8e2e0397d417a235ba201d2ce1c3621bdaf318e34a",
-          "source": "reporting.core",
-          "target": "projection.report",
-          "label": "Build Reporting core",
-          "kind": "changes"
-        },
-        {
-          "id": "edge:f6cf25fc83c7ae8423bb8479e568d4460a915462b2c76f35c740934b3ea3270a",
-          "source": "adapter.codex",
-          "target": "reporting.contract",
-          "label": "Import the actual Codex session through one strict adapter",
-          "kind": "calls"
-        },
-        {
-          "id": "edge:fb089a26d44d83083139c589083a9c5071d1a483fe70bf3dbe3519a3e7ee32e7",
-          "source": "adapter.codex",
-          "target": "reporting.contract",
-          "label": "Build Codex session adapter",
-          "kind": "calls"
         }
       ]
     },
@@ -295,7 +231,7 @@
       {
         "id": "capture-receipts",
         "label": "Capture structured receipts",
-        "detail": "21 change, decision, proof, blocker, and artifact receipts recorded.",
+        "detail": "12 change, decision, proof, blocker, and artifact receipts recorded.",
         "status": "done"
       },
       {
@@ -313,16 +249,16 @@
     ],
     "nextActions": [
       {
-        "id": "validate-three-genuine-sessions",
-        "label": "Use this exact reporting workflow on three genuine sessions before building navigation, a report library, or another visual type",
+        "id": "merge-pr-2",
+        "label": "At session end, PR #2 awaited Chris's merge decision",
         "status": "queued",
         "dependsOn": []
       }
     ],
     "proofs": [
       {
-        "id": "receipt:abfd343eeeb3cf45381a2092008c29b9804bbf1f6efb14abcdecbad3c384941e",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+        "id": "receipt:6bbdfcb3d1b5a39fe6735e7c243050948ddc65d98616387aa3f4a663a90f1225",
+        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
         "type": "proof",
         "title": "Repository acceptance suite passed",
         "summary": "The local npm run check command executed and exited with code 0.",
@@ -333,510 +269,406 @@
           },
           {
             "kind": "commit",
-            "label": "Repository receipt set sha256:4229d225ba4b95c8767cf8ca845c1f83643dfd1b15a9c2b1fcb770f4f7fdec04"
+            "label": "Repository receipt set sha256:fae514108a4de827ece8b1b354d90940c84746c119f811b0d638e8d5dd7fc434"
           }
         ],
         "proof": {
           "command": "npm run check",
           "exitCode": 0,
-          "executedAt": "2026-07-25T01:52:12.298Z",
-          "outputDigest": "sha256:f3ed9a056e97321d23a374efb631b9ca2ed64424d7cbb79c8bfd2aef422c6177"
+          "executedAt": "2026-07-25T04:54:48.019Z",
+          "outputDigest": "sha256:859de5b9ae31cdcab2011ec21fc5e9000139de8cc6343542ca66847d0ed428bf"
         }
       }
     ],
     "decisions": [
       {
-        "id": "receipt:7882876fd51f04fcec74b6256c44f8a546f7d34f597fa0ac7db26f268744a59d",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+        "id": "receipt:07de693d0fff31664de40153c64d3bd0d65b016667123a98ac0e5a421560bd5c",
+        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
         "type": "decision",
-        "title": "Problem resolved — A report generated from dirty or ambiguous repository state could make a true test result appear to prove different code.",
-        "summary": "Problem — A report generated from dirty or ambiguous repository state could make a true test result appear to prove different code. Resolution — Final generation requires a named clean evidence commit, records its tree, rejects changed source after that commit, and writes only publication artifacts afterward.",
-        "evidence": [
-          {
-            "kind": "file",
-            "label": "Evidence-head gate"
-          },
-          {
-            "kind": "test",
-            "label": "Evidence-head regression tests"
-          }
-        ]
+        "title": "Make tree rows selectable instead of decorative",
+        "summary": "The audit correctly rejected pre-rendered tree rows because they hid identity. The amended design preserves row IDs, block kind, status, parent relationship, and badges for inspection.",
+        "evidence": []
       },
       {
-        "id": "receipt:9f4954d36fa9c121b4646e3438cfecff0d0c56623660891183b03c459b5d9705",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+        "id": "receipt:40e200953e2f3d05058800bb67adee686cd5efbf6884a74c68c93c8cc830fd1f",
+        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
         "type": "decision",
-        "title": "Problem resolved — Live Codex sessions contained current runtime record shapes that the original parser did not classify.",
-        "summary": "Problem — Live Codex sessions contained current runtime record shapes that the original parser did not classify. Resolution — The source adapter was expanded with an explicit current-format contract and tests; genuinely unsupported content still fails closed instead of being silently ignored.",
-        "evidence": [
-          {
-            "kind": "test",
-            "label": "Current Codex format regression suite"
-          }
-        ]
+        "title": "Keep meaning in the domain and appearance in presentation",
+        "summary": "Wire kinds are domain meaning. Their colours and dash patterns live in one presentation map, so the domain does not absorb visual policy and every renderer uses the same visible vocabulary.",
+        "evidence": []
       },
       {
-        "id": "receipt:a22b30acdc601e75296d2a68c04123d4e0555879909dcf7c78341e42cca0e5c6",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+        "id": "receipt:86357e1059348510aa49a2783ea3d5e8798e42cef1f14d68471d2406e2d05362",
+        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
         "type": "decision",
-        "title": "Promote the Evidence Wall and delete the comparison variants",
-        "summary": "Variant C made delivered artifacts and proof primary. A, B, the switcher, prototype route, keyboard cycling, and losing tests were deleted instead of retained as permanent prototype debris.",
-        "evidence": [
-          {
-            "kind": "file",
-            "label": "Stable Evidence Wall"
-          },
-          {
-            "kind": "test",
-            "label": "Stable-route deletion gate"
-          }
-        ]
+        "title": "Problem resolved — Re-applying the right-now map dropped wires even though the nodes remained.",
+        "summary": "Problem — Re-applying the right-now map dropped wires even though the nodes remained. Resolution — Claude stopped during visual verification, corrected the translator output, and re-ran the statement comparison until all three generated scopes were stable.",
+        "evidence": []
       },
       {
-        "id": "receipt:a7e785285c1d1dd1eb89754ee1499c15f4f48b2d58af033548c43d400bfc3580",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+        "id": "receipt:ade5721d2b22cecbff1c058a145857a8ce0faae537697843b0913f29edb72bd4",
+        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
         "type": "decision",
-        "title": "Treat reporting as one Canvas mode, not the Canvas redesign",
-        "summary": "This POC proves a Work Session Report capability inside the existing application. It does not propose global navigation, a new architecture editor, or the final visual language for every future Canvas mode.",
-        "evidence": [
-          {
-            "kind": "file",
-            "label": "Report-route composition"
-          },
-          {
-            "kind": "artifact",
-            "label": "Roadmap boundary",
-            "href": "docs/visual-reporting/Novakai-Visual-Reporting-Handover.html"
-          }
-        ]
-      },
-      {
-        "id": "receipt:b7c4ed21d93c4aee969277e61b1c48d58437e65af9db70b786b6d8bd1258481e",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-        "type": "decision",
-        "title": "Problem resolved — The first real report was technically true but too generic to replace reading the session transcript.",
-        "summary": "Problem — The first real report was technically true but too generic to replace reading the session transcript. Resolution — A versioned evidence-led projection now publishes the agent-authored change story and artifacts while retaining repository receipts and executed proof as separate authority.",
-        "evidence": [
-          {
-            "kind": "file",
-            "label": "Versioned renderer profile"
-          },
-          {
-            "kind": "file",
-            "label": "Public projection adapter"
-          }
-        ]
-      },
-      {
-        "id": "receipt:c82ab601028b78d02eb797d75391fcf2d7512aac65cfff64fd6babfaf41725af",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-        "type": "decision",
-        "title": "Stop at the usefulness gate before building a reporting platform",
-        "summary": "The next decision is whether reports from three different real sessions remove the need to read transcripts. Navigation, report libraries, live streaming, generic composition, and a second visual product remain deliberately unbuilt.",
-        "evidence": [
-          {
-            "kind": "artifact",
-            "label": "POC boundary and roadmap",
-            "href": "docs/visual-reporting/Novakai-Visual-Reporting-Handover.html"
-          }
-        ]
-      },
-      {
-        "id": "receipt:e5a913d7132b0eb28ed106a94961bbd78c48ed77bc1e1100cc3a0732d50ee5d5",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-        "type": "decision",
-        "title": "Keep agent claims separate from acceptance proof",
-        "summary": "The brief may explain work but cannot author proof. Final generation executes npm run check inside the repository, binds its output to the evidence receipts, and refuses completion when proof fails.",
-        "evidence": [
-          {
-            "kind": "file",
-            "label": "Brief schema excludes proof"
-          },
-          {
-            "kind": "file",
-            "label": "Executed proof composition"
-          }
-        ]
+        "title": "Problem resolved — The first plan assumed the live agent registry was a dictionary and would have silently omitted relevant mail edges.",
+        "summary": "Problem — The first plan assumed the live agent registry was a dictionary and would have silently omitted relevant mail edges. Resolution — After audit, the translator normalized both observed array and dictionary shapes and used an explicit relevance rule for running and connected exited agents.",
+        "evidence": []
       }
     ],
     "blockers": [],
     "artifacts": [
       {
-        "id": "receipt:3cd7a4c4fb4a9741a205528cd287c2268654cd1cb60a999c3801786dbba053c4",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+        "id": "receipt:37fd7de1e91db7c2f60681c34243d92d9bda659fc2a5d9a3edce4d854a416512",
+        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
         "type": "artifact",
-        "title": "Stable Evidence Wall in Novakai Canvas",
-        "summary": "You now have — A production report route that visually leads with the session outcome, concrete changed work, delivered artifacts, important decisions, and repository-owned proof.",
+        "title": "Three live mission-view maps",
+        "summary": "You now have — Object model, data tree, and right-now mission maps generated from real stores and opened through the existing Canvas application.",
+        "evidence": []
+      },
+      {
+        "id": "receipt:8c4416d14bd796875ca5063bd25b3f648615ad0f3955247d2295bc5252a1c341",
+        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+        "type": "artifact",
+        "title": "Repository evidence snapshot — claude",
+        "summary": "28 changed files bind this report to claude from 60d7dadb4aa0 to 8681eeec1898.",
         "evidence": [
           {
             "kind": "file",
-            "label": "Evidence-wall host"
+            "label": "public/data/canvas-preferences.json"
           },
           {
             "kind": "file",
-            "label": "Report visual system"
+            "label": "public/data/project-architecture.json"
+          },
+          {
+            "kind": "file",
+            "label": "src/App.tsx"
+          },
+          {
+            "kind": "file",
+            "label": "src/domain/defaults.ts"
+          },
+          {
+            "kind": "file",
+            "label": "src/domain/layout.ts"
+          },
+          {
+            "kind": "file",
+            "label": "src/domain/model.ts"
+          },
+          {
+            "kind": "file",
+            "label": "src/domain/schema.ts"
+          },
+          {
+            "kind": "file",
+            "label": "src/domain/tree.ts"
+          },
+          {
+            "kind": "file",
+            "label": "src/presentation/components/canvas-surface.tsx"
+          },
+          {
+            "kind": "file",
+            "label": "src/presentation/components/inspect-panel.tsx"
+          },
+          {
+            "kind": "file",
+            "label": "src/presentation/components/legend.tsx"
+          },
+          {
+            "kind": "file",
+            "label": "src/presentation/components/preferences-panel.tsx"
+          },
+          {
+            "kind": "commit",
+            "label": "Repository base commit 60d7dadb4aa0e29e47056a892be8ce7bca483327"
+          },
+          {
+            "kind": "commit",
+            "label": "Repository base tree 905e0a51b78d7acab3b2b5f30ada3b282ba9e35d"
+          },
+          {
+            "kind": "commit",
+            "label": "Repository evidence commit 8681eeec18981907612810686b7eea5ade8dcdaa"
+          },
+          {
+            "kind": "commit",
+            "label": "Repository evidence tree 04ec773f57f2e10a932dd989de16c4997be2933c"
+          },
+          {
+            "kind": "commit",
+            "label": "Repository content digest sha256:f1427e198cc7a7f2d659da07a27a0119c2f7dcbf8b77d0741b0795c61ec87713"
           }
         ]
       },
       {
-        "id": "receipt:558f9f0beaa621140914c77594b7caa5ee421027899acdcf53c788af13392422",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+        "id": "receipt:d52095824e16f16942e93d2d4f62490a17fea20cff09553eab727db7842946c3",
+        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
         "type": "artifact",
-        "title": "Agent end-session receipt contract",
-        "summary": "You now have — A small source-bound JSON protocol for Outcome, Changes, Decisions, Problems, Artifacts, and Remaining work. Agent-supplied proof is rejected.",
+        "title": "Verified mission-view implementation",
+        "summary": "You now have — Commit 8681eee with 28 changed files, eight live screenshots, a clean test suite, and independent manager verification before PR #2 was opened.",
         "evidence": [
           {
-            "kind": "file",
-            "label": "Agent work-brief contract"
+            "kind": "commit",
+            "label": "Claude mission-view commit 8681eee"
           },
           {
-            "kind": "test",
-            "label": "Protocol and proof-separation tests"
-          }
-        ]
-      },
-      {
-        "id": "receipt:575e2f745efbf632fb42bfe9d94dcacb15bb06d7fc9619e1220f966e7ea5813d",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-        "type": "artifact",
-        "title": "Real Codex session reporting pipeline",
-        "summary": "You now have — A command that imports a selected Codex JSONL session, binds structured claims to it, derives repository evidence, runs the acceptance gate, and publishes one accepted revision.",
-        "evidence": [
-          {
-            "kind": "file",
-            "label": "Report CLI composition root"
-          },
-          {
-            "kind": "file",
-            "label": "Codex source adapter"
-          }
-        ]
-      },
-      {
-        "id": "receipt:ed12b2338a76f8e2648de4c7e2015cc8664e1e50f2bad501c7f0e1033d9ea922",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-        "type": "artifact",
-        "title": "Independent immutable HTML report",
-        "summary": "You now have — A shareable no-React rendering of the exact accepted public projection, with a deterministic byte digest and historical v1 pages left untouched.",
-        "evidence": [
-          {
-            "kind": "file",
-            "label": "Standalone renderer"
-          },
-          {
-            "kind": "file",
-            "label": "Publication verifier"
-          }
-        ]
-      },
-      {
-        "id": "receipt:f6337533770a64de1874d896325da3b510e9010ce0eaf3d635378e3c70fe82b4",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-        "type": "artifact",
-        "title": "Visual operating handover",
-        "summary": "You now have — One HTML handover that shows the delivered pipeline, protocol boundary, exact report identities, verified desktop/mobile views, operating commands, assumptions, and deliberately unbuilt scope.",
-        "evidence": [
-          {
-            "kind": "artifact",
-            "label": "Open the visual handover",
-            "href": "docs/visual-reporting/Novakai-Visual-Reporting-Handover.html"
+            "kind": "url",
+            "label": "Pull request #2"
           }
         ]
       }
     ],
     "changeDetails": [
       {
-        "id": "receipt:32605a95de94b88e58977cc78b3cabd460a6755db6a8138ef0e81c878f2a003a",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+        "id": "receipt:817e33cffb4bfd7d9df820a9fd8d0d513f36f84b8115b2130b4335dc346aa8b5",
+        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
         "type": "change",
-        "title": "Import the actual Codex session through one strict adapter",
-        "summary": "Before — The POC could prove its pipeline with a small fixture but could not safely normalize the changing live Codex JSONL shape. After — An explicitly selected real session is classified, normalized, source-digested, and rejected when identity or supported content is uncertain. Why — A useful report must describe the genuine work session while failing closed on unknown or malformed source records.",
+        "title": "Add an honest legend and persisted themes",
+        "summary": "Before — No in-canvas legend existed and the mission view had no verified light-theme persistence path. After — The active map derives its legend from used wire kinds, while dark and light theme preferences persist through reload. Why — Readers needed to decode only the wire kinds present on the active map and keep their chosen presentation after reload.",
         "evidence": [
           {
             "kind": "file",
-            "label": "tools/report-session/codex-session-source.ts"
+            "label": "src/presentation/components/legend.tsx"
           },
           {
             "kind": "file",
-            "label": "tools/report-session/codex-session-current-format.test.ts"
+            "label": "src/presentation/components/preferences-panel.tsx"
           },
           {
             "kind": "file",
-            "label": "tools/report-session/cli.ts"
+            "label": "src/styles/base.css"
+          },
+          {
+            "kind": "file",
+            "label": "src/styles/canvas.css"
+          },
+          {
+            "kind": "file",
+            "label": "public/data/canvas-preferences.json"
           }
         ],
         "changeNarrative": {
-          "why": "A useful report must describe the genuine work session while failing closed on unknown or malformed source records.",
-          "before": "The POC could prove its pipeline with a small fixture but could not safely normalize the changing live Codex JSONL shape.",
-          "after": "An explicitly selected real session is classified, normalized, source-digested, and rejected when identity or supported content is uncertain."
+          "why": "Readers needed to decode only the wire kinds present on the active map and keep their chosen presentation after reload.",
+          "before": "No in-canvas legend existed and the mission view had no verified light-theme persistence path.",
+          "after": "The active map derives its legend from used wire kinds, while dark and light theme preferences persist through reload."
         }
       },
       {
-        "id": "receipt:637837bed36386ed39759db72ed0579445f603b906545c86d39fd3b59a5ad353",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+        "id": "receipt:99b2238675ec760db6e61bb4887e6bea35a08e019f4943054bba90574ae0a2f3",
+        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
         "type": "change",
-        "title": "Give agents a source-bound end-session receipt",
-        "summary": "Before — Repository receipts could prove changed areas, but the human-facing explanation remained generic and omitted why, before-to-after, and resolved problems. After — The agent supplies Outcome, Changes, Decisions, Problems, Artifacts, and Remaining work; each change names files, module, reason, before, and after, while Proof is structurally impossible. Why — Agents need a compact structured handoff that creates useful narrative without being allowed to certify its own claims.",
+        "title": "Give every wire kind one visible meaning",
+        "summary": "Before — All wires inherited one global width and the available verbs could not honestly express mentions or missing links. After — Seven wire kinds derive their dash and colour from one presentation-owned style map shared by Canvas, the legend, and SVG snapshots. Why — The approved mission diagrams needed distinct link meanings without duplicating colour and dash rules across renderers.",
         "evidence": [
           {
             "kind": "file",
-            "label": "tools/report-session/agent-work-brief.ts"
+            "label": "src/domain/model.ts"
           },
           {
             "kind": "file",
-            "label": "tools/report-session/agent-work-brief.test.ts"
+            "label": "src/domain/schema.ts"
           },
           {
             "kind": "file",
-            "label": "docs/visual-reporting/briefs/poc-work-session-brief.json"
+            "label": "src/presentation/wire-styles.ts"
+          },
+          {
+            "kind": "file",
+            "label": "src/presentation/edges/elbow-edge.tsx"
+          },
+          {
+            "kind": "file",
+            "label": "tools/canvas-cli/snapshot.ts"
           }
         ],
         "changeNarrative": {
-          "why": "Agents need a compact structured handoff that creates useful narrative without being allowed to certify its own claims.",
-          "before": "Repository receipts could prove changed areas, but the human-facing explanation remained generic and omitted why, before-to-after, and resolved problems.",
-          "after": "The agent supplies Outcome, Changes, Decisions, Problems, Artifacts, and Remaining work; each change names files, module, reason, before, and after, while Proof is structurally impossible."
+          "why": "The approved mission diagrams needed distinct link meanings without duplicating colour and dash rules across renderers.",
+          "before": "All wires inherited one global width and the available verbs could not honestly express mentions or missing links.",
+          "after": "Seven wire kinds derive their dash and colour from one presentation-owned style map shared by Canvas, the legend, and SVG snapshots."
         }
       },
       {
-        "id": "receipt:72d5e01d5a671b1d250787a253b6388b1a530fc959e1bf6b3c94fc156a5c0868",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+        "id": "receipt:b7a92cf569b062c17fdb3598abc80a48ea912a887a580bdf85e16ef850037e2f",
+        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
         "type": "change",
-        "title": "Promote one Evidence Wall inside Canvas",
-        "summary": "Before — Three comparison variants and a prototype switcher made the POC itself the main thing the user had to understand. After — One stable report route leads with outcome, concrete accepted receipts, repository proof, the module map, and remaining work; the ordinary architecture canvas remains unchanged. Why — The report should answer what changed and what exists now at a glance, without forcing the reader through transcript prose.",
+        "title": "Translate real mission stores into Canvas maps",
+        "summary": "Before — Canvas could author maps but had no read-only path from production-shaped mission data. After — One translator reads both supported store shapes, applies a ruled relevance algorithm, and sends three generated scopes through the existing Canvas CLI. Why — The diagrams needed to show current Novakai missions, agents, and messages from their real stores rather than a hand-authored mock.",
         "evidence": [
           {
             "kind": "file",
-            "label": "src/main.tsx"
+            "label": "tools/mission-view/stores-to-dsl.ts"
           },
           {
             "kind": "file",
-            "label": "src/presentation/work-session-report/WorkSessionReport.tsx"
+            "label": "tools/mission-view/stores-to-dsl.test.ts"
           },
           {
             "kind": "file",
-            "label": "src/presentation/work-session-report/report-model.ts"
+            "label": "tools/mission-view/translate.ts"
           },
           {
             "kind": "file",
-            "label": "src/presentation/work-session-report/work-session-report.css"
-          },
-          {
-            "kind": "test",
-            "label": "Stable report route tests"
+            "label": "tools/canvas-cli/mission-vocabulary.test.ts"
           }
         ],
         "changeNarrative": {
-          "why": "The report should answer what changed and what exists now at a glance, without forcing the reader through transcript prose.",
-          "before": "Three comparison variants and a prototype switcher made the POC itself the main thing the user had to understand.",
-          "after": "One stable report route leads with outcome, concrete accepted receipts, repository proof, the module map, and remaining work; the ordinary architecture canvas remains unchanged."
+          "why": "The diagrams needed to show current Novakai missions, agents, and messages from their real stores rather than a hand-authored mock.",
+          "before": "Canvas could author maps but had no read-only path from production-shaped mission data.",
+          "after": "One translator reads both supported store shapes, applies a ruled relevance algorithm, and sends three generated scopes through the existing Canvas CLI."
         }
       },
       {
-        "id": "receipt:7938aa5bab3a3ea59da8e23e960dd0b1acab2d7edcfcb0c3feac29a3fe002d01",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
+        "id": "receipt:ecaf1214b83012ee9867b1f4e4d7692896fbf23f0ccde12fad1b047f69e68f30",
+        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
         "type": "change",
-        "title": "Render the same accepted revision as immutable standalone HTML",
-        "summary": "Before — The visual report was coupled to the application host and had no independently verifiable artifact. After — One deterministic renderer produces immutable HTML whose digest, source, receipts, projection, and evidence commit are verified at the publication boundary. Why — The reporting capability is only genuinely reusable if a second host can render the accepted projection without Canvas or React.",
+        "title": "Add a selectable semantic tree node",
+        "summary": "Before — The first plan flattened tree rows into presentation text with no stable identity or inspection path. After — Rows carry semantic identity and clicking a row selects its underlying block in the inspector. Why — Repository and mission hierarchies needed to remain compact without violating the rule that meaningful objects stay selectable.",
         "evidence": [
           {
             "kind": "file",
-            "label": "tools/report-session/html-renderer.ts"
+            "label": "src/domain/tree.ts"
           },
           {
             "kind": "file",
-            "label": "tools/report-session/publish-report.ts"
+            "label": "src/domain/layout.ts"
           },
           {
             "kind": "file",
-            "label": "src/capabilities/work-session-reporting/published-envelope-verifier.ts"
+            "label": "src/presentation/nodes/tree-node.tsx"
+          },
+          {
+            "kind": "file",
+            "label": "src/presentation/components/inspect-panel.tsx"
           }
         ],
         "changeNarrative": {
-          "why": "The reporting capability is only genuinely reusable if a second host can render the accepted projection without Canvas or React.",
-          "before": "The visual report was coupled to the application host and had no independently verifiable artifact.",
-          "after": "One deterministic renderer produces immutable HTML whose digest, source, receipts, projection, and evidence commit are verified at the publication boundary."
-        }
-      },
-      {
-        "id": "receipt:9ef05911f9f9bc298491ac26fb75e17174171954a36d71d8bfce0ed16e80bcc1",
-        "sourceDigest": "sha256:b4c1c4e0ffe4be81e4e66c31b709f15f94a02d1509cfd01e0e29426984611a4c",
-        "type": "change",
-        "title": "Turn work-session reporting into a host-neutral capability",
-        "summary": "Before — Session facts, report policy, and rendered content had no shared immutable domain contract. After — WorkSession, WorkReceipt, ReportDraft, and AcceptedReport form one deterministic capability with stable IDs and acceptance gates. Why — Canvas and standalone HTML need one trustworthy report authority instead of two renderers inventing their own story.",
-        "evidence": [
-          {
-            "kind": "file",
-            "label": "src/capabilities/work-session-reporting/contract.ts"
-          },
-          {
-            "kind": "file",
-            "label": "src/capabilities/work-session-reporting/core/report-compiler.ts"
-          },
-          {
-            "kind": "file",
-            "label": "src/capabilities/work-session-reporting/core/reporting-engine.ts"
-          },
-          {
-            "kind": "test",
-            "label": "Reporting authority tests"
-          }
-        ],
-        "changeNarrative": {
-          "why": "Canvas and standalone HTML need one trustworthy report authority instead of two renderers inventing their own story.",
-          "before": "Session facts, report policy, and rendered content had no shared immutable domain contract.",
-          "after": "WorkSession, WorkReceipt, ReportDraft, and AcceptedReport form one deterministic capability with stable IDs and acceptance gates."
+          "why": "Repository and mission hierarchies needed to remain compact without violating the rule that meaningful objects stay selectable.",
+          "before": "The first plan flattened tree rows into presentation text with no stable identity or inspection path.",
+          "after": "Rows carry semantic identity and clicking a row selects its underlying block in the inspector."
         }
       }
     ],
     "evidence": [
       {
-        "kind": "test",
-        "label": "Current Codex format regression suite"
-      },
-      {
-        "kind": "file",
-        "label": "docs/visual-reporting/briefs/poc-work-session-brief.json"
-      },
-      {
-        "kind": "file",
-        "label": "Evidence-head gate"
-      },
-      {
-        "kind": "test",
-        "label": "Evidence-head regression tests"
+        "kind": "commit",
+        "label": "Claude mission-view commit 8681eee"
       },
       {
         "kind": "test",
         "label": "npm run check"
       },
       {
-        "kind": "artifact",
-        "label": "Open the visual handover",
-        "href": "docs/visual-reporting/Novakai-Visual-Reporting-Handover.html"
-      },
-      {
-        "kind": "test",
-        "label": "Protocol and proof-separation tests"
+        "kind": "file",
+        "label": "public/data/canvas-preferences.json"
       },
       {
         "kind": "file",
-        "label": "Publication verifier"
+        "label": "public/data/project-architecture.json"
       },
       {
-        "kind": "file",
-        "label": "Report-route composition"
-      },
-      {
-        "kind": "test",
-        "label": "Reporting authority tests"
+        "kind": "url",
+        "label": "Pull request #2"
       },
       {
         "kind": "commit",
-        "label": "Repository base commit 31792d15f564a67729535ca275dc56826a85750b"
+        "label": "Repository base commit 60d7dadb4aa0e29e47056a892be8ce7bca483327"
       },
       {
         "kind": "commit",
-        "label": "Repository base tree 45974aef598575b61d49fbc73ed43d439b31c008"
+        "label": "Repository base tree 905e0a51b78d7acab3b2b5f30ada3b282ba9e35d"
       },
       {
         "kind": "commit",
-        "label": "Repository content digest sha256:b152826224436b03d5cff6774888db1a04ffd81714e7e7d5a210d958ea8c2eca"
+        "label": "Repository content digest sha256:f1427e198cc7a7f2d659da07a27a0119c2f7dcbf8b77d0741b0795c61ec87713"
       },
       {
         "kind": "commit",
-        "label": "Repository evidence commit e4c43963a9922b84f6db9ce440f62e3b6cdff148"
+        "label": "Repository evidence tree 04ec773f57f2e10a932dd989de16c4997be2933c"
       },
       {
         "kind": "commit",
-        "label": "Repository evidence tree a2f32744e8ce15e70603e1f40172ea4f8028ba5d"
-      },
-      {
-        "kind": "commit",
-        "label": "Repository receipt set sha256:4229d225ba4b95c8767cf8ca845c1f83643dfd1b15a9c2b1fcb770f4f7fdec04"
+        "label": "Repository receipt set sha256:fae514108a4de827ece8b1b354d90940c84746c119f811b0d638e8d5dd7fc434"
       },
       {
         "kind": "file",
-        "label": "src/capabilities/work-session-reporting/core/report-compiler.ts"
+        "label": "src/App.tsx"
       },
       {
         "kind": "file",
-        "label": "src/capabilities/work-session-reporting/core/reporting-engine.ts"
+        "label": "src/domain/defaults.ts"
       },
       {
         "kind": "file",
-        "label": "src/capabilities/work-session-reporting/core/stable-value.ts"
+        "label": "src/domain/layout.ts"
       },
       {
         "kind": "file",
-        "label": "src/capabilities/work-session-reporting/index.ts"
+        "label": "src/domain/model.ts"
       },
       {
         "kind": "file",
-        "label": "src/capabilities/work-session-reporting/reporting-engine.test.ts"
+        "label": "src/domain/schema.ts"
       },
       {
         "kind": "file",
-        "label": "src/presentation/work-session-report/report-model.ts"
+        "label": "src/domain/tree.ts"
       },
       {
         "kind": "file",
-        "label": "src/presentation/work-session-report/work-session-report.css"
+        "label": "src/presentation/components/canvas-surface.tsx"
       },
       {
         "kind": "file",
-        "label": "Stable Evidence Wall"
-      },
-      {
-        "kind": "test",
-        "label": "Stable-route deletion gate"
+        "label": "src/presentation/components/inspect-panel.tsx"
       },
       {
         "kind": "file",
-        "label": "tools/report-session/agent-work-brief.test.ts"
+        "label": "src/presentation/components/legend.tsx"
       },
       {
         "kind": "file",
-        "label": "tools/report-session/agent-work-brief.ts"
+        "label": "src/presentation/components/preferences-panel.tsx"
       },
       {
         "kind": "file",
-        "label": "tools/report-session/cli.ts"
+        "label": "src/presentation/edges/elbow-edge.tsx"
       },
       {
         "kind": "file",
-        "label": "tools/report-session/codex-session-current-format.test.ts"
+        "label": "src/presentation/nodes/tree-node.tsx"
       },
       {
         "kind": "file",
-        "label": "tools/report-session/codex-session-source.ts"
+        "label": "src/presentation/wire-styles.ts"
       },
       {
         "kind": "file",
-        "label": "tools/report-session/generation-policy.ts"
+        "label": "src/styles/base.css"
       },
       {
         "kind": "file",
-        "label": "tools/report-session/html-renderer.ts"
+        "label": "src/styles/canvas.css"
       },
       {
         "kind": "file",
-        "label": "tools/report-session/migrate-reporting-snapshot.test.ts"
+        "label": "tools/canvas-cli/mission-vocabulary.test.ts"
       },
       {
         "kind": "file",
-        "label": "tools/report-session/migrate-reporting-snapshot.ts"
+        "label": "tools/canvas-cli/snapshot.ts"
       },
       {
         "kind": "file",
-        "label": "tools/report-session/publish-report.ts"
+        "label": "tools/mission-view/stores-to-dsl.test.ts"
       },
       {
         "kind": "file",
-        "label": "tools/report-session/report-session.test.ts"
+        "label": "tools/mission-view/stores-to-dsl.ts"
       },
       {
         "kind": "file",
-        "label": "Versioned renderer profile"
+        "label": "tools/mission-view/translate.ts"
       }
     ]
   }
