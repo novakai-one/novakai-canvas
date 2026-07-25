@@ -15,6 +15,7 @@ import {
   hydratePublishedReport,
   selectWorkSessionReport,
 } from '../../src/presentation/work-session-report/report-model.ts';
+import { renderStandaloneReport } from './html-renderer.ts';
 import { verifyPublishedEnvelope } from './publish-report.ts';
 
 const repoRoot = new URL('../..', import.meta.url).pathname;
@@ -297,10 +298,24 @@ describe('stable work-session report public contract', () => {
 
   it('publishes real approved HTML anchors and rejects unsafe artifact hrefs', () => {
     const envelope = checkedEnvelope();
-    const html = readFileSync(join(repoRoot, envelope.html.path), 'utf8');
-    expect(envelope.projection.evidence).toContainEqual(expect.objectContaining({
+    const linkedEnvelope = structuredClone(envelope);
+    linkedEnvelope.projection.evidence[0] = {
+      ...linkedEnvelope.projection.evidence[0]!,
+      kind: 'file',
       href: 'docs/visual-reporting/Novakai-Visual-Reporting-Handover.html',
-    }));
+    };
+    resignProjection(linkedEnvelope);
+    expect(verifyPublishedProjectionEnvelope(linkedEnvelope).projection.evidence)
+      .toContainEqual(expect.objectContaining({
+        href: 'docs/visual-reporting/Novakai-Visual-Reporting-Handover.html',
+      }));
+    const renderableProjection = structuredClone(linkedEnvelope.projection);
+    renderableProjection.artifacts[0]!.evidence[0] = {
+      kind: 'file',
+      label: 'Visual reporting handover',
+      href: 'docs/visual-reporting/Novakai-Visual-Reporting-Handover.html',
+    };
+    const html = renderStandaloneReport(renderableProjection);
     expect(html).toContain(
       '<a href="../../../docs/visual-reporting/Novakai-Visual-Reporting-Handover.html">',
     );
@@ -313,10 +328,11 @@ describe('stable work-session report public contract', () => {
     ]) {
       const hostile = structuredClone(envelope);
       hostile.projection.evidence[0]!.href = href;
+      resignProjection(hostile);
       expect(() => verifyPublishedProjectionEnvelope(hostile), href).toThrow();
       expect(hydratePublishedReport(hostile), href).toMatchObject({ ok: false });
     }
-    const falselyTyped = structuredClone(envelope);
+    const falselyTyped = structuredClone(linkedEnvelope);
     const linkedEvidence = falselyTyped.projection.evidence.find((evidence) => evidence.href)!;
     linkedEvidence.kind = 'test';
     resignProjection(falselyTyped);

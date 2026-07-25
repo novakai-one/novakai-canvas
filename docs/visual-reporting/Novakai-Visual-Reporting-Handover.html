@@ -860,7 +860,7 @@
       </div>
       <div>
         <dt>Status</dt>
-        <dd>Proof of concept complete. The next step is a three-session pilot.</dd>
+        <dd>Three-session pilot complete. Next: make the go / change / stop decision.</dd>
       </div>
     </dl>
 
@@ -868,8 +868,8 @@
     <ol class="first-things" aria-label="Three things to know first">
       <li>
         <div>
-          <strong>The basic reporting flow works.</strong>
-          <span>One real Codex session produced the same accepted report in Canvas and standalone HTML.</span>
+          <strong>The same reporting flow now works for three agents.</strong>
+          <span>Real Codex, Claude, and Kimi sessions each produced an accepted standalone report; the current report also opens in Canvas.</span>
         </div>
       </li>
       <li>
@@ -881,7 +881,7 @@
       <li>
         <div>
           <strong>Do not build the platform yet.</strong>
-          <span>Use this workflow on three genuine sessions, then decide whether navigation, a report library, or more visual types are worth building.</span>
+          <span>The pilot is complete. Review the three reports, then decide whether navigation, a report library, another visual type, or nothing is worth building.</span>
         </div>
       </li>
     </ol>
@@ -955,7 +955,7 @@
 ├── <span class="owner">src/presentation/work-session-report/</span>
 │   └── <span class="purpose">renders the accepted report inside Canvas</span>
 ├── <span class="owner">tools/report-session/</span>
-│   └── <span class="purpose">imports sessions, reads agent briefs, proves, and publishes</span>
+│   └── <span class="purpose">imports Codex, Claude, and Kimi sessions; proves and publishes</span>
 ├── <span class="owner">public/reports/accepted-report.json</span>
 │   └── <span class="purpose">current redacted projection read by Canvas</span>
 └── <span class="owner">docs/visual-reporting/</span>
@@ -966,7 +966,7 @@
         <div class="map-legend">
           <span><strong>Blue path</strong> — repository location</span>
           <span><strong>Muted line</strong> — what that location owns</span>
-          <span><strong>Evidence base</strong> — commit <span class="mono">101593b</span></span>
+          <span><strong>Provider seam</strong> — commit <span class="mono">e94350b</span></span>
         </div>
         <p class="takeaway"><strong>Plain version:</strong> one capability owns the meaning; Canvas and standalone HTML only present the accepted result.</p>
       </div>
@@ -992,17 +992,22 @@
           </li>
           <li>
             <span class="row-status">Done</span>
-            <div><strong>Generated a report from a real Codex session</strong><p>The accepted report came from 156 normalized session events, not the test fixture.</p></div>
+            <div><strong>Added provider adapters for Codex, Claude, and Kimi</strong><p>Each native transcript format is normalized behind the same reporting contract.</p></div>
             <span></span>
           </li>
           <li>
             <span class="row-status">Done</span>
-            <div><strong>Rendered the same report in two places</strong><p>Canvas and immutable standalone HTML show the same accepted revision.</p></div>
+            <div><strong>Generated three reports from real sessions</strong><p>Codex: 156 events. Claude: 41 events. Kimi: 28 events. None came from a fixture.</p></div>
             <span></span>
           </li>
           <li>
             <span class="row-status">Done</span>
-            <div><strong>Checked the proof and protected old reports</strong><p>133 tests passed, desktop/mobile Chrome views were inspected, and both v1 report hashes stayed unchanged.</p></div>
+            <div><strong>Rendered and inspected both hosts</strong><p>Canvas and immutable standalone HTML were opened in Chrome for each accepted report.</p></div>
+            <span></span>
+          </li>
+          <li>
+            <span class="row-status">Done</span>
+            <div><strong>Reran proof and protected old reports</strong><p>Repository checks passed at each exact evidence commit, 136 Canvas tests passed, and every older report hash stayed unchanged.</p></div>
             <span></span>
           </li>
         </ul>
@@ -1023,17 +1028,17 @@
             <span class="row-time">Complete</span>
           </li>
           <li>
-            <span class="row-status next">Stage 2 · Next</span>
-            <div><strong>Use it on three genuine work sessions</strong><p>Generate each report, note where the structure helps or gets in the way, and make only small corrections needed to complete the pilot.</p></div>
-            <span class="row-time">2–4 AI hours</span>
+            <span class="row-status">Stage 2 · Done</span>
+            <div><strong>Use it on three genuine work sessions</strong><p>Codex, Claude, and Kimi sessions now pass through provider adapters into the same report contract and two presentation hosts.</p></div>
+            <span class="row-time">Complete</span>
           </li>
           <li>
-            <span class="row-status later">Stage 3 · Finish</span>
+            <span class="row-status next">Stage 3 · Next</span>
             <div><strong>Make a go / change / stop decision</strong><p>Review the three reports and decide whether the next investment is navigation, a report library, another visual type, or nothing.</p></div>
             <span class="row-time">30–60 minutes</span>
           </li>
         </ol>
-        <p class="roadmap-total"><strong>Estimated time to the end of the current roadmap: 3–5 AI working hours.</strong> That estimate assumes three supported Codex sessions are available and excludes any later product build.</p>
+        <p class="roadmap-total"><strong>Estimated time to the end of the current roadmap: 30–60 minutes.</strong> That is a human review and decision, not another build stage.</p>
       </div>
     </section>
 
@@ -1041,14 +1046,30 @@
       <div class="question-head">
         <span class="pill observed">The result</span>
         <h2>What can I open now?</h2>
-        <p>Both links show revision <span class="mono">report:6bddf213…09ff885a</span>.</p>
+        <p>Three immutable reports are ready. Canvas currently opens the accepted Kimi revision.</p>
       </div>
       <div class="plain-panel">
-        <h3>Start with the Canvas report.</h3>
-        <p>Use the standalone file when you want the same report without the Canvas application.</p>
+        <h3>Start with the three work stories.</h3>
+        <ul class="progress-list" aria-label="Accepted three-agent reports">
+          <li>
+            <span class="row-status">Codex</span>
+            <div><strong>Build the visual-reporting proof</strong><p>156 normalized events · accepted revision <span class="mono">6bddf213…09ff885a</span></p></div>
+            <span class="row-time"><a href="reports/report-6bddf213b159419f7175dcf9c3f8bc4aea43d72f915d0c7b813e785409ff885a.html">Open HTML</a></span>
+          </li>
+          <li>
+            <span class="row-status">Claude</span>
+            <div><strong>Turn mission state into explorable Canvas maps</strong><p>41 normalized events · accepted revision <span class="mono">353b0f07…b4fe50cb</span></p></div>
+            <span class="row-time"><a href="reports/report-353b0f075854566d5aa6b9e18748526fb8d089d3f752d54ab4da0dc0b4fe50cb.html">Open HTML</a></span>
+          </li>
+          <li>
+            <span class="row-status">Kimi</span>
+            <div><strong>Clear the final Mission Control CI gate</strong><p>28 normalized events · accepted revision <span class="mono">4ecc631e…314bd3ad</span></p></div>
+            <span class="row-time"><a href="reports/report-4ecc631ef0ff1fac803e5b13432fe21a2ac294bd03082eff7fa4df2a314bd3ad.html">Open HTML</a></span>
+          </li>
+        </ul>
+        <p>The button below opens the current Kimi report inside Canvas. A report library or selector is intentionally not part of this POC.</p>
         <div class="open-report">
-          <a class="primary" href="../../?report=work-session">Open in Canvas</a>
-          <a class="secondary" href="reports/report-6bddf213b159419f7175dcf9c3f8bc4aea43d72f915d0c7b813e785409ff885a.html">Open standalone HTML</a>
+          <a class="primary" href="../../?report=work-session">Open current report in Canvas</a>
         </div>
       </div>
     </section>
@@ -1065,14 +1086,14 @@
 
       <details class="detail-topic">
         <summary>
-          <span><span class="detail-topic-title">How the report moves</span><span class="detail-topic-note">The four-step path from a Codex session to Canvas and standalone HTML.</span></span>
+          <span><span class="detail-topic-title">How the report moves</span><span class="detail-topic-note">The four-step path from an agent session to Canvas and standalone HTML.</span></span>
         </summary>
         <div class="detail-topic-body">
       <div class="route" aria-label="Delivered reporting pipeline">
         <div class="route-node">
           <span class="pill observed">Actual source</span>
-          <strong>Codex session snapshot</strong>
-          <small>156 normalized events · 0 warnings</small>
+          <strong>Agent session snapshot</strong>
+          <small>Codex · Claude · Kimi provider adapters</small>
         </div>
         <div class="arrow">→</div>
         <div class="route-node">
@@ -1205,11 +1226,11 @@
         <div class="card">
           <span class="pill mandated">Use it</span>
           <h3 style="margin-top:10px">Commands</h3>
-          <pre class="tree"># Generate from an explicitly selected Codex session
-npm run report:poc -- --session &lt;session.jsonl&gt; --brief docs/visual-reporting/briefs/poc-work-session-brief.json --evidence-head &lt;commit&gt;
+          <pre class="tree"># Generate from an explicitly selected agent session
+npm run report:poc -- --provider &lt;codex|claude|kimi&gt; --session &lt;session.jsonl&gt; --brief &lt;brief.json&gt; --evidence-repo &lt;repo&gt; --evidence-head &lt;commit&gt; --check-script &lt;script&gt;
 
 # Verify/show the selected immutable revision
-npm run report:show -- --report report:6bddf213…09ff885a
+npm run report:show -- --report report:4ecc631e…314bd3ad
 
 # Start Canvas, then open:
 npm run dev
@@ -1219,15 +1240,15 @@ http://localhost:5173/?report=work-session</pre>
           <span class="pill observed">Exact artifacts</span>
           <h3 style="margin-top:10px">Files and identifiers</h3>
           <ul class="list path">
-            <li><a href="reports/report-6bddf213b159419f7175dcf9c3f8bc4aea43d72f915d0c7b813e785409ff885a.html">Immutable standalone report</a></li>
+            <li><a href="reports/report-6bddf213b159419f7175dcf9c3f8bc4aea43d72f915d0c7b813e785409ff885a.html">Codex standalone report</a></li>
+            <li><a href="reports/report-353b0f075854566d5aa6b9e18748526fb8d089d3f752d54ab4da0dc0b4fe50cb.html">Claude standalone report</a></li>
+            <li><a href="reports/report-4ecc631ef0ff1fac803e5b13432fe21a2ac294bd03082eff7fa4df2a314bd3ad.html">Kimi standalone report</a></li>
             <li><a href="../../public/reports/accepted-report.json">Current accepted public envelope</a></li>
             <li><a href="screenshots/final-v2/canvas-desktop.png">Canvas desktop screenshot</a> · 1280×844 CSS pixels</li>
-            <li><a href="screenshots/final-v2/canvas-mobile.png">Canvas mobile screenshot</a> · 390×844 CSS pixels</li>
             <li><a href="screenshots/final-v2/standalone-desktop.png">Standalone desktop screenshot</a> · 1280×844 CSS pixels</li>
-            <li><a href="screenshots/final-v2/standalone-mobile.png">Standalone mobile screenshot</a> · 390×844 CSS pixels</li>
           </ul>
-          <p class="path" style="margin-top:12px"><strong>Revision:</strong><br /><span class="mono">report:6bddf213b159419f7175dcf9c3f8bc4aea43d72f915d0c7b813e785409ff885a</span></p>
-          <p class="path" style="margin-top:8px"><strong>Public projection:</strong><br /><span class="mono">sha256:4eeebc3efc9ec05dc5a519ed718ddeced4a51b7c04db68529e9566a15e40fbb2</span></p>
+          <p class="path" style="margin-top:12px"><strong>Current Canvas revision:</strong><br /><span class="mono">report:4ecc631ef0ff1fac803e5b13432fe21a2ac294bd03082eff7fa4df2a314bd3ad</span></p>
+          <p class="path" style="margin-top:8px"><strong>Current public projection:</strong><br /><span class="mono">sha256:6967432b92048ebb701e2eac18111418369a6ba3f3746bebadd110d86d8f76d7</span></p>
         </div>
       </div>
         </div>
@@ -1274,7 +1295,7 @@ http://localhost:5173/?report=work-session</pre>
         </div>
       </details>
 
-      <p class="proof-note"><strong>Current stop point:</strong> the seam is proven. Run the three-session pilot before deciding whether to build anything larger.</p>
+      <p class="proof-note"><strong>Current stop point:</strong> the three-agent seam is proven. Review the three reports and make the go / change / stop decision before building anything larger.</p>
       </div>
     </details>
 

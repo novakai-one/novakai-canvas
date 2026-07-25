@@ -543,12 +543,11 @@ describe('report session adapters', () => {
     ]) {
       expect(publicBytes, `checked-in publication must redact ${forbidden}`).not.toContain(forbidden);
     }
-    expect(envelope.projection.changeDetails).toHaveLength(5);
-    expect(envelope.projection.changeDetails?.map((receipt) => receipt.title)).toContain(
-      'Give agents a source-bound end-session receipt',
-    );
+    expect(envelope.projection.changeDetails)
+      .toHaveLength(envelope.projection.stats.changes);
+    expect(envelope.projection.changeDetails?.length).toBeGreaterThan(0);
     expect(html).toContain('What changed — before → after?');
-    expect(html).toContain('Proof is structurally impossible');
+    expect(html).toContain('What proves it?');
   });
 
   it('keeps every checked-in v1 standalone report byte-for-byte immutable', () => {
@@ -557,6 +556,12 @@ describe('report session adapters', () => {
         'sha256:22e43ead9f1a95cf08cc5d6e23fcf4937ef50534bcb148bd2cddcdb23fea67c5',
       'docs/visual-reporting/reports/report-dcc4a98d5d37a06d481f8f720a033b302336c5bd515db1a0f2aa6beecdbd6779.html':
         'sha256:6e3365728d19ce431030d66b0373b6adfbbd1c9555d1e0e9cc47fa3b69d470c6',
+      'docs/visual-reporting/reports/report-6bddf213b159419f7175dcf9c3f8bc4aea43d72f915d0c7b813e785409ff885a.html':
+        'sha256:e85e1872fd17aa81da2a9ec601b2e000fc2db97415e2dc6bb9e3cdaae2575b7e',
+      'docs/visual-reporting/reports/report-353b0f075854566d5aa6b9e18748526fb8d089d3f752d54ab4da0dc0b4fe50cb.html':
+        'sha256:856ebc6abc051896c91a6f64bdc5e731f04d1259871a08f9926984b476dfc26f',
+      'docs/visual-reporting/reports/report-4ecc631ef0ff1fac803e5b13432fe21a2ac294bd03082eff7fa4df2a314bd3ad.html':
+        'sha256:847d57afda0167abc66f988aeb4519bf6cb1ce2ebc555304bd258298356467dc',
     };
     for (const [path, expectedDigest] of Object.entries(immutableV1Reports)) {
       expect(digestBytes(readFileSync(join(repoRoot, path), 'utf8')), path)
