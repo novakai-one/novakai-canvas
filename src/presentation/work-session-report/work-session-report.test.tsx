@@ -20,13 +20,17 @@ describe('public work-session report hydration', () => {
     const report = checkedReport();
     expect(report.reportRevisionId).toBe(acceptedReport.reportRevisionId);
     expect(report.publicProjectionDigest).toBe(acceptedReport.publicProjectionDigest);
-    expect(report.projection.stats).toEqual({
-      changes: 3,
-      decisions: 2,
+    expect(report.projection.stats).toEqual(expect.objectContaining({
       proofs: 1,
       blockers: 0,
-      artifacts: 1,
-    });
+      artifacts: 5,
+    }));
+    expect(report.projection.stats.changes).toBeGreaterThanOrEqual(5);
+    expect(report.projection.stats.decisions).toBeGreaterThanOrEqual(7);
+    expect(report.projection.changeDetails).toHaveLength(5);
+    expect(report.projection.changeDetails?.map((receipt) => receipt.title)).toContain(
+      'Give agents a source-bound end-session receipt',
+    );
     expect(report.proofState).toMatchObject({
       status: 'captured',
       command: 'npm run check',

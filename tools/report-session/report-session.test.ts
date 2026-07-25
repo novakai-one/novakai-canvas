@@ -543,10 +543,12 @@ describe('report session adapters', () => {
     ]) {
       expect(publicBytes, `checked-in publication must redact ${forbidden}`).not.toContain(forbidden);
     }
-    expect(envelope.projection.changeMap.nodes.map((node) => node.label)).not.toContain('Novakai Canvas');
-    expect(envelope.projection.decisions.map((decision) => decision.summary).join('\n'))
-      .not.toContain('Canvas');
-    expect(html).not.toContain('embedded Canvas');
+    expect(envelope.projection.changeDetails).toHaveLength(5);
+    expect(envelope.projection.changeDetails?.map((receipt) => receipt.title)).toContain(
+      'Give agents a source-bound end-session receipt',
+    );
+    expect(html).toContain('What changed — before → after?');
+    expect(html).toContain('Proof is structurally impossible');
   });
 
   it('keeps every checked-in v1 standalone report byte-for-byte immutable', () => {

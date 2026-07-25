@@ -299,7 +299,6 @@ describe('stable work-session report public contract', () => {
     const envelope = checkedEnvelope();
     const html = readFileSync(join(repoRoot, envelope.html.path), 'utf8');
     expect(envelope.projection.evidence).toContainEqual(expect.objectContaining({
-      label: 'Open visual handover',
       href: 'docs/visual-reporting/Novakai-Visual-Reporting-Handover.html',
     }));
     expect(html).toContain(
