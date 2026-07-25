@@ -833,6 +833,7 @@
         <a data-section="repository-map" href="#repository-map">Repository map</a>
         <a data-section="done" href="#done">Work completed</a>
         <a data-section="roadmap" href="#roadmap">Roadmap</a>
+        <a data-section="decision" href="#decision">Decision</a>
         <a data-section="open-result" href="#open-result">Open report</a>
         <a data-section="technical-detail" href="#technical-detail">Technical detail</a>
         <a data-section="historical-detail" href="#historical-detail">Original plan</a>
@@ -860,7 +861,7 @@
       </div>
       <div>
         <dt>Status</dt>
-        <dd>Three-session pilot complete. Next: make the go / change / stop decision.</dd>
+        <dd>Current roadmap complete. Go narrow, change presentation when needed, and stop platform expansion.</dd>
       </div>
     </dl>
 
@@ -880,8 +881,8 @@
       </li>
       <li>
         <div>
-          <strong>Do not build the platform yet.</strong>
-          <span>The pilot is complete. Review the three reports, then decide whether navigation, a report library, another visual type, or nothing is worth building.</span>
+          <strong>The decision is go narrow—not build the platform.</strong>
+          <span>Keep producing reports. Change their presentation when real feedback calls for it. Do not add a library, watcher, service, or multi-user layer yet.</span>
         </div>
       </li>
     </ol>
@@ -892,7 +893,7 @@
       <div class="question-head">
         <span class="pill observed">Page map</span>
         <h2>What is on this page?</h2>
-        <p>Read the first five sections in order. Open the technical or historical detail only when you need it.</p>
+        <p>Follow the page map through the decision, then open the reports. Technical and historical detail stay optional.</p>
       </div>
       <div class="plain-panel">
         <ol class="contents-map">
@@ -917,6 +918,12 @@
           <li>
             <a href="#roadmap">
               <span><strong>Roadmap and time</strong><small>The next stage, the end of this roadmap, and the current estimates.</small></span>
+              <span class="map-action">View ↓</span>
+            </a>
+          </li>
+          <li>
+            <a href="#decision">
+              <span><strong>Go / change / stop decision</strong><small>What the three-agent pilot proved—and what should not be built next.</small></span>
               <span class="map-action">View ↓</span>
             </a>
           </li>
@@ -1033,12 +1040,97 @@
             <span class="row-time">Complete</span>
           </li>
           <li>
-            <span class="row-status next">Stage 3 · Next</span>
+            <span class="row-status">Stage 3 · Done</span>
             <div><strong>Make a go / change / stop decision</strong><p>Review the three reports and decide whether the next investment is navigation, a report library, another visual type, or nothing.</p></div>
-            <span class="row-time">30–60 minutes</span>
+            <span class="row-time">Complete</span>
           </li>
         </ol>
-        <p class="roadmap-total"><strong>Estimated time to the end of the current roadmap: 30–60 minutes.</strong> That is a human review and decision, not another build stage.</p>
+        <p class="roadmap-total"><strong>The current roadmap is complete.</strong> No further build stage is implied by this decision.</p>
+      </div>
+    </section>
+
+    <section class="focus-section" id="decision">
+      <div class="question-head">
+        <span class="pill observed">Decision made</span>
+        <h2>Should this become a reporting platform now?</h2>
+        <p>No. Keep the proven workflow, preserve the renderer seam, and wait for repeated evidence before adding product surface.</p>
+      </div>
+      <div class="diagram">
+        <div class="diagram-title">
+          <div>
+            <h3>What did the pilot prove—and what follows?</h3>
+            <p>Observed implementation evidence is on top. The bounded recommendation is below.</p>
+          </div>
+          <span class="pill observed">Reviewed baseline · commit 517f77f</span>
+        </div>
+        <svg viewBox="0 0 940 430" role="img" aria-labelledby="decision-map-title decision-map-desc">
+          <title id="decision-map-title">Three-agent reporting decision map</title>
+          <desc id="decision-map-desc">Codex, Claude, and Kimi adapters feed one reporting module and accepted projection consumed by Canvas and standalone HTML. The recommendation is to keep using the workflow, change only presentation when evidence requires it, and not build a larger platform yet.</desc>
+          <defs>
+            <marker id="decisionArrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+              <path d="M0,0 L10,4 L0,8 Z" fill="#255bb5"></path>
+            </marker>
+          </defs>
+
+          <rect x="18" y="34" width="190" height="88" rx="14" class="box-violet"></rect>
+          <text x="38" y="58" class="svg-small">«adapter set» · observed</text>
+          <text x="38" y="82" class="svg-label">Codex · Claude · Kimi</text>
+          <text x="38" y="103" class="svg-small">3 native session formats</text>
+
+          <rect x="252" y="34" width="198" height="88" rx="14" class="box-blue"></rect>
+          <text x="272" y="58" class="svg-small">«module» · authority</text>
+          <text x="272" y="82" class="svg-label">Work Session Reporting</text>
+          <text x="272" y="103" class="svg-small">one contract · one acceptance path</text>
+
+          <rect x="494" y="34" width="190" height="88" rx="14" class="box-green"></rect>
+          <text x="514" y="58" class="svg-small">«projection» · public</text>
+          <text x="514" y="82" class="svg-label">Accepted report JSON</text>
+          <text x="514" y="103" class="svg-small">redacted · digest-bound</text>
+
+          <rect x="728" y="34" width="194" height="88" rx="14" class="box"></rect>
+          <text x="748" y="58" class="svg-small">«caller modules» · observed</text>
+          <text x="748" y="82" class="svg-label">Canvas + HTML</text>
+          <text x="748" y="103" class="svg-small">2 hosts · same report meaning</text>
+
+          <path d="M208 78 H252" stroke="#255bb5" stroke-width="2" fill="none" marker-end="url(#decisionArrow)"></path>
+          <text x="214" y="67" class="svg-tiny">normalize</text>
+          <path d="M450 78 H494" stroke="#255bb5" stroke-width="2" fill="none" marker-end="url(#decisionArrow)"></path>
+          <text x="457" y="67" class="svg-tiny">publish</text>
+          <path d="M684 78 H728" stroke="#255bb5" stroke-width="2" fill="none" marker-end="url(#decisionArrow)"></path>
+          <text x="691" y="67" class="svg-tiny">render</text>
+
+          <path d="M589 122 V164 H470 V188" stroke="#255bb5" stroke-width="2" fill="none" marker-end="url(#decisionArrow)"></path>
+          <text x="495" y="155" class="svg-tiny">3 sessions · 2 hosts · 136 tests</text>
+
+          <rect x="330" y="188" width="280" height="76" rx="18" class="box-blue"></rect>
+          <text x="350" y="213" class="svg-small">«decision» · current roadmap</text>
+          <text x="350" y="239" class="svg-label">Keep the capability narrow</text>
+
+          <path d="M470 264 V294 H155 V320" stroke="#255bb5" stroke-width="2" fill="none" marker-end="url(#decisionArrow)"></path>
+          <path d="M470 264 V320" stroke="#255bb5" stroke-width="2" fill="none" marker-end="url(#decisionArrow)"></path>
+          <path d="M470 294 H785 V320" stroke="#255bb5" stroke-width="2" fill="none" marker-end="url(#decisionArrow)"></path>
+
+          <rect x="18" y="320" width="274" height="88" rx="14" class="box-green"></rect>
+          <text x="38" y="345" class="svg-small">GO · recommended</text>
+          <text x="38" y="370" class="svg-label">Keep making reports</text>
+          <text x="38" y="391" class="svg-small">real session + exact repository proof</text>
+
+          <rect x="333" y="320" width="274" height="88" rx="14" class="box-violet"></rect>
+          <text x="353" y="345" class="svg-small">CHANGE · evidence-led</text>
+          <text x="353" y="370" class="svg-label">Evolve the two renderers</text>
+          <text x="353" y="391" class="svg-small">layout and aesthetics stay replaceable</text>
+
+          <rect x="648" y="320" width="274" height="88" rx="14" class="box-rose"></rect>
+          <text x="668" y="345" class="svg-small">STOP · not justified</text>
+          <text x="668" y="370" class="svg-label">No platform expansion</text>
+          <text x="668" y="391" class="svg-small">no library · watcher · service · auth</text>
+        </svg>
+        <div class="legend">
+          <span><b>Top row:</b> observed modules and data flow</span>
+          <span><b>Bottom row:</b> current recommendation, not built functionality</span>
+          <span><b>Arrow:</b> the labelled result that supports the next node</span>
+        </div>
+        <p class="takeaway"><strong>Plain version:</strong> the reusable seam earned a “go.” A reporting product did not.</p>
       </div>
     </section>
 
@@ -1119,6 +1211,31 @@
 
       <details class="detail-topic">
         <summary>
+          <span><span class="detail-topic-title">Architecture decision and measured score</span><span class="detail-topic-note">Why the POC is approved while the production-platform label is withheld.</span></span>
+        </summary>
+        <div class="detail-topic-body">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Dimension</th><th>Rating</th><th>Points</th><th>Observed evidence</th></tr></thead>
+              <tbody>
+                <tr><td>Ownership and authority</td><td>5 / 5</td><td>15 / 15</td><td>One capability owns sessions, receipts, compilation, acceptance, and report identity.</td></tr>
+                <tr><td>Module depth</td><td>4 / 5</td><td>12 / 15</td><td>Small host-neutral interface; CLI still coordinates the explicit local publication workflow.</td></tr>
+                <tr><td>Coupling and direction</td><td>5 / 5</td><td>15 / 15</td><td>Six core files, ten relative import edges, zero cycles; no React, renderer, or tool imports in the core.</td></tr>
+                <tr><td>Composability</td><td>5 / 5</td><td>15 / 15</td><td>Canvas and standalone HTML consume the same runtime-validated accepted projection.</td></tr>
+                <tr><td>Contract correctness</td><td>4 / 5</td><td>8 / 10</td><td>Typed IDs, strict schemas, digests, stale rejection, idempotency, and typed failures; no production compatibility policy.</td></tr>
+                <tr><td>Verification</td><td>5 / 5</td><td>15 / 15</td><td>136 tests cover adapters, invariants, privacy, hostile mutations, both hosts, retries, locking, and immutable HTML.</td></tr>
+                <tr><td>Changeability</td><td>4 / 5</td><td>8 / 10</td><td>Three providers share one seam; moving the public pointer exposed and removed three fixture-shaped test assumptions.</td></tr>
+                <tr><td>Operability and security</td><td>2 / 5</td><td>2 / 5</td><td>Bounded local single-writer workflow with clear failure truth; no authentication, authorization, metrics, or service operations.</td></tr>
+              </tbody>
+              <tfoot><tr><td><strong>Observed total</strong></td><td></td><td><strong>90 / 100</strong></td><td><strong>POC approved; production “elite” label withheld.</strong></td></tr></tfoot>
+            </table>
+          </div>
+          <p class="proof-note"><strong>Red-gate result:</strong> current-host and second-host scenarios pass, private consumer imports are zero, and the capability import graph has zero cycles. Required lint, test, tool typecheck, and build gates are not enforced by a checked-in CI workflow, so the elite label does not pass.</p>
+        </div>
+      </details>
+
+      <details class="detail-topic">
+        <summary>
           <span><span class="detail-topic-title">What shipped</span><span class="detail-topic-note">The selected report, its route, and what was deliberately removed.</span></span>
         </summary>
         <div class="detail-topic-body">
@@ -1147,31 +1264,31 @@
         <div class="route" aria-label="Accepted report identity chain">
           <div class="route-node">
             <small>Source digest</small>
-            <strong class="mono">b4c1c4e0…84611a4c</strong>
+            <strong class="mono">9e8a8ff9…17c0176f</strong>
           </div>
           <div class="arrow">→</div>
           <div class="route-node">
             <small>Receipts digest</small>
-            <strong class="mono">791c4891…6fe560d</strong>
+            <strong class="mono">280c0933…66850cd</strong>
           </div>
           <div class="arrow">→</div>
           <div class="route-node">
             <small>Report revision</small>
-            <strong class="mono">6bddf213…09ff885a</strong>
+            <strong class="mono">4ecc631e…314bd3ad</strong>
           </div>
           <div class="arrow">→</div>
           <div class="route-node">
             <small>Publication digest</small>
-            <strong class="mono">0d12b0d6…d05a7e6a</strong>
+            <strong class="mono">8730ebc2…11843abb</strong>
           </div>
         </div>
         <div class="legend">
-          <span><b>Evidence commit:</b> <span class="mono">e4c43963a9922b84f6db9ce440f62e3b6cdff148</span></span>
-          <span><b>Evidence tree:</b> <span class="mono">a2f32744e8ce15e70603e1f40172ea4f8028ba5d</span></span>
-          <span><b>Publication commit:</b> <span class="mono">634ae26fafbc5520d7af1350ed6a20afeb8cfeff</span></span>
+          <span><b>Evidence commit:</b> <span class="mono">59044733ad45e2fa0fbf06d10a65b678edc11506</span></span>
+          <span><b>Evidence tree:</b> <span class="mono">04cda2859f48c4ca7967c69aa501d8007dd099f9</span></span>
+          <span><b>Publication commit:</b> <span class="mono">a9e02868a633cf08ba9d13a4944876b3ca31ee8c</span></span>
         </div>
       </div>
-          <p class="proof-note"><strong>Verification:</strong> 133 checks passed. Both earlier report files kept their original hashes.</p>
+          <p class="proof-note"><strong>Verification:</strong> 136 tests, lint, tool typecheck, and production build passed. All five immutable standalone report hashes are pinned.</p>
         </div>
       </details>
 
@@ -1295,7 +1412,7 @@ http://localhost:5173/?report=work-session</pre>
         </div>
       </details>
 
-      <p class="proof-note"><strong>Current stop point:</strong> the three-agent seam is proven. Review the three reports and make the go / change / stop decision before building anything larger.</p>
+      <p class="proof-note"><strong>Current stop point:</strong> the roadmap is complete. Keep using the reporting workflow; change presentation when evidence demands it; do not build the larger platform yet.</p>
       </div>
     </details>
 
