@@ -237,6 +237,7 @@ function assertStoredProjection(
     sessionId: owner.sessionId,
     outcome: projection.outcome,
     nextActions: projection.nextActions,
+    renderingProfile: projection.renderingProfile,
   });
   const expectedReceiptsDigest = receiptsDigest(receipts);
   const expectedProjectionDigest = projectionDigest(expectedProjection);

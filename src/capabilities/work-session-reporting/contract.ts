@@ -142,10 +142,14 @@ export const nextActionSchema = z.object({
 }).strict();
 export type NextAction = z.infer<typeof nextActionSchema>;
 
+export const renderingProfileSchema = z.enum(['evidence-led-v2']);
+export type RenderingProfile = z.infer<typeof renderingProfileSchema>;
+
 export const compileReportInputSchema = z.object({
   sessionId: workSessionIdSchema,
   outcome: outcomeSchema,
   nextActions: z.array(nextActionSchema).max(50).default([]),
+  renderingProfile: renderingProfileSchema.optional(),
 }).strict();
 export type CompileReportInput = z.infer<typeof compileReportInputSchema>;
 
@@ -212,6 +216,7 @@ export const reportProjectionSchema = z.object({
   sessionId: workSessionIdSchema,
   sourceDigest: digestSchema,
   receiptsDigest: digestSchema,
+  renderingProfile: renderingProfileSchema.optional(),
   title: z.string().min(1),
   source: z.object({
     provider: z.enum(['codex', 'claude']),

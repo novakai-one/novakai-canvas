@@ -45,6 +45,9 @@ function changeMap(projection: PublishedReportProjection): string {
 /** Deterministic, dependency-free second-host rendering of an accepted report projection. */
 export function renderStandaloneReport(projection: PublishedReportProjection): string {
   const status = projection.outcome.status;
+  const artifactsSection = projection.renderingProfile === 'evidence-led-v2'
+    ? `  <section><h2>What did you get?</h2><div class="cards">${receiptCards(projection.artifacts, 'No delivered artifacts were recorded.')}</div></section>\n`
+    : '';
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -85,7 +88,7 @@ export function renderStandaloneReport(projection: PublishedReportProjection): s
   <section><h2>How did the report become trustworthy?</h2><div class="workflow">
     ${projection.workflow.map((step, index) => `<article class="step"><b>${index + 1}</b><strong>${escape(step.label)}</strong><span>${escape(step.detail)}</span></article>`).join('')}
   </div></section>
-  <section><h2>What proves it?</h2><div class="cards">${receiptCards(projection.proofs, 'No proof receipts were recorded.')}</div></section>
+${artifactsSection}  <section><h2>What proves it?</h2><div class="cards">${receiptCards(projection.proofs, 'No proof receipts were recorded.')}</div></section>
   <section><h2>Which decisions matter?</h2><div class="cards">${receiptCards(projection.decisions, 'No architectural decisions were recorded.')}</div></section>
   <section><h2>What remains?</h2><div class="next">
     ${projection.nextActions.length === 0 ? '<p class="empty">No further action is recorded for this completed report.</p>' : projection.nextActions.map((action) => `<div><strong>${escape(action.label)}</strong> · ${escape(action.status)}</div>`).join('')}

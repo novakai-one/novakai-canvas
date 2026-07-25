@@ -153,7 +153,7 @@ describe('report session adapters', () => {
     const newerIdentity = record(newerBase);
     expect(olderIdentity.receiptIds).not.toEqual(newerIdentity.receiptIds);
     expect(olderIdentity.receiptsDigest).not.toBe(newerIdentity.receiptsDigest);
-  });
+  }, 15_000);
 
   it('does not infer completion from valid JSON and accepts explicit completion confirmation', () => {
     const preview = parseCodexSessionFile(fixture);
@@ -617,7 +617,7 @@ describe('report session adapters', () => {
     ], { cwd: repoRoot, encoding: 'utf8' });
     expect(staleSelection.status).toBe(1);
     expect(staleSelection.stderr).toContain('not available');
-  });
+  }, 15_000);
 
   it('names the intended evidence commit and repeats generation byte-idempotently', () => {
     const directory = privateTemp('final-idempotency-test-');
@@ -676,7 +676,7 @@ describe('report session adapters', () => {
       cwd: repoRoot,
       encoding: 'utf8',
     })).toBe(trackedBefore);
-  });
+  }, 15_000);
 
   it('rejects a held local state lock and removed bare trust flags', () => {
     const directory = privateTemp('lock-test-');

@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "provider": "codex",
+    "nativeSessionId": "019f93c9-3a1d-71b0-904c-7f0503614043"
+  },
+  "outcome": {
+    "status": "complete",
+    "headline": "Novakai Canvas now explains agent work with evidence, not transcript prose.",
+    "summary": "A real Codex session, source-bound agent brief, repository diff, and executed acceptance proof now compile into one accepted report shown as a Canvas evidence wall and independent standalone HTML."
+  },
+  "nextActions": [
+    {
+      "id": "validate-three-genuine-sessions",
+      "label": "Use this reporting workflow on three genuine sessions before building navigation or a report library",
+      "status": "queued",
+      "dependsOn": []
+    }
+  ],
+  "renderingProfile": "evidence-led-v2",
+  "receipts": [
+    {
+      "type": "artifact",
+      "title": "Stable evidence-wall report mode",
+      "summary": "The selected Evidence Wall is a production route inside Canvas. It leads with outcome, delivered artifacts, decisions, and executed proof while leaving the ordinary architecture canvas unchanged.",
+      "evidence": [
+        {
+          "kind": "file",
+          "label": "Stable report route",
+          "uri": "repo:src/main.tsx"
+        },
+        {
+          "kind": "file",
+          "label": "Evidence-wall host",
+          "uri": "repo:src/presentation/work-session-report/WorkSessionReport.tsx"
+        },
+        {
+          "kind": "file",
+          "label": "Report visual system",
+          "uri": "repo:src/presentation/work-session-report/work-session-report.css"
+        }
+      ],
+      "tags": [
+        "canvas-host",
+        "delivered"
+      ]
+    },
+    {
+      "type": "artifact",
+      "title": "Actual Codex session ingestion",
+      "summary": "The report source is an explicitly selected real Codex JSONL session. Known runtime records are classified, unknown content fails closed, and the accepted report records the normalized event and warning counts.",
+      "evidence": [
+        {
+          "kind": "file",
+          "label": "Codex session adapter",
+          "uri": "repo:tools/report-session/codex-session-source.ts"
+        },
+        {
+          "kind": "test",
+          "label": "Current Codex format contract",
+          "uri": "repo:tools/report-session/codex-session-current-format.test.ts"
+        }
+      ],
+      "tags": [
+        "actual-session",
+        "source-adapter"
+      ]
+    },
+    {
+      "type": "artifact",
+      "title": "Independent immutable HTML report",
+      "summary": "The same accepted public projection deterministically renders without React or Canvas. Old report revisions retain their original renderer profile and bytes.",
+      "evidence": [
+        {
+          "kind": "file",
+          "label": "Standalone HTML renderer",
+          "uri": "repo:tools/report-session/html-renderer.ts"
+        },
+        {
+          "kind": "file",
+          "label": "Publication integrity adapter",
+          "uri": "repo:tools/report-session/publish-report.ts"
+        }
+      ],
+      "tags": [
+        "second-host",
+        "immutable"
+      ]
+    },
+    {
+      "type": "artifact",
+      "title": "Source-bound agent work brief",
+      "summary": "Agents can now submit a small validated outcome, artifact, decision, blocker, and next-action brief. The adapter binds those claims to the imported session, rejects stale source identity, and makes agent-authored proof impossible.",
+      "evidence": [
+        {
+          "kind": "file",
+          "label": "Agent work brief contract",
+          "uri": "repo:tools/report-session/agent-work-brief.ts"
+        },
+        {
+          "kind": "test",
+          "label": "Claim and proof-separation tests",
+          "uri": "repo:tools/report-session/agent-work-brief.test.ts"
+        },
+        {
+          "kind": "file",
+          "label": "Report generation composition root",
+          "uri": "repo:tools/report-session/cli.ts"
+        }
+      ],
+      "tags": [
+        "agent-protocol",
+        "source-bound"
+      ]
+    },
+    {
+      "type": "artifact",
+      "title": "Visual completion handover",
+      "summary": "The handover shows the delivered pipeline, exact report identities, host screenshots, operating commands, assumptions, and the boundary between this report mode and a future Canvas product.",
+      "evidence": [
+        {
+          "kind": "artifact",
+          "label": "Open the visual handover",
+          "uri": "repo:docs/visual-reporting/Novakai-Visual-Reporting-Handover.html"
+        }
+      ],
+      "tags": [
+        "handover",
+        "show-dont-tell"
+      ]
+    },
+    {
+      "type": "decision",
+      "title": "Treat reporting as one Canvas mode, not the Canvas redesign",
+      "summary": "This POC proves a Work Session Report capability inside the existing application. It does not propose new global navigation, a new architecture editor, or the final visual language for every future Canvas mode.",
+      "evidence": [
+        {
+          "kind": "file",
+          "label": "Early report-route composition",
+          "uri": "repo:src/main.tsx"
+        },
+        {
+          "kind": "artifact",
+          "label": "Roadmap boundary",
+          "uri": "repo:docs/visual-reporting/Novakai-Visual-Reporting-Handover.html"
+        }
+      ],
+      "tags": [
+        "scope",
+        "canvas-mode"
+      ]
+    },
+    {
+      "type": "decision",
+      "title": "Keep agent claims separate from acceptance proof",
+      "summary": "The brief may explain work but cannot author proof. Final generation still executes npm run check, binds its output digest to every evidence receipt, and refuses completion when proof fails.",
+      "evidence": [
+        {
+          "kind": "file",
+          "label": "Brief schema excludes proof",
+          "uri": "repo:tools/report-session/agent-work-brief.ts"
+        },
+        {
+          "kind": "file",
+          "label": "Executed proof composition",
+          "uri": "repo:tools/report-session/cli.ts"
+        }
+      ],
+      "tags": [
+        "authority",
+        "proof"
+      ]
+    },
+    {
+      "type": "decision",
+      "title": "Promote the Evidence Wall and delete the comparison variants",
+      "summary": "Variant C was selected because it makes delivered artifacts and proof primary. A, B, the switcher, prototype route, keyboard cycling, and losing tests were deleted rather than retained as a compatibility museum.",
+      "evidence": [
+        {
+          "kind": "file",
+          "label": "Stable Evidence Wall",
+          "uri": "repo:src/presentation/work-session-report/WorkSessionReport.tsx"
+        },
+        {
+          "kind": "test",
+          "label": "Stable-route deletion gate",
+          "uri": "repo:tools/report-session/work-session-report.test.ts"
+        }
+      ],
+      "tags": [
+        "visual-selection",
+        "superseded-path-deleted"
+      ]
+    },
+    {
+      "type": "decision",
+      "title": "Stop at the usefulness gate before building the platform",
+      "summary": "The next decision is whether reports from three different real sessions remove the need to read transcripts. Navigation, report libraries, live streaming, generic composition, and a second visual product remain deliberately unbuilt.",
+      "evidence": [
+        {
+          "kind": "artifact",
+          "label": "POC boundary and roadmap",
+          "uri": "repo:docs/visual-reporting/Novakai-Visual-Reporting-Handover.html"
+        }
+      ],
+      "tags": [
+        "roadmap",
+        "hard-stop"
+      ]
+    }
+  ]
+}

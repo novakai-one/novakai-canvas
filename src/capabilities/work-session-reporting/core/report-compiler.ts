@@ -114,6 +114,7 @@ export function compileProjection(
     receiptsDigest,
     outcome: input.outcome,
     nextActions: input.nextActions,
+    renderingProfile: input.renderingProfile,
   })}` as ReportRevisionId;
   return {
     schemaVersion: 1,
@@ -121,6 +122,7 @@ export function compileProjection(
     sessionId: session.id,
     sourceDigest: session.sourceDigest,
     receiptsDigest,
+    ...(input.renderingProfile ? { renderingProfile: input.renderingProfile } : {}),
     title: input.outcome.headline,
     source: {
       provider: session.provider,

@@ -154,6 +154,9 @@ export function createPublishedProjection(
     reportRevisionId: report.projection.reportRevisionId,
     sourceDigest: report.projection.sourceDigest,
     receiptsDigest: report.projection.receiptsDigest,
+    ...(report.projection.renderingProfile
+      ? { renderingProfile: report.projection.renderingProfile }
+      : {}),
     title: redactText(report.projection.title),
     source: structuredClone(report.projection.source),
     outcome: {

@@ -39,6 +39,7 @@ import {
   collectRepositoryReceipts,
   resolveRepositoryEvidenceHead,
 } from './repository-evidence.ts';
+import { loadAgentWorkBrief } from './agent-work-brief.ts';
 
 const REPO_ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const DEFAULT_STATE = join(REPO_ROOT, '.novakai-reports/reporting-state.json');
@@ -53,6 +54,7 @@ interface Args {
   htmlDirectory: string;
   base: string;
   evidenceHead?: string;
+  brief?: string;
   final: boolean;
   complete: boolean;
   report?: string;
@@ -77,6 +79,7 @@ function parseArgs(argv: string[]): Args {
     else if (value === '--html-directory') args.htmlDirectory = resolve(argv[(index += 1)]);
     else if (value === '--base') args.base = argv[(index += 1)];
     else if (value === '--evidence-head') args.evidenceHead = argv[(index += 1)];
+    else if (value === '--brief') args.brief = resolve(argv[(index += 1)]);
     else if (value === '--report') args.report = argv[(index += 1)];
     else if (value === '--final') args.final = true;
     else if (value === '--complete') args.complete = true;
@@ -266,16 +269,18 @@ function generate(args: Args): void {
       { confirmComplete: args.complete },
     );
     const session = valueOrThrow(reporting.importSession(sessionInput));
+    const agentBrief = args.brief ? loadAgentWorkBrief(args.brief, session) : undefined;
     const receipts = collectRepositoryReceipts({
       repoRoot: REPO_ROOT,
       baseRef: args.base,
       evidenceHeadRef: evidenceHead.commit,
       sessionId: session.id,
+      includeNarrativeReceipts: agentBrief === undefined,
     });
-    const repositoryReceipts = receipts.map((receipt) =>
+    const evidenceReceipts = [...receipts, ...(agentBrief?.receipts ?? [])].map((receipt) =>
       valueOrThrow(reporting.recordReceipt(receipt)));
-    const repositoryReceiptsDigest = digest(JSON.stringify(
-      repositoryReceipts.map((receipt) => receipt.id).sort(),
+    const evidenceReceiptsDigest = digest(JSON.stringify(
+      evidenceReceipts.map((receipt) => receipt.id).sort(),
     ));
     if (args.final) {
       const reusableProof = reporting.snapshot().receipts.find((receipt) =>
@@ -285,10 +290,10 @@ function generate(args: Args): void {
         && receipt.proof?.command === 'npm run check'
         && receipt.proof.exitCode === 0
         && receipt.evidence.some((evidence) =>
-          evidence.uri === `digest:${repositoryReceiptsDigest}`));
+          evidence.uri === `digest:${evidenceReceiptsDigest}`));
       const proof = reusableProof
         ?? valueOrThrow(reporting.recordReceipt(
-          executeCheckProof(session.id, repositoryReceiptsDigest),
+          executeCheckProof(session.id, evidenceReceiptsDigest),
         ));
       if (proof.proof?.exitCode !== 0) {
         throw new Error(`VerificationFailed: ${proof.proof?.command} exited ${proof.proof?.exitCode}.`);
@@ -296,7 +301,7 @@ function generate(args: Args): void {
     }
     const draft = valueOrThrow(reporting.compileReport({
       sessionId: session.id,
-      ...reportGenerationPolicy(args.final),
+      ...(agentBrief?.policy ?? reportGenerationPolicy(args.final)),
     }));
     const accepted = valueOrThrow(reporting.acceptReport({
       reportRevisionId: draft.id,
@@ -365,6 +370,7 @@ Usage
 Options
   --session <path>         Codex JSONL source; discovery is preview-only
   --complete               Explicitly confirm the selected session is terminal
+  --brief <path>           Validated agent-authored claims bound to this session
   --final                  Execute npm run check and require completion policy
   --state <path>           Private authority path (defaults outside public/)
   --public <path>          Runtime-validated public accepted-report envelope

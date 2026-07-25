@@ -12,6 +12,7 @@ interface EvidenceOptions {
   baseRef: string;
   evidenceHeadRef: string;
   sessionId: WorkSessionId;
+  includeNarrativeReceipts?: boolean;
 }
 
 export interface RepositoryEvidenceHead {
@@ -253,7 +254,7 @@ export function collectRepositoryReceipts(options: EvidenceOptions): RecordRecei
       ? [changeReceipt(area, matching, options.sessionId, identityEvidence)]
       : [];
   });
-  receipts.push(
+  if (options.includeNarrativeReceipts !== false) receipts.push(
     {
       sessionId: options.sessionId,
       type: 'decision',
