@@ -42,9 +42,39 @@ function changeMap(projection: PublishedReportProjection): string {
   return `<div class="map-nodes">${nodes}</div><ul class="edge-list">${edges}</ul>`;
 }
 
+function changeStories(receipts: readonly PublishedReceipt[]): string {
+  if (receipts.length === 0) {
+    return '<p class="empty">No specific before-to-after change claims were recorded.</p>';
+  }
+  return receipts.map((receipt) => `
+    <article class="change-story">
+      <span class="receipt-type">change</span>
+      <h3>${escape(receipt.title)}</h3>
+      <div class="before-after">
+        <div><small>Before</small><p>${escape(receipt.changeNarrative?.before ?? '')}</p></div>
+        <b>→</b>
+        <div><small>After</small><p>${escape(receipt.changeNarrative?.after ?? '')}</p></div>
+      </div>
+      <p class="why"><strong>Why</strong>${escape(receipt.changeNarrative?.why ?? '')}</p>
+      <div class="evidence">${receipt.evidence
+        .filter((item) => item.kind === 'file')
+        .map((item) => `<span>file · ${escape(item.label)}</span>`).join('')}</div>
+    </article>`).join('');
+}
+
 /** Deterministic, dependency-free second-host rendering of an accepted report projection. */
 export function renderStandaloneReport(projection: PublishedReportProjection): string {
   const status = projection.outcome.status;
+  const changesSection = projection.renderingProfile === 'evidence-led-v2'
+    ? `  <section><h2>What changed — before → after?</h2><div class="change-stories">${changeStories(projection.changeDetails ?? [])}</div></section>
+  <section><h2>Where did it land?</h2>${changeMap(projection)}</section>\n`
+    : `  <section><h2>What changed?</h2>${changeMap(projection)}</section>\n`;
+  const changeStyles = projection.renderingProfile === 'evidence-led-v2'
+    ? '    .change-stories{display:grid;gap:12px}.change-story{padding:18px;border:1px solid var(--line);border-top:4px solid var(--blue);border-radius:15px;background:#fff}.change-story h3{margin:10px 0 12px}.before-after{display:grid;align-items:stretch;gap:9px;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}.before-after>div{padding:13px;border:1px solid var(--line);border-radius:10px;background:#f8fafc}.before-after>div:last-child{border-color:#b8ddca;background:var(--green2)}.before-after>b{display:grid;place-items:center;color:var(--blue);font-size:22px}.before-after small,.why strong{display:block;color:var(--blue);font-weight:850;text-transform:uppercase;font-size:10px;letter-spacing:.05em}.before-after p{margin:5px 0 0;color:var(--muted)}.why{color:var(--muted)}.why strong{margin-bottom:4px;color:var(--violet)}\n'
+    : '';
+  const responsiveChangeStyles = projection.renderingProfile === 'evidence-led-v2'
+    ? '.before-after{grid-template-columns:1fr}.before-after>b{transform:rotate(90deg)}'
+    : '';
   const artifactsSection = projection.renderingProfile === 'evidence-led-v2'
     ? `  <section><h2>What did you get?</h2><div class="cards">${receiptCards(projection.artifacts, 'No delivered artifacts were recorded.')}</div></section>\n`
     : '';
@@ -64,8 +94,8 @@ export function renderStandaloneReport(projection: PublishedReportProjection): s
     .map-nodes,.cards,.workflow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.map-node,.receipt,.step{padding:17px;border:1px solid var(--line);border-radius:15px;background:#fff}.map-node span{color:var(--muted);font-size:11px;font-weight:800}.map-node strong,.map-node small{display:block}.map-node strong{margin:8px 0}.map-node[data-role=module]{border-top:4px solid var(--green)}.map-node[data-role=adapter]{border-top:4px solid var(--violet)}.map-node[data-role=caller]{border-top:4px solid var(--blue)}
     .edge-list{margin:12px 0 0;padding:0;list-style:none}.edge-list li{padding:9px 0;border-bottom:1px solid var(--line)}.edge-list strong{margin-left:10px}.step{position:relative;padding-left:54px}.step b{position:absolute;left:16px;top:16px;display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:var(--blue2);color:var(--blue)}.step span{display:block;color:var(--muted);font-size:13px}
     .receipt h3{margin:10px 0 5px}.receipt p{color:var(--muted)}.evidence{display:flex;flex-wrap:wrap;gap:6px}.evidence span,.evidence a{padding:4px 7px;border-radius:7px;background:#f1f5f9;font-size:11px}.evidence a{color:var(--blue)}.next{display:grid;gap:8px}.next div{padding:13px;border-left:4px solid var(--blue);border-radius:8px;background:#fff}.empty{padding:18px;border:1px dashed var(--line);border-radius:14px;color:var(--muted)}
-    footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font:12px ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere}
-    @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.map-nodes,.cards,.workflow{grid-template-columns:1fr}}
+${changeStyles}    footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font:12px ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere}
+    @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.map-nodes,.cards,.workflow{grid-template-columns:1fr}${responsiveChangeStyles}}
   </style>
 </head>
 <body>
@@ -84,8 +114,7 @@ export function renderStandaloneReport(projection: PublishedReportProjection): s
     ${Object.entries(projection.stats).map(([label, value]) => `<div class="stat"><b>${value}</b>${escape(label)}</div>`).join('')}
   </div>
 
-  <section><h2>What changed?</h2>${changeMap(projection)}</section>
-  <section><h2>How did the report become trustworthy?</h2><div class="workflow">
+${changesSection}  <section><h2>How did the report become trustworthy?</h2><div class="workflow">
     ${projection.workflow.map((step, index) => `<article class="step"><b>${index + 1}</b><strong>${escape(step.label)}</strong><span>${escape(step.detail)}</span></article>`).join('')}
   </div></section>
 ${artifactsSection}  <section><h2>What proves it?</h2><div class="cards">${receiptCards(projection.proofs, 'No proof receipts were recorded.')}</div></section>

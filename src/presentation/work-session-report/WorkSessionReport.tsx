@@ -278,6 +278,56 @@ function NextAction({ projection }: { projection: PublishedReportProjection }) {
   );
 }
 
+function ChangeStory({ projection }: { projection: PublishedReportProjection }) {
+  if (!projection.changeDetails || projection.changeDetails.length === 0) return null;
+  return (
+    <section className="report-change-story" aria-label="Specific before-to-after changes">
+      <div className="wall-heading">
+        <div>
+          <span>Change story</span>
+          <strong>What changed — and why</strong>
+        </div>
+        <small>Agent explanation · repository-bound files · separate executed proof below</small>
+      </div>
+      <div className="change-story-grid">
+        {projection.changeDetails.map((receipt) => (
+          <article className="change-story-card" key={receipt.id}>
+            <div className="change-story-title">
+              <span>Change receipt</span>
+              <h3>{receipt.title}</h3>
+            </div>
+            <div className="before-after-flow">
+              <div>
+                <small>Before</small>
+                <p>{receipt.changeNarrative?.before}</p>
+              </div>
+              <b aria-hidden="true">→</b>
+              <div>
+                <small>After</small>
+                <p>{receipt.changeNarrative?.after}</p>
+              </div>
+            </div>
+            <p className="change-story-why">
+              <strong>Why</strong>
+              {receipt.changeNarrative?.why}
+            </p>
+            <div className="change-story-files">
+              {receipt.evidence
+                .filter((evidence) => evidence.kind === 'file')
+                .map((evidence, index) => (
+                  <EvidenceReference
+                    evidence={evidence}
+                    key={`${evidence.label}:${index}`}
+                  />
+                ))}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 const MAP_POSITIONS = [
   { left: 8, top: 13 },
   { left: 62, top: 11 },
@@ -380,11 +430,12 @@ function WorkSessionReportView({ report }: { report: WorkSessionReportViewModel 
         <OutcomeBrief projection={projection} />
         <NextAction projection={projection} />
       </div>
+      <ChangeStory projection={projection} />
       <div className="evidence-wall-layout">
         <section className="evidence-wall">
           <div className="wall-heading">
             <div><span>Primary surface</span><strong>Accepted receipts</strong></div>
-            <small>Proof and artifacts first · select a receipt to inspect its published evidence</small>
+            <small>Artifacts, decisions, and proof · select a receipt to inspect its published evidence</small>
           </div>
           <div className="evidence-wall-grid">
             {receipts.map((receipt) => (

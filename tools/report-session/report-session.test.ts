@@ -549,6 +549,19 @@ describe('report session adapters', () => {
     expect(html).not.toContain('embedded Canvas');
   });
 
+  it('keeps every checked-in v1 standalone report byte-for-byte immutable', () => {
+    const immutableV1Reports = {
+      'docs/visual-reporting/reports/report-71adacbefcd482ba0d120cbcc662f32d8de8d97e8eadc3a1ffeac0abed802ce6.html':
+        'sha256:22e43ead9f1a95cf08cc5d6e23fcf4937ef50534bcb148bd2cddcdb23fea67c5',
+      'docs/visual-reporting/reports/report-dcc4a98d5d37a06d481f8f720a033b302336c5bd515db1a0f2aa6beecdbd6779.html':
+        'sha256:6e3365728d19ce431030d66b0373b6adfbbd1c9555d1e0e9cc47fa3b69d470c6',
+    };
+    for (const [path, expectedDigest] of Object.entries(immutableV1Reports)) {
+      expect(digestBytes(readFileSync(join(repoRoot, path), 'utf8')), path)
+        .toBe(expectedDigest);
+    }
+  });
+
   it('retains private history, publishes one atomic revision pointer, and shows the selected report', () => {
     const directory = privateTemp('cli-test-');
     const state = join(directory, 'state.json');

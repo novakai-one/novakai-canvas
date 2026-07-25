@@ -91,6 +91,13 @@ export const executedProofSchema = z.object({
 }).strict();
 export type ExecutedProof = z.infer<typeof executedProofSchema>;
 
+export const changeNarrativeSchema = z.object({
+  why: z.string().min(1).max(500),
+  before: z.string().min(1).max(500),
+  after: z.string().min(1).max(500),
+}).strict();
+export type ChangeNarrative = z.infer<typeof changeNarrativeSchema>;
+
 const receiptFields = {
   sessionId: workSessionIdSchema,
   type: receiptTypeSchema,
@@ -101,11 +108,16 @@ const receiptFields = {
   module: moduleRefSchema.optional(),
   relatedModules: z.array(moduleRefSchema).max(20).default([]),
   tags: z.array(z.string().min(1).max(80)).max(30).default([]),
+  changeNarrative: changeNarrativeSchema.optional(),
   proof: executedProofSchema.optional(),
 };
 
 function requireProof(
-  value: { type: z.infer<typeof receiptTypeSchema>; proof?: z.infer<typeof executedProofSchema> },
+  value: {
+    type: z.infer<typeof receiptTypeSchema>;
+    changeNarrative?: z.infer<typeof changeNarrativeSchema>;
+    proof?: z.infer<typeof executedProofSchema>;
+  },
   context: z.RefinementCtx,
 ): void {
   if (value.type === 'proof' && value.proof === undefined) {
@@ -120,6 +132,13 @@ function requireProof(
       code: 'custom',
       path: ['proof'],
       message: 'Only proof receipts may carry executed command evidence.',
+    });
+  }
+  if (value.type !== 'change' && value.changeNarrative !== undefined) {
+    context.addIssue({
+      code: 'custom',
+      path: ['changeNarrative'],
+      message: 'Only change receipts may carry a before-to-after narrative.',
     });
   }
 }
@@ -331,6 +350,7 @@ export const publishedReceiptSchema = z.object({
   title: z.string().min(1).max(180),
   summary: z.string().min(1).max(1_200),
   evidence: z.array(publishedEvidenceSchema),
+  changeNarrative: changeNarrativeSchema.optional(),
   proof: publishedExecutedProofSchema.optional(),
 }).strict().superRefine((value, context) => {
   if (value.type === 'proof' && value.proof === undefined) {
@@ -345,6 +365,13 @@ export const publishedReceiptSchema = z.object({
       code: 'custom',
       path: ['proof'],
       message: 'Only published proof receipts may carry executed proof.',
+    });
+  }
+  if (value.type !== 'change' && value.changeNarrative !== undefined) {
+    context.addIssue({
+      code: 'custom',
+      path: ['changeNarrative'],
+      message: 'Only published change receipts may carry a before-to-after narrative.',
     });
   }
 });
@@ -385,6 +412,7 @@ export const publishedReportProjectionSchema = reportProjectionSchema.omit({
   decisions: z.array(publishedReceiptSchema),
   blockers: z.array(publishedReceiptSchema),
   artifacts: z.array(publishedReceiptSchema),
+  changeDetails: z.array(publishedReceiptSchema).optional(),
   evidence: z.array(publishedEvidenceSchema),
 }).strict();
 export type PublishedReportProjection = z.infer<typeof publishedReportProjectionSchema>;

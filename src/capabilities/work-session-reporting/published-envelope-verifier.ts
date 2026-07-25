@@ -208,6 +208,29 @@ function verifySemantics(
     }
   }
 
+  if (projection.changeDetails) {
+    const changeDetailIds = new Set<string>();
+    for (const receipt of projection.changeDetails) {
+      const claim = claimsById.get(receipt.id);
+      if (
+        receipt.type !== 'change'
+        || receipt.changeNarrative === undefined
+        || receipt.sourceDigest !== envelope.sourceDigest
+        || !claim
+        || claim.type !== 'change'
+      ) {
+        return failure(
+          'ReceiptCoverageMismatch',
+          'Published change detail disagrees with its authoritative change claim.',
+        );
+      }
+      if (changeDetailIds.has(receipt.id)) {
+        return failure('ReceiptCoverageMismatch', 'Published change details must be unique.');
+      }
+      changeDetailIds.add(receipt.id);
+    }
+  }
+
   const derivedCounts = {
     changes: envelope.receiptClaims.filter((claim) => claim.type === 'change').length,
     decisions: envelope.receiptClaims.filter((claim) => claim.type === 'decision').length,

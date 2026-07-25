@@ -35,7 +35,7 @@ function validBrief() {
   return {
     session,
     value: {
-      schemaVersion: 1,
+      schemaVersion: 2,
       source: {
         provider: session.provider,
         nativeSessionId: session.nativeSessionId,
@@ -46,17 +46,36 @@ function validBrief() {
         headline: 'The work is visible.',
         summary: 'One source-bound brief explains what changed and why.',
       },
-      nextActions: [{
-        id: 'validate-usefulness',
-        label: 'Use the report on another real session',
-        status: 'queued',
-        dependsOn: [],
+      changes: [{
+        title: 'Make report changes concrete',
+        module: {
+          id: 'reporting.contract',
+          label: 'Reporting contract',
+          role: 'interface',
+        },
+        relatedModules: [],
+        files: ['tools/report-session/agent-work-brief.ts'],
+        why: 'Readers need to understand the work without the transcript.',
+        before: 'The report only listed generic changed areas.',
+        after: 'The report names the file, reason, and visible effect.',
+        evidence: [],
+        tags: ['report'],
       }],
-      renderingProfile: 'evidence-led-v2',
-      receipts: [{
-        type: 'artifact',
+      decisions: [{
+        title: 'Separate claims from proof',
+        rationale: 'Agents explain the work; repository execution proves it.',
+        evidence: [],
+        tags: [],
+      }],
+      problems: [{
+        problem: 'Generic summaries hid the implementation story.',
+        resolution: 'A before-to-after change claim now carries the story.',
+        evidence: [],
+        tags: [],
+      }],
+      artifacts: [{
         title: 'Evidence wall',
-        summary: 'Canvas displays the accepted public report projection.',
+        whatYouHaveNow: 'Canvas displays the accepted public report projection.',
         evidence: [{
           kind: 'file',
           label: 'Stable report host',
@@ -64,29 +83,57 @@ function validBrief() {
         }],
         tags: ['canvas'],
       }],
+      remainingWork: [{
+        id: 'validate-usefulness',
+        label: 'Use the report on another real session',
+        status: 'queued',
+        dependsOn: [],
+      }],
+      renderingProfile: 'evidence-led-v2',
     },
   } as const;
 }
 
 describe('agent work brief adapter', () => {
-  it('binds validated non-proof claims to the imported session and policy', () => {
+  it('binds the end-session Outcome / Changes / Decisions / Artifacts / Remaining-work claims', () => {
     const { session, value } = validBrief();
     const loaded = loadAgentWorkBrief(writeBrief(value), session);
 
     expect(loaded.policy).toEqual({
       outcome: value.outcome,
-      nextActions: value.nextActions,
+      nextActions: value.remainingWork,
       renderingProfile: 'evidence-led-v2',
     });
-    expect(loaded.receipts).toEqual([
+    expect(loaded.receipts).toEqual(expect.arrayContaining([
       expect.objectContaining({
         sessionId: session.id,
+        type: 'change',
+        title: 'Make report changes concrete',
+        summary: expect.stringContaining('Before — The report only listed generic changed areas.'),
+        evidence: expect.arrayContaining([
+          expect.objectContaining({
+            uri: 'repo:tools/report-session/agent-work-brief.ts',
+          }),
+        ]),
+      }),
+      expect.objectContaining({
+        type: 'decision',
+        title: 'Separate claims from proof',
+      }),
+      expect.objectContaining({
+        type: 'decision',
+        title: 'Problem resolved — Generic summaries hid the implementation story.',
+        summary: expect.stringContaining('Resolution — A before-to-after change claim'),
+        tags: ['agent-authored', 'problem-resolution'],
+      }),
+      expect.objectContaining({
         type: 'artifact',
         title: 'Evidence wall',
+        summary: 'You now have — Canvas displays the accepted public report projection.',
         tags: ['agent-authored', 'canvas'],
       }),
-    ]);
-    expect(loaded.receipts[0]).not.toHaveProperty('proof');
+    ]));
+    expect(loaded.receipts.every((receipt) => !('proof' in receipt))).toBe(true);
   });
 
   it('rejects stale identity/digest bindings and any attempt to author proof', () => {
@@ -105,17 +152,13 @@ describe('agent work brief adapter', () => {
     expect(() => loadAgentWorkBrief(writeBrief(stale), session))
       .toThrow(/expected source digest/);
 
-    const selfProof = structuredClone(value) as Record<string, unknown>;
-    selfProof.receipts = [{
-      type: 'proof',
-      title: 'Trust me',
-      summary: 'The agent claims its own proof.',
-      evidence: [],
-      proof: {
-        command: 'true',
-        exitCode: 0,
-      },
-    }];
+    const selfProof = structuredClone(value) as unknown as {
+      changes: Array<Record<string, unknown>>;
+    };
+    selfProof.changes[0]!.proof = {
+      command: 'true',
+      exitCode: 0,
+    };
     expect(() => loadAgentWorkBrief(writeBrief(selfProof), session)).toThrow();
   });
 
@@ -124,7 +167,7 @@ describe('agent work brief adapter', () => {
     const briefPath = writeBrief({
       ...value,
       outcome: { ...value.outcome, status: 'partial' },
-      nextActions: [],
+      remainingWork: [],
     });
     const directory = mkdtempSync(join(repoRoot, '.novakai-reports/agent-brief-cli-'));
     const state = join(directory, 'state.json');
@@ -164,7 +207,23 @@ describe('agent work brief adapter', () => {
     expect(envelope.projection.artifacts).toEqual([
       expect.objectContaining({ title: 'Evidence wall' }),
     ]);
+    expect(envelope.projection.stats.changes).toBeGreaterThan(0);
+    expect(envelope.projection.changeDetails).toEqual([
+      expect.objectContaining({
+        title: 'Make report changes concrete',
+        changeNarrative: {
+          before: 'The report only listed generic changed areas.',
+          after: 'The report names the file, reason, and visible effect.',
+          why: 'Readers need to understand the work without the transcript.',
+        },
+      }),
+    ]);
+    expect(envelope.projection.decisions).toEqual(expect.arrayContaining([
+      expect.objectContaining({ title: 'Problem resolved — Generic summaries hid the implementation story.' }),
+    ]));
     expect(html).toContain('What did you get?');
+    expect(html).toContain('What changed — before → after?');
+    expect(html).toContain('The report names the file, reason, and visible effect.');
     expect(html).toContain('Evidence wall');
   }, 15_000);
 });

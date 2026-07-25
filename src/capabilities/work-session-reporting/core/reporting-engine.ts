@@ -58,6 +58,7 @@ function receiptIdentity(value: {
   module?: unknown;
   relatedModules: unknown;
   tags: unknown;
+  changeNarrative?: unknown;
   proof?: unknown;
 }): unknown {
   return {
@@ -71,6 +72,7 @@ function receiptIdentity(value: {
     module: value.module,
     relatedModules: value.relatedModules,
     tags: value.tags,
+    changeNarrative: value.changeNarrative,
     proof: value.proof,
   };
 }

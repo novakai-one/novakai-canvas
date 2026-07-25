@@ -76,6 +76,15 @@ function publicReceipt(receipt: WorkReceipt): PublishedReceipt {
     title: redactText(receipt.title),
     summary: redactText(receipt.summary),
     evidence: publicEvidenceList(receipt.evidence),
+    ...(receipt.changeNarrative
+      ? {
+          changeNarrative: {
+            why: redactText(receipt.changeNarrative.why),
+            before: redactText(receipt.changeNarrative.before),
+            after: redactText(receipt.changeNarrative.after),
+          },
+        }
+      : {}),
     ...(receipt.proof
       ? {
           proof: {
@@ -148,7 +157,7 @@ export function createPublishedProjection(
   reportInput: AcceptedReport,
   receiptInputs: readonly WorkReceipt[],
 ): PublishedReportProjection {
-  const { report } = authoritativeReceiptsFor(reportInput, receiptInputs);
+  const { report, receipts } = authoritativeReceiptsFor(reportInput, receiptInputs);
   return {
     schemaVersion: 1,
     reportRevisionId: report.projection.reportRevisionId,
@@ -189,6 +198,13 @@ export function createPublishedProjection(
     decisions: report.projection.decisions.map(publicReceipt),
     blockers: report.projection.blockers.map(publicReceipt),
     artifacts: report.projection.artifacts.map(publicReceipt),
+    ...(report.projection.renderingProfile === 'evidence-led-v2'
+      ? {
+          changeDetails: receipts
+            .filter((receipt) => receipt.type === 'change' && receipt.changeNarrative)
+            .map(publicReceipt),
+        }
+      : {}),
     nextActions: report.projection.nextActions.map((action) => ({
       ...action,
       id: redactText(action.id),
