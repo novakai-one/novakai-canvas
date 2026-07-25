@@ -209,6 +209,12 @@
       height: auto;
       background: #0d1117;
     }
+    .visual-proof.mobile img {
+      max-height: 680px;
+      object-fit: contain;
+      object-position: top;
+      background: #e7eefb;
+    }
     .visual-proof figcaption {
       padding: 12px 14px;
       color: var(--muted);
@@ -479,11 +485,11 @@
       </div>
     </div>
 
-    <div class="notice">
-      <div class="icon">◌</div>
+    <div class="notice done">
+      <div class="icon">✓</div>
       <div>
-        <strong>One gate still pending: connected-browser visual QA</strong>
-        <p>The exact report revision and both renderers verify programmatically. The browser service exposed no Chrome or in-app browser instance during final QA, so desktop/mobile screenshots are not claimed here. Do not widen scope while that single gate is retried.</p>
+        <strong>Hard stop reached: exact-revision Chrome QA passed</strong>
+        <p>The accepted revision below was inspected in Canvas and standalone HTML at 1280×844 desktop and 390×844 mobile viewports. The four unedited page captures are embedded below. No further platform work is authorised.</p>
       </div>
     </div>
   </header>
@@ -640,11 +646,40 @@ http://localhost:5173/?report=work-session</pre>
           <ul class="list path">
             <li><a href="reports/report-6bddf213b159419f7175dcf9c3f8bc4aea43d72f915d0c7b813e785409ff885a.html">Immutable standalone report</a></li>
             <li><a href="../../public/reports/accepted-report.json">Current accepted public envelope</a></li>
-            <li><span class="mono">Chrome desktop/mobile screenshots</span> · pending browser connection</li>
+            <li><a href="screenshots/final-v2/canvas-desktop.png">Canvas desktop screenshot</a> · 1280×844 CSS pixels</li>
+            <li><a href="screenshots/final-v2/canvas-mobile.png">Canvas mobile screenshot</a> · 390×844 CSS pixels</li>
+            <li><a href="screenshots/final-v2/standalone-desktop.png">Standalone desktop screenshot</a> · 1280×844 CSS pixels</li>
+            <li><a href="screenshots/final-v2/standalone-mobile.png">Standalone mobile screenshot</a> · 390×844 CSS pixels</li>
           </ul>
           <p class="path" style="margin-top:12px"><strong>Revision:</strong><br /><span class="mono">report:6bddf213b159419f7175dcf9c3f8bc4aea43d72f915d0c7b813e785409ff885a</span></p>
           <p class="path" style="margin-top:8px"><strong>Public projection:</strong><br /><span class="mono">sha256:4eeebc3efc9ec05dc5a519ed718ddeced4a51b7c04db68529e9566a15e40fbb2</span></p>
         </div>
+      </div>
+
+      <div class="section-head" style="margin-top:28px">
+        <div>
+          <span class="pill observed">Chrome proof</span>
+          <h2>Same accepted revision, four real viewports</h2>
+        </div>
+        <p>Captured from the running local application with Chrome’s responsive viewport. Device pixel ratio 2 explains the 2× PNG dimensions.</p>
+      </div>
+      <div class="grid-2">
+        <figure class="visual-proof">
+          <img src="screenshots/final-v2/canvas-desktop.png" alt="Canvas-hosted accepted report at a 1280 by 844 desktop viewport" />
+          <figcaption><strong>Canvas · desktop</strong> — outcome, next action, counts, and concrete before→after change receipts remain legible at first glance.</figcaption>
+        </figure>
+        <figure class="visual-proof">
+          <img src="screenshots/final-v2/standalone-desktop.png" alt="Standalone accepted report at a 1280 by 844 desktop viewport" />
+          <figcaption><strong>Standalone HTML · desktop</strong> — the independent renderer opens the same accepted work story without React or Canvas.</figcaption>
+        </figure>
+        <figure class="visual-proof mobile">
+          <img src="screenshots/final-v2/canvas-mobile.png" alt="Canvas-hosted accepted report at a 390 by 844 mobile viewport" />
+          <figcaption><strong>Canvas · mobile</strong> — responsive single-column flow; no horizontal clipping or unreadable evidence labels observed.</figcaption>
+        </figure>
+        <figure class="visual-proof mobile">
+          <img src="screenshots/final-v2/standalone-mobile.png" alt="Standalone accepted report at a 390 by 844 mobile viewport" />
+          <figcaption><strong>Standalone HTML · mobile</strong> — title, summary, identity, and first evidence surface remain readable without transcript context.</figcaption>
+        </figure>
       </div>
 
       <div class="grid-2" style="margin-top:16px">
@@ -654,7 +689,7 @@ http://localhost:5173/?report=work-session</pre>
             <li><strong><span class="mono">$compile-mission-brief</span></strong> — converted the initial brain-dump into the execution contract and hard-stop plan.</li>
             <li><strong><span class="mono">$elite-codebase-engineering</span></strong> — enforced one authority, stable contracts, adapter seams, and second-host proof.</li>
             <li><strong><span class="mono">$create-architecture-diagrams</span></strong> — kept current/target/data-flow diagrams evidence-backed and visual.</li>
-            <li><strong>Handoff, prototype, and browser workflows</strong> — maintained continuity, compared A/B/C, and verified the selected host output.</li>
+            <li><strong>Handoff, prototype, browser, and computer-use workflows</strong> — maintained continuity, compared A/B/C, and verified the selected host output directly in Chrome.</li>
             <li><strong>Explicitly excluded:</strong> Anthropic frontend-design. It was not used.</li>
           </ul>
         </div>
@@ -670,11 +705,11 @@ http://localhost:5173/?report=work-session</pre>
         </div>
       </div>
 
-      <div class="notice">
-        <div class="icon">◌</div>
+      <div class="notice done">
+        <div class="icon">■</div>
         <div>
-          <strong>Exact remaining gate</strong>
-          <p>Reconnect a browser, inspect this exact revision in Canvas and standalone HTML at desktop and mobile widths, add the four screenshots here, then run the one permitted hostile review. No design rounds, navigation, libraries, watchers, composer, or second visual type.</p>
+          <strong>Stop boundary</strong>
+          <p>The seam is proven and every authorised final gate is green. No hostile review was run because the latest operator instruction says “no extra reviews unless I ask.” Stop here: no design rounds, navigation, libraries, watchers, composer, or second visual type.</p>
         </div>
       </div>
     </section>
