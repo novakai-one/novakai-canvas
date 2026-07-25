@@ -1,5 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
+import { basename } from 'node:path';
 import type {
   EvidenceRef,
   ModuleRef,
@@ -248,12 +249,29 @@ export function collectRepositoryReceipts(options: EvidenceOptions): RecordRecei
   const evidenceHead = resolveRepositoryEvidenceHead(options.repoRoot, options.evidenceHeadRef);
   const files = changedFiles(options.repoRoot, baseCommit, evidenceHead.commit);
   const identityEvidence = repositoryIdentity(options.repoRoot, baseCommit, evidenceHead, files);
-  const receipts = areas.flatMap((area) => {
+  const repositoryName = basename(options.repoRoot);
+  const receipts: RecordReceiptInput[] = [{
+    sessionId: options.sessionId,
+    type: 'artifact',
+    title: `Repository evidence snapshot — ${repositoryName}`,
+    summary: `${files.length} changed file${files.length === 1 ? '' : 's'} bind this report to ${repositoryName} from ${baseCommit.slice(0, 12)} to ${evidenceHead.commit.slice(0, 12)}.`,
+    occurredAt: null,
+    evidence: [
+      ...files.slice(0, 12).map((path) => ({
+        kind: 'file' as const,
+        label: path,
+        uri: evidenceUri(path),
+      })),
+      ...identityEvidence,
+    ],
+    relatedModules: [],
+    tags: ['repository-evidence', 'source-bound'],
+  }, ...areas.flatMap((area) => {
     const matching = files.filter(area.matches);
     return matching.length > 0
       ? [changeReceipt(area, matching, options.sessionId, identityEvidence)]
       : [];
-  });
+  })];
   if (options.includeNarrativeReceipts !== false) receipts.push(
     {
       sessionId: options.sessionId,

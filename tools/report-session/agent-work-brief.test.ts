@@ -204,9 +204,10 @@ describe('agent work brief adapter', () => {
     expect(verifyPublishedEnvelope(envelope, html)).toEqual(envelope);
     expect(envelope.projection.renderingProfile).toBe('evidence-led-v2');
     expect(envelope.projection.outcome.headline).toBe('The work is visible.');
-    expect(envelope.projection.artifacts).toEqual([
+    expect(envelope.projection.artifacts).toEqual(expect.arrayContaining([
       expect.objectContaining({ title: 'Evidence wall' }),
-    ]);
+      expect.objectContaining({ title: expect.stringContaining('Repository evidence snapshot') }),
+    ]));
     expect(envelope.projection.stats.changes).toBeGreaterThan(0);
     expect(envelope.projection.changeDetails).toEqual([
       expect.objectContaining({

@@ -1,0 +1,5 @@
+{"type":"ai-title","sessionId":"44444444-4444-4444-8444-444444444444","aiTitle":"Build a provider-neutral report"}
+{"type":"user","uuid":"claude-user","sessionId":"44444444-4444-4444-8444-444444444444","timestamp":"2026-07-20T01:00:00.000Z","isSidechain":false,"message":{"role":"user","content":"Build the Claude source adapter."}}
+{"type":"assistant","uuid":"claude-assistant","sessionId":"44444444-4444-4444-8444-444444444444","timestamp":"2026-07-20T01:01:00.000Z","isSidechain":false,"message":{"role":"assistant","content":[{"type":"thinking","thinking":"private reasoning"},{"type":"text","text":"The Claude source adapter is complete."}]}}
+{"type":"user","uuid":"claude-tool-result","sessionId":"44444444-4444-4444-8444-444444444444","timestamp":"2026-07-20T01:01:10.000Z","isSidechain":false,"message":{"role":"user","content":[{"type":"tool_result","content":"private tool output"}]}}
+{"type":"system","subtype":"turn_duration","sessionId":"44444444-4444-4444-8444-444444444444","timestamp":"2026-07-20T01:02:00.000Z"}

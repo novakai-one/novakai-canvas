@@ -20,12 +20,13 @@ import { fileURLToPath } from 'node:url';
 import {
   createReportingEngine,
   reportingSnapshotSchema,
+  sessionProviderSchema,
   verifyPublishedProjectionEnvelope,
   type RecordReceiptInput,
   type ReportingResult,
   type ReportingSnapshot,
+  type SessionProvider,
 } from '../../src/capabilities/work-session-reporting/index.ts';
-import { parseCodexSessionFile } from './codex-session-source.ts';
 import { reportGenerationPolicy } from './generation-policy.ts';
 import { renderStandaloneReport } from './html-renderer.ts';
 import { migrateReportingSnapshot } from './migrate-reporting-snapshot.ts';
@@ -40,6 +41,7 @@ import {
   resolveRepositoryEvidenceHead,
 } from './repository-evidence.ts';
 import { loadAgentWorkBrief } from './agent-work-brief.ts';
+import { parseSessionFile } from './session-source.ts';
 
 const REPO_ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const DEFAULT_STATE = join(REPO_ROOT, '.novakai-reports/reporting-state.json');
@@ -49,11 +51,14 @@ const DEFAULT_HTML_DIRECTORY = join(REPO_ROOT, 'docs/visual-reporting/reports');
 interface Args {
   verb: 'generate' | 'show' | 'help';
   session?: string;
+  provider: SessionProvider;
   state: string;
   publicEnvelope: string;
   htmlDirectory: string;
   base: string;
+  evidenceRepo: string;
   evidenceHead?: string;
+  checkScripts: string[];
   brief?: string;
   final: boolean;
   complete: boolean;
@@ -64,27 +69,42 @@ function parseArgs(argv: string[]): Args {
   const verb = argv[0] === 'generate' || argv[0] === 'show' ? argv[0] : 'help';
   const args: Args = {
     verb,
+    provider: 'codex',
     state: DEFAULT_STATE,
     publicEnvelope: DEFAULT_PUBLIC,
     htmlDirectory: DEFAULT_HTML_DIRECTORY,
     base: '31792d15f564a67729535ca275dc56826a85750b',
+    evidenceRepo: REPO_ROOT,
+    checkScripts: [],
     final: false,
     complete: false,
   };
   for (let index = 1; index < argv.length; index += 1) {
     const value = argv[index];
     if (value === '--session') args.session = resolve(argv[(index += 1)]);
+    else if (value === '--provider') {
+      args.provider = sessionProviderSchema.parse(argv[(index += 1)]);
+    }
     else if (value === '--state') args.state = resolve(argv[(index += 1)]);
     else if (value === '--public') args.publicEnvelope = resolve(argv[(index += 1)]);
     else if (value === '--html-directory') args.htmlDirectory = resolve(argv[(index += 1)]);
     else if (value === '--base') args.base = argv[(index += 1)];
+    else if (value === '--evidence-repo') args.evidenceRepo = resolve(argv[(index += 1)]);
     else if (value === '--evidence-head') args.evidenceHead = argv[(index += 1)];
+    else if (value === '--check-script') {
+      const script = argv[(index += 1)];
+      if (!/^[A-Za-z0-9:_-]+$/.test(script)) {
+        throw new Error(`Invalid npm check script: ${script}`);
+      }
+      args.checkScripts.push(script);
+    }
     else if (value === '--brief') args.brief = resolve(argv[(index += 1)]);
     else if (value === '--report') args.report = argv[(index += 1)];
     else if (value === '--final') args.final = true;
     else if (value === '--complete') args.complete = true;
     else throw new Error(`Unknown argument: ${value}`);
   }
+  if (args.checkScripts.length === 0) args.checkScripts.push('check');
   return args;
 }
 
@@ -206,18 +226,28 @@ function boundedOutput(value: string): string {
 }
 
 function executeCheckProof(
+  repositoryRoot: string,
   sessionId: RecordReceiptInput['sessionId'],
   repositoryReceiptsDigest: string,
+  scripts: readonly string[],
 ): RecordReceiptInput {
   const executedAt = new Date().toISOString();
-  const command = 'npm run check';
-  const result = spawnSync('npm', ['run', 'check'], {
-    cwd: REPO_ROOT,
-    encoding: 'utf8',
-    maxBuffer: 16 * 1024 * 1024,
-  });
-  const output = `${result.stdout ?? ''}${result.stderr ?? ''}`;
-  const exitCode = result.status ?? 1;
+  const command = scripts.map((script) => `npm run ${script}`).join(' && ');
+  const outputs: string[] = [];
+  let exitCode = 0;
+  for (const script of scripts) {
+    const result = spawnSync('npm', ['run', script], {
+      cwd: repositoryRoot,
+      encoding: 'utf8',
+      maxBuffer: 16 * 1024 * 1024,
+    });
+    outputs.push(`$ npm run ${script}\n${result.stdout ?? ''}${result.stderr ?? ''}`);
+    if ((result.status ?? 1) !== 0) {
+      exitCode = result.status ?? 1;
+      break;
+    }
+  }
+  const output = outputs.join('\n');
   return {
     sessionId,
     type: 'proof',
@@ -259,19 +289,23 @@ function generate(args: Args): void {
   if (args.final && !args.evidenceHead) {
     throw new Error('Final verified generation requires an explicit --evidence-head commit.');
   }
-  const evidenceHead = resolveRepositoryEvidenceHead(REPO_ROOT, args.evidenceHead ?? 'HEAD');
-  if (args.final) assertFinalEvidenceState(REPO_ROOT, evidenceHead.commit);
+  if (args.provider !== 'codex' && !args.session) {
+    throw new Error(`${args.provider} generation requires an explicit --session path.`);
+  }
+  const evidenceHead = resolveRepositoryEvidenceHead(args.evidenceRepo, args.evidenceHead ?? 'HEAD');
+  if (args.final) assertFinalEvidenceState(args.evidenceRepo, evidenceHead.commit);
   withStateLock(args.state, () => {
     const initialSnapshot = loadSnapshot(args.state);
     const reporting = createReportingEngine({ initialSnapshot });
-    const sessionInput = parseCodexSessionFile(
+    const sessionInput = parseSessionFile(
+      args.provider,
       args.session ?? defaultSessionPath(),
       { confirmComplete: args.complete },
     );
     const session = valueOrThrow(reporting.importSession(sessionInput));
     const agentBrief = args.brief ? loadAgentWorkBrief(args.brief, session) : undefined;
     const receipts = collectRepositoryReceipts({
-      repoRoot: REPO_ROOT,
+      repoRoot: args.evidenceRepo,
       baseRef: args.base,
       evidenceHeadRef: evidenceHead.commit,
       sessionId: session.id,
@@ -283,17 +317,25 @@ function generate(args: Args): void {
       evidenceReceipts.map((receipt) => receipt.id).sort(),
     ));
     if (args.final) {
+      const proofCommand = args.checkScripts
+        .map((script) => `npm run ${script}`)
+        .join(' && ');
       const reusableProof = reporting.snapshot().receipts.find((receipt) =>
         receipt.sessionId === session.id
         && receipt.sourceDigest === session.sourceDigest
         && receipt.type === 'proof'
-        && receipt.proof?.command === 'npm run check'
+        && receipt.proof?.command === proofCommand
         && receipt.proof.exitCode === 0
         && receipt.evidence.some((evidence) =>
           evidence.uri === `digest:${evidenceReceiptsDigest}`));
       const proof = reusableProof
         ?? valueOrThrow(reporting.recordReceipt(
-          executeCheckProof(session.id, evidenceReceiptsDigest),
+          executeCheckProof(
+            args.evidenceRepo,
+            session.id,
+            evidenceReceiptsDigest,
+            args.checkScripts,
+          ),
         ));
       if (proof.proof?.exitCode !== 0) {
         throw new Error(`VerificationFailed: ${proof.proof?.command} exited ${proof.proof?.exitCode}.`);
@@ -329,6 +371,7 @@ function generate(args: Args): void {
       receiptsDigest: accepted.receiptsDigest,
       publicationDigest: envelope.publicationDigest,
       evidenceHead: envelope.evidenceHead,
+      evidenceRepository: basename(args.evidenceRepo),
       publicEnvelope: relative(REPO_ROOT, args.publicEnvelope),
       html: htmlRelative,
       final: args.final,
@@ -360,15 +403,16 @@ function show(args: Args): void {
 }
 
 function help(): void {
-  process.stdout.write(`report-session — compile one Codex session into a local accepted report
+  process.stdout.write(`report-session — compile one agent session into a local accepted report
 
 Usage
-  node tools/report-session/cli.ts generate [--session file] [--complete]
-  node tools/report-session/cli.ts generate --final --session file --complete --evidence-head commit
+  node tools/report-session/cli.ts generate [--provider codex|claude|kimi] [--session file]
+  node tools/report-session/cli.ts generate --final --provider claude --session file --complete --evidence-repo path --evidence-head commit
   node tools/report-session/cli.ts show [--report report:<sha256>]
 
 Options
-  --session <path>         Codex JSONL source; discovery is preview-only
+  --provider <name>        codex, claude, or kimi (defaults to codex)
+  --session <path>         Provider-native JSONL source; Codex discovery is preview-only
   --complete               Explicitly confirm the selected session is terminal
   --brief <path>           Validated agent-authored claims bound to this session
   --final                  Execute npm run check and require completion policy
@@ -376,7 +420,9 @@ Options
   --public <path>          Runtime-validated public accepted-report envelope
   --html-directory <path>  Immutable HTML revision output directory
   --base <ref>             Git base used by the evidence adapter
+  --evidence-repo <path>   Repository that owns the session's file and commit proof
   --evidence-head <commit> Immutable committed code/tree inspected by the report
+  --check-script <name>    npm script used as executed proof; repeat for multiple gates
   --report <id>            Show this exact accepted revision
 
 Acceptance is a local operator decision. It does not claim an authenticated actor

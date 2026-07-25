@@ -12,6 +12,8 @@ export type ReceiptId = string & { readonly [receiptIdBrand]: true };
 export type ReportRevisionId = string & { readonly [reportRevisionIdBrand]: true };
 
 export const digestSchema = z.string().regex(/^sha256:[0-9a-f]{64}$/);
+export const sessionProviderSchema = z.enum(['codex', 'claude', 'kimi']);
+export type SessionProvider = z.infer<typeof sessionProviderSchema>;
 export const workSessionIdSchema = z.string().regex(/^session:[0-9a-f]{64}$/).transform(
   (value) => value as WorkSessionId,
 );
@@ -53,7 +55,7 @@ export const sessionWarningSchema = z.object({
 export type SessionWarning = z.infer<typeof sessionWarningSchema>;
 
 export const importSessionInputSchema = z.object({
-  provider: z.enum(['codex', 'claude']),
+  provider: sessionProviderSchema,
   nativeSessionId: z.string().min(1).max(500),
   sourceDigest: digestSchema,
   sourceRef: z.string().min(1).max(2_000),
@@ -187,7 +189,7 @@ const authoritativeRecordSchema = z.object({
 export const workSessionSchema = authoritativeRecordSchema.extend({
   id: workSessionIdSchema,
   kind: z.literal('work-session'),
-  provider: z.enum(['codex', 'claude']),
+  provider: sessionProviderSchema,
   nativeSessionId: z.string().min(1),
   sourceDigest: digestSchema,
   sourceRef: z.string().min(1),
@@ -238,7 +240,7 @@ export const reportProjectionSchema = z.object({
   renderingProfile: renderingProfileSchema.optional(),
   title: z.string().min(1),
   source: z.object({
-    provider: z.enum(['codex', 'claude']),
+    provider: sessionProviderSchema,
     startedAt: timestampSchema.nullable(),
     updatedAt: timestampSchema.nullable(),
     eventCount: z.number().int().nonnegative(),

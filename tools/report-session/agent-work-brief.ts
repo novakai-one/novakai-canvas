@@ -7,6 +7,7 @@ import {
   nextActionSchema,
   outcomeSchema,
   renderingProfileSchema,
+  sessionProviderSchema,
   type CompileReportInput,
   type RecordReceiptInput,
   type WorkSession,
@@ -62,7 +63,7 @@ const artifactClaimSchema = z.object({
 export const agentWorkBriefSchema = z.object({
   schemaVersion: z.literal(2),
   source: z.object({
-    provider: z.enum(['codex', 'claude']),
+    provider: sessionProviderSchema,
     nativeSessionId: z.string().min(1).max(500),
     expectedSourceDigest: digestSchema.optional(),
   }).strict(),
