@@ -1,126 +1,114 @@
 {
   "schemaVersion": 1,
   "kind": "accepted-report-publication",
-  "publicationDigest": "sha256:1499e4c86586f0eef4045556bb87ee110a09432642696ded5a89dcc2cfd8c3e8",
-  "publishedAt": "2026-07-25T04:55:02.359Z",
-  "reportRevisionId": "report:353b0f075854566d5aa6b9e18748526fb8d089d3f752d54ab4da0dc0b4fe50cb",
-  "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+  "publicationDigest": "sha256:8730ebc29cab88ad7445b183a065bf0a4e57deed0e53bc7fabf2f00b11843abb",
+  "publishedAt": "2026-07-25T04:56:25.046Z",
+  "reportRevisionId": "report:4ecc631ef0ff1fac803e5b13432fe21a2ac294bd03082eff7fa4df2a314bd3ad",
+  "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
   "receiptIds": [
-    "receipt:07de693d0fff31664de40153c64d3bd0d65b016667123a98ac0e5a421560bd5c",
-    "receipt:37fd7de1e91db7c2f60681c34243d92d9bda659fc2a5d9a3edce4d854a416512",
-    "receipt:40e200953e2f3d05058800bb67adee686cd5efbf6884a74c68c93c8cc830fd1f",
-    "receipt:6bbdfcb3d1b5a39fe6735e7c243050948ddc65d98616387aa3f4a663a90f1225",
-    "receipt:817e33cffb4bfd7d9df820a9fd8d0d513f36f84b8115b2130b4335dc346aa8b5",
-    "receipt:86357e1059348510aa49a2783ea3d5e8798e42cef1f14d68471d2406e2d05362",
-    "receipt:8c4416d14bd796875ca5063bd25b3f648615ad0f3955247d2295bc5252a1c341",
-    "receipt:99b2238675ec760db6e61bb4887e6bea35a08e019f4943054bba90574ae0a2f3",
-    "receipt:ade5721d2b22cecbff1c058a145857a8ce0faae537697843b0913f29edb72bd4",
-    "receipt:b7a92cf569b062c17fdb3598abc80a48ea912a887a580bdf85e16ef850037e2f",
-    "receipt:d52095824e16f16942e93d2d4f62490a17fea20cff09553eab727db7842946c3",
-    "receipt:ecaf1214b83012ee9867b1f4e4d7692896fbf23f0ccde12fad1b047f69e68f30"
+    "receipt:19debe843236848ff1647ab0ab29f16cfc8a6b7abec4774ed5ff9942b375dce2",
+    "receipt:56e37454144657551eeb0f4742993c10ffb859601a52cd3b6775157cf08f7c80",
+    "receipt:5836700b2cc64d433aed7c1a33fda75f42fa9c79789d988e934f6d546335f26b",
+    "receipt:587fe4385b3fec750b457002ce6c8754361c18b5599b015f58c8187f96a3fe88",
+    "receipt:6714a612516347f485feee9106bd6fc5491ba3d13e397024e071c162c4f23dcd",
+    "receipt:8cae2f8e97ba5132cc0c590cf3e38780050761ae347aef28b1461a927bbb3d35",
+    "receipt:b30158d0b9993eef5df1c3b17db5a4bbb30d2cffd6a2ae37ac5f94471195eb89",
+    "receipt:e2b8f7521463e497b0a2812f5a7f898bf483ca407d6c44590ed02e868ba18d64",
+    "receipt:ed80d8da46be78bd40313c1febe20ec2919022377e9a9bf6aeb6153870b32aba",
+    "receipt:fb8bdfd6cbea6dfa673f6c1c42b025c6e17f400d64129ec50eb10e86d2ce668a"
   ],
   "receiptClaims": [
     {
-      "id": "receipt:07de693d0fff31664de40153c64d3bd0d65b016667123a98ac0e5a421560bd5c",
-      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
-      "type": "decision"
-    },
-    {
-      "id": "receipt:37fd7de1e91db7c2f60681c34243d92d9bda659fc2a5d9a3edce4d854a416512",
-      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+      "id": "receipt:19debe843236848ff1647ab0ab29f16cfc8a6b7abec4774ed5ff9942b375dce2",
+      "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
       "type": "artifact"
     },
     {
-      "id": "receipt:40e200953e2f3d05058800bb67adee686cd5efbf6884a74c68c93c8cc830fd1f",
-      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+      "id": "receipt:56e37454144657551eeb0f4742993c10ffb859601a52cd3b6775157cf08f7c80",
+      "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
       "type": "decision"
     },
     {
-      "id": "receipt:6bbdfcb3d1b5a39fe6735e7c243050948ddc65d98616387aa3f4a663a90f1225",
-      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+      "id": "receipt:5836700b2cc64d433aed7c1a33fda75f42fa9c79789d988e934f6d546335f26b",
+      "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
+      "type": "decision"
+    },
+    {
+      "id": "receipt:587fe4385b3fec750b457002ce6c8754361c18b5599b015f58c8187f96a3fe88",
+      "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
+      "type": "decision"
+    },
+    {
+      "id": "receipt:6714a612516347f485feee9106bd6fc5491ba3d13e397024e071c162c4f23dcd",
+      "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
+      "type": "decision"
+    },
+    {
+      "id": "receipt:8cae2f8e97ba5132cc0c590cf3e38780050761ae347aef28b1461a927bbb3d35",
+      "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
+      "type": "artifact"
+    },
+    {
+      "id": "receipt:b30158d0b9993eef5df1c3b17db5a4bbb30d2cffd6a2ae37ac5f94471195eb89",
+      "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
+      "type": "artifact"
+    },
+    {
+      "id": "receipt:e2b8f7521463e497b0a2812f5a7f898bf483ca407d6c44590ed02e868ba18d64",
+      "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
       "type": "proof",
       "proof": {
-        "command": "npm run check",
+        "command": "npm run lint && npm run build",
         "exitCode": 0,
-        "executedAt": "2026-07-25T04:54:48.019Z",
-        "outputDigest": "sha256:859de5b9ae31cdcab2011ec21fc5e9000139de8cc6343542ca66847d0ed428bf"
+        "executedAt": "2026-07-25T04:56:19.691Z",
+        "outputDigest": "sha256:6b3f2fdba14ab0e9b0ae5c82d124102a7d761249374e52ecabba40e9b17d3333"
       }
     },
     {
-      "id": "receipt:817e33cffb4bfd7d9df820a9fd8d0d513f36f84b8115b2130b4335dc346aa8b5",
-      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+      "id": "receipt:ed80d8da46be78bd40313c1febe20ec2919022377e9a9bf6aeb6153870b32aba",
+      "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
       "type": "change"
     },
     {
-      "id": "receipt:86357e1059348510aa49a2783ea3d5e8798e42cef1f14d68471d2406e2d05362",
-      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
-      "type": "decision"
-    },
-    {
-      "id": "receipt:8c4416d14bd796875ca5063bd25b3f648615ad0f3955247d2295bc5252a1c341",
-      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
-      "type": "artifact"
-    },
-    {
-      "id": "receipt:99b2238675ec760db6e61bb4887e6bea35a08e019f4943054bba90574ae0a2f3",
-      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
-      "type": "change"
-    },
-    {
-      "id": "receipt:ade5721d2b22cecbff1c058a145857a8ce0faae537697843b0913f29edb72bd4",
-      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
-      "type": "decision"
-    },
-    {
-      "id": "receipt:b7a92cf569b062c17fdb3598abc80a48ea912a887a580bdf85e16ef850037e2f",
-      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
-      "type": "change"
-    },
-    {
-      "id": "receipt:d52095824e16f16942e93d2d4f62490a17fea20cff09553eab727db7842946c3",
-      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
-      "type": "artifact"
-    },
-    {
-      "id": "receipt:ecaf1214b83012ee9867b1f4e4d7692896fbf23f0ccde12fad1b047f69e68f30",
-      "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+      "id": "receipt:fb8bdfd6cbea6dfa673f6c1c42b025c6e17f400d64129ec50eb10e86d2ce668a",
+      "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
       "type": "change"
     }
   ],
-  "receiptsDigest": "sha256:45e37f5493f7ffa2c2d3dea0bf62470d86b4b24d7d7bdf05975cd6257b7fda46",
-  "authoritativeProjectionDigest": "sha256:9a21d3ae69ca7c0aad5dd1cf6bb5f13bf9d8f297228783458da76e880a9465a4",
-  "publicProjectionDigest": "sha256:31f6ca0f5ee78c2313fd3fd198a70325bd21c4c18062778489b0106b1c551f0f",
-  "acceptedAt": "2026-07-25T04:55:02.359Z",
+  "receiptsDigest": "sha256:280c0933b494021030b0518f01ae0bbbb25a6e826d088a201ffd82ee866850cd",
+  "authoritativeProjectionDigest": "sha256:1cb5eedfb1477a9c25f5634a269b97071eb64a7a56e0a85be4c719831c0fb334",
+  "publicProjectionDigest": "sha256:6967432b92048ebb701e2eac18111418369a6ba3f3746bebadd110d86d8f76d7",
+  "acceptedAt": "2026-07-25T04:56:25.046Z",
   "evidenceHead": {
-    "commit": "8681eeec18981907612810686b7eea5ade8dcdaa",
-    "tree": "04ec773f57f2e10a932dd989de16c4997be2933c"
+    "commit": "59044733ad45e2fa0fbf06d10a65b678edc11506",
+    "tree": "04cda2859f48c4ca7967c69aa501d8007dd099f9"
   },
   "html": {
-    "path": "docs/visual-reporting/reports/report-353b0f075854566d5aa6b9e18748526fb8d089d3f752d54ab4da0dc0b4fe50cb.html",
-    "digest": "sha256:856ebc6abc051896c91a6f64bdc5e731f04d1259871a08f9926984b476dfc26f"
+    "path": "docs/visual-reporting/reports/report-4ecc631ef0ff1fac803e5b13432fe21a2ac294bd03082eff7fa4df2a314bd3ad.html",
+    "digest": "sha256:847d57afda0167abc66f988aeb4519bf6cb1ce2ebc555304bd258298356467dc"
   },
   "projection": {
     "schemaVersion": 1,
-    "reportRevisionId": "report:353b0f075854566d5aa6b9e18748526fb8d089d3f752d54ab4da0dc0b4fe50cb",
-    "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
-    "receiptsDigest": "sha256:45e37f5493f7ffa2c2d3dea0bf62470d86b4b24d7d7bdf05975cd6257b7fda46",
+    "reportRevisionId": "report:4ecc631ef0ff1fac803e5b13432fe21a2ac294bd03082eff7fa4df2a314bd3ad",
+    "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
+    "receiptsDigest": "sha256:280c0933b494021030b0518f01ae0bbbb25a6e826d088a201ffd82ee866850cd",
     "renderingProfile": "evidence-led-v2",
-    "title": "Claude turned live mission state into three explorable Canvas maps.",
+    "title": "Kimi cleared the final Mission Control CI gate without weakening the standard.",
     "source": {
-      "provider": "claude",
-      "startedAt": "2026-07-22T03:28:02.180Z",
-      "updatedAt": "2026-07-22T04:50:21.338Z",
-      "eventCount": 41,
+      "provider": "kimi",
+      "startedAt": "2026-07-23T06:27:38.879Z",
+      "updatedAt": "2026-07-23T07:44:37.511Z",
+      "eventCount": 28,
       "complete": true,
       "warningCount": 0
     },
     "outcome": {
       "status": "complete",
-      "headline": "Claude turned live mission state into three explorable Canvas maps.",
-      "summary": "The session added semantic wire styles, a selectable tree node, an in-canvas legend, persisted themes, and a read-only translator from Novakai mission stores. Claude then drove the running app, corrected a dropped-wire regression, assembled visual evidence, and opened PR #2 after independent manager verification."
+      "headline": "Kimi cleared the final Mission Control CI gate without weakening the standard.",
+      "summary": "A bounded correction reduced the unpiped lint count from 202 to 199 through three real code fixes. Kimi kept the baseline unchanged, added no suppressions, ran TypeScript and touched suites, committed 59044733, and received independent manager and CI confirmation before the mission merged."
     },
     "stats": {
-      "changes": 4,
+      "changes": 2,
       "decisions": 4,
       "proofs": 1,
       "blockers": 0,
@@ -129,97 +117,19 @@
     "changeMap": {
       "nodes": [
         {
-          "id": "canvas.cli",
-          "label": "Canvas CLI",
-          "role": "interface",
-          "receiptCount": 0
-        },
-        {
-          "id": "canvas.edge-renderer",
-          "label": "Canvas edge renderer",
-          "role": "projection",
-          "receiptCount": 0
-        },
-        {
-          "id": "canvas.inspector",
-          "label": "Canvas inspector",
-          "role": "projection",
-          "receiptCount": 0
-        },
-        {
-          "id": "canvas.legend",
-          "label": "Canvas legend",
-          "role": "projection",
-          "receiptCount": 0
-        },
-        {
-          "id": "canvas.presentation-preferences",
-          "label": "Canvas presentation preferences",
+          "id": "mission-control.presentation",
+          "label": "Mission Control presentation",
           "role": "module",
           "receiptCount": 1
         },
         {
-          "id": "canvas.tree-node",
-          "label": "Canvas tree node",
+          "id": "mission-view.team-snapshot",
+          "label": "Mission-view team snapshot",
           "role": "module",
           "receiptCount": 1
-        },
-        {
-          "id": "canvas.wire-semantics",
-          "label": "Canvas wire semantics",
-          "role": "module",
-          "receiptCount": 1
-        },
-        {
-          "id": "adapter.mission-view",
-          "label": "Mission-store translator",
-          "role": "adapter",
-          "receiptCount": 1
-        },
-        {
-          "id": "canvas.snapshot",
-          "label": "SVG snapshot adapter",
-          "role": "adapter",
-          "receiptCount": 0
         }
       ],
-      "edges": [
-        {
-          "id": "edge:075012664b815c33364db1ba8162a6e5366e0a84e0d32108e54305ea6b919d9a",
-          "source": "canvas.presentation-preferences",
-          "target": "canvas.legend",
-          "label": "Add an honest legend and persisted themes",
-          "kind": "changes"
-        },
-        {
-          "id": "edge:54f1ccf567926659224b580a481f58972288f983c3693b88e548e15f0a977b8e",
-          "source": "adapter.mission-view",
-          "target": "canvas.cli",
-          "label": "Translate real mission stores into Canvas maps",
-          "kind": "calls"
-        },
-        {
-          "id": "edge:7f5ff98f2f487dd0373584b5a57612e85e203f750421cf76d41708918f51fd1d",
-          "source": "canvas.tree-node",
-          "target": "canvas.inspector",
-          "label": "Add a selectable semantic tree node",
-          "kind": "changes"
-        },
-        {
-          "id": "edge:99e5f1b2e50884e065b9aa654dd9d285c99a6c10de10c16a671cdc4213ac4e47",
-          "source": "canvas.wire-semantics",
-          "target": "canvas.snapshot",
-          "label": "Give every wire kind one visible meaning",
-          "kind": "changes"
-        },
-        {
-          "id": "edge:ef7beb4a0e89234971ae1c9125e9ecde108f6a4cc5e959d71e8cfcfafe9a5600",
-          "source": "canvas.wire-semantics",
-          "target": "canvas.edge-renderer",
-          "label": "Give every wire kind one visible meaning",
-          "kind": "changes"
-        }
-      ]
+      "edges": []
     },
     "workflow": [
       {
@@ -231,7 +141,7 @@
       {
         "id": "capture-receipts",
         "label": "Capture structured receipts",
-        "detail": "12 change, decision, proof, blocker, and artifact receipts recorded.",
+        "detail": "10 change, decision, proof, blocker, and artifact receipts recorded.",
         "status": "done"
       },
       {
@@ -247,428 +157,225 @@
         "status": "done"
       }
     ],
-    "nextActions": [
-      {
-        "id": "merge-pr-2",
-        "label": "At session end, PR #2 awaited Chris's merge decision",
-        "status": "queued",
-        "dependsOn": []
-      }
-    ],
+    "nextActions": [],
     "proofs": [
       {
-        "id": "receipt:6bbdfcb3d1b5a39fe6735e7c243050948ddc65d98616387aa3f4a663a90f1225",
-        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+        "id": "receipt:e2b8f7521463e497b0a2812f5a7f898bf483ca407d6c44590ed02e868ba18d64",
+        "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
         "type": "proof",
         "title": "Repository acceptance suite passed",
-        "summary": "The local npm run check command executed and exited with code 0.",
+        "summary": "The local npm run lint && npm run build command executed and exited with code 0.",
         "evidence": [
           {
             "kind": "test",
-            "label": "npm run check"
+            "label": "npm run lint && npm run build"
           },
           {
             "kind": "commit",
-            "label": "Repository receipt set sha256:fae514108a4de827ece8b1b354d90940c84746c119f811b0d638e8d5dd7fc434"
+            "label": "Repository receipt set sha256:ee752e576e122cd2b3cccd74c59694a744d0217a39a1dfb5a51269bb3f756dfe"
           }
         ],
         "proof": {
-          "command": "npm run check",
+          "command": "npm run lint && npm run build",
           "exitCode": 0,
-          "executedAt": "2026-07-25T04:54:48.019Z",
-          "outputDigest": "sha256:859de5b9ae31cdcab2011ec21fc5e9000139de8cc6343542ca66847d0ed428bf"
+          "executedAt": "2026-07-25T04:56:19.691Z",
+          "outputDigest": "sha256:6b3f2fdba14ab0e9b0ae5c82d124102a7d761249374e52ecabba40e9b17d3333"
         }
       }
     ],
     "decisions": [
       {
-        "id": "receipt:07de693d0fff31664de40153c64d3bd0d65b016667123a98ac0e5a421560bd5c",
-        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+        "id": "receipt:56e37454144657551eeb0f4742993c10ffb859601a52cd3b6775157cf08f7c80",
+        "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
         "type": "decision",
-        "title": "Make tree rows selectable instead of decorative",
-        "summary": "The audit correctly rejected pre-rendered tree rows because they hid identity. The amended design preserves row IDs, block kind, status, parent relationship, and badges for inspection.",
+        "title": "Fix code instead of moving the lint baseline",
+        "summary": "The correction kept the measured baseline and suppression rules untouched. Three small naming and test-structure fixes were enough to move the count from 202 to 199.",
         "evidence": []
       },
       {
-        "id": "receipt:40e200953e2f3d05058800bb67adee686cd5efbf6884a74c68c93c8cc830fd1f",
-        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+        "id": "receipt:5836700b2cc64d433aed7c1a33fda75f42fa9c79789d988e934f6d546335f26b",
+        "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
         "type": "decision",
-        "title": "Keep meaning in the domain and appearance in presentation",
-        "summary": "Wire kinds are domain meaning. Their colours and dash patterns live in one presentation map, so the domain does not absorb visual policy and every renderer uses the same visible vocabulary.",
+        "title": "Leave the optional max-lines cleanup alone",
+        "summary": "The requested gate was already green after the three bounded fixes. Extracting another presentational block would have expanded scope without improving the acceptance result.",
         "evidence": []
       },
       {
-        "id": "receipt:86357e1059348510aa49a2783ea3d5e8798e42cef1f14d68471d2406e2d05362",
-        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+        "id": "receipt:587fe4385b3fec750b457002ce6c8754361c18b5599b015f58c8187f96a3fe88",
+        "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
         "type": "decision",
-        "title": "Problem resolved — Re-applying the right-now map dropped wires even though the nodes remained.",
-        "summary": "Problem — Re-applying the right-now map dropped wires even though the nodes remained. Resolution — Claude stopped during visual verification, corrected the translator output, and re-ran the statement comparison until all three generated scopes were stable.",
+        "title": "Problem resolved — A previously delivered mission returned to red because its eslint count was 202 against a maximum of 200.",
+        "summary": "Problem — A previously delivered mission returned to red because its eslint count was 202 against a maximum of 200. Resolution — The bounded correction reduced the unpiped count to 199, after which the manager independently reran the gate and CI passed.",
         "evidence": []
       },
       {
-        "id": "receipt:ade5721d2b22cecbff1c058a145857a8ce0faae537697843b0913f29edb72bd4",
-        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+        "id": "receipt:6714a612516347f485feee9106bd6fc5491ba3d13e397024e071c162c4f23dcd",
+        "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
         "type": "decision",
-        "title": "Problem resolved — The first plan assumed the live agent registry was a dictionary and would have silently omitted relevant mail edges.",
-        "summary": "Problem — The first plan assumed the live agent registry was a dictionary and would have silently omitted relevant mail edges. Resolution — After audit, the translator normalized both observed array and dictionary shapes and used an explicit relevance rule for running and connected exited agents.",
+        "title": "Problem resolved — The first prop rename briefly left both the old and new prop at one call site.",
+        "summary": "Problem — The first prop rename briefly left both the old and new prop at one call site. Resolution — Kimi noticed the duplicate during the same edit, removed the old row prop, and ran the gates on the corrected tree.",
         "evidence": []
       }
     ],
     "blockers": [],
     "artifacts": [
       {
-        "id": "receipt:37fd7de1e91db7c2f60681c34243d92d9bda659fc2a5d9a3edce4d854a416512",
-        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+        "id": "receipt:19debe843236848ff1647ab0ab29f16cfc8a6b7abec4774ed5ff9942b375dce2",
+        "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
         "type": "artifact",
-        "title": "Three live mission-view maps",
-        "summary": "You now have — Object model, data tree, and right-now mission maps generated from real stores and opened through the existing Canvas application.",
-        "evidence": []
-      },
-      {
-        "id": "receipt:8c4416d14bd796875ca5063bd25b3f648615ad0f3955247d2295bc5252a1c341",
-        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
-        "type": "artifact",
-        "title": "Repository evidence snapshot — claude",
-        "summary": "28 changed files bind this report to claude from 60d7dadb4aa0 to 8681eeec1898.",
+        "title": "Bounded CI correction commit",
+        "summary": "You now have — Commit 59044733 contains exactly four touched files, 19 insertions, and 9 deletions for the lint correction.",
         "evidence": [
           {
-            "kind": "file",
-            "label": "public/data/canvas-preferences.json"
-          },
-          {
-            "kind": "file",
-            "label": "public/data/project-architecture.json"
-          },
-          {
-            "kind": "file",
-            "label": "src/App.tsx"
-          },
-          {
-            "kind": "file",
-            "label": "src/domain/defaults.ts"
-          },
-          {
-            "kind": "file",
-            "label": "src/domain/layout.ts"
-          },
-          {
-            "kind": "file",
-            "label": "src/domain/model.ts"
-          },
-          {
-            "kind": "file",
-            "label": "src/domain/schema.ts"
-          },
-          {
-            "kind": "file",
-            "label": "src/domain/tree.ts"
-          },
-          {
-            "kind": "file",
-            "label": "src/presentation/components/canvas-surface.tsx"
-          },
-          {
-            "kind": "file",
-            "label": "src/presentation/components/inspect-panel.tsx"
-          },
-          {
-            "kind": "file",
-            "label": "src/presentation/components/legend.tsx"
-          },
-          {
-            "kind": "file",
-            "label": "src/presentation/components/preferences-panel.tsx"
-          },
-          {
             "kind": "commit",
-            "label": "Repository base commit 60d7dadb4aa0e29e47056a892be8ce7bca483327"
-          },
-          {
-            "kind": "commit",
-            "label": "Repository base tree 905e0a51b78d7acab3b2b5f30ada3b282ba9e35d"
-          },
-          {
-            "kind": "commit",
-            "label": "Repository evidence commit 8681eeec18981907612810686b7eea5ade8dcdaa"
-          },
-          {
-            "kind": "commit",
-            "label": "Repository evidence tree 04ec773f57f2e10a932dd989de16c4997be2933c"
-          },
-          {
-            "kind": "commit",
-            "label": "Repository content digest sha256:f1427e198cc7a7f2d659da07a27a0119c2f7dcbf8b77d0741b0795c61ec87713"
+            "label": "Kimi correction commit 59044733"
           }
         ]
       },
       {
-        "id": "receipt:d52095824e16f16942e93d2d4f62490a17fea20cff09553eab727db7842946c3",
-        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+        "id": "receipt:8cae2f8e97ba5132cc0c590cf3e38780050761ae347aef28b1461a927bbb3d35",
+        "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
         "type": "artifact",
-        "title": "Verified mission-view implementation",
-        "summary": "You now have — Commit 8681eee with 28 changed files, eight live screenshots, a clean test suite, and independent manager verification before PR #2 was opened.",
+        "title": "Manager and CI verification",
+        "summary": "You now have — The manager independently measured lint at 199, confirmed TypeScript clean, recorded CI run 29988240171 as green, and reported the mission merged.",
+        "evidence": []
+      },
+      {
+        "id": "receipt:b30158d0b9993eef5df1c3b17db5a4bbb30d2cffd6a2ae37ac5f94471195eb89",
+        "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
+        "type": "artifact",
+        "title": "Repository evidence snapshot — kimi",
+        "summary": "4 changed files bind this report to kimi from a3947d09db2e to 59044733ad45.",
         "evidence": [
           {
-            "kind": "commit",
-            "label": "Claude mission-view commit 8681eee"
+            "kind": "file",
+            "label": "src/backend/missionView/snapshot/team/index.test.ts"
           },
           {
-            "kind": "url",
-            "label": "Pull request #2"
+            "kind": "file",
+            "label": "src/frontend/components/workspace/missionControl/index.tsx"
+          },
+          {
+            "kind": "file",
+            "label": "src/frontend/components/workspace/missionControl/panels/agentRow.tsx"
+          },
+          {
+            "kind": "file",
+            "label": "src/frontend/components/workspace/missionControl/panels/index.tsx"
+          },
+          {
+            "kind": "commit",
+            "label": "Repository base commit a3947d09db2e493096f01eb0ab2e02959c7959fd"
+          },
+          {
+            "kind": "commit",
+            "label": "Repository base tree 153e482e9ad2407dbd1f17546de1d86b7ffe904c"
+          },
+          {
+            "kind": "commit",
+            "label": "Repository evidence commit 59044733ad45e2fa0fbf06d10a65b678edc11506"
+          },
+          {
+            "kind": "commit",
+            "label": "Repository evidence tree 04cda2859f48c4ca7967c69aa501d8007dd099f9"
+          },
+          {
+            "kind": "commit",
+            "label": "Repository content digest sha256:52c49877a8379433618c3907bfede9a1f3319f84dbf910f52df55377caca375e"
           }
         ]
       }
     ],
     "changeDetails": [
       {
-        "id": "receipt:817e33cffb4bfd7d9df820a9fd8d0d513f36f84b8115b2130b4335dc346aa8b5",
-        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+        "id": "receipt:ed80d8da46be78bd40313c1febe20ec2919022377e9a9bf6aeb6153870b32aba",
+        "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
         "type": "change",
-        "title": "Add an honest legend and persisted themes",
-        "summary": "Before — No in-canvas legend existed and the mission view had no verified light-theme persistence path. After — The active map derives its legend from used wire kinds, while dark and light theme preferences persist through reload. Why — Readers needed to decode only the wire kinds present on the active map and keep their chosen presentation after reload.",
+        "title": "Split the oversized team-join test",
+        "summary": "Before — testTeamJoin verified two concerns in one oversized test function. After — Membership and presence are verified in separate focused tests under the line limit. Why — One 22-line test exceeded the repository's 20-line gate and mixed membership and presence behavior.",
         "evidence": [
           {
             "kind": "file",
-            "label": "src/presentation/components/legend.tsx"
-          },
-          {
-            "kind": "file",
-            "label": "src/presentation/components/preferences-panel.tsx"
-          },
-          {
-            "kind": "file",
-            "label": "src/styles/base.css"
-          },
-          {
-            "kind": "file",
-            "label": "src/styles/canvas.css"
-          },
-          {
-            "kind": "file",
-            "label": "public/data/canvas-preferences.json"
+            "label": "src/backend/missionView/snapshot/team/index.test.ts"
           }
         ],
         "changeNarrative": {
-          "why": "Readers needed to decode only the wire kinds present on the active map and keep their chosen presentation after reload.",
-          "before": "No in-canvas legend existed and the mission view had no verified light-theme persistence path.",
-          "after": "The active map derives its legend from used wire kinds, while dark and light theme preferences persist through reload."
+          "why": "One 22-line test exceeded the repository's 20-line gate and mixed membership and presence behavior.",
+          "before": "testTeamJoin verified two concerns in one oversized test function.",
+          "after": "Membership and presence are verified in separate focused tests under the line limit."
         }
       },
       {
-        "id": "receipt:99b2238675ec760db6e61bb4887e6bea35a08e019f4943054bba90574ae0a2f3",
-        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
+        "id": "receipt:fb8bdfd6cbea6dfa673f6c1c42b025c6e17f400d64129ec50eb10e86d2ce668a",
+        "sourceDigest": "sha256:9e8a8ff93ce44fa0722914ed2a4bf9edd2bb5f9e059e64004838f11277c0176f",
         "type": "change",
-        "title": "Give every wire kind one visible meaning",
-        "summary": "Before — All wires inherited one global width and the available verbs could not honestly express mentions or missing links. After — Seven wire kinds derive their dash and colour from one presentation-owned style map shared by Canvas, the legend, and SVG snapshots. Why — The approved mission diagrams needed distinct link meanings without duplicating colour and dash rules across renderers.",
+        "title": "Replace undersized mission-control row identifiers",
+        "summary": "Before — Two components used the generic identifier row, and the agent-row call site depended on the same ambiguous prop name. After — The identifiers now say laneRow and personRow, with the call site updated consistently. Why — The repository's id-length rule counted two newly introduced row identifiers and pushed CI above its accepted baseline.",
         "evidence": [
           {
             "kind": "file",
-            "label": "src/domain/model.ts"
+            "label": "src/frontend/components/workspace/missionControl/index.tsx"
           },
           {
             "kind": "file",
-            "label": "src/domain/schema.ts"
+            "label": "src/frontend/components/workspace/missionControl/panels/agentRow.tsx"
           },
           {
             "kind": "file",
-            "label": "src/presentation/wire-styles.ts"
-          },
-          {
-            "kind": "file",
-            "label": "src/presentation/edges/elbow-edge.tsx"
-          },
-          {
-            "kind": "file",
-            "label": "tools/canvas-cli/snapshot.ts"
+            "label": "src/frontend/components/workspace/missionControl/panels/index.tsx"
           }
         ],
         "changeNarrative": {
-          "why": "The approved mission diagrams needed distinct link meanings without duplicating colour and dash rules across renderers.",
-          "before": "All wires inherited one global width and the available verbs could not honestly express mentions or missing links.",
-          "after": "Seven wire kinds derive their dash and colour from one presentation-owned style map shared by Canvas, the legend, and SVG snapshots."
-        }
-      },
-      {
-        "id": "receipt:b7a92cf569b062c17fdb3598abc80a48ea912a887a580bdf85e16ef850037e2f",
-        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
-        "type": "change",
-        "title": "Translate real mission stores into Canvas maps",
-        "summary": "Before — Canvas could author maps but had no read-only path from production-shaped mission data. After — One translator reads both supported store shapes, applies a ruled relevance algorithm, and sends three generated scopes through the existing Canvas CLI. Why — The diagrams needed to show current Novakai missions, agents, and messages from their real stores rather than a hand-authored mock.",
-        "evidence": [
-          {
-            "kind": "file",
-            "label": "tools/mission-view/stores-to-dsl.ts"
-          },
-          {
-            "kind": "file",
-            "label": "tools/mission-view/stores-to-dsl.test.ts"
-          },
-          {
-            "kind": "file",
-            "label": "tools/mission-view/translate.ts"
-          },
-          {
-            "kind": "file",
-            "label": "tools/canvas-cli/mission-vocabulary.test.ts"
-          }
-        ],
-        "changeNarrative": {
-          "why": "The diagrams needed to show current Novakai missions, agents, and messages from their real stores rather than a hand-authored mock.",
-          "before": "Canvas could author maps but had no read-only path from production-shaped mission data.",
-          "after": "One translator reads both supported store shapes, applies a ruled relevance algorithm, and sends three generated scopes through the existing Canvas CLI."
-        }
-      },
-      {
-        "id": "receipt:ecaf1214b83012ee9867b1f4e4d7692896fbf23f0ccde12fad1b047f69e68f30",
-        "sourceDigest": "sha256:35f1d3cb78e6a48f79d54e33eb3ebb00945038140d4a045aa8a04777bd50958d",
-        "type": "change",
-        "title": "Add a selectable semantic tree node",
-        "summary": "Before — The first plan flattened tree rows into presentation text with no stable identity or inspection path. After — Rows carry semantic identity and clicking a row selects its underlying block in the inspector. Why — Repository and mission hierarchies needed to remain compact without violating the rule that meaningful objects stay selectable.",
-        "evidence": [
-          {
-            "kind": "file",
-            "label": "src/domain/tree.ts"
-          },
-          {
-            "kind": "file",
-            "label": "src/domain/layout.ts"
-          },
-          {
-            "kind": "file",
-            "label": "src/presentation/nodes/tree-node.tsx"
-          },
-          {
-            "kind": "file",
-            "label": "src/presentation/components/inspect-panel.tsx"
-          }
-        ],
-        "changeNarrative": {
-          "why": "Repository and mission hierarchies needed to remain compact without violating the rule that meaningful objects stay selectable.",
-          "before": "The first plan flattened tree rows into presentation text with no stable identity or inspection path.",
-          "after": "Rows carry semantic identity and clicking a row selects its underlying block in the inspector."
+          "why": "The repository's id-length rule counted two newly introduced row identifiers and pushed CI above its accepted baseline.",
+          "before": "Two components used the generic identifier row, and the agent-row call site depended on the same ambiguous prop name.",
+          "after": "The identifiers now say laneRow and personRow, with the call site updated consistently."
         }
       }
     ],
     "evidence": [
       {
-        "kind": "commit",
-        "label": "Claude mission-view commit 8681eee"
-      },
-      {
         "kind": "test",
-        "label": "npm run check"
-      },
-      {
-        "kind": "file",
-        "label": "public/data/canvas-preferences.json"
-      },
-      {
-        "kind": "file",
-        "label": "public/data/project-architecture.json"
-      },
-      {
-        "kind": "url",
-        "label": "Pull request #2"
+        "label": "npm run lint && npm run build"
       },
       {
         "kind": "commit",
-        "label": "Repository base commit 60d7dadb4aa0e29e47056a892be8ce7bca483327"
+        "label": "Repository base commit a3947d09db2e493096f01eb0ab2e02959c7959fd"
       },
       {
         "kind": "commit",
-        "label": "Repository base tree 905e0a51b78d7acab3b2b5f30ada3b282ba9e35d"
+        "label": "Repository base tree 153e482e9ad2407dbd1f17546de1d86b7ffe904c"
       },
       {
         "kind": "commit",
-        "label": "Repository content digest sha256:f1427e198cc7a7f2d659da07a27a0119c2f7dcbf8b77d0741b0795c61ec87713"
+        "label": "Repository content digest sha256:52c49877a8379433618c3907bfede9a1f3319f84dbf910f52df55377caca375e"
       },
       {
         "kind": "commit",
-        "label": "Repository evidence tree 04ec773f57f2e10a932dd989de16c4997be2933c"
+        "label": "Repository evidence commit 59044733ad45e2fa0fbf06d10a65b678edc11506"
       },
       {
         "kind": "commit",
-        "label": "Repository receipt set sha256:fae514108a4de827ece8b1b354d90940c84746c119f811b0d638e8d5dd7fc434"
+        "label": "Repository evidence tree 04cda2859f48c4ca7967c69aa501d8007dd099f9"
+      },
+      {
+        "kind": "commit",
+        "label": "Repository receipt set sha256:ee752e576e122cd2b3cccd74c59694a744d0217a39a1dfb5a51269bb3f756dfe"
       },
       {
         "kind": "file",
-        "label": "src/App.tsx"
+        "label": "src/backend/missionView/snapshot/team/index.test.ts"
       },
       {
         "kind": "file",
-        "label": "src/domain/defaults.ts"
+        "label": "src/frontend/components/workspace/missionControl/index.tsx"
       },
       {
         "kind": "file",
-        "label": "src/domain/layout.ts"
+        "label": "src/frontend/components/workspace/missionControl/panels/agentRow.tsx"
       },
       {
         "kind": "file",
-        "label": "src/domain/model.ts"
-      },
-      {
-        "kind": "file",
-        "label": "src/domain/schema.ts"
-      },
-      {
-        "kind": "file",
-        "label": "src/domain/tree.ts"
-      },
-      {
-        "kind": "file",
-        "label": "src/presentation/components/canvas-surface.tsx"
-      },
-      {
-        "kind": "file",
-        "label": "src/presentation/components/inspect-panel.tsx"
-      },
-      {
-        "kind": "file",
-        "label": "src/presentation/components/legend.tsx"
-      },
-      {
-        "kind": "file",
-        "label": "src/presentation/components/preferences-panel.tsx"
-      },
-      {
-        "kind": "file",
-        "label": "src/presentation/edges/elbow-edge.tsx"
-      },
-      {
-        "kind": "file",
-        "label": "src/presentation/nodes/tree-node.tsx"
-      },
-      {
-        "kind": "file",
-        "label": "src/presentation/wire-styles.ts"
-      },
-      {
-        "kind": "file",
-        "label": "src/styles/base.css"
-      },
-      {
-        "kind": "file",
-        "label": "src/styles/canvas.css"
-      },
-      {
-        "kind": "file",
-        "label": "tools/canvas-cli/mission-vocabulary.test.ts"
-      },
-      {
-        "kind": "file",
-        "label": "tools/canvas-cli/snapshot.ts"
-      },
-      {
-        "kind": "file",
-        "label": "tools/mission-view/stores-to-dsl.test.ts"
-      },
-      {
-        "kind": "file",
-        "label": "tools/mission-view/stores-to-dsl.ts"
-      },
-      {
-        "kind": "file",
-        "label": "tools/mission-view/translate.ts"
+        "label": "src/frontend/components/workspace/missionControl/panels/index.tsx"
       }
     ]
   }
