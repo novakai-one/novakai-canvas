@@ -299,31 +299,52 @@
 .architecture-node.ports-always .react-flow__handle,
 .react-flow__node.selected .react-flow__handle { opacity: 1; }
 
+/* The default wire is legible; --wire is the floor its kind colour is lifted above. */
 .react-flow__edge-path {
-  stroke: var(--wire-stroke, var(--faint));
-  stroke-linecap: square;
+  stroke: var(--wire-stroke, var(--wire));
+  stroke-linecap: round;
+  stroke-linejoin: round;
   transition: opacity 160ms ease, stroke 120ms ease;
 }
 
-.react-flow__edge.selected .react-flow__edge-path { stroke: var(--accent); }
-.react-flow__edge.is-dimmed { opacity: 0.16; }
+/* Gold marks the one wire you are working on, and only while you are working on it. */
+.react-flow__edge.selected .react-flow__edge-path { stroke: var(--gold); }
+/* Faint is the DIMMED state and nothing else. */
+.react-flow__edge.is-dimmed .react-flow__edge-path { stroke: var(--wire-dim); }
+.react-flow__edge.is-dimmed { opacity: 0.55; }
+.react-flow__edge.is-dimmed .wire-label { opacity: 0.35; }
 
+/*
+ * A wire label rides on its own wire and cuts a hole in it.
+ *
+ * No box, no border: at working density a hundred bordered chips read as noise. The halo is
+ * painted in the canvas background so the label separates from whatever it crosses — that is
+ * what stops neighbouring labels from smearing into one grey band.
+ */
 .wire-label {
   position: absolute;
-  padding: 3px 6px;
-  border: 1px solid var(--border-soft);
-  border-radius: 3px;
-  color: var(--muted);
-  background: var(--card-3);
-  font-size: 9px;
+  padding: 0 var(--space-1);
+  border: 0;
+  color: var(--wire-label);
+  background: none;
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
   cursor: pointer;
+  text-shadow:
+    0 0 3px var(--bg), 0 0 3px var(--bg), 0 0 3px var(--bg),
+    1px 0 1px var(--bg), -1px 0 1px var(--bg),
+    0 1px 1px var(--bg), 0 -1px 1px var(--bg);
 }
+
+.wire-label:hover { color: var(--ink); }
 
 /* A selected wire's contract must stay readable above everything else. */
 .wire-label.is-selected {
-  border-color: var(--accent-dim);
-  color: var(--accent-bright);
-  background: var(--hover);
+  color: var(--gold-bright);
+  font-weight: 500;
 }
 
 .canvas-toolbar {
@@ -479,14 +500,15 @@
   pointer-events: none;
 }
 
-.is-present .react-flow__edge-path { stroke: var(--wire-stroke, var(--faint-read)); }
+.is-present .react-flow__edge-path { stroke: var(--wire-stroke, var(--wire)); }
 
 .is-present .wire-label {
-  padding: 2px 5px;
-  border: 0;
   color: var(--muted-read);
-  background: var(--panel-read);
-  font-size: 10px;
+  background: none;
+  text-shadow:
+    0 0 3px var(--bg-read), 0 0 3px var(--bg-read), 0 0 3px var(--bg-read),
+    1px 0 1px var(--bg-read), -1px 0 1px var(--bg-read),
+    0 1px 1px var(--bg-read), 0 -1px 1px var(--bg-read);
 }
 
 .react-flow__controls {

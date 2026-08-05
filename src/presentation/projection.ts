@@ -22,6 +22,36 @@ export interface ArchitectureEdgeData extends Record<string, unknown> {
   preferences: CanvasPreferences;
   editable: boolean;
   select: () => void;
+  /**
+   * Signed perpendicular offset that keeps wires sharing a node pair apart.
+   *
+   * Assigned here rather than in the renderer because separation is a property of the whole set
+   * of wires, and an edge component only ever sees itself.
+   */
+  lane: number;
+}
+
+/** Distance between the corridors of two wires that join the same pair of nodes. */
+const LANE_GAP = 22;
+
+/**
+ * How far each wire's corridor moves so parallel wires stop drawing over each other.
+ *
+ * Keyed on the unordered node pair: two wires joining the same two nodes are the ones that would
+ * otherwise share every pixel. The middle wire of an odd group keeps the straight route.
+ */
+function laneOffsets(wires: ProjectedView['wires']): Map<string, number> {
+  const groups = new Map<string, string[]>();
+  for (const wire of wires) {
+    const ends = [wire.source.nodeId as string, wire.target.nodeId as string].sort();
+    const key = `${ends[0]}\u0000${ends[1]}`;
+    groups.set(key, [...(groups.get(key) ?? []), wire.id]);
+  }
+  const offsets = new Map<string, number>();
+  for (const ids of groups.values()) {
+    ids.forEach((id, index) => offsets.set(id, (index - (ids.length - 1) / 2) * LANE_GAP));
+  }
+  return offsets;
 }
 
 /**
@@ -174,6 +204,7 @@ export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>
 export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>[] {
   const { editable, preferences, select, selection, view } = input;
   const connected = connectedIds(input);
+  const lanes = laneOffsets(view.wires);
   return view.wires.map((wire) => ({
     id: wire.id,
     source: wire.source.nodeId,
@@ -195,6 +226,7 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
       preferences,
       editable,
       select: () => select({ kind: 'wire', id: wire.id }),
+      lane: lanes.get(wire.id) ?? 0,
     },
   }));
 }

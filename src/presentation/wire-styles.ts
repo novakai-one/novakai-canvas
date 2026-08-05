@@ -31,16 +31,34 @@ const WIRE_DASH_ARRAYS: Record<WireDash, string> = {
   dashdot: '9 4 2 4',
 };
 
-/** Muted per-theme colours; no neon. CSS variables are injected from this table. */
+/**
+ * Muted per-theme colours; no neon, but every one reads at working zoom.
+ *
+ * These are the DEFAULT state. Faintness belongs to the dimmed state alone — a wire you cannot
+ * follow across a 44-node diagram is not restrained, it is broken.
+ */
 const WIRE_TONE_COLORS: Record<WireTone, Record<CanvasTheme, string>> = {
-  neutral: { dark: '#7a756b', light: '#8a8478' },
-  sage: { dark: '#78a886', light: '#4f7d60' },
-  steel: { dark: '#7591ad', light: '#4f6d8c' },
-  slate: { dark: '#8b93a3', light: '#68707f' },
-  violet: { dark: '#9c86b4', light: '#77618f' },
-  amber: { dark: '#c39257', light: '#a2743a' },
-  rust: { dark: '#b56f63', light: '#a05243' },
+  neutral: { dark: '#948d80', light: '#6f695d' },
+  sage: { dark: '#8dbd9b', light: '#3f6c51' },
+  steel: { dark: '#8aa8c6', light: '#41607f' },
+  slate: { dark: '#a2aabb', light: '#5a6271' },
+  violet: { dark: '#b19bc9', light: '#68527f' },
+  amber: { dark: '#d3a468', light: '#8f6530' },
+  rust: { dark: '#c98376', light: '#8f4438' },
 };
+
+/**
+ * Rendered stroke width.
+ *
+ * The stored preference is a taste dial, not a licence to draw an invisible wire: below the floor
+ * a wire disappears into the background at the zoom real diagrams are read at.
+ */
+const MINIMUM_STROKE = 1.7;
+
+/** Stroke width for one wire, never thinner than the legibility floor. */
+export function wireStrokeWidth(preferred: number | undefined): number {
+  return Math.max(preferred ?? MINIMUM_STROKE, MINIMUM_STROKE);
+}
 
 /** Literal colour for renderers that cannot read CSS variables (markers, SVG). */
 export function wireKindColor(kind: WireKind, theme: CanvasTheme): string {
