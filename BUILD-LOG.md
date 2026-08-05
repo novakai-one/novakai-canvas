@@ -120,6 +120,27 @@ if Chris says they were intentionally global — then they need a home concept o
 | Interfaces / distinct owners | 56 / 51 | Supports LBD-05 (interfaces as ports) |
 | Applied operations | 60 | Idempotency history to carry forward |
 
+### D-006 — "Before" baseline, driven in a real browser (not read from code)
+
+Screenshots: `~/.claude/browse/shots/canvas-before.png`, `canvas-edit-mode.png`. Chris's rule —
+UI is never judged from source. What I found using it the way he would:
+
+| # | What a user hits | Severity |
+|---|---|---|
+| 1 | **The toolbar clips.** In Edit the title runs off the right edge (`Novakai project model r238…` cut mid-token) and the diagram select truncates to `Diagram…`. The controls collide with the Inspect panel instead of fitting beside it. | High — it reads as broken |
+| 2 | **Inspect is a ~400px void.** 95% empty with one grey line of copy in the middle. It's the largest area on screen and says the least. | High — R1 friendliness |
+| 3 | **Present is the default mode.** The app opens read-only; every authoring control is one click away behind a mode toggle. For a tool whose first requirement is "create diagrams on the canvas", the drawing tools should not be the hidden state. | High — R1 |
+| 4 | **Node text truncates mid-word** — `listAgents(Pr…`, `SessionStatus { provider,`. Interfaces and types are the content, and they're the first thing cut. | Medium |
+| 5 | **Legend floats over the canvas** as a bordered box, permanently, regardless of relevance. Ornament that never earns its place. | Medium — his "no ornament" rule |
+| 6 | `Preview map layout` wraps to two lines inside its button; `Undo` sits disabled and unexplained. | Low |
+| 7 | The React Flow attribution badge sits in the corner of the product. | Low |
+
+**Correction to my own earlier reading:** Present and Edit differ visibly in these screenshots,
+but that is zoom and label styling, not arrangement — `presentArchitecture` already delegates
+to the same focus path, so Codex did fix the contradiction at the data level. What survives is
+the *concept*: a mode still exists in the presentation layer and could regress. V2 removes the
+possibility structurally rather than trusting it.
+
 ## Slice progress
 
 | Slice | State | Evidence |
