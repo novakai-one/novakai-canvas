@@ -37,13 +37,3 @@ export type LinkId = Branded<'LinkId'>;
 /** Any identifier this capability mints. */
 export type CanvasId =
   | DiagramId | NodeId | WireId | InterfaceId | TypeId | LayoutId | ViewId | LinkId;
-
-/**
- * Marks an untrusted string as an identifier of one kind.
- *
- * Used only at parsing seams, where a validator has already established the string is a
- * non-empty identifier. Domain code never calls this to invent an identity out of a label.
- */
-export function asId<Id extends CanvasId>(value: string): Id {
-  return value as Id;
-}

@@ -181,6 +181,9 @@
 .tone-bucket { color: var(--tree-muted); font-weight: 600; }
 .tone-tombstone { color: var(--tree-tombstone); }
 
+/* A permanent bordered panel for reference text is ornament: it competes with the
+   diagram every second it is on screen without ever being the thing you need now.
+   It stays available, quietly, and comes forward when looked at. */
 .canvas-legend {
   position: absolute;
   z-index: 10;
@@ -190,9 +193,19 @@
   flex-direction: column;
   gap: 6px;
   padding: 10px 14px;
-  border: 1px solid var(--border);
+  border: 1px solid transparent;
   border-radius: 7px;
+  background: transparent;
+  opacity: 0.4;
+  transition: opacity var(--motion-feedback), background var(--motion-feedback),
+    border-color var(--motion-feedback);
+}
+
+.canvas-legend:hover,
+.canvas-legend:focus-within {
+  border-color: var(--border);
   background: var(--overlay);
+  opacity: 1;
   backdrop-filter: blur(16px);
 }
 

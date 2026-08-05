@@ -1,4 +1,26 @@
 /** Framework-free public surface shared by the web host, CLI, agents, and future Novakai host. */
+
+// The record capability: independent per-diagram records with one library over them. Hosts
+// reach Canvas through this file and never through a path below it.
+export { createCanvasLibrary } from './application/canvas-library.ts';
+export type {
+  CanvasLibrary, CanvasLibraryRepository, DiagramSummary, LibraryFailure, WriteOutcome,
+} from './application/canvas-library.ts';
+export { createCanvasWorkspace } from './application/canvas-workspace.ts';
+export type {
+  ActorContext, CanvasWorkspace, ChangeOutcome, RecordChangeSet, RecordCommand,
+} from './application/canvas-workspace.ts';
+export { createMemoryLibraryRepository } from './adapters/memory-library-repository.ts';
+export { migrateDocumentToLibrary } from './domain/migrate/v2-to-v3.ts';
+export { censusOfLegacyDocument, censusOfMigratedLibrary } from './domain/migrate/census.ts';
+export type { CanvasCensus } from './domain/migrate/census.ts';
+export type {
+  CrossDiagramLink, DiagramRecord, LibraryEntry, LibraryIndex, MigratedLibrary, MigrationReport,
+} from './domain/records.ts';
+export type {
+  DiagramId, LayoutId, LinkId, NodeId, TypeId, ViewId, WireId,
+} from './domain/ids.ts';
+
 export { createCanvasEngine, type CanvasEngine } from './application/canvas-engine.ts';
 export type { JsonRepository } from './application/json-repository.ts';
 export {

@@ -266,3 +266,12 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* Checkboxes inherited the browser default: a bright white block that read as
+   the loudest element in a dark panel. */
+.field input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--accent-dim);
+}

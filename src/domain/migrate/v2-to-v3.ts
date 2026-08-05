@@ -1,5 +1,5 @@
 import type { ArchitectureDocument, CanvasWire as LegacyWire } from '../model.ts';
-import { asId } from '../ids.ts';
+import { asId } from '../id-cast.ts';
 import type { DiagramId, LinkId, NodeId, ViewId } from '../ids.ts';
 import type {
   CanvasLayout, CanvasNode, CanvasView, CanvasWire, CrossDiagramLink, DiagramRecord,
