@@ -10,6 +10,7 @@ interface InspectPanelProps {
   selection: Selection;
   execute: (command: CanvasCommand) => void;
   clearSelection: () => void;
+  editable: boolean;
 }
 
 function EmptySelection() {
@@ -24,17 +25,17 @@ function NodeInspection({ props, id }: { props: InspectPanelProps; id: string })
     <div className="inspection">
       <div className="object-identity"><span>{node.kind}</span><strong>{node.label}</strong></div>
       <Field label="Name">
-        <input value={node.label} onChange={(event) => props.execute({ kind: 'node.update', id, patch: { label: event.target.value } })} />
+        <input disabled={!props.editable} value={node.label} onChange={(event) => props.execute({ kind: 'node.update', id, patch: { label: event.target.value } })} />
       </Field>
       <Field label="Description">
-        <textarea value={node.description ?? ''} onChange={(event) => props.execute({ kind: 'node.update', id, patch: { description: event.target.value } })} />
+        <textarea disabled={!props.editable} value={node.description ?? ''} onChange={(event) => props.execute({ kind: 'node.update', id, patch: { description: event.target.value } })} />
       </Field>
       <div className="facts">
         <div><span>Interfaces</span><strong>{node.interfaceIds.length}</strong></div>
         <div><span>Types</span><strong>{node.typeIds.length}</strong></div>
         <div><span>Position</span><strong>{Math.round(placement.position.x)}, {Math.round(placement.position.y)}</strong></div>
       </div>
-      {node.kind !== 'scope' && (
+      {props.editable && node.kind !== 'scope' && (
         <button className="danger-action" onClick={() => { props.execute({ kind: 'node.remove', id }); props.clearSelection(); }} type="button">Delete object</button>
       )}
     </div>
@@ -75,16 +76,16 @@ function WireInspection({ props, id }: { props: InspectPanelProps; id: string })
   return (
     <div className="inspection">
       <div className="object-identity"><span>wire · {wire.kind}</span><strong>{wire.label || 'Unlabelled'}</strong></div>
-      <Field label="Label"><input value={wire.label} onChange={(event) => props.execute({ kind: 'wire.update', id, patch: { label: event.target.value } })} /></Field>
+      <Field label="Label"><input disabled={!props.editable} value={wire.label} onChange={(event) => props.execute({ kind: 'wire.update', id, patch: { label: event.target.value } })} /></Field>
       <Field label="Kind">
-        <select value={wire.kind} onChange={(event) => props.execute({ kind: 'wire.update', id, patch: { kind: event.target.value as WireKind } })}>
+        <select disabled={!props.editable} value={wire.kind} onChange={(event) => props.execute({ kind: 'wire.update', id, patch: { kind: event.target.value as WireKind } })}>
           {WIRE_KINDS.map((kind) => <option key={kind} value={kind}>{kind}</option>)}
         </select>
       </Field>
       <Field label="From"><output>{props.document.nodes[wire.source]?.label ?? wire.source}</output></Field>
       <Field label="To"><output>{props.document.nodes[wire.target]?.label ?? wire.target}</output></Field>
       <Field label="Routing"><output>Elbow</output></Field>
-      <button className="danger-action" onClick={() => { props.execute({ kind: 'wire.remove', id }); props.clearSelection(); }} type="button">Delete wire</button>
+      {props.editable && <button className="danger-action" onClick={() => { props.execute({ kind: 'wire.remove', id }); props.clearSelection(); }} type="button">Delete wire</button>}
     </div>
   );
 }

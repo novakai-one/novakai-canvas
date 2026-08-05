@@ -40,6 +40,21 @@ describe('applyCanvasCommand', () => {
     expect(next.wires.link).toBeUndefined();
   });
 
+  it('reconnects an existing wire without replacing its identity', () => {
+    const wired = structuredClone(document);
+    wired.nodes.two = { ...wired.nodes.one, id: 'two', label: 'Two' };
+    wired.nodes.three = { ...wired.nodes.one, id: 'three', label: 'Three' };
+    wired.wires.link = { id: 'link', source: 'one', target: 'two', label: 'calls', kind: 'executes', routing: 'elbow' };
+
+    const next = applyCanvasCommand(wired, {
+      kind: 'wire.reconnect', id: 'link', source: 'one', target: 'three',
+    });
+
+    expect(next.wires.link).toEqual({
+      id: 'link', source: 'one', target: 'three', label: 'calls', kind: 'executes', routing: 'elbow',
+    });
+  });
+
   it('lays out one scope without moving another scope', () => {
     const scoped = structuredClone(document);
     scoped.nodes.one = { ...scoped.nodes.one, kind: 'scope' };

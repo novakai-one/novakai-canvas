@@ -1,5 +1,7 @@
 import type { ArchitectureDocument, CanvasNode, NodePlacement } from '../domain/model';
 
+export type CreatableNodeKind = 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'group';
+
 /** Semantic node and initial geometry produced for one add command. */
 export interface CreatedCanvasNode {
   node: CanvasNode;
@@ -10,15 +12,19 @@ export interface CreatedCanvasNode {
 export function createCanvasNode(
   document: ArchitectureDocument,
   parentId: string,
-  kind: 'module' | 'comment',
+  kind: CreatableNodeKind,
   id: string,
 ): CreatedCanvasNode {
   const count = Object.values(document.nodes).filter((node) => node.parentId === parentId).length;
+  const semanticKind = kind === 'group' ? 'scope' : kind;
+  const label = kind === 'comment' ? 'Add context here'
+    : kind === 'group' ? 'New group'
+      : `New ${kind}`;
   return {
     node: {
       id,
-      kind,
-      label: kind === 'comment' ? 'Add context here' : 'New module',
+      kind: semanticKind,
+      label,
       parentId,
       interfaceIds: [],
       typeIds: [],
@@ -28,7 +34,9 @@ export function createCanvasNode(
       position: kind === 'comment'
         ? { x: 40 + (count % 3) * 300, y: 80 + (count % 4) * 140 }
         : { x: 60 + (count % 3) * 240, y: 120 + (count % 4) * 160 },
-      size: kind === 'comment' ? { width: 240, height: 100 } : { width: 200, height: 110 },
+      size: kind === 'comment' ? { width: 240, height: 100 }
+        : kind === 'group' ? { width: 480, height: 300 }
+          : { width: 200, height: 110 },
       pinned: false,
     },
   };

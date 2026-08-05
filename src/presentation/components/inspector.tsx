@@ -16,22 +16,24 @@ interface InspectorProps {
   replace: (document: ArchitectureDocument) => void;
   updatePreferences: (preferences: CanvasPreferences) => void;
   clearSelection: () => void;
+  editable: boolean;
 }
 
 /** Routes universal selection into contextual inspector surfaces. */
 export function Inspector(props: InspectorProps) {
   const [section, setSection] = useState<PreferenceSection>('canvas');
+  const tabs: InspectorTab[] = props.editable ? ['inspect', 'preferences', 'json'] : ['inspect'];
   return (
     <aside className="inspector" style={{ width: props.preferences.panel.width }}>
       <nav className="inspector-tabs">
-        {(['inspect', 'preferences', 'json'] as const).map((tab) => (
+        {tabs.map((tab) => (
           <button className={props.tab === tab ? 'is-active' : ''} key={tab} onClick={() => props.setTab(tab)} type="button">{tab}</button>
         ))}
       </nav>
       <div className="inspector-body">
-        {props.tab === 'inspect' && <InspectPanel document={props.document} selection={props.selection} execute={props.execute} clearSelection={props.clearSelection} />}
-        {props.tab === 'preferences' && <PreferencesPanel preferences={props.preferences} section={section} setSection={setSection} update={props.updatePreferences} />}
-        {props.tab === 'json' && <JsonPanel document={props.document} replace={props.replace} />}
+        {(!props.editable || props.tab === 'inspect') && <InspectPanel document={props.document} selection={props.selection} execute={props.execute} clearSelection={props.clearSelection} editable={props.editable} />}
+        {props.editable && props.tab === 'preferences' && <PreferencesPanel preferences={props.preferences} section={section} setSection={setSection} update={props.updatePreferences} />}
+        {props.editable && props.tab === 'json' && <JsonPanel document={props.document} replace={props.replace} />}
       </div>
     </aside>
   );

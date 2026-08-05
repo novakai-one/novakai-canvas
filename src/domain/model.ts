@@ -132,6 +132,7 @@ export interface CanvasPreferences {
     gridSize: number;
     showControls: boolean;
     showLegend: boolean;
+    groupPadding: number;
   };
   nodes: {
     showKinds: boolean;
@@ -167,5 +168,6 @@ export type CanvasCommand =
   | { kind: 'node.remove'; id: string }
   | { kind: 'wire.add'; wire: CanvasWire }
   | { kind: 'wire.update'; id: string; patch: Partial<Pick<CanvasWire, 'label' | 'kind'>> }
+  | { kind: 'wire.reconnect'; id: string; source: string; target: string }
   | { kind: 'wire.remove'; id: string }
-  | { kind: 'scope.layout'; id: string; layoutId?: string };
+  | { kind: 'scope.layout'; id: string; layoutId?: string; groupPadding?: number };

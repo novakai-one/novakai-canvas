@@ -37,8 +37,15 @@ export function applyCanvasCommand(
       break;
     case 'wire.add': next.wires[command.wire.id] = command.wire; break;
     case 'wire.update': if (next.wires[command.id]) Object.assign(next.wires[command.id], command.patch); break;
+    case 'wire.reconnect':
+      if (next.wires[command.id] && next.nodes[command.source] && next.nodes[command.target]) {
+        next.wires[command.id] = {
+          ...next.wires[command.id], source: command.source, target: command.target,
+        };
+      }
+      break;
     case 'wire.remove': delete next.wires[command.id]; break;
-    case 'scope.layout': next = layoutScopes(next, [command.id], command.layoutId); break;
+    case 'scope.layout': next = layoutScopes(next, [command.id], command.layoutId, command.groupPadding); break;
   }
   next.revision += 1;
   return next;

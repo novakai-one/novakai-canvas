@@ -107,10 +107,10 @@ export default function App({ engine, initialPreferences, preferencesRepository 
           setSelection={select}
         />
       </ReactFlowProvider>
-      {mode === 'edit' && (
-        <Inspector
+      <Inspector
           clearSelection={() => setSelection(null)}
           document={document}
+          editable={mode === 'edit'}
           execute={engine.execute}
           preferences={preferences}
           replace={engine.replace}
@@ -119,7 +119,6 @@ export default function App({ engine, initialPreferences, preferencesRepository 
           tab={tab}
           updatePreferences={setPreferences}
         />
-      )}
     </div>
   );
 }

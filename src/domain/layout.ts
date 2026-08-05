@@ -6,9 +6,7 @@ import type { ArchitectureDocument, PositionedCanvasNode, TreeRow } from './mode
 import { positionedNodes, resolveLayout } from './layouts.ts';
 import { orderedTreeRows, treeRowDepth, treeRowText } from './tree.ts';
 
-const PADDING_TOP = 56;
-const PADDING_SIDE = 40;
-const PADDING_BOTTOM = 40;
+const DEFAULT_GROUP_PADDING = 40;
 const SCOPE_GAP = 80;
 const NEW_SCOPE_X = 40;
 const CHAR_WIDTH = 7.2;
@@ -79,7 +77,8 @@ function directChildren(document: PositionedDocument, containerId: string): stri
 }
 
 /** Flat container: dagre over children with every child-internal wire as a rank edge. */
-function layoutFlat(document: PositionedDocument, childIds: string[]): Size {
+function layoutFlat(document: PositionedDocument, childIds: string[], groupPadding: number): Size {
+  const paddingTop = groupPadding + 16;
   const graph = new dagre.graphlib.Graph();
   graph.setGraph({ rankdir: ARCHITECTURE_FLOW.rankDirection, nodesep: 40, ranksep: 70 });
   graph.setDefaultEdgeLabel(() => ({}));
@@ -95,8 +94,8 @@ function layoutFlat(document: PositionedDocument, childIds: string[]): Size {
   let maxBottom = 0;
   for (const id of childIds) {
     const laid = graph.node(id);
-    const x = Math.round(laid.x - laid.width / 2) + PADDING_SIDE;
-    const y = Math.round(laid.y - laid.height / 2) + PADDING_TOP;
+    const x = Math.round(laid.x - laid.width / 2) + groupPadding;
+    const y = Math.round(laid.y - laid.height / 2) + paddingTop;
     document.nodes[id] = {
       ...document.nodes[id],
       position: { x, y },
@@ -106,8 +105,8 @@ function layoutFlat(document: PositionedDocument, childIds: string[]): Size {
     maxBottom = Math.max(maxBottom, y + laid.height);
   }
   return {
-    width: Math.max(320, maxRight + PADDING_SIDE),
-    height: Math.max(160, maxBottom + PADDING_BOTTOM),
+    width: Math.max(320, maxRight + groupPadding),
+    height: Math.max(160, maxBottom + groupPadding),
   };
 }
 
@@ -143,7 +142,7 @@ function ownsRanks(document: PositionedDocument, childIds: string[]): Map<string
 }
 
 /** Zoned container: deterministic grid packing with topological rank by `owns` (ruling R6). */
-function layoutGrid(document: PositionedDocument, childIds: string[]): Size {
+function layoutGrid(document: PositionedDocument, childIds: string[], groupPadding: number): Size {
   for (const id of childIds) {
     if (document.nodes[id].kind === 'scope') continue; // zones already sized by the recursion
     document.nodes[id] = { ...document.nodes[id], size: contentSize(document, id) };
@@ -155,7 +154,7 @@ function layoutGrid(document: PositionedDocument, childIds: string[]): Size {
     byRank.set(rank, [...(byRank.get(rank) ?? []), id]);
   }
 
-  let y = PADDING_TOP;
+  let y = groupPadding + 16;
   let maxRight = 0;
   for (const rank of [...byRank.keys()].sort((a, b) => a - b)) {
     // Wrap wide ranks into multiple rows so the grid keeps a bounded aspect ratio.
@@ -172,7 +171,7 @@ function layoutGrid(document: PositionedDocument, childIds: string[]): Size {
       rowWidth = rowWidth === 0 ? width : rowWidth + GRID_COL_GAP + width;
     }
     for (const row of rows) {
-      let x = PADDING_SIDE;
+      let x = groupPadding;
       let rowHeight = 0;
       for (const id of row) {
         const size = document.nodes[id].size;
@@ -186,21 +185,21 @@ function layoutGrid(document: PositionedDocument, childIds: string[]): Size {
   }
   const maxBottom = y - GRID_ROW_GAP;
   return {
-    width: Math.max(320, maxRight + PADDING_SIDE),
-    height: Math.max(160, maxBottom + PADDING_BOTTOM),
+    width: Math.max(320, maxRight + groupPadding),
+    height: Math.max(160, maxBottom + groupPadding),
   };
 }
 
 /** Lays out one container; recurses into child zones bottom-up before packing it. */
-function layoutContainer(document: PositionedDocument, containerId: string): Size {
+function layoutContainer(document: PositionedDocument, containerId: string, groupPadding: number): Size {
   const childIds = directChildren(document, containerId);
   const zoneIds = childIds.filter((id) => document.nodes[id].kind === 'scope');
-  if (zoneIds.length === 0) return layoutFlat(document, childIds);
+  if (zoneIds.length === 0) return layoutFlat(document, childIds, groupPadding);
   for (const zoneId of zoneIds) {
-    const size = layoutContainer(document, zoneId);
+    const size = layoutContainer(document, zoneId, groupPadding);
     document.nodes[zoneId] = { ...document.nodes[zoneId], size };
   }
-  return layoutGrid(document, childIds);
+  return layoutGrid(document, childIds, groupPadding);
 }
 
 /** Re-layouts named scopes in one saved layout without changing semantic nodes. */
@@ -208,7 +207,9 @@ export function layoutScopes(
   input: ArchitectureDocument,
   scopeIds: string[],
   layoutId?: string,
+  requestedGroupPadding = DEFAULT_GROUP_PADDING,
 ): ArchitectureDocument {
+  const groupPadding = Math.min(160, Math.max(16, requestedGroupPadding));
   const layout = resolveLayout(input, layoutId);
   const document: PositionedDocument = {
     ...input,
@@ -222,7 +223,7 @@ export function layoutScopes(
     if (!scope || scope.kind !== 'scope') continue;
     const isNew = scope.size.width === 1 && scope.size.height === 1;
     if (isNew) newScopeIds.push(scopeId);
-    const size = layoutContainer(document, scopeId);
+    const size = layoutContainer(document, scopeId, groupPadding);
     document.nodes[scopeId] = { ...document.nodes[scopeId], size };
   }
 

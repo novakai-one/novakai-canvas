@@ -5,7 +5,7 @@ import {
 import type { CanvasEngine } from '../../application/canvas-engine';
 import type { ArchitectureDocument, CanvasPreferences, Selection } from '../../domain/model';
 import type { ArchitectureMap } from '../../domain/maps';
-import { createCanvasNode } from '../canvas-actions';
+import { createCanvasNode, type CreatableNodeKind } from '../canvas-actions';
 import { projectEdges, projectNodes } from '../projection';
 import type { CanvasMode } from '../view-mode';
 import { ArchitectureNode } from '../nodes/architecture-node';
@@ -57,7 +57,7 @@ function connect(engine: CanvasEngine, connection: Connection): string | null {
 }
 
 function CanvasToolbar({ props, layout }: { props: CanvasSurfaceProps; layout: () => void }) {
-  const add = (kind: 'module' | 'comment'): void => {
+  const add = (kind: CreatableNodeKind): void => {
     if (!props.activeMapId) return;
     const id = `${kind}-${crypto.randomUUID().slice(0, 8)}`;
     const created = createCanvasNode(props.document, props.activeMapId, kind, id);
@@ -82,8 +82,23 @@ function CanvasToolbar({ props, layout }: { props: CanvasSurfaceProps; layout: (
       {props.mode === 'edit' && (
         <div className="toolbar-actions">
           <button disabled={!props.activeMapId} onClick={layout} type="button">Auto-layout</button>
-          <button disabled={!props.activeMapId} onClick={() => add('module')} type="button"><span>＋</span>Node</button>
-          <button disabled={!props.activeMapId} onClick={() => add('comment')} type="button"><span>＋</span>Comment</button>
+          <select
+            aria-label="Add object"
+            disabled={!props.activeMapId}
+            onChange={(event) => {
+              if (event.target.value) add(event.target.value as CreatableNodeKind);
+              event.target.value = '';
+            }}
+            value=""
+          >
+            <option value="">＋ Add</option>
+            <option value="module">Module</option>
+            <option value="object">Object</option>
+            <option value="runtime">Runtime</option>
+            <option value="resource">Resource</option>
+            <option value="group">Group</option>
+            <option value="comment">Comment</option>
+          </select>
         </div>
       )}
       <div className="file-identity"><span>{props.document.name}</span><small>r{props.document.revision}</small></div>
@@ -110,7 +125,9 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   );
   const layout = (): void => {
     if (!props.activeMapId) return;
-    props.engine.execute({ kind: 'scope.layout', id: props.activeMapId });
+    props.engine.execute({
+      kind: 'scope.layout', id: props.activeMapId, groupPadding: props.preferences.canvas.groupPadding,
+    });
     setFitRevision((revision) => revision + 1);
   };
   return (
@@ -118,10 +135,17 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
       <ReactFlow
         key={`${props.mode}:${props.activeMapId ?? 'empty'}:${fitRevision}`}
         colorMode={props.preferences.appearance.theme} deleteKeyCode={editable ? ['Backspace', 'Delete'] : null} edgeTypes={edgeTypes} edges={edges}
-        elementsSelectable fitView fitViewOptions={{ padding: editable ? 0.12 : 0.05, maxZoom: 1 }} minZoom={0.35}
+        edgesReconnectable={editable} elementsSelectable fitView fitViewOptions={{ padding: editable ? 0.12 : 0.05, maxZoom: 1 }} minZoom={0.35}
         nodeTypes={nodeTypes} nodes={nodes} nodesConnectable={editable} nodesDraggable={editable}
         onConnect={(connection) => { if (!editable) return; const id = connect(props.engine, connection); if (id) props.setSelection({ kind: 'wire', id }); }}
         onEdgeClick={(_event, edge) => props.setSelection({ kind: 'wire', id: edge.id })}
+        onReconnect={(edge, connection) => {
+          if (!editable || !connection.source || !connection.target) return;
+          props.engine.execute({
+            kind: 'wire.reconnect', id: edge.id, source: connection.source, target: connection.target,
+          });
+          props.setSelection({ kind: 'wire', id: edge.id });
+        }}
         onNodeClick={(_event, node) => props.setSelection({ kind: 'node', id: node.id })}
         onNodesChange={(changes) => addNodeChanges(props.engine, editable, changes)} onPaneClick={() => props.setSelection(null)}
         selectionOnDrag={editable} snapGrid={[props.preferences.canvas.gridSize, props.preferences.canvas.gridSize]}

@@ -38,6 +38,9 @@ function CanvasControls({ value, patch }: { value: CanvasPreferences; patch: Pat
     <Field label={`Grid size · ${value.canvas.gridSize}`}>
       <input min="4" max="32" type="range" value={value.canvas.gridSize} onChange={(event) => patch('canvas', { ...value.canvas, gridSize: Number(event.target.value) })} />
     </Field>
+    <Field label={`Group breathing room · ${value.canvas.groupPadding}`}>
+      <input min="16" max="160" step="8" type="range" value={value.canvas.groupPadding} onChange={(event) => patch('canvas', { ...value.canvas, groupPadding: Number(event.target.value) })} />
+    </Field>
   </>;
 }
 

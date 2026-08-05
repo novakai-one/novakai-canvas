@@ -106,6 +106,19 @@ describe('layoutScopes', () => {
     expect(second).toEqual(first);
   });
 
+  it('uses the requested group breathing room without changing semantic nodes', () => {
+    const { doc, touchedScopeIds } = compiled();
+    const compact = layoutScopes(doc, touchedScopeIds, undefined, 24);
+    const spacious = layoutScopes(doc, touchedScopeIds, undefined, 96);
+    const childId = 'browser-sessions--browse-cli';
+
+    expect(placementFor(spacious, childId).position.x)
+      .toBeGreaterThan(placementFor(compact, childId).position.x);
+    expect(placementFor(spacious, 'browser-sessions').size.width)
+      .toBeGreaterThan(placementFor(compact, 'browser-sessions').size.width);
+    expect(spacious.nodes).toEqual(compact.nodes);
+  });
+
   it('places a new scope below the lowest existing top-level node and never moves others', () => {
     const { doc, touchedScopeIds } = compiled();
     const laid = layoutScopes(doc, touchedScopeIds);
