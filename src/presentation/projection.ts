@@ -64,6 +64,20 @@ function connectedIds(input: ProjectionInput): Set<string> {
     return wire ? new Set([wire.source.nodeId as string, wire.target.nodeId as string]) : new Set();
   }
   const ids = new Set([owner as string]);
+  // A group has no wires of its own, so relatedness for a group is containment: everything it
+  // holds. Without this, selecting a frame greys out the entire diagram it frames.
+  if (record.nodes[owner as string]?.kind === 'group') {
+    let grew = true;
+    while (grew) {
+      grew = false;
+      view.nodes.forEach((node) => {
+        if (node.parentId && ids.has(node.parentId as string) && !ids.has(node.id as string)) {
+          ids.add(node.id as string);
+          grew = true;
+        }
+      });
+    }
+  }
   view.wires.forEach((wire) => {
     if (wire.source.nodeId === owner) ids.add(wire.target.nodeId);
     if (wire.target.nodeId === owner) ids.add(wire.source.nodeId);
@@ -105,6 +119,11 @@ export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>
   const byId: Record<string, NestedNode> = Object.fromEntries(
     view.nodes.map((node) => [node.id as string, node]),
   );
+  // Dimming is a relationship between what is selected and what is drawn. A selection that
+  // reaches nothing on screen — the object was undone away, or its kind is hidden — has no
+  // relationship to show, so the canvas stays lit rather than greying out entirely.
+  const dimming = preferences.wires.dimUnrelated && selection !== null
+    && view.nodes.some((node) => connected.has(node.id as string));
   // `view.nodes` is parent-first by contract, so React Flow always meets a parent before its
   // child; this projection must not reorder it.
   return view.nodes.map((node) => {
@@ -120,11 +139,18 @@ export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>
       width: node.size.width,
       height: node.size.height,
       selected: selection?.kind === 'node' && selection.id === node.id,
-      className: preferences.wires.dimUnrelated && selection
-        && !connected.has(node.id) && node.kind !== 'group' ? 'is-dimmed' : '',
-      // A selected group rises above the interaction layers so its resize handles are reachable;
-      // its body stays click-through (pointer-events). Otherwise a group sits behind regular
-      // nodes by nesting depth, so a parent container stays behind the ones it holds.
+      className: dimming && !connected.has(node.id) && node.kind !== 'group' ? 'is-dimmed' : '',
+      // A group is a frame, not a surface: its whole box is click-through, and only the parts
+      // that mean something — the title, the ports, the resize handles — opt back in
+      // (`canvas.css`). React Flow's own `.react-flow__node.draggable` rule sets
+      // `pointer-events: all` at a specificity a stylesheet cannot politely outrank, so the
+      // policy is declared here, where the rest of a group's interaction policy already lives.
+      // Without it the root group covers the diagram and swallows every click meant for the
+      // pane — the reason clicking empty space used to select the enclosing group.
+      style: node.kind === 'group' ? { pointerEvents: 'none' as const } : undefined,
+      // A selected group rises above the interaction layers so its resize handles are reachable.
+      // Otherwise a group sits behind regular nodes by nesting depth, so a parent container
+      // stays behind the ones it holds.
       zIndex: node.kind === 'group'
         ? (selection?.kind === 'node' && selection.id === node.id ? 4 : scopeDepth(byId, node) - 1)
         : node.kind === 'comment' ? 3 : 2,

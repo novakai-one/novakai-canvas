@@ -1,5 +1,6 @@
 import { asId } from '../domain/id-cast';
 import type { NodeId } from '../domain/ids';
+import type { Selection } from '../domain/model';
 import type { CanvasNode, DiagramRecord } from '../domain/records';
 
 /** Node kinds the toolbar can create. Trees are authored by the CLI, so they are not offered. */
@@ -56,4 +57,40 @@ export function createCanvasNode(
 export function rootGroupId(record: DiagramRecord): NodeId | undefined {
   return Object.values(record.nodes)
     .find((node) => node.kind === 'group' && !node.parentId)?.id;
+}
+
+/**
+ * Where Escape takes the current selection: one step outward, never sideways.
+ *
+ * Selection is a stack the user climbs down: a node hands attention to the group that holds it,
+ * a group with nothing above it hands it back to the diagram. Anything that is not a node —
+ * a wire, an interface, a type — has no enclosing frame worth stepping into, so it clears.
+ * Escape never moves the camera; this function only ever names the next selection.
+ */
+export function escapeStep(record: DiagramRecord, selection: Selection): Selection {
+  if (!selection) return null;
+  if (selection.kind !== 'node') return null;
+  const parentId = record.nodes[selection.id]?.parentId;
+  if (!parentId || !record.nodes[parentId]) return null;
+  return { kind: 'node', id: parentId as string };
+}
+
+/**
+ * Whether the object a selection names still exists.
+ *
+ * Undo and remove can delete the thing under the cursor while the selection still points at it.
+ * A selection nothing answers to is worse than none: the inspector empties and the "dim
+ * everything unrelated" rule dims the whole canvas around an object that is not there. The
+ * surface drops such a selection rather than rendering the ghost.
+ */
+export function selectionResolves(record: DiagramRecord, selection: Selection): boolean {
+  if (!selection) return true;
+  switch (selection.kind) {
+    case 'node': return Boolean(record.nodes[selection.id]);
+    case 'tree-row': return Boolean(record.nodes[selection.nodeId]);
+    case 'wire': return Boolean(record.wires[selection.id]);
+    case 'interface': return Boolean(record.interfaces[selection.id]);
+    case 'type': return Boolean(record.types[selection.id]);
+    default: return true;
+  }
 }

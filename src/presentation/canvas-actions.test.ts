@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { asId } from '../domain/id-cast';
 import type { NodeId } from '../domain/ids';
 import type { DiagramRecord } from '../domain/records';
-import { createCanvasNode, rootGroupId } from './canvas-actions';
+import {
+  createCanvasNode, escapeStep, rootGroupId, selectionResolves,
+} from './canvas-actions';
 
 const record: DiagramRecord = {
   schemaVersion: 3,
@@ -62,5 +64,57 @@ describe('createCanvasNode', () => {
 describe('rootGroupId', () => {
   it('finds the one group that has no parent', () => {
     expect(rootGroupId(record)).toBe('map');
+  });
+});
+
+/** A root group holding an inner group holding one module, plus one wire between two modules. */
+const nested: DiagramRecord = {
+  ...record,
+  nodes: {
+    map: record.nodes.map,
+    inner: {
+      id: asId<NodeId>('inner'), kind: 'group', label: 'Inner', parentId: asId<NodeId>('map'), interfaceIds: [], typeIds: [],
+    },
+    leaf: {
+      id: asId<NodeId>('leaf'), kind: 'module', label: 'Leaf', parentId: asId<NodeId>('inner'), interfaceIds: [], typeIds: [],
+    },
+  },
+};
+
+describe('escapeStep', () => {
+  it('steps a node out to the group that holds it', () => {
+    expect(escapeStep(nested, { kind: 'node', id: 'leaf' })).toEqual({ kind: 'node', id: 'inner' });
+  });
+
+  it('keeps stepping outward one group at a time', () => {
+    expect(escapeStep(nested, { kind: 'node', id: 'inner' })).toEqual({ kind: 'node', id: 'map' });
+  });
+
+  it('clears once the outermost group is reached', () => {
+    expect(escapeStep(nested, { kind: 'node', id: 'map' })).toBeNull();
+  });
+
+  it('clears anything that is not a node, and stays cleared', () => {
+    expect(escapeStep(nested, { kind: 'wire', id: 'wire-a' })).toBeNull();
+    expect(escapeStep(nested, { kind: 'interface', id: 'iface-a' })).toBeNull();
+    expect(escapeStep(nested, null)).toBeNull();
+  });
+
+  it('clears rather than stepping into a parent that no longer exists', () => {
+    const orphaned = { ...nested, nodes: { leaf: nested.nodes.leaf } };
+    expect(escapeStep(orphaned, { kind: 'node', id: 'leaf' })).toBeNull();
+  });
+});
+
+describe('selectionResolves', () => {
+  it('accepts an empty selection and one that names a live node', () => {
+    expect(selectionResolves(nested, null)).toBe(true);
+    expect(selectionResolves(nested, { kind: 'node', id: 'leaf' })).toBe(true);
+  });
+
+  it('rejects a selection left pointing at something undo removed', () => {
+    expect(selectionResolves(nested, { kind: 'node', id: 'gone' })).toBe(false);
+    expect(selectionResolves(nested, { kind: 'wire', id: 'gone' })).toBe(false);
+    expect(selectionResolves(nested, { kind: 'tree-row', nodeId: 'gone', rowId: 'row' })).toBe(false);
   });
 });

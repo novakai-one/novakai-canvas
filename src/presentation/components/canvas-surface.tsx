@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
   Background, BackgroundVariant, Controls, ReactFlow, type Connection, type NodeChange,
 } from '@xyflow/react';
@@ -9,6 +9,7 @@ import type { NodeId, WireId } from '../../domain/ids';
 import type { CanvasPreferences, Selection } from '../../domain/model';
 import type { ProjectedView } from '../../domain/project-view';
 import type { DiagramRecord } from '../../domain/records';
+import { escapeStep, selectionResolves } from '../canvas-actions';
 import { projectEdges, projectNodes } from '../projection';
 import type { CanvasMode } from '../view-mode';
 import { ArchitectureNode } from '../nodes/architecture-node';
@@ -75,12 +76,62 @@ function connect(execute: (command: RecordCommand) => void, connection: Connecti
   return id;
 }
 
+/** True while the keystroke belongs to a field the user is typing in, not to the canvas. */
+function typingInAField(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false;
+  return target.isContentEditable
+    || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
+}
+
+/**
+ * Escape, owned by the canvas.
+ *
+ * The canvas is the only thing that knows what "outward" means, so the keystroke is read here
+ * rather than in the shell. It never touches the camera — Escape only ever renames the
+ * selection, one step at a time, until there is none.
+ */
+function useEscapeStepsOutward(
+  record: DiagramRecord,
+  selection: Selection,
+  setSelection: (selection: Selection) => void,
+): void {
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (event.key !== 'Escape' || typingInAField(event.target)) return;
+      if (!selection) return;
+      event.preventDefault();
+      setSelection(escapeStep(record, selection));
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [record, selection, setSelection]);
+}
+
+/**
+ * Drops a selection whose object has gone.
+ *
+ * Undo and delete can retire the selected object while the selection still names it. Left
+ * alone, "dim unrelated" then dims every node against a thing that no longer exists and the
+ * canvas sits grey with nothing selected. Releasing the selection releases the dim with it.
+ */
+function useSelectionReleasesWithItsObject(
+  record: DiagramRecord,
+  selection: Selection,
+  setSelection: (selection: Selection) => void,
+): void {
+  useEffect(() => {
+    if (!selectionResolves(record, selection)) setSelection(null);
+  }, [record, selection, setSelection]);
+}
+
 /** Interactive editor or clean, read-only presentation of one open diagram record. */
 export function CanvasSurface(props: CanvasSurfaceProps) {
   const {
     activeDiagramId, execute, mode, preferences, record, selection, setSelection, view,
   } = props;
   const editable = mode === 'edit';
+  useEscapeStepsOutward(record, selection, setSelection);
+  useSelectionReleasesWithItsObject(record, selection, setSelection);
   const nodes = useMemo(
     () => projectNodes({ view, record, preferences, selection, editable, select: setSelection }),
     [editable, preferences, record, selection, setSelection, view],

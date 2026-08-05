@@ -227,6 +227,14 @@
 
 .react-flow__node.selected .comment-node { border-color: var(--accent-dim); }
 
+/*
+ * A group is a frame, not a surface.
+ *
+ * The wrapper is made click-through in `projection.ts` (React Flow's own rule outranks a
+ * stylesheet there). Here the three things that must still answer the pointer opt back in:
+ * the title below, the ports, and the resize handles. Clicking a group's empty middle
+ * therefore reaches the pane and deselects.
+ */
 .scope-node {
   width: 100%;
   height: 100%;
@@ -236,10 +244,13 @@
   pointer-events: none;
 }
 
-.scope-node > span {
+.scope-node__title {
   position: absolute;
-  top: 18px;
-  left: 22px;
+  top: var(--space-4);
+  left: var(--space-5);
+  padding: var(--space-1) var(--space-2);
+  margin: calc(-1 * var(--space-1)) calc(-1 * var(--space-2));
+  border-radius: 4px;
   color: var(--faint);
   font-size: 10px;
   font-weight: 600;
@@ -249,10 +260,17 @@
   cursor: pointer;
 }
 
-.scope-node > span:hover { color: var(--muted-read); }
+.scope-node__title:hover {
+  color: var(--muted-read);
+  background: var(--card-3);
+}
 
 /* Standalone (orphan-bucket) zones keep the same quiet styling, drawn dashed. */
 .scope-node--standalone { border-style: dashed; }
+
+/* A selected group states itself at its edge; it never lights its interior. */
+.scope-node.is-selected { border-color: var(--accent-dim); }
+.scope-node.is-selected .scope-node__title { color: var(--accent); }
 
 /* The scope body is click-through; handles and resize controls re-enable it. */
 .scope-node .react-flow__handle { pointer-events: auto; }
@@ -393,7 +411,7 @@
   background: var(--panel-read);
 }
 
-.is-present .scope-node > span {
+.is-present .scope-node__title {
   color: var(--accent-strong);
   font-size: 15px;
   letter-spacing: 0;
