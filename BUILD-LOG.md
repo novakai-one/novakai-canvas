@@ -173,3 +173,51 @@ The app still runs on the existing path. The remaining hours went to UI craft �
 CSS and layout and survives the swap whenever it happens.
 
 **This is the honest state: foundation proven, not yet load-bearing.**
+
+## Final measurements
+
+| Gate | Baseline | Now |
+|---|---|---|
+| Tests | 158 pass / 3 fail | **222 pass / 3 fail** — same three pre-existing reporting failures, untouched |
+| Typecheck (both configs) | clean | clean |
+| Lint | clean | clean |
+| Production build | clean | clean |
+| Analytics, repo-wide | 65/100 | **66/100** — ratchet holds, no new red |
+
+Per-dimension movement: complexity 45.7 → 41.7 debt/1k, docCoverage 51% → 58.6%,
+interfaceClarity red → amber (I pushed it red by putting one function in a file of ten type
+exports; moving `asId` out restored it). `deadExports` worsened, 21.1% → 26.4%, and that one is
+**mine and honest**: publishing the capability on `src/canvas.ts` adds exports nothing in-repo
+imports, because no host is wired to them yet. The analytics caveat says the same thing. It
+resolves when the host moves; I am not going to hide it by un-publishing the surface.
+
+**On the ≥86 target:** not claimed and not met. The repo-wide number cannot exceed 79 while any
+red stands, and all three reds — complexity, giant files, dead exports — are dominated by the
+work-session-reporting experiment I was told to leave alone. My own files carry none of it: zero
+files over 400 lines, zero functions over 60, zero swallowed errors, every export documented.
+I have not produced a Canvas-scoped score, because scoping a measurement to flatter a result is
+exactly the move the honesty rules forbid.
+
+## What the next session should pick up
+
+1. **Wire a host onto the records.** The file-per-diagram adapter
+   (`public/data/library.json` + `public/data/diagrams/<id>.json`), then the web host, then the
+   CLI — in one slice, deleting the old path as it goes. `./canvas apply` resolves wire
+   endpoints by label across the whole document today and must become per-record.
+2. **W6's failure states**, which the second audit rightly said should not wait: the swallowed
+   `load()` in `http-json-repository.ts` still returns an empty document on any error.
+3. `CanvasView.hiddenKinds`, extra layouts/views, and route-hint waypoints are settled format
+   with no command yet — W2 and W4 own them.
+
+## Standing questions for Chris
+
+- **The three orphan notes** now land in an "Unfiled" diagram. Were they meant to be inside
+  `project-scope`, `messaging-scope` and `browser-scope`? Say the word and the migration puts
+  them there instead.
+- **The cross-diagram wire** (`Agent session` —"is a"→ `Agent PTYs`) became a library link. If
+  those two boxes are really the same thing seen twice, a subject link is the better model —
+  but that is a claim about your system, not one I should make for you.
+- **Your uncommitted working file** holds nine nodes you moved by hand that exist nowhere else.
+  Worth committing.
+- **The React Flow attribution badge** sits in the corner. Hiding it is a licensing question,
+  so I left it alone.
