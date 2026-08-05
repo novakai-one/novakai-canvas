@@ -18,8 +18,10 @@ export const emptyArchitecture: ArchitectureDocument = {
       strategy: 'manual',
       placements: {},
       wireRouteHints: {},
+      collapsedNodeIds: [],
     },
   },
+  diagrams: {},
   appliedOperations: {},
 };
 

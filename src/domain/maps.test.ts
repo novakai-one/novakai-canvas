@@ -3,7 +3,7 @@ import type { ArchitectureDocument } from './model';
 import { placementFor } from './layouts';
 import { parseArchitectureDocument } from './schema';
 import {
-  focusArchitecture, listArchitectureMaps, presentArchitecture, resolveArchitectureMap,
+  focusArchitecture, linkedArchitectureMap, listArchitectureMaps, presentArchitecture, resolveArchitectureMap,
 } from './maps';
 
 function node(id: string, parentId?: string) {
@@ -48,9 +48,37 @@ const document: ArchitectureDocument = parseArchitectureDocument({
 describe('architecture maps', () => {
   it('lists only top-level scopes in document order', () => {
     expect(listArchitectureMaps(document)).toEqual([
-      { id: 'a', label: 'a' },
-      { id: 'b', label: 'b' },
+      { id: 'a', rootNodeId: 'a', label: 'a', status: 'active' },
+      { id: 'b', rootNodeId: 'b', label: 'b', status: 'active' },
     ]);
+  });
+
+  it('hides archived diagrams by default and resolves explicit detail links', () => {
+    const organised = structuredClone(document);
+    organised.diagrams.b.status = 'archived';
+    organised.nodes['a-child'].expandsToDiagramId = 'b';
+    expect(listArchitectureMaps(organised)).toEqual([{ id: 'a', rootNodeId: 'a', label: 'a', status: 'active' }]);
+    expect(listArchitectureMaps(organised, true)).toHaveLength(2);
+    expect(linkedArchitectureMap(organised, 'a-child')).toBeUndefined();
+    organised.diagrams.b.status = 'active';
+    expect(linkedArchitectureMap(organised, 'a-child')).toBe('b');
+  });
+
+  it('collapses only one group in the active layout', () => {
+    const collapsed = structuredClone(document);
+    collapsed.nodes.group = { ...node('group', 'a'), kind: 'scope' };
+    collapsed.nodes['group-child'] = { ...node('group-child', 'group'), kind: 'module' };
+    collapsed.layouts['layout-default'].placements.group = {
+      nodeId: 'group', position: { x: 10, y: 10 }, size: { width: 300, height: 200 }, pinned: false,
+    };
+    collapsed.layouts['layout-default'].placements['group-child'] = {
+      nodeId: 'group-child', position: { x: 30, y: 30 }, size: { width: 100, height: 60 }, pinned: false,
+    };
+    collapsed.layouts['layout-default'].collapsedNodeIds = ['group'];
+    const focused = focusArchitecture(collapsed, 'a');
+    expect(focused.nodes.group).toBeDefined();
+    expect(focused.nodes['group-child']).toBeUndefined();
+    expect(focused.nodes['a-child']).toBeDefined();
   });
 
   it('keeps a valid choice and falls back to the first map', () => {

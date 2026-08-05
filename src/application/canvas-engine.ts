@@ -40,6 +40,14 @@ export function createCanvasEngine(
     wireKinds: ['owns', 'references', 'assigns', 'queries', 'executes', 'mentions', 'missing'] satisfies WireKind[],
     layoutTargets: ['diagram', 'group', 'nodes'],
     layoutStrategies: ['manual', 'hierarchy'],
+    commandKinds: [
+      'diagram.create', 'diagram.setStatus', 'diagram.setReferences',
+      'node.add', 'node.move', 'node.resize', 'node.pin', 'node.update', 'node.setSubject',
+      'node.setDetailDiagram', 'node.reparent',
+      'node.setCollapsed', 'node.remove',
+      'wire.add', 'wire.update', 'wire.reconnect', 'wire.remove',
+      'layout.apply', 'scope.layout',
+    ],
   });
   const submit = (changeSet: CanvasChangeSet): CanvasChangeOutcome => {
     const applied = document.appliedOperations[changeSet.operationId];

@@ -41,6 +41,19 @@ export interface CanvasNode {
   typeIds: string[];
   /** Semantic hierarchy rows; present only on kind "tree". */
   rows?: TreeRow[];
+  /** Optional identity of the real thing this drawing occurrence represents. */
+  subjectRef?: CanvasReference;
+  /** Optional deeper explanation opened from this overview occurrence. */
+  expandsToDiagramId?: string;
+}
+
+export interface CanvasReference {
+  namespace: string;
+  id: string;
+}
+
+export interface SourceReference extends CanvasReference {
+  label?: string;
 }
 
 /** One selectable interface exposed by a node. */
@@ -91,6 +104,16 @@ export interface CanvasLayout {
   strategy: 'manual' | 'hierarchy';
   placements: Record<string, NodePlacement>;
   wireRouteHints: Record<string, WireRouteHint>;
+  collapsedNodeIds: string[];
+}
+
+/** Library identity and lifecycle; diagram title remains owned by its root scope node. */
+export interface CanvasDiagram {
+  id: string;
+  rootNodeId: string;
+  status: 'active' | 'archived';
+  subjectRef?: CanvasReference;
+  sourceRefs: SourceReference[];
 }
 
 export type LayoutTarget =
@@ -130,6 +153,7 @@ export interface ArchitectureDocument {
   wires: Record<string, CanvasWire>;
   activeLayoutId: string;
   layouts: Record<string, CanvasLayout>;
+  diagrams: Record<string, CanvasDiagram>;
   /** Durable idempotency and authorship trace for atomic public operations. */
   appliedOperations: Record<string, AppliedCanvasOperation>;
 }
@@ -182,11 +206,18 @@ export type Selection =
 
 /** Complete set of supported domain intentions. */
 export type CanvasCommand =
+  | { kind: 'diagram.create'; diagram: CanvasDiagram; root: CanvasNode; placement: NodePlacement }
+  | { kind: 'diagram.setStatus'; id: string; status: CanvasDiagram['status'] }
+  | { kind: 'diagram.setReferences'; id: string; subjectRef?: CanvasReference; sourceRefs: SourceReference[] }
   | { kind: 'node.add'; node: CanvasNode; placement: NodePlacement }
   | { kind: 'node.move'; id: string; position: Position; layoutId?: string }
   | { kind: 'node.resize'; id: string; size: Size; layoutId?: string }
   | { kind: 'node.pin'; id: string; pinned: boolean; layoutId?: string }
   | { kind: 'node.update'; id: string; patch: Partial<Pick<CanvasNode, 'label' | 'description' | 'kind'>> }
+  | { kind: 'node.setSubject'; id: string; subjectRef?: CanvasReference }
+  | { kind: 'node.setDetailDiagram'; id: string; diagramId?: string }
+  | { kind: 'node.reparent'; id: string; parentId: string }
+  | { kind: 'node.setCollapsed'; id: string; collapsed: boolean; layoutId?: string }
   | { kind: 'node.remove'; id: string }
   | { kind: 'wire.add'; wire: CanvasWire }
   | { kind: 'wire.update'; id: string; patch: Partial<Pick<CanvasWire, 'label' | 'kind'>> }
@@ -239,4 +270,5 @@ export interface CanvasCapabilityDescription {
   wireKinds: WireKind[];
   layoutTargets: Array<'diagram' | 'group' | 'nodes'>;
   layoutStrategies: CanvasLayout['strategy'][];
+  commandKinds: CanvasCommand['kind'][];
 }

@@ -67,6 +67,10 @@ function parseArgs(argv: string[]): Args {
 
 function findScope(doc: ArchitectureDocument, query: string): string | undefined {
   const querySlug = slugify(query);
+  const diagram = doc.diagrams[query]
+    ?? Object.values(doc.diagrams).find((item) =>
+      slugify(doc.nodes[item.rootNodeId]?.label ?? '') === querySlug);
+  if (diagram) return diagram.rootNodeId;
   return Object.values(doc.nodes).find(
     (node) => node.kind === 'scope' && !node.parentId && (node.id === query || slugify(node.label) === querySlug),
   )?.id;
@@ -179,6 +183,7 @@ async function main(): Promise<void> {
     const types = { ...doc.types };
     const wires = { ...doc.wires };
     const layouts = structuredClone(doc.layouts);
+    const diagrams = structuredClone(doc.diagrams);
 
     const removeNode = (id: string): void => {
       for (const interfaceId of nodes[id].interfaceIds) delete interfaces[interfaceId];
@@ -220,6 +225,8 @@ async function main(): Promise<void> {
       removeNode(target.id);
     } else {
       removedLabel = nodes[scopeId].label;
+      const diagram = Object.values(diagrams).find((item) => item.rootNodeId === scopeId);
+      if (diagram) delete diagrams[diagram.id];
       const queue = [scopeId];
       while (queue.length > 0) {
         const current = queue.shift() as string;
@@ -230,7 +237,7 @@ async function main(): Promise<void> {
       }
     }
 
-    let next: ArchitectureDocument = { ...doc, nodes, interfaces, types, wires, layouts };
+    let next: ArchitectureDocument = { ...doc, nodes, interfaces, types, wires, layouts, diagrams };
     if (args.positional[1]) next = layoutScopes(next, [scopeId]);
     const revision = await saveDocument(args.file, next);
     process.stdout.write(`removed: ${removedLabel} (revision ${revision})\n`);

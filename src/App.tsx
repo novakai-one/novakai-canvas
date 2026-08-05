@@ -28,9 +28,10 @@ export default function App({ engine, initialPreferences, preferencesRepository 
   const [mode, setMode] = useState<CanvasMode>(DEFAULT_CANVAS_MODE);
   const [requestedMapId, setRequestedMapId] = useState(() =>
     resolveArchitectureMap(engine.snapshot(), undefined));
+  const [mapHistory, setMapHistory] = useState<string[]>([]);
   const savedPreferences = useRef(JSON.stringify(initialPreferences));
-  const maps = useMemo(() => listArchitectureMaps(document), [document]);
-  const activeMapId = resolveArchitectureMap(document, requestedMapId);
+  const maps = useMemo(() => listArchitectureMaps(document, true), [document]);
+  const activeMapId = resolveArchitectureMap(document, requestedMapId, true);
   const focusedDocument = useMemo(
     () => mode === 'present'
       ? presentArchitecture(document, activeMapId)
@@ -76,6 +77,48 @@ export default function App({ engine, initialPreferences, preferencesRepository 
     setSelection(null);
   }, []);
 
+  const createDiagram = useCallback(() => {
+    const token = crypto.randomUUID().slice(0, 8);
+    const diagramId = `diagram-${token}`;
+    const rootNodeId = `scope-${token}`;
+    engine.execute({
+      kind: 'diagram.create',
+      diagram: { id: diagramId, rootNodeId, status: 'active', sourceRefs: [] },
+      root: { id: rootNodeId, kind: 'scope', label: 'Untitled diagram', interfaceIds: [], typeIds: [] },
+      placement: {
+        nodeId: rootNodeId, position: { x: 0, y: 0 },
+        size: { width: 1000, height: 700 }, pinned: false,
+      },
+    });
+    setRequestedMapId(diagramId);
+    setSelection({ kind: 'node', id: rootNodeId });
+  }, [engine]);
+
+  const setDiagramStatus = useCallback((diagramId: string, status: 'active' | 'archived') => {
+    engine.execute({ kind: 'diagram.setStatus', id: diagramId, status });
+    if (status === 'archived' && activeMapId === diagramId) {
+      const next = maps.find((map) => map.id !== diagramId && map.status === 'active');
+      setRequestedMapId(next?.id);
+      setSelection(null);
+    }
+  }, [activeMapId, engine, maps]);
+
+  const openDiagram = useCallback((diagramId: string) => {
+    if (!document.diagrams[diagramId] || document.diagrams[diagramId].status !== 'active') return;
+    if (activeMapId) setMapHistory((history) => [...history, activeMapId]);
+    setRequestedMapId(diagramId);
+    setSelection(null);
+  }, [activeMapId, document.diagrams]);
+
+  const goBack = useCallback(() => {
+    setMapHistory((history) => {
+      const target = history.at(-1);
+      if (target) setRequestedMapId(target);
+      return target ? history.slice(0, -1) : history;
+    });
+    setSelection(null);
+  }, []);
+
   const changeMode = useCallback((next: CanvasMode) => {
     setMode(next);
     setSelection(null);
@@ -95,16 +138,20 @@ export default function App({ engine, initialPreferences, preferencesRepository 
       <ReactFlowProvider>
         <CanvasSurface
           activeMapId={activeMapId}
+          canGoBack={mapHistory.length > 0}
           changeMap={changeMap}
           changeMode={changeMode}
+          createDiagram={createDiagram}
           document={focusedDocument}
           engine={engine}
           maps={maps}
           mode={mode}
+          goBack={goBack}
           preferences={preferences}
           saveStatus={saveStatus}
           selection={selection}
           setSelection={select}
+          setDiagramStatus={setDiagramStatus}
         />
       </ReactFlowProvider>
       <Inspector
@@ -112,6 +159,7 @@ export default function App({ engine, initialPreferences, preferencesRepository 
           document={document}
           editable={mode === 'edit'}
           execute={engine.execute}
+          openDiagram={openDiagram}
           preferences={preferences}
           replace={engine.replace}
           selection={selection}

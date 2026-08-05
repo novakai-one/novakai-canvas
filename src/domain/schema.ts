@@ -25,6 +25,8 @@ const semanticNode = z.object({
     interfaceIds: z.array(z.string()),
     typeIds: z.array(z.string()),
     rows: treeRows,
+    subjectRef: z.object({ namespace: z.string().min(1), id: z.string().min(1) }).optional(),
+    expandsToDiagramId: z.string().min(1).optional(),
 });
 
 const interfaceObjects = z.record(z.string(), z.object({
@@ -60,7 +62,9 @@ const appliedOperations = z.record(z.string(), z.object({
   timestamp: z.string().min(1),
   provenance,
   commandKinds: z.array(z.enum([
+    'diagram.create', 'diagram.setStatus', 'diagram.setReferences',
     'node.add', 'node.move', 'node.resize', 'node.pin', 'node.update', 'node.remove',
+    'node.setSubject', 'node.setDetailDiagram', 'node.reparent', 'node.setCollapsed',
     'wire.add', 'wire.update', 'wire.reconnect', 'wire.remove', 'layout.apply', 'scope.layout',
   ])),
 }));
@@ -86,7 +90,17 @@ const architectureDocumentV2 = z.object({
       preferredTargetSide: z.enum(['top', 'right', 'bottom', 'left']).optional(),
       waypoints: z.array(position),
     })),
+    collapsedNodeIds: z.array(z.string().min(1)).default([]),
   })),
+  diagrams: z.record(z.string(), z.object({
+    id: z.string().min(1),
+    rootNodeId: z.string().min(1),
+    status: z.enum(['active', 'archived']),
+    subjectRef: z.object({ namespace: z.string().min(1), id: z.string().min(1) }).optional(),
+    sourceRefs: z.array(z.object({
+      namespace: z.string().min(1), id: z.string().min(1), label: z.string().optional(),
+    })),
+  })).default({}),
   appliedOperations: appliedOperations.default({}),
 }).superRefine((document, context) => {
   if (!document.layouts[document.activeLayoutId]) {
@@ -95,6 +109,16 @@ const architectureDocumentV2 = z.object({
       message: `active layout "${document.activeLayoutId}" does not exist`,
       path: ['activeLayoutId'],
     });
+  }
+  for (const [diagramId, diagram] of Object.entries(document.diagrams)) {
+    const root = document.nodes[diagram.rootNodeId];
+    if (!root || root.kind !== 'scope' || root.parentId) {
+      context.addIssue({
+        code: 'custom',
+        message: `diagram "${diagramId}" must reference a top-level scope root`,
+        path: ['diagrams', diagramId, 'rootNodeId'],
+      });
+    }
   }
 });
 
@@ -114,7 +138,16 @@ const DEFAULT_LAYOUT_ID = 'layout-default';
 /** Parses current documents and losslessly migrates legacy node geometry into a layout. */
 export function parseArchitectureDocument(input: unknown): ArchitectureDocument {
   const version = z.object({ schemaVersion: z.number() }).passthrough().parse(input).schemaVersion;
-  if (version === 2) return architectureDocumentV2.parse(input) as ArchitectureDocument;
+  if (version === 2) {
+    const parsed = architectureDocumentV2.parse(input);
+    const diagrams = Object.keys(parsed.diagrams).length > 0 ? parsed.diagrams
+      : Object.fromEntries(Object.values(parsed.nodes)
+        .filter((node) => node.kind === 'scope' && !node.parentId)
+        .map((node) => [node.id, {
+          id: node.id, rootNodeId: node.id, status: 'active' as const, sourceRefs: [],
+        }]));
+    return { ...parsed, diagrams } as ArchitectureDocument;
+  }
   const legacy = legacyArchitectureDocument.parse(input);
   return architectureDocumentV2.parse({
     schemaVersion: 2,
@@ -141,8 +174,14 @@ export function parseArchitectureDocument(input: unknown): ArchitectureDocument 
           pinned: false,
         }])),
         wireRouteHints: {},
+        collapsedNodeIds: [],
       },
     },
+    diagrams: Object.fromEntries(Object.values(legacy.nodes)
+      .filter((node) => node.kind === 'scope' && !node.parentId)
+      .map((node) => [node.id, {
+        id: node.id, rootNodeId: node.id, status: 'active', sourceRefs: [],
+      }])),
     appliedOperations: {},
   }) as ArchitectureDocument;
 }
@@ -166,6 +205,22 @@ const layoutProposal = z.object({
 });
 
 const canvasCommand = z.discriminatedUnion('kind', [
+  z.object({
+    kind: z.literal('diagram.create'),
+    diagram: z.object({
+      id: z.string().min(1), rootNodeId: z.string().min(1), status: z.enum(['active', 'archived']),
+      subjectRef: z.object({ namespace: z.string().min(1), id: z.string().min(1) }).optional(),
+      sourceRefs: z.array(z.object({ namespace: z.string().min(1), id: z.string().min(1), label: z.string().optional() })),
+    }),
+    root: semanticNode,
+    placement: nodePlacement,
+  }),
+  z.object({ kind: z.literal('diagram.setStatus'), id: z.string().min(1), status: z.enum(['active', 'archived']) }),
+  z.object({
+    kind: z.literal('diagram.setReferences'), id: z.string().min(1),
+    subjectRef: z.object({ namespace: z.string().min(1), id: z.string().min(1) }).optional(),
+    sourceRefs: z.array(z.object({ namespace: z.string().min(1), id: z.string().min(1), label: z.string().optional() })),
+  }),
   z.object({ kind: z.literal('node.add'), node: semanticNode, placement: nodePlacement }),
   z.object({ kind: z.literal('node.move'), id: z.string().min(1), position, layoutId: z.string().optional() }),
   z.object({ kind: z.literal('node.resize'), id: z.string().min(1), size, layoutId: z.string().optional() }),
@@ -177,6 +232,13 @@ const canvasCommand = z.discriminatedUnion('kind', [
       kind: z.enum(['scope', 'module', 'object', 'runtime', 'resource', 'comment', 'tree']).optional(),
     }),
   }),
+  z.object({
+    kind: z.literal('node.setSubject'), id: z.string().min(1),
+    subjectRef: z.object({ namespace: z.string().min(1), id: z.string().min(1) }).optional(),
+  }),
+  z.object({ kind: z.literal('node.setDetailDiagram'), id: z.string().min(1), diagramId: z.string().min(1).optional() }),
+  z.object({ kind: z.literal('node.reparent'), id: z.string().min(1), parentId: z.string().min(1) }),
+  z.object({ kind: z.literal('node.setCollapsed'), id: z.string().min(1), collapsed: z.boolean(), layoutId: z.string().optional() }),
   z.object({ kind: z.literal('node.remove'), id: z.string().min(1) }),
   z.object({ kind: z.literal('wire.add'), wire: canvasWire }),
   z.object({

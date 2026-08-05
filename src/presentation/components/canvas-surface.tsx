@@ -31,6 +31,10 @@ interface CanvasSurfaceProps {
   mode: CanvasMode;
   changeMap: (mapId: string) => void;
   changeMode: (mode: CanvasMode) => void;
+  canGoBack: boolean;
+  goBack: () => void;
+  createDiagram: () => void;
+  setDiagramStatus: (diagramId: string, status: 'active' | 'archived') => void;
 }
 
 function applyNodeChanges(engine: CanvasEngine, changes: NodeChange[]): void {
@@ -67,10 +71,16 @@ interface LayoutActions {
 }
 
 function CanvasToolbar({ props, layout }: { props: CanvasSurfaceProps; layout: LayoutActions }) {
+  const [diagramQuery, setDiagramQuery] = useState('');
+  const [showArchived, setShowArchived] = useState(false);
+  const activeMap = props.maps.find((map) => map.id === props.activeMapId);
+  const visibleMaps = props.maps.filter((map) =>
+    (showArchived || map.status === 'active')
+    && (map.id === props.activeMapId || map.label.toLowerCase().includes(diagramQuery.toLowerCase())));
   const add = (kind: CreatableNodeKind): void => {
-    if (!props.activeMapId) return;
+    if (!activeMap) return;
     const id = `${kind}-${crypto.randomUUID().slice(0, 8)}`;
-    const created = createCanvasNode(props.document, props.activeMapId, kind, id);
+    const created = createCanvasNode(props.document, activeMap.rootNodeId, kind, id);
     props.engine.execute({ kind: 'node.add', ...created });
     props.setSelection({ kind: 'node', id: created.node.id });
   };
@@ -83,10 +93,18 @@ function CanvasToolbar({ props, layout }: { props: CanvasSurfaceProps; layout: L
           </button>
         ))}
       </div>
+      {props.canGoBack && <button onClick={props.goBack} type="button">← Back</button>}
       <label className="map-picker">
-        <span>Map</span>
+        <span>Diagram</span>
+        <input
+          aria-label="Find diagram"
+          onChange={(event) => setDiagramQuery(event.target.value)}
+          placeholder="Find"
+          type="search"
+          value={diagramQuery}
+        />
         <select aria-label="Map" disabled={props.maps.length === 0} value={props.activeMapId ?? ''} onChange={(event) => props.changeMap(event.target.value)}>
-          {props.maps.map((map) => <option key={map.id} value={map.id}>{map.label}</option>)}
+          {visibleMaps.map((map) => <option key={map.id} value={map.id}>{map.label}{map.status === 'archived' ? ' · archived' : ''}</option>)}
         </select>
       </label>
       {props.mode === 'edit' && (
@@ -115,6 +133,26 @@ function CanvasToolbar({ props, layout }: { props: CanvasSurfaceProps; layout: L
               <option value="resource">Resource</option>
               <option value="group">Group</option>
               <option value="comment">Comment</option>
+            </select>
+            <select
+              aria-label="Diagram actions"
+              onChange={(event) => {
+                const action = event.target.value;
+                if (action === 'new') props.createDiagram();
+                if (action === 'status' && activeMap) {
+                  props.setDiagramStatus(activeMap.id, activeMap.status === 'active' ? 'archived' : 'active');
+                }
+                if (action === 'archived') setShowArchived((shown) => !shown);
+                event.target.value = '';
+              }}
+              value=""
+            >
+              <option value="">Diagram…</option>
+              <option value="new">New diagram</option>
+              {activeMap && <option value="status">{activeMap.status === 'active' ? 'Archive current' : 'Restore current'}</option>}
+              {props.maps.some((map) => map.status === 'archived') && (
+                <option value="archived">{showArchived ? 'Hide archived' : 'Show archived'}</option>
+              )}
             </select>
           </>}
         </div>
@@ -153,7 +191,8 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
     [displayDocument, interactionEnabled, props.preferences, props.selection, props.setSelection],
   );
   const preview = (): void => {
-    if (!props.activeMapId) return;
+    const activeMap = props.maps.find((map) => map.id === props.activeMapId);
+    if (!activeMap) return;
     const selectedScope = selectedNodeIds.length === 1
       && props.document.nodes[selectedNodeIds[0]]?.kind === 'scope'
       ? selectedNodeIds[0]
@@ -163,7 +202,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         ? { kind: 'scope', scopeId: selectedScope }
         : selectedNodeIds.length > 0
           ? { kind: 'nodes', nodeIds: selectedNodeIds }
-          : { kind: 'scope', scopeId: props.activeMapId },
+          : { kind: 'scope', scopeId: activeMap.rootNodeId },
       groupPadding: props.preferences.canvas.groupPadding,
     }));
   };

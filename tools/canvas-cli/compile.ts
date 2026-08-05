@@ -68,6 +68,7 @@ export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): Compil
   const types = { ...input.types };
   const wires: Wires = { ...input.wires };
   const layouts = structuredClone(input.layouts);
+  const diagrams = structuredClone(input.diagrams);
   const activePlacements = layouts[input.activeLayoutId].placements;
 
   for (const scopeAst of scopes) {
@@ -78,6 +79,9 @@ export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): Compil
     const scopeId = existingScope?.id ?? scopeSlug;
     touchedScopeIds.push(scopeId);
     if (!existingScope) createdScopeIds.push(scopeId);
+    if (!Object.values(diagrams).some((diagram) => diagram.rootNodeId === scopeId)) {
+      diagrams[scopeId] = { id: scopeId, rootNodeId: scopeId, status: 'active', sourceRefs: [] };
+    }
 
     // Remember old child ids by label slug so re-applied nodes keep stable ids.
     const removedIds = existingScope ? descendantsOf(nodes, existingScope.id) : [];
@@ -262,7 +266,7 @@ export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): Compil
   }
 
   return {
-    doc: { ...input, nodes, interfaces, types, wires, layouts },
+    doc: { ...input, nodes, interfaces, types, wires, layouts, diagrams },
     errors,
     touchedScopeIds,
     createdScopeIds,

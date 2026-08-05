@@ -11,6 +11,7 @@ interface InspectPanelProps {
   execute: (command: CanvasCommand) => void;
   clearSelection: () => void;
   editable: boolean;
+  openDiagram: (diagramId: string) => void;
 }
 
 function EmptySelection() {
@@ -21,6 +22,8 @@ function NodeInspection({ props, id }: { props: InspectPanelProps; id: string })
   const node = props.document.nodes[id];
   if (!node) return <EmptySelection />;
   const placement = placementFor(props.document, node.id);
+  const layout = props.document.layouts[props.document.activeLayoutId];
+  const diagram = Object.values(props.document.diagrams).find((item) => item.rootNodeId === node.id);
   return (
     <div className="inspection">
       <div className="object-identity"><span>{node.kind}</span><strong>{node.label}</strong></div>
@@ -35,11 +38,46 @@ function NodeInspection({ props, id }: { props: InspectPanelProps; id: string })
         <div><span>Types</span><strong>{node.typeIds.length}</strong></div>
         <div><span>Position</span><strong>{Math.round(placement.position.x)}, {Math.round(placement.position.y)}</strong></div>
       </div>
+      {diagram && <Field label="Diagram status"><output>{diagram.status}</output></Field>}
+      {node.subjectRef && (
+        <Field label="Subject"><output>{node.subjectRef.namespace}:{node.subjectRef.id}</output></Field>
+      )}
+      <Field label="Detail diagram">
+        <select
+          disabled={!props.editable}
+          onChange={(event) => props.execute({
+            kind: 'node.setDetailDiagram', id,
+            diagramId: event.target.value || undefined,
+          })}
+          value={node.expandsToDiagramId ?? ''}
+        >
+          <option value="">No linked detail</option>
+          {Object.values(props.document.diagrams)
+            .filter((item) => item.status === 'active' && item.rootNodeId !== node.id)
+            .map((item) => (
+              <option key={item.id} value={item.id}>
+                {props.document.nodes[item.rootNodeId]?.label ?? item.id}
+              </option>
+            ))}
+        </select>
+      </Field>
+      {node.expandsToDiagramId && props.document.diagrams[node.expandsToDiagramId]?.status === 'active' && (
+        <button onClick={() => props.openDiagram(node.expandsToDiagramId as string)} type="button">Open detail →</button>
+      )}
       {props.editable && (
         <Field label="Lock position">
           <input
             checked={placement.pinned}
             onChange={(event) => props.execute({ kind: 'node.pin', id, pinned: event.target.checked })}
+            type="checkbox"
+          />
+        </Field>
+      )}
+      {props.editable && node.kind === 'scope' && (
+        <Field label="Collapse children">
+          <input
+            checked={layout.collapsedNodeIds.includes(node.id)}
+            onChange={(event) => props.execute({ kind: 'node.setCollapsed', id, collapsed: event.target.checked })}
             type="checkbox"
           />
         </Field>

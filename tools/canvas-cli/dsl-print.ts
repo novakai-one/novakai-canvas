@@ -85,7 +85,9 @@ function topLevelScopes(doc: ArchitectureDocument) {
 
 /** Top-level scopes with content counts. */
 export function listMaps(doc: ArchitectureDocument): { id: string; label: string; nodes: number; wires: number }[] {
-  return topLevelScopes(doc).map((scope) => {
+  return Object.values(doc.diagrams).map((diagram) => {
+    const scope = positionedNodes(doc)[diagram.rootNodeId];
+    if (!scope) return { id: diagram.id, label: diagram.id, nodes: 0, wires: 0 };
     let nodes = 0;
     const queue = [scope.id];
     while (queue.length > 0) {
@@ -97,6 +99,6 @@ export function listMaps(doc: ArchitectureDocument): { id: string; label: string
         }
       }
     }
-    return { id: scope.id, label: scope.label, nodes, wires: wiresOf(doc, scope.id).length };
+    return { id: diagram.id, label: scope.label, nodes, wires: wiresOf(doc, scope.id).length };
   });
 }

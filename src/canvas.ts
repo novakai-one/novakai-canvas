@@ -2,6 +2,7 @@
 export { createCanvasEngine, type CanvasEngine } from './application/canvas-engine.ts';
 export type { JsonRepository } from './application/json-repository.ts';
 export { previewLayout, applyLayoutProposal } from './domain/layout-proposal.ts';
+export { findSubjectOccurrences, linkedArchitectureMap, listArchitectureMaps } from './domain/maps.ts';
 export { architectureDocumentSchema, canvasChangeSetSchema } from './domain/schema.ts';
 export type {
   AppliedCanvasOperation,
@@ -11,13 +12,16 @@ export type {
   CanvasChangeOutcome,
   CanvasChangeSet,
   CanvasCommand,
+  CanvasDiagram,
   CanvasLayout,
   CanvasNode,
   CanvasProvenance,
+  CanvasReference,
   CanvasWire,
   LayoutProposal,
   LayoutRequest,
   LayoutTarget,
   NodePlacement,
+  SourceReference,
   WireRouteHint,
 } from './domain/model.ts';
