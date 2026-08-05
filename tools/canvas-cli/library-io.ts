@@ -7,10 +7,7 @@ import { createCanvasLibrary } from '../../src/canvas.ts';
 import type {
   CanvasLibrary, CanvasLibraryRepository, DiagramRecord, LibraryIndex, WriteOutcome,
 } from '../../src/canvas.ts';
-// `src/canvas.ts` publishes the record capability but not its runtime validators, so these two
-// are imported from the domain directly. Reported to the lead as a needed public export; nothing
-// else in this directory reaches below `src/canvas.ts` for storage.
-import { diagramRecordSchema, libraryIndexSchema } from '../../src/domain/record-schema.ts';
+import { diagramRecordSchema, libraryIndexSchema } from '../../src/canvas.ts';
 import { bootstrapLibrary } from '../json-file-bridge.ts';
 
 const INDEX_FILE = 'library.json';
