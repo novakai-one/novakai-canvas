@@ -1,0 +1,1141 @@
+{
+  "schemaVersion": 3,
+  "id": "mission-data-tree",
+  "name": "Mission Data Tree",
+  "status": "active",
+  "revision": 2381,
+  "nodes": {
+    "mission-data-tree": {
+      "id": "mission-data-tree",
+      "kind": "group",
+      "label": "Mission Data Tree",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "What is actually in the stores — hierarchy of live blocks"
+    },
+    "mission-data-tree--proj-novakai-command": {
+      "id": "mission-data-tree--proj-novakai-command",
+      "kind": "group",
+      "label": "proj_novakai-command",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Novakai Command | status: active",
+      "parentId": "mission-data-tree"
+    },
+    "mission-data-tree--proj-novakai-command--mission-m1-orchestration-tooling": {
+      "id": "mission-data-tree--proj-novakai-command--mission-m1-orchestration-tooling",
+      "kind": "group",
+      "label": "mission_m1-orchestration-tooling",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done | outcome: absent | team: absent",
+      "parentId": "mission-data-tree--proj-novakai-command"
+    },
+    "mission-data-tree--proj-novakai-command--mission-m2-plumbing-hardening": {
+      "id": "mission-data-tree--proj-novakai-command--mission-m2-plumbing-hardening",
+      "kind": "group",
+      "label": "mission_m2-plumbing-hardening",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done | outcome: absent | team: absent",
+      "parentId": "mission-data-tree--proj-novakai-command"
+    },
+    "mission-data-tree--proj-novakai-command--mission-m3-dogfood-orchestrator": {
+      "id": "mission-data-tree--proj-novakai-command--mission-m3-dogfood-orchestrator",
+      "kind": "group",
+      "label": "mission_m3-dogfood-orchestrator",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done | outcome: absent | team: absent",
+      "parentId": "mission-data-tree--proj-novakai-command"
+    },
+    "mission-data-tree--proj-novakai-command--mission-m4-ui-glitch-braindump": {
+      "id": "mission-data-tree--proj-novakai-command--mission-m4-ui-glitch-braindump",
+      "kind": "group",
+      "label": "mission_m4-ui-glitch-braindump",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: retired | outcome: absent | team: absent",
+      "parentId": "mission-data-tree--proj-novakai-command"
+    },
+    "mission-data-tree--proj-novakai-command--mission-review-6hr-kimi-build": {
+      "id": "mission-data-tree--proj-novakai-command--mission-review-6hr-kimi-build",
+      "kind": "group",
+      "label": "mission_review-6hr-kimi-build",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done | outcome: absent | team: absent",
+      "parentId": "mission-data-tree--proj-novakai-command"
+    },
+    "mission-data-tree--proj-novakai-command--mission-agent-roles-spike": {
+      "id": "mission-data-tree--proj-novakai-command--mission-agent-roles-spike",
+      "kind": "group",
+      "label": "mission_agent-roles-spike",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: todo | outcome: absent | team: absent",
+      "parentId": "mission-data-tree--proj-novakai-command"
+    },
+    "mission-data-tree--proj-novakai-command--mission-desktop-live-lanes": {
+      "id": "mission-data-tree--proj-novakai-command--mission-desktop-live-lanes",
+      "kind": "group",
+      "label": "mission_desktop-live-lanes",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done | outcome: present | team: absent",
+      "parentId": "mission-data-tree--proj-novakai-command"
+    },
+    "mission-data-tree--proj-novakai-command--mission-store-validator": {
+      "id": "mission-data-tree--proj-novakai-command--mission-store-validator",
+      "kind": "group",
+      "label": "mission_store-validator",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done | outcome: present | team: absent",
+      "parentId": "mission-data-tree--proj-novakai-command"
+    },
+    "mission-data-tree--proj-novakai-command--mission-store-validator--task-store-validator": {
+      "id": "mission-data-tree--proj-novakai-command--mission-store-validator--task-store-validator",
+      "kind": "module",
+      "label": "task_store-validator",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done",
+      "parentId": "mission-data-tree--proj-novakai-command--mission-store-validator"
+    },
+    "mission-data-tree--proj-novakai-command--mission-mission-room-v1": {
+      "id": "mission-data-tree--proj-novakai-command--mission-mission-room-v1",
+      "kind": "group",
+      "label": "mission_mission-room-v1",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done | outcome: present | team: absent",
+      "parentId": "mission-data-tree--proj-novakai-command"
+    },
+    "mission-data-tree--proj-novakai-command--mission-or005-pr41-review-or": {
+      "id": "mission-data-tree--proj-novakai-command--mission-or005-pr41-review-or",
+      "kind": "group",
+      "label": "mission_or005-pr41-review-or",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done | outcome: absent | team: absent",
+      "parentId": "mission-data-tree--proj-novakai-command"
+    },
+    "mission-data-tree--proj-novakai-command--mission-messaging-state-report": {
+      "id": "mission-data-tree--proj-novakai-command--mission-messaging-state-report",
+      "kind": "group",
+      "label": "mission_messaging-state-report",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done | outcome: absent | team: absent",
+      "parentId": "mission-data-tree--proj-novakai-command"
+    },
+    "mission-data-tree--proj-novakai-command--mission-messaging-report-v2": {
+      "id": "mission-data-tree--proj-novakai-command--mission-messaging-report-v2",
+      "kind": "group",
+      "label": "mission_messaging-report-v2",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done | outcome: absent | team: absent",
+      "parentId": "mission-data-tree--proj-novakai-command"
+    },
+    "mission-data-tree--proj-html-builder": {
+      "id": "mission-data-tree--proj-html-builder",
+      "kind": "group",
+      "label": "proj_html-builder",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "html-builder | status: active",
+      "parentId": "mission-data-tree"
+    },
+    "mission-data-tree--proj-novakai-docs": {
+      "id": "mission-data-tree--proj-novakai-docs",
+      "kind": "group",
+      "label": "proj_novakai-docs",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "novakai-docs | status: active",
+      "parentId": "mission-data-tree"
+    },
+    "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing": {
+      "id": "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing",
+      "kind": "group",
+      "label": "mission_hq-desktop-tasks-not-showing",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: todo | outcome: absent | team: absent",
+      "parentId": "mission-data-tree--proj-novakai-docs"
+    },
+    "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing--task-docs-packaged-patch-handoff": {
+      "id": "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing--task-docs-packaged-patch-handoff",
+      "kind": "module",
+      "label": "task_docs-packaged-patch-handoff",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: todo",
+      "parentId": "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing"
+    },
+    "mission-data-tree--proj-novakai-docs--mission-docs-render-stores": {
+      "id": "mission-data-tree--proj-novakai-docs--mission-docs-render-stores",
+      "kind": "group",
+      "label": "mission_docs-render-stores",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done | outcome: present | team: present",
+      "parentId": "mission-data-tree--proj-novakai-docs"
+    },
+    "mission-data-tree--proj-novakai-docs--mission-docs-viewer-round2": {
+      "id": "mission-data-tree--proj-novakai-docs--mission-docs-viewer-round2",
+      "kind": "group",
+      "label": "mission_docs-viewer-round2",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done | outcome: present | team: present",
+      "parentId": "mission-data-tree--proj-novakai-docs"
+    },
+    "mission-data-tree--proj-novakai-canvas": {
+      "id": "mission-data-tree--proj-novakai-canvas",
+      "kind": "group",
+      "label": "proj_novakai-canvas",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "novakai-canvas | status: active",
+      "parentId": "mission-data-tree"
+    },
+    "mission-data-tree--proj-novakai-canvas--mission-canvas-mission-view": {
+      "id": "mission-data-tree--proj-novakai-canvas--mission-canvas-mission-view",
+      "kind": "group",
+      "label": "mission_canvas-mission-view",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done | outcome: present | team: absent",
+      "parentId": "mission-data-tree--proj-novakai-canvas"
+    },
+    "mission-data-tree--proj-novakai-canvas--mission-canvas-zones-v2": {
+      "id": "mission-data-tree--proj-novakai-canvas--mission-canvas-zones-v2",
+      "kind": "group",
+      "label": "mission_canvas-zones-v2",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: in-progress | outcome: absent | team: absent",
+      "parentId": "mission-data-tree--proj-novakai-canvas"
+    },
+    "mission-data-tree--standalone-no-project": {
+      "id": "mission-data-tree--standalone-no-project",
+      "kind": "group",
+      "label": "Standalone — no project",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Missions with no project ref",
+      "parentId": "mission-data-tree"
+    },
+    "mission-data-tree--standalone-no-project--mission-slack-visibility-mirror": {
+      "id": "mission-data-tree--standalone-no-project--mission-slack-visibility-mirror",
+      "kind": "group",
+      "label": "mission_slack-visibility-mirror",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done | outcome: absent | team: absent",
+      "parentId": "mission-data-tree--standalone-no-project"
+    },
+    "mission-data-tree--standalone-no-mission": {
+      "id": "mission-data-tree--standalone-no-mission",
+      "kind": "group",
+      "label": "Standalone — no mission",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "15 tasks with no mission ref",
+      "parentId": "mission-data-tree"
+    },
+    "mission-data-tree--standalone-no-mission--task-fleet-idle-verdict": {
+      "id": "mission-data-tree--standalone-no-mission--task-fleet-idle-verdict",
+      "kind": "module",
+      "label": "task_fleet-idle-verdict",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done",
+      "parentId": "mission-data-tree--standalone-no-mission"
+    },
+    "mission-data-tree--standalone-no-mission--task-onboarding-brief": {
+      "id": "mission-data-tree--standalone-no-mission--task-onboarding-brief",
+      "kind": "module",
+      "label": "task_onboarding-brief",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: todo",
+      "parentId": "mission-data-tree--standalone-no-mission"
+    },
+    "mission-data-tree--standalone-no-mission--task-m1-orchestration-tooling": {
+      "id": "mission-data-tree--standalone-no-mission--task-m1-orchestration-tooling",
+      "kind": "module",
+      "label": "task_m1-orchestration-tooling",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: refiled",
+      "parentId": "mission-data-tree--standalone-no-mission"
+    },
+    "mission-data-tree--standalone-no-mission--task-m2-plumbing-hardening": {
+      "id": "mission-data-tree--standalone-no-mission--task-m2-plumbing-hardening",
+      "kind": "module",
+      "label": "task_m2-plumbing-hardening",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: refiled",
+      "parentId": "mission-data-tree--standalone-no-mission"
+    },
+    "mission-data-tree--standalone-no-mission--task-m3-dogfood-orchestrator": {
+      "id": "mission-data-tree--standalone-no-mission--task-m3-dogfood-orchestrator",
+      "kind": "module",
+      "label": "task_m3-dogfood-orchestrator",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: refiled",
+      "parentId": "mission-data-tree--standalone-no-mission"
+    },
+    "mission-data-tree--standalone-no-mission--task-m4-ui-glitch-braindump": {
+      "id": "mission-data-tree--standalone-no-mission--task-m4-ui-glitch-braindump",
+      "kind": "module",
+      "label": "task_m4-ui-glitch-braindump",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: refiled",
+      "parentId": "mission-data-tree--standalone-no-mission"
+    },
+    "mission-data-tree--standalone-no-mission--task-agent-roles-spike": {
+      "id": "mission-data-tree--standalone-no-mission--task-agent-roles-spike",
+      "kind": "module",
+      "label": "task_agent-roles-spike",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: refiled",
+      "parentId": "mission-data-tree--standalone-no-mission"
+    },
+    "mission-data-tree--standalone-no-mission--task-hq-desktop-tasks-not-showing": {
+      "id": "mission-data-tree--standalone-no-mission--task-hq-desktop-tasks-not-showing",
+      "kind": "module",
+      "label": "task_hq-desktop-tasks-not-showing",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: refiled",
+      "parentId": "mission-data-tree--standalone-no-mission"
+    },
+    "mission-data-tree--standalone-no-mission--task-review-6hr-kimi-build": {
+      "id": "mission-data-tree--standalone-no-mission--task-review-6hr-kimi-build",
+      "kind": "module",
+      "label": "task_review-6hr-kimi-build",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: refiled",
+      "parentId": "mission-data-tree--standalone-no-mission"
+    },
+    "mission-data-tree--standalone-no-mission--task-docs-nav-clipping": {
+      "id": "mission-data-tree--standalone-no-mission--task-docs-nav-clipping",
+      "kind": "module",
+      "label": "task_docs-nav-clipping",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done",
+      "parentId": "mission-data-tree--standalone-no-mission"
+    },
+    "mission-data-tree--standalone-no-mission--task-docs-inspector-all-views": {
+      "id": "mission-data-tree--standalone-no-mission--task-docs-inspector-all-views",
+      "kind": "module",
+      "label": "task_docs-inspector-all-views",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done",
+      "parentId": "mission-data-tree--standalone-no-mission"
+    },
+    "mission-data-tree--standalone-no-mission--task-docs-subtitle-source-honesty": {
+      "id": "mission-data-tree--standalone-no-mission--task-docs-subtitle-source-honesty",
+      "kind": "module",
+      "label": "task_docs-subtitle-source-honesty",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done",
+      "parentId": "mission-data-tree--standalone-no-mission"
+    },
+    "mission-data-tree--standalone-no-mission--task-git-bind-agents-to-worktrees": {
+      "id": "mission-data-tree--standalone-no-mission--task-git-bind-agents-to-worktrees",
+      "kind": "module",
+      "label": "task_git-bind-agents-to-worktrees",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: todo",
+      "parentId": "mission-data-tree--standalone-no-mission"
+    },
+    "mission-data-tree--standalone-no-mission--task-processes-store-resume": {
+      "id": "mission-data-tree--standalone-no-mission--task-processes-store-resume",
+      "kind": "module",
+      "label": "task_processes-store-resume",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: todo",
+      "parentId": "mission-data-tree--standalone-no-mission"
+    },
+    "mission-data-tree--standalone-no-mission--task-org-rails-backend-delivery": {
+      "id": "mission-data-tree--standalone-no-mission--task-org-rails-backend-delivery",
+      "kind": "module",
+      "label": "task_org-rails-backend-delivery",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: done",
+      "parentId": "mission-data-tree--standalone-no-mission"
+    }
+  },
+  "wires": {
+    "mission-data-tree--wire-1": {
+      "id": "mission-data-tree--wire-1",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-command"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-command--mission-m1-orchestration-tooling"
+      }
+    },
+    "mission-data-tree--wire-2": {
+      "id": "mission-data-tree--wire-2",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-command"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-command--mission-m2-plumbing-hardening"
+      }
+    },
+    "mission-data-tree--wire-3": {
+      "id": "mission-data-tree--wire-3",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-command"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-command--mission-m3-dogfood-orchestrator"
+      }
+    },
+    "mission-data-tree--wire-4": {
+      "id": "mission-data-tree--wire-4",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-command"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-command--mission-m4-ui-glitch-braindump"
+      }
+    },
+    "mission-data-tree--wire-5": {
+      "id": "mission-data-tree--wire-5",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-command"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-command--mission-review-6hr-kimi-build"
+      }
+    },
+    "mission-data-tree--wire-6": {
+      "id": "mission-data-tree--wire-6",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-command"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-command--mission-agent-roles-spike"
+      }
+    },
+    "mission-data-tree--wire-7": {
+      "id": "mission-data-tree--wire-7",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-command"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-command--mission-desktop-live-lanes"
+      }
+    },
+    "mission-data-tree--wire-8": {
+      "id": "mission-data-tree--wire-8",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-command"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-command--mission-store-validator"
+      }
+    },
+    "mission-data-tree--wire-9": {
+      "id": "mission-data-tree--wire-9",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-command--mission-store-validator"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-command--mission-store-validator--task-store-validator"
+      }
+    },
+    "mission-data-tree--wire-10": {
+      "id": "mission-data-tree--wire-10",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-command"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-command--mission-mission-room-v1"
+      }
+    },
+    "mission-data-tree--wire-11": {
+      "id": "mission-data-tree--wire-11",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-command"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-command--mission-or005-pr41-review-or"
+      }
+    },
+    "mission-data-tree--wire-12": {
+      "id": "mission-data-tree--wire-12",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-command"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-command--mission-messaging-state-report"
+      }
+    },
+    "mission-data-tree--wire-13": {
+      "id": "mission-data-tree--wire-13",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-command"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-command--mission-messaging-report-v2"
+      }
+    },
+    "mission-data-tree--wire-14": {
+      "id": "mission-data-tree--wire-14",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-docs"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing"
+      }
+    },
+    "mission-data-tree--wire-15": {
+      "id": "mission-data-tree--wire-15",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing--task-docs-packaged-patch-handoff"
+      }
+    },
+    "mission-data-tree--wire-16": {
+      "id": "mission-data-tree--wire-16",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-docs"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-docs--mission-docs-render-stores"
+      }
+    },
+    "mission-data-tree--wire-17": {
+      "id": "mission-data-tree--wire-17",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-docs"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-docs--mission-docs-viewer-round2"
+      }
+    },
+    "mission-data-tree--wire-18": {
+      "id": "mission-data-tree--wire-18",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-canvas"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-canvas--mission-canvas-mission-view"
+      }
+    },
+    "mission-data-tree--wire-19": {
+      "id": "mission-data-tree--wire-19",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--proj-novakai-canvas"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--proj-novakai-canvas--mission-canvas-zones-v2"
+      }
+    },
+    "mission-data-tree--wire-20": {
+      "id": "mission-data-tree--wire-20",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-data-tree--standalone-no-project"
+      },
+      "target": {
+        "nodeId": "mission-data-tree--standalone-no-project--mission-slack-visibility-mirror"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "mission-data-tree": {
+          "nodeId": "mission-data-tree",
+          "position": {
+            "x": 40,
+            "y": 10363
+          },
+          "size": {
+            "width": 4103,
+            "height": 2140
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-command": {
+          "nodeId": "mission-data-tree--proj-novakai-command",
+          "position": {
+            "x": 40,
+            "y": 382
+          },
+          "size": {
+            "width": 1840,
+            "height": 756
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-command--mission-m1-orchestration-tooling": {
+          "nodeId": "mission-data-tree--proj-novakai-command--mission-m1-orchestration-tooling",
+          "position": {
+            "x": 760,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-command--mission-m2-plumbing-hardening": {
+          "nodeId": "mission-data-tree--proj-novakai-command--mission-m2-plumbing-hardening",
+          "position": {
+            "x": 1120,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-command--mission-m3-dogfood-orchestrator": {
+          "nodeId": "mission-data-tree--proj-novakai-command--mission-m3-dogfood-orchestrator",
+          "position": {
+            "x": 1480,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-command--mission-m4-ui-glitch-braindump": {
+          "nodeId": "mission-data-tree--proj-novakai-command--mission-m4-ui-glitch-braindump",
+          "position": {
+            "x": 40,
+            "y": 286
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-command--mission-review-6hr-kimi-build": {
+          "nodeId": "mission-data-tree--proj-novakai-command--mission-review-6hr-kimi-build",
+          "position": {
+            "x": 40,
+            "y": 516
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-command--mission-agent-roles-spike": {
+          "nodeId": "mission-data-tree--proj-novakai-command--mission-agent-roles-spike",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-command--mission-desktop-live-lanes": {
+          "nodeId": "mission-data-tree--proj-novakai-command--mission-desktop-live-lanes",
+          "position": {
+            "x": 400,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-command--mission-store-validator": {
+          "nodeId": "mission-data-tree--proj-novakai-command--mission-store-validator",
+          "position": {
+            "x": 400,
+            "y": 516
+          },
+          "size": {
+            "width": 320,
+            "height": 200
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-command--mission-store-validator--task-store-validator": {
+          "nodeId": "mission-data-tree--proj-novakai-command--mission-store-validator--task-store-validator",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 200,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-command--mission-mission-room-v1": {
+          "nodeId": "mission-data-tree--proj-novakai-command--mission-mission-room-v1",
+          "position": {
+            "x": 1120,
+            "y": 286
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-command--mission-or005-pr41-review-or": {
+          "nodeId": "mission-data-tree--proj-novakai-command--mission-or005-pr41-review-or",
+          "position": {
+            "x": 1480,
+            "y": 286
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-command--mission-messaging-state-report": {
+          "nodeId": "mission-data-tree--proj-novakai-command--mission-messaging-state-report",
+          "position": {
+            "x": 760,
+            "y": 286
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-command--mission-messaging-report-v2": {
+          "nodeId": "mission-data-tree--proj-novakai-command--mission-messaging-report-v2",
+          "position": {
+            "x": 400,
+            "y": 286
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-html-builder": {
+          "nodeId": "mission-data-tree--proj-html-builder",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-docs": {
+          "nodeId": "mission-data-tree--proj-novakai-docs",
+          "position": {
+            "x": 40,
+            "y": 1208
+          },
+          "size": {
+            "width": 1134,
+            "height": 296
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing": {
+          "nodeId": "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing",
+          "position": {
+            "x": 760,
+            "y": 56
+          },
+          "size": {
+            "width": 334,
+            "height": 200
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing--task-docs-packaged-patch-handoff": {
+          "nodeId": "mission-data-tree--proj-novakai-docs--mission-hq-desktop-tasks-not-showing--task-docs-packaged-patch-handoff",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 254,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-docs--mission-docs-render-stores": {
+          "nodeId": "mission-data-tree--proj-novakai-docs--mission-docs-render-stores",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-docs--mission-docs-viewer-round2": {
+          "nodeId": "mission-data-tree--proj-novakai-docs--mission-docs-viewer-round2",
+          "position": {
+            "x": 400,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-canvas": {
+          "nodeId": "mission-data-tree--proj-novakai-canvas",
+          "position": {
+            "x": 400,
+            "y": 56
+          },
+          "size": {
+            "width": 760,
+            "height": 256
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-canvas--mission-canvas-mission-view": {
+          "nodeId": "mission-data-tree--proj-novakai-canvas--mission-canvas-mission-view",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-data-tree--proj-novakai-canvas--mission-canvas-zones-v2": {
+          "nodeId": "mission-data-tree--proj-novakai-canvas--mission-canvas-zones-v2",
+          "position": {
+            "x": 400,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-project": {
+          "nodeId": "mission-data-tree--standalone-no-project",
+          "position": {
+            "x": 40,
+            "y": 1844
+          },
+          "size": {
+            "width": 400,
+            "height": 256
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-project--mission-slack-visibility-mirror": {
+          "nodeId": "mission-data-tree--standalone-no-project--mission-slack-visibility-mirror",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-mission": {
+          "nodeId": "mission-data-tree--standalone-no-mission",
+          "position": {
+            "x": 40,
+            "y": 1574
+          },
+          "size": {
+            "width": 4023,
+            "height": 200
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-mission--task-fleet-idle-verdict": {
+          "nodeId": "mission-data-tree--standalone-no-mission--task-fleet-idle-verdict",
+          "position": {
+            "x": 1095,
+            "y": 56
+          },
+          "size": {
+            "width": 200,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-mission--task-onboarding-brief": {
+          "nodeId": "mission-data-tree--standalone-no-mission--task-onboarding-brief",
+          "position": {
+            "x": 2987,
+            "y": 56
+          },
+          "size": {
+            "width": 200,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-mission--task-m1-orchestration-tooling": {
+          "nodeId": "mission-data-tree--standalone-no-mission--task-m1-orchestration-tooling",
+          "position": {
+            "x": 1939,
+            "y": 56
+          },
+          "size": {
+            "width": 233,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-mission--task-m2-plumbing-hardening": {
+          "nodeId": "mission-data-tree--standalone-no-mission--task-m2-plumbing-hardening",
+          "position": {
+            "x": 2212,
+            "y": 56
+          },
+          "size": {
+            "width": 211,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-mission--task-m3-dogfood-orchestrator": {
+          "nodeId": "mission-data-tree--standalone-no-mission--task-m3-dogfood-orchestrator",
+          "position": {
+            "x": 2463,
+            "y": 56
+          },
+          "size": {
+            "width": 226,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-mission--task-m4-ui-glitch-braindump": {
+          "nodeId": "mission-data-tree--standalone-no-mission--task-m4-ui-glitch-braindump",
+          "position": {
+            "x": 2729,
+            "y": 56
+          },
+          "size": {
+            "width": 218,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-mission--task-agent-roles-spike": {
+          "nodeId": "mission-data-tree--standalone-no-mission--task-agent-roles-spike",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 200,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-mission--task-hq-desktop-tasks-not-showing": {
+          "nodeId": "mission-data-tree--standalone-no-mission--task-hq-desktop-tasks-not-showing",
+          "position": {
+            "x": 1637,
+            "y": 56
+          },
+          "size": {
+            "width": 262,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-mission--task-review-6hr-kimi-build": {
+          "nodeId": "mission-data-tree--standalone-no-mission--task-review-6hr-kimi-build",
+          "position": {
+            "x": 3772,
+            "y": 56
+          },
+          "size": {
+            "width": 211,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-mission--task-docs-nav-clipping": {
+          "nodeId": "mission-data-tree--standalone-no-mission--task-docs-nav-clipping",
+          "position": {
+            "x": 553,
+            "y": 56
+          },
+          "size": {
+            "width": 200,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-mission--task-docs-inspector-all-views": {
+          "nodeId": "mission-data-tree--standalone-no-mission--task-docs-inspector-all-views",
+          "position": {
+            "x": 280,
+            "y": 56
+          },
+          "size": {
+            "width": 233,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-mission--task-docs-subtitle-source-honesty": {
+          "nodeId": "mission-data-tree--standalone-no-mission--task-docs-subtitle-source-honesty",
+          "position": {
+            "x": 793,
+            "y": 56
+          },
+          "size": {
+            "width": 262,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-mission--task-git-bind-agents-to-worktrees": {
+          "nodeId": "mission-data-tree--standalone-no-mission--task-git-bind-agents-to-worktrees",
+          "position": {
+            "x": 1335,
+            "y": 56
+          },
+          "size": {
+            "width": 262,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-mission--task-processes-store-resume": {
+          "nodeId": "mission-data-tree--standalone-no-mission--task-processes-store-resume",
+          "position": {
+            "x": 3514,
+            "y": 56
+          },
+          "size": {
+            "width": 218,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-data-tree--standalone-no-mission--task-org-rails-backend-delivery": {
+          "nodeId": "mission-data-tree--standalone-no-mission--task-org-rails-backend-delivery",
+          "position": {
+            "x": 3227,
+            "y": 56
+          },
+          "size": {
+            "width": 247,
+            "height": 104
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {}
+}

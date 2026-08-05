@@ -1,0 +1,418 @@
+{
+  "schemaVersion": 3,
+  "id": "mission-object-model",
+  "name": "Mission Object Model",
+  "status": "active",
+  "revision": 2381,
+  "nodes": {
+    "mission-object-model": {
+      "id": "mission-object-model",
+      "kind": "group",
+      "label": "Mission Object Model",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Every box is a real data root; every wire is a link type"
+    },
+    "mission-object-model--stores": {
+      "id": "mission-object-model--stores",
+      "kind": "group",
+      "label": "Stores",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "The real data roots",
+      "parentId": "mission-object-model"
+    },
+    "mission-object-model--stores--objective-okrs-jsonl": {
+      "id": "mission-object-model--stores--objective-okrs-jsonl",
+      "kind": "module",
+      "label": "objective (okrs.jsonl)",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-object-model--stores--objective-okrs-jsonl--type-objective"
+      ],
+      "description": "KRs are flat blocks that ref back to their objective",
+      "parentId": "mission-object-model--stores"
+    },
+    "mission-object-model--stores--project-projects-jsonl": {
+      "id": "mission-object-model--stores--project-projects-jsonl",
+      "kind": "module",
+      "label": "project (projects.jsonl)",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-object-model--stores--project-projects-jsonl--type-project"
+      ],
+      "parentId": "mission-object-model--stores"
+    },
+    "mission-object-model--stores--mission-missions-jsonl": {
+      "id": "mission-object-model--stores--mission-missions-jsonl",
+      "kind": "module",
+      "label": "mission (missions.jsonl)",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-object-model--stores--mission-missions-jsonl--type-mission"
+      ],
+      "description": "optional, not enforced: outcome 6/18, stage 7/18, team 2/18",
+      "parentId": "mission-object-model--stores"
+    },
+    "mission-object-model--stores--task-tasks-jsonl": {
+      "id": "mission-object-model--stores--task-tasks-jsonl",
+      "kind": "module",
+      "label": "task (tasks.jsonl)",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-object-model--stores--task-tasks-jsonl--type-task"
+      ],
+      "parentId": "mission-object-model--stores"
+    },
+    "mission-object-model--stores--agent-agents-json": {
+      "id": "mission-object-model--stores--agent-agents-json",
+      "kind": "module",
+      "label": "agent (agents.json)",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-object-model--stores--agent-agents-json--type-agent"
+      ],
+      "parentId": "mission-object-model--stores"
+    },
+    "mission-object-model--stores--journal-messages-jsonl": {
+      "id": "mission-object-model--stores--journal-messages-jsonl",
+      "kind": "module",
+      "label": "journal (messages.jsonl)",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-object-model--stores--journal-messages-jsonl--type-message"
+      ],
+      "description": "agent-to-agent mail",
+      "parentId": "mission-object-model--stores"
+    },
+    "mission-object-model--read-layer": {
+      "id": "mission-object-model--read-layer",
+      "kind": "group",
+      "label": "Read layer",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Joins the roots; never writes",
+      "parentId": "mission-object-model"
+    },
+    "mission-object-model--read-layer--mission-room": {
+      "id": "mission-object-model--read-layer--mission-room",
+      "kind": "object",
+      "label": "Mission Room",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Read-only composition; joins the roots; never writes",
+      "parentId": "mission-object-model--read-layer"
+    }
+  },
+  "wires": {
+    "mission-object-model--wire-1": {
+      "id": "mission-object-model--wire-1",
+      "kind": "references",
+      "label": "typed ref (17x)",
+      "source": {
+        "nodeId": "mission-object-model--stores--mission-missions-jsonl"
+      },
+      "target": {
+        "nodeId": "mission-object-model--stores--project-projects-jsonl"
+      }
+    },
+    "mission-object-model--wire-2": {
+      "id": "mission-object-model--wire-2",
+      "kind": "references",
+      "label": "typed ref (2x)",
+      "source": {
+        "nodeId": "mission-object-model--stores--mission-missions-jsonl"
+      },
+      "target": {
+        "nodeId": "mission-object-model--stores--objective-okrs-jsonl"
+      }
+    },
+    "mission-object-model--wire-3": {
+      "id": "mission-object-model--wire-3",
+      "kind": "references",
+      "label": "typed refs, sparse (5x)",
+      "source": {
+        "nodeId": "mission-object-model--stores--mission-missions-jsonl"
+      },
+      "target": {
+        "nodeId": "mission-object-model--stores--task-tasks-jsonl"
+      }
+    },
+    "mission-object-model--wire-4": {
+      "id": "mission-object-model--wire-4",
+      "kind": "mentions",
+      "label": "team = free-text strings (2x)",
+      "source": {
+        "nodeId": "mission-object-model--stores--mission-missions-jsonl"
+      },
+      "target": {
+        "nodeId": "mission-object-model--stores--agent-agents-json"
+      }
+    },
+    "mission-object-model--wire-5": {
+      "id": "mission-object-model--wire-5",
+      "kind": "missing",
+      "label": "no field either side",
+      "source": {
+        "nodeId": "mission-object-model--stores--agent-agents-json"
+      },
+      "target": {
+        "nodeId": "mission-object-model--stores--mission-missions-jsonl"
+      }
+    },
+    "mission-object-model--wire-6": {
+      "id": "mission-object-model--wire-6",
+      "kind": "mentions",
+      "label": "mail about work, no mission field",
+      "source": {
+        "nodeId": "mission-object-model--stores--agent-agents-json"
+      },
+      "target": {
+        "nodeId": "mission-object-model--stores--journal-messages-jsonl"
+      }
+    },
+    "mission-object-model--wire-7": {
+      "id": "mission-object-model--wire-7",
+      "kind": "queries",
+      "label": "read-only join",
+      "source": {
+        "nodeId": "mission-object-model--stores--mission-missions-jsonl"
+      },
+      "target": {
+        "nodeId": "mission-object-model--read-layer--mission-room"
+      }
+    },
+    "mission-object-model--wire-8": {
+      "id": "mission-object-model--wire-8",
+      "kind": "queries",
+      "label": "read-only join",
+      "source": {
+        "nodeId": "mission-object-model--stores--task-tasks-jsonl"
+      },
+      "target": {
+        "nodeId": "mission-object-model--read-layer--mission-room"
+      }
+    },
+    "mission-object-model--wire-9": {
+      "id": "mission-object-model--wire-9",
+      "kind": "queries",
+      "label": "read-only join",
+      "source": {
+        "nodeId": "mission-object-model--stores--journal-messages-jsonl"
+      },
+      "target": {
+        "nodeId": "mission-object-model--read-layer--mission-room"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {
+    "mission-object-model--stores--objective-okrs-jsonl--type-objective": {
+      "id": "mission-object-model--stores--objective-okrs-jsonl--type-objective",
+      "name": "Objective",
+      "fields": [
+        "id",
+        "title",
+        "horizon"
+      ]
+    },
+    "mission-object-model--stores--project-projects-jsonl--type-project": {
+      "id": "mission-object-model--stores--project-projects-jsonl--type-project",
+      "name": "Project",
+      "fields": [
+        "id",
+        "title",
+        "status",
+        "path"
+      ]
+    },
+    "mission-object-model--stores--mission-missions-jsonl--type-mission": {
+      "id": "mission-object-model--stores--mission-missions-jsonl--type-mission",
+      "name": "Mission",
+      "fields": [
+        "id",
+        "title",
+        "status",
+        "owner",
+        "refs"
+      ]
+    },
+    "mission-object-model--stores--task-tasks-jsonl--type-task": {
+      "id": "mission-object-model--stores--task-tasks-jsonl--type-task",
+      "name": "Task",
+      "fields": [
+        "id",
+        "title",
+        "status",
+        "refs"
+      ]
+    },
+    "mission-object-model--stores--agent-agents-json--type-agent": {
+      "id": "mission-object-model--stores--agent-agents-json--type-agent",
+      "name": "Agent",
+      "fields": [
+        "agentId",
+        "title",
+        "provider",
+        "status"
+      ]
+    },
+    "mission-object-model--stores--journal-messages-jsonl--type-message": {
+      "id": "mission-object-model--stores--journal-messages-jsonl--type-message",
+      "name": "Message",
+      "fields": [
+        "from",
+        "to",
+        "body",
+        "createdAt"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "mission-object-model": {
+          "nodeId": "mission-object-model",
+          "position": {
+            "x": 40,
+            "y": 12583
+          },
+          "size": {
+            "width": 1711,
+            "height": 692
+          },
+          "pinned": false
+        },
+        "mission-object-model--stores": {
+          "nodeId": "mission-object-model--stores",
+          "position": {
+            "x": 558,
+            "y": 56
+          },
+          "size": {
+            "width": 1113,
+            "height": 596
+          },
+          "pinned": false
+        },
+        "mission-object-model--stores--objective-okrs-jsonl": {
+          "nodeId": "mission-object-model--stores--objective-okrs-jsonl",
+          "position": {
+            "x": 381,
+            "y": 428
+          },
+          "size": {
+            "width": 398,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "mission-object-model--stores--project-projects-jsonl": {
+          "nodeId": "mission-object-model--stores--project-projects-jsonl",
+          "position": {
+            "x": 65,
+            "y": 448
+          },
+          "size": {
+            "width": 276,
+            "height": 88
+          },
+          "pinned": false
+        },
+        "mission-object-model--stores--mission-missions-jsonl": {
+          "nodeId": "mission-object-model--stores--mission-missions-jsonl",
+          "position": {
+            "x": 370,
+            "y": 214
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "mission-object-model--stores--task-tasks-jsonl": {
+          "nodeId": "mission-object-model--stores--task-tasks-jsonl",
+          "position": {
+            "x": 819,
+            "y": 448
+          },
+          "size": {
+            "width": 254,
+            "height": 88
+          },
+          "pinned": false
+        },
+        "mission-object-model--stores--agent-agents-json": {
+          "nodeId": "mission-object-model--stores--agent-agents-json",
+          "position": {
+            "x": 230,
+            "y": 56
+          },
+          "size": {
+            "width": 326,
+            "height": 88
+          },
+          "pinned": false
+        },
+        "mission-object-model--stores--journal-messages-jsonl": {
+          "nodeId": "mission-object-model--stores--journal-messages-jsonl",
+          "position": {
+            "x": 40,
+            "y": 222
+          },
+          "size": {
+            "width": 290,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "mission-object-model--read-layer": {
+          "nodeId": "mission-object-model--read-layer",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 478,
+            "height": 200
+          },
+          "pinned": false
+        },
+        "mission-object-model--read-layer--mission-room": {
+          "nodeId": "mission-object-model--read-layer--mission-room",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 398,
+            "height": 104
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {}
+}

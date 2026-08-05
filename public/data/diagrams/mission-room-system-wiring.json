@@ -1,0 +1,502 @@
+{
+  "schemaVersion": 3,
+  "id": "mission-room-system-wiring",
+  "name": "Mission Room — System Wiring",
+  "status": "active",
+  "revision": 2381,
+  "nodes": {
+    "mission-room-system-wiring": {
+      "id": "mission-room-system-wiring",
+      "kind": "group",
+      "label": "Mission Room — System Wiring",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "How existing Novakai parts become one trustworthy read-only view"
+    },
+    "mission-room-system-wiring--mission-room-ui": {
+      "id": "mission-room-system-wiring--mission-room-ui",
+      "kind": "module",
+      "label": "Mission Room UI",
+      "interfaceIds": [
+        "mission-room-system-wiring--mission-room-ui--if-render"
+      ],
+      "typeIds": [],
+      "description": "EXISTS: the current Mission Control shell; rewire it instead of rebuilding it",
+      "parentId": "mission-room-system-wiring"
+    },
+    "mission-room-system-wiring--note-1-exists-means-reusable-to": {
+      "id": "mission-room-system-wiring--note-1-exists-means-reusable-to",
+      "kind": "comment",
+      "label": "EXISTS means reusable today; PARTIAL means incomplete; CREATE means missing. Most infrastructure already exists—the real build remains Mission Linkage plus Mission View.",
+      "interfaceIds": [],
+      "typeIds": [],
+      "parentId": "mission-room-system-wiring"
+    },
+    "mission-room-system-wiring--note-2-write-rule-mission-commi": {
+      "id": "mission-room-system-wiring--note-2-write-rule-mission-commi",
+      "kind": "comment",
+      "label": "WRITE RULE: mission commissioning records canonical linkage explicitly. Reads never infer it from titles, agent names or the active session.",
+      "interfaceIds": [],
+      "typeIds": [],
+      "parentId": "mission-room-system-wiring"
+    },
+    "mission-room-system-wiring--note-3-identity-rule-mission-th": {
+      "id": "mission-room-system-wiring--note-3-identity-rule-mission-th",
+      "kind": "comment",
+      "label": "IDENTITY RULE: Mission Thread, provider execution Thread and zero-or-many Rooms stay explicitly named until their underlying models are unified.",
+      "interfaceIds": [],
+      "typeIds": [],
+      "parentId": "mission-room-system-wiring"
+    },
+    "mission-room-system-wiring--mission-view": {
+      "id": "mission-room-system-wiring--mission-view",
+      "kind": "module",
+      "label": "Mission View",
+      "interfaceIds": [
+        "mission-room-system-wiring--mission-view--if-read"
+      ],
+      "typeIds": [
+        "mission-room-system-wiring--mission-view--type-missionfacts",
+        "mission-room-system-wiring--mission-view--type-missionsnapshot"
+      ],
+      "description": "CREATE: one deep read module that joins existing facts, preserves uncertainty and exposes one small interface",
+      "parentId": "mission-room-system-wiring"
+    },
+    "mission-room-system-wiring--mission-linkage": {
+      "id": "mission-room-system-wiring--mission-linkage",
+      "kind": "module",
+      "label": "Mission Linkage",
+      "interfaceIds": [
+        "mission-room-system-wiring--mission-linkage--if-record",
+        "mission-room-system-wiring--mission-linkage--if-resolve"
+      ],
+      "typeIds": [
+        "mission-room-system-wiring--mission-linkage--type-missionlinks",
+        "mission-room-system-wiring--mission-linkage--type-missionlinkage",
+        "mission-room-system-wiring--mission-linkage--type-missionassignment"
+      ],
+      "description": "CREATE: owns canonical links; record at mission commissioning, resolve for reads, and never infer",
+      "parentId": "mission-room-system-wiring"
+    },
+    "mission-room-system-wiring--existing-read-sources": {
+      "id": "mission-room-system-wiring--existing-read-sources",
+      "kind": "module",
+      "label": "Existing Read Sources",
+      "interfaceIds": [
+        "mission-room-system-wiring--existing-read-sources--if-collect"
+      ],
+      "typeIds": [
+        "mission-room-system-wiring--existing-read-sources--type-existingsources"
+      ],
+      "description": "EXISTS: reuse current systems rather than creating parallel stores",
+      "parentId": "mission-room-system-wiring"
+    },
+    "mission-room-system-wiring--transcript-projection": {
+      "id": "mission-room-system-wiring--transcript-projection",
+      "kind": "module",
+      "label": "Transcript Projection",
+      "interfaceIds": [
+        "mission-room-system-wiring--transcript-projection--if-events"
+      ],
+      "typeIds": [
+        "mission-room-system-wiring--transcript-projection--type-threadprojection"
+      ],
+      "description": "PARTIAL: Claude and Codex are connected; add the Kimi session adapter and preserve recoverable issues",
+      "parentId": "mission-room-system-wiring"
+    },
+    "mission-room-system-wiring--chief-pulse-projection": {
+      "id": "mission-room-system-wiring--chief-pulse-projection",
+      "kind": "object",
+      "label": "Chief Pulse Projection",
+      "interfaceIds": [
+        "mission-room-system-wiring--chief-pulse-projection--if-derive"
+      ],
+      "typeIds": [
+        "mission-room-system-wiring--chief-pulse-projection--type-chiefpulse"
+      ],
+      "description": "CREATE: derived from collected facts and transcript history; it is not another stored record",
+      "parentId": "mission-room-system-wiring"
+    }
+  },
+  "wires": {
+    "mission-room-system-wiring--wire-1": {
+      "id": "mission-room-system-wiring--wire-1",
+      "kind": "queries",
+      "label": "read(MissionId) -> MissionSnapshot",
+      "source": {
+        "nodeId": "mission-room-system-wiring--mission-room-ui"
+      },
+      "target": {
+        "nodeId": "mission-room-system-wiring--mission-view"
+      }
+    },
+    "mission-room-system-wiring--wire-2": {
+      "id": "mission-room-system-wiring--wire-2",
+      "kind": "queries",
+      "label": "resolve(MissionId) -> MissionLinkage",
+      "source": {
+        "nodeId": "mission-room-system-wiring--mission-view"
+      },
+      "target": {
+        "nodeId": "mission-room-system-wiring--mission-linkage"
+      }
+    },
+    "mission-room-system-wiring--wire-3": {
+      "id": "mission-room-system-wiring--wire-3",
+      "kind": "queries",
+      "label": "collect(MissionLinkage) -> MissionFacts",
+      "source": {
+        "nodeId": "mission-room-system-wiring--mission-view"
+      },
+      "target": {
+        "nodeId": "mission-room-system-wiring--existing-read-sources"
+      }
+    },
+    "mission-room-system-wiring--wire-4": {
+      "id": "mission-room-system-wiring--wire-4",
+      "kind": "queries",
+      "label": "events(ExecutionThreadId) -> ThreadProjection",
+      "source": {
+        "nodeId": "mission-room-system-wiring--mission-view"
+      },
+      "target": {
+        "nodeId": "mission-room-system-wiring--transcript-projection"
+      }
+    },
+    "mission-room-system-wiring--wire-5": {
+      "id": "mission-room-system-wiring--wire-5",
+      "kind": "executes",
+      "label": "derive(MissionFacts, ThreadProjection) -> ChiefPulse",
+      "source": {
+        "nodeId": "mission-room-system-wiring--mission-view"
+      },
+      "target": {
+        "nodeId": "mission-room-system-wiring--chief-pulse-projection"
+      }
+    }
+  },
+  "interfaces": {
+    "mission-room-system-wiring--mission-room-ui--if-render": {
+      "id": "mission-room-system-wiring--mission-room-ui--if-render",
+      "ownerId": "mission-room-system-wiring--mission-room-ui",
+      "name": "render",
+      "accepts": [
+        "MissionSnapshot"
+      ],
+      "returns": [
+        "Screen"
+      ]
+    },
+    "mission-room-system-wiring--mission-view--if-read": {
+      "id": "mission-room-system-wiring--mission-view--if-read",
+      "ownerId": "mission-room-system-wiring--mission-view",
+      "name": "read",
+      "accepts": [
+        "MissionId"
+      ],
+      "returns": [
+        "MissionSnapshot"
+      ]
+    },
+    "mission-room-system-wiring--mission-linkage--if-record": {
+      "id": "mission-room-system-wiring--mission-linkage--if-record",
+      "ownerId": "mission-room-system-wiring--mission-linkage",
+      "name": "record",
+      "accepts": [
+        "MissionId",
+        "MissionLinks"
+      ],
+      "returns": [
+        "MissionLinkage"
+      ]
+    },
+    "mission-room-system-wiring--mission-linkage--if-resolve": {
+      "id": "mission-room-system-wiring--mission-linkage--if-resolve",
+      "ownerId": "mission-room-system-wiring--mission-linkage",
+      "name": "resolve",
+      "accepts": [
+        "MissionId"
+      ],
+      "returns": [
+        "MissionLinkage"
+      ]
+    },
+    "mission-room-system-wiring--existing-read-sources--if-collect": {
+      "id": "mission-room-system-wiring--existing-read-sources--if-collect",
+      "ownerId": "mission-room-system-wiring--existing-read-sources",
+      "name": "collect",
+      "accepts": [
+        "MissionLinkage"
+      ],
+      "returns": [
+        "MissionFacts"
+      ]
+    },
+    "mission-room-system-wiring--transcript-projection--if-events": {
+      "id": "mission-room-system-wiring--transcript-projection--if-events",
+      "ownerId": "mission-room-system-wiring--transcript-projection",
+      "name": "events",
+      "accepts": [
+        "ExecutionThreadId"
+      ],
+      "returns": [
+        "ThreadProjection"
+      ]
+    },
+    "mission-room-system-wiring--chief-pulse-projection--if-derive": {
+      "id": "mission-room-system-wiring--chief-pulse-projection--if-derive",
+      "ownerId": "mission-room-system-wiring--chief-pulse-projection",
+      "name": "derive",
+      "accepts": [
+        "MissionFacts",
+        "ThreadProjection"
+      ],
+      "returns": [
+        "ChiefPulse"
+      ]
+    }
+  },
+  "types": {
+    "mission-room-system-wiring--mission-view--type-missionfacts": {
+      "id": "mission-room-system-wiring--mission-view--type-missionfacts",
+      "name": "MissionFacts",
+      "fields": [
+        "mission",
+        "assignments",
+        "presences",
+        "messages",
+        "artifacts",
+        "attention",
+        "asOf",
+        "issues"
+      ]
+    },
+    "mission-room-system-wiring--mission-view--type-missionsnapshot": {
+      "id": "mission-room-system-wiring--mission-view--type-missionsnapshot",
+      "name": "MissionSnapshot",
+      "fields": [
+        "mission",
+        "pulse",
+        "assignments",
+        "presences",
+        "timeline",
+        "artifacts",
+        "attention",
+        "asOf",
+        "issues"
+      ]
+    },
+    "mission-room-system-wiring--mission-linkage--type-missionlinks": {
+      "id": "mission-room-system-wiring--mission-linkage--type-missionlinks",
+      "name": "MissionLinks",
+      "fields": [
+        "projectId",
+        "missionThreadId",
+        "executionThreadId",
+        "roomIds",
+        "assignments"
+      ]
+    },
+    "mission-room-system-wiring--mission-linkage--type-missionlinkage": {
+      "id": "mission-room-system-wiring--mission-linkage--type-missionlinkage",
+      "name": "MissionLinkage",
+      "fields": [
+        "missionId",
+        "projectId",
+        "missionThreadId",
+        "executionThreadId",
+        "roomIds",
+        "assignments"
+      ]
+    },
+    "mission-room-system-wiring--mission-linkage--type-missionassignment": {
+      "id": "mission-room-system-wiring--mission-linkage--type-missionassignment",
+      "name": "MissionAssignment",
+      "fields": [
+        "personId",
+        "role",
+        "authority",
+        "assignedAt"
+      ]
+    },
+    "mission-room-system-wiring--existing-read-sources--type-existingsources": {
+      "id": "mission-room-system-wiring--existing-read-sources--type-existingsources",
+      "name": "ExistingSources",
+      "fields": [
+        "missionStore",
+        "projectStore",
+        "messageStore",
+        "roomStore",
+        "agentRegistry",
+        "missionPackets",
+        "attentionState"
+      ]
+    },
+    "mission-room-system-wiring--transcript-projection--type-threadprojection": {
+      "id": "mission-room-system-wiring--transcript-projection--type-threadprojection",
+      "name": "ThreadProjection",
+      "fields": [
+        "events",
+        "issues"
+      ]
+    },
+    "mission-room-system-wiring--chief-pulse-projection--type-chiefpulse": {
+      "id": "mission-room-system-wiring--chief-pulse-projection--type-chiefpulse",
+      "name": "ChiefPulse",
+      "fields": [
+        "phase",
+        "health",
+        "lastMeaningfulUpdate",
+        "nextCheckpoint",
+        "needsChris"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "mission-room-system-wiring": {
+          "nodeId": "mission-room-system-wiring",
+          "position": {
+            "x": 0,
+            "y": 5460
+          },
+          "size": {
+            "width": 2095,
+            "height": 827
+          },
+          "pinned": false
+        },
+        "mission-room-system-wiring--mission-room-ui": {
+          "nodeId": "mission-room-system-wiring--mission-room-ui",
+          "position": {
+            "x": 675,
+            "y": 60
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "mission-room-system-wiring--note-1-exists-means-reusable-to": {
+          "nodeId": "mission-room-system-wiring--note-1-exists-means-reusable-to",
+          "position": {
+            "x": 1135,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 153
+          },
+          "pinned": false
+        },
+        "mission-room-system-wiring--note-2-write-rule-mission-commi": {
+          "nodeId": "mission-room-system-wiring--note-2-write-rule-mission-commi",
+          "position": {
+            "x": 1455,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 153
+          },
+          "pinned": false
+        },
+        "mission-room-system-wiring--note-3-identity-rule-mission-th": {
+          "nodeId": "mission-room-system-wiring--note-3-identity-rule-mission-th",
+          "position": {
+            "x": 1775,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 153
+          },
+          "pinned": false
+        },
+        "mission-room-system-wiring--mission-view": {
+          "nodeId": "mission-room-system-wiring--mission-view",
+          "position": {
+            "x": 675,
+            "y": 279
+          },
+          "size": {
+            "width": 420,
+            "height": 194
+          },
+          "pinned": false
+        },
+        "mission-room-system-wiring--mission-linkage": {
+          "nodeId": "mission-room-system-wiring--mission-linkage",
+          "position": {
+            "x": 1420,
+            "y": 543
+          },
+          "size": {
+            "width": 420,
+            "height": 244
+          },
+          "pinned": false
+        },
+        "mission-room-system-wiring--existing-read-sources": {
+          "nodeId": "mission-room-system-wiring--existing-read-sources",
+          "position": {
+            "x": 960,
+            "y": 580
+          },
+          "size": {
+            "width": 420,
+            "height": 170
+          },
+          "pinned": false
+        },
+        "mission-room-system-wiring--transcript-projection": {
+          "nodeId": "mission-room-system-wiring--transcript-projection",
+          "position": {
+            "x": 500,
+            "y": 580
+          },
+          "size": {
+            "width": 420,
+            "height": 170
+          },
+          "pinned": false
+        },
+        "mission-room-system-wiring--chief-pulse-projection": {
+          "nodeId": "mission-room-system-wiring--chief-pulse-projection",
+          "position": {
+            "x": 40,
+            "y": 580
+          },
+          "size": {
+            "width": 420,
+            "height": 170
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {}
+}

@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { LoadFailure } from './presentation/components/load-failure';
+import type { DiagramSummary } from './application/canvas-library';
 
 const root = createRoot(document.getElementById('root')!);
 const workSessionReport =
@@ -80,11 +81,47 @@ async function bootstrapCanvas(): Promise<void> {
     });
   }
 
+  const libraryDiagrams = await loadLibraryDiagrams();
+
   root.render(
     <StrictMode>
-      <App engine={engine} initialPreferences={preferences} preferencesRepository={preferencesRepository} />
+      <App
+        engine={engine}
+        initialPreferences={preferences}
+        libraryDiagrams={libraryDiagrams}
+        preferencesRepository={preferencesRepository}
+      />
     </StrictMode>,
   );
+}
+
+/**
+ * Builds the v3 record-model library and snapshots its diagram list for the picker.
+ *
+ * Dev-only: the endpoints this needs (`/api/library`, `/api/diagrams`) are served by the Vite
+ * dev bridge, which does not exist in a static production build — there the picker keeps sourcing
+ * from the legacy document exactly as it does today. A failure here is logged, not thrown: the
+ * library is an additive read path proving the record-model seam, not yet load-bearing for
+ * rendering, so it must never take the whole app down.
+ */
+async function loadLibraryDiagrams(): Promise<DiagramSummary[] | undefined> {
+  if (!import.meta.env.DEV) return undefined;
+  try {
+    const [{ createFileLibraryRepository }, { createCanvasLibrary }] = await Promise.all([
+      import('./adapters/file-library-repository'),
+      import('./application/canvas-library'),
+    ]);
+    const repository = createFileLibraryRepository();
+    const index = await repository.readIndex();
+    const library = createCanvasLibrary(repository, index, {
+      actor: { id: 'local-user', kind: 'human' },
+      provenance: { source: 'ui' },
+    });
+    return library.list({ includeArchived: true });
+  } catch (error) {
+    console.error('[canvas library] unavailable; the diagram picker falls back to the legacy document', error);
+    return undefined;
+  }
 }
 
 void (workSessionReport ? bootstrapWorkSessionReport() : bootstrapCanvas());

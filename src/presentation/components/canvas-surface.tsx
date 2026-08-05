@@ -3,6 +3,7 @@ import {
   Background, BackgroundVariant, Controls, ReactFlow, type Connection, type NodeChange,
 } from '@xyflow/react';
 import type { CanvasEngine } from '../../application/canvas-engine';
+import type { DiagramSummary } from '../../application/canvas-library';
 import type { ArchitectureDocument, CanvasPreferences, Selection } from '../../domain/model';
 import type { ArchitectureMap } from '../../domain/maps';
 import { projectEdges, projectNodes } from '../projection';
@@ -26,6 +27,8 @@ interface CanvasSurfaceProps {
   setSelection: (selection: Selection) => void;
   engine: CanvasEngine;
   saveStatus: string;
+  /** Diagram list sourced from the v3 record library, when available; see `AppProps`. */
+  libraryDiagrams?: DiagramSummary[];
   maps: ArchitectureMap[];
   activeMapId?: string;
   mode: CanvasMode;

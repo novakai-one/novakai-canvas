@@ -1,0 +1,402 @@
+{
+  "schemaVersion": 3,
+  "id": "mission-control-ux-22-jul-people-proof",
+  "name": "Mission Control UX 22-Jul — People & Proof",
+  "status": "active",
+  "revision": 2381,
+  "nodes": {
+    "mission-control-ux-22-jul-people-proof": {
+      "id": "mission-control-ux-22-jul-people-proof",
+      "kind": "group",
+      "label": "Mission Control UX 22-Jul — People & Proof",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Exact lineage for team, artifacts and the selection-driven right inspector"
+    },
+    "mission-control-ux-22-jul-people-proof--note-1-the-inspector-owns-no-ne": {
+      "id": "mission-control-ux-22-jul-people-proof--note-1-the-inspector-owns-no-ne",
+      "kind": "comment",
+      "label": "The inspector owns no new truth: it formats the selected section's value, status, provenance and next action.",
+      "interfaceIds": [],
+      "typeIds": [],
+      "parentId": "mission-control-ux-22-jul-people-proof"
+    },
+    "mission-control-ux-22-jul-people-proof--missions-jsonl": {
+      "id": "mission-control-ux-22-jul-people-proof--missions-jsonl",
+      "kind": "resource",
+      "label": "missions.jsonl",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-control-ux-22-jul-people-proof--missions-jsonl--type-fields"
+      ],
+      "description": "ATOMIC · owner, assignments[] and refs[kind=doc]",
+      "parentId": "mission-control-ux-22-jul-people-proof"
+    },
+    "mission-control-ux-22-jul-people-proof--agents-json": {
+      "id": "mission-control-ux-22-jul-people-proof--agents-json",
+      "kind": "runtime",
+      "label": "agents.json",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-control-ux-22-jul-people-proof--agents-json--type-fields"
+      ],
+      "description": "ATOMIC RUNTIME · agent, provider, session and availability exist; mission binding does not",
+      "parentId": "mission-control-ux-22-jul-people-proof"
+    },
+    "mission-control-ux-22-jul-people-proof--mission-packet": {
+      "id": "mission-control-ux-22-jul-people-proof--mission-packet",
+      "kind": "resource",
+      "label": "Mission Packet",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-control-ux-22-jul-people-proof--mission-packet--type-fields"
+      ],
+      "description": "ATOMIC FILES · .novakai/work/<missionId>/ names, paths and observation mtimes",
+      "parentId": "mission-control-ux-22-jul-people-proof"
+    },
+    "mission-control-ux-22-jul-people-proof--v4-static-copy": {
+      "id": "mission-control-ux-22-jul-people-proof--v4-static-copy",
+      "kind": "runtime",
+      "label": "V4 Static Copy",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-control-ux-22-jul-people-proof--v4-static-copy--type-fixture"
+      ],
+      "description": "DEMO ONLY · Kimi, Fable, Builder, Codex roles/current work and the independent-review evidence row",
+      "parentId": "mission-control-ux-22-jul-people-proof"
+    },
+    "mission-control-ux-22-jul-people-proof--team": {
+      "id": "mission-control-ux-22-jul-people-proof--team",
+      "kind": "object",
+      "label": "Team",
+      "interfaceIds": [
+        "mission-control-ux-22-jul-people-proof--team--if-show"
+      ],
+      "typeIds": [],
+      "description": "MISSING / PARTIAL · owner is live; assignments are absent for this mission; presence and current work lack mission binding",
+      "parentId": "mission-control-ux-22-jul-people-proof"
+    },
+    "mission-control-ux-22-jul-people-proof--artifacts": {
+      "id": "mission-control-ux-22-jul-people-proof--artifacts",
+      "kind": "object",
+      "label": "Artifacts",
+      "interfaceIds": [
+        "mission-control-ux-22-jul-people-proof--artifacts--if-show"
+      ],
+      "typeIds": [],
+      "description": "PARTIAL / LIVE · explicit doc refs plus matching packet metadata are live; unlinked packet neighbours remain Attention",
+      "parentId": "mission-control-ux-22-jul-people-proof"
+    },
+    "mission-control-ux-22-jul-people-proof--right-inspector": {
+      "id": "mission-control-ux-22-jul-people-proof--right-inspector",
+      "kind": "module",
+      "label": "Right Inspector",
+      "interfaceIds": [
+        "mission-control-ux-22-jul-people-proof--right-inspector--if-inspect"
+      ],
+      "typeIds": [],
+      "description": "CREATE PRESENTATION · selected center item -> human summary, status, facts, significance, next step and provenance trail",
+      "parentId": "mission-control-ux-22-jul-people-proof"
+    }
+  },
+  "wires": {
+    "mission-control-ux-22-jul-people-proof--wire-1": {
+      "id": "mission-control-ux-22-jul-people-proof--wire-1",
+      "kind": "owns",
+      "label": "owner + assignments[] -> Accountability",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-people-proof--missions-jsonl"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-people-proof--team"
+      }
+    },
+    "mission-control-ux-22-jul-people-proof--wire-2": {
+      "id": "mission-control-ux-22-jul-people-proof--wire-2",
+      "kind": "references",
+      "label": "registryCandidate + CREATE missionIdBinding -> PresenceAndCurrentWork",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-people-proof--agents-json"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-people-proof--team"
+      }
+    },
+    "mission-control-ux-22-jul-people-proof--wire-3": {
+      "id": "mission-control-ux-22-jul-people-proof--wire-3",
+      "kind": "references",
+      "label": "demoPeople + roles + currentWork -> TeamList",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-people-proof--v4-static-copy"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-people-proof--team"
+      }
+    },
+    "mission-control-ux-22-jul-people-proof--wire-4": {
+      "id": "mission-control-ux-22-jul-people-proof--wire-4",
+      "kind": "owns",
+      "label": "refs[kind=doc] -> ArtifactIds",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-people-proof--missions-jsonl"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-people-proof--artifacts"
+      }
+    },
+    "mission-control-ux-22-jul-people-proof--wire-5": {
+      "id": "mission-control-ux-22-jul-people-proof--wire-5",
+      "kind": "owns",
+      "label": "matchingFile + path + mtime -> ArtifactMetadata",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-people-proof--mission-packet"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-people-proof--artifacts"
+      }
+    },
+    "mission-control-ux-22-jul-people-proof--wire-6": {
+      "id": "mission-control-ux-22-jul-people-proof--wire-6",
+      "kind": "references",
+      "label": "demoEvidenceRows -> EvidenceList",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-people-proof--v4-static-copy"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-people-proof--artifacts"
+      }
+    },
+    "mission-control-ux-22-jul-people-proof--wire-7": {
+      "id": "mission-control-ux-22-jul-people-proof--wire-7",
+      "kind": "queries",
+      "label": "inspect(TeamSelection) -> InspectorContent",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-people-proof--team"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-people-proof--right-inspector"
+      }
+    },
+    "mission-control-ux-22-jul-people-proof--wire-8": {
+      "id": "mission-control-ux-22-jul-people-proof--wire-8",
+      "kind": "queries",
+      "label": "inspect(ArtifactSelection) -> InspectorContent",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-people-proof--artifacts"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-people-proof--right-inspector"
+      }
+    }
+  },
+  "interfaces": {
+    "mission-control-ux-22-jul-people-proof--team--if-show": {
+      "id": "mission-control-ux-22-jul-people-proof--team--if-show",
+      "ownerId": "mission-control-ux-22-jul-people-proof--team",
+      "name": "show",
+      "accepts": [],
+      "returns": [
+        "TeamList"
+      ]
+    },
+    "mission-control-ux-22-jul-people-proof--artifacts--if-show": {
+      "id": "mission-control-ux-22-jul-people-proof--artifacts--if-show",
+      "ownerId": "mission-control-ux-22-jul-people-proof--artifacts",
+      "name": "show",
+      "accepts": [],
+      "returns": [
+        "EvidenceList"
+      ]
+    },
+    "mission-control-ux-22-jul-people-proof--right-inspector--if-inspect": {
+      "id": "mission-control-ux-22-jul-people-proof--right-inspector--if-inspect",
+      "ownerId": "mission-control-ux-22-jul-people-proof--right-inspector",
+      "name": "inspect",
+      "accepts": [
+        "CenterSelection"
+      ],
+      "returns": [
+        "InspectorContent"
+      ]
+    }
+  },
+  "types": {
+    "mission-control-ux-22-jul-people-proof--missions-jsonl--type-fields": {
+      "id": "mission-control-ux-22-jul-people-proof--missions-jsonl--type-fields",
+      "name": "Fields",
+      "fields": [
+        "owner",
+        "assignments",
+        "refs"
+      ]
+    },
+    "mission-control-ux-22-jul-people-proof--agents-json--type-fields": {
+      "id": "mission-control-ux-22-jul-people-proof--agents-json--type-fields",
+      "name": "Fields",
+      "fields": [
+        "agentId",
+        "title",
+        "provider",
+        "sessionId",
+        "status",
+        "projectId",
+        "threadId"
+      ]
+    },
+    "mission-control-ux-22-jul-people-proof--mission-packet--type-fields": {
+      "id": "mission-control-ux-22-jul-people-proof--mission-packet--type-fields",
+      "name": "Fields",
+      "fields": [
+        "fileName",
+        "path",
+        "observedModifiedAt"
+      ]
+    },
+    "mission-control-ux-22-jul-people-proof--v4-static-copy--type-fixture": {
+      "id": "mission-control-ux-22-jul-people-proof--v4-static-copy--type-fixture",
+      "name": "Fixture",
+      "fields": [
+        "people",
+        "roles",
+        "presence",
+        "currentWork",
+        "evidenceRows"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "mission-control-ux-22-jul-people-proof": {
+          "nodeId": "mission-control-ux-22-jul-people-proof",
+          "position": {
+            "x": 40,
+            "y": 9027
+          },
+          "size": {
+            "width": 2246,
+            "height": 908
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-people-proof--note-1-the-inspector-owns-no-ne": {
+          "nodeId": "mission-control-ux-22-jul-people-proof--note-1-the-inspector-owns-no-ne",
+          "position": {
+            "x": 1370,
+            "y": 62
+          },
+          "size": {
+            "width": 280,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-people-proof--missions-jsonl": {
+          "nodeId": "mission-control-ux-22-jul-people-proof--missions-jsonl",
+          "position": {
+            "x": 960,
+            "y": 64
+          },
+          "size": {
+            "width": 370,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-people-proof--agents-json": {
+          "nodeId": "mission-control-ux-22-jul-people-proof--agents-json",
+          "position": {
+            "x": 1690,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-people-proof--mission-packet": {
+          "nodeId": "mission-control-ux-22-jul-people-proof--mission-packet",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-people-proof--v4-static-copy": {
+          "nodeId": "mission-control-ux-22-jul-people-proof--v4-static-copy",
+          "position": {
+            "x": 500,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-people-proof--team": {
+          "nodeId": "mission-control-ux-22-jul-people-proof--team",
+          "position": {
+            "x": 1303,
+            "y": 270
+          },
+          "size": {
+            "width": 420,
+            "height": 162
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-people-proof--artifacts": {
+          "nodeId": "mission-control-ux-22-jul-people-proof--artifacts",
+          "position": {
+            "x": 280,
+            "y": 270
+          },
+          "size": {
+            "width": 420,
+            "height": 162
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-people-proof--right-inspector": {
+          "nodeId": "mission-control-ux-22-jul-people-proof--right-inspector",
+          "position": {
+            "x": 764,
+            "y": 693
+          },
+          "size": {
+            "width": 420,
+            "height": 162
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {}
+}

@@ -1,0 +1,941 @@
+{
+  "schemaVersion": 3,
+  "id": "command-messaging",
+  "name": "Command Messaging",
+  "status": "active",
+  "revision": 2381,
+  "nodes": {
+    "command-messaging": {
+      "id": "command-messaging",
+      "kind": "group",
+      "label": "Command Messaging",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Inside src/backend/messaging and its direct neighbours — docs/agent-messaging.md"
+    },
+    "command-messaging--messaging-tunnel": {
+      "id": "command-messaging--messaging-tunnel",
+      "kind": "group",
+      "label": "Messaging tunnel",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "src/backend/messaging — one module per seam",
+      "parentId": "command-messaging"
+    },
+    "command-messaging--messaging-tunnel--actors": {
+      "id": "command-messaging--messaging-tunnel--actors",
+      "kind": "module",
+      "label": "Actors",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Sender/recipient actor resolution",
+      "parentId": "command-messaging--messaging-tunnel"
+    },
+    "command-messaging--messaging-tunnel--address-book": {
+      "id": "command-messaging--messaging-tunnel--address-book",
+      "kind": "module",
+      "label": "Address book",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Agent roster + spawn briefing composition — see docs/agent-messaging.md",
+      "parentId": "command-messaging--messaging-tunnel"
+    },
+    "command-messaging--messaging-tunnel--delivery-confirm": {
+      "id": "command-messaging--messaging-tunnel--delivery-confirm",
+      "kind": "module",
+      "label": "Delivery confirm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Delivery confirmation tracking",
+      "parentId": "command-messaging--messaging-tunnel"
+    },
+    "command-messaging--messaging-tunnel--pty-delivery": {
+      "id": "command-messaging--messaging-tunnel--pty-delivery",
+      "kind": "module",
+      "label": "PTY delivery",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "normal: type + submit; interrupt: Esc, settle, type — per-provider quirks live here — see docs/agent-messaging.md",
+      "parentId": "command-messaging--messaging-tunnel"
+    },
+    "command-messaging--messaging-tunnel--messaging-hub": {
+      "id": "command-messaging--messaging-tunnel--messaging-hub",
+      "kind": "module",
+      "label": "Messaging hub",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "index.ts — REST surface (POST/GET /api/messages), ws push, spawn briefing into new PTYs — see docs/agent-messaging.md",
+      "parentId": "command-messaging--messaging-tunnel"
+    },
+    "command-messaging--messaging-tunnel--identity-stamping": {
+      "id": "command-messaging--messaging-tunnel--identity-stamping",
+      "kind": "module",
+      "label": "Identity stamping",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Server-derived envelope identity: durable agent ids + mission link, never client-trusted",
+      "parentId": "command-messaging--messaging-tunnel"
+    },
+    "command-messaging--messaging-tunnel--mailbox-registry": {
+      "id": "command-messaging--messaging-tunnel--mailbox-registry",
+      "kind": "module",
+      "label": "Mailbox registry",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Pull mailboxes — delivery path for external sessions",
+      "parentId": "command-messaging--messaging-tunnel"
+    },
+    "command-messaging--messaging-tunnel--rooms": {
+      "id": "command-messaging--messaging-tunnel--rooms",
+      "kind": "module",
+      "label": "Rooms",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Room/channel membership and state",
+      "parentId": "command-messaging--messaging-tunnel"
+    },
+    "command-messaging--messaging-tunnel--message-router": {
+      "id": "command-messaging--messaging-tunnel--message-router",
+      "kind": "module",
+      "label": "Message router",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Records every envelope first, then delivers via adapter seam; failures land as status amendments — see docs/agent-messaging.md",
+      "parentId": "command-messaging--messaging-tunnel"
+    },
+    "command-messaging--messaging-tunnel--send-api": {
+      "id": "command-messaging--messaging-tunnel--send-api",
+      "kind": "module",
+      "label": "Send API",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Wraps SendMessage into an envelope and submits to the router — see docs/agent-messaging.md",
+      "parentId": "command-messaging--messaging-tunnel"
+    },
+    "command-messaging--messaging-tunnel--message-store": {
+      "id": "command-messaging--messaging-tunnel--message-store",
+      "kind": "module",
+      "label": "Message store",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Append-only JSONL; amendments re-append same id, readers fold, last line wins — see docs/agent-messaging.md",
+      "parentId": "command-messaging--messaging-tunnel"
+    },
+    "command-messaging--messaging-tunnel--thread-links": {
+      "id": "command-messaging--messaging-tunnel--thread-links",
+      "kind": "module",
+      "label": "Thread links",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Mission-thread linkage over rooms",
+      "parentId": "command-messaging--messaging-tunnel"
+    },
+    "command-messaging--messaging-tunnel--envelope-types": {
+      "id": "command-messaging--messaging-tunnel--envelope-types",
+      "kind": "module",
+      "label": "Envelope types",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "MessageEnvelope, addresses, delivery modes",
+      "parentId": "command-messaging--messaging-tunnel"
+    },
+    "command-messaging--neighbours": {
+      "id": "command-messaging--neighbours",
+      "kind": "group",
+      "label": "Neighbours",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "What the tunnel touches beyond its own directory",
+      "parentId": "command-messaging"
+    },
+    "command-messaging--neighbours--agent-ptys": {
+      "id": "command-messaging--neighbours--agent-ptys",
+      "kind": "runtime",
+      "label": "Agent PTYs",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Claude + Codex sessions hosted by TerminalManager (src/backend/terminal)",
+      "parentId": "command-messaging--neighbours"
+    },
+    "command-messaging--neighbours--messages-jsonl": {
+      "id": "command-messaging--neighbours--messages-jsonl",
+      "kind": "resource",
+      "label": "messages.jsonl",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Append-only envelope journal — the permanent audit record",
+      "parentId": "command-messaging--neighbours"
+    },
+    "command-messaging--neighbours--ws-broadcast": {
+      "id": "command-messaging--neighbours--ws-broadcast",
+      "kind": "module",
+      "label": "ws broadcast",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Server WebSocket fan-out (src/backend/server)",
+      "parentId": "command-messaging--neighbours"
+    },
+    "command-messaging--neighbours--tunnelmodel": {
+      "id": "command-messaging--neighbours--tunnelmodel",
+      "kind": "module",
+      "label": "tunnelModel",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "src/frontend/lib/tunnelModel — folds the envelope stream for the UI",
+      "parentId": "command-messaging--neighbours"
+    },
+    "command-messaging--neighbours--studio-chat": {
+      "id": "command-messaging--neighbours--studio-chat",
+      "kind": "module",
+      "label": "Studio chat",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Studio layout: rail, work head, AI chat panel, tunnel lens — subscribes to the tunnel feed",
+      "parentId": "command-messaging--neighbours"
+    },
+    "command-messaging--neighbours--workspace": {
+      "id": "command-messaging--neighbours--workspace",
+      "kind": "module",
+      "label": "Workspace",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Dominant workspace lenses: messages, organization, mission control — subscribes to the tunnel feed",
+      "parentId": "command-messaging--neighbours"
+    }
+  },
+  "wires": {
+    "command-messaging--wire-1": {
+      "id": "command-messaging--wire-1",
+      "kind": "references",
+      "label": "imports",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--actors"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--envelope-types"
+      }
+    },
+    "command-messaging--wire-2": {
+      "id": "command-messaging--wire-2",
+      "kind": "references",
+      "label": "imports",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--address-book"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--envelope-types"
+      }
+    },
+    "command-messaging--wire-3": {
+      "id": "command-messaging--wire-3",
+      "kind": "queries",
+      "label": "resolves recipient actor",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--pty-delivery"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--actors"
+      }
+    },
+    "command-messaging--wire-4": {
+      "id": "command-messaging--wire-4",
+      "kind": "references",
+      "label": "imports",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--pty-delivery"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--envelope-types"
+      }
+    },
+    "command-messaging--wire-5": {
+      "id": "command-messaging--wire-5",
+      "kind": "references",
+      "label": "imports",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--messaging-hub"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--actors"
+      }
+    },
+    "command-messaging--wire-6": {
+      "id": "command-messaging--wire-6",
+      "kind": "executes",
+      "label": "composes spawn briefing",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--messaging-hub"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--address-book"
+      }
+    },
+    "command-messaging--wire-7": {
+      "id": "command-messaging--wire-7",
+      "kind": "references",
+      "label": "imports",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--messaging-hub"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--delivery-confirm"
+      }
+    },
+    "command-messaging--wire-8": {
+      "id": "command-messaging--wire-8",
+      "kind": "owns",
+      "label": "constructs PTY adapter",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--messaging-hub"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--pty-delivery"
+      }
+    },
+    "command-messaging--wire-9": {
+      "id": "command-messaging--wire-9",
+      "kind": "owns",
+      "label": "wires identity seam",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--messaging-hub"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--identity-stamping"
+      }
+    },
+    "command-messaging--wire-10": {
+      "id": "command-messaging--wire-10",
+      "kind": "owns",
+      "label": "shares durable registry",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--messaging-hub"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--mailbox-registry"
+      }
+    },
+    "command-messaging--wire-11": {
+      "id": "command-messaging--wire-11",
+      "kind": "references",
+      "label": "imports",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--messaging-hub"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--rooms"
+      }
+    },
+    "command-messaging--wire-12": {
+      "id": "command-messaging--wire-12",
+      "kind": "executes",
+      "label": "routes every send",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--messaging-hub"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--message-router"
+      }
+    },
+    "command-messaging--wire-13": {
+      "id": "command-messaging--wire-13",
+      "kind": "owns",
+      "label": "exposes send API",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--messaging-hub"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--send-api"
+      }
+    },
+    "command-messaging--wire-14": {
+      "id": "command-messaging--wire-14",
+      "kind": "owns",
+      "label": "owns the journal",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--messaging-hub"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--message-store"
+      }
+    },
+    "command-messaging--wire-15": {
+      "id": "command-messaging--wire-15",
+      "kind": "references",
+      "label": "imports",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--messaging-hub"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--thread-links"
+      }
+    },
+    "command-messaging--wire-16": {
+      "id": "command-messaging--wire-16",
+      "kind": "references",
+      "label": "imports",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--messaging-hub"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--envelope-types"
+      }
+    },
+    "command-messaging--wire-17": {
+      "id": "command-messaging--wire-17",
+      "kind": "references",
+      "label": "imports",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--identity-stamping"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--envelope-types"
+      }
+    },
+    "command-messaging--wire-18": {
+      "id": "command-messaging--wire-18",
+      "kind": "references",
+      "label": "imports",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--mailbox-registry"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--envelope-types"
+      }
+    },
+    "command-messaging--wire-19": {
+      "id": "command-messaging--wire-19",
+      "kind": "references",
+      "label": "imports",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--rooms"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--envelope-types"
+      }
+    },
+    "command-messaging--wire-20": {
+      "id": "command-messaging--wire-20",
+      "kind": "references",
+      "label": "imports",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--message-router"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--actors"
+      }
+    },
+    "command-messaging--wire-21": {
+      "id": "command-messaging--wire-21",
+      "kind": "assigns",
+      "label": "tracks delivery outcome",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--message-router"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--delivery-confirm"
+      }
+    },
+    "command-messaging--wire-22": {
+      "id": "command-messaging--wire-22",
+      "kind": "executes",
+      "label": "delivers DM into PTY",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--message-router"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--pty-delivery"
+      }
+    },
+    "command-messaging--wire-23": {
+      "id": "command-messaging--wire-23",
+      "kind": "assigns",
+      "label": "stamps envelope identity",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--message-router"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--identity-stamping"
+      }
+    },
+    "command-messaging--wire-24": {
+      "id": "command-messaging--wire-24",
+      "kind": "assigns",
+      "label": "fans out channel posts",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--message-router"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--rooms"
+      }
+    },
+    "command-messaging--wire-25": {
+      "id": "command-messaging--wire-25",
+      "kind": "owns",
+      "label": "records envelope first",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--message-router"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--message-store"
+      }
+    },
+    "command-messaging--wire-26": {
+      "id": "command-messaging--wire-26",
+      "kind": "references",
+      "label": "imports",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--message-router"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--envelope-types"
+      }
+    },
+    "command-messaging--wire-27": {
+      "id": "command-messaging--wire-27",
+      "kind": "executes",
+      "label": "submits envelope",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--send-api"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--message-router"
+      }
+    },
+    "command-messaging--wire-28": {
+      "id": "command-messaging--wire-28",
+      "kind": "references",
+      "label": "imports",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--send-api"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--envelope-types"
+      }
+    },
+    "command-messaging--wire-29": {
+      "id": "command-messaging--wire-29",
+      "kind": "references",
+      "label": "imports",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--message-store"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--envelope-types"
+      }
+    },
+    "command-messaging--wire-30": {
+      "id": "command-messaging--wire-30",
+      "kind": "queries",
+      "label": "mission link stamping",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--thread-links"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--identity-stamping"
+      }
+    },
+    "command-messaging--wire-31": {
+      "id": "command-messaging--wire-31",
+      "kind": "executes",
+      "label": "posts into thread rooms",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--thread-links"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--message-router"
+      }
+    },
+    "command-messaging--wire-32": {
+      "id": "command-messaging--wire-32",
+      "kind": "references",
+      "label": "imports",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--thread-links"
+      },
+      "target": {
+        "nodeId": "command-messaging--messaging-tunnel--envelope-types"
+      }
+    },
+    "command-messaging--wire-33": {
+      "id": "command-messaging--wire-33",
+      "kind": "queries",
+      "label": "reads AgentInfo roster",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--address-book"
+      },
+      "target": {
+        "nodeId": "command-messaging--neighbours--agent-ptys"
+      }
+    },
+    "command-messaging--wire-34": {
+      "id": "command-messaging--wire-34",
+      "kind": "executes",
+      "label": "reads agent roster, types briefing",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--messaging-hub"
+      },
+      "target": {
+        "nodeId": "command-messaging--neighbours--agent-ptys"
+      }
+    },
+    "command-messaging--wire-35": {
+      "id": "command-messaging--wire-35",
+      "kind": "owns",
+      "label": "appends every envelope",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--message-store"
+      },
+      "target": {
+        "nodeId": "command-messaging--neighbours--messages-jsonl"
+      }
+    },
+    "command-messaging--wire-36": {
+      "id": "command-messaging--wire-36",
+      "kind": "executes",
+      "label": "types into PTY (normal queues, interrupt Esc first)",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--pty-delivery"
+      },
+      "target": {
+        "nodeId": "command-messaging--neighbours--agent-ptys"
+      }
+    },
+    "command-messaging--wire-37": {
+      "id": "command-messaging--wire-37",
+      "kind": "executes",
+      "label": "pushes appended envelopes",
+      "source": {
+        "nodeId": "command-messaging--messaging-tunnel--messaging-hub"
+      },
+      "target": {
+        "nodeId": "command-messaging--neighbours--ws-broadcast"
+      }
+    },
+    "command-messaging--wire-38": {
+      "id": "command-messaging--wire-38",
+      "kind": "references",
+      "label": "envelope stream over ws",
+      "source": {
+        "nodeId": "command-messaging--neighbours--ws-broadcast"
+      },
+      "target": {
+        "nodeId": "command-messaging--neighbours--tunnelmodel"
+      }
+    },
+    "command-messaging--wire-39": {
+      "id": "command-messaging--wire-39",
+      "kind": "queries",
+      "label": "renders the folded tunnel feed",
+      "source": {
+        "nodeId": "command-messaging--neighbours--studio-chat"
+      },
+      "target": {
+        "nodeId": "command-messaging--neighbours--tunnelmodel"
+      }
+    },
+    "command-messaging--wire-40": {
+      "id": "command-messaging--wire-40",
+      "kind": "queries",
+      "label": "renders the folded tunnel feed",
+      "source": {
+        "nodeId": "command-messaging--neighbours--workspace"
+      },
+      "target": {
+        "nodeId": "command-messaging--neighbours--tunnelmodel"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "command-messaging": {
+          "nodeId": "command-messaging",
+          "position": {
+            "x": 40,
+            "y": 14079
+          },
+          "size": {
+            "width": 3029,
+            "height": 1754
+          },
+          "pinned": false
+        },
+        "command-messaging--messaging-tunnel": {
+          "nodeId": "command-messaging--messaging-tunnel",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 2949,
+            "height": 1182
+          },
+          "pinned": false
+        },
+        "command-messaging--messaging-tunnel--actors": {
+          "nodeId": "command-messaging--messaging-tunnel--actors",
+          "position": {
+            "x": 2647,
+            "y": 856
+          },
+          "size": {
+            "width": 262,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-messaging--messaging-tunnel--address-book": {
+          "nodeId": "command-messaging--messaging-tunnel--address-book",
+          "position": {
+            "x": 840,
+            "y": 848
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-messaging--messaging-tunnel--delivery-confirm": {
+          "nodeId": "command-messaging--messaging-tunnel--delivery-confirm",
+          "position": {
+            "x": 40,
+            "y": 666
+          },
+          "size": {
+            "width": 240,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-messaging--messaging-tunnel--pty-delivery": {
+          "nodeId": "command-messaging--messaging-tunnel--pty-delivery",
+          "position": {
+            "x": 1090,
+            "y": 658
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-messaging--messaging-tunnel--messaging-hub": {
+          "nodeId": "command-messaging--messaging-tunnel--messaging-hub",
+          "position": {
+            "x": 1521,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 136
+          },
+          "pinned": false
+        },
+        "command-messaging--messaging-tunnel--identity-stamping": {
+          "nodeId": "command-messaging--messaging-tunnel--identity-stamping",
+          "position": {
+            "x": 2167,
+            "y": 658
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-messaging--messaging-tunnel--mailbox-registry": {
+          "nodeId": "command-messaging--messaging-tunnel--mailbox-registry",
+          "position": {
+            "x": 1938,
+            "y": 856
+          },
+          "size": {
+            "width": 398,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-messaging--messaging-tunnel--rooms": {
+          "nodeId": "command-messaging--messaging-tunnel--rooms",
+          "position": {
+            "x": 1777,
+            "y": 666
+          },
+          "size": {
+            "width": 262,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-messaging--messaging-tunnel--message-router": {
+          "nodeId": "command-messaging--messaging-tunnel--message-router",
+          "position": {
+            "x": 1321,
+            "y": 452
+          },
+          "size": {
+            "width": 420,
+            "height": 136
+          },
+          "pinned": false
+        },
+        "command-messaging--messaging-tunnel--send-api": {
+          "nodeId": "command-messaging--messaging-tunnel--send-api",
+          "position": {
+            "x": 1220,
+            "y": 262
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-messaging--messaging-tunnel--message-store": {
+          "nodeId": "command-messaging--messaging-tunnel--message-store",
+          "position": {
+            "x": 340,
+            "y": 658
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-messaging--messaging-tunnel--thread-links": {
+          "nodeId": "command-messaging--messaging-tunnel--thread-links",
+          "position": {
+            "x": 1680,
+            "y": 270
+          },
+          "size": {
+            "width": 262,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-messaging--messaging-tunnel--envelope-types": {
+          "nodeId": "command-messaging--messaging-tunnel--envelope-types",
+          "position": {
+            "x": 897,
+            "y": 1038
+          },
+          "size": {
+            "width": 326,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-messaging--neighbours": {
+          "nodeId": "command-messaging--neighbours",
+          "position": {
+            "x": 40,
+            "y": 1308
+          },
+          "size": {
+            "width": 2268,
+            "height": 406
+          },
+          "pinned": false
+        },
+        "command-messaging--neighbours--agent-ptys": {
+          "nodeId": "command-messaging--neighbours--agent-ptys",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-messaging--neighbours--messages-jsonl": {
+          "nodeId": "command-messaging--neighbours--messages-jsonl",
+          "position": {
+            "x": 500,
+            "y": 64
+          },
+          "size": {
+            "width": 420,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-messaging--neighbours--ws-broadcast": {
+          "nodeId": "command-messaging--neighbours--ws-broadcast",
+          "position": {
+            "x": 1880,
+            "y": 64
+          },
+          "size": {
+            "width": 348,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-messaging--neighbours--tunnelmodel": {
+          "nodeId": "command-messaging--neighbours--tunnelmodel",
+          "position": {
+            "x": 1420,
+            "y": 246
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-messaging--neighbours--studio-chat": {
+          "nodeId": "command-messaging--neighbours--studio-chat",
+          "position": {
+            "x": 1420,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-messaging--neighbours--workspace": {
+          "nodeId": "command-messaging--neighbours--workspace",
+          "position": {
+            "x": 960,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {}
+}

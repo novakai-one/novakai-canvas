@@ -1,0 +1,488 @@
+{
+  "schemaVersion": 3,
+  "id": "messaging-scope",
+  "name": "Agent Messaging",
+  "status": "active",
+  "revision": 2381,
+  "nodes": {
+    "messaging-scope": {
+      "id": "messaging-scope",
+      "kind": "group",
+      "label": "Agent Messaging",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "DMs + team channel between live agents"
+    },
+    "msg-send-api": {
+      "id": "msg-send-api",
+      "kind": "module",
+      "label": "Send API",
+      "interfaceIds": [
+        "msg-send"
+      ],
+      "typeIds": [
+        "send-message"
+      ],
+      "description": "POST /api/messages + nvk msg CLI",
+      "parentId": "messaging-scope"
+    },
+    "msg-router": {
+      "id": "msg-router",
+      "kind": "module",
+      "label": "Message router",
+      "interfaceIds": [
+        "msg-route"
+      ],
+      "typeIds": [
+        "delivery-receipt"
+      ],
+      "description": "Resolves recipients, applies delivery policy",
+      "parentId": "messaging-scope"
+    },
+    "msg-store": {
+      "id": "msg-store",
+      "kind": "module",
+      "label": "Message store",
+      "interfaceIds": [
+        "msg-append",
+        "msg-history"
+      ],
+      "typeIds": [],
+      "description": "Append-only log: audit record of every envelope",
+      "parentId": "messaging-scope"
+    },
+    "msg-envelope": {
+      "id": "msg-envelope",
+      "kind": "object",
+      "label": "Message envelope",
+      "interfaceIds": [],
+      "typeIds": [
+        "message-envelope"
+      ],
+      "description": "Extensible wrapper: permissions & metadata later",
+      "parentId": "messaging-scope"
+    },
+    "msg-injector": {
+      "id": "msg-injector",
+      "kind": "module",
+      "label": "PTY delivery",
+      "interfaceIds": [
+        "msg-deliver"
+      ],
+      "typeIds": [],
+      "description": "normal: queue-typed; interrupt: Esc then type",
+      "parentId": "messaging-scope"
+    },
+    "msg-channel": {
+      "id": "msg-channel",
+      "kind": "object",
+      "label": "#team channel",
+      "interfaceIds": [
+        "msg-channel-read"
+      ],
+      "typeIds": [],
+      "description": "Fan-out recipient every agent can read",
+      "parentId": "messaging-scope"
+    },
+    "msg-agents": {
+      "id": "msg-agents",
+      "kind": "runtime",
+      "label": "Agent PTYs",
+      "interfaceIds": [],
+      "typeIds": [
+        "agent-address"
+      ],
+      "description": "Claude + Codex sessions via TerminalManager",
+      "parentId": "messaging-scope"
+    },
+    "msg-briefing": {
+      "id": "msg-briefing",
+      "kind": "object",
+      "label": "Spawn briefing",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Standing instructions: your name + how to message",
+      "parentId": "messaging-scope"
+    },
+    "msg-ui": {
+      "id": "msg-ui",
+      "kind": "module",
+      "label": "Messages view",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "UI feed of DMs + channel over ws",
+      "parentId": "messaging-scope"
+    }
+  },
+  "wires": {
+    "agents-send": {
+      "id": "agents-send",
+      "kind": "executes",
+      "label": "nvk msg / curl",
+      "source": {
+        "nodeId": "msg-agents"
+      },
+      "target": {
+        "nodeId": "msg-send-api"
+      }
+    },
+    "send-envelope": {
+      "id": "send-envelope",
+      "kind": "owns",
+      "label": "wraps",
+      "source": {
+        "nodeId": "msg-send-api"
+      },
+      "target": {
+        "nodeId": "msg-envelope"
+      }
+    },
+    "send-router": {
+      "id": "send-router",
+      "kind": "executes",
+      "label": "submits",
+      "source": {
+        "nodeId": "msg-send-api"
+      },
+      "target": {
+        "nodeId": "msg-router"
+      }
+    },
+    "router-store": {
+      "id": "router-store",
+      "kind": "owns",
+      "label": "records",
+      "source": {
+        "nodeId": "msg-router"
+      },
+      "target": {
+        "nodeId": "msg-store"
+      }
+    },
+    "router-injector": {
+      "id": "router-injector",
+      "kind": "executes",
+      "label": "delivers DM",
+      "source": {
+        "nodeId": "msg-router"
+      },
+      "target": {
+        "nodeId": "msg-injector"
+      }
+    },
+    "router-channel": {
+      "id": "router-channel",
+      "kind": "assigns",
+      "label": "fans out",
+      "source": {
+        "nodeId": "msg-router"
+      },
+      "target": {
+        "nodeId": "msg-channel"
+      }
+    },
+    "injector-agents": {
+      "id": "injector-agents",
+      "kind": "executes",
+      "label": "types into PTY",
+      "source": {
+        "nodeId": "msg-injector"
+      },
+      "target": {
+        "nodeId": "msg-agents"
+      }
+    },
+    "briefing-agents": {
+      "id": "briefing-agents",
+      "kind": "references",
+      "label": "instructs at spawn",
+      "source": {
+        "nodeId": "msg-briefing"
+      },
+      "target": {
+        "nodeId": "msg-agents"
+      }
+    },
+    "ui-store": {
+      "id": "ui-store",
+      "kind": "queries",
+      "label": "history",
+      "source": {
+        "nodeId": "msg-ui"
+      },
+      "target": {
+        "nodeId": "msg-store"
+      }
+    },
+    "ui-channel": {
+      "id": "ui-channel",
+      "kind": "queries",
+      "label": "watches",
+      "source": {
+        "nodeId": "msg-ui"
+      },
+      "target": {
+        "nodeId": "msg-channel"
+      }
+    }
+  },
+  "interfaces": {
+    "msg-send": {
+      "id": "msg-send",
+      "ownerId": "msg-send-api",
+      "name": "send",
+      "accepts": [
+        "SendMessage"
+      ],
+      "returns": [
+        "MessageEnvelope"
+      ]
+    },
+    "msg-route": {
+      "id": "msg-route",
+      "ownerId": "msg-router",
+      "name": "route",
+      "accepts": [
+        "MessageEnvelope"
+      ],
+      "returns": [
+        "DeliveryReceipt"
+      ]
+    },
+    "msg-append": {
+      "id": "msg-append",
+      "ownerId": "msg-store",
+      "name": "append",
+      "accepts": [
+        "MessageEnvelope"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "msg-history": {
+      "id": "msg-history",
+      "ownerId": "msg-store",
+      "name": "history",
+      "accepts": [
+        "MessageQuery"
+      ],
+      "returns": [
+        "MessageEnvelope[]"
+      ]
+    },
+    "msg-deliver": {
+      "id": "msg-deliver",
+      "ownerId": "msg-injector",
+      "name": "deliver",
+      "accepts": [
+        "AgentAddress",
+        "MessageEnvelope"
+      ],
+      "returns": [
+        "DeliveryReceipt"
+      ]
+    },
+    "msg-channel-read": {
+      "id": "msg-channel-read",
+      "ownerId": "msg-channel",
+      "name": "read",
+      "accepts": [
+        "ChannelQuery"
+      ],
+      "returns": [
+        "MessageEnvelope[]"
+      ]
+    }
+  },
+  "types": {
+    "message-envelope": {
+      "id": "message-envelope",
+      "name": "MessageEnvelope",
+      "fields": [
+        "id",
+        "from",
+        "to",
+        "delivery",
+        "body",
+        "threadId",
+        "createdAt",
+        "status"
+      ]
+    },
+    "send-message": {
+      "id": "send-message",
+      "name": "SendMessage",
+      "fields": [
+        "to",
+        "delivery",
+        "body"
+      ]
+    },
+    "delivery-receipt": {
+      "id": "delivery-receipt",
+      "name": "DeliveryReceipt",
+      "fields": [
+        "messageId",
+        "deliveredAt",
+        "mode"
+      ]
+    },
+    "agent-address": {
+      "id": "agent-address",
+      "name": "AgentAddress",
+      "fields": [
+        "agentId",
+        "name",
+        "provider"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "messaging-scope": {
+          "nodeId": "messaging-scope",
+          "position": {
+            "x": 312,
+            "y": 870
+          },
+          "size": {
+            "width": 1160,
+            "height": 760
+          },
+          "pinned": false
+        },
+        "msg-send-api": {
+          "nodeId": "msg-send-api",
+          "position": {
+            "x": 48,
+            "y": 60
+          },
+          "size": {
+            "width": 220,
+            "height": 140
+          },
+          "pinned": false
+        },
+        "msg-router": {
+          "nodeId": "msg-router",
+          "position": {
+            "x": 460,
+            "y": 60
+          },
+          "size": {
+            "width": 230,
+            "height": 140
+          },
+          "pinned": false
+        },
+        "msg-store": {
+          "nodeId": "msg-store",
+          "position": {
+            "x": 880,
+            "y": 60
+          },
+          "size": {
+            "width": 230,
+            "height": 150
+          },
+          "pinned": false
+        },
+        "msg-envelope": {
+          "nodeId": "msg-envelope",
+          "position": {
+            "x": 48,
+            "y": 300
+          },
+          "size": {
+            "width": 220,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "msg-injector": {
+          "nodeId": "msg-injector",
+          "position": {
+            "x": 460,
+            "y": 300
+          },
+          "size": {
+            "width": 230,
+            "height": 140
+          },
+          "pinned": false
+        },
+        "msg-channel": {
+          "nodeId": "msg-channel",
+          "position": {
+            "x": 880,
+            "y": 300
+          },
+          "size": {
+            "width": 230,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "msg-agents": {
+          "nodeId": "msg-agents",
+          "position": {
+            "x": 300,
+            "y": 540
+          },
+          "size": {
+            "width": 240,
+            "height": 150
+          },
+          "pinned": false
+        },
+        "msg-briefing": {
+          "nodeId": "msg-briefing",
+          "position": {
+            "x": 48,
+            "y": 540
+          },
+          "size": {
+            "width": 220,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "msg-ui": {
+          "nodeId": "msg-ui",
+          "position": {
+            "x": 732,
+            "y": 582
+          },
+          "size": {
+            "width": 230,
+            "height": 140
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {}
+}

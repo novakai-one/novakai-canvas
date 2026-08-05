@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
 import type { CanvasEngine } from './application/canvas-engine';
+import type { DiagramSummary } from './application/canvas-library';
 import type { JsonRepository } from './application/json-repository';
 import type { CanvasPreferences, InspectorTab, Selection } from './domain/model';
 import {
@@ -15,11 +16,19 @@ import { DEFAULT_CANVAS_MODE, type CanvasMode } from './presentation/view-mode';
 interface AppProps {
   engine: CanvasEngine;
   initialPreferences: CanvasPreferences;
+  /**
+   * A snapshot of the v3 record-model library's diagram list, when one could be built.
+   *
+   * Sourced independently of `document`/`maps`: it proves the library seam reads real records
+   * from disk without yet driving the rendering pipeline. Undefined in production or if the
+   * library was unavailable, in which case the picker falls back to the legacy document.
+   */
+  libraryDiagrams?: DiagramSummary[];
   preferencesRepository: JsonRepository<CanvasPreferences>;
 }
 
 /** Composes the canvas engine with replaceable presentation adapters. */
-export default function App({ engine, initialPreferences, preferencesRepository }: AppProps) {
+export default function App({ engine, initialPreferences, libraryDiagrams, preferencesRepository }: AppProps) {
   const document = useCanvasEngine(engine);
   const [preferences, setPreferences] = useState(initialPreferences);
   const [selection, setSelection] = useState<Selection>(null);
@@ -146,6 +155,7 @@ export default function App({ engine, initialPreferences, preferencesRepository 
           createDiagram={createDiagram}
           document={focusedDocument}
           engine={engine}
+          libraryDiagrams={libraryDiagrams}
           maps={maps}
           mode={mode}
           goBack={goBack}

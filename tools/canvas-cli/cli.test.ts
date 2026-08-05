@@ -1,12 +1,19 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { copyFile, mkdtemp, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { architectureDocumentSchema } from '../../src/domain/schema';
 
 const CLI = resolve(import.meta.dirname, 'cli.ts');
-const REAL_DATA = resolve(import.meta.dirname, '../../public/data/project-architecture.json');
+// The one-time v3 library migration (tools/json-file-bridge.ts) renames this file to
+// project-architecture.pre-v3.json the first time `npm run dev` serves it; this fixture still
+// wants the same real committed data either way, so it follows wherever the migration left it.
+const LEGACY_DATA = resolve(import.meta.dirname, '../../public/data/project-architecture.json');
+const REAL_DATA = existsSync(LEGACY_DATA)
+  ? LEGACY_DATA
+  : resolve(import.meta.dirname, '../../public/data/project-architecture.pre-v3.json');
 
 interface RunResult { code: number; stdout: string; stderr: string }
 

@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 3,
+  "id": "unfiled",
+  "name": "Unfiled",
+  "status": "active",
+  "revision": 2381,
+  "nodes": {
+    "note-scope": {
+      "id": "note-scope",
+      "kind": "comment",
+      "label": "Project is the umbrella, not one enormous aggregate.",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "note-messaging": {
+      "id": "note-messaging",
+      "kind": "comment",
+      "label": "Sender decides delivery: normal queues into the turn; interrupt breaks it.",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "note-browser": {
+      "id": "note-browser",
+      "kind": "comment",
+      "label": "One session ⇢ one instance. No shared tab, so nothing to fight over — and it renders off-screen, so your foreground never moves.",
+      "interfaceIds": [],
+      "typeIds": []
+    }
+  },
+  "wires": {},
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "note-scope": {
+          "nodeId": "note-scope",
+          "position": {
+            "x": 1656,
+            "y": 120
+          },
+          "size": {
+            "width": 250,
+            "height": 110
+          },
+          "pinned": false
+        },
+        "note-messaging": {
+          "nodeId": "note-messaging",
+          "position": {
+            "x": 1656,
+            "y": 900
+          },
+          "size": {
+            "width": 250,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "note-browser": {
+          "nodeId": "note-browser",
+          "position": {
+            "x": 1900,
+            "y": 1760
+          },
+          "size": {
+            "width": 270,
+            "height": 150
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {}
+}

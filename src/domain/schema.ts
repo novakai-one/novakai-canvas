@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { ArchitectureDocument, CanvasChangeSet } from './model';
+import type { ArchitectureDocument, CanvasChangeSet } from './model.ts';
 
 const position = z.object({ x: z.number(), y: z.number() });
 const size = z.object({ width: z.number().positive(), height: z.number().positive() });

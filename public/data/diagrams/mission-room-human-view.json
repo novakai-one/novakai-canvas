@@ -1,0 +1,477 @@
+{
+  "schemaVersion": 3,
+  "id": "mission-room-human-view",
+  "name": "Mission Room — Human View",
+  "status": "active",
+  "revision": 2381,
+  "nodes": {
+    "mission-room-human-view": {
+      "id": "mission-room-human-view",
+      "kind": "group",
+      "label": "Mission Room — Human View",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "The simple picture: one Mission, made visible to Chris"
+    },
+    "mission-room-human-view--note-1-assign-a-person-to-a-mis": {
+      "id": "mission-room-human-view--note-1-assign-a-person-to-a-mis",
+      "kind": "comment",
+      "label": "Assign a Person to a Mission role. One Person may have zero or many live Presences; a disposable session is never the team member.",
+      "interfaceIds": [],
+      "typeIds": [],
+      "parentId": "mission-room-human-view"
+    },
+    "mission-room-human-view--note-2-the-mission-is-the-durab": {
+      "id": "mission-room-human-view--note-2-the-mission-is-the-durab",
+      "kind": "comment",
+      "label": "The Mission is the durable work. The Mission Room is a trustworthy read-only page, never another source of truth.",
+      "interfaceIds": [],
+      "typeIds": [],
+      "parentId": "mission-room-human-view"
+    },
+    "mission-room-human-view--mission-room": {
+      "id": "mission-room-human-view--mission-room",
+      "kind": "module",
+      "label": "Mission Room",
+      "interfaceIds": [
+        "mission-room-human-view--mission-room--if-open"
+      ],
+      "typeIds": [
+        "mission-room-human-view--mission-room--type-missionview"
+      ],
+      "description": "A read-only page for one mission",
+      "parentId": "mission-room-human-view"
+    },
+    "mission-room-human-view--mission": {
+      "id": "mission-room-human-view--mission",
+      "kind": "object",
+      "label": "Mission",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-room-human-view--mission--type-mission"
+      ],
+      "description": "The durable job and intended outcome; ownership comes from its team assignment",
+      "parentId": "mission-room-human-view"
+    },
+    "mission-room-human-view--chief-pulse": {
+      "id": "mission-room-human-view--chief-pulse",
+      "kind": "object",
+      "label": "Chief Pulse",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-room-human-view--chief-pulse--type-chiefpulse"
+      ],
+      "description": "The six-second answer: Are we okay, what changed, and do you need me?",
+      "parentId": "mission-room-human-view"
+    },
+    "mission-room-human-view--mission-team": {
+      "id": "mission-room-human-view--mission-team",
+      "kind": "object",
+      "label": "Mission Team",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-room-human-view--mission-team--type-missionassignment"
+      ],
+      "description": "People assigned to this mission with explicit roles and authority; role Owner is the ownership truth",
+      "parentId": "mission-room-human-view"
+    },
+    "mission-room-human-view--live-presence": {
+      "id": "mission-room-human-view--live-presence",
+      "kind": "runtime",
+      "label": "Live Presence",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-room-human-view--live-presence--type-presence"
+      ],
+      "description": "The currently running processes for a team member; they may come, go, or overlap",
+      "parentId": "mission-room-human-view"
+    },
+    "mission-room-human-view--mission-thread": {
+      "id": "mission-room-human-view--mission-thread",
+      "kind": "object",
+      "label": "Mission Thread",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-room-human-view--mission-thread--type-threaditem"
+      ],
+      "description": "The meaningful causal history—not an unfiltered wall of tool calls",
+      "parentId": "mission-room-human-view"
+    },
+    "mission-room-human-view--evidence": {
+      "id": "mission-room-human-view--evidence",
+      "kind": "resource",
+      "label": "Evidence",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-room-human-view--evidence--type-artifact"
+      ],
+      "description": "Briefs, plans, audits, results, commits and pull requests with preserved provenance",
+      "parentId": "mission-room-human-view"
+    },
+    "mission-room-human-view--trust-signals": {
+      "id": "mission-room-human-view--trust-signals",
+      "kind": "object",
+      "label": "Trust Signals",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-room-human-view--trust-signals--type-missionreadstatus"
+      ],
+      "description": "Snapshot freshness and recoverable read issues; the page never hides uncertainty",
+      "parentId": "mission-room-human-view"
+    }
+  },
+  "wires": {
+    "mission-room-human-view--wire-1": {
+      "id": "mission-room-human-view--wire-1",
+      "kind": "references",
+      "label": "displays(ChiefPulse) -> Summary",
+      "source": {
+        "nodeId": "mission-room-human-view--mission-room"
+      },
+      "target": {
+        "nodeId": "mission-room-human-view--chief-pulse"
+      }
+    },
+    "mission-room-human-view--wire-2": {
+      "id": "mission-room-human-view--wire-2",
+      "kind": "queries",
+      "label": "renders(MissionId) -> Mission",
+      "source": {
+        "nodeId": "mission-room-human-view--mission-room"
+      },
+      "target": {
+        "nodeId": "mission-room-human-view--mission"
+      }
+    },
+    "mission-room-human-view--wire-3": {
+      "id": "mission-room-human-view--wire-3",
+      "kind": "references",
+      "label": "displays(MissionReadStatus) -> TrustState",
+      "source": {
+        "nodeId": "mission-room-human-view--mission-room"
+      },
+      "target": {
+        "nodeId": "mission-room-human-view--trust-signals"
+      }
+    },
+    "mission-room-human-view--wire-4": {
+      "id": "mission-room-human-view--wire-4",
+      "kind": "assigns",
+      "label": "assigns(Person, Role) -> MissionAssignment",
+      "source": {
+        "nodeId": "mission-room-human-view--mission"
+      },
+      "target": {
+        "nodeId": "mission-room-human-view--mission-team"
+      }
+    },
+    "mission-room-human-view--wire-5": {
+      "id": "mission-room-human-view--wire-5",
+      "kind": "queries",
+      "label": "observes(PersonId) -> Presence[]",
+      "source": {
+        "nodeId": "mission-room-human-view--mission-team"
+      },
+      "target": {
+        "nodeId": "mission-room-human-view--live-presence"
+      }
+    },
+    "mission-room-human-view--wire-6": {
+      "id": "mission-room-human-view--wire-6",
+      "kind": "owns",
+      "label": "owns(MissionThreadId) -> ThreadItem[]",
+      "source": {
+        "nodeId": "mission-room-human-view--mission"
+      },
+      "target": {
+        "nodeId": "mission-room-human-view--mission-thread"
+      }
+    },
+    "mission-room-human-view--wire-7": {
+      "id": "mission-room-human-view--wire-7",
+      "kind": "references",
+      "label": "references(MissionId) -> Artifact[]",
+      "source": {
+        "nodeId": "mission-room-human-view--mission"
+      },
+      "target": {
+        "nodeId": "mission-room-human-view--evidence"
+      }
+    },
+    "mission-room-human-view--wire-8": {
+      "id": "mission-room-human-view--wire-8",
+      "kind": "queries",
+      "label": "summarises(Mission) -> ChiefPulse",
+      "source": {
+        "nodeId": "mission-room-human-view--chief-pulse"
+      },
+      "target": {
+        "nodeId": "mission-room-human-view--mission"
+      }
+    }
+  },
+  "interfaces": {
+    "mission-room-human-view--mission-room--if-open": {
+      "id": "mission-room-human-view--mission-room--if-open",
+      "ownerId": "mission-room-human-view--mission-room",
+      "name": "open",
+      "accepts": [
+        "MissionId"
+      ],
+      "returns": [
+        "MissionView"
+      ]
+    }
+  },
+  "types": {
+    "mission-room-human-view--mission-room--type-missionview": {
+      "id": "mission-room-human-view--mission-room--type-missionview",
+      "name": "MissionView",
+      "fields": [
+        "pulse",
+        "mission",
+        "team",
+        "timeline",
+        "evidence",
+        "trust"
+      ]
+    },
+    "mission-room-human-view--mission--type-mission": {
+      "id": "mission-room-human-view--mission--type-mission",
+      "name": "Mission",
+      "fields": [
+        "id",
+        "outcome",
+        "status",
+        "priority"
+      ]
+    },
+    "mission-room-human-view--chief-pulse--type-chiefpulse": {
+      "id": "mission-room-human-view--chief-pulse--type-chiefpulse",
+      "name": "ChiefPulse",
+      "fields": [
+        "outcome",
+        "phase",
+        "health",
+        "lastUpdate",
+        "nextCheckpoint",
+        "needsChris"
+      ]
+    },
+    "mission-room-human-view--mission-team--type-missionassignment": {
+      "id": "mission-room-human-view--mission-team--type-missionassignment",
+      "name": "MissionAssignment",
+      "fields": [
+        "personId",
+        "role",
+        "authority",
+        "assignedAt"
+      ]
+    },
+    "mission-room-human-view--live-presence--type-presence": {
+      "id": "mission-room-human-view--live-presence--type-presence",
+      "name": "Presence",
+      "fields": [
+        "personId",
+        "agentId",
+        "provider",
+        "sessionId",
+        "status",
+        "observedAt"
+      ]
+    },
+    "mission-room-human-view--mission-thread--type-threaditem": {
+      "id": "mission-room-human-view--mission-thread--type-threaditem",
+      "name": "ThreadItem",
+      "fields": [
+        "id",
+        "authorPersonId",
+        "kind",
+        "summary",
+        "timestamp",
+        "sourceRef",
+        "causeRef"
+      ]
+    },
+    "mission-room-human-view--evidence--type-artifact": {
+      "id": "mission-room-human-view--evidence--type-artifact",
+      "name": "Artifact",
+      "fields": [
+        "id",
+        "kind",
+        "label",
+        "location",
+        "producedAt",
+        "sourceRef"
+      ]
+    },
+    "mission-room-human-view--trust-signals--type-missionreadstatus": {
+      "id": "mission-room-human-view--trust-signals--type-missionreadstatus",
+      "name": "MissionReadStatus",
+      "fields": [
+        "asOf",
+        "issues",
+        "sourceRefs"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "mission-room-human-view": {
+          "nodeId": "mission-room-human-view",
+          "position": {
+            "x": 36,
+            "y": 4140
+          },
+          "size": {
+            "width": 1435,
+            "height": 1106
+          },
+          "pinned": false
+        },
+        "mission-room-human-view--note-1-assign-a-person-to-a-mis": {
+          "nodeId": "mission-room-human-view--note-1-assign-a-person-to-a-mis",
+          "position": {
+            "x": 740,
+            "y": 67
+          },
+          "size": {
+            "width": 280,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "mission-room-human-view--note-2-the-mission-is-the-durab": {
+          "nodeId": "mission-room-human-view--note-2-the-mission-is-the-durab",
+          "position": {
+            "x": 1060,
+            "y": 67
+          },
+          "size": {
+            "width": 280,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "mission-room-human-view--mission-room": {
+          "nodeId": "mission-room-human-view--mission-room",
+          "position": {
+            "x": 280,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 154
+          },
+          "pinned": false
+        },
+        "mission-room-human-view--mission": {
+          "nodeId": "mission-room-human-view--mission",
+          "position": {
+            "x": 390,
+            "y": 494
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "mission-room-human-view--chief-pulse": {
+          "nodeId": "mission-room-human-view--chief-pulse",
+          "position": {
+            "x": 525,
+            "y": 280
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "mission-room-human-view--mission-team": {
+          "nodeId": "mission-room-human-view--mission-team",
+          "position": {
+            "x": 975,
+            "y": 708
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "mission-room-human-view--live-presence": {
+          "nodeId": "mission-room-human-view--live-presence",
+          "position": {
+            "x": 975,
+            "y": 922
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "mission-room-human-view--mission-thread": {
+          "nodeId": "mission-room-human-view--mission-thread",
+          "position": {
+            "x": 515,
+            "y": 708
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "mission-room-human-view--evidence": {
+          "nodeId": "mission-room-human-view--evidence",
+          "position": {
+            "x": 55,
+            "y": 708
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "mission-room-human-view--trust-signals": {
+          "nodeId": "mission-room-human-view--trust-signals",
+          "position": {
+            "x": 40,
+            "y": 280
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {}
+}

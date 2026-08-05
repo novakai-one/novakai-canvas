@@ -1,0 +1,484 @@
+{
+  "schemaVersion": 3,
+  "id": "project-scope",
+  "name": "Novakai IDE",
+  "status": "active",
+  "revision": 2381,
+  "nodes": {
+    "project-scope": {
+      "id": "project-scope",
+      "kind": "group",
+      "label": "Novakai IDE",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Project scope"
+    },
+    "planning": {
+      "id": "planning",
+      "kind": "module",
+      "label": "Planning",
+      "interfaceIds": [
+        "planning-active"
+      ],
+      "typeIds": [
+        "task"
+      ],
+      "description": "Plans, milestones, and task assignments",
+      "parentId": "project-scope"
+    },
+    "threads": {
+      "id": "threads",
+      "kind": "module",
+      "label": "Threads",
+      "interfaceIds": [
+        "threads-list",
+        "threads-create"
+      ],
+      "typeIds": [
+        "thread-summary"
+      ],
+      "description": "Durable work objectives",
+      "parentId": "project-scope"
+    },
+    "resources": {
+      "id": "resources",
+      "kind": "module",
+      "label": "Resources",
+      "interfaceIds": [
+        "resources-read",
+        "resources-list"
+      ],
+      "typeIds": [
+        "project-resource"
+      ],
+      "description": "Project-owned files and storyboards",
+      "parentId": "project-scope"
+    },
+    "task-assignment": {
+      "id": "task-assignment",
+      "kind": "object",
+      "label": "Task assignment",
+      "interfaceIds": [],
+      "typeIds": [
+        "task-assignment-type"
+      ],
+      "description": "Connects tasks with working threads",
+      "parentId": "project-scope"
+    },
+    "session": {
+      "id": "session",
+      "kind": "runtime",
+      "label": "Agent session",
+      "interfaceIds": [
+        "session-cancel"
+      ],
+      "typeIds": [
+        "session-status"
+      ],
+      "description": "Provider-specific runtime",
+      "parentId": "project-scope"
+    },
+    "storyboard": {
+      "id": "storyboard",
+      "kind": "resource",
+      "label": "Storyboard",
+      "interfaceIds": [],
+      "typeIds": [
+        "project-resource"
+      ],
+      "description": "Stored inside the project folder",
+      "parentId": "project-scope"
+    },
+    "activity": {
+      "id": "activity",
+      "kind": "module",
+      "label": "Activity",
+      "interfaceIds": [
+        "activity-active"
+      ],
+      "typeIds": [
+        "agent-activity"
+      ],
+      "description": "Project-wide working projection",
+      "parentId": "project-scope"
+    },
+    "repository": {
+      "id": "repository",
+      "kind": "resource",
+      "label": "IDE repository",
+      "interfaceIds": [],
+      "typeIds": [
+        "repository-ref"
+      ],
+      "description": "Version-controlled source",
+      "parentId": "project-scope"
+    }
+  },
+  "wires": {
+    "planning-assignment": {
+      "id": "planning-assignment",
+      "kind": "owns",
+      "label": "creates",
+      "source": {
+        "nodeId": "planning"
+      },
+      "target": {
+        "nodeId": "task-assignment"
+      }
+    },
+    "assignment-thread": {
+      "id": "assignment-thread",
+      "kind": "assigns",
+      "label": "assigns",
+      "source": {
+        "nodeId": "task-assignment"
+      },
+      "target": {
+        "nodeId": "threads"
+      }
+    },
+    "threads-session": {
+      "id": "threads-session",
+      "kind": "owns",
+      "label": "owns",
+      "source": {
+        "nodeId": "threads"
+      },
+      "target": {
+        "nodeId": "session"
+      }
+    },
+    "threads-resources": {
+      "id": "threads-resources",
+      "kind": "references",
+      "label": "references",
+      "source": {
+        "nodeId": "threads"
+      },
+      "target": {
+        "nodeId": "resources"
+      }
+    },
+    "resources-storyboard": {
+      "id": "resources-storyboard",
+      "kind": "owns",
+      "label": "indexes",
+      "source": {
+        "nodeId": "resources"
+      },
+      "target": {
+        "nodeId": "storyboard"
+      }
+    },
+    "session-repository": {
+      "id": "session-repository",
+      "kind": "executes",
+      "label": "works in",
+      "source": {
+        "nodeId": "session"
+      },
+      "target": {
+        "nodeId": "repository"
+      }
+    },
+    "activity-session": {
+      "id": "activity-session",
+      "kind": "queries",
+      "label": "queries",
+      "source": {
+        "nodeId": "activity"
+      },
+      "target": {
+        "nodeId": "session"
+      }
+    },
+    "activity-repository": {
+      "id": "activity-repository",
+      "kind": "queries",
+      "label": "indexes",
+      "source": {
+        "nodeId": "activity"
+      },
+      "target": {
+        "nodeId": "repository"
+      }
+    }
+  },
+  "interfaces": {
+    "planning-active": {
+      "id": "planning-active",
+      "ownerId": "planning",
+      "name": "listActive",
+      "accepts": [
+        "ProjectId"
+      ],
+      "returns": [
+        "Task[]"
+      ]
+    },
+    "threads-list": {
+      "id": "threads-list",
+      "ownerId": "threads",
+      "name": "list",
+      "accepts": [
+        "ProjectId"
+      ],
+      "returns": [
+        "ThreadSummary[]"
+      ]
+    },
+    "threads-create": {
+      "id": "threads-create",
+      "ownerId": "threads",
+      "name": "create",
+      "accepts": [
+        "CreateThread"
+      ],
+      "returns": [
+        "Thread"
+      ]
+    },
+    "resources-read": {
+      "id": "resources-read",
+      "ownerId": "resources",
+      "name": "read",
+      "accepts": [
+        "ResourceId"
+      ],
+      "returns": [
+        "ProjectResource"
+      ]
+    },
+    "resources-list": {
+      "id": "resources-list",
+      "ownerId": "resources",
+      "name": "list",
+      "accepts": [
+        "ProjectId"
+      ],
+      "returns": [
+        "ResourceSummary[]"
+      ]
+    },
+    "session-cancel": {
+      "id": "session-cancel",
+      "ownerId": "session",
+      "name": "cancel",
+      "accepts": [
+        "SessionId"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "activity-active": {
+      "id": "activity-active",
+      "ownerId": "activity",
+      "name": "listAgents",
+      "accepts": [
+        "ProjectId"
+      ],
+      "returns": [
+        "AgentActivity[]"
+      ]
+    }
+  },
+  "types": {
+    "task": {
+      "id": "task",
+      "name": "Task",
+      "fields": [
+        "id",
+        "projectId",
+        "status"
+      ]
+    },
+    "thread-summary": {
+      "id": "thread-summary",
+      "name": "ThreadSummary",
+      "fields": [
+        "id",
+        "title",
+        "status"
+      ]
+    },
+    "project-resource": {
+      "id": "project-resource",
+      "name": "ProjectResource",
+      "fields": [
+        "id",
+        "projectId",
+        "path"
+      ]
+    },
+    "task-assignment-type": {
+      "id": "task-assignment-type",
+      "name": "TaskAssignment",
+      "fields": [
+        "taskId",
+        "threadId"
+      ]
+    },
+    "session-status": {
+      "id": "session-status",
+      "name": "SessionStatus",
+      "fields": [
+        "provider",
+        "status"
+      ]
+    },
+    "agent-activity": {
+      "id": "agent-activity",
+      "name": "AgentActivity",
+      "fields": [
+        "threadId",
+        "sessionId",
+        "repositoryId"
+      ]
+    },
+    "repository-ref": {
+      "id": "repository-ref",
+      "name": "RepositoryRef",
+      "fields": [
+        "id",
+        "root",
+        "branch"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "project-scope": {
+          "nodeId": "project-scope",
+          "position": {
+            "x": 564,
+            "y": 144
+          },
+          "size": {
+            "width": 1516,
+            "height": 842
+          },
+          "pinned": false
+        },
+        "planning": {
+          "nodeId": "planning",
+          "position": {
+            "x": 36,
+            "y": 48
+          },
+          "size": {
+            "width": 210,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "threads": {
+          "nodeId": "threads",
+          "position": {
+            "x": 432,
+            "y": 12
+          },
+          "size": {
+            "width": 220,
+            "height": 150
+          },
+          "pinned": false
+        },
+        "resources": {
+          "nodeId": "resources",
+          "position": {
+            "x": 864,
+            "y": 48
+          },
+          "size": {
+            "width": 220,
+            "height": 150
+          },
+          "pinned": false
+        },
+        "task-assignment": {
+          "nodeId": "task-assignment",
+          "position": {
+            "x": 144,
+            "y": 348
+          },
+          "size": {
+            "width": 190,
+            "height": 112
+          },
+          "pinned": false
+        },
+        "session": {
+          "nodeId": "session",
+          "position": {
+            "x": 480,
+            "y": 300
+          },
+          "size": {
+            "width": 190,
+            "height": 112
+          },
+          "pinned": false
+        },
+        "storyboard": {
+          "nodeId": "storyboard",
+          "position": {
+            "x": 780,
+            "y": 336
+          },
+          "size": {
+            "width": 190,
+            "height": 112
+          },
+          "pinned": false
+        },
+        "activity": {
+          "nodeId": "activity",
+          "position": {
+            "x": 260,
+            "y": 500
+          },
+          "size": {
+            "width": 210,
+            "height": 126
+          },
+          "pinned": false
+        },
+        "repository": {
+          "nodeId": "repository",
+          "position": {
+            "x": 732,
+            "y": 516
+          },
+          "size": {
+            "width": 210,
+            "height": 112
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {}
+}

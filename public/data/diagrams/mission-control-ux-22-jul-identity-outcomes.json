@@ -1,0 +1,441 @@
+{
+  "schemaVersion": 3,
+  "id": "mission-control-ux-22-jul-identity-outcomes",
+  "name": "Mission Control UX 22-Jul — Identity & Outcomes",
+  "status": "active",
+  "revision": 2381,
+  "nodes": {
+    "mission-control-ux-22-jul-identity-outcomes": {
+      "id": "mission-control-ux-22-jul-identity-outcomes",
+      "kind": "group",
+      "label": "Mission Control UX 22-Jul — Identity & Outcomes",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Exact lineage for the Mission Room header, outcome, promises and decision state"
+    },
+    "mission-control-ux-22-jul-identity-outcomes--note-1-all-live-values-travel-t": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--note-1-all-live-values-travel-t",
+      "kind": "comment",
+      "label": "All LIVE values travel through MissionViewHub -> MissionSnapshot. The wires name their atomic origin.",
+      "interfaceIds": [],
+      "typeIds": [],
+      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+    },
+    "mission-control-ux-22-jul-identity-outcomes--missions-jsonl": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--missions-jsonl",
+      "kind": "resource",
+      "label": "missions.jsonl",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-control-ux-22-jul-identity-outcomes--missions-jsonl--type-fields"
+      ],
+      "description": "ATOMIC · .novakai/stores/missions.jsonl",
+      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+    },
+    "mission-control-ux-22-jul-identity-outcomes--okrs-jsonl": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--okrs-jsonl",
+      "kind": "resource",
+      "label": "okrs.jsonl",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-control-ux-22-jul-identity-outcomes--okrs-jsonl--type-fields"
+      ],
+      "description": "ATOMIC · objective title resolves only through mission.refs[kind=objective]",
+      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+    },
+    "mission-control-ux-22-jul-identity-outcomes--requests-jsonl": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--requests-jsonl",
+      "kind": "resource",
+      "label": "requests.jsonl",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-control-ux-22-jul-identity-outcomes--requests-jsonl--type-fields"
+      ],
+      "description": "ATOMIC · a pending request needs an explicit mission ref to set needsChris",
+      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+    },
+    "mission-control-ux-22-jul-identity-outcomes--v4-static-copy": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--v4-static-copy",
+      "kind": "runtime",
+      "label": "V4 Static Copy",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-control-ux-22-jul-identity-outcomes--v4-static-copy--type-fixture"
+      ],
+      "description": "DEMO ONLY · friendly headline, short summary and three promises live in mission-room-v4.html",
+      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+    },
+    "mission-control-ux-22-jul-identity-outcomes--mission-title": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--mission-title",
+      "kind": "object",
+      "label": "Mission Title",
+      "interfaceIds": [
+        "mission-control-ux-22-jul-identity-outcomes--mission-title--if-show"
+      ],
+      "typeIds": [],
+      "description": "LIVE / PARTIAL · official title is live; V4's friendly headline and kicker are fixture-authored",
+      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+    },
+    "mission-control-ux-22-jul-identity-outcomes--mission-outcome": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--mission-outcome",
+      "kind": "object",
+      "label": "Mission Outcome",
+      "interfaceIds": [
+        "mission-control-ux-22-jul-identity-outcomes--mission-outcome--if-show"
+      ],
+      "typeIds": [],
+      "description": "PARTIAL · pulse.outcome is live, but the stored outcome is currently a long completion report rather than concise intent",
+      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+    },
+    "mission-control-ux-22-jul-identity-outcomes--three-promises": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--three-promises",
+      "kind": "object",
+      "label": "Three Promises",
+      "interfaceIds": [
+        "mission-control-ux-22-jul-identity-outcomes--three-promises--if-show"
+      ],
+      "typeIds": [],
+      "description": "MISSING · no structured successCriteria[] or promises[] field exists; V4 hardcodes Protect, Preserve and Reveal",
+      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+    },
+    "mission-control-ux-22-jul-identity-outcomes--health-and-needs-you": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--health-and-needs-you",
+      "kind": "object",
+      "label": "Health and Needs You",
+      "interfaceIds": [
+        "mission-control-ux-22-jul-identity-outcomes--health-and-needs-you--if-show"
+      ],
+      "typeIds": [],
+      "description": "LIVE / DERIVED · health = attention or read issues; needsYou = pending request explicitly linked to mission",
+      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+    }
+  },
+  "wires": {
+    "mission-control-ux-22-jul-identity-outcomes--wire-1": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--wire-1",
+      "kind": "owns",
+      "label": "title + owner + stage + updated -> MissionHeader",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--missions-jsonl"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--mission-title"
+      }
+    },
+    "mission-control-ux-22-jul-identity-outcomes--wire-2": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--wire-2",
+      "kind": "references",
+      "label": "objective.title -> MissionKicker",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--okrs-jsonl"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--mission-title"
+      }
+    },
+    "mission-control-ux-22-jul-identity-outcomes--wire-3": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--wire-3",
+      "kind": "references",
+      "label": "friendlyHeadline + shortSummary -> MissionHeader",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--v4-static-copy"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--mission-title"
+      }
+    },
+    "mission-control-ux-22-jul-identity-outcomes--wire-4": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--wire-4",
+      "kind": "owns",
+      "label": "outcome || title -> pulse.outcome",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--missions-jsonl"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--mission-outcome"
+      }
+    },
+    "mission-control-ux-22-jul-identity-outcomes--wire-5": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--wire-5",
+      "kind": "references",
+      "label": "humanSummary -> OutcomeStatement",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--v4-static-copy"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--mission-outcome"
+      }
+    },
+    "mission-control-ux-22-jul-identity-outcomes--wire-6": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--wire-6",
+      "kind": "owns",
+      "label": "protect + preserve + reveal -> PromiseList",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--v4-static-copy"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--three-promises"
+      }
+    },
+    "mission-control-ux-22-jul-identity-outcomes--wire-7": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--wire-7",
+      "kind": "references",
+      "label": "CREATE successCriteria[] -> PromiseList",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--missions-jsonl"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--three-promises"
+      }
+    },
+    "mission-control-ux-22-jul-identity-outcomes--wire-8": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--wire-8",
+      "kind": "owns",
+      "label": "status + stage -> phase",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--missions-jsonl"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--health-and-needs-you"
+      }
+    },
+    "mission-control-ux-22-jul-identity-outcomes--wire-9": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--wire-9",
+      "kind": "owns",
+      "label": "pending + missionRef -> needsChris",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--requests-jsonl"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-identity-outcomes--health-and-needs-you"
+      }
+    }
+  },
+  "interfaces": {
+    "mission-control-ux-22-jul-identity-outcomes--mission-title--if-show": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--mission-title--if-show",
+      "ownerId": "mission-control-ux-22-jul-identity-outcomes--mission-title",
+      "name": "show",
+      "accepts": [],
+      "returns": [
+        "MissionHeader"
+      ]
+    },
+    "mission-control-ux-22-jul-identity-outcomes--mission-outcome--if-show": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--mission-outcome--if-show",
+      "ownerId": "mission-control-ux-22-jul-identity-outcomes--mission-outcome",
+      "name": "show",
+      "accepts": [],
+      "returns": [
+        "OutcomeStatement"
+      ]
+    },
+    "mission-control-ux-22-jul-identity-outcomes--three-promises--if-show": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--three-promises--if-show",
+      "ownerId": "mission-control-ux-22-jul-identity-outcomes--three-promises",
+      "name": "show",
+      "accepts": [],
+      "returns": [
+        "PromiseList"
+      ]
+    },
+    "mission-control-ux-22-jul-identity-outcomes--health-and-needs-you--if-show": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--health-and-needs-you--if-show",
+      "ownerId": "mission-control-ux-22-jul-identity-outcomes--health-and-needs-you",
+      "name": "show",
+      "accepts": [],
+      "returns": [
+        "DecisionState"
+      ]
+    }
+  },
+  "types": {
+    "mission-control-ux-22-jul-identity-outcomes--missions-jsonl--type-fields": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--missions-jsonl--type-fields",
+      "name": "Fields",
+      "fields": [
+        "title",
+        "outcome",
+        "status",
+        "owner",
+        "stage",
+        "updated",
+        "refs"
+      ]
+    },
+    "mission-control-ux-22-jul-identity-outcomes--okrs-jsonl--type-fields": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--okrs-jsonl--type-fields",
+      "name": "Fields",
+      "fields": [
+        "id",
+        "title"
+      ]
+    },
+    "mission-control-ux-22-jul-identity-outcomes--requests-jsonl--type-fields": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--requests-jsonl--type-fields",
+      "name": "Fields",
+      "fields": [
+        "status",
+        "refs"
+      ]
+    },
+    "mission-control-ux-22-jul-identity-outcomes--v4-static-copy--type-fixture": {
+      "id": "mission-control-ux-22-jul-identity-outcomes--v4-static-copy--type-fixture",
+      "name": "Fixture",
+      "fields": [
+        "friendlyHeadline",
+        "summary",
+        "protect",
+        "preserve",
+        "reveal"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "mission-control-ux-22-jul-identity-outcomes": {
+          "nodeId": "mission-control-ux-22-jul-identity-outcomes",
+          "position": {
+            "x": 72,
+            "y": 8676
+          },
+          "size": {
+            "width": 2982,
+            "height": 1204
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-identity-outcomes--note-1-all-live-values-travel-t": {
+          "nodeId": "mission-control-ux-22-jul-identity-outcomes--note-1-all-live-values-travel-t",
+          "position": {
+            "x": 500,
+            "y": 73
+          },
+          "size": {
+            "width": 280,
+            "height": 111
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-identity-outcomes--missions-jsonl": {
+          "nodeId": "mission-control-ux-22-jul-identity-outcomes--missions-jsonl",
+          "position": {
+            "x": 1796,
+            "y": 45
+          },
+          "size": {
+            "width": 420,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-identity-outcomes--okrs-jsonl": {
+          "nodeId": "mission-control-ux-22-jul-identity-outcomes--okrs-jsonl",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-identity-outcomes--requests-jsonl": {
+          "nodeId": "mission-control-ux-22-jul-identity-outcomes--requests-jsonl",
+          "position": {
+            "x": 2276,
+            "y": 69
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-identity-outcomes--v4-static-copy": {
+          "nodeId": "mission-control-ux-22-jul-identity-outcomes--v4-static-copy",
+          "position": {
+            "x": 820,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-identity-outcomes--mission-title": {
+          "nodeId": "mission-control-ux-22-jul-identity-outcomes--mission-title",
+          "position": {
+            "x": 68,
+            "y": 561
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-identity-outcomes--mission-outcome": {
+          "nodeId": "mission-control-ux-22-jul-identity-outcomes--mission-outcome",
+          "position": {
+            "x": 752,
+            "y": 873
+          },
+          "size": {
+            "width": 420,
+            "height": 162
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-identity-outcomes--three-promises": {
+          "nodeId": "mission-control-ux-22-jul-identity-outcomes--three-promises",
+          "position": {
+            "x": 1460,
+            "y": 957
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-identity-outcomes--health-and-needs-you": {
+          "nodeId": "mission-control-ux-22-jul-identity-outcomes--health-and-needs-you",
+          "position": {
+            "x": 2324,
+            "y": 885
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {}
+}

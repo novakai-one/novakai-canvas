@@ -1,0 +1,518 @@
+{
+  "schemaVersion": 3,
+  "id": "mission-control-ux-22-jul",
+  "name": "Mission Control UX 22-Jul",
+  "status": "active",
+  "revision": 2381,
+  "nodes": {
+    "mission-control-ux-22-jul": {
+      "id": "mission-control-ux-22-jul",
+      "kind": "group",
+      "label": "Mission Control UX 22-Jul",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Overview of the V4 data domains; use the three adjacent detail maps for field-level lineage"
+    },
+    "mission-control-ux-22-jul--note-1-read-top-to-bottom-atomi": {
+      "id": "mission-control-ux-22-jul--note-1-read-top-to-bottom-atomi",
+      "kind": "comment",
+      "label": "READ TOP TO BOTTOM: atomic truth and demo-only copy flow into the visible Mission Room sections.",
+      "interfaceIds": [],
+      "typeIds": [],
+      "parentId": "mission-control-ux-22-jul"
+    },
+    "mission-control-ux-22-jul--note-2-live-available-from-miss": {
+      "id": "mission-control-ux-22-jul--note-2-live-available-from-miss",
+      "kind": "comment",
+      "label": "LIVE = available from MissionSnapshot now. PARTIAL = atomic facts exist but need a projection or safer link. MISSING = V4 currently uses fixture copy.",
+      "interfaceIds": [],
+      "typeIds": [],
+      "parentId": "mission-control-ux-22-jul"
+    },
+    "mission-control-ux-22-jul--mission-record": {
+      "id": "mission-control-ux-22-jul--mission-record",
+      "kind": "resource",
+      "label": "Mission Record",
+      "interfaceIds": [
+        "mission-control-ux-22-jul--mission-record--if-read"
+      ],
+      "typeIds": [
+        "mission-control-ux-22-jul--mission-record--type-missionfields"
+      ],
+      "description": "LIVE · .novakai/stores/missions.jsonl",
+      "parentId": "mission-control-ux-22-jul"
+    },
+    "mission-control-ux-22-jul--linked-work-records": {
+      "id": "mission-control-ux-22-jul--linked-work-records",
+      "kind": "resource",
+      "label": "Linked Work Records",
+      "interfaceIds": [
+        "mission-control-ux-22-jul--linked-work-records--if-resolve"
+      ],
+      "typeIds": [
+        "mission-control-ux-22-jul--linked-work-records--type-linkedwork"
+      ],
+      "description": "LIVE · tasks.jsonl, captains-log.jsonl, issues.jsonl, okrs.jsonl and requests.jsonl",
+      "parentId": "mission-control-ux-22-jul"
+    },
+    "mission-control-ux-22-jul--mission-packet": {
+      "id": "mission-control-ux-22-jul--mission-packet",
+      "kind": "resource",
+      "label": "Mission Packet",
+      "interfaceIds": [
+        "mission-control-ux-22-jul--mission-packet--if-observe"
+      ],
+      "typeIds": [],
+      "description": "PARTIAL · .novakai/work/<missionId>/ files become evidence only when explicitly referenced",
+      "parentId": "mission-control-ux-22-jul"
+    },
+    "mission-control-ux-22-jul--operational-runtime": {
+      "id": "mission-control-ux-22-jul--operational-runtime",
+      "kind": "runtime",
+      "label": "Operational Runtime",
+      "interfaceIds": [
+        "mission-control-ux-22-jul--operational-runtime--if-observe"
+      ],
+      "typeIds": [],
+      "description": "PARTIAL · agents.json, rooms.jsonl and messages.jsonl exist but need explicit mission binding",
+      "parentId": "mission-control-ux-22-jul"
+    },
+    "mission-control-ux-22-jul--v4-prototype-copy": {
+      "id": "mission-control-ux-22-jul--v4-prototype-copy",
+      "kind": "runtime",
+      "label": "V4 Prototype Copy",
+      "interfaceIds": [
+        "mission-control-ux-22-jul--v4-prototype-copy--if-demonstrate"
+      ],
+      "typeIds": [],
+      "description": "MISSING SOURCE · friendly copy, promises, workflow, team and activity are currently JavaScript fixtures",
+      "parentId": "mission-control-ux-22-jul"
+    },
+    "mission-control-ux-22-jul--identity-and-outcomes": {
+      "id": "mission-control-ux-22-jul--identity-and-outcomes",
+      "kind": "object",
+      "label": "Identity and Outcomes",
+      "interfaceIds": [
+        "mission-control-ux-22-jul--identity-and-outcomes--if-detail"
+      ],
+      "typeIds": [],
+      "description": "Mission title, friendly headline, outcome, three promises, health and needs-you",
+      "parentId": "mission-control-ux-22-jul"
+    },
+    "mission-control-ux-22-jul--work-and-progress": {
+      "id": "mission-control-ux-22-jul--work-and-progress",
+      "kind": "object",
+      "label": "Work and Progress",
+      "interfaceIds": [
+        "mission-control-ux-22-jul--work-and-progress--if-detail"
+      ],
+      "typeIds": [],
+      "description": "Six stages, tasks, workflow columns and meaningful activity",
+      "parentId": "mission-control-ux-22-jul"
+    },
+    "mission-control-ux-22-jul--people-and-proof": {
+      "id": "mission-control-ux-22-jul--people-and-proof",
+      "kind": "object",
+      "label": "People and Proof",
+      "interfaceIds": [
+        "mission-control-ux-22-jul--people-and-proof--if-detail"
+      ],
+      "typeIds": [],
+      "description": "Team, current work, artifacts and the selection-driven right inspector",
+      "parentId": "mission-control-ux-22-jul"
+    }
+  },
+  "wires": {
+    "mission-control-ux-22-jul--wire-1": {
+      "id": "mission-control-ux-22-jul--wire-1",
+      "kind": "owns",
+      "label": "title + outcome + status + stage -> HeaderAndPulse",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul--mission-record"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul--identity-and-outcomes"
+      }
+    },
+    "mission-control-ux-22-jul--wire-2": {
+      "id": "mission-control-ux-22-jul--wire-2",
+      "kind": "owns",
+      "label": "objective + pendingRequests + issues -> ContextAndHealth",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul--linked-work-records"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul--identity-and-outcomes"
+      }
+    },
+    "mission-control-ux-22-jul--wire-3": {
+      "id": "mission-control-ux-22-jul--wire-3",
+      "kind": "references",
+      "label": "friendlyCopy + promises -> DemoOnlyFields",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul--v4-prototype-copy"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul--identity-and-outcomes"
+      }
+    },
+    "mission-control-ux-22-jul--wire-4": {
+      "id": "mission-control-ux-22-jul--wire-4",
+      "kind": "owns",
+      "label": "stage + status -> CurrentStage",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul--mission-record"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul--work-and-progress"
+      }
+    },
+    "mission-control-ux-22-jul--wire-5": {
+      "id": "mission-control-ux-22-jul--wire-5",
+      "kind": "owns",
+      "label": "tasks + logs + issues -> TimelineAndWorkflow",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul--linked-work-records"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul--work-and-progress"
+      }
+    },
+    "mission-control-ux-22-jul--wire-6": {
+      "id": "mission-control-ux-22-jul--wire-6",
+      "kind": "references",
+      "label": "explicitlyLinkedRooms -> Timeline",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul--operational-runtime"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul--work-and-progress"
+      }
+    },
+    "mission-control-ux-22-jul--wire-7": {
+      "id": "mission-control-ux-22-jul--wire-7",
+      "kind": "references",
+      "label": "sixLabels + workflowCopy + narrative -> DemoOnlyFields",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul--v4-prototype-copy"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul--work-and-progress"
+      }
+    },
+    "mission-control-ux-22-jul--wire-8": {
+      "id": "mission-control-ux-22-jul--wire-8",
+      "kind": "owns",
+      "label": "owner + assignments + docRefs -> TeamAndArtifactIds",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul--mission-record"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul--people-and-proof"
+      }
+    },
+    "mission-control-ux-22-jul--wire-9": {
+      "id": "mission-control-ux-22-jul--wire-9",
+      "kind": "owns",
+      "label": "filePath + observedModifiedAt -> ArtifactMetadata",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul--mission-packet"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul--people-and-proof"
+      }
+    },
+    "mission-control-ux-22-jul--wire-10": {
+      "id": "mission-control-ux-22-jul--wire-10",
+      "kind": "references",
+      "label": "registryCandidates + missingMissionBinding -> TeamGaps",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul--operational-runtime"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul--people-and-proof"
+      }
+    },
+    "mission-control-ux-22-jul--wire-11": {
+      "id": "mission-control-ux-22-jul--wire-11",
+      "kind": "references",
+      "label": "demoPeople + demoEvidence -> DemoOnlyFields",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul--v4-prototype-copy"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul--people-and-proof"
+      }
+    }
+  },
+  "interfaces": {
+    "mission-control-ux-22-jul--mission-record--if-read": {
+      "id": "mission-control-ux-22-jul--mission-record--if-read",
+      "ownerId": "mission-control-ux-22-jul--mission-record",
+      "name": "read",
+      "accepts": [
+        "MissionId"
+      ],
+      "returns": [
+        "MissionFields"
+      ]
+    },
+    "mission-control-ux-22-jul--linked-work-records--if-resolve": {
+      "id": "mission-control-ux-22-jul--linked-work-records--if-resolve",
+      "ownerId": "mission-control-ux-22-jul--linked-work-records",
+      "name": "resolve",
+      "accepts": [
+        "TypedRefs"
+      ],
+      "returns": [
+        "LinkedWork"
+      ]
+    },
+    "mission-control-ux-22-jul--mission-packet--if-observe": {
+      "id": "mission-control-ux-22-jul--mission-packet--if-observe",
+      "ownerId": "mission-control-ux-22-jul--mission-packet",
+      "name": "observe",
+      "accepts": [
+        "MissionId"
+      ],
+      "returns": [
+        "PacketFiles"
+      ]
+    },
+    "mission-control-ux-22-jul--operational-runtime--if-observe": {
+      "id": "mission-control-ux-22-jul--operational-runtime--if-observe",
+      "ownerId": "mission-control-ux-22-jul--operational-runtime",
+      "name": "observe",
+      "accepts": [
+        "MissionId"
+      ],
+      "returns": [
+        "RuntimeCandidates"
+      ]
+    },
+    "mission-control-ux-22-jul--v4-prototype-copy--if-demonstrate": {
+      "id": "mission-control-ux-22-jul--v4-prototype-copy--if-demonstrate",
+      "ownerId": "mission-control-ux-22-jul--v4-prototype-copy",
+      "name": "demonstrate",
+      "accepts": [
+        "DemoState"
+      ],
+      "returns": [
+        "PrototypeCopy"
+      ]
+    },
+    "mission-control-ux-22-jul--identity-and-outcomes--if-detail": {
+      "id": "mission-control-ux-22-jul--identity-and-outcomes--if-detail",
+      "ownerId": "mission-control-ux-22-jul--identity-and-outcomes",
+      "name": "detail",
+      "accepts": [],
+      "returns": [
+        "IdentityLineageMap"
+      ]
+    },
+    "mission-control-ux-22-jul--work-and-progress--if-detail": {
+      "id": "mission-control-ux-22-jul--work-and-progress--if-detail",
+      "ownerId": "mission-control-ux-22-jul--work-and-progress",
+      "name": "detail",
+      "accepts": [],
+      "returns": [
+        "WorkLineageMap"
+      ]
+    },
+    "mission-control-ux-22-jul--people-and-proof--if-detail": {
+      "id": "mission-control-ux-22-jul--people-and-proof--if-detail",
+      "ownerId": "mission-control-ux-22-jul--people-and-proof",
+      "name": "detail",
+      "accepts": [],
+      "returns": [
+        "PeopleProofLineageMap"
+      ]
+    }
+  },
+  "types": {
+    "mission-control-ux-22-jul--mission-record--type-missionfields": {
+      "id": "mission-control-ux-22-jul--mission-record--type-missionfields",
+      "name": "MissionFields",
+      "fields": [
+        "title",
+        "outcome",
+        "status",
+        "owner",
+        "stage",
+        "updated",
+        "assignments",
+        "refs"
+      ]
+    },
+    "mission-control-ux-22-jul--linked-work-records--type-linkedwork": {
+      "id": "mission-control-ux-22-jul--linked-work-records--type-linkedwork",
+      "name": "LinkedWork",
+      "fields": [
+        "objective",
+        "tasks",
+        "logs",
+        "issues",
+        "pendingRequests"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "mission-control-ux-22-jul": {
+          "nodeId": "mission-control-ux-22-jul",
+          "position": {
+            "x": 40,
+            "y": 7913
+          },
+          "size": {
+            "width": 3000,
+            "height": 482
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul--note-1-read-top-to-bottom-atomi": {
+          "nodeId": "mission-control-ux-22-jul--note-1-read-top-to-bottom-atomi",
+          "position": {
+            "x": 1440,
+            "y": 86
+          },
+          "size": {
+            "width": 280,
+            "height": 111
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul--note-2-live-available-from-miss": {
+          "nodeId": "mission-control-ux-22-jul--note-2-live-available-from-miss",
+          "position": {
+            "x": 1760,
+            "y": 65
+          },
+          "size": {
+            "width": 280,
+            "height": 153
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul--mission-record": {
+          "nodeId": "mission-control-ux-22-jul--mission-record",
+          "position": {
+            "x": 510,
+            "y": 64
+          },
+          "size": {
+            "width": 420,
+            "height": 154
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul--linked-work-records": {
+          "nodeId": "mission-control-ux-22-jul--linked-work-records",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 170
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul--mission-packet": {
+          "nodeId": "mission-control-ux-22-jul--mission-packet",
+          "position": {
+            "x": 2540,
+            "y": 68
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul--operational-runtime": {
+          "nodeId": "mission-control-ux-22-jul--operational-runtime",
+          "position": {
+            "x": 2080,
+            "y": 68
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul--v4-prototype-copy": {
+          "nodeId": "mission-control-ux-22-jul--v4-prototype-copy",
+          "position": {
+            "x": 980,
+            "y": 68
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul--identity-and-outcomes": {
+          "nodeId": "mission-control-ux-22-jul--identity-and-outcomes",
+          "position": {
+            "x": 280,
+            "y": 296
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul--work-and-progress": {
+          "nodeId": "mission-control-ux-22-jul--work-and-progress",
+          "position": {
+            "x": 960,
+            "y": 296
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul--people-and-proof": {
+          "nodeId": "mission-control-ux-22-jul--people-and-proof",
+          "position": {
+            "x": 1420,
+            "y": 296
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {}
+}

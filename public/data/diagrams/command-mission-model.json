@@ -1,0 +1,822 @@
+{
+  "schemaVersion": 3,
+  "id": "command-mission-model",
+  "name": "Command Mission Model",
+  "status": "active",
+  "revision": 2381,
+  "nodes": {
+    "command-mission-model": {
+      "id": "command-mission-model",
+      "kind": "group",
+      "label": "Command Mission Model",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Schema law of .novakai/stores (src/backend/stores/schema.mjs) plus every module that reads or writes it"
+    },
+    "command-mission-model--durable-hierarchy": {
+      "id": "command-mission-model--durable-hierarchy",
+      "kind": "group",
+      "label": "Durable hierarchy",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Documented chain: Project -> Objective -> KR -> Mission -> Team -> Agent -> Task -> Artifact",
+      "parentId": "command-mission-model"
+    },
+    "command-mission-model--durable-hierarchy--project": {
+      "id": "command-mission-model--durable-hierarchy--project",
+      "kind": "object",
+      "label": "Project",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--project--type-project"
+      ],
+      "description": "projects.jsonl — required: title, status, path | status: free-form",
+      "parentId": "command-mission-model--durable-hierarchy"
+    },
+    "command-mission-model--durable-hierarchy--objective": {
+      "id": "command-mission-model--durable-hierarchy--objective",
+      "kind": "object",
+      "label": "Objective",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--objective--type-objective"
+      ],
+      "description": "okrs.jsonl — required: title, horizon | status: free-form",
+      "parentId": "command-mission-model--durable-hierarchy"
+    },
+    "command-mission-model--durable-hierarchy--kr": {
+      "id": "command-mission-model--durable-hierarchy--kr",
+      "kind": "object",
+      "label": "KR",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--kr--type-kr"
+      ],
+      "description": "okrs.jsonl — required: objective, body | status: free-form",
+      "parentId": "command-mission-model--durable-hierarchy"
+    },
+    "command-mission-model--durable-hierarchy--mission": {
+      "id": "command-mission-model--durable-hierarchy--mission",
+      "kind": "object",
+      "label": "Mission",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--mission--type-mission"
+      ],
+      "description": "missions.jsonl — required: title, owner | status: free-form",
+      "parentId": "command-mission-model--durable-hierarchy"
+    },
+    "command-mission-model--durable-hierarchy--team": {
+      "id": "command-mission-model--durable-hierarchy--team",
+      "kind": "object",
+      "label": "Team",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--team--type-team"
+      ],
+      "description": "teams.jsonl — required: name | status: free-form",
+      "parentId": "command-mission-model--durable-hierarchy"
+    },
+    "command-mission-model--durable-hierarchy--agent": {
+      "id": "command-mission-model--durable-hierarchy--agent",
+      "kind": "object",
+      "label": "Agent",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--agent--type-agent"
+      ],
+      "description": "agents.jsonl — required: name, provider | status: spawning|live|failed|retired",
+      "parentId": "command-mission-model--durable-hierarchy"
+    },
+    "command-mission-model--durable-hierarchy--task": {
+      "id": "command-mission-model--durable-hierarchy--task",
+      "kind": "object",
+      "label": "Task",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--task--type-task"
+      ],
+      "description": "tasks.jsonl — required: title | status: todo|doing|done|blocked",
+      "parentId": "command-mission-model--durable-hierarchy"
+    },
+    "command-mission-model--durable-hierarchy--artifact": {
+      "id": "command-mission-model--durable-hierarchy--artifact",
+      "kind": "object",
+      "label": "Artifact",
+      "interfaceIds": [],
+      "typeIds": [
+        "command-mission-model--durable-hierarchy--artifact--type-artifact"
+      ],
+      "description": "artifacts.jsonl — required: title | status: free-form",
+      "parentId": "command-mission-model--durable-hierarchy"
+    },
+    "command-mission-model--durable-hierarchy--thread": {
+      "id": "command-mission-model--durable-hierarchy--thread",
+      "kind": "object",
+      "label": "Thread",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "threads.jsonl — mission-to-messaging link: roomId + mission ref | required: roomId | status: free-form",
+      "parentId": "command-mission-model--durable-hierarchy"
+    },
+    "command-mission-model--journal-stores": {
+      "id": "command-mission-model--journal-stores",
+      "kind": "group",
+      "label": "Journal stores",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Flat append-only records outside the hierarchy",
+      "parentId": "command-mission-model"
+    },
+    "command-mission-model--journal-stores--decision": {
+      "id": "command-mission-model--journal-stores--decision",
+      "kind": "object",
+      "label": "Decision",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "decisions.jsonl — required: title, body | status: free-form",
+      "parentId": "command-mission-model--journal-stores"
+    },
+    "command-mission-model--journal-stores--issue": {
+      "id": "command-mission-model--journal-stores--issue",
+      "kind": "object",
+      "label": "Issue",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "issues.jsonl — status: free-form",
+      "parentId": "command-mission-model--journal-stores"
+    },
+    "command-mission-model--journal-stores--learning": {
+      "id": "command-mission-model--journal-stores--learning",
+      "kind": "object",
+      "label": "Learning",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "learnings.jsonl — required: body | status: free-form",
+      "parentId": "command-mission-model--journal-stores"
+    },
+    "command-mission-model--journal-stores--log": {
+      "id": "command-mission-model--journal-stores--log",
+      "kind": "object",
+      "label": "Log",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "captains-log.jsonl — required: body | status: free-form",
+      "parentId": "command-mission-model--journal-stores"
+    },
+    "command-mission-model--journal-stores--request": {
+      "id": "command-mission-model--journal-stores--request",
+      "kind": "object",
+      "label": "Request",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "requests.jsonl — required: question, options | status: pending|answered",
+      "parentId": "command-mission-model--journal-stores"
+    },
+    "command-mission-model--readers-and-writers": {
+      "id": "command-mission-model--readers-and-writers",
+      "kind": "group",
+      "label": "Readers and writers",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Modules allowed to touch the stores",
+      "parentId": "command-mission-model"
+    },
+    "command-mission-model--readers-and-writers--object-model-facade": {
+      "id": "command-mission-model--readers-and-writers--object-model-facade",
+      "kind": "module",
+      "label": "Object model facade",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "src/backend/objectModel — the ONE write interface; domain intent in, validated typed blocks out",
+      "parentId": "command-mission-model--readers-and-writers"
+    },
+    "command-mission-model--readers-and-writers--mission-view": {
+      "id": "command-mission-model--readers-and-writers--mission-view",
+      "kind": "module",
+      "label": "Mission view",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "src/backend/missionView — read-only snapshot composition; no writes anywhere in the module",
+      "parentId": "command-mission-model--readers-and-writers"
+    },
+    "command-mission-model--readers-and-writers--messaging-identity": {
+      "id": "command-mission-model--readers-and-writers--messaging-identity",
+      "kind": "module",
+      "label": "Messaging identity",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "src/backend/messaging/identity — stamps durable agent ids + mission link on envelopes, server-side",
+      "parentId": "command-mission-model--readers-and-writers"
+    },
+    "command-mission-model--readers-and-writers--external-sessions": {
+      "id": "command-mission-model--readers-and-writers--external-sessions",
+      "kind": "module",
+      "label": "External sessions",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "src/backend/externalSessions — registers outside-spawned sessions as Agent + Presence + mailbox",
+      "parentId": "command-mission-model--readers-and-writers"
+    }
+  },
+  "wires": {
+    "command-mission-model--wire-17": {
+      "id": "command-mission-model--wire-17",
+      "kind": "assigns",
+      "label": "validated append + CAS state transitions",
+      "source": {
+        "nodeId": "command-mission-model--readers-and-writers--object-model-facade"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy"
+      }
+    },
+    "command-mission-model--wire-18": {
+      "id": "command-mission-model--wire-18",
+      "kind": "assigns",
+      "label": "appends journal records",
+      "source": {
+        "nodeId": "command-mission-model--readers-and-writers--object-model-facade"
+      },
+      "target": {
+        "nodeId": "command-mission-model--journal-stores"
+      }
+    },
+    "command-mission-model--wire-19": {
+      "id": "command-mission-model--wire-19",
+      "kind": "queries",
+      "label": "read-only snapshot join",
+      "source": {
+        "nodeId": "command-mission-model--readers-and-writers--mission-view"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy"
+      }
+    },
+    "command-mission-model--wire-1": {
+      "id": "command-mission-model--wire-1",
+      "kind": "owns",
+      "label": "owns",
+      "source": {
+        "nodeId": "command-mission-model--durable-hierarchy--project"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--objective"
+      }
+    },
+    "command-mission-model--wire-2": {
+      "id": "command-mission-model--wire-2",
+      "kind": "owns",
+      "label": "owns",
+      "source": {
+        "nodeId": "command-mission-model--durable-hierarchy--objective"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--kr"
+      }
+    },
+    "command-mission-model--wire-3": {
+      "id": "command-mission-model--wire-3",
+      "kind": "owns",
+      "label": "owns",
+      "source": {
+        "nodeId": "command-mission-model--durable-hierarchy--kr"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--mission"
+      }
+    },
+    "command-mission-model--wire-4": {
+      "id": "command-mission-model--wire-4",
+      "kind": "owns",
+      "label": "owns",
+      "source": {
+        "nodeId": "command-mission-model--durable-hierarchy--mission"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--team"
+      }
+    },
+    "command-mission-model--wire-5": {
+      "id": "command-mission-model--wire-5",
+      "kind": "owns",
+      "label": "owns",
+      "source": {
+        "nodeId": "command-mission-model--durable-hierarchy--team"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--agent"
+      }
+    },
+    "command-mission-model--wire-6": {
+      "id": "command-mission-model--wire-6",
+      "kind": "owns",
+      "label": "owns",
+      "source": {
+        "nodeId": "command-mission-model--durable-hierarchy--agent"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--task"
+      }
+    },
+    "command-mission-model--wire-7": {
+      "id": "command-mission-model--wire-7",
+      "kind": "owns",
+      "label": "owns",
+      "source": {
+        "nodeId": "command-mission-model--durable-hierarchy--task"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--artifact"
+      }
+    },
+    "command-mission-model--wire-8": {
+      "id": "command-mission-model--wire-8",
+      "kind": "references",
+      "label": "typed ref (1..1)",
+      "source": {
+        "nodeId": "command-mission-model--durable-hierarchy--agent"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--mission"
+      }
+    },
+    "command-mission-model--wire-9": {
+      "id": "command-mission-model--wire-9",
+      "kind": "references",
+      "label": "typed ref (1..1)",
+      "source": {
+        "nodeId": "command-mission-model--durable-hierarchy--agent"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--team"
+      }
+    },
+    "command-mission-model--wire-10": {
+      "id": "command-mission-model--wire-10",
+      "kind": "references",
+      "label": "typed ref (0..1)",
+      "source": {
+        "nodeId": "command-mission-model--durable-hierarchy--task"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--agent"
+      }
+    },
+    "command-mission-model--wire-11": {
+      "id": "command-mission-model--wire-11",
+      "kind": "references",
+      "label": "typed ref (0..1)",
+      "source": {
+        "nodeId": "command-mission-model--durable-hierarchy--task"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--mission"
+      }
+    },
+    "command-mission-model--wire-12": {
+      "id": "command-mission-model--wire-12",
+      "kind": "references",
+      "label": "typed ref (1..1)",
+      "source": {
+        "nodeId": "command-mission-model--durable-hierarchy--team"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--mission"
+      }
+    },
+    "command-mission-model--wire-13": {
+      "id": "command-mission-model--wire-13",
+      "kind": "references",
+      "label": "typed ref (1..1)",
+      "source": {
+        "nodeId": "command-mission-model--durable-hierarchy--thread"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--mission"
+      }
+    },
+    "command-mission-model--wire-14": {
+      "id": "command-mission-model--wire-14",
+      "kind": "references",
+      "label": "objective back-ref (required)",
+      "source": {
+        "nodeId": "command-mission-model--durable-hierarchy--kr"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--objective"
+      }
+    },
+    "command-mission-model--wire-15": {
+      "id": "command-mission-model--wire-15",
+      "kind": "references",
+      "label": "anchor ref (at least one)",
+      "source": {
+        "nodeId": "command-mission-model--durable-hierarchy--artifact"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--mission"
+      }
+    },
+    "command-mission-model--wire-16": {
+      "id": "command-mission-model--wire-16",
+      "kind": "references",
+      "label": "anchor ref (at least one)",
+      "source": {
+        "nodeId": "command-mission-model--durable-hierarchy--artifact"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--task"
+      }
+    },
+    "command-mission-model--wire-20": {
+      "id": "command-mission-model--wire-20",
+      "kind": "queries",
+      "label": "resolves durable agent id",
+      "source": {
+        "nodeId": "command-mission-model--readers-and-writers--messaging-identity"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--agent"
+      }
+    },
+    "command-mission-model--wire-21": {
+      "id": "command-mission-model--wire-21",
+      "kind": "assigns",
+      "label": "stamps missionId via thread link",
+      "source": {
+        "nodeId": "command-mission-model--readers-and-writers--messaging-identity"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--thread"
+      }
+    },
+    "command-mission-model--wire-22": {
+      "id": "command-mission-model--wire-22",
+      "kind": "assigns",
+      "label": "registers Agent + Presence",
+      "source": {
+        "nodeId": "command-mission-model--readers-and-writers--external-sessions"
+      },
+      "target": {
+        "nodeId": "command-mission-model--durable-hierarchy--agent"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {
+    "command-mission-model--durable-hierarchy--project--type-project": {
+      "id": "command-mission-model--durable-hierarchy--project--type-project",
+      "name": "project",
+      "fields": [
+        "title",
+        "status",
+        "path"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--objective--type-objective": {
+      "id": "command-mission-model--durable-hierarchy--objective--type-objective",
+      "name": "objective",
+      "fields": [
+        "title",
+        "horizon"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--kr--type-kr": {
+      "id": "command-mission-model--durable-hierarchy--kr--type-kr",
+      "name": "kr",
+      "fields": [
+        "objective",
+        "body"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--mission--type-mission": {
+      "id": "command-mission-model--durable-hierarchy--mission--type-mission",
+      "name": "mission",
+      "fields": [
+        "title",
+        "owner"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--team--type-team": {
+      "id": "command-mission-model--durable-hierarchy--team--type-team",
+      "name": "team",
+      "fields": [
+        "name"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--agent--type-agent": {
+      "id": "command-mission-model--durable-hierarchy--agent--type-agent",
+      "name": "agent",
+      "fields": [
+        "name",
+        "provider"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--task--type-task": {
+      "id": "command-mission-model--durable-hierarchy--task--type-task",
+      "name": "task",
+      "fields": [
+        "title"
+      ]
+    },
+    "command-mission-model--durable-hierarchy--artifact--type-artifact": {
+      "id": "command-mission-model--durable-hierarchy--artifact--type-artifact",
+      "name": "artifact",
+      "fields": [
+        "title"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "command-mission-model": {
+          "nodeId": "command-mission-model",
+          "position": {
+            "x": 40,
+            "y": 15913
+          },
+          "size": {
+            "width": 2232,
+            "height": 1748
+          },
+          "pinned": false
+        },
+        "command-mission-model--durable-hierarchy": {
+          "nodeId": "command-mission-model--durable-hierarchy",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 2121,
+            "height": 1080
+          },
+          "pinned": false
+        },
+        "command-mission-model--durable-hierarchy--project": {
+          "nodeId": "command-mission-model--durable-hierarchy--project",
+          "position": {
+            "x": 970,
+            "y": 484
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "command-mission-model--durable-hierarchy--objective": {
+          "nodeId": "command-mission-model--durable-hierarchy--objective",
+          "position": {
+            "x": 1216,
+            "y": 706
+          },
+          "size": {
+            "width": 420,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "command-mission-model--durable-hierarchy--kr": {
+          "nodeId": "command-mission-model--durable-hierarchy--kr",
+          "position": {
+            "x": 1430,
+            "y": 492
+          },
+          "size": {
+            "width": 420,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "command-mission-model--durable-hierarchy--mission": {
+          "nodeId": "command-mission-model--durable-hierarchy--mission",
+          "position": {
+            "x": 500,
+            "y": 698
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "command-mission-model--durable-hierarchy--team": {
+          "nodeId": "command-mission-model--durable-hierarchy--team",
+          "position": {
+            "x": 1711,
+            "y": 912
+          },
+          "size": {
+            "width": 370,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "command-mission-model--durable-hierarchy--agent": {
+          "nodeId": "command-mission-model--durable-hierarchy--agent",
+          "position": {
+            "x": 730,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "command-mission-model--durable-hierarchy--task": {
+          "nodeId": "command-mission-model--durable-hierarchy--task",
+          "position": {
+            "x": 483,
+            "y": 270
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "command-mission-model--durable-hierarchy--artifact": {
+          "nodeId": "command-mission-model--durable-hierarchy--artifact",
+          "position": {
+            "x": 500,
+            "y": 492
+          },
+          "size": {
+            "width": 406,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "command-mission-model--durable-hierarchy--thread": {
+          "nodeId": "command-mission-model--durable-hierarchy--thread",
+          "position": {
+            "x": 40,
+            "y": 496
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-mission-model--journal-stores": {
+          "nodeId": "command-mission-model--journal-stores",
+          "position": {
+            "x": 40,
+            "y": 1206
+          },
+          "size": {
+            "width": 2152,
+            "height": 216
+          },
+          "pinned": false
+        },
+        "command-mission-model--journal-stores--decision": {
+          "nodeId": "command-mission-model--journal-stores--decision",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-mission-model--journal-stores--issue": {
+          "nodeId": "command-mission-model--journal-stores--issue",
+          "position": {
+            "x": 500,
+            "y": 64
+          },
+          "size": {
+            "width": 254,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-mission-model--journal-stores--learning": {
+          "nodeId": "command-mission-model--journal-stores--learning",
+          "position": {
+            "x": 794,
+            "y": 64
+          },
+          "size": {
+            "width": 398,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-mission-model--journal-stores--log": {
+          "nodeId": "command-mission-model--journal-stores--log",
+          "position": {
+            "x": 1232,
+            "y": 64
+          },
+          "size": {
+            "width": 420,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-mission-model--journal-stores--request": {
+          "nodeId": "command-mission-model--journal-stores--request",
+          "position": {
+            "x": 1692,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-mission-model--readers-and-writers": {
+          "nodeId": "command-mission-model--readers-and-writers",
+          "position": {
+            "x": 40,
+            "y": 1492
+          },
+          "size": {
+            "width": 1880,
+            "height": 216
+          },
+          "pinned": false
+        },
+        "command-mission-model--readers-and-writers--object-model-facade": {
+          "nodeId": "command-mission-model--readers-and-writers--object-model-facade",
+          "position": {
+            "x": 1420,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-mission-model--readers-and-writers--mission-view": {
+          "nodeId": "command-mission-model--readers-and-writers--mission-view",
+          "position": {
+            "x": 960,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-mission-model--readers-and-writers--messaging-identity": {
+          "nodeId": "command-mission-model--readers-and-writers--messaging-identity",
+          "position": {
+            "x": 500,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-mission-model--readers-and-writers--external-sessions": {
+          "nodeId": "command-mission-model--readers-and-writers--external-sessions",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {}
+}

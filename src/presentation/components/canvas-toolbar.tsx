@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { CanvasEngine } from '../../application/canvas-engine';
+import type { DiagramSummary } from '../../application/canvas-library';
 import type { ArchitectureDocument, Selection } from '../../domain/model';
 import type { ArchitectureMap } from '../../domain/maps';
 import { createCanvasNode, type CreatableNodeKind } from '../canvas-actions';
@@ -10,6 +11,8 @@ export interface CanvasToolbarProps {
   document: ArchitectureDocument;
   engine: CanvasEngine;
   maps: ArchitectureMap[];
+  /** Diagram list sourced from the v3 record library; when present, the picker lists these. */
+  libraryDiagrams?: DiagramSummary[];
   activeMapId?: string;
   mode: CanvasMode;
   saveStatus: string;
@@ -34,6 +37,9 @@ function ModeSwitch({ props }: { props: CanvasToolbarProps }) {
   );
 }
 
+/** Common shape the picker renders, whichever source (library or legacy document) supplied it. */
+interface PickerOption { id: string; label: string; status: 'active' | 'archived' }
+
 function DiagramPicker({
   props, query, setQuery, showArchived,
 }: {
@@ -42,7 +48,13 @@ function DiagramPicker({
   setQuery: (query: string) => void;
   showArchived: boolean;
 }) {
-  const visibleMaps = props.maps.filter((map) =>
+  // The library is the record-model's proof of a real end-to-end read; when it built
+  // successfully, the picker's list is sourced from it rather than the legacy document. Diagram
+  // IDs are identical either way, so switching the map by ID below is unaffected.
+  const options: PickerOption[] = props.libraryDiagrams
+    ? props.libraryDiagrams.map((entry) => ({ id: entry.id, label: entry.name, status: entry.status }))
+    : props.maps;
+  const visibleMaps = options.filter((map) =>
     (showArchived || map.status === 'active')
     && (map.id === props.activeMapId || map.label.toLowerCase().includes(query.toLowerCase())));
   return (

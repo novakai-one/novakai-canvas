@@ -1,0 +1,573 @@
+{
+  "schemaVersion": 3,
+  "id": "mission-room-information-architecture",
+  "name": "Mission Room — Information Architecture",
+  "status": "active",
+  "revision": 2381,
+  "nodes": {
+    "mission-room-information-architecture": {
+      "id": "mission-room-information-architecture",
+      "kind": "group",
+      "label": "Mission Room — Information Architecture",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "A read-only briefing for one mission: decide whether to relax, inspect, or intervene"
+    },
+    "mission-room-information-architecture--note-1-read-in-order-six-second": {
+      "id": "mission-room-information-architecture--note-1-read-in-order-six-second",
+      "kind": "comment",
+      "label": "READ IN ORDER: six-second glance → one-minute understanding → proof only when needed.",
+      "interfaceIds": [],
+      "typeIds": [],
+      "parentId": "mission-room-information-architecture"
+    },
+    "mission-room-information-architecture--note-2-out-of-scope-portfolio-o": {
+      "id": "mission-room-information-architecture--note-2-out-of-scope-portfolio-o",
+      "kind": "comment",
+      "label": "OUT OF SCOPE: portfolio overview, raw transcript forensics, process review, and write controls.",
+      "interfaceIds": [],
+      "typeIds": [],
+      "parentId": "mission-room-information-architecture"
+    },
+    "mission-room-information-architecture--mission-snapshot": {
+      "id": "mission-room-information-architecture--mission-snapshot",
+      "kind": "resource",
+      "label": "Mission Snapshot",
+      "interfaceIds": [
+        "mission-room-information-architecture--mission-snapshot--if-read"
+      ],
+      "typeIds": [
+        "mission-room-information-architecture--mission-snapshot--type-missionsnapshot"
+      ],
+      "description": "The single joined, read-only truth presented by every layer",
+      "parentId": "mission-room-information-architecture"
+    },
+    "mission-room-information-architecture--mission-header": {
+      "id": "mission-room-information-architecture--mission-header",
+      "kind": "module",
+      "label": "Mission Header",
+      "interfaceIds": [
+        "mission-room-information-architecture--mission-header--if-summarize"
+      ],
+      "typeIds": [
+        "mission-room-information-architecture--mission-header--type-glancebrief"
+      ],
+      "description": "Six-second answer: what is the outcome, are we okay, and do you need me?",
+      "parentId": "mission-room-information-architecture"
+    },
+    "mission-room-information-architecture--situation-brief": {
+      "id": "mission-room-information-architecture--situation-brief",
+      "kind": "module",
+      "label": "Situation Brief",
+      "interfaceIds": [
+        "mission-room-information-architecture--situation-brief--if-orient"
+      ],
+      "typeIds": [
+        "mission-room-information-architecture--situation-brief--type-situation"
+      ],
+      "description": "Plain-English orientation: why this matters, what changed, and what happens next",
+      "parentId": "mission-room-information-architecture"
+    },
+    "mission-room-information-architecture--team-current-work": {
+      "id": "mission-room-information-architecture--team-current-work",
+      "kind": "object",
+      "label": "Team & Current Work",
+      "interfaceIds": [
+        "mission-room-information-architecture--team-current-work--if-resolve"
+      ],
+      "typeIds": [
+        "mission-room-information-architecture--team-current-work--type-teamactivity"
+      ],
+      "description": "Accountable people, explicit roles, live presences, and the work each person owns now",
+      "parentId": "mission-room-information-architecture"
+    },
+    "mission-room-information-architecture--attention-queue": {
+      "id": "mission-room-information-architecture--attention-queue",
+      "kind": "object",
+      "label": "Attention Queue",
+      "interfaceIds": [
+        "mission-room-information-architecture--attention-queue--if-prioritize"
+      ],
+      "typeIds": [
+        "mission-room-information-architecture--attention-queue--type-attentionbrief"
+      ],
+      "description": "Only intervention-worthy blockers, risks, questions, and honesty gaps",
+      "parentId": "mission-room-information-architecture"
+    },
+    "mission-room-information-architecture--mission-timeline": {
+      "id": "mission-room-information-architecture--mission-timeline",
+      "kind": "object",
+      "label": "Mission Timeline",
+      "interfaceIds": [
+        "mission-room-information-architecture--mission-timeline--if-narrate"
+      ],
+      "typeIds": [
+        "mission-room-information-architecture--mission-timeline--type-canonicaleventlist"
+      ],
+      "description": "Meaningful causal events, decisions, handoffs, and completed checkpoints—not tool-call exhaust",
+      "parentId": "mission-room-information-architecture"
+    },
+    "mission-room-information-architecture--evidence-shelf": {
+      "id": "mission-room-information-architecture--evidence-shelf",
+      "kind": "resource",
+      "label": "Evidence Shelf",
+      "interfaceIds": [
+        "mission-room-information-architecture--evidence-shelf--if-collect"
+      ],
+      "typeIds": [
+        "mission-room-information-architecture--evidence-shelf--type-evidenceindex"
+      ],
+      "description": "Briefs, plans, reports, commits, pull requests, and results supporting the visible claims",
+      "parentId": "mission-room-information-architecture"
+    },
+    "mission-room-information-architecture--trust-drawer": {
+      "id": "mission-room-information-architecture--trust-drawer",
+      "kind": "object",
+      "label": "Trust Drawer",
+      "interfaceIds": [
+        "mission-room-information-architecture--trust-drawer--if-explain"
+      ],
+      "typeIds": [
+        "mission-room-information-architecture--trust-drawer--type-readtrust"
+      ],
+      "description": "Freshness, data-quality warnings, exact sources, and recoverable uncertainty",
+      "parentId": "mission-room-information-architecture"
+    }
+  },
+  "wires": {
+    "mission-room-information-architecture--wire-1": {
+      "id": "mission-room-information-architecture--wire-1",
+      "kind": "queries",
+      "label": "summarize(MissionSnapshot) -> GlanceBrief",
+      "source": {
+        "nodeId": "mission-room-information-architecture--mission-snapshot"
+      },
+      "target": {
+        "nodeId": "mission-room-information-architecture--mission-header"
+      }
+    },
+    "mission-room-information-architecture--wire-2": {
+      "id": "mission-room-information-architecture--wire-2",
+      "kind": "queries",
+      "label": "orient(GlanceBrief) -> Situation",
+      "source": {
+        "nodeId": "mission-room-information-architecture--mission-header"
+      },
+      "target": {
+        "nodeId": "mission-room-information-architecture--situation-brief"
+      }
+    },
+    "mission-room-information-architecture--wire-3": {
+      "id": "mission-room-information-architecture--wire-3",
+      "kind": "queries",
+      "label": "resolve(MissionSnapshot) -> TeamActivity",
+      "source": {
+        "nodeId": "mission-room-information-architecture--situation-brief"
+      },
+      "target": {
+        "nodeId": "mission-room-information-architecture--team-current-work"
+      }
+    },
+    "mission-room-information-architecture--wire-4": {
+      "id": "mission-room-information-architecture--wire-4",
+      "kind": "queries",
+      "label": "prioritize(MissionSnapshot) -> AttentionBrief",
+      "source": {
+        "nodeId": "mission-room-information-architecture--situation-brief"
+      },
+      "target": {
+        "nodeId": "mission-room-information-architecture--attention-queue"
+      }
+    },
+    "mission-room-information-architecture--wire-5": {
+      "id": "mission-room-information-architecture--wire-5",
+      "kind": "queries",
+      "label": "narrate(MissionSnapshot) -> CanonicalEventList",
+      "source": {
+        "nodeId": "mission-room-information-architecture--situation-brief"
+      },
+      "target": {
+        "nodeId": "mission-room-information-architecture--mission-timeline"
+      }
+    },
+    "mission-room-information-architecture--wire-6": {
+      "id": "mission-room-information-architecture--wire-6",
+      "kind": "references",
+      "label": "collect(MissionSnapshot) -> EvidenceIndex",
+      "source": {
+        "nodeId": "mission-room-information-architecture--team-current-work"
+      },
+      "target": {
+        "nodeId": "mission-room-information-architecture--evidence-shelf"
+      }
+    },
+    "mission-room-information-architecture--wire-7": {
+      "id": "mission-room-information-architecture--wire-7",
+      "kind": "references",
+      "label": "collect(MissionSnapshot) -> EvidenceIndex",
+      "source": {
+        "nodeId": "mission-room-information-architecture--attention-queue"
+      },
+      "target": {
+        "nodeId": "mission-room-information-architecture--evidence-shelf"
+      }
+    },
+    "mission-room-information-architecture--wire-8": {
+      "id": "mission-room-information-architecture--wire-8",
+      "kind": "references",
+      "label": "collect(MissionSnapshot) -> EvidenceIndex",
+      "source": {
+        "nodeId": "mission-room-information-architecture--mission-timeline"
+      },
+      "target": {
+        "nodeId": "mission-room-information-architecture--evidence-shelf"
+      }
+    },
+    "mission-room-information-architecture--wire-9": {
+      "id": "mission-room-information-architecture--wire-9",
+      "kind": "references",
+      "label": "explain(MissionSnapshot) -> ReadTrust",
+      "source": {
+        "nodeId": "mission-room-information-architecture--evidence-shelf"
+      },
+      "target": {
+        "nodeId": "mission-room-information-architecture--trust-drawer"
+      }
+    }
+  },
+  "interfaces": {
+    "mission-room-information-architecture--mission-snapshot--if-read": {
+      "id": "mission-room-information-architecture--mission-snapshot--if-read",
+      "ownerId": "mission-room-information-architecture--mission-snapshot",
+      "name": "read",
+      "accepts": [
+        "MissionId"
+      ],
+      "returns": [
+        "MissionSnapshot"
+      ]
+    },
+    "mission-room-information-architecture--mission-header--if-summarize": {
+      "id": "mission-room-information-architecture--mission-header--if-summarize",
+      "ownerId": "mission-room-information-architecture--mission-header",
+      "name": "summarize",
+      "accepts": [
+        "MissionSnapshot"
+      ],
+      "returns": [
+        "GlanceBrief"
+      ]
+    },
+    "mission-room-information-architecture--situation-brief--if-orient": {
+      "id": "mission-room-information-architecture--situation-brief--if-orient",
+      "ownerId": "mission-room-information-architecture--situation-brief",
+      "name": "orient",
+      "accepts": [
+        "GlanceBrief"
+      ],
+      "returns": [
+        "Situation"
+      ]
+    },
+    "mission-room-information-architecture--team-current-work--if-resolve": {
+      "id": "mission-room-information-architecture--team-current-work--if-resolve",
+      "ownerId": "mission-room-information-architecture--team-current-work",
+      "name": "resolve",
+      "accepts": [
+        "MissionSnapshot"
+      ],
+      "returns": [
+        "TeamActivity"
+      ]
+    },
+    "mission-room-information-architecture--attention-queue--if-prioritize": {
+      "id": "mission-room-information-architecture--attention-queue--if-prioritize",
+      "ownerId": "mission-room-information-architecture--attention-queue",
+      "name": "prioritize",
+      "accepts": [
+        "MissionSnapshot"
+      ],
+      "returns": [
+        "AttentionBrief"
+      ]
+    },
+    "mission-room-information-architecture--mission-timeline--if-narrate": {
+      "id": "mission-room-information-architecture--mission-timeline--if-narrate",
+      "ownerId": "mission-room-information-architecture--mission-timeline",
+      "name": "narrate",
+      "accepts": [
+        "MissionSnapshot"
+      ],
+      "returns": [
+        "CanonicalEventList"
+      ]
+    },
+    "mission-room-information-architecture--evidence-shelf--if-collect": {
+      "id": "mission-room-information-architecture--evidence-shelf--if-collect",
+      "ownerId": "mission-room-information-architecture--evidence-shelf",
+      "name": "collect",
+      "accepts": [
+        "MissionSnapshot"
+      ],
+      "returns": [
+        "EvidenceIndex"
+      ]
+    },
+    "mission-room-information-architecture--trust-drawer--if-explain": {
+      "id": "mission-room-information-architecture--trust-drawer--if-explain",
+      "ownerId": "mission-room-information-architecture--trust-drawer",
+      "name": "explain",
+      "accepts": [
+        "MissionSnapshot"
+      ],
+      "returns": [
+        "ReadTrust"
+      ]
+    }
+  },
+  "types": {
+    "mission-room-information-architecture--mission-snapshot--type-missionsnapshot": {
+      "id": "mission-room-information-architecture--mission-snapshot--type-missionsnapshot",
+      "name": "MissionSnapshot",
+      "fields": [
+        "mission",
+        "pulse",
+        "team",
+        "activity",
+        "timeline",
+        "evidence",
+        "attention",
+        "trust"
+      ]
+    },
+    "mission-room-information-architecture--mission-header--type-glancebrief": {
+      "id": "mission-room-information-architecture--mission-header--type-glancebrief",
+      "name": "GlanceBrief",
+      "fields": [
+        "outcome",
+        "status",
+        "health",
+        "needsYou",
+        "freshness"
+      ]
+    },
+    "mission-room-information-architecture--situation-brief--type-situation": {
+      "id": "mission-room-information-architecture--situation-brief--type-situation",
+      "name": "Situation",
+      "fields": [
+        "intent",
+        "latestMeaningfulChange",
+        "nextCheckpoint"
+      ]
+    },
+    "mission-room-information-architecture--team-current-work--type-teamactivity": {
+      "id": "mission-room-information-architecture--team-current-work--type-teamactivity",
+      "name": "TeamActivity",
+      "fields": [
+        "owner",
+        "assignments",
+        "presences",
+        "currentWork"
+      ]
+    },
+    "mission-room-information-architecture--attention-queue--type-attentionbrief": {
+      "id": "mission-room-information-architecture--attention-queue--type-attentionbrief",
+      "name": "AttentionBrief",
+      "fields": [
+        "severity",
+        "humanAction",
+        "reason",
+        "source"
+      ]
+    },
+    "mission-room-information-architecture--mission-timeline--type-canonicaleventlist": {
+      "id": "mission-room-information-architecture--mission-timeline--type-canonicaleventlist",
+      "name": "CanonicalEventList",
+      "fields": [
+        "happenedAt",
+        "actor",
+        "meaning",
+        "outcome"
+      ]
+    },
+    "mission-room-information-architecture--evidence-shelf--type-evidenceindex": {
+      "id": "mission-room-information-architecture--evidence-shelf--type-evidenceindex",
+      "name": "EvidenceIndex",
+      "fields": [
+        "kind",
+        "label",
+        "observedAt",
+        "location"
+      ]
+    },
+    "mission-room-information-architecture--trust-drawer--type-readtrust": {
+      "id": "mission-room-information-architecture--trust-drawer--type-readtrust",
+      "name": "ReadTrust",
+      "fields": [
+        "asOf",
+        "sourceHealth",
+        "uncertainty",
+        "provenance"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "mission-room-information-architecture": {
+          "nodeId": "mission-room-information-architecture",
+          "position": {
+            "x": 40,
+            "y": 6367
+          },
+          "size": {
+            "width": 1475,
+            "height": 1466
+          },
+          "pinned": false
+        },
+        "mission-room-information-architecture--note-1-read-in-order-six-second": {
+          "nodeId": "mission-room-information-architecture--note-1-read-in-order-six-second",
+          "position": {
+            "x": 835,
+            "y": 86
+          },
+          "size": {
+            "width": 280,
+            "height": 111
+          },
+          "pinned": false
+        },
+        "mission-room-information-architecture--note-2-out-of-scope-portfolio-o": {
+          "nodeId": "mission-room-information-architecture--note-2-out-of-scope-portfolio-o",
+          "position": {
+            "x": 1155,
+            "y": 86
+          },
+          "size": {
+            "width": 280,
+            "height": 111
+          },
+          "pinned": false
+        },
+        "mission-room-information-architecture--mission-snapshot": {
+          "nodeId": "mission-room-information-architecture--mission-snapshot",
+          "position": {
+            "x": 375,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 170
+          },
+          "pinned": false
+        },
+        "mission-room-information-architecture--mission-header": {
+          "nodeId": "mission-room-information-architecture--mission-header",
+          "position": {
+            "x": 375,
+            "y": 296
+          },
+          "size": {
+            "width": 420,
+            "height": 170
+          },
+          "pinned": false
+        },
+        "mission-room-information-architecture--situation-brief": {
+          "nodeId": "mission-room-information-architecture--situation-brief",
+          "position": {
+            "x": 375,
+            "y": 536
+          },
+          "size": {
+            "width": 420,
+            "height": 170
+          },
+          "pinned": false
+        },
+        "mission-room-information-architecture--team-current-work": {
+          "nodeId": "mission-room-information-architecture--team-current-work",
+          "position": {
+            "x": 960,
+            "y": 776
+          },
+          "size": {
+            "width": 420,
+            "height": 170
+          },
+          "pinned": false
+        },
+        "mission-room-information-architecture--attention-queue": {
+          "nodeId": "mission-room-information-architecture--attention-queue",
+          "position": {
+            "x": 500,
+            "y": 776
+          },
+          "size": {
+            "width": 420,
+            "height": 170
+          },
+          "pinned": false
+        },
+        "mission-room-information-architecture--mission-timeline": {
+          "nodeId": "mission-room-information-architecture--mission-timeline",
+          "position": {
+            "x": 40,
+            "y": 776
+          },
+          "size": {
+            "width": 420,
+            "height": 170
+          },
+          "pinned": false
+        },
+        "mission-room-information-architecture--evidence-shelf": {
+          "nodeId": "mission-room-information-architecture--evidence-shelf",
+          "position": {
+            "x": 395,
+            "y": 1016
+          },
+          "size": {
+            "width": 420,
+            "height": 170
+          },
+          "pinned": false
+        },
+        "mission-room-information-architecture--trust-drawer": {
+          "nodeId": "mission-room-information-architecture--trust-drawer",
+          "position": {
+            "x": 395,
+            "y": 1256
+          },
+          "size": {
+            "width": 420,
+            "height": 170
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {}
+}

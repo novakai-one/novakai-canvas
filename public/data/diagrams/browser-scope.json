@@ -1,0 +1,538 @@
+{
+  "schemaVersion": 3,
+  "id": "browser-scope",
+  "name": "Agent Browser Sessions",
+  "status": "active",
+  "revision": 2381,
+  "nodes": {
+    "browser-scope": {
+      "id": "browser-scope",
+      "kind": "group",
+      "label": "Agent Browser Sessions",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Isolated per-agent browser + live off-screen mirror"
+    },
+    "bs-cli": {
+      "id": "bs-cli",
+      "kind": "module",
+      "label": "browse CLI",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Agent-facing: browse --session <id> goto|click|shot",
+      "parentId": "browser-scope"
+    },
+    "bs-mirror": {
+      "id": "bs-mirror",
+      "kind": "module",
+      "label": "Mirror viewer",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Off-screen screencast grid + copyable page URL",
+      "parentId": "browser-scope"
+    },
+    "bs-session": {
+      "id": "bs-session",
+      "kind": "object",
+      "label": "Session",
+      "interfaceIds": [],
+      "typeIds": [
+        "bs-t-session",
+        "bs-t-handle"
+      ],
+      "description": "Agent ↔ instance binding and lifecycle",
+      "parentId": "browser-scope"
+    },
+    "bs-broker": {
+      "id": "bs-broker",
+      "kind": "module",
+      "label": "Session broker",
+      "interfaceIds": [
+        "bs-acquire",
+        "bs-release"
+      ],
+      "typeIds": [],
+      "description": "acquire / release / lookup; owns pool state",
+      "parentId": "browser-scope"
+    },
+    "bs-policy": {
+      "id": "bs-policy",
+      "kind": "object",
+      "label": "Allocation policy",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Pure: choose free instance, grow or evict",
+      "parentId": "browser-scope"
+    },
+    "bs-lease": {
+      "id": "bs-lease",
+      "kind": "object",
+      "label": "Lease",
+      "interfaceIds": [],
+      "typeIds": [
+        "bs-t-lease"
+      ],
+      "description": "TTL claim; reclaims a dead agent's instance",
+      "parentId": "browser-scope"
+    },
+    "bs-pool": {
+      "id": "bs-pool",
+      "kind": "module",
+      "label": "Chrome pool",
+      "interfaceIds": [
+        "bs-launch"
+      ],
+      "typeIds": [
+        "bs-t-instance"
+      ],
+      "description": "Adapter: launches headless Chrome, own user-data-dir + port",
+      "parentId": "browser-scope"
+    },
+    "bs-control": {
+      "id": "bs-control",
+      "kind": "module",
+      "label": "CDP control",
+      "interfaceIds": [
+        "bs-act"
+      ],
+      "typeIds": [
+        "bs-t-command"
+      ],
+      "description": "Adapter: Playwright over CDP, target-scoped, never bringToFront",
+      "parentId": "browser-scope"
+    },
+    "bs-screencast": {
+      "id": "bs-screencast",
+      "kind": "module",
+      "label": "CDP screencast",
+      "interfaceIds": [
+        "bs-frames"
+      ],
+      "typeIds": [
+        "bs-t-frame"
+      ],
+      "description": "Adapter: Page.startScreencast → JPEG frames",
+      "parentId": "browser-scope"
+    },
+    "bs-chrome": {
+      "id": "bs-chrome",
+      "kind": "runtime",
+      "label": "Chrome instances",
+      "interfaceIds": [],
+      "typeIds": [
+        "bs-t-instance"
+      ],
+      "description": "N isolated processes, off-screen",
+      "parentId": "browser-scope"
+    }
+  },
+  "wires": {
+    "bs-w-cli-broker": {
+      "id": "bs-w-cli-broker",
+      "kind": "executes",
+      "label": "acquire / release",
+      "source": {
+        "nodeId": "bs-cli"
+      },
+      "target": {
+        "nodeId": "bs-broker"
+      }
+    },
+    "bs-w-cli-control": {
+      "id": "bs-w-cli-control",
+      "kind": "executes",
+      "label": "acts via",
+      "source": {
+        "nodeId": "bs-cli"
+      },
+      "target": {
+        "nodeId": "bs-control"
+      }
+    },
+    "bs-w-mirror-broker": {
+      "id": "bs-w-mirror-broker",
+      "kind": "queries",
+      "label": "lists sessions",
+      "source": {
+        "nodeId": "bs-mirror"
+      },
+      "target": {
+        "nodeId": "bs-broker"
+      }
+    },
+    "bs-w-mirror-screencast": {
+      "id": "bs-w-mirror-screencast",
+      "kind": "queries",
+      "label": "streams",
+      "source": {
+        "nodeId": "bs-mirror"
+      },
+      "target": {
+        "nodeId": "bs-screencast"
+      }
+    },
+    "bs-w-broker-session": {
+      "id": "bs-w-broker-session",
+      "kind": "owns",
+      "label": "tracks",
+      "source": {
+        "nodeId": "bs-broker"
+      },
+      "target": {
+        "nodeId": "bs-session"
+      }
+    },
+    "bs-w-broker-lease": {
+      "id": "bs-w-broker-lease",
+      "kind": "owns",
+      "label": "grants",
+      "source": {
+        "nodeId": "bs-broker"
+      },
+      "target": {
+        "nodeId": "bs-lease"
+      }
+    },
+    "bs-w-broker-policy": {
+      "id": "bs-w-broker-policy",
+      "kind": "queries",
+      "label": "decides via",
+      "source": {
+        "nodeId": "bs-broker"
+      },
+      "target": {
+        "nodeId": "bs-policy"
+      }
+    },
+    "bs-w-broker-pool": {
+      "id": "bs-w-broker-pool",
+      "kind": "executes",
+      "label": "launch / dispose",
+      "source": {
+        "nodeId": "bs-broker"
+      },
+      "target": {
+        "nodeId": "bs-pool"
+      }
+    },
+    "bs-w-control-chrome": {
+      "id": "bs-w-control-chrome",
+      "kind": "executes",
+      "label": "drives target",
+      "source": {
+        "nodeId": "bs-control"
+      },
+      "target": {
+        "nodeId": "bs-chrome"
+      }
+    },
+    "bs-w-screencast-chrome": {
+      "id": "bs-w-screencast-chrome",
+      "kind": "queries",
+      "label": "captures",
+      "source": {
+        "nodeId": "bs-screencast"
+      },
+      "target": {
+        "nodeId": "bs-chrome"
+      }
+    },
+    "bs-w-pool-chrome": {
+      "id": "bs-w-pool-chrome",
+      "kind": "owns",
+      "label": "spawns",
+      "source": {
+        "nodeId": "bs-pool"
+      },
+      "target": {
+        "nodeId": "bs-chrome"
+      }
+    },
+    "bs-w-session-chrome": {
+      "id": "bs-w-session-chrome",
+      "kind": "references",
+      "label": "endpoint",
+      "source": {
+        "nodeId": "bs-session"
+      },
+      "target": {
+        "nodeId": "bs-chrome"
+      }
+    }
+  },
+  "interfaces": {
+    "bs-acquire": {
+      "id": "bs-acquire",
+      "ownerId": "bs-broker",
+      "name": "acquire",
+      "accepts": [
+        "AgentId"
+      ],
+      "returns": [
+        "SessionHandle"
+      ]
+    },
+    "bs-release": {
+      "id": "bs-release",
+      "ownerId": "bs-broker",
+      "name": "release",
+      "accepts": [
+        "SessionId"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "bs-launch": {
+      "id": "bs-launch",
+      "ownerId": "bs-pool",
+      "name": "launch",
+      "accepts": [
+        "LaunchSpec"
+      ],
+      "returns": [
+        "BrowserInstance"
+      ]
+    },
+    "bs-act": {
+      "id": "bs-act",
+      "ownerId": "bs-control",
+      "name": "act",
+      "accepts": [
+        "SessionId",
+        "BrowserCommand"
+      ],
+      "returns": [
+        "ActionResult"
+      ]
+    },
+    "bs-frames": {
+      "id": "bs-frames",
+      "ownerId": "bs-screencast",
+      "name": "subscribe",
+      "accepts": [
+        "SessionId"
+      ],
+      "returns": [
+        "Frame[]"
+      ]
+    }
+  },
+  "types": {
+    "bs-t-session": {
+      "id": "bs-t-session",
+      "name": "Session",
+      "fields": [
+        "id",
+        "agentId",
+        "instancePort",
+        "status"
+      ]
+    },
+    "bs-t-handle": {
+      "id": "bs-t-handle",
+      "name": "SessionHandle",
+      "fields": [
+        "sessionId",
+        "cdpEndpoint",
+        "mirrorUrl",
+        "pageUrl"
+      ]
+    },
+    "bs-t-lease": {
+      "id": "bs-t-lease",
+      "name": "Lease",
+      "fields": [
+        "sessionId",
+        "agentId",
+        "expiresAt"
+      ]
+    },
+    "bs-t-instance": {
+      "id": "bs-t-instance",
+      "name": "BrowserInstance",
+      "fields": [
+        "pid",
+        "port",
+        "userDataDir"
+      ]
+    },
+    "bs-t-command": {
+      "id": "bs-t-command",
+      "name": "BrowserCommand",
+      "fields": [
+        "kind",
+        "selector",
+        "text"
+      ]
+    },
+    "bs-t-frame": {
+      "id": "bs-t-frame",
+      "name": "Frame",
+      "fields": [
+        "sessionId",
+        "seq",
+        "jpeg"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "browser-scope": {
+          "nodeId": "browser-scope",
+          "position": {
+            "x": 432,
+            "y": 2220
+          },
+          "size": {
+            "width": 1520,
+            "height": 780
+          },
+          "pinned": false
+        },
+        "bs-cli": {
+          "nodeId": "bs-cli",
+          "position": {
+            "x": 60,
+            "y": 60
+          },
+          "size": {
+            "width": 230,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "bs-mirror": {
+          "nodeId": "bs-mirror",
+          "position": {
+            "x": 852,
+            "y": 0
+          },
+          "size": {
+            "width": 230,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "bs-session": {
+          "nodeId": "bs-session",
+          "position": {
+            "x": 24,
+            "y": 228
+          },
+          "size": {
+            "width": 230,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "bs-broker": {
+          "nodeId": "bs-broker",
+          "position": {
+            "x": 552,
+            "y": 216
+          },
+          "size": {
+            "width": 240,
+            "height": 140
+          },
+          "pinned": false
+        },
+        "bs-policy": {
+          "nodeId": "bs-policy",
+          "position": {
+            "x": 1236,
+            "y": 216
+          },
+          "size": {
+            "width": 230,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "bs-lease": {
+          "nodeId": "bs-lease",
+          "position": {
+            "x": 1272,
+            "y": 456
+          },
+          "size": {
+            "width": 230,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "bs-pool": {
+          "nodeId": "bs-pool",
+          "position": {
+            "x": 60,
+            "y": 544
+          },
+          "size": {
+            "width": 240,
+            "height": 140
+          },
+          "pinned": false
+        },
+        "bs-control": {
+          "nodeId": "bs-control",
+          "position": {
+            "x": 384,
+            "y": 640
+          },
+          "size": {
+            "width": 240,
+            "height": 140
+          },
+          "pinned": false
+        },
+        "bs-screencast": {
+          "nodeId": "bs-screencast",
+          "position": {
+            "x": 852,
+            "y": 516
+          },
+          "size": {
+            "width": 240,
+            "height": 140
+          },
+          "pinned": false
+        },
+        "bs-chrome": {
+          "nodeId": "bs-chrome",
+          "position": {
+            "x": 1272,
+            "y": 648
+          },
+          "size": {
+            "width": 230,
+            "height": 132
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {}
+}

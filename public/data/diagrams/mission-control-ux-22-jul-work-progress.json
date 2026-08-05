@@ -1,0 +1,404 @@
+{
+  "schemaVersion": 3,
+  "id": "mission-control-ux-22-jul-work-progress",
+  "name": "Mission Control UX 22-Jul — Work & Progress",
+  "status": "active",
+  "revision": 2381,
+  "nodes": {
+    "mission-control-ux-22-jul-work-progress": {
+      "id": "mission-control-ux-22-jul-work-progress",
+      "kind": "group",
+      "label": "Mission Control UX 22-Jul — Work & Progress",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Exact lineage for stages, tasks, workflow columns and meaningful activity"
+    },
+    "mission-control-ux-22-jul-work-progress--note-1-current-v1-can-show-hone": {
+      "id": "mission-control-ux-22-jul-work-progress--note-1-current-v1-can-show-hone",
+      "kind": "comment",
+      "label": "Current V1 can show honest chronology. V4's richer causal story needs a presentation projection and explicit current-work facts.",
+      "interfaceIds": [],
+      "typeIds": [],
+      "parentId": "mission-control-ux-22-jul-work-progress"
+    },
+    "mission-control-ux-22-jul-work-progress--missions-jsonl": {
+      "id": "mission-control-ux-22-jul-work-progress--missions-jsonl",
+      "kind": "resource",
+      "label": "missions.jsonl",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-control-ux-22-jul-work-progress--missions-jsonl--type-fields"
+      ],
+      "description": "ATOMIC · current stage, status, mission timestamp and mission refs",
+      "parentId": "mission-control-ux-22-jul-work-progress"
+    },
+    "mission-control-ux-22-jul-work-progress--task-and-history-stores": {
+      "id": "mission-control-ux-22-jul-work-progress--task-and-history-stores",
+      "kind": "resource",
+      "label": "Task and History Stores",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-control-ux-22-jul-work-progress--task-and-history-stores--type-fields"
+      ],
+      "description": "ATOMIC · tasks.jsonl, captains-log.jsonl and issues.jsonl linked through typed refs",
+      "parentId": "mission-control-ux-22-jul-work-progress"
+    },
+    "mission-control-ux-22-jul-work-progress--rooms-and-messages": {
+      "id": "mission-control-ux-22-jul-work-progress--rooms-and-messages",
+      "kind": "resource",
+      "label": "Rooms and Messages",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-control-ux-22-jul-work-progress--rooms-and-messages--type-fields"
+      ],
+      "description": "ATOMIC · rooms.jsonl and messages.jsonl; only explicitly mission-linked rooms join the timeline today",
+      "parentId": "mission-control-ux-22-jul-work-progress"
+    },
+    "mission-control-ux-22-jul-work-progress--v4-static-copy": {
+      "id": "mission-control-ux-22-jul-work-progress--v4-static-copy",
+      "kind": "runtime",
+      "label": "V4 Static Copy",
+      "interfaceIds": [],
+      "typeIds": [
+        "mission-control-ux-22-jul-work-progress--v4-static-copy--type-fixture"
+      ],
+      "description": "DEMO ONLY · STEP_COPY, demo step number, workflow cards and human activity sentences",
+      "parentId": "mission-control-ux-22-jul-work-progress"
+    },
+    "mission-control-ux-22-jul-work-progress--stages": {
+      "id": "mission-control-ux-22-jul-work-progress--stages",
+      "kind": "object",
+      "label": "Stages",
+      "interfaceIds": [
+        "mission-control-ux-22-jul-work-progress--stages--if-show"
+      ],
+      "typeIds": [],
+      "description": "PARTIAL · stage and status are LIVE; the six labels and state-to-step mapping are static V4 code",
+      "parentId": "mission-control-ux-22-jul-work-progress"
+    },
+    "mission-control-ux-22-jul-work-progress--tasks-and-workflow": {
+      "id": "mission-control-ux-22-jul-work-progress--tasks-and-workflow",
+      "kind": "object",
+      "label": "Tasks and Workflow",
+      "interfaceIds": [
+        "mission-control-ux-22-jul-work-progress--tasks-and-workflow--if-show"
+      ],
+      "typeIds": [],
+      "description": "PARTIAL · linked tasks and their statuses are LIVE; Working now and Next require explicit current-work ownership",
+      "parentId": "mission-control-ux-22-jul-work-progress"
+    },
+    "mission-control-ux-22-jul-work-progress--activity": {
+      "id": "mission-control-ux-22-jul-work-progress--activity",
+      "kind": "object",
+      "label": "Activity",
+      "interfaceIds": [
+        "mission-control-ux-22-jul-work-progress--activity--if-show"
+      ],
+      "typeIds": [],
+      "description": "PARTIAL · chronological mission, task, log, issue and linked-room entries are LIVE; V4 narrative wording is fixture copy",
+      "parentId": "mission-control-ux-22-jul-work-progress"
+    }
+  },
+  "wires": {
+    "mission-control-ux-22-jul-work-progress--wire-1": {
+      "id": "mission-control-ux-22-jul-work-progress--wire-1",
+      "kind": "owns",
+      "label": "stage + status -> currentStep",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-work-progress--missions-jsonl"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-work-progress--stages"
+      }
+    },
+    "mission-control-ux-22-jul-work-progress--wire-2": {
+      "id": "mission-control-ux-22-jul-work-progress--wire-2",
+      "kind": "references",
+      "label": "STEP_COPY + demoStep -> SixStepProgress",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-work-progress--v4-static-copy"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-work-progress--stages"
+      }
+    },
+    "mission-control-ux-22-jul-work-progress--wire-3": {
+      "id": "mission-control-ux-22-jul-work-progress--wire-3",
+      "kind": "owns",
+      "label": "task.status + typedRefs -> LinkedTasks",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-work-progress--task-and-history-stores"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-work-progress--tasks-and-workflow"
+      }
+    },
+    "mission-control-ux-22-jul-work-progress--wire-4": {
+      "id": "mission-control-ux-22-jul-work-progress--wire-4",
+      "kind": "references",
+      "label": "completeItems + workingItems + nextItems -> WorkflowColumns",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-work-progress--v4-static-copy"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-work-progress--tasks-and-workflow"
+      }
+    },
+    "mission-control-ux-22-jul-work-progress--wire-5": {
+      "id": "mission-control-ux-22-jul-work-progress--wire-5",
+      "kind": "owns",
+      "label": "title + updated -> MissionTimelineEntry",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-work-progress--missions-jsonl"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-work-progress--activity"
+      }
+    },
+    "mission-control-ux-22-jul-work-progress--wire-6": {
+      "id": "mission-control-ux-22-jul-work-progress--wire-6",
+      "kind": "owns",
+      "label": "titleOrBody + timestamp + refPath -> timeline[]",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-work-progress--task-and-history-stores"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-work-progress--activity"
+      }
+    },
+    "mission-control-ux-22-jul-work-progress--wire-7": {
+      "id": "mission-control-ux-22-jul-work-progress--wire-7",
+      "kind": "references",
+      "label": "explicitMissionRoomRef -> timeline[]",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-work-progress--rooms-and-messages"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-work-progress--activity"
+      }
+    },
+    "mission-control-ux-22-jul-work-progress--wire-8": {
+      "id": "mission-control-ux-22-jul-work-progress--wire-8",
+      "kind": "references",
+      "label": "activityData() -> HumanNarrative",
+      "source": {
+        "nodeId": "mission-control-ux-22-jul-work-progress--v4-static-copy"
+      },
+      "target": {
+        "nodeId": "mission-control-ux-22-jul-work-progress--activity"
+      }
+    }
+  },
+  "interfaces": {
+    "mission-control-ux-22-jul-work-progress--stages--if-show": {
+      "id": "mission-control-ux-22-jul-work-progress--stages--if-show",
+      "ownerId": "mission-control-ux-22-jul-work-progress--stages",
+      "name": "show",
+      "accepts": [],
+      "returns": [
+        "SixStepProgress"
+      ]
+    },
+    "mission-control-ux-22-jul-work-progress--tasks-and-workflow--if-show": {
+      "id": "mission-control-ux-22-jul-work-progress--tasks-and-workflow--if-show",
+      "ownerId": "mission-control-ux-22-jul-work-progress--tasks-and-workflow",
+      "name": "show",
+      "accepts": [],
+      "returns": [
+        "WorkflowColumns"
+      ]
+    },
+    "mission-control-ux-22-jul-work-progress--activity--if-show": {
+      "id": "mission-control-ux-22-jul-work-progress--activity--if-show",
+      "ownerId": "mission-control-ux-22-jul-work-progress--activity",
+      "name": "show",
+      "accepts": [],
+      "returns": [
+        "MeaningfulTimeline"
+      ]
+    }
+  },
+  "types": {
+    "mission-control-ux-22-jul-work-progress--missions-jsonl--type-fields": {
+      "id": "mission-control-ux-22-jul-work-progress--missions-jsonl--type-fields",
+      "name": "Fields",
+      "fields": [
+        "stage",
+        "status",
+        "ts",
+        "updated",
+        "refs"
+      ]
+    },
+    "mission-control-ux-22-jul-work-progress--task-and-history-stores--type-fields": {
+      "id": "mission-control-ux-22-jul-work-progress--task-and-history-stores--type-fields",
+      "name": "Fields",
+      "fields": [
+        "id",
+        "title",
+        "body",
+        "status",
+        "ts",
+        "updated",
+        "refs"
+      ]
+    },
+    "mission-control-ux-22-jul-work-progress--rooms-and-messages--type-fields": {
+      "id": "mission-control-ux-22-jul-work-progress--rooms-and-messages--type-fields",
+      "name": "Fields",
+      "fields": [
+        "roomId",
+        "createdAt",
+        "refs",
+        "messageThreadId"
+      ]
+    },
+    "mission-control-ux-22-jul-work-progress--v4-static-copy--type-fixture": {
+      "id": "mission-control-ux-22-jul-work-progress--v4-static-copy--type-fixture",
+      "name": "Fixture",
+      "fields": [
+        "sixLabels",
+        "currentStep",
+        "completeItems",
+        "workingItems",
+        "nextItems",
+        "activityData"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "mission-control-ux-22-jul-work-progress": {
+          "nodeId": "mission-control-ux-22-jul-work-progress",
+          "position": {
+            "x": 40,
+            "y": 9811
+          },
+          "size": {
+            "width": 2210,
+            "height": 472
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-work-progress--note-1-current-v1-can-show-hone": {
+          "nodeId": "mission-control-ux-22-jul-work-progress--note-1-current-v1-can-show-hone",
+          "position": {
+            "x": 500,
+            "y": 62
+          },
+          "size": {
+            "width": 280,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-work-progress--missions-jsonl": {
+          "nodeId": "mission-control-ux-22-jul-work-progress--missions-jsonl",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-work-progress--task-and-history-stores": {
+          "nodeId": "mission-control-ux-22-jul-work-progress--task-and-history-stores",
+          "position": {
+            "x": 1750,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-work-progress--rooms-and-messages": {
+          "nodeId": "mission-control-ux-22-jul-work-progress--rooms-and-messages",
+          "position": {
+            "x": 820,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-work-progress--v4-static-copy": {
+          "nodeId": "mission-control-ux-22-jul-work-progress--v4-static-copy",
+          "position": {
+            "x": 1290,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-work-progress--stages": {
+          "nodeId": "mission-control-ux-22-jul-work-progress--stages",
+          "position": {
+            "x": 230,
+            "y": 278
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-work-progress--tasks-and-workflow": {
+          "nodeId": "mission-control-ux-22-jul-work-progress--tasks-and-workflow",
+          "position": {
+            "x": 1730,
+            "y": 278
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "mission-control-ux-22-jul-work-progress--activity": {
+          "nodeId": "mission-control-ux-22-jul-work-progress--activity",
+          "position": {
+            "x": 1060,
+            "y": 270
+          },
+          "size": {
+            "width": 420,
+            "height": 162
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {}
+}

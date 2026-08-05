@@ -1,0 +1,310 @@
+{
+  "schemaVersion": 3,
+  "id": "webhook-relay",
+  "name": "Webhook Relay",
+  "status": "active",
+  "revision": 2381,
+  "nodes": {
+    "webhook-relay": {
+      "id": "webhook-relay",
+      "kind": "group",
+      "label": "Webhook Relay",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "webhook-relay--note-1-failed-deliveries-retry-": {
+      "id": "webhook-relay--note-1-failed-deliveries-retry-",
+      "kind": "comment",
+      "label": "Failed deliveries retry with backoff.",
+      "interfaceIds": [],
+      "typeIds": [],
+      "parentId": "webhook-relay"
+    },
+    "webhook-relay--note-2-ack-is-not-a-receipt-ack": {
+      "id": "webhook-relay--note-2-ack-is-not-a-receipt-ack",
+      "kind": "comment",
+      "label": "Ack is not a receipt: Ack answers the webhook sender instantly (got it, queued). A DeliveryReceipt records one delivery attempt to one subscriber. relay-log append returns void because logging is fire-and-forget.",
+      "interfaceIds": [],
+      "typeIds": [],
+      "parentId": "webhook-relay"
+    },
+    "webhook-relay--ingress": {
+      "id": "webhook-relay--ingress",
+      "kind": "module",
+      "label": "Ingress",
+      "interfaceIds": [
+        "webhook-relay--ingress--if-receive"
+      ],
+      "typeIds": [
+        "webhook-relay--ingress--type-ack"
+      ],
+      "description": "Receives webhooks over HTTP",
+      "parentId": "webhook-relay"
+    },
+    "webhook-relay--signature-check": {
+      "id": "webhook-relay--signature-check",
+      "kind": "module",
+      "label": "Signature check",
+      "interfaceIds": [
+        "webhook-relay--signature-check--if-verify"
+      ],
+      "typeIds": [
+        "webhook-relay--signature-check--type-verdict"
+      ],
+      "parentId": "webhook-relay"
+    },
+    "webhook-relay--fanout": {
+      "id": "webhook-relay--fanout",
+      "kind": "module",
+      "label": "Fanout",
+      "interfaceIds": [
+        "webhook-relay--fanout--if-deliver"
+      ],
+      "typeIds": [
+        "webhook-relay--fanout--type-subscriber",
+        "webhook-relay--fanout--type-deliveryreceipt"
+      ],
+      "description": "Delivers to every subscriber",
+      "parentId": "webhook-relay"
+    },
+    "webhook-relay--relay-log-json": {
+      "id": "webhook-relay--relay-log-json",
+      "kind": "resource",
+      "label": "relay-log.json",
+      "interfaceIds": [
+        "webhook-relay--relay-log-json--if-append"
+      ],
+      "typeIds": [],
+      "parentId": "webhook-relay"
+    }
+  },
+  "wires": {
+    "webhook-relay--wire-1": {
+      "id": "webhook-relay--wire-1",
+      "kind": "queries",
+      "label": "verify(WebhookEvent, Secret) -> Verdict",
+      "source": {
+        "nodeId": "webhook-relay--ingress"
+      },
+      "target": {
+        "nodeId": "webhook-relay--signature-check"
+      }
+    },
+    "webhook-relay--wire-2": {
+      "id": "webhook-relay--wire-2",
+      "kind": "executes",
+      "label": "deliver(WebhookEvent, Subscriber) -> DeliveryReceipt",
+      "source": {
+        "nodeId": "webhook-relay--ingress"
+      },
+      "target": {
+        "nodeId": "webhook-relay--fanout"
+      }
+    },
+    "webhook-relay--wire-3": {
+      "id": "webhook-relay--wire-3",
+      "kind": "owns",
+      "label": "append(DeliveryReceipt) -> void",
+      "source": {
+        "nodeId": "webhook-relay--fanout"
+      },
+      "target": {
+        "nodeId": "webhook-relay--relay-log-json"
+      }
+    }
+  },
+  "interfaces": {
+    "webhook-relay--ingress--if-receive": {
+      "id": "webhook-relay--ingress--if-receive",
+      "ownerId": "webhook-relay--ingress",
+      "name": "receive",
+      "accepts": [
+        "WebhookEvent"
+      ],
+      "returns": [
+        "Ack"
+      ]
+    },
+    "webhook-relay--signature-check--if-verify": {
+      "id": "webhook-relay--signature-check--if-verify",
+      "ownerId": "webhook-relay--signature-check",
+      "name": "verify",
+      "accepts": [
+        "WebhookEvent",
+        "Secret"
+      ],
+      "returns": [
+        "Verdict"
+      ]
+    },
+    "webhook-relay--fanout--if-deliver": {
+      "id": "webhook-relay--fanout--if-deliver",
+      "ownerId": "webhook-relay--fanout",
+      "name": "deliver",
+      "accepts": [
+        "WebhookEvent",
+        "Subscriber"
+      ],
+      "returns": [
+        "DeliveryReceipt"
+      ]
+    },
+    "webhook-relay--relay-log-json--if-append": {
+      "id": "webhook-relay--relay-log-json--if-append",
+      "ownerId": "webhook-relay--relay-log-json",
+      "name": "append",
+      "accepts": [
+        "DeliveryReceipt"
+      ],
+      "returns": [
+        "void"
+      ]
+    }
+  },
+  "types": {
+    "webhook-relay--ingress--type-ack": {
+      "id": "webhook-relay--ingress--type-ack",
+      "name": "Ack",
+      "fields": [
+        "received",
+        "eventId"
+      ]
+    },
+    "webhook-relay--signature-check--type-verdict": {
+      "id": "webhook-relay--signature-check--type-verdict",
+      "name": "Verdict",
+      "fields": [
+        "valid",
+        "reason"
+      ]
+    },
+    "webhook-relay--fanout--type-subscriber": {
+      "id": "webhook-relay--fanout--type-subscriber",
+      "name": "Subscriber",
+      "fields": [
+        "url",
+        "secret"
+      ]
+    },
+    "webhook-relay--fanout--type-deliveryreceipt": {
+      "id": "webhook-relay--fanout--type-deliveryreceipt",
+      "name": "DeliveryReceipt",
+      "fields": [
+        "subscriberUrl",
+        "status",
+        "attempt"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "webhook-relay": {
+          "nodeId": "webhook-relay",
+          "position": {
+            "x": 84,
+            "y": 3108
+          },
+          "size": {
+            "width": 1852,
+            "height": 879
+          },
+          "pinned": false
+        },
+        "webhook-relay--note-1-failed-deliveries-retry-": {
+          "nodeId": "webhook-relay--note-1-failed-deliveries-retry-",
+          "position": {
+            "x": 792,
+            "y": 241
+          },
+          "size": {
+            "width": 388,
+            "height": 174
+          },
+          "pinned": false
+        },
+        "webhook-relay--note-2-ack-is-not-a-receipt-ack": {
+          "nodeId": "webhook-relay--note-2-ack-is-not-a-receipt-ack",
+          "position": {
+            "x": 1332,
+            "y": 192
+          },
+          "size": {
+            "width": 496,
+            "height": 243
+          },
+          "pinned": false
+        },
+        "webhook-relay--ingress": {
+          "nodeId": "webhook-relay--ingress",
+          "position": {
+            "x": 370,
+            "y": 113
+          },
+          "size": {
+            "width": 382,
+            "height": 250
+          },
+          "pinned": false
+        },
+        "webhook-relay--signature-check": {
+          "nodeId": "webhook-relay--signature-check",
+          "position": {
+            "x": 744,
+            "y": 516
+          },
+          "size": {
+            "width": 605,
+            "height": 234
+          },
+          "pinned": false
+        },
+        "webhook-relay--fanout": {
+          "nodeId": "webhook-relay--fanout",
+          "position": {
+            "x": 244,
+            "y": 453
+          },
+          "size": {
+            "width": 398,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "webhook-relay--relay-log-json": {
+          "nodeId": "webhook-relay--relay-log-json",
+          "position": {
+            "x": 320,
+            "y": 701
+          },
+          "size": {
+            "width": 247,
+            "height": 90
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {}
+}

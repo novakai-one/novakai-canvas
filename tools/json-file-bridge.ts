@@ -1,12 +1,21 @@
-import { watch } from 'node:fs';
-import { readFile, writeFile } from 'node:fs/promises';
-import { basename, resolve } from 'node:path';
+import { existsSync, watch } from 'node:fs';
+import { mkdir, readdir, readFile, rename, writeFile } from 'node:fs/promises';
+import { basename, join, resolve } from 'node:path';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { Plugin } from 'vite';
+import { parseArchitectureDocument } from '../src/domain/schema.ts';
+import { migrateDocumentToLibrary } from '../src/domain/migrate/v2-to-v3.ts';
+import type { MigrationReport } from '../src/domain/records.ts';
 
-const FILES = new Map([
-  ['/api/architecture', 'public/data/project-architecture.json'],
-  ['/api/preferences', 'public/data/canvas-preferences.json'],
+const FILES = new Map<string, { file: string; fallback?: string }>([
+  ['/api/architecture', {
+    file: 'public/data/project-architecture.json',
+    // The one-time library migration renames this file away; a host still speaking the legacy
+    // architecture endpoint (the current rendering pipeline) must keep reading the same content
+    // afterward, so a missing primary falls back to where the migration left it.
+    fallback: 'public/data/project-architecture.pre-v3.json',
+  }],
+  ['/api/preferences', { file: 'public/data/canvas-preferences.json' }],
 ]);
 
 /** Only the architecture document carries a revision worth guarding. */
@@ -23,19 +32,21 @@ async function handle(
   response: ServerResponse,
   file: string,
   onWrite: () => void,
+  fallback?: string,
 ): Promise<void> {
   response.setHeader('content-type', 'application/json; charset=utf-8');
+  const readable = !existsSync(file) && fallback && existsSync(fallback) ? fallback : file;
   if (request.method === 'GET') {
-    response.end(await readFile(file, 'utf8'));
+    response.end(await readFile(readable, 'utf8'));
     return;
   }
   if (request.method === 'PUT') {
     const raw = await bodyOf(request);
     const parsed = JSON.parse(raw) as { revision?: number };
-    if (REVISION_GUARDED.has(basename(file)) && typeof parsed.revision === 'number') {
+    if (REVISION_GUARDED.has(basename(file)) && typeof parsed.revision === 'number' && existsSync(readable)) {
       // Compare-and-swap: an external writer (the canvas CLI) may have advanced
       // the file since this client loaded it; a stale PUT must not clobber that.
-      const disk = JSON.parse(await readFile(file, 'utf8')) as { revision?: number };
+      const disk = JSON.parse(await readFile(readable, 'utf8')) as { revision?: number };
       if (typeof disk.revision === 'number' && parsed.revision <= disk.revision) {
         response.statusCode = 409;
         response.end(JSON.stringify({ error: 'stale revision', disk: disk.revision }));
@@ -52,7 +63,141 @@ async function handle(
   response.end(JSON.stringify({ error: 'Method not allowed' }));
 }
 
-/** Development-only bridge restricted to two known JSON files. */
+/** What a revisioned file write produced: written, or the actual revision it conflicted with. */
+export type RecordWriteOutcome = { status: 'written' } | { status: 'conflict'; revision: number };
+
+/**
+ * Compare-and-swap write for one record file, independent of HTTP plumbing.
+ *
+ * A file that does not exist yet reads as revision 0, so a create (`expectedRevision: 0`)
+ * against a never-written record succeeds — matching what `createCanvasLibrary` sends when it
+ * writes a brand-new diagram.
+ */
+export async function writeRecordFile(
+  file: string,
+  raw: string,
+  expectedRevision: number,
+): Promise<RecordWriteOutcome> {
+  const diskRevision = existsSync(file)
+    ? (JSON.parse(await readFile(file, 'utf8')) as { revision?: number }).revision ?? 0
+    : 0;
+  if (expectedRevision !== diskRevision) return { status: 'conflict', revision: diskRevision };
+  await writeFile(file, raw.endsWith('\n') ? raw : `${raw}\n`, 'utf8');
+  return { status: 'written' };
+}
+
+/** Result of checking whether the one-time legacy-to-library migration ran. */
+export type BootstrapOutcome = { migrated: false } | { migrated: true; report: MigrationReport };
+
+/**
+ * Runs the legacy-document-to-library migration exactly once per data directory.
+ *
+ * Idempotent by construction rather than by a lock: the presence of `library.json` is the only
+ * signal consulted, and the migration's own last step renames the legacy file away, so a second
+ * call finds nothing left to migrate and returns immediately.
+ */
+export async function bootstrapLibrary(dataDir: string): Promise<BootstrapOutcome> {
+  const libraryPath = join(dataDir, 'library.json');
+  const legacyPath = join(dataDir, 'project-architecture.json');
+  if (existsSync(libraryPath) || !existsSync(legacyPath)) return { migrated: false };
+  const document = parseArchitectureDocument(JSON.parse(await readFile(legacyPath, 'utf8')));
+  const { index, records, report } = migrateDocumentToLibrary(document);
+  const diagramsDir = join(dataDir, 'diagrams');
+  await mkdir(diagramsDir, { recursive: true });
+  await Promise.all(Object.values(records).map((record) =>
+    writeFile(join(diagramsDir, `${record.id}.json`), `${JSON.stringify(record, null, 2)}\n`, 'utf8')));
+  await writeFile(libraryPath, `${JSON.stringify(index, null, 2)}\n`, 'utf8');
+  await rename(legacyPath, join(dataDir, 'project-architecture.pre-v3.json'));
+  return { migrated: true, report };
+}
+
+function logMigration(report: MigrationReport): void {
+  console.log(
+    `[canvas migration] diagramsCreated=${report.diagramsCreated} `
+    + `unfiledNodes=${report.unfiledNodeIds.length} `
+    + `crossDiagramLinks=${report.crossDiagramLinkIds.length} `
+    + `carriedOperations=${report.carriedOperationIds.length}`,
+  );
+}
+
+function expectedRevisionOf(url: URL): number | undefined {
+  const raw = url.searchParams.get('expectedRevision');
+  if (raw === null) return undefined;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+async function handleRecordFile(
+  request: IncomingMessage,
+  response: ServerResponse,
+  file: string,
+  expectedRevision: number | undefined,
+  onWrite: () => void,
+): Promise<void> {
+  response.setHeader('content-type', 'application/json; charset=utf-8');
+  if (request.method === 'GET') {
+    if (!existsSync(file)) {
+      response.statusCode = 404;
+      response.end(JSON.stringify({ error: 'not found' }));
+      return;
+    }
+    response.end(await readFile(file, 'utf8'));
+    return;
+  }
+  if (request.method === 'PUT') {
+    const raw = await bodyOf(request);
+    const outcome = await writeRecordFile(file, raw, expectedRevision ?? 0);
+    if (outcome.status === 'conflict') {
+      response.statusCode = 409;
+      response.end(JSON.stringify({ revision: outcome.revision }));
+      return;
+    }
+    onWrite();
+    response.statusCode = 204;
+    response.end();
+    return;
+  }
+  response.statusCode = 405;
+  response.end(JSON.stringify({ error: 'Method not allowed' }));
+}
+
+async function handleLibrary(
+  request: IncomingMessage,
+  response: ServerResponse,
+  dataDir: string,
+  expectedRevision: number | undefined,
+  onWrite: () => void,
+): Promise<void> {
+  if (request.method === 'GET') {
+    // Mark the write window before the migration's own file writes, not after: they land as a
+    // burst of `fs.watch` events, and the whole burst must be suppressed as self-inflicted, not
+    // just whichever event happens to land after the last `await`. Only marked when a migration
+    // is actually about to run, so an ordinary GET never masks a genuine concurrent external write.
+    const aboutToMigrate = !existsSync(join(dataDir, 'library.json'))
+      && existsSync(join(dataDir, 'project-architecture.json'));
+    if (aboutToMigrate) onWrite();
+    const outcome = await bootstrapLibrary(dataDir);
+    if (outcome.migrated) logMigration(outcome.report);
+  }
+  await handleRecordFile(request, response, join(dataDir, 'library.json'), expectedRevision, onWrite);
+}
+
+async function handleDiagramsList(request: IncomingMessage, response: ServerResponse, dataDir: string): Promise<void> {
+  response.setHeader('content-type', 'application/json; charset=utf-8');
+  if (request.method !== 'GET') {
+    response.statusCode = 405;
+    response.end(JSON.stringify({ error: 'Method not allowed' }));
+    return;
+  }
+  const diagramsDir = join(dataDir, 'diagrams');
+  const ids = existsSync(diagramsDir)
+    ? (await readdir(diagramsDir)).filter((name) => name.endsWith('.json'))
+      .map((name) => name.slice(0, -'.json'.length)).sort()
+    : [];
+  response.end(JSON.stringify(ids));
+}
+
+/** Development-only bridge serving the legacy document, preferences, and the v3 record library. */
 export function jsonFileBridge(): Plugin {
   return {
     name: 'novakai-canvas-json-file-bridge',
@@ -76,13 +221,34 @@ export function jsonFileBridge(): Plugin {
       server.httpServer?.once('close', () => watcher.close());
 
       server.middlewares.use((request, response, next) => {
-        const path = request.url ? new URL(request.url, 'http://localhost').pathname : '';
-        const relative = FILES.get(path);
-        if (!relative) return next();
-        void handle(request, response, resolve(relative), markBridgeWrite).catch((error: unknown) => {
+        if (!request.url) return next();
+        const url = new URL(request.url, 'http://localhost');
+        const path = url.pathname;
+        const fail = (error: unknown): void => {
           response.statusCode = 500;
           response.end(JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }));
-        });
+        };
+
+        if (path === '/api/library') {
+          void handleLibrary(request, response, dataDir, expectedRevisionOf(url), markBridgeWrite).catch(fail);
+          return;
+        }
+        if (path === '/api/diagrams') {
+          void handleDiagramsList(request, response, dataDir).catch(fail);
+          return;
+        }
+        if (path.startsWith('/api/diagrams/')) {
+          const id = decodeURIComponent(path.slice('/api/diagrams/'.length));
+          if (id && !id.includes('/')) {
+            const file = join(dataDir, 'diagrams', `${id}.json`);
+            void handleRecordFile(request, response, file, expectedRevisionOf(url), markBridgeWrite).catch(fail);
+            return;
+          }
+        }
+        const known = FILES.get(path);
+        if (!known) return next();
+        void handle(request, response, resolve(known.file), markBridgeWrite, known.fallback && resolve(known.fallback))
+          .catch(fail);
       });
     },
   };

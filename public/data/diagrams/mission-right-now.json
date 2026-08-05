@@ -1,0 +1,252 @@
+{
+  "schemaVersion": 3,
+  "id": "mission-right-now",
+  "name": "Mission Right Now",
+  "status": "active",
+  "revision": 2381,
+  "nodes": {
+    "mission-right-now": {
+      "id": "mission-right-now",
+      "kind": "group",
+      "label": "Mission Right Now",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Registry truth: who is linked to what, right now"
+    },
+    "mission-right-now--proj-novakai-canvas": {
+      "id": "mission-right-now--proj-novakai-canvas",
+      "kind": "group",
+      "label": "proj_novakai-canvas",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "novakai-canvas | status: active",
+      "parentId": "mission-right-now"
+    },
+    "mission-right-now--proj-novakai-canvas--mission-canvas-zones-v2": {
+      "id": "mission-right-now--proj-novakai-canvas--mission-canvas-zones-v2",
+      "kind": "group",
+      "label": "mission_canvas-zones-v2",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "status: in-progress | owner: chief-kimi | outcome: absent",
+      "parentId": "mission-right-now--proj-novakai-canvas"
+    },
+    "mission-right-now--standalone-no-mission-link": {
+      "id": "mission-right-now--standalone-no-mission-link",
+      "kind": "group",
+      "label": "Standalone — no mission link",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "Agents linked to no in-progress mission",
+      "parentId": "mission-right-now"
+    },
+    "mission-right-now--standalone-no-mission-link--manager-kimi-zones": {
+      "id": "mission-right-now--standalone-no-mission-link--manager-kimi-zones",
+      "kind": "runtime",
+      "label": "Manager Kimi Zones",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "provider: kimi | status: running",
+      "parentId": "mission-right-now--standalone-no-mission-link"
+    },
+    "mission-right-now--standalone-no-mission-link--worker-kimi-zones": {
+      "id": "mission-right-now--standalone-no-mission-link--worker-kimi-zones",
+      "kind": "runtime",
+      "label": "Worker Kimi Zones",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "provider: kimi | status: running",
+      "parentId": "mission-right-now--standalone-no-mission-link"
+    },
+    "mission-right-now--standalone-no-mission-link--auditor-codex-zones-iii": {
+      "id": "mission-right-now--standalone-no-mission-link--auditor-codex-zones-iii",
+      "kind": "runtime",
+      "label": "Auditor Codex Zones III",
+      "interfaceIds": [],
+      "typeIds": [],
+      "description": "provider: codex | status: running",
+      "parentId": "mission-right-now--standalone-no-mission-link"
+    }
+  },
+  "wires": {
+    "mission-right-now--wire-1": {
+      "id": "mission-right-now--wire-1",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "mission-right-now--proj-novakai-canvas"
+      },
+      "target": {
+        "nodeId": "mission-right-now--proj-novakai-canvas--mission-canvas-zones-v2"
+      }
+    },
+    "mission-right-now--wire-2": {
+      "id": "mission-right-now--wire-2",
+      "kind": "missing",
+      "label": "no link at all",
+      "source": {
+        "nodeId": "mission-right-now--proj-novakai-canvas--mission-canvas-zones-v2"
+      },
+      "target": {
+        "nodeId": "mission-right-now--standalone-no-mission-link--manager-kimi-zones"
+      }
+    },
+    "mission-right-now--wire-3": {
+      "id": "mission-right-now--wire-3",
+      "kind": "missing",
+      "label": "no link at all",
+      "source": {
+        "nodeId": "mission-right-now--proj-novakai-canvas--mission-canvas-zones-v2"
+      },
+      "target": {
+        "nodeId": "mission-right-now--standalone-no-mission-link--worker-kimi-zones"
+      }
+    },
+    "mission-right-now--wire-4": {
+      "id": "mission-right-now--wire-4",
+      "kind": "missing",
+      "label": "no link at all",
+      "source": {
+        "nodeId": "mission-right-now--proj-novakai-canvas--mission-canvas-zones-v2"
+      },
+      "target": {
+        "nodeId": "mission-right-now--standalone-no-mission-link--auditor-codex-zones-iii"
+      }
+    },
+    "mission-right-now--wire-5": {
+      "id": "mission-right-now--wire-5",
+      "kind": "mentions",
+      "label": "mail thread (6x)",
+      "source": {
+        "nodeId": "mission-right-now--standalone-no-mission-link--auditor-codex-zones-iii"
+      },
+      "target": {
+        "nodeId": "mission-right-now--standalone-no-mission-link--manager-kimi-zones"
+      }
+    },
+    "mission-right-now--wire-6": {
+      "id": "mission-right-now--wire-6",
+      "kind": "mentions",
+      "label": "mail thread (18x)",
+      "source": {
+        "nodeId": "mission-right-now--standalone-no-mission-link--manager-kimi-zones"
+      },
+      "target": {
+        "nodeId": "mission-right-now--standalone-no-mission-link--worker-kimi-zones"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "mission-right-now": {
+          "nodeId": "mission-right-now",
+          "position": {
+            "x": 40,
+            "y": 13355
+          },
+          "size": {
+            "width": 862,
+            "height": 644
+          },
+          "pinned": false
+        },
+        "mission-right-now--proj-novakai-canvas": {
+          "nodeId": "mission-right-now--proj-novakai-canvas",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 400,
+            "height": 256
+          },
+          "pinned": false
+        },
+        "mission-right-now--proj-novakai-canvas--mission-canvas-zones-v2": {
+          "nodeId": "mission-right-now--proj-novakai-canvas--mission-canvas-zones-v2",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "mission-right-now--standalone-no-mission-link": {
+          "nodeId": "mission-right-now--standalone-no-mission-link",
+          "position": {
+            "x": 480,
+            "y": 56
+          },
+          "size": {
+            "width": 342,
+            "height": 548
+          },
+          "pinned": false
+        },
+        "mission-right-now--standalone-no-mission-link--manager-kimi-zones": {
+          "nodeId": "mission-right-now--standalone-no-mission-link--manager-kimi-zones",
+          "position": {
+            "x": 44,
+            "y": 230
+          },
+          "size": {
+            "width": 254,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-right-now--standalone-no-mission-link--worker-kimi-zones": {
+          "nodeId": "mission-right-now--standalone-no-mission-link--worker-kimi-zones",
+          "position": {
+            "x": 44,
+            "y": 404
+          },
+          "size": {
+            "width": 254,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "mission-right-now--standalone-no-mission-link--auditor-codex-zones-iii": {
+          "nodeId": "mission-right-now--standalone-no-mission-link--auditor-codex-zones-iii",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 262,
+            "height": 104
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {}
+}
