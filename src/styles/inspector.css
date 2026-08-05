@@ -209,3 +209,60 @@
   .inspector { width: 100% !important; height: 38%; border-top: 1px solid var(--border-soft); border-left: 0; }
   .canvas-surface { height: 62%; }
 }
+
+/* Contents list: what the panel shows instead of four hundred empty pixels.
+   Calm by default — no badges, no dots, no borders per row. The only emphasis
+   is the hovered row, because that is the one the pointer is about to act on. */
+.diagram-contents { display: flex; flex-direction: column; min-height: 0; }
+
+.diagram-contents header {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 0 0 10px;
+  border-bottom: var(--surface-border-soft);
+}
+
+.diagram-contents header strong { color: var(--ink-strong); font-size: var(--type-title); }
+.diagram-contents header small { color: var(--faint); font-size: var(--type-meta); }
+
+.diagram-contents ul {
+  margin: 0;
+  padding: 6px 0 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.diagram-contents li { margin: 0; }
+
+.diagram-contents li button {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  padding: 5px 6px;
+  border: 0;
+  border-radius: var(--control-radius);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.diagram-contents li button:hover { background: var(--hover); }
+
+.contents-kind {
+  flex: none;
+  width: 52px;
+  color: var(--faint);
+  font-size: var(--type-meta);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.contents-label {
+  overflow: hidden;
+  color: var(--ink-soft);
+  font-size: var(--type-body);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -7,20 +7,73 @@ const WIRE_KINDS = Object.keys(WIRE_KIND_STYLES) as WireKind[];
 
 interface InspectPanelProps {
   document: ArchitectureDocument;
+  /** Only what the open diagram contains, so the contents list matches what is on screen. */
+  visibleDocument: ArchitectureDocument;
   selection: Selection;
   execute: (command: CanvasCommand) => void;
   clearSelection: () => void;
+  select: (selection: Selection) => void;
   editable: boolean;
   openDiagram: (diagramId: string) => void;
 }
 
-function EmptySelection() {
-  return <div className="empty-inspector"><span className="empty-mark">⌁</span><span>Select any object or wire</span></div>;
+function depthOf(document: ArchitectureDocument, nodeId: string): number {
+  let depth = 0;
+  let cursor = document.nodes[nodeId]?.parentId;
+  while (cursor) {
+    depth += 1;
+    cursor = document.nodes[cursor]?.parentId;
+  }
+  return depth;
+}
+
+/**
+ * What the panel shows when nothing is selected.
+ *
+ * It used to be one grey sentence in four hundred pixels of nothing. Listing what the open
+ * diagram contains costs no extra chrome and turns the largest empty area on screen into the
+ * fastest way to reach any object in it.
+ */
+function DiagramContents({ props }: { props: InspectPanelProps }) {
+  const { visibleDocument: visible } = props;
+  const nodes = Object.values(visible.nodes);
+  const root = nodes.find((node) => node.kind === 'scope' && !node.parentId);
+  const listed = nodes
+    .filter((node) => node.id !== root?.id)
+    .sort((left, right) => depthOf(visible, left.id) - depthOf(visible, right.id)
+      || left.label.localeCompare(right.label));
+
+  if (listed.length === 0) {
+    return <div className="empty-inspector"><span className="empty-mark">⌁</span><span>Nothing drawn yet</span></div>;
+  }
+
+  return (
+    <div className="diagram-contents">
+      <header>
+        <strong>{root?.label ?? visible.name}</strong>
+        <small>{listed.length} objects · {Object.keys(visible.wires).length} wires</small>
+      </header>
+      <ul>
+        {listed.map((node) => (
+          <li key={node.id} style={{ paddingLeft: `${Math.min(depthOf(visible, node.id) - 1, 3) * 10}px` }}>
+            <button onClick={() => props.select({ kind: 'node', id: node.id })} type="button">
+              <span className="contents-kind">{node.kind}</span>
+              <span className="contents-label">{node.label}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function EmptySelection({ props }: { props: InspectPanelProps }) {
+  return <DiagramContents props={props} />;
 }
 
 function NodeInspection({ props, id }: { props: InspectPanelProps; id: string }) {
   const node = props.document.nodes[id];
-  if (!node) return <EmptySelection />;
+  if (!node) return <EmptySelection props={props} />;
   const placement = placementFor(props.document, node.id);
   const layout = props.document.layouts[props.document.activeLayoutId];
   const diagram = Object.values(props.document.diagrams).find((item) => item.rootNodeId === node.id);
@@ -91,7 +144,7 @@ function NodeInspection({ props, id }: { props: InspectPanelProps; id: string })
 
 function InterfaceInspection({ props, id }: { props: InspectPanelProps; id: string }) {
   const item = props.document.interfaces[id];
-  if (!item) return <EmptySelection />;
+  if (!item) return <EmptySelection props={props} />;
   return (
     <div className="inspection">
       <div className="object-identity"><span>interface</span><strong>{item.name}</strong></div>
@@ -105,7 +158,7 @@ function InterfaceInspection({ props, id }: { props: InspectPanelProps; id: stri
 
 function TypeInspection({ props, id }: { props: InspectPanelProps; id: string }) {
   const item = props.document.types[id];
-  if (!item) return <EmptySelection />;
+  if (!item) return <EmptySelection props={props} />;
   const usedBy = Object.values(props.document.nodes).filter((node) => node.typeIds.includes(id));
   return (
     <div className="inspection">
@@ -119,7 +172,7 @@ function TypeInspection({ props, id }: { props: InspectPanelProps; id: string })
 
 function WireInspection({ props, id }: { props: InspectPanelProps; id: string }) {
   const wire = props.document.wires[id];
-  if (!wire) return <EmptySelection />;
+  if (!wire) return <EmptySelection props={props} />;
   return (
     <div className="inspection">
       <div className="object-identity"><span>wire · {wire.kind}</span><strong>{wire.label || 'Unlabelled'}</strong></div>
@@ -140,7 +193,7 @@ function WireInspection({ props, id }: { props: InspectPanelProps; id: string })
 function TreeRowInspection({ props, nodeId, rowId }: { props: InspectPanelProps; nodeId: string; rowId: string }) {
   const node = props.document.nodes[nodeId];
   const row = node?.rows?.find((item) => item.id === rowId);
-  if (!node || !row) return <EmptySelection />;
+  if (!node || !row) return <EmptySelection props={props} />;
   const parent = row.parentRowId ? node.rows?.find((item) => item.id === row.parentRowId) : undefined;
   return (
     <div className="inspection">
@@ -159,7 +212,7 @@ function TreeRowInspection({ props, nodeId, rowId }: { props: InspectPanelProps;
 /** Inspects the currently selected domain object. */
 export function InspectPanel(props: InspectPanelProps) {
   const selection = props.selection;
-  if (!selection) return <EmptySelection />;
+  if (!selection) return <EmptySelection props={props} />;
   if (selection.kind === 'node') return <NodeInspection props={props} id={selection.id} />;
   if (selection.kind === 'interface') return <InterfaceInspection props={props} id={selection.id} />;
   if (selection.kind === 'type') return <TypeInspection props={props} id={selection.id} />;

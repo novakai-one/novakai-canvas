@@ -139,7 +139,15 @@ export function CanvasToolbar({ props, layout }: { props: CanvasToolbarProps; la
         <EditActions props={props} layout={layout} showArchived={showArchived} toggleArchived={() => setShowArchived((shown) => !shown)} />
       )}
       <div className="file-identity"><span>{props.document.name}</span><small>r{props.document.revision}</small></div>
-      {props.mode === 'edit' && <span className="save-status">{props.saveStatus}</span>}
+      {props.mode === 'edit' && (
+        <span
+          className="save-status"
+          data-state={props.saveStatus === 'Saved' || props.saveStatus === 'Saving' ? 'clean' : 'unsaved'}
+          role="status"
+        >
+          {props.saveStatus}
+        </span>
+      )}
     </div>
   );
 }

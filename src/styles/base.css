@@ -56,6 +56,60 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   --accent-dim: #8e754a;
   --danger: #5a433a;
   --danger-strong: #c8a798;
+
+  /* ---- Groups ----------------------------------------------------------
+     Every repeated look is defined once here and referenced everywhere else,
+     so changing how all controls feel is one edit rather than eleven. Reach
+     for these before inventing a value. */
+
+  /* Controls: buttons, selects, inputs. */
+  --control-padding: 7px 9px;
+  --control-radius: 4px;
+  --control-border: 1px solid var(--border);
+  --control-bg: var(--card-2);
+  --control-ink: var(--ink-soft);
+  --control-border-hover: var(--faint);
+  --control-bg-hover: var(--hover);
+  --control-disabled-opacity: 0.4;
+
+  /* Surfaces, lightest to deepest. Children are always lighter than parents. */
+  --surface-1: var(--card);
+  --surface-2: var(--card-2);
+  --surface-3: var(--card-3);
+  --surface-border: 1px solid var(--border);
+  --surface-border-soft: 1px solid var(--border-soft);
+  --surface-radius: 6px;
+
+  /* Type scale. Four sizes, named by the job they do rather than by number. */
+  --type-title: 12px;
+  --type-body: 11px;
+  --type-control: 10px;
+  --type-meta: 9px;
+
+  /* Motion. Calm by default; structural movement is slower than feedback. */
+  --motion-feedback: 160ms ease;
+  --motion-structural: 700ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* One definition for every control in the application. */
+.app-shell :is(.toolbar-actions, .map-picker) :is(button, select, input) {
+  padding: var(--control-padding);
+  border: var(--control-border);
+  border-radius: var(--control-radius);
+  color: var(--control-ink);
+  background: var(--control-bg);
+  font-size: var(--type-control);
+  cursor: pointer;
+}
+
+.app-shell :is(.toolbar-actions, .map-picker) :is(button, select, input):hover {
+  border-color: var(--control-border-hover);
+  background: var(--control-bg-hover);
+}
+
+.app-shell :is(.toolbar-actions, .map-picker) :is(button, select):disabled {
+  opacity: var(--control-disabled-opacity);
+  cursor: default;
 }
 
 .app-shell[data-accent='sage'] {

@@ -46,11 +46,13 @@ export default function App({ engine, initialPreferences, preferencesRepository 
     const timer = window.setTimeout(() => {
       void engine.save().then(() => setSaveStatus('Saved')).catch((error: unknown) => {
         if (error instanceof Error && error.message === 'stale-revision') {
-          // Someone else (e.g. the canvas CLI) wrote the file first — their version wins.
-          void engine.reload().then(() => setSaveStatus('Saved'));
+          // Something else — usually ./canvas apply — wrote the file after this session read
+          // it. Reloading here silently threw the user's unsaved edits away while the status
+          // still read "Saved". Their work stays; they are told; they decide.
+          setSaveStatus('File changed on disk — your edits are unsaved');
           return;
         }
-        setSaveStatus('Local changes');
+        setSaveStatus('Not saved');
       });
     }, preferences.files.saveDelay);
     return () => window.clearTimeout(timer);
@@ -157,6 +159,8 @@ export default function App({ engine, initialPreferences, preferencesRepository 
       <Inspector
           clearSelection={() => setSelection(null)}
           document={document}
+          visibleDocument={focusedDocument}
+          select={select}
           editable={mode === 'edit'}
           execute={engine.execute}
           openDiagram={openDiagram}
