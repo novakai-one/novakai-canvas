@@ -14,6 +14,13 @@ export interface CanvasCensus {
   diagramNames: string[];
   /** Labels of every node, sorted. */
   nodeLabels: string[];
+  /**
+   * Kind, label, description and parentage per node, sorted.
+   *
+   * Labels alone are too weak an oracle: 233 of 259 real nodes carry a description, and a
+   * migration that dropped every one of them would still pass a label-only comparison.
+   */
+  nodeSignatures: string[];
   /** One signature per wire: kind, label, and endpoint IDs. Endpoint IDs survive migration. */
   wireSignatures: string[];
   /** Signatures of relationships that crossed a diagram boundary and became library links. */
@@ -32,6 +39,17 @@ function geometry(x: number, y: number, width: number, height: number): string {
   return `${x},${y},${width},${height}`;
 }
 
+/** `scope` and `group` are the same concept under two names, so they compare as one. */
+function normalisedKind(kind: string): string {
+  return kind === 'scope' ? 'group' : kind;
+}
+
+function nodeSignature(node: {
+  kind: string; label: string; description?: string; parentId?: string;
+}): string {
+  return `${normalisedKind(node.kind)}|${node.label}|${node.description ?? ''}|${node.parentId ?? ''}`;
+}
+
 /**
  * Censuses a legacy (schemaVersion 2) document.
  *
@@ -46,6 +64,7 @@ export function censusOfLegacyDocument(document: ArchitectureDocument): CanvasCe
       .map((diagram) => document.nodes[diagram.rootNodeId]?.label ?? diagram.id)
       .sort(),
     nodeLabels: Object.values(document.nodes).map((node) => node.label).sort(),
+    nodeSignatures: Object.values(document.nodes).map(nodeSignature).sort(),
     wireSignatures: Object.values(document.wires)
       .map((wire) => `${wire.kind}|${wire.label}|${wire.source}>${wire.target}`)
       .sort(),
@@ -76,6 +95,7 @@ export function censusOfMigratedLibrary(library: MigratedLibrary): CanvasCensus 
   return {
     diagramNames: records.map((record) => record.name).sort(),
     nodeLabels: records.flatMap((record) => Object.values(record.nodes).map((node) => node.label)).sort(),
+    nodeSignatures: records.flatMap((record) => Object.values(record.nodes).map(nodeSignature)).sort(),
     wireSignatures: records
       .flatMap((record) => Object.values(record.wires))
       .map((wire) => `${wire.kind}|${wire.label}|${wire.source.nodeId}>${wire.target.nodeId}`)
@@ -93,6 +113,6 @@ export function censusOfMigratedLibrary(library: MigratedLibrary): CanvasCensus 
         placement.nodeId,
         geometry(placement.position.x, placement.position.y, placement.size.width, placement.size.height),
       ] as const)))),
-    appliedOperationIds: [...library.index.migratedOperations].sort(),
+    appliedOperationIds: Object.keys(library.index.migratedOperations).sort(),
   };
 }

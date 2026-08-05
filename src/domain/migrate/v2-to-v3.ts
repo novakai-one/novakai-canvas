@@ -150,7 +150,10 @@ function buildRecord(
  * to no diagram at all go to a visible Unfiled diagram, and the document-global idempotency
  * ledger is carried to the library so a replayed pre-migration operation is still recognised.
  */
-export function migrateDocumentToLibrary(document: ArchitectureDocument): MigratedLibrary {
+export function migrateDocumentToLibrary(
+  document: ArchitectureDocument,
+  options: { fromSchemaVersion?: 1 | 2 } = {},
+): MigratedLibrary {
   const startingRevision = document.revision + 1;
   const records: Record<string, DiagramRecord> = {};
   const diagramOfNode = new Map<string, string>();
@@ -213,14 +216,31 @@ export function migrateDocumentToLibrary(document: ArchitectureDocument): Migrat
   const carriedOperationIds = Object.keys(document.appliedOperations).sort();
   const index: LibraryIndex = {
     schemaVersion: 3,
+    revision: 1,
     entries,
     links,
-    migratedOperations: carriedOperationIds,
+    migratedOperations: structuredClone(document.appliedOperations),
   };
 
+  // A type referenced from two records would be written into both, making two authorities for
+  // one definition. No real file does this today; reporting it means the day one does is the
+  // day it is seen, not the day the copies drift.
+  const typeOwners = new Map<string, Set<string>>();
+  for (const record of Object.values(records)) {
+    for (const typeId of Object.keys(record.types)) {
+      const owners = typeOwners.get(typeId) ?? new Set<string>();
+      owners.add(record.id);
+      typeOwners.set(typeId, owners);
+    }
+  }
+
   const report: MigrationReport = {
-    fromSchemaVersion: 2,
+    fromSchemaVersion: options.fromSchemaVersion ?? 2,
     diagramsCreated: Object.keys(records).length,
+    sharedTypeIds: [...typeOwners.entries()]
+      .filter(([, owners]) => owners.size > 1)
+      .map(([typeId]) => asId<never>(typeId))
+      .sort(),
     unfiledNodeIds,
     crossDiagramLinkIds: Object.keys(links).map((id) => asId<LinkId>(id)),
     carriedOperationIds,

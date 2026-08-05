@@ -169,24 +169,36 @@ export interface LibraryEntry {
   nodeLabels: string[];
 }
 
-/** The searchable index over every diagram record, plus the facts that belong to no record. */
+/**
+ * The searchable index over every diagram record, plus the facts that belong to no record.
+ *
+ * `entries` is a declared projection: every field in it is recomputable from the records, so a
+ * write torn between a record and this index is repaired by rebuilding rather than reconciled.
+ * `links` and `migratedOperations` are authoritative — they exist nowhere else.
+ */
 export interface LibraryIndex {
   schemaVersion: 3;
+  /** Guards against two hosts last-writer-wins-ing the index while saving different diagrams. */
+  revision: number;
   entries: Record<string, LibraryEntry>;
   links: Record<string, CrossDiagramLink>;
   /**
-   * Operation IDs applied before diagrams were split apart.
+   * Operations applied before diagrams were split apart, kept whole.
    *
    * Idempotency was document-global; without carrying these forward, replaying a pre-migration
-   * operation would apply it a second time.
+   * operation would apply it a second time. The full record is kept, not just the ID, because
+   * a duplicate outcome has to report the revision the original produced.
    */
-  migratedOperations: string[];
+  migratedOperations: Record<string, AppliedCanvasOperation>;
 }
 
 /** Everything a migration produced, so nothing it decided is invisible. */
 export interface MigrationReport {
+  /** The version of the file as it was found on disk, before any chained upgrade step. */
   fromSchemaVersion: 1 | 2;
   diagramsCreated: number;
+  /** Types referenced from more than one record, which would otherwise be copied into each. */
+  sharedTypeIds: TypeId[];
   /** Nodes that belonged to no diagram and were placed in the Unfiled diagram. */
   unfiledNodeIds: NodeId[];
   /** Relationships converted from wires into library links. */

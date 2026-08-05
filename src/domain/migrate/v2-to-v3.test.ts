@@ -23,8 +23,9 @@ describe.each(fixtures)('migrating $name', ({ raw }) => {
   const library = migrateDocumentToLibrary(legacy);
   const after = censusOfMigratedLibrary(library);
 
-  it('loses no node', () => {
+  it('loses no node, description, kind or parentage', () => {
     expect(after.nodeLabels).toEqual(before.nodeLabels);
+    expect(after.nodeSignatures).toEqual(before.nodeSignatures);
   });
 
   it('loses no relationship — a wire either stays a wire or becomes a library link', () => {
@@ -104,9 +105,18 @@ describe('migration report', () => {
     });
   });
 
-  it('carries all sixty pre-migration operations to the library', () => {
+  it('carries all sixty pre-migration operations to the library, whole', () => {
     expect(library.report.carriedOperationIds).toHaveLength(60);
-    expect(library.index.migratedOperations).toHaveLength(60);
+    expect(Object.keys(library.index.migratedOperations)).toHaveLength(60);
+    // Kept whole rather than as bare IDs: reporting a replay as a duplicate requires the
+    // revision the original produced.
+    const [first] = Object.values(library.index.migratedOperations);
+    expect(first).toMatchObject({ operationId: expect.any(String), revision: expect.any(Number) });
+    expect(first.actor).toBeDefined();
+  });
+
+  it('reports that no type is shared across records in any real file', () => {
+    expect(library.report.sharedTypeIds).toEqual([]);
   });
 
   it('indexes every diagram for search without opening a record', () => {
