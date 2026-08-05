@@ -332,6 +332,12 @@
   line-height: 1.35;
   letter-spacing: 0.01em;
   white-space: nowrap;
+  /* The label renderer is click-through and the wire's own 18px interaction band is painted
+     over it; without these two a label is a picture, not a control — which is why labels
+     could not be selected or moved at all. React Flow elevates each edge's own svg to 2, so a
+     label has to sit above that to be reachable at all. */
+  z-index: 3;
+  pointer-events: all;
   cursor: pointer;
   text-shadow:
     0 0 3px var(--bg), 0 0 3px var(--bg), 0 0 3px var(--bg),
@@ -340,6 +346,25 @@
 }
 
 .wire-label:hover { color: var(--ink); }
+.wire-label.is-movable { cursor: grab; }
+.wire-label.is-movable:active { cursor: grabbing; }
+
+/*
+ * The ends of a selected wire.
+ *
+ * Drawn only while the wire is selected — an always-on dot at every endpoint would be the badge
+ * on every row Chris rejected. The drag target itself is React Flow's own reconnect anchor,
+ * which is larger than the dot on purpose.
+ */
+.wire-endpoint {
+  fill: var(--gold);
+  stroke: var(--bg);
+  stroke-width: 2;
+  pointer-events: none;
+}
+
+.react-flow__edgeupdater { cursor: grab; }
+.react-flow__edge.selected .react-flow__edgeupdater:hover { cursor: grabbing; }
 
 /* A selected wire's contract must stay readable above everything else. */
 .wire-label.is-selected {

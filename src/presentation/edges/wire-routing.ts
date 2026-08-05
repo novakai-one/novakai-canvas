@@ -123,6 +123,39 @@ export function pointAlong(points: Point[], t: number): Point & { angle: number 
   return { ...last, angle: Math.atan2(last.y - previous.y, last.x - previous.x) };
 }
 
+/**
+ * The fraction of the way along a polyline that sits closest to a loose point.
+ *
+ * The inverse of `pointAlong`: it turns "the human dropped the label here" into the durable
+ * 0..1 the record stores, so the label keeps its place when the wire is rerouted.
+ */
+export function nearestPositionAlong(points: Point[], target: Point): number {
+  const total = polylineLength(points);
+  if (total === 0) return 0;
+  let travelled = 0;
+  let best = { distance: Number.POSITIVE_INFINITY, position: 0 };
+  for (let index = 1; index < points.length; index += 1) {
+    const from = points[index - 1];
+    const to = points[index];
+    const spanX = to.x - from.x;
+    const spanY = to.y - from.y;
+    const length = Math.abs(spanX) + Math.abs(spanY);
+    if (length === 0) continue;
+    const ratio = clamp(
+      ((target.x - from.x) * spanX + (target.y - from.y) * spanY) / (spanX ** 2 + spanY ** 2),
+      0,
+      1,
+    );
+    const nearest = { x: from.x + spanX * ratio, y: from.y + spanY * ratio };
+    const distance = (target.x - nearest.x) ** 2 + (target.y - nearest.y) ** 2;
+    if (distance < best.distance) {
+      best = { distance, position: (travelled + length * ratio) / total };
+    }
+    travelled += length;
+  }
+  return best.position;
+}
+
 /** SVG path for a polyline with rounded bends; the radius shrinks to fit short segments. */
 export function routePath(points: Point[], radius = 6): string {
   if (points.length === 0) return '';

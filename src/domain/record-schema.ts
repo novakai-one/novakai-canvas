@@ -52,6 +52,7 @@ const wireRouteHint = z.object({
   preferredSourceSide: portSide.optional(),
   preferredTargetSide: portSide.optional(),
   waypoints: z.array(position),
+  labelPosition: z.number().min(0).max(1).optional(),
 });
 
 const canvasLayout = z.object({

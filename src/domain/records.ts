@@ -88,6 +88,13 @@ export interface WireRouteHint {
   preferredSourceSide?: PortSide;
   preferredTargetSide?: PortSide;
   waypoints: Position[];
+  /**
+   * Where the label sits along the wire, 0 at the source and 1 at the target.
+   *
+   * A fraction rather than a coordinate: the label has to keep its place on the wire when the
+   * nodes move, and a stored point would drift off the path the moment either end was dragged.
+   */
+  labelPosition?: number;
 }
 
 /** One named arrangement of one diagram's nodes. */

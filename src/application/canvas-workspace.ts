@@ -1,4 +1,4 @@
-import type { DiagramRecord } from '../domain/records.ts';
+import type { DiagramRecord, PortSide, WireRouteHint } from '../domain/records.ts';
 import type { CanvasActor, CanvasProvenance } from '../domain/model.ts';
 
 /** Who is acting and through which surface. Supplied by the host, never by a caller payload. */
@@ -26,6 +26,7 @@ export type RecordCommand =
   | { kind: 'node.remove'; id: string }
   | { kind: 'wire.add'; wire: DiagramRecord['wires'][string] }
   | { kind: 'wire.reconnect'; id: string; source?: string; target?: string }
+  | { kind: 'wire.setRoute'; id: string; route: RouteInput }
   | { kind: 'wire.remove'; id: string }
   | { kind: 'view.setCollapsed'; id: string; collapsed: boolean }
   | { kind: 'view.setViewport'; viewport: { x: number; y: number; zoom: number } }
@@ -34,6 +35,21 @@ export type RecordCommand =
 interface PlacementInput {
   position: { x: number; y: number };
   size: { width: number; height: number };
+}
+
+/**
+ * How a human wants one wire shaped.
+ *
+ * Every field is optional and merges into what is already stored, so moving a label never
+ * silently discards the corridor someone dragged, and vice versa. An empty `waypoints` list is
+ * the way to say "route it yourself again" — the absent field means "leave it as it is".
+ */
+interface RouteInput {
+  waypoints?: { x: number; y: number }[];
+  /** 0 at the source end, 1 at the target end. */
+  labelPosition?: number;
+  preferredSourceSide?: PortSide;
+  preferredTargetSide?: PortSide;
 }
 
 /** What happened to a submitted batch. Every failure is named, none are exceptions. */
@@ -112,6 +128,18 @@ function validate(record: DiagramRecord, command: RecordCommand): void {
       if (command.source) requireNode(record, command.source);
       if (command.target) requireNode(record, command.target);
       return;
+    case 'wire.setRoute': {
+      if (!record.wires[command.id]) throw new Error(`wire-not-found:${command.id}`);
+      const { labelPosition, waypoints } = command.route;
+      if (labelPosition !== undefined
+        && (!Number.isFinite(labelPosition) || labelPosition < 0 || labelPosition > 1)) {
+        throw new Error(`label-position-off-wire:${labelPosition}`);
+      }
+      if (waypoints?.some((point) => !Number.isFinite(point.x) || !Number.isFinite(point.y))) {
+        throw new Error('waypoint-not-a-position');
+      }
+      return;
+    }
     case 'wire.remove':
       if (!record.wires[command.id]) throw new Error(`wire-not-found:${command.id}`);
       return;
@@ -180,6 +208,21 @@ function apply(record: DiagramRecord, command: RecordCommand): DiagramRecord {
       const wire = next.wires[command.id];
       if (command.source) wire.source = { ...wire.source, nodeId: command.source as never };
       if (command.target) wire.target = { ...wire.target, nodeId: command.target as never };
+      break;
+    }
+    case 'wire.setRoute': {
+      // The hint belongs to the arrangement, not to the relationship: the same wire can be
+      // shaped one way in one layout and another way in another.
+      const existing: WireRouteHint = layout.wireRouteHints[command.id]
+        ?? { wireId: command.id as never, waypoints: [] };
+      const { labelPosition, preferredSourceSide, preferredTargetSide, waypoints } = command.route;
+      layout.wireRouteHints[command.id] = {
+        ...existing,
+        ...(waypoints ? { waypoints: waypoints.map((point) => ({ ...point })) } : {}),
+        ...(labelPosition === undefined ? {} : { labelPosition }),
+        ...(preferredSourceSide === undefined ? {} : { preferredSourceSide }),
+        ...(preferredTargetSide === undefined ? {} : { preferredTargetSide }),
+      };
       break;
     }
     case 'wire.remove':

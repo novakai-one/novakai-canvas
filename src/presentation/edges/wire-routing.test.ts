@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  pointAlong, polylineLength, routePath, routeWire, segmentIntersectsRect,
+  nearestPositionAlong, pointAlong, polylineLength, routePath, routeWire, segmentIntersectsRect,
 } from './wire-routing';
 
 /** Every routed wire must be orthogonal: each segment moves in exactly one axis. */
@@ -86,6 +86,25 @@ describe('pointAlong', () => {
 
   it('measures total length along every segment', () => {
     expect(polylineLength(square)).toBe(200);
+  });
+});
+
+describe('nearestPositionAlong', () => {
+  const square = [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }];
+
+  it('turns a dropped point into the fraction of the wire nearest to it', () => {
+    expect(nearestPositionAlong(square, { x: 50, y: 8 })).toBeCloseTo(0.25, 5);
+    expect(nearestPositionAlong(square, { x: 108, y: 50 })).toBeCloseTo(0.75, 5);
+  });
+
+  it('answers the ends for a point dragged past either end', () => {
+    expect(nearestPositionAlong(square, { x: -400, y: -400 })).toBe(0);
+    expect(nearestPositionAlong(square, { x: 400, y: 400 })).toBe(1);
+  });
+
+  it('round-trips with pointAlong', () => {
+    const point = pointAlong(square, 0.4);
+    expect(nearestPositionAlong(square, point)).toBeCloseTo(0.4, 5);
   });
 });
 

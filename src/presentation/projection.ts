@@ -1,4 +1,5 @@
 import { MarkerType, type Edge, type Node } from '@xyflow/react';
+import type { RecordCommand } from '../application/canvas-workspace';
 import type { CanvasPreferences, InterfaceObject, Selection, TypeObject } from '../domain/model';
 import type { PositionedNode, ProjectedView } from '../domain/project-view';
 import type { DiagramRecord, NodeKind, WireKind } from '../domain/records';
@@ -15,6 +16,13 @@ export interface ArchitectureNodeData extends Record<string, unknown> {
   select: (selection: Selection) => void;
 }
 
+/** How one wire is shaped by hand, read from the active layout's route hint. */
+export interface EdgeRoute {
+  waypoints: { x: number; y: number }[];
+  /** 0 at the source, 1 at the target; absent means "wherever the router puts it". */
+  labelPosition?: number;
+}
+
 /** Presentation data required by elbow wires. */
 export interface ArchitectureEdgeData extends Record<string, unknown> {
   label: string;
@@ -22,6 +30,15 @@ export interface ArchitectureEdgeData extends Record<string, unknown> {
   preferences: CanvasPreferences;
   editable: boolean;
   select: () => void;
+  /** The stored shape of this wire; empty when nobody has touched it. */
+  route: EdgeRoute;
+  /**
+   * Shaping this wire, or absent when the host gave the projection no way to change anything.
+   *
+   * Optional so a read-only host — an SVG snapshot, a test harness — can project the same wires
+   * without pretending to own a workspace.
+   */
+  setRoute?: (route: Partial<EdgeRoute>) => void;
   /**
    * Signed perpendicular offset that keeps wires sharing a node pair apart.
    *
@@ -68,6 +85,13 @@ export interface ProjectionInput {
   selection: Selection;
   editable: boolean;
   select: (selection: Selection) => void;
+  /**
+   * The one way this projection changes anything.
+   *
+   * Optional: a host that only reads — the SVG snapshot, the projection tests — projects the same
+   * wires and simply gets no editing affordances, rather than being handed a fake workspace.
+   */
+  execute?: (command: RecordCommand) => void;
 }
 
 /** The minimum a node must expose to be placed in the parent chain. */
@@ -202,9 +226,10 @@ export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>
 
 /** Projects the visible wires of one diagram into React Flow edges. */
 export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>[] {
-  const { editable, preferences, select, selection, view } = input;
+  const { editable, execute, preferences, record, select, selection, view } = input;
   const connected = connectedIds(input);
   const lanes = laneOffsets(view.wires);
+  const hints = record.layouts[record.views[record.activeViewId]?.layoutId]?.wireRouteHints ?? {};
   return view.wires.map((wire) => ({
     id: wire.id,
     source: wire.source.nodeId,
@@ -227,6 +252,13 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
       editable,
       select: () => select({ kind: 'wire', id: wire.id }),
       lane: lanes.get(wire.id) ?? 0,
+      route: {
+        waypoints: hints[wire.id]?.waypoints ?? [],
+        labelPosition: hints[wire.id]?.labelPosition,
+      },
+      setRoute: execute && editable
+        ? (route: Partial<EdgeRoute>) => execute({ kind: 'wire.setRoute', id: wire.id, route })
+        : undefined,
     },
   }));
 }
