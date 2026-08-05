@@ -1,5 +1,4 @@
 import type { ArchitectureDocument } from './model';
-import { layoutScopes } from './layout.ts';
 
 /** Small map identity used by presentation adapters. */
 export interface ArchitectureMap {
@@ -55,14 +54,21 @@ export function focusArchitecture(
     types: Object.fromEntries(Object.entries(document.types).filter(([id]) => typeIds.has(id))),
     wires: Object.fromEntries(Object.entries(document.wires).filter(([, wire]) =>
       nodeIds.has(wire.source) && nodeIds.has(wire.target))),
+    layouts: Object.fromEntries(Object.entries(document.layouts).map(([layoutId, layout]) => [layoutId, {
+      ...layout,
+      placements: Object.fromEntries(Object.entries(layout.placements).filter(([nodeId]) => nodeIds.has(nodeId))),
+      wireRouteHints: Object.fromEntries(Object.entries(layout.wireRouteHints).filter(([wireId]) => {
+        const wire = document.wires[wireId];
+        return wire && nodeIds.has(wire.source) && nodeIds.has(wire.target);
+      })),
+    }])),
   };
 }
 
-/** Derives a clean map for reading; stored edit coordinates remain untouched. */
+/** Derives the same saved map for read-only presentation; mode never changes layout. */
 export function presentArchitecture(
   document: ArchitectureDocument,
   mapId: string | undefined,
 ): ArchitectureDocument {
-  const focused = focusArchitecture(document, mapId);
-  return mapId ? layoutScopes(focused, [mapId]) : focused;
+  return focusArchitecture(document, mapId);
 }

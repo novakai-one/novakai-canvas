@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { ArchitectureDocument } from '../../src/domain/model';
+import { emptyArchitecture } from '../../src/domain/defaults';
 import { architectureDocumentSchema } from '../../src/domain/schema';
 import { parseDsl } from './dsl-parse.ts';
 import { compile } from './compile.ts';
@@ -21,8 +22,7 @@ scope "Mission State"
 
 function emptyDoc(): ArchitectureDocument {
   return {
-    schemaVersion: 1, id: 'doc', name: 'Doc', revision: 1,
-    nodes: {}, interfaces: {}, types: {}, wires: {},
+    ...structuredClone(emptyArchitecture), id: 'doc', name: 'Doc', revision: 1,
   };
 }
 
@@ -64,10 +64,7 @@ describe('mission vocabulary', () => {
     const reapplied = compile(doc, scopes);
     expect(reapplied.errors).toEqual([]);
     const strip = (input: ArchitectureDocument) => ({
-      nodes: Object.fromEntries(Object.entries(input.nodes).map(([id, node]) => {
-        const { position: _position, size: _size, ...rest } = node;
-        return [id, rest];
-      })),
+      nodes: input.nodes,
       wires: input.wires,
     });
     expect(strip(reapplied.doc)).toEqual(strip(doc));

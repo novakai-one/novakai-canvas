@@ -1,6 +1,7 @@
 /** Dependency-free SVG snapshot of one scope and its nested zones, in Novakai's dark + gold identity. */
 
-import type { ArchitectureDocument, CanvasNode } from '../../src/domain/model';
+import type { ArchitectureDocument, PositionedCanvasNode } from '../../src/domain/model';
+import { positionedNodes } from '../../src/domain/layouts.ts';
 import { ARCHITECTURE_FLOW } from '../../src/domain/flow.ts';
 import { orderedTreeRows, treeRowDepth, treeRowText } from '../../src/domain/tree.ts';
 import { TREE_TONE_COLORS, wireKindColor, wireKindDashArray } from '../../src/presentation/wire-styles.ts';
@@ -47,13 +48,14 @@ export function renderScopeSvg(doc: ArchitectureDocument, scopeId: string): stri
   if (ARCHITECTURE_FLOW.sourcePort !== 'bottom' || ARCHITECTURE_FLOW.targetPort !== 'top') {
     throw new Error('snapshot renderer requires top-to-bottom architecture flow');
   }
-  const scope = doc.nodes[scopeId];
+  const nodes = positionedNodes(doc);
+  const scope = nodes[scopeId];
   if (!scope) throw new Error(`no scope "${scopeId}"`);
 
   // Depth-first preorder: every descendant, parents always before children.
-  const descendants: CanvasNode[] = [];
+  const descendants: PositionedCanvasNode[] = [];
   const collect = (parentId: string) => {
-    const children = Object.values(doc.nodes)
+    const children = Object.values(nodes)
       .filter((node) => node.parentId === parentId)
       .sort((a, b) => a.id.localeCompare(b.id));
     for (const child of children) {
@@ -71,13 +73,13 @@ export function renderScopeSvg(doc: ArchitectureDocument, scopeId: string): stri
   const total = { width: panel.width + 2 * MARGIN, height: panel.height + 2 * MARGIN };
   // Positions are relative to the parent container; accumulate up the chain.
   const abs = (id: string) => {
-    let x = panel.x + doc.nodes[id].position.x;
-    let y = panel.y + doc.nodes[id].position.y;
-    let parentId = doc.nodes[id].parentId;
+    let x = panel.x + nodes[id].position.x;
+    let y = panel.y + nodes[id].position.y;
+    let parentId = nodes[id].parentId;
     while (parentId && parentId !== scopeId) {
-      x += doc.nodes[parentId].position.x;
-      y += doc.nodes[parentId].position.y;
-      parentId = doc.nodes[parentId].parentId;
+      x += nodes[parentId].position.x;
+      y += nodes[parentId].position.y;
+      parentId = nodes[parentId].parentId;
     }
     return { x, y };
   };
@@ -105,8 +107,8 @@ export function renderScopeSvg(doc: ArchitectureDocument, scopeId: string): stri
 
   // Wires under cards: elbow from source bottom-center to target top-center.
   for (const wire of wires) {
-    const source = doc.nodes[wire.source];
-    const target = doc.nodes[wire.target];
+    const source = nodes[wire.source];
+    const target = nodes[wire.target];
     const from = abs(wire.source);
     const to = abs(wire.target);
     const startX = from.x + source.size.width / 2;

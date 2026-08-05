@@ -1,10 +1,13 @@
-import type { z } from 'zod';
 import type { JsonRepository } from '../application/json-repository';
+
+interface RuntimeParser<T> {
+  parse(input: unknown): T;
+}
 
 /** Creates a validated HTTP-backed JSON repository. */
 export function createHttpJsonRepository<T>(
   endpoint: string,
-  schema: z.ZodType<T>,
+  schema: RuntimeParser<T>,
   fallback: T,
 ): JsonRepository<T> {
   return {

@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { ArchitectureDocument } from '../../src/domain/model';
+import { placementFor } from '../../src/domain/layouts';
+import { parseArchitectureDocument } from '../../src/domain/schema';
 import { parseDsl } from './dsl-parse.ts';
 import { compile } from './compile.ts';
 import { estimateNodeSize, layoutScopes } from './layout.ts';
@@ -24,8 +26,8 @@ scope "Browser Sessions"
 interface Rect { x: number; y: number; width: number; height: number }
 
 function rect(doc: ArchitectureDocument, id: string): Rect {
-  const node = doc.nodes[id];
-  return { x: node.position.x, y: node.position.y, ...node.size };
+  const placement = placementFor(doc, id);
+  return { x: placement.position.x, y: placement.position.y, ...placement.size };
 }
 
 function intersects(a: Rect, b: Rect): boolean {
@@ -33,7 +35,7 @@ function intersects(a: Rect, b: Rect): boolean {
 }
 
 function baseDoc(): ArchitectureDocument {
-  return {
+  return parseArchitectureDocument({
     schemaVersion: 1, id: 'doc', name: 'Doc', revision: 1,
     nodes: {
       'existing-scope': {
@@ -46,7 +48,7 @@ function baseDoc(): ArchitectureDocument {
       },
     },
     interfaces: {}, types: {}, wires: {},
-  };
+  });
 }
 
 function compiled() {
@@ -73,7 +75,7 @@ describe('layoutScopes', () => {
   it('lays out children without overlap, inside the scope, flowing top to bottom', () => {
     const { doc, touchedScopeIds } = compiled();
     const laid = layoutScopes(doc, touchedScopeIds);
-    const scope = laid.nodes['browser-sessions'];
+    const scope = placementFor(laid, 'browser-sessions');
     const childIds = Object.values(laid.nodes)
       .filter((node) => node.parentId === 'browser-sessions')
       .map((node) => node.id);
@@ -90,9 +92,9 @@ describe('layoutScopes', () => {
       expect(child.x + child.width).toBeLessThanOrEqual(scope.size.width);
       expect(child.y + child.height).toBeLessThanOrEqual(scope.size.height);
     }
-    const cli = laid.nodes['browser-sessions--browse-cli'];
-    const broker = laid.nodes['browser-sessions--session-broker'];
-    const chrome = laid.nodes['browser-sessions--chrome-instances'];
+    const cli = placementFor(laid, 'browser-sessions--browse-cli');
+    const broker = placementFor(laid, 'browser-sessions--session-broker');
+    const chrome = placementFor(laid, 'browser-sessions--chrome-instances');
     expect(cli.position.y).toBeLessThan(broker.position.y);
     expect(broker.position.y).toBeLessThan(chrome.position.y);
   });
@@ -107,9 +109,9 @@ describe('layoutScopes', () => {
   it('places a new scope below the lowest existing top-level node and never moves others', () => {
     const { doc, touchedScopeIds } = compiled();
     const laid = layoutScopes(doc, touchedScopeIds);
-    expect(laid.nodes['existing-scope'].position).toEqual({ x: 300, y: 120 });
+    expect(placementFor(laid, 'existing-scope').position).toEqual({ x: 300, y: 120 });
     expect(laid.nodes['existing-child']).toEqual(doc.nodes['existing-child']);
-    const scope = laid.nodes['browser-sessions'];
+    const scope = placementFor(laid, 'browser-sessions');
     expect(scope.position.x).toBe(40);
     expect(scope.position.y).toBe(120 + 400 + 80);
   });
@@ -121,7 +123,7 @@ describe('layoutScopes', () => {
     const again = compile(once, scopes);
     expect(again.errors).toEqual([]);
     const relaid = layoutScopes(again.doc, again.touchedScopeIds);
-    expect(relaid.nodes['browser-sessions'].position).toEqual(once.nodes['browser-sessions'].position);
+    expect(placementFor(relaid, 'browser-sessions').position).toEqual(placementFor(once, 'browser-sessions').position);
   });
 
   it('flat container: query-only wires still drive dagre rank (status quo)', () => {
@@ -131,7 +133,7 @@ describe('layoutScopes', () => {
     expect(errors).toEqual([]);
     const result = compile(baseDoc(), scopes);
     const laid = layoutScopes(result.doc, result.touchedScopeIds);
-    expect(laid.nodes['flat--a'].position.y).toBeLessThan(laid.nodes['flat--b'].position.y);
+    expect(placementFor(laid, 'flat--a').position.y).toBeLessThan(placementFor(laid, 'flat--b').position.y);
   });
 
   it('zoned container: owns wires rank parents above children, non-owns stay rank-free', () => {
@@ -147,11 +149,11 @@ describe('layoutScopes', () => {
     expect(errors).toEqual([]);
     const result = compile(baseDoc(), scopes);
     const laid = layoutScopes(result.doc, result.touchedScopeIds);
-    const parent = laid.nodes['zoned--parent'];
-    const child = laid.nodes['zoned--child'];
+    const parent = placementFor(laid, 'zoned--parent');
+    const child = placementFor(laid, 'zoned--child');
     expect(parent.position.y).toBeLessThan(child.position.y);
     // every grid child sits inside the container, no overlaps
-    const scope = laid.nodes.zoned;
+    const scope = placementFor(laid, 'zoned');
     const childIds = ['zoned--parent', 'zoned--child', 'zoned--loose'];
     for (const a of childIds) {
       const ra = rect(laid, a);
@@ -176,7 +178,7 @@ describe('layoutScopes', () => {
     expect(errors).toEqual([]);
     const result = compile(baseDoc(), scopes);
     const laid = layoutScopes(result.doc, result.touchedScopeIds);
-    const scope = laid.nodes['no-owns'];
+    const scope = placementFor(laid, 'no-owns');
     const zoneIds = ['no-owns--one', 'no-owns--two', 'no-owns--three'];
     for (const a of zoneIds) {
       const ra = rect(laid, a);
@@ -202,16 +204,16 @@ describe('layoutScopes', () => {
     expect(errors).toEqual([]);
     const result = compile(baseDoc(), scopes);
     const laid = layoutScopes(result.doc, result.touchedScopeIds);
-    const outer = laid.nodes['deep--outer'];
-    const inner = laid.nodes['deep--outer--inner'];
-    const leaf = laid.nodes['deep--outer--inner--leaf-one'];
+    const outer = placementFor(laid, 'deep--outer');
+    const inner = placementFor(laid, 'deep--outer--inner');
+    const leaf = placementFor(laid, 'deep--outer--inner--leaf-one');
     // inner contains its leaves
     expect(inner.size.width).toBeGreaterThanOrEqual(leaf.position.x + leaf.size.width);
     expect(inner.size.height).toBeGreaterThanOrEqual(leaf.position.y + leaf.size.height);
     // outer contains inner and sibling
     expect(outer.size.width).toBeGreaterThanOrEqual(inner.position.x + inner.size.width);
     expect(outer.size.height).toBeGreaterThanOrEqual(inner.position.y + inner.size.height);
-    const sibling = laid.nodes['deep--outer--sibling'];
+    const sibling = placementFor(laid, 'deep--outer--sibling');
     expect(outer.size.height).toBeGreaterThanOrEqual(sibling.position.y + sibling.size.height);
     expect(intersects(rect(laid, 'deep--outer--inner'), rect(laid, 'deep--outer--sibling'))).toBe(false);
   });
@@ -225,7 +227,7 @@ describe('layoutScopes', () => {
     const first = layoutScopes(result.doc, result.touchedScopeIds);
     const second = layoutScopes(result.doc, result.touchedScopeIds);
     expect(second).toEqual(first);
-    const scope = first.nodes.wide;
+    const scope = placementFor(first, 'wide');
     // 8 zones must wrap before the width runs away; aspect stays bounded
     expect(scope.size.width).toBeLessThanOrEqual(2000 + 320 + 40);
     expect(scope.size.height).toBeGreaterThan(160);

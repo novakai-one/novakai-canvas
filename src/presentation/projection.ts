@@ -1,7 +1,8 @@
 import { MarkerType, type Edge, type Node } from '@xyflow/react';
 import type {
-  ArchitectureDocument, CanvasNode, CanvasPreferences, InterfaceObject, Selection, TypeObject, WireKind,
+  ArchitectureDocument, CanvasNode, CanvasPreferences, InterfaceObject, PositionedCanvasNode, Selection, TypeObject, WireKind,
 } from '../domain/model';
+import { positionedNodes } from '../domain/layouts';
 import { wireKindColor } from './wire-styles';
 
 /** Presentation data required by architecture nodes. */
@@ -64,7 +65,7 @@ export function scopeDepth(nodes: Record<string, CanvasNode>, node: CanvasNode):
 }
 
 /** Stable parent-first ordering; React Flow renders parents before their children. */
-export function sortParentFirst(nodes: Record<string, CanvasNode>): CanvasNode[] {
+export function sortParentFirst(nodes: Record<string, PositionedCanvasNode>): PositionedCanvasNode[] {
   return Object.values(nodes)
     .map((node, index) => ({ node, index, depth: scopeDepth(nodes, node) }))
     .sort((a, b) => a.depth - b.depth || a.index - b.index)
@@ -79,8 +80,9 @@ export function projectNodes(
   editable: boolean,
   select: (next: Selection) => void,
 ): Node<ArchitectureNodeData>[] {
+  const nodes = positionedNodes(document);
   const connected = connectedIds(document, selection);
-  return sortParentFirst(document.nodes).map((node) => ({
+  return sortParentFirst(nodes).map((node) => ({
     id: node.id,
     type: node.kind === 'comment' ? 'comment'
       : node.kind === 'scope' ? 'scope'
@@ -99,7 +101,7 @@ export function projectNodes(
     // Otherwise a scope sits behind regular nodes by nesting depth, so a
     // parent zone stays behind the zones it contains.
     zIndex: node.kind === 'scope'
-      ? (selection?.kind === 'node' && selection.id === node.id ? 4 : scopeDepth(document.nodes, node) - 1)
+      ? (selection?.kind === 'node' && selection.id === node.id ? 4 : scopeDepth(nodes, node) - 1)
       : node.kind === 'comment' ? 3 : 2,
     data: {
       node,

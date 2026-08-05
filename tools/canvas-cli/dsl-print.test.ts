@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { ArchitectureDocument } from '../../src/domain/model';
+import { emptyArchitecture } from '../../src/domain/defaults';
 import { parseDsl } from './dsl-parse.ts';
 import { compile } from './compile.ts';
 import { layoutScopes } from './layout.ts';
@@ -19,8 +20,7 @@ scope "Browser Sessions" "Isolated per-agent browsing"
 
 function emptyDoc(): ArchitectureDocument {
   return {
-    schemaVersion: 1, id: 'doc', name: 'Doc', revision: 1,
-    nodes: {}, interfaces: {}, types: {}, wires: {},
+    ...structuredClone(emptyArchitecture), id: 'doc', name: 'Doc', revision: 1,
   };
 }
 
@@ -53,10 +53,7 @@ describe('printScope', () => {
     expect(reapplied.warnings).toEqual([]);
 
     const strip = (input: ArchitectureDocument) => ({
-      nodes: Object.fromEntries(Object.entries(input.nodes).map(([id, node]) => {
-        const { position: _position, size: _size, ...rest } = node;
-        return [id, rest];
-      })),
+      nodes: input.nodes,
       interfaces: input.interfaces,
       types: input.types,
       wires: input.wires,
@@ -121,10 +118,7 @@ scope "Mission Map"
     expect(reapplied.warnings).toEqual([]);
 
     const strip = (input: ArchitectureDocument) => ({
-      nodes: Object.fromEntries(Object.entries(input.nodes).map(([id, node]) => {
-        const { position: _position, size: _size, ...rest } = node;
-        return [id, rest];
-      })),
+      nodes: input.nodes,
       interfaces: input.interfaces,
       types: input.types,
       wires: input.wires,

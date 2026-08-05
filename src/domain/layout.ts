@@ -2,7 +2,8 @@
 
 import dagre from '@dagrejs/dagre';
 import { ARCHITECTURE_FLOW } from './flow.ts';
-import type { ArchitectureDocument, TreeRow } from './model.ts';
+import type { ArchitectureDocument, PositionedCanvasNode, TreeRow } from './model.ts';
+import { positionedNodes, resolveLayout } from './layouts.ts';
 import { orderedTreeRows, treeRowDepth, treeRowText } from './tree.ts';
 
 const PADDING_TOP = 56;
@@ -17,6 +18,9 @@ const GRID_ROW_GAP = 70;
 const GRID_MAX_ROW_WIDTH = 2000;
 
 interface Size { width: number; height: number }
+type PositionedDocument = Omit<ArchitectureDocument, 'nodes'> & {
+  nodes: Record<string, PositionedCanvasNode>;
+};
 
 /** Generous stored size that prevents presentation adapters clipping content. */
 export function estimateNodeSize(
@@ -53,7 +57,7 @@ function estimateTreeSize(rows: TreeRow[]): Size {
   };
 }
 
-function contentSize(document: ArchitectureDocument, nodeId: string): Size {
+function contentSize(document: PositionedDocument, nodeId: string): Size {
   const node = document.nodes[nodeId];
   if (node.kind === 'comment') return estimateCommentSize(node.label);
   if (node.kind === 'tree') return estimateTreeSize(node.rows ?? []);
@@ -68,14 +72,14 @@ function contentSize(document: ArchitectureDocument, nodeId: string): Size {
   return estimateNodeSize(node.label, node.description, interfaceLines, typeLines);
 }
 
-function directChildren(document: ArchitectureDocument, containerId: string): string[] {
+function directChildren(document: PositionedDocument, containerId: string): string[] {
   return Object.keys(document.nodes)
     .filter((id) => document.nodes[id].parentId === containerId)
     .sort();
 }
 
 /** Flat container: dagre over children with every child-internal wire as a rank edge. */
-function layoutFlat(document: ArchitectureDocument, childIds: string[]): Size {
+function layoutFlat(document: PositionedDocument, childIds: string[]): Size {
   const graph = new dagre.graphlib.Graph();
   graph.setGraph({ rankdir: ARCHITECTURE_FLOW.rankDirection, nodesep: 40, ranksep: 70 });
   graph.setDefaultEdgeLabel(() => ({}));
@@ -108,7 +112,7 @@ function layoutFlat(document: ArchitectureDocument, childIds: string[]): Size {
 }
 
 /** Topological rank by `owns` among siblings; cycles break deterministically by id. */
-function ownsRanks(document: ArchitectureDocument, childIds: string[]): Map<string, number> {
+function ownsRanks(document: PositionedDocument, childIds: string[]): Map<string, number> {
   const childSet = new Set(childIds);
   const targetsBySource = new Map<string, string[]>();
   const indegree = new Map<string, number>(childIds.map((id) => [id, 0]));
@@ -139,7 +143,7 @@ function ownsRanks(document: ArchitectureDocument, childIds: string[]): Map<stri
 }
 
 /** Zoned container: deterministic grid packing with topological rank by `owns` (ruling R6). */
-function layoutGrid(document: ArchitectureDocument, childIds: string[]): Size {
+function layoutGrid(document: PositionedDocument, childIds: string[]): Size {
   for (const id of childIds) {
     if (document.nodes[id].kind === 'scope') continue; // zones already sized by the recursion
     document.nodes[id] = { ...document.nodes[id], size: contentSize(document, id) };
@@ -188,7 +192,7 @@ function layoutGrid(document: ArchitectureDocument, childIds: string[]): Size {
 }
 
 /** Lays out one container; recurses into child zones bottom-up before packing it. */
-function layoutContainer(document: ArchitectureDocument, containerId: string): Size {
+function layoutContainer(document: PositionedDocument, containerId: string): Size {
   const childIds = directChildren(document, containerId);
   const zoneIds = childIds.filter((id) => document.nodes[id].kind === 'scope');
   if (zoneIds.length === 0) return layoutFlat(document, childIds);
@@ -199,9 +203,17 @@ function layoutContainer(document: ArchitectureDocument, containerId: string): S
   return layoutGrid(document, childIds);
 }
 
-/** Re-layouts named scopes without moving unrelated top-level maps. */
-export function layoutScopes(input: ArchitectureDocument, scopeIds: string[]): ArchitectureDocument {
-  const document: ArchitectureDocument = { ...input, nodes: { ...input.nodes } };
+/** Re-layouts named scopes in one saved layout without changing semantic nodes. */
+export function layoutScopes(
+  input: ArchitectureDocument,
+  scopeIds: string[],
+  layoutId?: string,
+): ArchitectureDocument {
+  const layout = resolveLayout(input, layoutId);
+  const document: PositionedDocument = {
+    ...input,
+    nodes: positionedNodes(input, layout.id),
+  };
   const sortedScopeIds = [...scopeIds].sort();
   const newScopeIds: string[] = [];
 
@@ -230,11 +242,28 @@ export function layoutScopes(input: ArchitectureDocument, scopeIds: string[]): A
     };
   }
 
-  return document;
+  const placements = Object.fromEntries(Object.entries(document.nodes).map(([nodeId, node]) => [nodeId, {
+    nodeId,
+    position: node.position,
+    size: node.size,
+    pinned: layout.placements[nodeId]?.pinned ?? false,
+  }]));
+  return {
+    ...input,
+    layouts: {
+      ...input.layouts,
+      [layout.id]: { ...layout, strategy: 'hierarchy', placements },
+    },
+  };
 }
 
 /** Names top-level maps that now overlap a laid-out scope. */
-export function overlappingScopes(document: ArchitectureDocument, scopeId: string): string[] {
+export function overlappingScopes(
+  input: ArchitectureDocument,
+  scopeId: string,
+  layoutId?: string,
+): string[] {
+  const document: PositionedDocument = { ...input, nodes: positionedNodes(input, layoutId) };
   const scope = document.nodes[scopeId];
   if (!scope) return [];
   return Object.values(document.nodes)

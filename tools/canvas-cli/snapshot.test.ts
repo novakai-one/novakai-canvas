@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import type { ArchitectureDocument, CanvasNode, WireKind } from '../../src/domain/model';
+import type { ArchitectureDocument, NodeKind, WireKind } from '../../src/domain/model';
+import { emptyArchitecture } from '../../src/domain/defaults';
+import { parseArchitectureDocument } from '../../src/domain/schema';
 import { parseDsl } from './dsl-parse.ts';
 import { compile } from './compile.ts';
 import { layoutScopes } from './layout.ts';
@@ -18,7 +20,7 @@ function build(): ArchitectureDocument {
   const { scopes, errors } = parseDsl(DSL);
   expect(errors).toEqual([]);
   const empty: ArchitectureDocument = {
-    schemaVersion: 1, id: 'doc', name: 'Doc', revision: 1, nodes: {}, interfaces: {}, types: {}, wires: {},
+    ...structuredClone(emptyArchitecture), id: 'doc', name: 'Doc', revision: 1,
   };
   const result = compile(empty, scopes);
   expect(result.errors).toEqual([]);
@@ -28,9 +30,9 @@ function build(): ArchitectureDocument {
 /** Fabricated nested map: zone in zone, a deep node, a Standalone zone, three wires. */
 function buildNested(): ArchitectureDocument {
   const node = (
-    id: string, kind: CanvasNode['kind'], label: string,
+    id: string, kind: NodeKind, label: string,
     x: number, y: number, width: number, height: number, parentId?: string,
-  ): CanvasNode => ({
+  ) => ({
     id, kind, label, position: { x, y }, size: { width, height }, parentId, interfaceIds: [], typeIds: [],
   });
   const wire = (id: string, source: string, target: string, label: string, kind: WireKind) =>
@@ -48,12 +50,12 @@ function buildNested(): ArchitectureDocument {
     wire('w-zone-node', 'zone-a', 'deep', 'zone to node', 'owns'),
     wire('w-zone-zone', 'zone-a', 'standalone', 'zone to zone', 'assigns'),
   ];
-  return {
+  return parseArchitectureDocument({
     schemaVersion: 1, id: 'doc', name: 'Doc', revision: 1,
     nodes: Object.fromEntries(nodes.map((n) => [n.id, n])),
     interfaces: {}, types: {},
     wires: Object.fromEntries(wires.map((w) => [w.id, w])),
-  };
+  });
 }
 
 describe('renderScopeSvg', () => {

@@ -67,6 +67,8 @@ export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): Compil
   const interfaces = { ...input.interfaces };
   const types = { ...input.types };
   const wires: Wires = { ...input.wires };
+  const layouts = structuredClone(input.layouts);
+  const activePlacements = layouts[input.activeLayoutId].placements;
 
   for (const scopeAst of scopes) {
     const scopeSlug = slugify(scopeAst.label);
@@ -86,6 +88,7 @@ export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): Compil
       for (const interfaceId of nodes[id].interfaceIds) delete interfaces[interfaceId];
       for (const typeId of nodes[id].typeIds) delete types[typeId];
       delete nodes[id];
+      for (const layout of Object.values(layouts)) delete layout.placements[id];
     }
 
     // Scope node itself (keeps id and position when it already existed).
@@ -94,10 +97,14 @@ export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): Compil
       kind: 'scope',
       label: scopeAst.label,
       ...(scopeAst.description ? { description: scopeAst.description } : {}),
-      position: existingScope ? existingScope.position : { ...PLACEHOLDER_POSITION },
-      size: existingScope ? existingScope.size : { ...PLACEHOLDER_SIZE },
       interfaceIds: [],
       typeIds: [],
+    };
+    activePlacements[scopeId] ??= {
+      nodeId: scopeId,
+      position: { ...PLACEHOLDER_POSITION },
+      size: { ...PLACEHOLDER_SIZE },
+      pinned: false,
     };
 
     // Children, with zones nesting to any depth. Labels are unique per map so
@@ -152,12 +159,16 @@ export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): Compil
           kind: nodeAst.kind,
           label: nodeAst.label,
           ...(nodeAst.description ? { description: nodeAst.description } : {}),
-          position: { ...PLACEHOLDER_POSITION },
-          size: { ...PLACEHOLDER_SIZE },
           parentId,
           interfaceIds,
           typeIds,
           ...(nodeAst.rows.length > 0 ? { rows: nodeAst.rows } : {}),
+        };
+        activePlacements[nodeId] = {
+          nodeId,
+          position: { ...PLACEHOLDER_POSITION },
+          size: { ...PLACEHOLDER_SIZE },
+          pinned: false,
         };
       }
     };
@@ -180,11 +191,15 @@ export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): Compil
           kind: 'scope',
           label: zoneAst.label,
           ...(zoneAst.description ? { description: zoneAst.description } : {}),
-          position: { ...PLACEHOLDER_POSITION },
-          size: { ...PLACEHOLDER_SIZE },
           parentId,
           interfaceIds: [],
           typeIds: [],
+        };
+        activePlacements[zoneId] = {
+          nodeId: zoneId,
+          position: { ...PLACEHOLDER_POSITION },
+          size: { ...PLACEHOLDER_SIZE },
+          pinned: false,
         };
         compileNodes(zoneAst.nodes, zoneId);
         compileZones(zoneAst.zones, zoneId);
@@ -247,7 +262,7 @@ export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): Compil
   }
 
   return {
-    doc: { ...input, nodes, interfaces, types, wires },
+    doc: { ...input, nodes, interfaces, types, wires, layouts },
     errors,
     touchedScopeIds,
     createdScopeIds,

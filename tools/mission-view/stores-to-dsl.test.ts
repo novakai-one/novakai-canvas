@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { ArchitectureDocument } from '../../src/domain/model';
+import { emptyArchitecture } from '../../src/domain/defaults';
 import { architectureDocumentSchema } from '../../src/domain/schema';
 import { parseDsl } from '../canvas-cli/dsl-parse.ts';
 import { compile } from '../canvas-cli/compile.ts';
@@ -66,8 +67,7 @@ function compiled(): ArchitectureDocument {
   const { scopes, errors } = parseDsl(dsl);
   expect(errors).toEqual([]);
   const result = compile({
-    schemaVersion: 1, id: 'doc', name: 'Doc', revision: 1,
-    nodes: {}, interfaces: {}, types: {}, wires: {},
+    ...structuredClone(emptyArchitecture), id: 'doc', name: 'Doc', revision: 1,
   }, scopes);
   expect(result.errors).toEqual([]);
   return result.doc;
@@ -97,12 +97,7 @@ describe('storesToDsl', () => {
     expect(scopes.map((scope) => scope.label).sort()).toEqual(
       ['Mission Data Tree', 'Mission Object Model', 'Mission Right Now'],
     );
-    expect(() => architectureDocumentSchema.parse({
-      ...doc,
-      nodes: Object.fromEntries(Object.entries(doc.nodes).map(([id, node]) => [
-        id, { ...node, size: { width: Math.max(1, node.size.width), height: Math.max(1, node.size.height) } },
-      ])),
-    })).not.toThrow();
+    expect(() => architectureDocumentSchema.parse(doc)).not.toThrow();
   });
 
   it('computes object-model counts from the data, never copies them', () => {
@@ -210,8 +205,7 @@ describe('storesToDsl', () => {
     const { scopes, errors } = parseDsl(dsl);
     expect(errors).toEqual([]);
     const result = compile({
-      schemaVersion: 1, id: 'doc', name: 'Doc', revision: 1,
-      nodes: {}, interfaces: {}, types: {}, wires: {},
+      ...structuredClone(emptyArchitecture), id: 'doc', name: 'Doc', revision: 1,
     }, scopes);
     expect(result.errors).toEqual([]);
     const byLabel = new Map(Object.values(result.doc.nodes).map((node) => [node.label, node]));

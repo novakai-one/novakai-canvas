@@ -2,7 +2,7 @@ import type { ArchitectureDocument, CanvasPreferences } from './model';
 
 /** Safe empty document used when loading fails. */
 export const emptyArchitecture: ArchitectureDocument = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   id: 'new-map',
   name: 'Untitled architecture',
   revision: 0,
@@ -10,6 +10,16 @@ export const emptyArchitecture: ArchitectureDocument = {
   interfaces: {},
   types: {},
   wires: {},
+  activeLayoutId: 'layout-default',
+  layouts: {
+    'layout-default': {
+      id: 'layout-default',
+      name: 'Default',
+      strategy: 'manual',
+      placements: {},
+      wireRouteHints: {},
+    },
+  },
 };
 
 /** Safe visual defaults used when loading fails. */

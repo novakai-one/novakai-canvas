@@ -148,13 +148,18 @@ async function main(): Promise<void> {
     const interfaces = { ...doc.interfaces };
     const types = { ...doc.types };
     const wires = { ...doc.wires };
+    const layouts = structuredClone(doc.layouts);
 
     const removeNode = (id: string): void => {
       for (const interfaceId of nodes[id].interfaceIds) delete interfaces[interfaceId];
       for (const typeId of nodes[id].typeIds) delete types[typeId];
       delete nodes[id];
+      for (const layout of Object.values(layouts)) delete layout.placements[id];
       for (const [wireId, wire] of Object.entries(wires)) {
-        if (wire.source === id || wire.target === id) delete wires[wireId];
+        if (wire.source === id || wire.target === id) {
+          delete wires[wireId];
+          for (const layout of Object.values(layouts)) delete layout.wireRouteHints[wireId];
+        }
       }
     };
 
@@ -195,7 +200,7 @@ async function main(): Promise<void> {
       }
     }
 
-    let next: ArchitectureDocument = { ...doc, nodes, interfaces, types, wires };
+    let next: ArchitectureDocument = { ...doc, nodes, interfaces, types, wires, layouts };
     if (args.positional[1]) next = layoutScopes(next, [scopeId]);
     const revision = await saveDocument(args.file, next);
     process.stdout.write(`removed: ${removedLabel} (revision ${revision})\n`);

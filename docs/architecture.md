@@ -37,9 +37,15 @@ Future adapters may target desktop or cloud storage.
 
 ## Data separation
 
-- Architecture JSON stores meaning and layout.
+- Semantic nodes and wires store what the diagram means.
+- Saved layouts separately own node geometry and small wire-routing hints.
+- Edit and Present read the same selected layout; mode never substitutes another arrangement.
 - Preferences JSON stores visual choices.
 - Selection remains transient interface state.
+
+Schema-1 documents migrate at the validation seam: existing node geometry becomes
+the `layout-default` layout without changing IDs, meaning, coordinates, or revision.
+New saves use schema 2.
 
 ## Verification
 

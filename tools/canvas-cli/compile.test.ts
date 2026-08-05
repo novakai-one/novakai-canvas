@@ -1,12 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import type { ArchitectureDocument } from '../../src/domain/model';
+import { parseArchitectureDocument } from '../../src/domain/schema';
 import { parseDsl } from './dsl-parse.ts';
 import { compile } from './compile.ts';
 
 function fixture(): ArchitectureDocument {
   const position = { x: 0, y: 0 };
   const size = { width: 100, height: 100 };
-  return {
+  return parseArchitectureDocument({
     schemaVersion: 1,
     id: 'test-doc',
     name: 'Test doc',
@@ -46,7 +47,7 @@ function fixture(): ArchitectureDocument {
         label: 'notify(Message) -> void', kind: 'queries', routing: 'elbow',
       },
     },
-  };
+  });
 }
 
 function parseOk(source: string) {

@@ -60,9 +60,9 @@ function CanvasToolbar({ props, layout }: { props: CanvasSurfaceProps; layout: (
   const add = (kind: 'module' | 'comment'): void => {
     if (!props.activeMapId) return;
     const id = `${kind}-${crypto.randomUUID().slice(0, 8)}`;
-    const node = createCanvasNode(props.document, props.activeMapId, kind, id);
-    props.engine.execute({ kind: 'node.add', node });
-    props.setSelection({ kind: 'node', id: node.id });
+    const created = createCanvasNode(props.document, props.activeMapId, kind, id);
+    props.engine.execute({ kind: 'node.add', ...created });
+    props.setSelection({ kind: 'node', id: created.node.id });
   };
   return (
     <div className="canvas-toolbar">

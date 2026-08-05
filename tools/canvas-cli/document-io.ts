@@ -6,7 +6,7 @@ import { architectureDocumentSchema } from '../../src/domain/schema.ts';
 import type { ArchitectureDocument } from '../../src/domain/model';
 
 export async function loadDocument(path: string): Promise<ArchitectureDocument> {
-  return architectureDocumentSchema.parse(JSON.parse(await readFile(path, 'utf8'))) as ArchitectureDocument;
+  return architectureDocumentSchema.parse(JSON.parse(await readFile(path, 'utf8')));
 }
 
 /** Validates, bumps revision, writes atomically (temp + rename). Returns the new revision. */

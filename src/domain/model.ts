@@ -1,6 +1,6 @@
 /** Stable, serialisable vocabulary shared across every module. */
 
-type NodeKind = 'scope' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree';
+export type NodeKind = 'scope' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree';
 
 /** Relationship vocabulary carried by wires; renderers style each kind distinctly. */
 export type WireKind =
@@ -13,8 +13,8 @@ export type InspectorTab = 'inspect' | 'preferences' | 'json';
 /** Compact preference categories. */
 export type PreferenceSection = 'theme' | 'canvas' | 'nodes' | 'wires' | 'panel' | 'files';
 
-interface Position { x: number; y: number; }
-interface Size { width: number; height: number; }
+export interface Position { x: number; y: number; }
+export interface Size { width: number; height: number; }
 
 /** Row kinds a tree node can carry. */
 type TreeRowKind = 'project' | 'mission' | 'task' | 'bucket';
@@ -30,14 +30,12 @@ export interface TreeRow {
   label?: string;
 }
 
-/** One positioned, selectable architecture object. */
+/** One semantic, selectable architecture object. Geometry belongs to a layout. */
 export interface CanvasNode {
   id: string;
   kind: NodeKind;
   label: string;
   description?: string;
-  position: Position;
-  size: Size;
   parentId?: string;
   interfaceIds: string[];
   typeIds: string[];
@@ -61,7 +59,7 @@ export interface TypeObject {
   fields: string[];
 }
 
-interface CanvasWire {
+export interface CanvasWire {
   id: string;
   source: string;
   target: string;
@@ -70,9 +68,40 @@ interface CanvasWire {
   routing: 'elbow';
 }
 
+/** One node's geometry inside one saved layout. */
+export interface NodePlacement {
+  nodeId: string;
+  position: Position;
+  size: Size;
+  pinned: boolean;
+}
+
+/** Small durable routing preference; the renderer still owns the concrete path. */
+export interface WireRouteHint {
+  wireId: string;
+  preferredSourceSide?: 'top' | 'right' | 'bottom' | 'left';
+  preferredTargetSide?: 'top' | 'right' | 'bottom' | 'left';
+  waypoints: Position[];
+}
+
+/** One named arrangement of a semantic architecture document. */
+export interface CanvasLayout {
+  id: string;
+  name: string;
+  strategy: 'manual' | 'hierarchy';
+  placements: Record<string, NodePlacement>;
+  wireRouteHints: Record<string, WireRouteHint>;
+}
+
+/** Semantic node joined with geometry for layout and rendering adapters. */
+export interface PositionedCanvasNode extends CanvasNode {
+  position: Position;
+  size: Size;
+}
+
 /** Canonical serialisable architecture map. */
 export interface ArchitectureDocument {
-  schemaVersion: 1;
+  schemaVersion: 2;
   id: string;
   name: string;
   revision: number;
@@ -80,6 +109,8 @@ export interface ArchitectureDocument {
   interfaces: Record<string, InterfaceObject>;
   types: Record<string, TypeObject>;
   wires: Record<string, CanvasWire>;
+  activeLayoutId: string;
+  layouts: Record<string, CanvasLayout>;
 }
 
 /** App colour theme choices. */
@@ -129,12 +160,12 @@ export type Selection =
 
 /** Complete set of supported domain intentions. */
 export type CanvasCommand =
-  | { kind: 'node.add'; node: CanvasNode }
-  | { kind: 'node.move'; id: string; position: Position }
-  | { kind: 'node.resize'; id: string; size: Size }
+  | { kind: 'node.add'; node: CanvasNode; placement: NodePlacement }
+  | { kind: 'node.move'; id: string; position: Position; layoutId?: string }
+  | { kind: 'node.resize'; id: string; size: Size; layoutId?: string }
   | { kind: 'node.update'; id: string; patch: Partial<Pick<CanvasNode, 'label' | 'description' | 'kind'>> }
   | { kind: 'node.remove'; id: string }
   | { kind: 'wire.add'; wire: CanvasWire }
   | { kind: 'wire.update'; id: string; patch: Partial<Pick<CanvasWire, 'label' | 'kind'>> }
   | { kind: 'wire.remove'; id: string }
-  | { kind: 'scope.layout'; id: string };
+  | { kind: 'scope.layout'; id: string; layoutId?: string };

@@ -1,4 +1,5 @@
 import type { ArchitectureDocument, CanvasCommand, Selection, WireKind } from '../../domain/model';
+import { placementFor } from '../../domain/layouts';
 import { WIRE_KIND_STYLES } from '../wire-styles';
 import { Field } from './field';
 
@@ -18,6 +19,7 @@ function EmptySelection() {
 function NodeInspection({ props, id }: { props: InspectPanelProps; id: string }) {
   const node = props.document.nodes[id];
   if (!node) return <EmptySelection />;
+  const placement = placementFor(props.document, node.id);
   return (
     <div className="inspection">
       <div className="object-identity"><span>{node.kind}</span><strong>{node.label}</strong></div>
@@ -30,7 +32,7 @@ function NodeInspection({ props, id }: { props: InspectPanelProps; id: string })
       <div className="facts">
         <div><span>Interfaces</span><strong>{node.interfaceIds.length}</strong></div>
         <div><span>Types</span><strong>{node.typeIds.length}</strong></div>
-        <div><span>Position</span><strong>{Math.round(node.position.x)}, {Math.round(node.position.y)}</strong></div>
+        <div><span>Position</span><strong>{Math.round(placement.position.x)}, {Math.round(placement.position.y)}</strong></div>
       </div>
       {node.kind !== 'scope' && (
         <button className="danger-action" onClick={() => { props.execute({ kind: 'node.remove', id }); props.clearSelection(); }} type="button">Delete object</button>

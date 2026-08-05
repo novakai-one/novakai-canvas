@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import type { CanvasNode } from '../domain/model';
+import type { PositionedCanvasNode } from '../domain/model';
 import { scopeDepth, sortParentFirst } from './projection';
 
-function scope(id: string, parentId?: string): CanvasNode {
+function scope(id: string, parentId?: string): PositionedCanvasNode {
   return {
     id,
     kind: 'scope',

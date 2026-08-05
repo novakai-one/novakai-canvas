@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import type { ArchitectureDocument, CanvasNode } from './model';
+import type { ArchitectureDocument } from './model';
+import { placementFor } from './layouts';
+import { parseArchitectureDocument } from './schema';
 import {
   focusArchitecture, listArchitectureMaps, presentArchitecture, resolveArchitectureMap,
 } from './maps';
 
-function node(id: string, parentId?: string): CanvasNode {
+function node(id: string, parentId?: string) {
   return {
     id,
     kind: parentId ? 'module' : 'scope',
@@ -17,7 +19,7 @@ function node(id: string, parentId?: string): CanvasNode {
   };
 }
 
-const document: ArchitectureDocument = {
+const document: ArchitectureDocument = parseArchitectureDocument({
   schemaVersion: 1,
   id: 'architecture',
   name: 'Architecture',
@@ -41,7 +43,7 @@ const document: ArchitectureDocument = {
     'a-wire': { id: 'a-wire', source: 'a-child', target: 'a-grandchild', label: 'inside', kind: 'owns', routing: 'elbow' },
     'cross-wire': { id: 'cross-wire', source: 'a-child', target: 'b-child', label: 'outside', kind: 'references', routing: 'elbow' },
   },
-};
+});
 
 describe('architecture maps', () => {
   it('lists only top-level scopes in document order', () => {
@@ -65,10 +67,10 @@ describe('architecture maps', () => {
     expect(focused.revision).toBe(document.revision);
   });
 
-  it('presents an auto-laid-out copy without mutating stored coordinates', () => {
+  it('presents the same saved layout without mutating stored coordinates', () => {
     const before = structuredClone(document);
     const presented = presentArchitecture(document, 'a');
-    expect(presented.nodes['a-child'].position).not.toEqual(document.nodes['a-child'].position);
+    expect(placementFor(presented, 'a-child')).toEqual(placementFor(document, 'a-child'));
     expect(presented.revision).toBe(document.revision);
     expect(document).toEqual(before);
   });

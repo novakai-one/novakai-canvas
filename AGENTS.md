@@ -37,6 +37,7 @@ The open app live-reloads when the CLI writes.
 
 - Everything meaningful remains selectable.
 - JSON owns architecture meaning.
+- Layout records own coordinates; semantic nodes never do.
 - Preferences own presentation choices.
 - Canvas objects explain themselves.
 - Visual styling stays restrained.

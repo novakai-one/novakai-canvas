@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createCanvasEngine } from './canvas-engine';
 import type { ArchitectureDocument } from '../domain/model';
+import { emptyArchitecture } from '../domain/defaults';
 
 const initial: ArchitectureDocument = {
-  schemaVersion: 1, id: 'map', name: 'Map', revision: 0,
-  nodes: {}, interfaces: {}, types: {}, wires: {},
+  ...structuredClone(emptyArchitecture), id: 'map', name: 'Map',
 };
 
 describe('createCanvasEngine', () => {
@@ -16,9 +16,9 @@ describe('createCanvasEngine', () => {
     engine.execute({
       kind: 'node.add',
       node: {
-        id: 'node', kind: 'module', label: 'Module', position: { x: 0, y: 0 },
-        size: { width: 160, height: 80 }, interfaceIds: [], typeIds: [],
+        id: 'node', kind: 'module', label: 'Module', interfaceIds: [], typeIds: [],
       },
+      placement: { nodeId: 'node', position: { x: 0, y: 0 }, size: { width: 160, height: 80 }, pinned: false },
     });
     await engine.save();
     expect(listener).toHaveBeenCalledOnce();
@@ -33,9 +33,9 @@ describe('createCanvasEngine', () => {
     engine.execute({
       kind: 'node.add',
       node: {
-        id: 'node', kind: 'module', label: 'Module', position: { x: 0, y: 0 },
-        size: { width: 160, height: 80 }, interfaceIds: [], typeIds: [],
+        id: 'node', kind: 'module', label: 'Module', interfaceIds: [], typeIds: [],
       },
+      placement: { nodeId: 'node', position: { x: 0, y: 0 }, size: { width: 160, height: 80 }, pinned: false },
     });
     expect(engine.snapshot().revision).toBe(1);
     expect(engine.persistedRevision()).toBe(0);

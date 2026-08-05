@@ -1,13 +1,14 @@
 /** Prints a document back as round-trippable DSL — the cheap way to reload context. */
 
 import type { ArchitectureDocument } from '../../src/domain/model';
+import { positionedNodes } from '../../src/domain/layouts.ts';
 
 function quote(label: string): string {
   return `"${label}"`;
 }
 
 function childrenOf(doc: ArchitectureDocument, scopeId: string) {
-  return Object.values(doc.nodes)
+  return Object.values(positionedNodes(doc))
     .filter((node) => node.parentId === scopeId)
     .sort((a, b) => a.position.y - b.position.y || a.position.x - b.position.x || a.id.localeCompare(b.id));
 }
@@ -77,7 +78,7 @@ export function printOutline(doc: ArchitectureDocument): string {
 }
 
 function topLevelScopes(doc: ArchitectureDocument) {
-  return Object.values(doc.nodes)
+  return Object.values(positionedNodes(doc))
     .filter((node) => node.kind === 'scope' && !node.parentId)
     .sort((a, b) => a.position.y - b.position.y || a.id.localeCompare(b.id));
 }
