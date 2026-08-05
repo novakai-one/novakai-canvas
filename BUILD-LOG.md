@@ -292,3 +292,95 @@ worktrees, cherry-picked onto `claude/canvas-record-model` by the lead.
 > "All UI changes need to be inspected in browser -> human-level interaction to see how I would
 > use it -> visually correact and structured, not just logically correct. Use Opus subagents
 > and Sonent subagents."
+
+---
+
+## 2026-08-06 — Experience lane (the cockpit build), lead: Claude Fable 5
+
+Commits `3ad4b46`..`e853c57` on `claude/canvas-record-model`. Same session first ran the
+dual-agent UX critique (23/40, archived in `.impeccable/critique/`), captured Chris's 15
+pain points verbatim (`docs/blueprint/2026-08-06-experience-requirements.md`), and designed
+the lane (`2026-08-06-experience-lane-design.md`: mission contract, ASCII UX reference,
+view-change semantics, tokens, component contracts).
+
+### Skills used
+
+- Lead: `elite-codebase-engineering`, `impeccable` (critique), `compile-mission-brief`,
+  superpowers standing rules, Chris's browse verification rule throughout.
+- Lane A (Opus): `elite-codebase-engineering` + `interface-design` — **confirmed** in its
+  report, with named consequences (Inspection descriptor contract, shell as second-host-safe
+  capability).
+- Lanes B, C (Opus): `elite-codebase-engineering` — **confirmed** in both reports (B: camera
+  as published contract, pure placement module; C: pure framework-free router with three
+  consumers).
+
+### What landed
+
+- **Tokens** (`src/styles/tokens.css`): one vocabulary — 4px spacing grid, surfaces, Inter
+  type scale, motion (700ms structural), gold scarcity, wire tones. All lanes styled through it.
+- **Lane A — Shell.** Panel primitives; ONE studio skeleton for every selection state;
+  Preferences behind a header gear; the left rail (filter, groups, counts, travel, one gold
+  dot); toolbar slimmed; native selects out of the chrome; both panels drag-resizable and
+  fully collapsible with matched icons; widths persisted.
+- **Lane B — Canvas feel.** Group interiors click-through (empty-click deselects, always);
+  Esc steps selection outward; stuck-dim fixed; no remount on mode toggle; per-diagram camera
+  memory, fit on first open; extent clamp removed — membership follows placement both ways;
+  + Add places at viewport centre; `canvasCamera()` travel contract (700ms ease).
+- **Lane C — Wires.** Legible strokes (faint = dimmed only); label halos; parallel lanes 22px;
+  deterministic obstacle-avoiding router — **470 straight-line node crossings across all 18
+  real diagrams → 0 routed**, enforced by `routing-gate.test.ts`; endpoint drag preserving
+  identity; gold selected wire + endpoint dots; label position draggable (persisted 0..1);
+  one draggable waypoint; `wire.setRoute` through the public surface.
+- **Lead integration:** B→(A+conflict merge)→C cherry-picks, gates after each; selection now
+  survives mode toggle; fit settles after shell layout; panels re-fit the canvas calmly;
+  minZoom 0.05 so huge diagrams frame fully; `>_ novakai` gold mono wordmark.
+
+### Testing as run
+
+- Per-lane: gates + own dev server (5181/5182/5183) + own headless Playwright, screenshots
+  read for spacing/consistency, not just render. TDD light: pure logic only (router,
+  placement, filter, width). Fix rounds: A 1/1/1, B 1/0/1, C 0/1/2 — cap of 2 held, no resets.
+- Lead after every pick and at the end: `tsc -b`, tools tsc, oxlint, `vite build`,
+  `vitest run` → **434 passed / 3 pre-existing work-session-report failures** (baseline 373).
+  +61 tests net.
+- Lead personal browser pass on the merged build: empty-group-click deselect, Esc stepping,
+  byte-identical viewport across Present/Edit, camera memory on switch, rail travel, collapse/
+  restore, studio skeleton across diagram/node/wire states, working-zoom wire legibility on
+  command-overview, wire selection.
+- Process lesson recorded: **never run vitest while a dev server watches `public/data`** — the
+  bridge test rewrote real records mid-run (caught, reverted; files were byte-identical after
+  `git checkout`).
+
+### Subagent economics
+
+Three Opus lanes, ~185k–253k tokens each. Convergence checkpoint sent mid-flight at ~200k
+(finish the slice minimally, no gold-plating, ship-and-record); all three converged cleanly.
+One fence violation total: Lane C's one-line seam in `canvas-surface.tsx`, declared, isolated
+in its own commit, accepted. One latent hazard found at integration: C wrote a literal NUL
+byte into source (as a map-key separator), which made git treat `projection.ts` as binary;
+replaced with the escaped form ` `.
+
+### Known accepted issues (recorded, not hidden)
+
+1. Label-on-label overlap in the densest bands of command-overview; needs a label-collision
+   pass or `showLabels: selected` default.
+2. Preferences' five form fields still native `<select>` (chrome is clean; the open dropdown
+   is OS-drawn).
+3. Per-side ports stored but not honoured (nodes expose top/bottom handles only).
+4. One waypoint per wire in the UI (format supports a list).
+5. Re-parent resolves against the visible tree; differs from record truth only when hidden
+   kinds are active (default views hide nothing).
+6. Drag writes one `node.move` per frame — undo grain too fine (pre-existing).
+7. Wire label TEXT editing not exposed in the studio (position is; text is read-only there).
+8. Camera-memory restore can differ ~100px from the pre-switch sample (zoom exact).
+
+### Pain points → status (Chris's 15, verbatim list in experience-requirements.md)
+
+Cleared and personally verified: panels resizable/collapsible · empty-click deselect ·
+canvas movement (fit, memory, travel) · endpoint reconnect · wire overlap (lanes) · Esc ·
+panel structure consistency · wires through unrelated nodes (0/18 diagrams) · wires movable
+(waypoint + label position) · draw anywhere (clamp removed, viewport-centre add) · rail/studio
+designed with intent. Partial: label control (position yes, text edit not in studio), font
+consistency (Inter everywhere except JSON view, deliberate pending Chris's call on "real
+machine output"), left/right panel content design (structure landed; Find-nodes search and
+contents-row travel affordance not yet wired to camera).
