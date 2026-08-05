@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { DiagramRecord } from '../../domain/records';
+import { PanelSection } from '../shell';
 
 /**
  * The open diagram exactly as it is stored, for reading.
@@ -12,8 +13,8 @@ import type { DiagramRecord } from '../../domain/records';
 export function JsonPanel({ record }: { record: DiagramRecord }) {
   const raw = useMemo(() => JSON.stringify(record, null, 2), [record]);
   return (
-    <div className="json-panel">
-      <textarea aria-label="Diagram record JSON" readOnly spellCheck={false} value={raw} />
-    </div>
+    <PanelSection fill title="Record">
+      <textarea aria-label="Diagram record JSON" className="record-text" readOnly spellCheck={false} value={raw} />
+    </PanelSection>
   );
 }

@@ -1,9 +1,10 @@
 :root {
-  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #e8e3d8;
-  background: #11110f;
+  font-family: var(--font-ui);
+  color: var(--ink);
+  background: var(--surface-page);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 * { box-sizing: border-box; }
@@ -15,7 +16,7 @@ button, input, textarea, select { font: inherit; }
 button { color: inherit; }
 
 button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
-  outline: 1px solid var(--accent, #a8864f);
+  outline: 1px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -39,7 +40,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   --scope-fill: rgba(20, 19, 16, 0.52);
   --border: #302e29;
   --border-soft: #2b2925;
-  --ink: #e8e3d8;
   --ink-strong: #eee8dc;
   --ink-soft: #d3ccc0;
   --muted: #9b968c;
@@ -54,8 +54,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   --accent-strong: #d0a14b;
   --accent-bright: #e2ba6e;
   --accent-dim: #8e754a;
-  --danger: #5a433a;
-  --danger-strong: #c8a798;
 
   /* ---- Groups ----------------------------------------------------------
      Every repeated look is defined once here and referenced everywhere else,
@@ -72,10 +70,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   --control-bg-hover: var(--hover);
   --control-disabled-opacity: 0.4;
 
-  /* Surfaces, lightest to deepest. Children are always lighter than parents. */
-  --surface-1: var(--card);
-  --surface-2: var(--card-2);
-  --surface-3: var(--card-3);
+  /* Surfaces. The three numbered levels live in tokens.css; only the composed
+     border and radius shorthands are named here. */
   --surface-border: 1px solid var(--border);
   --surface-border-soft: 1px solid var(--border-soft);
   --surface-radius: 6px;
@@ -86,9 +82,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   --type-control: 10px;
   --type-meta: 9px;
 
-  /* Motion. Calm by default; structural movement is slower than feedback. */
+  /* Motion. Structural movement is defined once, in tokens.css. */
   --motion-feedback: 160ms ease;
-  --motion-structural: 700ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 /* One definition for every control in the application. */
@@ -138,7 +133,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   --scope-fill: rgba(255, 255, 255, 0.5);
   --border: #c9c2b1;
   --border-soft: #dcd6c7;
-  --ink: #2e2a23;
   --ink-strong: #1f1c16;
   --ink-soft: #4a4438;
   --muted: #6b6558;
@@ -153,8 +147,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   --accent-strong: #9c7a40;
   --accent-bright: #75592c;
   --accent-dim: #9c8258;
-  --danger: #b08578;
-  --danger-strong: #8c4f3d;
 }
 
 .app-shell[data-theme='light'][data-accent='sage'] {

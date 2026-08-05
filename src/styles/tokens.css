@@ -44,6 +44,10 @@
   --gold-ink: #17130a;  /* text on solid gold */
   --sage: #78a886;
 
+  /* Danger — only ever an outcome of hovering a destructive control, never a resting state. */
+  --danger: #5a433a;
+  --danger-strong: #c8a798;
+
   /* Wires — default must read at working zoom; faint is ONLY the dimmed state. */
   --wire: #62626c;
   --wire-strong: #8a8a94;
@@ -82,4 +86,6 @@
   --wire-strong: #6f6a60;
   --wire-dim: #ddd8cc;
   --gold-ink: #17130a;
+  --danger: #b08578;
+  --danger-strong: #8c4f3d;
 }

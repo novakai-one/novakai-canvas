@@ -1,0 +1,470 @@
+/**
+ * The studio shell — panels, headers, sections, fields, tab strips.
+ *
+ * Every value here reads tokens.css. No hex, no bare pixel padding, no font stack: if a value
+ * is missing from the token vocabulary it belongs in tokens.css, not in this file. Structural
+ * 1px hairlines are the only literal length.
+ */
+
+/* ---- Panel ------------------------------------------------------------- */
+
+.panel-shell {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  flex: 0 0 auto;
+  width: var(--panel-width);
+  height: 100%;
+  background: var(--surface-1);
+  /* Structural: the panel PUSHES the canvas, so its width is what animates. */
+  transition: width var(--motion-structural);
+}
+
+.panel-shell[data-side='left'] { border-right: 1px solid var(--edge-soft); }
+.panel-shell[data-side='right'] { border-left: 1px solid var(--edge-soft); }
+
+.panel-shell-inner {
+  display: flex;
+  overflow: hidden;
+  width: var(--panel-width);
+  flex-direction: column;
+  min-height: 0;
+  /* The contents keep their laid-out width while the panel closes, so a collapsing panel
+     slides away instead of reflowing its own text on the way out. */
+  flex: 0 0 var(--panel-width);
+}
+
+/* ---- Header ------------------------------------------------------------ */
+
+.panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--edge-soft);
+}
+
+.panel-identity {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.panel-kind {
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+/* The one focal element of a panel: the name of what you are looking at. */
+.panel-title {
+  overflow: hidden;
+  margin: 0;
+  color: var(--ink);
+  font-size: var(--text-xl);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.panel-meta {
+  min-height: var(--space-4);
+  color: var(--ink-faint);
+  font-size: var(--text-sm);
+  line-height: var(--space-4);
+}
+
+.panel-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.icon-button {
+  display: grid;
+  width: var(--space-6);
+  height: var(--space-6);
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--ink-faint);
+  background: transparent;
+  font-size: var(--text-base);
+  line-height: 1;
+  cursor: pointer;
+  place-items: center;
+  transition: color var(--motion-quick), background var(--motion-quick);
+}
+
+.icon-button:hover { color: var(--ink); background: var(--surface-2); }
+.icon-button[aria-pressed='true'] { color: var(--ink); background: var(--surface-2); }
+.icon-button[data-tone='accent'] { color: var(--gold); }
+
+/* ---- Tab strip --------------------------------------------------------- */
+
+.tab-strip {
+  display: flex;
+  overflow-x: auto;
+  flex: none;
+  gap: var(--space-4);
+  padding: 0 var(--space-4);
+  border-bottom: 1px solid var(--edge-soft);
+  scrollbar-width: none;
+}
+
+.tab-strip::-webkit-scrollbar { display: none; }
+
+.tab-strip button {
+  position: relative;
+  padding: var(--space-3) 0;
+  border: 0;
+  color: var(--ink-faint);
+  background: transparent;
+  font-size: var(--text-sm);
+  text-transform: capitalize;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--motion-quick);
+}
+
+.tab-strip button:hover { color: var(--ink-muted); }
+.tab-strip button.is-active { color: var(--ink); }
+
+/* The active tab is marked by a rule, not by colour: gold is spent on the rail. */
+.tab-strip button.is-active::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: var(--ink-muted);
+  content: "";
+}
+
+/* ---- Body and sections ------------------------------------------------- */
+
+.panel-body {
+  display: flex;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.panel-section + .panel-section { border-top: 1px solid var(--edge-soft); }
+
+/* One section may own the leftover height — the contents list, the JSON view. */
+.panel-section[data-fill] { overflow: hidden; flex: 1 1 auto; min-height: 0; }
+.panel-section[data-fill] > .panel-section-body { flex: 1 1 auto; }
+
+.panel-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.panel-section-title {
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.panel-section-body {
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 0;
+}
+
+/* ---- Fields ------------------------------------------------------------ */
+
+.field-row { display: flex; flex-direction: column; gap: var(--space-2); }
+
+/* Label and its current value share one line, so a slider costs two rows, never three. */
+.field-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.field-label {
+  color: var(--ink-faint);
+  font-size: var(--text-sm);
+}
+
+.field-hint {
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.panel-shell :is(.field-row, .switch-row) :is(input, textarea, select, output) {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  color: var(--ink);
+  /* Inputs are inset: darker than the panel they sit in. */
+  background: var(--surface-page);
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+}
+
+/* A fact is not a field. Same rhythm, no chrome — so a read-only value never invites a click. */
+.panel-shell .field-row output {
+  display: block;
+  padding: var(--space-1) 0;
+  border: 0;
+  color: var(--ink-muted);
+  background: transparent;
+}
+
+.panel-shell .field-row textarea { min-height: var(--space-8); resize: vertical; line-height: 1.5; }
+
+.panel-shell :is(.field-row, .switch-row) :is(input, textarea, select):disabled {
+  color: var(--ink-muted);
+  cursor: default;
+}
+
+.panel-shell :is(.field-row, .switch-row) :is(input, textarea, select):focus-visible {
+  border-color: var(--ink-faint);
+  outline: none;
+}
+
+.panel-shell .field-row input[type='range'] {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  accent-color: var(--ink-muted);
+}
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: var(--space-6);
+}
+
+.panel-shell .switch-row input[type='checkbox'] {
+  width: var(--space-4);
+  height: var(--space-4);
+  flex: none;
+  padding: 0;
+  border: 1px solid var(--edge);
+  border-radius: 3px;
+  background: var(--surface-page);
+  appearance: none;
+  cursor: pointer;
+  transition: background var(--motion-quick), border-color var(--motion-quick);
+}
+
+.panel-shell .switch-row input[type='checkbox']:hover { border-color: var(--ink-faint); }
+
+/* Checked is a settled state, not an alarm: the quietest ink that still reads as "on". */
+.panel-shell .switch-row input[type='checkbox']:checked {
+  border-color: var(--ink-faint);
+  background: var(--ink-faint);
+}
+
+.panel-shell .switch-row input[type='checkbox']:checked::after {
+  display: block;
+  width: 4px;
+  height: 8px;
+  margin: 1px 0 0 4px;
+  border: solid var(--surface-page);
+  border-width: 0 2px 2px 0;
+  content: "";
+  transform: rotate(45deg);
+}
+
+/* ---- Panel buttons ----------------------------------------------------- */
+
+.panel-shell .panel-button {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  color: var(--ink-muted);
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  text-align: center;
+  cursor: pointer;
+  transition: color var(--motion-quick), border-color var(--motion-quick), background var(--motion-quick);
+}
+
+.panel-shell .panel-button:hover { color: var(--ink); background: var(--surface-2); }
+.panel-shell .panel-button[data-tone='danger']:hover { border-color: var(--danger); color: var(--danger-strong); }
+
+/* ---- Object list rows (contents, and anything list-shaped) -------------- */
+
+.object-rows {
+  display: flex;
+  overflow-y: auto;
+  flex-direction: column;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.object-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Peek: selects, never moves the camera. The default act of the row. */
+.object-row > .object-peek {
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--row-indent, 0px);
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.object-row:hover > .object-peek { background: var(--surface-2); }
+
+/* A fixed gutter so every label starts on the same line, whatever kind precedes it. */
+.object-row-kind {
+  flex: none;
+  width: calc(var(--space-8) + var(--space-6));
+  overflow: hidden;
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.object-row-label {
+  overflow: hidden;
+  color: var(--ink-muted);
+  font-size: var(--text-base);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.object-row[data-selected] .object-row-label { color: var(--ink); }
+
+/* Travel: a second, deliberate gesture. It is not there until you reach for the row. */
+.object-jump {
+  position: absolute;
+  right: var(--space-1);
+  display: grid;
+  width: var(--space-5);
+  height: var(--space-5);
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--ink-faint);
+  background: var(--surface-2);
+  font-size: var(--text-sm);
+  line-height: 1;
+  opacity: 0;
+  cursor: pointer;
+  place-items: center;
+  transition: opacity var(--motion-quick), color var(--motion-quick);
+}
+
+.object-row:hover .object-jump,
+.object-jump:focus-visible { opacity: 1; }
+.object-jump:hover { color: var(--ink); }
+
+/* ---- Empty state ------------------------------------------------------- */
+
+.panel-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-8) var(--space-4);
+  color: var(--ink-faint);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.panel-empty .panel-empty-mark { font-size: var(--text-xl); }
+
+/* ---- Read-only record text --------------------------------------------- */
+
+.record-text {
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--edge-soft);
+  border-radius: var(--radius);
+  color: var(--ink-muted);
+  background: var(--surface-page);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  resize: none;
+  white-space: pre;
+}
+
+.token-row { display: flex; gap: var(--space-1); flex-wrap: wrap; }
+
+.token-row span {
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--edge-soft);
+  border-radius: 3px;
+  color: var(--ink-muted);
+  background: var(--surface-2);
+  font-size: var(--text-sm);
+}
+
+/* ---- Fact grid --------------------------------------------------------- */
+
+.fact-grid {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.fact-grid div { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
+.fact-grid span { color: var(--ink-faint); font-size: var(--text-xs); }
+
+.fact-grid strong {
+  overflow: hidden;
+  color: var(--ink-muted);
+  font-size: var(--text-base);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel-shell, .panel-shell * { transition-duration: 1ms !important; }
+}
