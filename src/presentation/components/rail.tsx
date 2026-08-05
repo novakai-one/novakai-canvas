@@ -15,6 +15,8 @@ export interface RailProps {
   createDiagram: () => void;
   setDiagramStatus: (diagramId: string, status: 'active' | 'archived') => void;
   width: number;
+  collapsed: boolean;
+  setWidth: (width: number) => void;
 }
 
 function RailList({
@@ -64,7 +66,14 @@ export function Rail(props: RailProps) {
   const width = clampPanelWidth(props.width, RAIL_BOUNDS, 264);
 
   return (
-    <PanelShell label="Diagrams" side="left" width={width}>
+    <PanelShell
+      bounds={RAIL_BOUNDS}
+      collapsed={props.collapsed}
+      label="Diagrams"
+      onResize={props.setWidth}
+      side="left"
+      width={width}
+    >
       <PanelHeader
         kind="Novakai"
         meta={`${total} diagrams${archived > 0 ? ` · ${archived} archived` : ''}`}

@@ -14,6 +14,8 @@ export interface InspectorProps extends InspectPanelProps {
   tab: InspectorTab;
   setTab: (tab: InspectorTab) => void;
   updatePreferences: (preferences: CanvasPreferences) => void;
+  collapsed: boolean;
+  setWidth: (width: number) => void;
 }
 
 /** The surfaces the Studio offers for the selected object. Settings are not one of them. */
@@ -45,7 +47,14 @@ export function Inspector(props: InspectorProps) {
     : { kind: inspection.kind, title: inspection.title, meta: inspection.meta };
 
   return (
-    <PanelShell label="Studio" side="right" width={width}>
+    <PanelShell
+      bounds={STUDIO_BOUNDS}
+      collapsed={props.collapsed}
+      label="Studio"
+      onResize={props.setWidth}
+      side="right"
+      width={width}
+    >
       <PanelHeader
         actions={(
           <>

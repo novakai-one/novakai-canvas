@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   createCanvasNode, placedNodes, type CreatableNodeKind, type WorldPoint,
 } from '../canvas-actions';
+import { ShellControls } from '../shell';
 import type { CanvasSurfaceProps } from './canvas-surface';
 
 /** Where the user is looking, in the diagram's own coordinates — the canvas answers this. */
@@ -101,6 +102,7 @@ export function CanvasToolbar({ focusPoint, props }: { focusPoint: FocusPoint; p
           {props.saveStatus}
         </span>
       )}
+      <ShellControls />
     </div>
   );
 }

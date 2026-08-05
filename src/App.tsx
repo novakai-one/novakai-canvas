@@ -10,6 +10,7 @@ import { projectView } from './canvas';
 import { CanvasSurface } from './presentation/components/canvas-surface';
 import { Inspector } from './presentation/components/inspector';
 import { Rail } from './presentation/components/rail';
+import { ShellGeometryProvider } from './presentation/shell';
 import { useWorkspaceRecord } from './presentation/use-workspace-record';
 import { wireToneCssVariables } from './presentation/wire-styles';
 import { DEFAULT_CANVAS_MODE, type CanvasMode } from './presentation/view-mode';
@@ -195,23 +196,45 @@ export default function App(props: AppProps) {
     setSelection(null);
   }, []);
 
+  /**
+   * Panel geometry is a preference, not session state.
+   *
+   * Widths and collapsed edges ride the same debounced write as everything else in
+   * preferences, so the shape you leave the studio in is the shape you come back to.
+   */
+  const setPanel = useCallback((patch: Partial<CanvasPreferences['panel']>) => {
+    setPreferences((current) => ({ ...current, panel: { ...current.panel, ...patch } }));
+  }, []);
+
   const shellStyle = {
     '--node-radius': `${preferences.appearance.radius}px`,
     ...wireToneCssVariables(preferences.appearance.theme),
   } as CSSProperties;
+  const railCollapsed = preferences.panel.railCollapsed ?? false;
+  const studioCollapsed = preferences.panel.studioCollapsed ?? false;
   return (
-    <div
-      className={`app-shell mode-${mode}`}
-      data-accent={preferences.appearance.accent}
-      data-theme={preferences.appearance.theme}
-      style={shellStyle}
+    <ShellGeometryProvider
+      value={{
+        railCollapsed,
+        studioCollapsed,
+        toggleRail: () => setPanel({ railCollapsed: !railCollapsed }),
+        toggleStudio: () => setPanel({ studioCollapsed: !studioCollapsed }),
+      }}
     >
+      <div
+        className={`app-shell mode-${mode}`}
+        data-accent={preferences.appearance.accent}
+        data-theme={preferences.appearance.theme}
+        style={shellStyle}
+      >
       <Rail
         activeDiagramId={open.id}
         changeDiagram={changeDiagram}
+        collapsed={railCollapsed}
         createDiagram={createDiagram}
         diagrams={diagrams}
         setDiagramStatus={setDiagramStatus}
+        setWidth={(railWidth) => setPanel({ railWidth })}
         width={preferences.panel.railWidth ?? 264}
       />
       <ReactFlowProvider>
@@ -238,6 +261,7 @@ export default function App(props: AppProps) {
       </ReactFlowProvider>
       <Inspector
         clearSelection={() => setSelection(null)}
+        collapsed={studioCollapsed}
         diagrams={diagrams}
         editable={mode === 'edit'}
         execute={execute}
@@ -247,10 +271,12 @@ export default function App(props: AppProps) {
         select={select}
         selection={selection}
         setTab={setTab}
+        setWidth={(width) => setPanel({ width })}
         tab={tab}
         updatePreferences={setPreferences}
         view={view}
       />
-    </div>
+      </div>
+    </ShellGeometryProvider>
   );
 }

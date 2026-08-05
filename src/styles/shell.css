@@ -12,6 +12,7 @@
   position: relative;
   z-index: 20;
   display: flex;
+  overflow: hidden;
   flex: 0 0 auto;
   width: var(--panel-width);
   height: 100%;
@@ -23,16 +24,56 @@
 .panel-shell[data-side='left'] { border-right: 1px solid var(--edge-soft); }
 .panel-shell[data-side='right'] { border-left: 1px solid var(--edge-soft); }
 
+/* A dragged panel must track the pointer exactly; the calm pace is for structural moves
+   the user is not steering. */
+.panel-shell[data-dragging] { transition: none; }
+
+/* Closed is closed: no width, no border, nothing left over the canvas. */
+.panel-shell[data-collapsed] { border: 0; }
+
 .panel-shell-inner {
   display: flex;
   overflow: hidden;
-  width: var(--panel-width);
   flex-direction: column;
   min-height: 0;
   /* The contents keep their laid-out width while the panel closes, so a collapsing panel
      slides away instead of reflowing its own text on the way out. */
-  flex: 0 0 var(--panel-width);
+  flex: none;
 }
+
+/* Hidden until you reach for it: a drag handle is not something to look at. */
+.panel-resize {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  width: var(--space-2);
+  background: transparent;
+  cursor: col-resize;
+  touch-action: none;
+  transition: background var(--motion-quick);
+}
+
+/* Inside the panel: a collapsed panel is clipped to nothing, and a handle hanging
+   outside that clip would be sheared off. */
+.panel-shell[data-side='left'] .panel-resize { right: 0; }
+.panel-shell[data-side='right'] .panel-resize { left: 0; }
+
+.panel-shell[data-side='left'] .panel-resize:hover,
+.panel-shell[data-side='left'][data-dragging] .panel-resize {
+  background: linear-gradient(to right, transparent 7px, var(--ink-faint) 7px);
+}
+
+.panel-shell[data-side='right'] .panel-resize:hover,
+.panel-shell[data-side='right'][data-dragging] .panel-resize {
+  background: linear-gradient(to right, var(--ink-faint) 1px, transparent 1px);
+}
+
+/* ---- Shell controls ------------------------------------------------------
+   The one place panel geometry is governed from. It rides the toolbar, over
+   the canvas, so it stays reachable whether a panel is open or closed. */
+
+.shell-controls { display: flex; gap: var(--space-1); }
 
 /* ---- Header ------------------------------------------------------------ */
 
