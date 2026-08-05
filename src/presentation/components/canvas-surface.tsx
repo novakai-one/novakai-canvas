@@ -1,20 +1,20 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import {
   Background, BackgroundVariant, Controls, ReactFlow, type Connection, type NodeChange,
 } from '@xyflow/react';
 import type { CanvasEngine } from '../../application/canvas-engine';
-import { applyLayoutProposal, previewLayout } from '../../domain/layout-proposal';
-import type { ArchitectureDocument, CanvasPreferences, LayoutProposal, Selection } from '../../domain/model';
+import type { ArchitectureDocument, CanvasPreferences, Selection } from '../../domain/model';
 import type { ArchitectureMap } from '../../domain/maps';
-import { createCanvasNode, type CreatableNodeKind } from '../canvas-actions';
 import { projectEdges, projectNodes } from '../projection';
 import type { CanvasMode } from '../view-mode';
+import { useLayoutPreview } from '../use-layout-preview';
 import { ArchitectureNode } from '../nodes/architecture-node';
 import { CommentNode } from '../nodes/comment-node';
 import { ScopeNode } from '../nodes/scope-node';
 import { TreeNode } from '../nodes/tree-node';
 import { ElbowEdge } from '../edges/elbow-edge';
 import { Legend } from './legend';
+import { CanvasToolbar } from './canvas-toolbar';
 
 const nodeTypes = { architecture: ArchitectureNode, comment: CommentNode, scope: ScopeNode, tree: TreeNode };
 const edgeTypes = { elbow: ElbowEdge };
@@ -61,108 +61,6 @@ function connect(engine: CanvasEngine, connection: Connection): string | null {
   return id;
 }
 
-interface LayoutActions {
-  apply(): void;
-  cancel(): void;
-  preview(): void;
-  undo(): void;
-  proposal: LayoutProposal | null;
-  selectedNodeCount: number;
-}
-
-function CanvasToolbar({ props, layout }: { props: CanvasSurfaceProps; layout: LayoutActions }) {
-  const [diagramQuery, setDiagramQuery] = useState('');
-  const [showArchived, setShowArchived] = useState(false);
-  const activeMap = props.maps.find((map) => map.id === props.activeMapId);
-  const visibleMaps = props.maps.filter((map) =>
-    (showArchived || map.status === 'active')
-    && (map.id === props.activeMapId || map.label.toLowerCase().includes(diagramQuery.toLowerCase())));
-  const add = (kind: CreatableNodeKind): void => {
-    if (!activeMap) return;
-    const id = `${kind}-${crypto.randomUUID().slice(0, 8)}`;
-    const created = createCanvasNode(props.document, activeMap.rootNodeId, kind, id);
-    props.engine.execute({ kind: 'node.add', ...created });
-    props.setSelection({ kind: 'node', id: created.node.id });
-  };
-  return (
-    <div className="canvas-toolbar">
-      <div className="mode-switch" aria-label="Canvas mode">
-        {(['present', 'edit'] as const).map((mode) => (
-          <button className={props.mode === mode ? 'is-active' : ''} key={mode} onClick={() => props.changeMode(mode)} type="button">
-            {mode === 'present' ? 'Present' : 'Edit'}
-          </button>
-        ))}
-      </div>
-      {props.canGoBack && <button onClick={props.goBack} type="button">← Back</button>}
-      <label className="map-picker">
-        <span>Diagram</span>
-        <input
-          aria-label="Find diagram"
-          onChange={(event) => setDiagramQuery(event.target.value)}
-          placeholder="Find"
-          type="search"
-          value={diagramQuery}
-        />
-        <select aria-label="Map" disabled={props.maps.length === 0} value={props.activeMapId ?? ''} onChange={(event) => props.changeMap(event.target.value)}>
-          {visibleMaps.map((map) => <option key={map.id} value={map.id}>{map.label}{map.status === 'archived' ? ' · archived' : ''}</option>)}
-        </select>
-      </label>
-      {props.mode === 'edit' && (
-        <div className="toolbar-actions">
-          {layout.proposal ? <>
-            <button onClick={layout.apply} type="button">Apply preview · {layout.proposal.affectedNodeIds.length}</button>
-            <button onClick={layout.cancel} type="button">Cancel</button>
-          </> : <>
-            <button disabled={!props.activeMapId} onClick={layout.preview} type="button">
-              {layout.selectedNodeCount > 0 ? `Preview selected · ${layout.selectedNodeCount}` : 'Preview map layout'}
-            </button>
-            <button disabled={!props.engine.canUndo()} onClick={layout.undo} type="button">Undo</button>
-            <select
-              aria-label="Add object"
-              disabled={!props.activeMapId}
-              onChange={(event) => {
-                if (event.target.value) add(event.target.value as CreatableNodeKind);
-                event.target.value = '';
-              }}
-              value=""
-            >
-              <option value="">＋ Add</option>
-              <option value="module">Module</option>
-              <option value="object">Object</option>
-              <option value="runtime">Runtime</option>
-              <option value="resource">Resource</option>
-              <option value="group">Group</option>
-              <option value="comment">Comment</option>
-            </select>
-            <select
-              aria-label="Diagram actions"
-              onChange={(event) => {
-                const action = event.target.value;
-                if (action === 'new') props.createDiagram();
-                if (action === 'status' && activeMap) {
-                  props.setDiagramStatus(activeMap.id, activeMap.status === 'active' ? 'archived' : 'active');
-                }
-                if (action === 'archived') setShowArchived((shown) => !shown);
-                event.target.value = '';
-              }}
-              value=""
-            >
-              <option value="">Diagram…</option>
-              <option value="new">New diagram</option>
-              {activeMap && <option value="status">{activeMap.status === 'active' ? 'Archive current' : 'Restore current'}</option>}
-              {props.maps.some((map) => map.status === 'archived') && (
-                <option value="archived">{showArchived ? 'Hide archived' : 'Show archived'}</option>
-              )}
-            </select>
-          </>}
-        </div>
-      )}
-      <div className="file-identity"><span>{props.document.name}</span><small>r{props.document.revision}</small></div>
-      {props.mode === 'edit' && <span className="save-status">{props.saveStatus}</span>}
-    </div>
-  );
-}
-
 function addNodeChanges(engine: CanvasEngine, editable: boolean, changes: NodeChange[]): void {
   if (editable) applyNodeChanges(engine, changes);
 }
@@ -170,18 +68,12 @@ function addNodeChanges(engine: CanvasEngine, editable: boolean, changes: NodeCh
 /** Interactive editor or clean, read-only presentation of one selected map. */
 export function CanvasSurface(props: CanvasSurfaceProps) {
   const editable = props.mode === 'edit';
-  const [fitRevision, setFitRevision] = useState(0);
-  const [proposal, setProposal] = useState<LayoutProposal | null>(null);
-  const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([]);
-  const currentProposal = proposal?.baseRevision === props.document.revision ? proposal : null;
-  useEffect(() => {
-    if (proposal && !currentProposal) setProposal(null);
-  }, [currentProposal, proposal]);
-  const displayDocument = useMemo(
-    () => currentProposal ? applyLayoutProposal(props.document, currentProposal) : props.document,
-    [currentProposal, props.document],
-  );
-  const interactionEnabled = editable && !currentProposal;
+  const {
+    currentProposal, displayDocument, fitRevision, interactionEnabled, layout, setSelectedNodeIds,
+  } = useLayoutPreview({
+    document: props.document, preferences: props.preferences, engine: props.engine,
+    maps: props.maps, activeMapId: props.activeMapId, editable,
+  });
   const nodes = useMemo(
     () => projectNodes(displayDocument, props.preferences, props.selection, interactionEnabled, props.setSelection),
     [displayDocument, interactionEnabled, props.preferences, props.selection, props.setSelection],
@@ -190,42 +82,6 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
     () => projectEdges(displayDocument, props.preferences, props.selection, interactionEnabled, props.setSelection),
     [displayDocument, interactionEnabled, props.preferences, props.selection, props.setSelection],
   );
-  const preview = (): void => {
-    const activeMap = props.maps.find((map) => map.id === props.activeMapId);
-    if (!activeMap) return;
-    const selectedScope = selectedNodeIds.length === 1
-      && props.document.nodes[selectedNodeIds[0]]?.kind === 'scope'
-      ? selectedNodeIds[0]
-      : undefined;
-    setProposal(previewLayout(props.document, {
-      target: selectedScope
-        ? { kind: 'scope', scopeId: selectedScope }
-        : selectedNodeIds.length > 0
-          ? { kind: 'nodes', nodeIds: selectedNodeIds }
-          : { kind: 'scope', scopeId: activeMap.rootNodeId },
-      groupPadding: props.preferences.canvas.groupPadding,
-    }));
-  };
-  const applyPreview = (): void => {
-    if (!currentProposal) return;
-    props.engine.execute({ kind: 'layout.apply', proposal: currentProposal });
-    setProposal(null);
-    setFitRevision((revision) => revision + 1);
-  };
-  const cancelPreview = (): void => setProposal(null);
-  const undo = (): void => {
-    if (!props.engine.undo()) return;
-    setProposal(null);
-    setFitRevision((revision) => revision + 1);
-  };
-  const layout: LayoutActions = {
-    apply: applyPreview,
-    cancel: cancelPreview,
-    preview,
-    undo,
-    proposal: currentProposal,
-    selectedNodeCount: selectedNodeIds.length,
-  };
   return (
     <main className={`canvas-surface is-${props.mode}${currentProposal ? ' has-layout-preview' : ''}`}>
       <ReactFlow

@@ -10,6 +10,40 @@
 
 This document preserves the decisions reached in the 2026-08-05 conversation so a future builder does not have to reinterpret the transcript. It deliberately separates Chris's product intent from Codex's proposed engineering decisions.
 
+## Implementation addendum — 2026-08-05
+
+> **Status:** Codex implementation notes — **not laws and not a ratified specification**
+>
+> **Implementation author:** Codex (OpenAI)
+>
+> **Authority:** Christopher subsequently authorised implementation in this isolated worktree.
+
+The mission contract below is preserved as the historical contract for the original documentation pass. Implementation was authorised afterwards and now exists on branch `codex/canvas-product-decisions`.
+
+### What is implemented
+
+- **M1 — meaning versus layout:** semantic nodes and wires are separate from saved placements and route hints; schema-1 files migrate on load.
+- **M2 — ordinary canvas:** same layout in Edit and Present; Inspector remains readable; add/move/resize/pin/delete; multiple node types; wire create and endpoint reconnect; group breathing preference; searchable diagram library; create/archive/restore.
+- **M3 — safe layout:** whole diagram, selected group, or selected nodes; pinned anchors; deterministic preview; explicit Apply/Cancel; revision check; Undo.
+- **M4 — AI authoring:** machine-readable vocabulary; runtime-validated JSON batches; expected revision; atomic apply; durable actor/provenance; idempotent operation IDs; coordinate-free DSL imports pass through the same capability authority.
+- **M5 — connected depth:** stable diagram records; subject references; source references; explicit overview-to-detail links; modest nested groups; collapsed group state; Back navigation.
+- **M6 — future Novakai seam:** public `novakai-canvas/canvas` module and a typed CAS object-store adapter; a second-host contract test loads, observes, edits, and saves without core changes.
+
+### Known unfinished edges
+
+- A human can reconnect wire endpoints, but there is not yet a draggable waypoint editor for manually shaping an elbow path.
+- Multiple layouts are supported by the data model, but there is no layout-library UI yet.
+- Subject/source references are fully available to agents; the human Inspector only exposes detail-diagram linking and read-only subject display so far.
+- The object-store adapter is integration-ready, but it is not wired into the real Novakai shell in this branch.
+- Visual polish remains intentionally modest. Functional browser checks covered Present/Edit, Inspector, layout preview/cancel, diagram search, and compact toolbar fit.
+
+### Verification truth
+
+- Canvas-focused verification: 111 tests passed, both TypeScript configurations passed, lint passed, and the production build passed before this addendum.
+- The complete repository gate reached 158 passing tests and the same three pre-existing work-session-report publication failures recorded by the original documentation pass; this Canvas implementation did not modify that capability.
+- Novakai Analytics scored the whole repository **65/100**. The red giant-file set and final combined "where to look" files are entirely the unrelated work-session-reporting experiment. Canvas still contributes complexity in `commands.ts`; the presentation refactor removed Canvas from the final focus list. The public `src/canvas.ts` integration surface is counted as dead exports even though it exists for external hosts. No 90+ claim is made.
+- The original dirty working tree remains untouched; all implementation commits are isolated here.
+
 ## Mission contract
 
 **Outcome:** Leave one findable document that explains the intended Novakai Canvas product, the proposed engineering shape, the roadmap, and the finish lines well enough for another builder to continue without inventing missing meaning.
