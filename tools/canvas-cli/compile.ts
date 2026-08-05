@@ -1,46 +1,51 @@
-/** Compiles parsed scope ASTs into an ArchitectureDocument via scope-granular upsert. */
+/** Compiles parsed scope ASTs into diagram-record content, one record per scope block. */
 
-import type { ArchitectureDocument } from '../../src/domain/model';
+import type { CrossDiagramLink, DiagramRecord } from '../../src/canvas.ts';
 import type { NodeAst, ScopeAst, ZoneAst } from './dsl-parse.ts';
+import type { RecordNode, RecordWire, RecordWireKind } from './record-graph.ts';
+import { asId, descendantIds, rootGroupId } from './record-graph.ts';
 import { slugify } from './slug.ts';
 
+/** A refusal to compile, always paired with the fix that would make it compile. */
 export interface CompileError { message: string; hint: string }
 
+/** One end of a relationship, named by the diagram that owns the node and the node itself. */
+export interface LinkEnd { diagramId: string; nodeId: string }
+
+/** A relationship the DSL declared whose far end lives in a different diagram. */
+export interface CrossDiagramWire {
+  kind: RecordWireKind;
+  label: string;
+  source: LinkEnd;
+  target: LinkEnd;
+}
+
+/** One diagram's complete content, exactly as its scope block declares it. */
+export interface CompiledDiagram {
+  /** Reuses the existing record's id when the scope already exists, so identity survives. */
+  id: string;
+  name: string;
+  rootNodeId: string;
+  nodes: Record<string, RecordNode>;
+  wires: Record<string, RecordWire>;
+  interfaces: DiagramRecord['interfaces'];
+  types: DiagramRecord['types'];
+  /** Wires the record cannot hold, because a wire belongs to exactly one diagram. */
+  crossDiagramWires: CrossDiagramWire[];
+}
+
+/** Everything one `./canvas apply` compiled, including what it refused and what it warned about. */
 export interface CompileResult {
-  doc: ArchitectureDocument;
+  diagrams: CompiledDiagram[];
   errors: CompileError[];
-  /** Ids of every scope the DSL declared (replaced or created). */
-  touchedScopeIds: string[];
-  /** Subset of touched scopes that did not exist before. */
-  createdScopeIds: string[];
-  /** Human-readable notes about content that could not be preserved. */
   warnings: string[];
+  /** Diagram ids that did not exist before this compile. */
+  createdDiagramIds: string[];
 }
 
-type Nodes = ArchitectureDocument['nodes'];
-type Wires = ArchitectureDocument['wires'];
-
-const PLACEHOLDER_POSITION = { x: 0, y: 0 };
-const PLACEHOLDER_SIZE = { width: 1, height: 1 };
-
-function descendantsOf(nodes: Nodes, rootId: string): string[] {
-  const result: string[] = [];
-  const queue = [rootId];
-  while (queue.length > 0) {
-    const current = queue.shift() as string;
-    for (const node of Object.values(nodes)) {
-      if (node.parentId === current) {
-        result.push(node.id);
-        queue.push(node.id);
-      }
-    }
-  }
-  return result;
-}
-
-function closestCandidates(labelSlugs: Map<string, string>, query: string): string[] {
+function closestCandidates(labels: Map<string, string>, query: string): string[] {
   const querySlug = slugify(query);
-  return [...labelSlugs.entries()]
+  return [...labels.entries()]
     .map(([slug, label]) => {
       let score = 0;
       if (slug.includes(querySlug) || querySlug.includes(slug)) score = 2;
@@ -56,63 +61,94 @@ function closestCandidates(labelSlugs: Map<string, string>, query: string): stri
     .map((entry) => entry.label);
 }
 
-/** Pure upsert: returns a new document; positions/sizes of new nodes are placeholders for layout. */
-export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): CompileResult {
+/** Finds the record a scope block refers to: by diagram id first, then by diagram name. */
+function existingRecordFor(
+  existing: Record<string, DiagramRecord>,
+  label: string,
+): DiagramRecord | undefined {
+  const wanted = slugify(label);
+  return existing[wanted]
+    ?? Object.values(existing).find((record) => slugify(record.name) === wanted);
+}
+
+/** Every node in every OTHER diagram, indexed by label slug, for cross-diagram wire endpoints. */
+function foreignNodesByLabel(
+  existing: Record<string, DiagramRecord>,
+  selfIds: Set<string>,
+): { ends: Map<string, LinkEnd[]>; labels: Map<string, string> } {
+  const ends = new Map<string, LinkEnd[]>();
+  const labels = new Map<string, string>();
+  for (const record of Object.values(existing)) {
+    if (selfIds.has(record.id as string)) continue;
+    for (const node of Object.values(record.nodes)) {
+      const slug = slugify(node.label);
+      labels.set(slug, node.label);
+      ends.set(slug, [...(ends.get(slug) ?? []), {
+        diagramId: record.id as string, nodeId: node.id as string,
+      }]);
+    }
+  }
+  return { ends, labels };
+}
+
+/**
+ * Compiles scope blocks into per-record content.
+ *
+ * Each scope block fully declares its diagram, so a record's contents are rebuilt from the DSL
+ * rather than merged into. Identity is what survives: a node whose label still slugifies the
+ * same keeps the id it already had, which is what lets a re-apply preserve placements, wires
+ * pointing in from elsewhere, and anything a host has pinned to a node id.
+ */
+export function compile(
+  scopes: ScopeAst[],
+  existing: Record<string, DiagramRecord>,
+  links: CrossDiagramLink[] = [],
+): CompileResult {
   const errors: CompileError[] = [];
   const warnings: string[] = [];
-  const touchedScopeIds: string[] = [];
-  const createdScopeIds: string[] = [];
+  const diagrams: CompiledDiagram[] = [];
+  const createdDiagramIds: string[] = [];
 
-  const nodes: Nodes = { ...input.nodes };
-  const interfaces = { ...input.interfaces };
-  const types = { ...input.types };
-  const wires: Wires = { ...input.wires };
-  const layouts = structuredClone(input.layouts);
-  const diagrams = structuredClone(input.diagrams);
-  const activePlacements = layouts[input.activeLayoutId].placements;
-
+  // Every diagram this apply declares, so a wire between two scopes in the SAME apply resolves
+  // against the content being written rather than against whatever is still on disk.
+  const declared = new Map<string, { scopeAst: ScopeAst; record?: DiagramRecord; id: string; rootNodeId: string }>();
   for (const scopeAst of scopes) {
-    const scopeSlug = slugify(scopeAst.label);
-    const existingScope = Object.values(nodes).find(
-      (node) => node.kind === 'scope' && !node.parentId && slugify(node.label) === scopeSlug,
-    );
-    const scopeId = existingScope?.id ?? scopeSlug;
-    touchedScopeIds.push(scopeId);
-    if (!existingScope) createdScopeIds.push(scopeId);
-    if (!Object.values(diagrams).some((diagram) => diagram.rootNodeId === scopeId)) {
-      diagrams[scopeId] = { id: scopeId, rootNodeId: scopeId, status: 'active', sourceRefs: [] };
-    }
+    const record = existingRecordFor(existing, scopeAst.label);
+    const slug = slugify(scopeAst.label);
+    const id = (record?.id as string | undefined) ?? slug;
+    const rootNodeId = (record && rootGroupId(record)) ?? slug;
+    declared.set(id, { scopeAst, record, id, rootNodeId });
+    if (!record) createdDiagramIds.push(id);
+  }
 
-    // Remember old child ids by label slug so re-applied nodes keep stable ids.
-    const removedIds = existingScope ? descendantsOf(nodes, existingScope.id) : [];
+  const declaredIds = new Set(declared.keys());
+  const foreign = foreignNodesByLabel(existing, declaredIds);
+
+  for (const { scopeAst, record, id: diagramId, rootNodeId } of declared.values()) {
+    const nodes: Record<string, RecordNode> = {};
+    const wires: Record<string, RecordWire> = {};
+    const interfaces: DiagramRecord['interfaces'] = {};
+    const types: DiagramRecord['types'] = {};
+    const crossDiagramWires: CrossDiagramWire[] = [];
+
+    // Ids of the nodes this scope had before, by label slug, so re-applied nodes keep them.
     const oldIdBySlug = new Map<string, string>();
-    for (const id of removedIds) oldIdBySlug.set(slugify(nodes[id].label), id);
-
-    for (const id of removedIds) {
-      for (const interfaceId of nodes[id].interfaceIds) delete interfaces[interfaceId];
-      for (const typeId of nodes[id].typeIds) delete types[typeId];
-      delete nodes[id];
-      for (const layout of Object.values(layouts)) delete layout.placements[id];
+    if (record) {
+      for (const nodeId of descendantIds(record, rootNodeId)) {
+        oldIdBySlug.set(slugify(record.nodes[nodeId].label), nodeId);
+      }
     }
 
-    // Scope node itself (keeps id and position when it already existed).
-    nodes[scopeId] = {
-      id: scopeId,
-      kind: 'scope',
+    nodes[rootNodeId] = {
+      id: asId(rootNodeId),
+      kind: 'group',
       label: scopeAst.label,
       ...(scopeAst.description ? { description: scopeAst.description } : {}),
       interfaceIds: [],
       typeIds: [],
     };
-    activePlacements[scopeId] ??= {
-      nodeId: scopeId,
-      position: { ...PLACEHOLDER_POSITION },
-      size: { ...PLACEHOLDER_SIZE },
-      pinned: false,
-    };
 
-    // Children, with zones nesting to any depth. Labels are unique per map so
-    // wires can resolve endpoints by label alone (ruling R7).
+    // Labels are unique per map so wires can resolve endpoints by label alone (ruling R7).
     const idByLabelSlug = new Map<string, string>();
     const mapLabelSlugs = new Map<string, string>();
     let commentCount = 0;
@@ -136,11 +172,17 @@ export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): Compil
 
         const interfaceIds: string[] = [];
         for (const interfaceAst of nodeAst.interfaces) {
+          // Interface ids are minted from the slugified method name and so are regenerated on
+          // every apply. Renaming a method therefore mints a new id; nothing durable may key on
+          // one (which is why wire endpoints anchor to an ordinal, not to an interface).
           let interfaceId = `${nodeId}--if-${slugify(interfaceAst.name)}`;
           while (interfaces[interfaceId]) interfaceId += '-x';
           interfaces[interfaceId] = {
-            id: interfaceId, ownerId: nodeId,
-            name: interfaceAst.name, accepts: interfaceAst.accepts, returns: interfaceAst.returns,
+            id: interfaceId,
+            ownerId: nodeId,
+            name: interfaceAst.name,
+            accepts: interfaceAst.accepts,
+            returns: interfaceAst.returns,
           };
           interfaceIds.push(interfaceId);
         }
@@ -159,20 +201,14 @@ export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): Compil
           }
         }
         nodes[nodeId] = {
-          id: nodeId,
+          id: asId(nodeId),
           kind: nodeAst.kind,
           label: nodeAst.label,
           ...(nodeAst.description ? { description: nodeAst.description } : {}),
-          parentId,
-          interfaceIds,
-          typeIds,
+          parentId: asId(parentId),
+          interfaceIds: interfaceIds.map((each) => asId(each)),
+          typeIds: typeIds.map((each) => asId(each)),
           ...(nodeAst.rows.length > 0 ? { rows: nodeAst.rows } : {}),
-        };
-        activePlacements[nodeId] = {
-          nodeId,
-          position: { ...PLACEHOLDER_POSITION },
-          size: { ...PLACEHOLDER_SIZE },
-          pinned: false,
         };
       }
     };
@@ -191,85 +227,93 @@ export function compile(input: ArchitectureDocument, scopes: ScopeAst[]): Compil
         const zoneId = oldIdBySlug.get(labelSlug) ?? `${parentId}--${labelSlug}`;
         idByLabelSlug.set(labelSlug, zoneId);
         nodes[zoneId] = {
-          id: zoneId,
-          kind: 'scope',
+          id: asId(zoneId),
+          kind: 'group',
           label: zoneAst.label,
           ...(zoneAst.description ? { description: zoneAst.description } : {}),
-          parentId,
+          parentId: asId(parentId),
           interfaceIds: [],
           typeIds: [],
-        };
-        activePlacements[zoneId] = {
-          nodeId: zoneId,
-          position: { ...PLACEHOLDER_POSITION },
-          size: { ...PLACEHOLDER_SIZE },
-          pinned: false,
         };
         compileNodes(zoneAst.nodes, zoneId);
         compileZones(zoneAst.zones, zoneId);
       }
     };
 
-    compileNodes(scopeAst.nodes, scopeId);
-    compileZones(scopeAst.zones, scopeId);
+    compileNodes(scopeAst.nodes, rootNodeId);
+    compileZones(scopeAst.zones, rootNodeId);
 
-    // Wires internal to the replaced scope are regenerated from the DSL; wires from
-    // other scopes survive when their endpoint id was reused, otherwise they drop.
-    const droppedCrossScope: { source: string; target: string; label: string }[] = [];
-    for (const [wireId, wire] of Object.entries(wires)) {
-      const sourceGone = !nodes[wire.source];
-      const targetGone = !nodes[wire.target];
-      if (sourceGone || targetGone) {
-        delete wires[wireId];
-        const internal = removedIds.includes(wire.source) && removedIds.includes(wire.target);
-        if (!internal) droppedCrossScope.push({ source: wire.source, target: wire.target, label: wire.label });
-      }
-    }
+    // Endpoints resolve inside this diagram first. Only a name this diagram does not hold is
+    // looked for elsewhere, so a label reused in two maps always means the local one.
+    const resolveLocal = (name: string): string | undefined => idByLabelSlug.get(slugify(name));
 
-    // New wires from the DSL.
-    const resolve = (name: string): string | undefined => {
-      const nameSlug = slugify(name);
-      const local = idByLabelSlug.get(nameSlug);
-      if (local) return local;
-      return Object.values(nodes).find((node) => slugify(node.label) === nameSlug)?.id;
+    // A label can name a node in more than one other map. A link the library already holds
+    // between this wire's near end and one of the candidates settles it — otherwise re-applying
+    // a map would silently re-point a real relationship at a same-named node somewhere else.
+    const resolveForeign = (name: string, nearNodeId: string | undefined): LinkEnd | undefined => {
+      const candidates = foreign.ends.get(slugify(name));
+      if (!candidates || candidates.length === 0) return undefined;
+      if (candidates.length === 1) return candidates[0];
+      const alreadyLinked = candidates.find((candidate) => links.some((link) =>
+        (link.source.nodeId === nearNodeId && link.target.nodeId === candidate.nodeId)
+        || (link.target.nodeId === nearNodeId && link.source.nodeId === candidate.nodeId)));
+      if (alreadyLinked) return alreadyLinked;
+      const sorted = [...candidates].sort((a, b) => a.diagramId.localeCompare(b.diagramId));
+      warnings.push(
+        `"${name}" names a node in ${candidates.length} other maps — linked to ${sorted[0].diagramId}`,
+      );
+      return sorted[0];
     };
-    const allLabels = new Map<string, string>();
-    for (const node of Object.values(nodes)) allLabels.set(slugify(node.label), node.label);
+    const allLabels = new Map([...foreign.labels.entries(), ...mapLabelSlugs.entries()]);
 
     let wireCount = 0;
     for (const wireAst of scopeAst.wires) {
-      const source = resolve(wireAst.source);
-      const target = resolve(wireAst.target);
-      for (const [name, id] of [[wireAst.source, source], [wireAst.target, target]] as const) {
-        if (!id) {
-          errors.push({
-            message: `wire endpoint "${name}" (line ${wireAst.line}) does not match any node`,
-            hint: `closest labels: ${closestCandidates(allLabels, name).join(', ')}`,
-          });
-        }
-      }
+      const localSource = resolveLocal(wireAst.source);
+      const localTarget = resolveLocal(wireAst.target);
+      const resolveEnd = (name: string, local: string | undefined, nearNodeId: string | undefined) => {
+        if (local) return { local, end: { diagramId, nodeId: local } };
+        const far = resolveForeign(name, nearNodeId);
+        if (far) return { local: undefined, end: far };
+        errors.push({
+          message: `wire endpoint "${name}" (line ${wireAst.line}) does not match any node`,
+          hint: `closest labels: ${closestCandidates(allLabels, name).join(', ')}`,
+        });
+        return undefined;
+      };
+      const source = resolveEnd(wireAst.source, localSource, localTarget);
+      const target = resolveEnd(wireAst.target, localTarget, localSource);
       if (!source || !target) continue;
+
+      if (!source.local || !target.local) {
+        // A wire belongs to exactly one diagram, so a relationship crossing two has no home in
+        // either record. The library owns it as a CrossDiagramLink instead of it being dropped.
+        crossDiagramWires.push({
+          kind: wireAst.kind, label: wireAst.contract, source: source.end, target: target.end,
+        });
+        continue;
+      }
       wireCount += 1;
-      const wireId = `${scopeId}--wire-${wireCount}`;
+      const wireId = `${rootNodeId}--wire-${wireCount}`;
       wires[wireId] = {
-        id: wireId, source, target, label: wireAst.contract, kind: wireAst.kind, routing: 'elbow',
+        id: asId(wireId),
+        kind: wireAst.kind,
+        label: wireAst.contract,
+        source: { nodeId: asId(source.local) },
+        target: { nodeId: asId(target.local) },
       };
     }
 
-    // Only report cross-scope drops the DSL did not re-establish.
-    const pairs = new Set(Object.values(wires).map((wire) => `${wire.source}->${wire.target}`));
-    for (const dropped of droppedCrossScope) {
-      if (!pairs.has(`${dropped.source}->${dropped.target}`)) {
-        warnings.push(`dropped cross-scope wire: ${dropped.source} -> ${dropped.target} (${dropped.label})`);
-      }
-    }
+    diagrams.push({
+      id: diagramId,
+      name: scopeAst.label,
+      rootNodeId,
+      nodes,
+      wires,
+      interfaces,
+      types,
+      crossDiagramWires,
+    });
   }
 
-  return {
-    doc: { ...input, nodes, interfaces, types, wires, layouts, diagrams },
-    errors,
-    touchedScopeIds,
-    createdScopeIds,
-    warnings,
-  };
+  return { diagrams, errors, warnings, createdDiagramIds };
 }

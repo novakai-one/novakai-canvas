@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readdir, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { bootstrapLibrary, writeRecordFile } from './json-file-bridge.ts';
+import { bootstrapLibrary, watchDataDirectory, writeRecordFile } from './json-file-bridge.ts';
 
 /** The smallest legacy document that produces one migrated diagram. */
 const MINIMAL_LEGACY_DOCUMENT = {
@@ -91,5 +91,48 @@ describe('writeRecordFile', () => {
     await mkdir(join(dir, 'diagrams'), { recursive: true });
     const outcome = await writeRecordFile(file, JSON.stringify({ id: 'new', revision: 0 }), 0);
     expect(outcome).toEqual({ status: 'written' });
+  });
+});
+
+/** Waits for a condition the filesystem watcher fulfils asynchronously, or gives up loudly. */
+async function eventually(condition: () => boolean, timeoutMs = 5000): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (condition()) return;
+    await new Promise((settle) => { setTimeout(settle, 25); });
+  }
+  throw new Error('condition was never met');
+}
+
+describe('watchDataDirectory', () => {
+  it('reports a record written into the diagrams subdirectory by something else', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'canvas-bridge-watch-'));
+    await mkdir(join(dir, 'diagrams'), { recursive: true });
+    const seen: string[] = [];
+    const watcher = watchDataDirectory(dir, (fileName) => seen.push(fileName));
+    try {
+      // The canvas CLI writes exactly like this: straight to the record file, never through
+      // the bridge. A non-recursive watch never sees it.
+      await writeFile(join(dir, 'diagrams', 'cli-written.json'), '{"id":"cli-written"}\n', 'utf8');
+      await eventually(() => seen.length > 0);
+      expect(seen.some((name) => name.endsWith('cli-written.json'))).toBe(true);
+    } finally {
+      watcher.close();
+    }
+  });
+
+  it('stays silent for a record this process wrote itself', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'canvas-bridge-selfwrite-'));
+    await mkdir(join(dir, 'diagrams'), { recursive: true });
+    const seen: string[] = [];
+    const watcher = watchDataDirectory(dir, (fileName) => seen.push(fileName));
+    try {
+      watcher.markOwnWrite();
+      await writeFile(join(dir, 'diagrams', 'own.json'), '{"id":"own"}\n', 'utf8');
+      await new Promise((settle) => { setTimeout(settle, 400); });
+      expect(seen).toEqual([]);
+    } finally {
+      watcher.close();
+    }
   });
 });

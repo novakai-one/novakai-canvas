@@ -1,5 +1,5 @@
 import { existsSync, watch } from 'node:fs';
-import { mkdir, readdir, readFile, rename, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { Plugin } from 'vite';
@@ -157,6 +157,15 @@ async function handleRecordFile(
     response.end();
     return;
   }
+  if (request.method === 'DELETE') {
+    // Idempotent by design: `createFileLibraryRepository` treats a 404 as "already gone", so
+    // removing a record twice is not an error the host has to distinguish.
+    onWrite();
+    await rm(file, { force: true });
+    response.statusCode = 204;
+    response.end();
+    return;
+  }
   response.statusCode = 405;
   response.end(JSON.stringify({ error: 'Method not allowed' }));
 }
@@ -197,6 +206,43 @@ async function handleDiagramsList(request: IncomingMessage, response: ServerResp
   response.end(JSON.stringify(ids));
 }
 
+/** Stops watching a data directory and forgets any change still waiting to be announced. */
+export interface DataDirectoryWatch {
+  /** Marks the moment this process wrote a served file, so its own writes do not echo back. */
+  markOwnWrite(): void;
+  close(): void;
+}
+
+/** How long a write is attributed to this process, and how long changes are coalesced. */
+const OWN_WRITE_WINDOW_MS = 500;
+const CHANGE_DEBOUNCE_MS = 200;
+
+/**
+ * Watches a data directory and everything under it for writes this process did not make.
+ *
+ * Recursive is the whole point: records live in `diagrams/`, one file each, and the CLI writes
+ * them straight to disk. A watch on the top directory alone sees the legacy document and the
+ * preferences change but never a record, so an open app would silently keep showing a diagram
+ * the CLI had already rewritten.
+ */
+export function watchDataDirectory(dataDir: string, onExternalChange: (fileName: string) => void): DataDirectoryWatch {
+  let lastOwnWrite = 0;
+  let pending: ReturnType<typeof setTimeout> | undefined;
+  const watcher = watch(dataDir, { recursive: true }, (_event, fileName) => {
+    if (!fileName || !fileName.endsWith('.json')) return;
+    if (Date.now() - lastOwnWrite < OWN_WRITE_WINDOW_MS) return;
+    clearTimeout(pending);
+    pending = setTimeout(() => onExternalChange(fileName), CHANGE_DEBOUNCE_MS);
+  });
+  return {
+    markOwnWrite: () => { lastOwnWrite = Date.now(); },
+    close() {
+      clearTimeout(pending);
+      watcher.close();
+    },
+  };
+}
+
 /** Development-only bridge serving the legacy document, preferences, and the v3 record library. */
 export function jsonFileBridge(): Plugin {
   return {
@@ -207,17 +253,10 @@ export function jsonFileBridge(): Plugin {
 
       // Notify the open app when someone ELSE (the canvas CLI, an editor) writes
       // the data files. Bridge PUTs mark themselves so autosave does not echo.
-      let lastBridgeWrite = 0;
-      const markBridgeWrite = (): void => { lastBridgeWrite = Date.now(); };
-      let pending: ReturnType<typeof setTimeout> | undefined;
-      const watcher = watch(dataDir, (_event, fileName) => {
-        if (!fileName || !fileName.endsWith('.json')) return;
-        if (Date.now() - lastBridgeWrite < 500) return;
-        clearTimeout(pending);
-        pending = setTimeout(() => {
-          server.ws.send({ type: 'custom', event: 'novakai:data-changed', data: { path: fileName } });
-        }, 200);
+      const watcher = watchDataDirectory(dataDir, (fileName) => {
+        server.ws.send({ type: 'custom', event: 'novakai:data-changed', data: { path: fileName } });
       });
+      const markBridgeWrite = watcher.markOwnWrite;
       server.httpServer?.once('close', () => watcher.close());
 
       server.middlewares.use((request, response, next) => {

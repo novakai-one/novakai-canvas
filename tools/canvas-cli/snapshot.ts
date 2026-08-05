@@ -1,7 +1,7 @@
 /** Dependency-free SVG snapshot of one scope and its nested zones, in Novakai's dark + gold identity. */
 
-import type { ArchitectureDocument, PositionedCanvasNode } from '../../src/domain/model';
-import { positionedNodes } from '../../src/domain/layouts.ts';
+import type { DiagramRecord } from '../../src/canvas.ts';
+import { placedNodes, rootGroupId, type PlacedNode } from './record-graph.ts';
 import { ARCHITECTURE_FLOW } from '../../src/domain/flow.ts';
 import { orderedTreeRows, treeRowDepth, treeRowText } from '../../src/domain/tree.ts';
 import { TREE_TONE_COLORS, wireKindColor, wireKindDashArray } from '../../src/presentation/wire-styles.ts';
@@ -43,31 +43,33 @@ function wrap(text: string, charsPerLine: number): string[] {
   return lines;
 }
 
-/** Renders one scope and every descendant zone/node to a standalone SVG string. */
-export function renderScopeSvg(doc: ArchitectureDocument, scopeId: string): string {
+/** Renders one record's root group and every descendant zone/node to a standalone SVG string. */
+export function renderRecordSvg(record: DiagramRecord): string {
   if (ARCHITECTURE_FLOW.sourcePort !== 'bottom' || ARCHITECTURE_FLOW.targetPort !== 'top') {
     throw new Error('snapshot renderer requires top-to-bottom architecture flow');
   }
-  const nodes = positionedNodes(doc);
+  const nodes = placedNodes(record);
+  const scopeId = rootGroupId(record);
+  if (!scopeId) throw new Error(`"${record.id}" has no single root group to render`);
   const scope = nodes[scopeId];
-  if (!scope) throw new Error(`no scope "${scopeId}"`);
 
   // Depth-first preorder: every descendant, parents always before children.
-  const descendants: PositionedCanvasNode[] = [];
+  const descendants: PlacedNode[] = [];
   const collect = (parentId: string) => {
     const children = Object.values(nodes)
       .filter((node) => node.parentId === parentId)
-      .sort((a, b) => a.id.localeCompare(b.id));
+      .sort((a, b) => (a.id as string).localeCompare(b.id as string));
     for (const child of children) {
       descendants.push(child);
-      collect(child.id);
+      collect(child.id as string);
     }
   };
   collect(scopeId);
-  const descendantSet = new Set(descendants.map((node) => node.id));
-  const wires = Object.values(doc.wires)
-    .filter((wire) => descendantSet.has(wire.source) && descendantSet.has(wire.target))
-    .sort((a, b) => a.id.localeCompare(b.id));
+  const descendantSet = new Set(descendants.map((node) => node.id as string));
+  const wires = Object.values(record.wires)
+    .filter((wire) => descendantSet.has(wire.source.nodeId as string)
+      && descendantSet.has(wire.target.nodeId as string))
+    .sort((a, b) => (a.id as string).localeCompare(b.id as string));
 
   const panel = { x: MARGIN, y: MARGIN, width: scope.size.width, height: scope.size.height };
   const total = { width: panel.width + 2 * MARGIN, height: panel.height + 2 * MARGIN };
@@ -75,11 +77,11 @@ export function renderScopeSvg(doc: ArchitectureDocument, scopeId: string): stri
   const abs = (id: string) => {
     let x = panel.x + nodes[id].position.x;
     let y = panel.y + nodes[id].position.y;
-    let parentId = nodes[id].parentId;
+    let parentId = nodes[id].parentId as string | undefined;
     while (parentId && parentId !== scopeId) {
       x += nodes[parentId].position.x;
       y += nodes[parentId].position.y;
-      parentId = nodes[parentId].parentId;
+      parentId = nodes[parentId].parentId as string | undefined;
     }
     return { x, y };
   };
@@ -94,9 +96,9 @@ export function renderScopeSvg(doc: ArchitectureDocument, scopeId: string): stri
   );
 
   // Zone containers first (preorder, so parents behind children); "Standalone" zones dash their border.
-  const zones = descendants.filter((node) => node.kind === 'scope');
+  const zones = descendants.filter((node) => node.kind === 'group');
   for (const zone of zones) {
-    const { x, y } = abs(zone.id);
+    const { x, y } = abs(zone.id as string);
     const { width, height } = zone.size;
     const dash = zone.label.startsWith('Standalone') ? ' stroke-dasharray="6 4"' : '';
     parts.push(
@@ -107,10 +109,10 @@ export function renderScopeSvg(doc: ArchitectureDocument, scopeId: string): stri
 
   // Wires under cards: elbow from source bottom-center to target top-center.
   for (const wire of wires) {
-    const source = nodes[wire.source];
-    const target = nodes[wire.target];
-    const from = abs(wire.source);
-    const to = abs(wire.target);
+    const source = nodes[wire.source.nodeId];
+    const target = nodes[wire.target.nodeId];
+    const from = abs(wire.source.nodeId as string);
+    const to = abs(wire.target.nodeId as string);
     const startX = from.x + source.size.width / 2;
     const startY = from.y + source.size.height;
     const endX = to.x + target.size.width / 2;
@@ -125,8 +127,8 @@ export function renderScopeSvg(doc: ArchitectureDocument, scopeId: string): stri
   }
 
   for (const node of descendants) {
-    if (node.kind === 'scope') continue;
-    const { x, y } = abs(node.id);
+    if (node.kind === 'group') continue;
+    const { x, y } = abs(node.id as string);
     const { width, height } = node.size;
     if (node.kind === 'comment') {
       parts.push(`<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="none" stroke="${COLORS.border}" stroke-dasharray="4 4" rx="6"/>`);
@@ -169,13 +171,13 @@ export function renderScopeSvg(doc: ArchitectureDocument, scopeId: string): stri
       cursor += 8;
     }
     for (const interfaceId of node.interfaceIds) {
-      const iface = doc.interfaces[interfaceId];
+      const iface = record.interfaces[interfaceId];
       const signature = `${iface.name}(${iface.accepts.join(', ')}) → ${iface.returns.join(', ')}`;
       parts.push(`<text x="${x + 14}" y="${cursor}" fill="${COLORS.ink}" font-family="${FONT}" font-size="12">${esc(signature)}</text>`);
       cursor += 26;
     }
     for (const typeId of node.typeIds) {
-      const type = doc.types[typeId];
+      const type = record.types[typeId];
       parts.push(`<text x="${x + 14}" y="${cursor}" fill="${COLORS.faint}" font-family="${FONT}" font-size="11">${esc(`${type.name} { ${type.fields.join(', ')} }`)}</text>`);
       cursor += 24;
     }

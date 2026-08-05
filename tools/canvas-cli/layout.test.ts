@@ -1,10 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import type { ArchitectureDocument } from '../../src/domain/model';
-import { placementFor } from '../../src/domain/layouts';
-import { parseArchitectureDocument } from '../../src/domain/schema';
-import { parseDsl } from './dsl-parse.ts';
-import { compile } from './compile.ts';
-import { estimateNodeSize, layoutScopes } from './layout.ts';
+import type { DiagramRecord } from '../../src/canvas.ts';
+import { buildRecord } from './dsl-fixture.ts';
+import { estimateNodeSize } from './layout.ts';
+import { layoutRecord, placementsOf } from './record-graph.ts';
 
 const DSL = `
 scope "Browser Sessions"
@@ -25,38 +23,17 @@ scope "Browser Sessions"
 
 interface Rect { x: number; y: number; width: number; height: number }
 
-function rect(doc: ArchitectureDocument, id: string): Rect {
-  const placement = placementFor(doc, id);
-  return { x: placement.position.x, y: placement.position.y, ...placement.size };
+function placement(record: DiagramRecord, id: string) {
+  return placementsOf(record)[id];
+}
+
+function rect(record: DiagramRecord, id: string): Rect {
+  const found = placement(record, id);
+  return { x: found.position.x, y: found.position.y, ...found.size };
 }
 
 function intersects(a: Rect, b: Rect): boolean {
   return a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height;
-}
-
-function baseDoc(): ArchitectureDocument {
-  return parseArchitectureDocument({
-    schemaVersion: 1, id: 'doc', name: 'Doc', revision: 1,
-    nodes: {
-      'existing-scope': {
-        id: 'existing-scope', kind: 'scope', label: 'Existing',
-        position: { x: 300, y: 120 }, size: { width: 500, height: 400 }, interfaceIds: [], typeIds: [],
-      },
-      'existing-child': {
-        id: 'existing-child', kind: 'module', label: 'Child', parentId: 'existing-scope',
-        position: { x: 40, y: 60 }, size: { width: 200, height: 100 }, interfaceIds: [], typeIds: [],
-      },
-    },
-    interfaces: {}, types: {}, wires: {},
-  });
-}
-
-function compiled() {
-  const { scopes, errors } = parseDsl(DSL);
-  expect(errors).toEqual([]);
-  const result = compile(baseDoc(), scopes);
-  expect(result.errors).toEqual([]);
-  return result;
 }
 
 describe('estimateNodeSize', () => {
@@ -71,14 +48,13 @@ describe('estimateNodeSize', () => {
   });
 });
 
-describe('layoutScopes', () => {
-  it('lays out children without overlap, inside the scope, flowing top to bottom', () => {
-    const { doc, touchedScopeIds } = compiled();
-    const laid = layoutScopes(doc, touchedScopeIds);
-    const scope = placementFor(laid, 'browser-sessions');
+describe('layoutRecord', () => {
+  it('lays out children without overlap, inside the root group, flowing top to bottom', () => {
+    const laid = buildRecord(DSL);
+    const scope = placement(laid, 'browser-sessions');
     const childIds = Object.values(laid.nodes)
       .filter((node) => node.parentId === 'browser-sessions')
-      .map((node) => node.id);
+      .map((node) => node.id as string);
     expect(childIds.length).toBe(6);
     for (const a of childIds) {
       for (const b of childIds) {
@@ -92,65 +68,52 @@ describe('layoutScopes', () => {
       expect(child.x + child.width).toBeLessThanOrEqual(scope.size.width);
       expect(child.y + child.height).toBeLessThanOrEqual(scope.size.height);
     }
-    const cli = placementFor(laid, 'browser-sessions--browse-cli');
-    const broker = placementFor(laid, 'browser-sessions--session-broker');
-    const chrome = placementFor(laid, 'browser-sessions--chrome-instances');
+    const cli = placement(laid, 'browser-sessions--browse-cli');
+    const broker = placement(laid, 'browser-sessions--session-broker');
+    const chrome = placement(laid, 'browser-sessions--chrome-instances');
     expect(cli.position.y).toBeLessThan(broker.position.y);
     expect(broker.position.y).toBeLessThan(chrome.position.y);
   });
 
   it('is deterministic', () => {
-    const { doc, touchedScopeIds } = compiled();
-    const first = layoutScopes(doc, touchedScopeIds);
-    const second = layoutScopes(doc, touchedScopeIds);
-    expect(second).toEqual(first);
+    const record = buildRecord(DSL);
+    expect(layoutRecord(record)).toEqual(layoutRecord(record));
   });
 
   it('uses the requested group breathing room without changing semantic nodes', () => {
-    const { doc, touchedScopeIds } = compiled();
-    const compact = layoutScopes(doc, touchedScopeIds, undefined, 24);
-    const spacious = layoutScopes(doc, touchedScopeIds, undefined, 96);
+    const record = buildRecord(DSL);
+    const compact = layoutRecord(record, 24);
+    const spacious = layoutRecord(record, 96);
     const childId = 'browser-sessions--browse-cli';
 
-    expect(placementFor(spacious, childId).position.x)
-      .toBeGreaterThan(placementFor(compact, childId).position.x);
-    expect(placementFor(spacious, 'browser-sessions').size.width)
-      .toBeGreaterThan(placementFor(compact, 'browser-sessions').size.width);
+    expect(placement(spacious, childId).position.x)
+      .toBeGreaterThan(placement(compact, childId).position.x);
+    expect(placement(spacious, 'browser-sessions').size.width)
+      .toBeGreaterThan(placement(compact, 'browser-sessions').size.width);
     expect(spacious.nodes).toEqual(compact.nodes);
   });
 
-  it('places a new scope below the lowest existing top-level node and never moves others', () => {
-    const { doc, touchedScopeIds } = compiled();
-    const laid = layoutScopes(doc, touchedScopeIds);
-    expect(placementFor(laid, 'existing-scope').position).toEqual({ x: 300, y: 120 });
-    expect(laid.nodes['existing-child']).toEqual(doc.nodes['existing-child']);
-    const scope = placementFor(laid, 'browser-sessions');
-    expect(scope.position.x).toBe(40);
-    expect(scope.position.y).toBe(120 + 400 + 80);
+  it('places a brand-new map at the origin corner of its own coordinate space', () => {
+    // Per record, nothing else shares the plane, so the old "below the lowest existing scope"
+    // rule reduces to a single fixed corner and a re-applied map can never push another over.
+    const laid = buildRecord(DSL);
+    expect(placement(laid, 'browser-sessions').position).toEqual({ x: 40, y: 80 });
   });
 
-  it('keeps a re-applied scope anchored at its prior position', () => {
-    const { doc, touchedScopeIds } = compiled();
-    const once = layoutScopes(doc, touchedScopeIds);
-    const { scopes } = parseDsl(DSL);
-    const again = compile(once, scopes);
-    expect(again.errors).toEqual([]);
-    const relaid = layoutScopes(again.doc, again.touchedScopeIds);
-    expect(placementFor(relaid, 'browser-sessions').position).toEqual(placementFor(once, 'browser-sessions').position);
+  it('keeps a re-applied map anchored at its prior position', () => {
+    const once = buildRecord(DSL);
+    const again = buildRecord(DSL, { [once.id]: once });
+    expect(placement(again, 'browser-sessions').position)
+      .toEqual(placement(once, 'browser-sessions').position);
   });
 
   it('flat container: query-only wires still drive dagre rank (status quo)', () => {
-    const { scopes, errors } = parseDsl(
-      'scope Flat\n  module A\n  module B\n  wire A -> B : read() -> Rows [queries]\n',
-    );
-    expect(errors).toEqual([]);
-    const result = compile(baseDoc(), scopes);
-    const laid = layoutScopes(result.doc, result.touchedScopeIds);
-    expect(placementFor(laid, 'flat--a').position.y).toBeLessThan(placementFor(laid, 'flat--b').position.y);
+    const laid = buildRecord('scope Flat\n  module A\n  module B\n  wire A -> B : read() -> Rows [queries]\n');
+    expect(placement(laid, 'flat--a').position.y).toBeLessThan(placement(laid, 'flat--b').position.y);
   });
 
   it('zoned container: owns wires rank parents above children, non-owns stay rank-free', () => {
-    const { scopes, errors } = parseDsl(
+    const laid = buildRecord(
       'scope Zoned\n'
       + '  zone "Parent"\n    module "p1"\n  end\n'
       + '  zone "Child"\n    module "c1"\n  end\n'
@@ -159,14 +122,9 @@ describe('layoutScopes', () => {
       + '  wire "Child" -> "Parent" : reads [queries]\n'
       + '  wire "Loose" -> "Parent" : mentions [mentions]\n',
     );
-    expect(errors).toEqual([]);
-    const result = compile(baseDoc(), scopes);
-    const laid = layoutScopes(result.doc, result.touchedScopeIds);
-    const parent = placementFor(laid, 'zoned--parent');
-    const child = placementFor(laid, 'zoned--child');
-    expect(parent.position.y).toBeLessThan(child.position.y);
-    // every grid child sits inside the container, no overlaps
-    const scope = placementFor(laid, 'zoned');
+    expect(placement(laid, 'zoned--parent').position.y)
+      .toBeLessThan(placement(laid, 'zoned--child').position.y);
+    const scope = placement(laid, 'zoned');
     const childIds = ['zoned--parent', 'zoned--child', 'zoned--loose'];
     for (const a of childIds) {
       const ra = rect(laid, a);
@@ -181,17 +139,14 @@ describe('layoutScopes', () => {
   });
 
   it('zoned container with no owns wires still packs without overlap (R5 fixture)', () => {
-    const { scopes, errors } = parseDsl(
+    const laid = buildRecord(
       'scope "No Owns"\n'
       + '  zone "One"\n    module "a"\n  end\n'
       + '  zone "Two"\n    module "b"\n  end\n'
       + '  zone "Three"\n    module "c"\n  end\n'
       + '  wire "a" -> "b" : q [queries]\n',
     );
-    expect(errors).toEqual([]);
-    const result = compile(baseDoc(), scopes);
-    const laid = layoutScopes(result.doc, result.touchedScopeIds);
-    const scope = placementFor(laid, 'no-owns');
+    const scope = placement(laid, 'no-owns');
     const zoneIds = ['no-owns--one', 'no-owns--two', 'no-owns--three'];
     for (const a of zoneIds) {
       const ra = rect(laid, a);
@@ -204,7 +159,7 @@ describe('layoutScopes', () => {
   });
 
   it('nested zones size bottom-up so deep children stay inside every ancestor', () => {
-    const { scopes, errors } = parseDsl(
+    const laid = buildRecord(
       'scope Deep\n'
       + '  zone "Outer"\n'
       + '    zone "Inner"\n'
@@ -214,19 +169,14 @@ describe('layoutScopes', () => {
       + '    module "sibling"\n'
       + '  end\n',
     );
-    expect(errors).toEqual([]);
-    const result = compile(baseDoc(), scopes);
-    const laid = layoutScopes(result.doc, result.touchedScopeIds);
-    const outer = placementFor(laid, 'deep--outer');
-    const inner = placementFor(laid, 'deep--outer--inner');
-    const leaf = placementFor(laid, 'deep--outer--inner--leaf-one');
-    // inner contains its leaves
+    const outer = placement(laid, 'deep--outer');
+    const inner = placement(laid, 'deep--outer--inner');
+    const leaf = placement(laid, 'deep--outer--inner--leaf-one');
     expect(inner.size.width).toBeGreaterThanOrEqual(leaf.position.x + leaf.size.width);
     expect(inner.size.height).toBeGreaterThanOrEqual(leaf.position.y + leaf.size.height);
-    // outer contains inner and sibling
     expect(outer.size.width).toBeGreaterThanOrEqual(inner.position.x + inner.size.width);
     expect(outer.size.height).toBeGreaterThanOrEqual(inner.position.y + inner.size.height);
-    const sibling = placementFor(laid, 'deep--outer--sibling');
+    const sibling = placement(laid, 'deep--outer--sibling');
     expect(outer.size.height).toBeGreaterThanOrEqual(sibling.position.y + sibling.size.height);
     expect(intersects(rect(laid, 'deep--outer--inner'), rect(laid, 'deep--outer--sibling'))).toBe(false);
   });
@@ -234,14 +184,9 @@ describe('layoutScopes', () => {
   it('grid layout is deterministic and keeps a bounded aspect ratio', () => {
     const zones = Array.from({ length: 8 }, (_, index) =>
       `  zone "Z${index}"\n    module "m${index}"\n  end\n`).join('');
-    const { scopes, errors } = parseDsl(`scope Wide\n${zones}`);
-    expect(errors).toEqual([]);
-    const result = compile(baseDoc(), scopes);
-    const first = layoutScopes(result.doc, result.touchedScopeIds);
-    const second = layoutScopes(result.doc, result.touchedScopeIds);
-    expect(second).toEqual(first);
-    const scope = placementFor(first, 'wide');
-    // 8 zones must wrap before the width runs away; aspect stays bounded
+    const record = buildRecord(`scope Wide\n${zones}`);
+    expect(layoutRecord(record)).toEqual(layoutRecord(record));
+    const scope = placement(record, 'wide');
     expect(scope.size.width).toBeLessThanOrEqual(2000 + 320 + 40);
     expect(scope.size.height).toBeGreaterThan(160);
   });

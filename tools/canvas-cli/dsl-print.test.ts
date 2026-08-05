@@ -1,10 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import type { ArchitectureDocument } from '../../src/domain/model';
-import { emptyArchitecture } from '../../src/domain/defaults';
-import { parseDsl } from './dsl-parse.ts';
-import { compile } from './compile.ts';
-import { layoutScopes } from './layout.ts';
-import { listMaps, printOutline, printScope } from './dsl-print.ts';
+import type { CrossDiagramLink, DiagramRecord } from '../../src/canvas.ts';
+import { buildRecord, buildRecords } from './dsl-fixture.ts';
+import { listMaps, printLibrary, printRecord } from './dsl-print.ts';
 
 const DSL = `
 scope "Browser Sessions" "Isolated per-agent browsing"
@@ -18,23 +15,19 @@ scope "Browser Sessions" "Isolated per-agent browsing"
   wire "Session broker" -> "browse CLI" : ack(SessionHandle) -> void
 `;
 
-function emptyDoc(): ArchitectureDocument {
+/** Content is what a round trip has to preserve; ids and revisions are storage, not meaning. */
+function content(record: DiagramRecord) {
   return {
-    ...structuredClone(emptyArchitecture), id: 'doc', name: 'Doc', revision: 1,
+    nodes: record.nodes,
+    interfaces: record.interfaces,
+    types: record.types,
+    wires: record.wires,
   };
 }
 
-function build() {
-  const { scopes, errors } = parseDsl(DSL);
-  expect(errors).toEqual([]);
-  const result = compile(emptyDoc(), scopes);
-  expect(result.errors).toEqual([]);
-  return layoutScopes(result.doc, result.touchedScopeIds);
-}
-
-describe('printScope', () => {
+describe('printRecord', () => {
   it('prints contract on every wire and kind only when not the default', () => {
-    const output = printScope(build(), 'browser-sessions');
+    const output = printRecord(buildRecord(DSL));
     expect(output).toContain('wire "browse CLI" -> "Session broker" : acquire(AgentId) -> SessionHandle [queries]');
     expect(output).toContain('wire "Session broker" -> "browse CLI" : ack(SessionHandle) -> void');
     expect(output).not.toContain('[references]');
@@ -43,36 +36,64 @@ describe('printScope', () => {
     expect(output).toContain('type Lease { agentId, ttl }');
   });
 
-  it('round-trips: applying the printed outline reproduces the same structure', () => {
-    const doc = build();
-    const printed = printScope(doc, 'browser-sessions');
-    const { scopes, errors } = parseDsl(printed);
-    expect(errors).toEqual([]);
-    const reapplied = compile(doc, scopes);
-    expect(reapplied.errors).toEqual([]);
-    expect(reapplied.warnings).toEqual([]);
+  it('round-trips: re-applying the printed map reproduces the same record content', () => {
+    const record = buildRecord(DSL);
+    const reapplied = buildRecord(printRecord(record), { [record.id]: record });
+    expect(content(reapplied)).toEqual(content(record));
+  });
 
-    const strip = (input: ArchitectureDocument) => ({
-      nodes: input.nodes,
-      interfaces: input.interfaces,
-      types: input.types,
-      wires: input.wires,
-    });
-    expect(strip(reapplied.doc)).toEqual(strip(doc));
+  it('preserves node ids and placements for unchanged nodes across a re-apply', () => {
+    const record = buildRecord(DSL);
+    const reapplied = buildRecord(printRecord(record), { [record.id]: record });
+    expect(Object.keys(reapplied.nodes).sort()).toEqual(Object.keys(record.nodes).sort());
+    expect(reapplied.layouts[reapplied.views[reapplied.activeViewId].layoutId].placements)
+      .toEqual(record.layouts[record.views[record.activeViewId].layoutId].placements);
+  });
+
+  it('prints a cross-diagram link as an ordinary wire, so read stays lossless', () => {
+    const { records } = buildRecords(`
+scope "Novakai IDE"
+  module Session
+
+scope "Agent Messaging"
+  module Agents
+`);
+    const link = {
+      id: 'session-agents', kind: 'references', label: 'is a',
+      source: { diagramId: 'novakai-ide', nodeId: 'novakai-ide--session' },
+      target: { diagramId: 'agent-messaging', nodeId: 'agent-messaging--agents' },
+    } as unknown as CrossDiagramLink;
+    const context = {
+      links: [link],
+      labelOf: (diagramId: string, nodeId: string) => records[diagramId]?.nodes[nodeId]?.label,
+    };
+    expect(printRecord(records['novakai-ide'], context)).toContain('wire "Session" -> "Agents" : is a');
+    // The link is outbound from one map only; the other must not print it a second time.
+    expect(printRecord(records['agent-messaging'], context)).not.toContain('is a');
   });
 });
 
-describe('printOutline / listMaps', () => {
-  it('lists top-level scopes with node and wire counts', () => {
-    const doc = build();
-    expect(listMaps(doc)).toEqual([
+describe('printLibrary / listMaps', () => {
+  it('lists maps with node and wire counts', () => {
+    const record = buildRecord(DSL);
+    expect(listMaps([record])).toEqual([
       { id: 'browser-sessions', label: 'Browser Sessions', nodes: 3, wires: 2 },
     ]);
-    expect(printOutline(doc)).toContain('scope "Browser Sessions"');
+    expect(printLibrary([record])).toContain('scope "Browser Sessions"');
+  });
+
+  it('counts an outbound cross-diagram link as a wire of its source map', () => {
+    const record = buildRecord('scope "Solo"\n  module A\n');
+    const link = {
+      id: 'l1', kind: 'references', label: 'is a',
+      source: { diagramId: 'solo', nodeId: 'solo--a' },
+      target: { diagramId: 'other', nodeId: 'other--b' },
+    } as unknown as CrossDiagramLink;
+    expect(listMaps([record], [link])[0].wires).toBe(1);
   });
 });
 
-describe('printScope with nested zones', () => {
+describe('printRecord with nested zones', () => {
   const ZONED_DSL = `
 scope "Mission Map"
   zone "Stores"
@@ -90,16 +111,8 @@ scope "Mission Map"
   wire "Stores" -> "Archive" : keeps [owns]
 `;
 
-  function buildZoned() {
-    const { scopes, errors } = parseDsl(ZONED_DSL);
-    expect(errors).toEqual([]);
-    const result = compile(emptyDoc(), scopes);
-    expect(result.errors).toEqual([]);
-    return layoutScopes(result.doc, result.touchedScopeIds);
-  }
-
-  it('prints nested scopes as zone/end blocks with wires at scope level', () => {
-    const output = printScope(buildZoned(), 'mission-map');
+  it('prints nested groups as zone/end blocks with wires at scope level', () => {
+    const output = printRecord(buildRecord(ZONED_DSL));
     expect(output).toContain('zone "Stores"');
     expect(output).toContain('zone "Archive"');
     expect(output).toContain('zone "Standalone — no mission"');
@@ -109,20 +122,8 @@ scope "Mission Map"
   });
 
   it('round-trips nested zones: re-applying the print reproduces the structure', () => {
-    const doc = buildZoned();
-    const printed = printScope(doc, 'mission-map');
-    const { scopes, errors } = parseDsl(printed);
-    expect(errors).toEqual([]);
-    const reapplied = compile(doc, scopes);
-    expect(reapplied.errors).toEqual([]);
-    expect(reapplied.warnings).toEqual([]);
-
-    const strip = (input: ArchitectureDocument) => ({
-      nodes: input.nodes,
-      interfaces: input.interfaces,
-      types: input.types,
-      wires: input.wires,
-    });
-    expect(strip(reapplied.doc)).toEqual(strip(doc));
+    const record = buildRecord(ZONED_DSL);
+    const reapplied = buildRecord(printRecord(record), { [record.id]: record });
+    expect(content(reapplied)).toEqual(content(record));
   });
 });

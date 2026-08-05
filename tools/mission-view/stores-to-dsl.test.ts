@@ -1,9 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import type { ArchitectureDocument } from '../../src/domain/model';
-import { emptyArchitecture } from '../../src/domain/defaults';
-import { architectureDocumentSchema } from '../../src/domain/schema';
-import { parseDsl } from '../canvas-cli/dsl-parse.ts';
-import { compile } from '../canvas-cli/compile.ts';
+import type { DiagramRecord } from '../../src/canvas.ts';
+import { diagramRecordSchema } from '../../src/domain/record-schema.ts';
+import { buildRecords } from '../canvas-cli/dsl-fixture.ts';
+import type { RecordNode, RecordWire } from '../canvas-cli/record-graph.ts';
 import { rightNowSelection, storesToDsl, type MissionStores } from './stores-to-dsl.ts';
 
 const NOW = '2026-07-22T12:00:00.000Z';
@@ -62,15 +61,28 @@ function fixture(): MissionStores {
   };
 }
 
-function compiled(): ArchitectureDocument {
-  const dsl = storesToDsl(fixture());
-  const { scopes, errors } = parseDsl(dsl);
-  expect(errors).toEqual([]);
-  const result = compile({
-    ...structuredClone(emptyArchitecture), id: 'doc', name: 'Doc', revision: 1,
-  }, scopes);
+/** Every record one DSL source produced, flattened — these assertions read across maps. */
+interface CompiledMaps {
+  nodes: Record<string, RecordNode>;
+  wires: Record<string, RecordWire>;
+  records: Record<string, DiagramRecord>;
+}
+
+function compileDsl(dsl: string): CompiledMaps {
+  const { records, result, parseErrors } = buildRecords(dsl);
+  expect(parseErrors).toEqual([]);
   expect(result.errors).toEqual([]);
-  return result.doc;
+  const nodes: Record<string, RecordNode> = {};
+  const wires: Record<string, RecordWire> = {};
+  for (const record of Object.values(records)) {
+    Object.assign(nodes, record.nodes);
+    Object.assign(wires, record.wires);
+  }
+  return { nodes, wires, records };
+}
+
+function compiled(): CompiledMaps {
+  return compileDsl(storesToDsl(fixture()));
 }
 
 describe('rightNowSelection', () => {
@@ -93,11 +105,13 @@ describe('rightNowSelection', () => {
 describe('storesToDsl', () => {
   it('emits three scopes that parse, compile, and validate cleanly', () => {
     const doc = compiled();
-    const scopes = Object.values(doc.nodes).filter((node) => node.kind === 'scope' && !node.parentId);
+    const scopes = Object.values(doc.nodes).filter((node) => node.kind === 'group' && !node.parentId);
     expect(scopes.map((scope) => scope.label).sort()).toEqual(
       ['Mission Data Tree', 'Mission Object Model', 'Mission Right Now'],
     );
-    expect(() => architectureDocumentSchema.parse(doc)).not.toThrow();
+    for (const record of Object.values(doc.records)) {
+      expect(() => diagramRecordSchema.parse(record)).not.toThrow();
+    }
   });
 
   it('computes object-model counts from the data, never copies them', () => {
@@ -113,8 +127,9 @@ describe('storesToDsl', () => {
     const byLabel = new Map(Object.values(doc.nodes).map((node) => [node.label, node]));
     const stores = byLabel.get('Stores');
     const readLayer = byLabel.get('Read layer');
-    expect(stores?.kind).toBe('scope');
-    expect(readLayer?.kind).toBe('scope');
+    // The record model calls a container `group`; the DSL still writes it as `zone`.
+    expect(stores?.kind).toBe('group');
+    expect(readLayer?.kind).toBe('group');
     expect(byLabel.get('mission (missions.jsonl)')?.parentId).toBe(stores?.id);
     expect(byLabel.get('Mission Room')?.parentId).toBe(readLayer?.id);
   });
@@ -160,7 +175,7 @@ describe('storesToDsl', () => {
     // containment wires: owns, parents above children
     const owns = Object.values(doc.wires).filter((wire) => wire.kind === 'owns');
     const pair = (wire: (typeof owns)[number]) =>
-      `${doc.nodes[wire.source].label} -> ${doc.nodes[wire.target].label}`;
+      `${doc.nodes[wire.source.nodeId].label} -> ${doc.nodes[wire.target.nodeId].label}`;
     expect(owns.map(pair)).toContain('proj_command -> mission_done');
     expect(owns.map(pair)).toContain('mission_done -> task_linked');
   });
@@ -201,19 +216,13 @@ describe('storesToDsl', () => {
       { id: 'mission_a', title: 'A', status: 'in-progress', owner: 'Author Scribe', refs: [] },
     ];
     stores.projects = [];
-    const dsl = storesToDsl(stores);
-    const { scopes, errors } = parseDsl(dsl);
-    expect(errors).toEqual([]);
-    const result = compile({
-      ...structuredClone(emptyArchitecture), id: 'doc', name: 'Doc', revision: 1,
-    }, scopes);
-    expect(result.errors).toEqual([]);
-    const byLabel = new Map(Object.values(result.doc.nodes).map((node) => [node.label, node]));
+    const compiledMaps = compileDsl(storesToDsl(stores));
+    const byLabel = new Map(Object.values(compiledMaps.nodes).map((node) => [node.label, node]));
     // mission_a sorts first — it owns the agent; both missions soft-match so both
     // keep their mentions wires, but only mission_a owns the node.
     expect(byLabel.get('Author Scribe')?.parentId).toBe(byLabel.get('mission_a')?.id);
-    const wirePairs = Object.values(result.doc.wires)
-      .map((wire) => `${result.doc.nodes[wire.source].label} -> ${result.doc.nodes[wire.target].label} [${wire.kind}]`);
+    const wirePairs = Object.values(compiledMaps.wires)
+      .map((wire) => `${compiledMaps.nodes[wire.source.nodeId].label} -> ${compiledMaps.nodes[wire.target.nodeId].label} [${wire.kind}]`);
     expect(wirePairs).toContain('mission_a -> Author Scribe [owns]');
     expect(wirePairs).toContain('mission_b -> Author Scribe [mentions]');
     expect(wirePairs).not.toContain('mission_b -> Author Scribe [owns]');

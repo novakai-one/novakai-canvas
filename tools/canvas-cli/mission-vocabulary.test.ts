@@ -1,11 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import type { ArchitectureDocument } from '../../src/domain/model';
-import { emptyArchitecture } from '../../src/domain/defaults';
-import { architectureDocumentSchema } from '../../src/domain/schema';
+import type { DiagramRecord } from '../../src/canvas.ts';
+import { diagramRecordSchema } from '../../src/domain/record-schema.ts';
 import { parseDsl } from './dsl-parse.ts';
-import { compile } from './compile.ts';
-import { layoutScopes } from './layout.ts';
-import { printScope } from './dsl-print.ts';
+import { buildRecord } from './dsl-fixture.ts';
+import { printRecord } from './dsl-print.ts';
 
 const DSL = `
 scope "Mission State"
@@ -20,30 +18,20 @@ scope "Mission State"
   wire "Manager Kimi" -> "mission store" : no link exists [missing]
 `;
 
-function emptyDoc(): ArchitectureDocument {
-  return {
-    ...structuredClone(emptyArchitecture), id: 'doc', name: 'Doc', revision: 1,
-  };
-}
-
-function build() {
-  const { scopes, errors } = parseDsl(DSL);
-  expect(errors).toEqual([]);
-  const result = compile(emptyDoc(), scopes);
-  expect(result.errors).toEqual([]);
-  return layoutScopes(result.doc, result.touchedScopeIds);
+function build(): DiagramRecord {
+  return buildRecord(DSL);
 }
 
 describe('mission vocabulary', () => {
   it('parses mentions and missing wire kinds', () => {
-    const doc = build();
-    const kinds = Object.values(doc.wires).map((wire) => wire.kind).sort();
+    const record = build();
+    const kinds = Object.values(record.wires).map((wire) => wire.kind).sort();
     expect(kinds).toEqual(['mentions', 'missing']);
   });
 
   it('compiles tree rows with identity, hierarchy, badges, and bucket labels', () => {
-    const doc = build();
-    const tree = Object.values(doc.nodes).find((node) => node.kind === 'tree');
+    const record = build();
+    const tree = Object.values(record.nodes).find((node) => node.kind === 'tree');
     expect(tree?.rows).toEqual([
       { id: 'proj_command', kind: 'project', status: 'active', badges: [] },
       { id: 'mission_m1', kind: 'mission', status: 'done', parentRowId: 'proj_command', badges: ['outcome', 'team'] },
@@ -52,22 +40,15 @@ describe('mission vocabulary', () => {
     ]);
   });
 
-  it('validates against the document schema', () => {
-    expect(() => architectureDocumentSchema.parse(build())).not.toThrow();
+  it('validates against the record schema', () => {
+    expect(() => diagramRecordSchema.parse(build())).not.toThrow();
   });
 
   it('round-trips rows and new kinds through print → parse → compile', () => {
-    const doc = build();
-    const printed = printScope(doc, 'mission-state');
-    const { scopes, errors } = parseDsl(printed);
-    expect(errors).toEqual([]);
-    const reapplied = compile(doc, scopes);
-    expect(reapplied.errors).toEqual([]);
-    const strip = (input: ArchitectureDocument) => ({
-      nodes: input.nodes,
-      wires: input.wires,
-    });
-    expect(strip(reapplied.doc)).toEqual(strip(doc));
+    const record = build();
+    const reapplied = buildRecord(printRecord(record), { [record.id]: record });
+    const strip = (input: DiagramRecord) => ({ nodes: input.nodes, wires: input.wires });
+    expect(strip(reapplied)).toEqual(strip(record));
   });
 
   it('rejects rows outside tree nodes and unknown row kinds', () => {
