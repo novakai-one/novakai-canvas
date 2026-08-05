@@ -178,7 +178,7 @@ CSS and layout and survives the swap whenever it happens.
 
 | Gate | Baseline | Now |
 |---|---|---|
-| Tests | 158 pass / 3 fail | **222 pass / 3 fail** — same three pre-existing reporting failures, untouched |
+| Tests | 158 pass / 3 fail | **226 pass / 3 fail** — same three pre-existing reporting failures, untouched |
 | Typecheck (both configs) | clean | clean |
 | Lint | clean | clean |
 | Production build | clean | clean |
@@ -197,6 +197,20 @@ work-session-reporting experiment I was told to leave alone. My own files carry 
 files over 400 lines, zero functions over 60, zero swallowed errors, every export documented.
 I have not produced a Canvas-scoped score, because scoping a measurement to flatter a result is
 exactly the move the honesty rules forbid.
+
+### D-008 — The worst bug I found was not in the new code
+
+`load()` caught every error and returned the empty-document fallback. A corrupt file, a failed
+request, or a schema mismatch opened a blank canvas — and the autosave a few seconds later
+wrote that blank canvas over the real file. I proved it by corrupting one node kind in the real
+data and loading the app.
+
+Fixed: a missing document is still a legitimate empty start; a document that exists and cannot
+be read now throws, and the host refuses to open rather than starting on emptiness it would
+then persist. Both paths driven in a browser.
+
+This is why the failure-state work belonged in the slice that touches data, exactly as the
+second audit argued.
 
 ## What the next session should pick up
 
