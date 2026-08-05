@@ -1,25 +1,19 @@
-import { useEffect, useState } from 'react';
-import type { ArchitectureDocument } from '../../domain/model';
-import { architectureDocumentSchema } from '../../domain/schema';
+import { useMemo } from 'react';
+import type { DiagramRecord } from '../../domain/records';
 
-/** Editable validated representation of the canonical document. */
-export function JsonPanel({ document, replace }: { document: ArchitectureDocument; replace: (next: ArchitectureDocument) => void }) {
-  const [raw, setRaw] = useState(() => JSON.stringify(document, null, 2));
-  const [error, setError] = useState('');
-  useEffect(() => setRaw(JSON.stringify(document, null, 2)), [document]);
-  const apply = (): void => {
-    try {
-      replace(architectureDocumentSchema.parse(JSON.parse(raw)));
-      setError('');
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : 'Invalid JSON');
-    }
-  };
+/**
+ * The open diagram exactly as it is stored, for reading.
+ *
+ * This panel used to accept an edited document back. A record now changes only through the
+ * workspace's commands, so accepting hand-edited JSON would mean bypassing validation, the
+ * revision check, and the operation ledger — and a textarea that silently did that is worse than
+ * one that shows the truth.
+ */
+export function JsonPanel({ record }: { record: DiagramRecord }) {
+  const raw = useMemo(() => JSON.stringify(record, null, 2), [record]);
   return (
     <div className="json-panel">
-      <textarea aria-label="Architecture JSON" spellCheck={false} value={raw} onChange={(event) => setRaw(event.target.value)} />
-      {error && <div className="json-error">{error}</div>}
-      <button className="primary-action" onClick={apply} type="button">Apply JSON</button>
+      <textarea aria-label="Diagram record JSON" readOnly spellCheck={false} value={raw} />
     </div>
   );
 }

@@ -1,18 +1,19 @@
-import type { ArchitectureDocument, CanvasPreferences, WireKind } from '../../domain/model';
+import type { CanvasPreferences, WireKind } from '../../domain/model';
+import type { ProjectedView } from '../../domain/project-view';
 import { WIRE_KIND_STYLES, wireKindColorVariable, wireKindDashArray } from '../wire-styles';
 
 interface LegendProps {
-  document: ArchitectureDocument;
+  view: ProjectedView;
   preferences: CanvasPreferences;
 }
 
-/** Quiet overlay explaining only the wire kinds the active map actually uses. */
-export function Legend({ document, preferences }: LegendProps) {
+/** Quiet overlay explaining only the wire kinds the visible diagram actually uses. */
+export function Legend({ preferences, view }: LegendProps) {
   if (!preferences.canvas.showLegend) return null;
-  const present = new Set(Object.values(document.wires).map((wire) => wire.kind));
+  const present = new Set<string>(view.wires.map((wire) => wire.kind));
   const kinds = (Object.keys(WIRE_KIND_STYLES) as WireKind[]).filter((kind) => present.has(kind));
-  const standalone = Object.values(document.nodes)
-    .some((node) => node.kind === 'scope' && node.label.startsWith('Standalone'));
+  const standalone = view.nodes
+    .some((node) => node.kind === 'group' && node.label.startsWith('Standalone'));
   if (kinds.length === 0 && !standalone) return null;
   return (
     <aside className="canvas-legend" aria-label="Wire kinds">

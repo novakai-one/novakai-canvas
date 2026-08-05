@@ -1,71 +1,87 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
-import type { CanvasEngine } from './application/canvas-engine';
-import type { DiagramSummary } from './application/canvas-library';
+import type { CanvasLibrary, DiagramSummary } from './application/canvas-library';
+import type { CanvasWorkspace, RecordCommand } from './application/canvas-workspace';
 import type { JsonRepository } from './application/json-repository';
+import { asId } from './domain/id-cast';
+import type { NodeId } from './domain/ids';
 import type { CanvasPreferences, InspectorTab, Selection } from './domain/model';
-import {
-  focusArchitecture, listArchitectureMaps, presentArchitecture, resolveArchitectureMap,
-} from './domain/maps';
+import { projectView } from './domain/project-view';
 import { CanvasSurface } from './presentation/components/canvas-surface';
 import { Inspector } from './presentation/components/inspector';
-import { useCanvasEngine } from './presentation/use-canvas-engine';
+import { useWorkspaceRecord } from './presentation/use-workspace-record';
 import { wireToneCssVariables } from './presentation/wire-styles';
 import { DEFAULT_CANVAS_MODE, type CanvasMode } from './presentation/view-mode';
 
-interface AppProps {
-  engine: CanvasEngine;
+/** What the host hands the app once the library and the first diagram have been read. */
+export interface AppProps {
+  library: CanvasLibrary;
+  initialDiagramId: string;
+  initialWorkspace: CanvasWorkspace;
   initialPreferences: CanvasPreferences;
-  /**
-   * A snapshot of the v3 record-model library's diagram list, when one could be built.
-   *
-   * Sourced independently of `document`/`maps`: it proves the library seam reads real records
-   * from disk without yet driving the rendering pipeline. Undefined in production or if the
-   * library was unavailable, in which case the picker falls back to the legacy document.
-   */
-  libraryDiagrams?: DiagramSummary[];
   preferencesRepository: JsonRepository<CanvasPreferences>;
 }
 
-/** Composes the canvas engine with replaceable presentation adapters. */
-export default function App({ engine, initialPreferences, libraryDiagrams, preferencesRepository }: AppProps) {
-  const document = useCanvasEngine(engine);
+/** One open diagram: its identity and the workspace holding its content. */
+interface OpenDiagram { id: string; workspace: CanvasWorkspace }
+
+const SAVE_STATUS = {
+  saved: 'Saved',
+  saving: 'Saving',
+  /** A record changed underneath this session. The edits stay; the user decides what to do. */
+  stale: 'File changed on disk — your edits are unsaved',
+  failed: 'Not saved',
+  refused: 'Change not applied',
+} as const;
+
+/** Composes the diagram library and one open workspace with replaceable presentation. */
+export default function App(props: AppProps) {
+  const { initialDiagramId, initialPreferences, initialWorkspace, library, preferencesRepository } = props;
+  const [open, setOpen] = useState<OpenDiagram>(
+    () => ({ id: initialDiagramId, workspace: initialWorkspace }),
+  );
+  const record = useWorkspaceRecord(open.workspace);
+  const view = useMemo(() => projectView(record), [record]);
+  const [diagrams, setDiagrams] = useState<DiagramSummary[]>(
+    () => library.list({ includeArchived: true }),
+  );
   const [preferences, setPreferences] = useState(initialPreferences);
   const [selection, setSelection] = useState<Selection>(null);
   const [tab, setTab] = useState<InspectorTab>(initialPreferences.panel.defaultTab);
-  const [saveStatus, setSaveStatus] = useState('Saved');
+  const [saveStatus, setSaveStatus] = useState<string>(SAVE_STATUS.saved);
   const [mode, setMode] = useState<CanvasMode>(DEFAULT_CANVAS_MODE);
-  const [requestedMapId, setRequestedMapId] = useState(() =>
-    resolveArchitectureMap(engine.snapshot(), undefined));
-  const [mapHistory, setMapHistory] = useState<string[]>([]);
+  const [history, setHistory] = useState<string[]>([]);
   const savedPreferences = useRef(JSON.stringify(initialPreferences));
-  const maps = useMemo(() => listArchitectureMaps(document, true), [document]);
-  const activeMapId = resolveArchitectureMap(document, requestedMapId, true);
-  const focusedDocument = useMemo(
-    () => mode === 'present'
-      ? presentArchitecture(document, activeMapId)
-      : focusArchitecture(document, activeMapId),
-    [activeMapId, document, mode],
+  // The revision each open diagram was last written at. A save that fails leaves its entry
+  // behind, so the next edit tries again rather than pretending the work is on disk.
+  const persisted = useRef(new Map<string, number>([[initialDiagramId, record.revision]]));
+
+  const refreshDiagrams = useCallback(
+    () => setDiagrams(library.list({ includeArchived: true })),
+    [library],
   );
 
   useEffect(() => {
     if (!preferences.files.autoSave) return;
-    if (document.revision === engine.persistedRevision()) return;
-    setSaveStatus('Saving');
+    if (persisted.current.get(open.id) === record.revision) return;
+    setSaveStatus(SAVE_STATUS.saving);
     const timer = window.setTimeout(() => {
-      void engine.save().then(() => setSaveStatus('Saved')).catch((error: unknown) => {
-        if (error instanceof Error && error.message === 'stale-revision') {
-          // Something else — usually ./canvas apply — wrote the file after this session read
-          // it. Reloading here silently threw the user's unsaved edits away while the status
-          // still read "Saved". Their work stays; they are told; they decide.
-          setSaveStatus('File changed on disk — your edits are unsaved');
+      const saving = open.workspace.snapshot().revision;
+      void library.save(open.id).then((outcome) => {
+        if (outcome.status === 'written') {
+          persisted.current.set(open.id, saving);
+          setSaveStatus(SAVE_STATUS.saved);
+          refreshDiagrams();
           return;
         }
-        setSaveStatus('Not saved');
+        // Something else — usually ./canvas apply — wrote the record after this session read it.
+        // Reloading here silently threw the user's unsaved edits away while the status still read
+        // "Saved". Their work stays; they are told; they decide.
+        setSaveStatus(outcome.status === 'stale-revision' ? SAVE_STATUS.stale : SAVE_STATUS.failed);
       });
     }, preferences.files.saveDelay);
     return () => window.clearTimeout(timer);
-  }, [document, engine, preferences.files.autoSave, preferences.files.saveDelay]);
+  }, [library, open, preferences.files.autoSave, preferences.files.saveDelay, record, refreshDiagrams]);
 
   useEffect(() => {
     const serialized = JSON.stringify(preferences);
@@ -78,57 +94,100 @@ export default function App({ engine, initialPreferences, libraryDiagrams, prefe
     return () => window.clearTimeout(timer);
   }, [preferences, preferencesRepository]);
 
+  const execute = useCallback((command: RecordCommand) => {
+    const outcome = open.workspace.execute(command);
+    if (outcome.status === 'applied') return;
+    // A refused command is a bug or a race, never a no-op worth hiding: say so on screen and
+    // leave the detail in the console for whoever is looking.
+    console.warn('[canvas] change not applied', outcome, command);
+    setSaveStatus(SAVE_STATUS.refused);
+  }, [open.workspace]);
+
   const select = useCallback((next: Selection) => {
     setSelection(next);
     if (next) setTab('inspect');
   }, []);
 
-  const changeMap = useCallback((mapId: string) => {
-    setRequestedMapId(mapId);
-    setSelection(null);
-  }, []);
-
-  const createDiagram = useCallback(() => {
-    const token = crypto.randomUUID().slice(0, 8);
-    const diagramId = `diagram-${token}`;
-    const rootNodeId = `scope-${token}`;
-    engine.execute({
-      kind: 'diagram.create',
-      diagram: { id: diagramId, rootNodeId, status: 'active', sourceRefs: [] },
-      root: { id: rootNodeId, kind: 'scope', label: 'Untitled diagram', interfaceIds: [], typeIds: [] },
-      placement: {
-        nodeId: rootNodeId, position: { x: 0, y: 0 },
-        size: { width: 1000, height: 700 }, pinned: false,
-      },
-    });
-    setRequestedMapId(diagramId);
-    setSelection({ kind: 'node', id: rootNodeId });
-  }, [engine]);
-
-  const setDiagramStatus = useCallback((diagramId: string, status: 'active' | 'archived') => {
-    engine.execute({ kind: 'diagram.setStatus', id: diagramId, status });
-    if (status === 'archived' && activeMapId === diagramId) {
-      const next = maps.find((map) => map.id !== diagramId && map.status === 'active');
-      setRequestedMapId(next?.id);
-      setSelection(null);
+  /**
+   * Opens another diagram through the library.
+   *
+   * The library owns workspace identity: opening the same diagram twice returns the workspace
+   * that is already open, so unsaved edits survive switching away and back.
+   */
+  const openDiagram = useCallback(async (diagramId: string): Promise<CanvasWorkspace | null> => {
+    const opened = await library.open(diagramId);
+    if (!('snapshot' in opened)) {
+      console.warn('[canvas] diagram could not be opened', opened);
+      setSaveStatus(SAVE_STATUS.failed);
+      return null;
     }
-  }, [activeMapId, engine, maps]);
-
-  const openDiagram = useCallback((diagramId: string) => {
-    if (!document.diagrams[diagramId] || document.diagrams[diagramId].status !== 'active') return;
-    if (activeMapId) setMapHistory((history) => [...history, activeMapId]);
-    setRequestedMapId(diagramId);
+    if (!persisted.current.has(diagramId)) {
+      persisted.current.set(diagramId, opened.snapshot().revision);
+    }
+    setOpen({ id: diagramId, workspace: opened });
     setSelection(null);
-  }, [activeMapId, document.diagrams]);
+    setSaveStatus(SAVE_STATUS.saved);
+    return opened;
+  }, [library]);
+
+  const changeDiagram = useCallback((diagramId: string) => {
+    if (diagramId === open.id) return;
+    void openDiagram(diagramId);
+  }, [open.id, openDiagram]);
+
+  const drillInto = useCallback((diagramId: string) => {
+    const from = open.id;
+    void openDiagram(diagramId).then((opened) => {
+      if (opened) setHistory((trail: string[]) => [...trail, from]);
+    });
+  }, [open.id, openDiagram]);
 
   const goBack = useCallback(() => {
-    setMapHistory((history) => {
-      const target = history.at(-1);
-      if (target) setRequestedMapId(target);
-      return target ? history.slice(0, -1) : history;
+    const target = history.at(-1);
+    if (!target) return;
+    void openDiagram(target).then((opened) => {
+      if (opened) setHistory((trail) => trail.slice(0, -1));
     });
-    setSelection(null);
-  }, []);
+  }, [history, openDiagram]);
+
+  const createDiagram = useCallback(() => {
+    const diagramId = `diagram-${crypto.randomUUID().slice(0, 8)}`;
+    const name = 'Untitled diagram';
+    void library.create(name, diagramId).then(async (created) => {
+      if (!('nodeLabels' in created)) {
+        console.warn('[canvas] diagram could not be created', created);
+        setSaveStatus(SAVE_STATUS.failed);
+        return;
+      }
+      refreshDiagrams();
+      const opened = await openDiagram(diagramId);
+      if (!opened) return;
+      // Every migrated diagram is one root container holding its objects; a new one starts the
+      // same way, so `+ Add` has somewhere to put things and the canvas is not a blank void.
+      opened.execute({
+        kind: 'node.add',
+        node: {
+          id: asId<NodeId>(diagramId), kind: 'group', label: name, interfaceIds: [], typeIds: [],
+        },
+        placement: { position: { x: 0, y: 0 }, size: { width: 1000, height: 700 } },
+      });
+      setSelection({ kind: 'node', id: diagramId });
+    });
+  }, [library, openDiagram, refreshDiagrams]);
+
+  const setDiagramStatus = useCallback((diagramId: string, status: 'active' | 'archived') => {
+    void library.setStatus(diagramId, status).then((outcome) => {
+      if (!('nodeLabels' in outcome)) {
+        console.warn('[canvas] diagram status unchanged', outcome);
+        setSaveStatus(SAVE_STATUS.failed);
+        return;
+      }
+      refreshDiagrams();
+      if (status !== 'archived' || diagramId !== open.id) return;
+      const next = library.list().find((entry) => entry.id !== diagramId);
+      if (next) void openDiagram(next.id);
+    });
+  }, [library, open.id, openDiagram, refreshDiagrams]);
 
   const changeMode = useCallback((next: CanvasMode) => {
     setMode(next);
@@ -148,39 +207,41 @@ export default function App({ engine, initialPreferences, libraryDiagrams, prefe
     >
       <ReactFlowProvider>
         <CanvasSurface
-          activeMapId={activeMapId}
-          canGoBack={mapHistory.length > 0}
-          changeMap={changeMap}
+          activeDiagramId={open.id}
+          canGoBack={history.length > 0}
+          canUndo={open.workspace.canUndo()}
+          changeDiagram={changeDiagram}
           changeMode={changeMode}
           createDiagram={createDiagram}
-          document={focusedDocument}
-          engine={engine}
-          libraryDiagrams={libraryDiagrams}
-          maps={maps}
-          mode={mode}
+          diagrams={diagrams}
+          execute={execute}
           goBack={goBack}
+          mode={mode}
           preferences={preferences}
+          record={record}
           saveStatus={saveStatus}
           selection={selection}
-          setSelection={select}
           setDiagramStatus={setDiagramStatus}
+          setSelection={select}
+          undo={() => { open.workspace.undo(); }}
+          view={view}
         />
       </ReactFlowProvider>
       <Inspector
-          clearSelection={() => setSelection(null)}
-          document={document}
-          visibleDocument={focusedDocument}
-          select={select}
-          editable={mode === 'edit'}
-          execute={engine.execute}
-          openDiagram={openDiagram}
-          preferences={preferences}
-          replace={engine.replace}
-          selection={selection}
-          setTab={setTab}
-          tab={tab}
-          updatePreferences={setPreferences}
-        />
+        clearSelection={() => setSelection(null)}
+        diagrams={diagrams}
+        editable={mode === 'edit'}
+        execute={execute}
+        openDiagram={drillInto}
+        preferences={preferences}
+        record={record}
+        select={select}
+        selection={selection}
+        setTab={setTab}
+        tab={tab}
+        updatePreferences={setPreferences}
+        view={view}
+      />
     </div>
   );
 }

@@ -1,30 +1,38 @@
-import type { ArchitectureDocument, CanvasCommand, Selection, WireKind } from '../../domain/model';
-import { placementFor } from '../../domain/layouts';
-import { WIRE_KIND_STYLES } from '../wire-styles';
+import type { DiagramSummary } from '../../application/canvas-library';
+import type { RecordCommand } from '../../application/canvas-workspace';
+import type { Selection } from '../../domain/model';
+import type { ProjectedView } from '../../domain/project-view';
+import type { CanvasLayout, DiagramRecord, NodePlacement } from '../../domain/records';
+import { rootGroupId } from '../canvas-actions';
+import { scopeDepth } from '../projection';
 import { Field } from './field';
 
-const WIRE_KINDS = Object.keys(WIRE_KIND_STYLES) as WireKind[];
-
-interface InspectPanelProps {
-  document: ArchitectureDocument;
-  /** Only what the open diagram contains, so the contents list matches what is on screen. */
-  visibleDocument: ArchitectureDocument;
+/** Everything the inspector reads about the open diagram and the library around it. */
+export interface InspectPanelProps {
+  record: DiagramRecord;
+  /** Only what is visible, so the contents list matches what is on screen. */
+  view: ProjectedView;
   selection: Selection;
-  execute: (command: CanvasCommand) => void;
+  execute: (command: RecordCommand) => void;
   clearSelection: () => void;
   select: (selection: Selection) => void;
   editable: boolean;
+  diagrams: DiagramSummary[];
   openDiagram: (diagramId: string) => void;
 }
 
-function depthOf(document: ArchitectureDocument, nodeId: string): number {
-  let depth = 0;
-  let cursor = document.nodes[nodeId]?.parentId;
-  while (cursor) {
-    depth += 1;
-    cursor = document.nodes[cursor]?.parentId;
-  }
-  return depth;
+function activeLayout(record: DiagramRecord): CanvasLayout | undefined {
+  return record.layouts[record.views[record.activeViewId]?.layoutId];
+}
+
+function placementOf(record: DiagramRecord, nodeId: string): Pick<NodePlacement, 'position' | 'pinned'> {
+  const placement = activeLayout(record)?.placements[nodeId];
+  return { position: placement?.position ?? { x: 0, y: 0 }, pinned: placement?.pinned ?? false };
+}
+
+function depthOf(record: DiagramRecord, nodeId: string): number {
+  const node = record.nodes[nodeId];
+  return node ? scopeDepth(record.nodes, node) : 0;
 }
 
 /**
@@ -35,12 +43,11 @@ function depthOf(document: ArchitectureDocument, nodeId: string): number {
  * fastest way to reach any object in it.
  */
 function DiagramContents({ props }: { props: InspectPanelProps }) {
-  const { visibleDocument: visible } = props;
-  const nodes = Object.values(visible.nodes);
-  const root = nodes.find((node) => node.kind === 'scope' && !node.parentId);
-  const listed = nodes
-    .filter((node) => node.id !== root?.id)
-    .sort((left, right) => depthOf(visible, left.id) - depthOf(visible, right.id)
+  const { record, view } = props;
+  const rootId = rootGroupId(record);
+  const listed = view.nodes
+    .filter((node) => node.id !== rootId)
+    .sort((left, right) => depthOf(record, left.id) - depthOf(record, right.id)
       || left.label.localeCompare(right.label));
 
   if (listed.length === 0) {
@@ -50,12 +57,12 @@ function DiagramContents({ props }: { props: InspectPanelProps }) {
   return (
     <div className="diagram-contents">
       <header>
-        <strong>{root?.label ?? visible.name}</strong>
-        <small>{listed.length} objects · {Object.keys(visible.wires).length} wires</small>
+        <strong>{record.name}</strong>
+        <small>{listed.length} objects · {view.wires.length} wires</small>
       </header>
       <ul>
         {listed.map((node) => (
-          <li key={node.id} style={{ paddingLeft: `${Math.min(depthOf(visible, node.id) - 1, 3) * 10}px` }}>
+          <li key={node.id} style={{ paddingLeft: `${Math.min(depthOf(record, node.id) - 1, 3) * 10}px` }}>
             <button onClick={() => props.select({ kind: 'node', id: node.id })} type="button">
               <span className="contents-kind">{node.kind}</span>
               <span className="contents-label">{node.label}</span>
@@ -72,16 +79,24 @@ function EmptySelection({ props }: { props: InspectPanelProps }) {
 }
 
 function NodeInspection({ props, id }: { props: InspectPanelProps; id: string }) {
-  const node = props.document.nodes[id];
+  const node = props.record.nodes[id];
   if (!node) return <EmptySelection props={props} />;
-  const placement = placementFor(props.document, node.id);
-  const layout = props.document.layouts[props.document.activeLayoutId];
-  const diagram = Object.values(props.document.diagrams).find((item) => item.rootNodeId === node.id);
+  const placement = placementOf(props.record, id);
+  const detail = node.expandsToDiagramId
+    ? props.diagrams.find((entry) => entry.id === node.expandsToDiagramId)
+    : undefined;
+  const isRoot = id === rootGroupId(props.record);
+  // The record owns its own title, and the root container shows that title on the canvas. Renaming
+  // one without the other would put two different names on one diagram, so they move together.
+  const rename = (label: string): void => {
+    props.execute({ kind: 'node.update', id, patch: { label } });
+    if (isRoot && label.trim().length > 0) props.execute({ kind: 'diagram.rename', name: label });
+  };
   return (
     <div className="inspection">
       <div className="object-identity"><span>{node.kind}</span><strong>{node.label}</strong></div>
       <Field label="Name">
-        <input disabled={!props.editable} value={node.label} onChange={(event) => props.execute({ kind: 'node.update', id, patch: { label: event.target.value } })} />
+        <input disabled={!props.editable} value={node.label} onChange={(event) => rename(event.target.value)} />
       </Field>
       <Field label="Description">
         <textarea disabled={!props.editable} value={node.description ?? ''} onChange={(event) => props.execute({ kind: 'node.update', id, patch: { description: event.target.value } })} />
@@ -91,31 +106,14 @@ function NodeInspection({ props, id }: { props: InspectPanelProps; id: string })
         <div><span>Types</span><strong>{node.typeIds.length}</strong></div>
         <div><span>Position</span><strong>{Math.round(placement.position.x)}, {Math.round(placement.position.y)}</strong></div>
       </div>
-      {diagram && <Field label="Diagram status"><output>{diagram.status}</output></Field>}
       {node.subjectRef && (
         <Field label="Subject"><output>{node.subjectRef.namespace}:{node.subjectRef.id}</output></Field>
       )}
-      <Field label="Detail diagram">
-        <select
-          disabled={!props.editable}
-          onChange={(event) => props.execute({
-            kind: 'node.setDetailDiagram', id,
-            diagramId: event.target.value || undefined,
-          })}
-          value={node.expandsToDiagramId ?? ''}
-        >
-          <option value="">No linked detail</option>
-          {Object.values(props.document.diagrams)
-            .filter((item) => item.status === 'active' && item.rootNodeId !== node.id)
-            .map((item) => (
-              <option key={item.id} value={item.id}>
-                {props.document.nodes[item.rootNodeId]?.label ?? item.id}
-              </option>
-            ))}
-        </select>
-      </Field>
-      {node.expandsToDiagramId && props.document.diagrams[node.expandsToDiagramId]?.status === 'active' && (
-        <button onClick={() => props.openDiagram(node.expandsToDiagramId as string)} type="button">Open detail →</button>
+      {node.expandsToDiagramId && (
+        <Field label="Detail diagram"><output>{detail?.name ?? node.expandsToDiagramId}</output></Field>
+      )}
+      {detail?.status === 'active' && (
+        <button onClick={() => props.openDiagram(detail.id)} type="button">Open detail →</button>
       )}
       {props.editable && (
         <Field label="Lock position">
@@ -126,16 +124,16 @@ function NodeInspection({ props, id }: { props: InspectPanelProps; id: string })
           />
         </Field>
       )}
-      {props.editable && node.kind === 'scope' && (
+      {props.editable && node.kind === 'group' && (
         <Field label="Collapse children">
           <input
-            checked={layout.collapsedNodeIds.includes(node.id)}
-            onChange={(event) => props.execute({ kind: 'node.setCollapsed', id, collapsed: event.target.checked })}
+            checked={props.view.collapsedNodeIds.includes(node.id)}
+            onChange={(event) => props.execute({ kind: 'view.setCollapsed', id, collapsed: event.target.checked })}
             type="checkbox"
           />
         </Field>
       )}
-      {props.editable && node.kind !== 'scope' && (
+      {props.editable && !isRoot && (
         <button className="danger-action" onClick={() => { props.execute({ kind: 'node.remove', id }); props.clearSelection(); }} type="button">Delete object</button>
       )}
     </div>
@@ -143,12 +141,12 @@ function NodeInspection({ props, id }: { props: InspectPanelProps; id: string })
 }
 
 function InterfaceInspection({ props, id }: { props: InspectPanelProps; id: string }) {
-  const item = props.document.interfaces[id];
+  const item = props.record.interfaces[id];
   if (!item) return <EmptySelection props={props} />;
   return (
     <div className="inspection">
       <div className="object-identity"><span>interface</span><strong>{item.name}</strong></div>
-      <Field label="Owner"><output>{props.document.nodes[item.ownerId]?.label ?? item.ownerId}</output></Field>
+      <Field label="Owner"><output>{props.record.nodes[item.ownerId]?.label ?? item.ownerId}</output></Field>
       <Field label="Accepts"><output>{item.accepts.join(', ') || 'Nothing'}</output></Field>
       <Field label="Returns"><output>{item.returns.join(', ') || 'void'}</output></Field>
       <pre className="object-json">{JSON.stringify(item, null, 2)}</pre>
@@ -157,9 +155,10 @@ function InterfaceInspection({ props, id }: { props: InspectPanelProps; id: stri
 }
 
 function TypeInspection({ props, id }: { props: InspectPanelProps; id: string }) {
-  const item = props.document.types[id];
+  const item = props.record.types[id];
   if (!item) return <EmptySelection props={props} />;
-  const usedBy = Object.values(props.document.nodes).filter((node) => node.typeIds.includes(id));
+  const usedBy = Object.values(props.record.nodes)
+    .filter((node) => (node.typeIds as string[]).includes(id));
   return (
     <div className="inspection">
       <div className="object-identity"><span>type</span><strong>{item.name}</strong></div>
@@ -171,19 +170,15 @@ function TypeInspection({ props, id }: { props: InspectPanelProps; id: string })
 }
 
 function WireInspection({ props, id }: { props: InspectPanelProps; id: string }) {
-  const wire = props.document.wires[id];
+  const wire = props.record.wires[id];
   if (!wire) return <EmptySelection props={props} />;
   return (
     <div className="inspection">
       <div className="object-identity"><span>wire · {wire.kind}</span><strong>{wire.label || 'Unlabelled'}</strong></div>
-      <Field label="Label"><input disabled={!props.editable} value={wire.label} onChange={(event) => props.execute({ kind: 'wire.update', id, patch: { label: event.target.value } })} /></Field>
-      <Field label="Kind">
-        <select disabled={!props.editable} value={wire.kind} onChange={(event) => props.execute({ kind: 'wire.update', id, patch: { kind: event.target.value as WireKind } })}>
-          {WIRE_KINDS.map((kind) => <option key={kind} value={kind}>{kind}</option>)}
-        </select>
-      </Field>
-      <Field label="From"><output>{props.document.nodes[wire.source]?.label ?? wire.source}</output></Field>
-      <Field label="To"><output>{props.document.nodes[wire.target]?.label ?? wire.target}</output></Field>
+      <Field label="Label"><output>{wire.label || 'Unlabelled'}</output></Field>
+      <Field label="Kind"><output>{wire.kind}</output></Field>
+      <Field label="From"><output>{props.record.nodes[wire.source.nodeId]?.label ?? wire.source.nodeId}</output></Field>
+      <Field label="To"><output>{props.record.nodes[wire.target.nodeId]?.label ?? wire.target.nodeId}</output></Field>
       <Field label="Routing"><output>Elbow</output></Field>
       {props.editable && <button className="danger-action" onClick={() => { props.execute({ kind: 'wire.remove', id }); props.clearSelection(); }} type="button">Delete wire</button>}
     </div>
@@ -191,7 +186,7 @@ function WireInspection({ props, id }: { props: InspectPanelProps; id: string })
 }
 
 function TreeRowInspection({ props, nodeId, rowId }: { props: InspectPanelProps; nodeId: string; rowId: string }) {
-  const node = props.document.nodes[nodeId];
+  const node = props.record.nodes[nodeId];
   const row = node?.rows?.find((item) => item.id === rowId);
   if (!node || !row) return <EmptySelection props={props} />;
   const parent = row.parentRowId ? node.rows?.find((item) => item.id === row.parentRowId) : undefined;

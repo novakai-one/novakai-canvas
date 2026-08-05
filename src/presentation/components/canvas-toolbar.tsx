@@ -1,31 +1,8 @@
 import { useState } from 'react';
-import type { CanvasEngine } from '../../application/canvas-engine';
-import type { DiagramSummary } from '../../application/canvas-library';
-import type { ArchitectureDocument, Selection } from '../../domain/model';
-import type { ArchitectureMap } from '../../domain/maps';
-import { createCanvasNode, type CreatableNodeKind } from '../canvas-actions';
-import type { LayoutPreviewActions } from '../use-layout-preview';
-import type { CanvasMode } from '../view-mode';
+import { createCanvasNode, rootGroupId, type CreatableNodeKind } from '../canvas-actions';
+import type { CanvasSurfaceProps } from './canvas-surface';
 
-export interface CanvasToolbarProps {
-  document: ArchitectureDocument;
-  engine: CanvasEngine;
-  maps: ArchitectureMap[];
-  /** Diagram list sourced from the v3 record library; when present, the picker lists these. */
-  libraryDiagrams?: DiagramSummary[];
-  activeMapId?: string;
-  mode: CanvasMode;
-  saveStatus: string;
-  setSelection: (selection: Selection) => void;
-  changeMap: (mapId: string) => void;
-  changeMode: (mode: CanvasMode) => void;
-  canGoBack: boolean;
-  goBack: () => void;
-  createDiagram: () => void;
-  setDiagramStatus: (diagramId: string, status: 'active' | 'archived') => void;
-}
-
-function ModeSwitch({ props }: { props: CanvasToolbarProps }) {
+function ModeSwitch({ props }: { props: CanvasSurfaceProps }) {
   return (
     <div className="mode-switch" aria-label="Canvas mode">
       {(['present', 'edit'] as const).map((mode) => (
@@ -37,47 +14,39 @@ function ModeSwitch({ props }: { props: CanvasToolbarProps }) {
   );
 }
 
-/** Common shape the picker renders, whichever source (library or legacy document) supplied it. */
-interface PickerOption { id: string; label: string; status: 'active' | 'archived' }
-
 function DiagramPicker({
   props, query, setQuery, showArchived,
 }: {
-  props: CanvasToolbarProps;
+  props: CanvasSurfaceProps;
   query: string;
   setQuery: (query: string) => void;
   showArchived: boolean;
 }) {
-  // The library is the record-model's proof of a real end-to-end read; when it built
-  // successfully, the picker's list is sourced from it rather than the legacy document. Diagram
-  // IDs are identical either way, so switching the map by ID below is unaffected.
-  const options: PickerOption[] = props.libraryDiagrams
-    ? props.libraryDiagrams.map((entry) => ({ id: entry.id, label: entry.name, status: entry.status }))
-    : props.maps;
-  const visibleMaps = options.filter((map) =>
-    (showArchived || map.status === 'active')
-    && (map.id === props.activeMapId || map.label.toLowerCase().includes(query.toLowerCase())));
+  // The library index is the only source of this list. Its entries are a projection over the
+  // records themselves, so the picker cannot offer a diagram that has no record behind it.
+  const listed = props.diagrams.filter((entry) =>
+    (showArchived || entry.status === 'active')
+    && (entry.id === props.activeDiagramId || entry.name.toLowerCase().includes(query.toLowerCase())));
   return (
     <label className="map-picker">
       <span>Diagram</span>
       <input aria-label="Find diagram" onChange={(event) => setQuery(event.target.value)} placeholder="Find" type="search" value={query} />
-      <select aria-label="Map" disabled={props.maps.length === 0} value={props.activeMapId ?? ''} onChange={(event) => props.changeMap(event.target.value)}>
-        {visibleMaps.map((map) => <option key={map.id} value={map.id}>{map.label}{map.status === 'archived' ? ' · archived' : ''}</option>)}
+      <select aria-label="Map" disabled={props.diagrams.length === 0} value={props.activeDiagramId} onChange={(event) => props.changeDiagram(event.target.value)}>
+        {listed.map((entry) => <option key={entry.id} value={entry.id}>{entry.name}{entry.status === 'archived' ? ' · archived' : ''}</option>)}
       </select>
     </label>
   );
 }
 
-function AddObjectSelect({ props, activeMap }: { props: CanvasToolbarProps; activeMap?: ArchitectureMap }) {
+function AddObjectSelect({ props }: { props: CanvasSurfaceProps }) {
   const add = (kind: CreatableNodeKind): void => {
-    if (!activeMap) return;
     const id = `${kind}-${crypto.randomUUID().slice(0, 8)}`;
-    const created = createCanvasNode(props.document, activeMap.rootNodeId, kind, id);
-    props.engine.execute({ kind: 'node.add', ...created });
+    const created = createCanvasNode(props.record, rootGroupId(props.record), kind, id);
+    props.execute({ kind: 'node.add', ...created });
     props.setSelection({ kind: 'node', id: created.node.id });
   };
   return (
-    <select aria-label="Add object" disabled={!activeMap} onChange={(event) => {
+    <select aria-label="Add object" onChange={(event) => {
       if (event.target.value) add(event.target.value as CreatableNodeKind);
       event.target.value = '';
     }} value="">
@@ -89,17 +58,17 @@ function AddObjectSelect({ props, activeMap }: { props: CanvasToolbarProps; acti
 }
 
 function DiagramActionSelect({
-  props, activeMap, showArchived, toggleArchived,
+  props, showArchived, toggleArchived,
 }: {
-  props: CanvasToolbarProps;
-  activeMap?: ArchitectureMap;
+  props: CanvasSurfaceProps;
   showArchived: boolean;
   toggleArchived: () => void;
 }) {
+  const active = props.record.status === 'active';
   const act = (action: string): void => {
     if (action === 'new') props.createDiagram();
-    if (action === 'status' && activeMap) {
-      props.setDiagramStatus(activeMap.id, activeMap.status === 'active' ? 'archived' : 'active');
+    if (action === 'status') {
+      props.setDiagramStatus(props.activeDiagramId, active ? 'archived' : 'active');
     }
     if (action === 'archived') toggleArchived();
   };
@@ -107,8 +76,8 @@ function DiagramActionSelect({
     <select aria-label="Diagram actions" onChange={(event) => { act(event.target.value); event.target.value = ''; }} value="">
       <option value="">Diagram…</option>
       <option value="new">New diagram</option>
-      {activeMap && <option value="status">{activeMap.status === 'active' ? 'Archive current' : 'Restore current'}</option>}
-      {props.maps.some((map) => map.status === 'archived') && (
+      <option value="status">{active ? 'Archive current' : 'Restore current'}</option>
+      {props.diagrams.some((entry) => entry.status === 'archived') && (
         <option value="archived">{showArchived ? 'Hide archived' : 'Show archived'}</option>
       )}
     </select>
@@ -116,30 +85,23 @@ function DiagramActionSelect({
 }
 
 function EditActions({
-  props, layout, showArchived, toggleArchived,
+  props, showArchived, toggleArchived,
 }: {
-  props: CanvasToolbarProps;
-  layout: LayoutPreviewActions;
+  props: CanvasSurfaceProps;
   showArchived: boolean;
   toggleArchived: () => void;
 }) {
-  const activeMap = props.maps.find((map) => map.id === props.activeMapId);
-  if (layout.proposal) return <div className="toolbar-actions">
-    <button onClick={layout.apply} type="button">Apply preview · {layout.proposal.affectedNodeIds.length}</button>
-    <button onClick={layout.cancel} type="button">Cancel</button>
-  </div>;
-  return <div className="toolbar-actions">
-    <button disabled={!activeMap} onClick={layout.preview} type="button">
-      {layout.selectedNodeCount > 0 ? `Preview selected · ${layout.selectedNodeCount}` : 'Preview map layout'}
-    </button>
-    <button disabled={!props.engine.canUndo()} onClick={layout.undo} type="button">Undo</button>
-    <AddObjectSelect activeMap={activeMap} props={props} />
-    <DiagramActionSelect activeMap={activeMap} props={props} showArchived={showArchived} toggleArchived={toggleArchived} />
-  </div>;
+  return (
+    <div className="toolbar-actions">
+      <button disabled={!props.canUndo} onClick={props.undo} type="button">Undo</button>
+      <AddObjectSelect props={props} />
+      <DiagramActionSelect props={props} showArchived={showArchived} toggleArchived={toggleArchived} />
+    </div>
+  );
 }
 
 /** Compact, composable chrome for mode, diagram discovery, and edit intentions. */
-export function CanvasToolbar({ props, layout }: { props: CanvasToolbarProps; layout: LayoutPreviewActions }) {
+export function CanvasToolbar({ props }: { props: CanvasSurfaceProps }) {
   const [query, setQuery] = useState('');
   const [showArchived, setShowArchived] = useState(false);
   return (
@@ -148,9 +110,9 @@ export function CanvasToolbar({ props, layout }: { props: CanvasToolbarProps; la
       {props.canGoBack && <button onClick={props.goBack} type="button">← Back</button>}
       <DiagramPicker props={props} query={query} setQuery={setQuery} showArchived={showArchived} />
       {props.mode === 'edit' && (
-        <EditActions props={props} layout={layout} showArchived={showArchived} toggleArchived={() => setShowArchived((shown) => !shown)} />
+        <EditActions props={props} showArchived={showArchived} toggleArchived={() => setShowArchived((shown) => !shown)} />
       )}
-      <div className="file-identity"><span>{props.document.name}</span><small>r{props.document.revision}</small></div>
+      <div className="file-identity"><span>{props.record.name}</span><small>r{props.record.revision}</small></div>
       {props.mode === 'edit' && (
         <span
           className="save-status"

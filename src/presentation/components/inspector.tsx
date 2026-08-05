@@ -1,25 +1,15 @@
 import { useState } from 'react';
-import type {
-  ArchitectureDocument, CanvasCommand, CanvasPreferences, InspectorTab, PreferenceSection, Selection,
-} from '../../domain/model';
-import { InspectPanel } from './inspect-panel';
+import type { CanvasPreferences, InspectorTab, PreferenceSection } from '../../domain/model';
+import { InspectPanel, type InspectPanelProps } from './inspect-panel';
 import { JsonPanel } from './json-panel';
 import { PreferencesPanel } from './preferences-panel';
 
-interface InspectorProps {
-  document: ArchitectureDocument;
-  visibleDocument: ArchitectureDocument;
-  select: (selection: Selection) => void;
+/** What the inspector inspects, plus the surfaces it can switch between. */
+export interface InspectorProps extends InspectPanelProps {
   preferences: CanvasPreferences;
-  selection: Selection;
   tab: InspectorTab;
   setTab: (tab: InspectorTab) => void;
-  execute: (command: CanvasCommand) => void;
-  replace: (document: ArchitectureDocument) => void;
   updatePreferences: (preferences: CanvasPreferences) => void;
-  clearSelection: () => void;
-  editable: boolean;
-  openDiagram: (diagramId: string) => void;
 }
 
 /** Routes universal selection into contextual inspector surfaces. */
@@ -34,9 +24,9 @@ export function Inspector(props: InspectorProps) {
         ))}
       </nav>
       <div className="inspector-body">
-        {(!props.editable || props.tab === 'inspect') && <InspectPanel document={props.document} visibleDocument={props.visibleDocument} select={props.select} selection={props.selection} execute={props.execute} clearSelection={props.clearSelection} editable={props.editable} openDiagram={props.openDiagram} />}
+        {(!props.editable || props.tab === 'inspect') && <InspectPanel {...props} />}
         {props.editable && props.tab === 'preferences' && <PreferencesPanel preferences={props.preferences} section={section} setSection={setSection} update={props.updatePreferences} />}
-        {props.editable && props.tab === 'json' && <JsonPanel document={props.document} replace={props.replace} />}
+        {props.editable && props.tab === 'json' && <JsonPanel record={props.record} />}
       </div>
     </aside>
   );

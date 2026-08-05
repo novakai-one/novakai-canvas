@@ -1,7 +1,13 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { LoadFailure } from './presentation/components/load-failure';
-import type { DiagramSummary } from './application/canvas-library';
+import type { ActorContext } from './application/canvas-workspace';
+
+/** Who this host acts as. Every change it submits carries this attribution, never a caller's. */
+const LOCAL_USER: ActorContext = {
+  actor: { id: 'local-user', kind: 'human' },
+  provenance: { source: 'ui' },
+};
 
 const root = createRoot(document.getElementById('root')!);
 const workSessionReport =
@@ -35,92 +41,63 @@ async function bootstrapWorkSessionReport(): Promise<void> {
   );
 }
 
+/**
+ * Composes the record-model canvas: repository → library → one open diagram → render.
+ *
+ * Nothing is written on the way in. If the index, the first record, or the preferences cannot be
+ * read, the app refuses to open rather than starting on an empty diagram — the autosave that
+ * follows would write that emptiness over whatever is actually on disk.
+ */
 async function bootstrapCanvas(): Promise<void> {
   const [
     { default: App },
-    { createCanvasEngine },
+    { createFileLibraryRepository },
+    { createCanvasLibrary },
     { createHttpJsonRepository },
-    { architectureDocumentSchema, canvasPreferencesSchema },
-    { defaultPreferences, emptyArchitecture },
+    { canvasPreferencesSchema },
+    { defaultPreferences },
   ] = await Promise.all([
     import('./App'),
-    import('./application/canvas-engine'),
+    import('./adapters/file-library-repository'),
+    import('./application/canvas-library'),
     import('./adapters/http-json-repository'),
     import('./domain/schema'),
     import('./domain/defaults'),
     import('@xyflow/react/dist/style.css'),
     import('./styles.css'),
   ]);
-  const architectureEndpoint = import.meta.env.DEV ? '/api/architecture' : './data/project-architecture.json';
   const preferencesEndpoint = import.meta.env.DEV ? '/api/preferences' : './data/canvas-preferences.json';
-  const architectureRepository = createHttpJsonRepository(
-    architectureEndpoint, architectureDocumentSchema, emptyArchitecture,
-  );
   const preferencesRepository = createHttpJsonRepository(
     preferencesEndpoint, canvasPreferencesSchema, defaultPreferences,
   );
-  let architecture;
-  let preferences;
+
   try {
-    [architecture, preferences] = await Promise.all([
-      architectureRepository.load(), preferencesRepository.load(),
-    ]);
-  } catch (error) {
-    // Refuse to open rather than start on an empty document: the autosave that follows would
-    // write that emptiness over whatever is actually on disk.
-    root.render(<StrictMode><LoadFailure detail={error instanceof Error ? error.message : String(error)} /></StrictMode>);
-    return;
-  }
-  const engine = createCanvasEngine(architecture, architectureRepository);
-
-  // External writers (the canvas CLI) touch the data files directly; the dev
-  // bridge notifies us so the open canvas reflects disk without a manual reload.
-  if (import.meta.hot) {
-    import.meta.hot.on('novakai:data-changed', () => {
-      void engine.reload();
-    });
-  }
-
-  const libraryDiagrams = await loadLibraryDiagrams();
-
-  root.render(
-    <StrictMode>
-      <App
-        engine={engine}
-        initialPreferences={preferences}
-        libraryDiagrams={libraryDiagrams}
-        preferencesRepository={preferencesRepository}
-      />
-    </StrictMode>,
-  );
-}
-
-/**
- * Builds the v3 record-model library and snapshots its diagram list for the picker.
- *
- * Dev-only: the endpoints this needs (`/api/library`, `/api/diagrams`) are served by the Vite
- * dev bridge, which does not exist in a static production build — there the picker keeps sourcing
- * from the legacy document exactly as it does today. A failure here is logged, not thrown: the
- * library is an additive read path proving the record-model seam, not yet load-bearing for
- * rendering, so it must never take the whole app down.
- */
-async function loadLibraryDiagrams(): Promise<DiagramSummary[] | undefined> {
-  if (!import.meta.env.DEV) return undefined;
-  try {
-    const [{ createFileLibraryRepository }, { createCanvasLibrary }] = await Promise.all([
-      import('./adapters/file-library-repository'),
-      import('./application/canvas-library'),
-    ]);
     const repository = createFileLibraryRepository();
-    const index = await repository.readIndex();
-    const library = createCanvasLibrary(repository, index, {
-      actor: { id: 'local-user', kind: 'human' },
-      provenance: { source: 'ui' },
-    });
-    return library.list({ includeArchived: true });
+    const [index, preferences] = await Promise.all([
+      repository.readIndex(), preferencesRepository.load(),
+    ]);
+    const library = createCanvasLibrary(repository, index, LOCAL_USER);
+    // A library with nothing in it is the first-run case, not a failure: creating the first
+    // diagram is the only write this path makes, and it overwrites nothing.
+    const first = library.list().at(0)
+      ?? await library.create('Untitled diagram', `diagram-${crypto.randomUUID().slice(0, 8)}`);
+    if (!('nodeLabels' in first)) throw new Error(`library-unusable:${first.status}`);
+    const workspace = await library.open(first.id);
+    if (!('snapshot' in workspace)) throw new Error(`diagram-unreadable:${workspace.status}`);
+
+    root.render(
+      <StrictMode>
+        <App
+          initialDiagramId={first.id}
+          initialPreferences={preferences}
+          initialWorkspace={workspace}
+          library={library}
+          preferencesRepository={preferencesRepository}
+        />
+      </StrictMode>,
+    );
   } catch (error) {
-    console.error('[canvas library] unavailable; the diagram picker falls back to the legacy document', error);
-    return undefined;
+    root.render(<StrictMode><LoadFailure detail={error instanceof Error ? error.message : String(error)} /></StrictMode>);
   }
 }
 

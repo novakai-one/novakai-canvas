@@ -1,29 +1,96 @@
 import { describe, expect, it } from 'vitest';
-import type { PositionedCanvasNode } from '../domain/model';
-import { scopeDepth, sortParentFirst } from './projection';
+import { defaultPreferences } from '../domain/defaults';
+import { asId } from '../domain/id-cast';
+import type { NodeId } from '../domain/ids';
+import { projectView } from '../domain/project-view';
+import type { CanvasNode, CanvasWire, DiagramRecord } from '../domain/records';
+import { flowNodeType, projectEdges, projectNodes, scopeDepth } from './projection';
 
-function scope(id: string, parentId?: string): PositionedCanvasNode {
+function node(id: string, kind: CanvasNode['kind'], parentId?: string): CanvasNode {
   return {
-    id,
-    kind: 'scope',
+    id: asId<NodeId>(id),
+    kind,
     label: id,
-    position: { x: 0, y: 0 },
-    size: { width: 320, height: 160 },
-    parentId,
+    parentId: parentId ? asId<NodeId>(parentId) : undefined,
     interfaceIds: [],
     typeIds: [],
+  };
+}
+
+function wire(id: string, source: string, target: string): CanvasWire {
+  return {
+    id: asId(id),
+    kind: 'references',
+    label: id,
+    source: { nodeId: asId<NodeId>(source) },
+    target: { nodeId: asId<NodeId>(target) },
+  };
+}
+
+/** One record shaped like the migrated ones: a root group holding nested objects. */
+function record(nodes: CanvasNode[], wires: CanvasWire[] = []): DiagramRecord {
+  return {
+    schemaVersion: 3,
+    id: asId('map'),
+    name: 'Map',
+    status: 'active',
+    revision: 1,
+    nodes: Object.fromEntries(nodes.map((each) => [each.id, each])),
+    wires: Object.fromEntries(wires.map((each) => [each.id, each])),
+    interfaces: {
+      'iface-a': { id: 'iface-a', ownerId: 'module', name: 'send', accepts: [], returns: [] },
+    },
+    types: { 'type-a': { id: 'type-a', name: 'Envelope', fields: ['id'] } },
+    layouts: {
+      'layout-default': {
+        id: asId('layout-default'),
+        name: 'Default',
+        strategy: 'manual',
+        placements: Object.fromEntries(nodes.map((each, index) => [each.id, {
+          nodeId: each.id,
+          position: { x: index * 100, y: index * 50 },
+          size: { width: 200, height: 110 },
+          pinned: false,
+        }])),
+        wireRouteHints: {},
+      },
+    },
+    views: {
+      'view-default': {
+        id: asId('view-default'),
+        name: 'Default',
+        layoutId: asId('layout-default'),
+        viewport: { x: 0, y: 0, zoom: 1 },
+        collapsedNodeIds: [],
+        hiddenKinds: [],
+      },
+    },
+    activeViewId: asId('view-default'),
+    sourceRefs: [],
+    appliedOperations: {},
+  };
+}
+
+function input(source: DiagramRecord) {
+  return {
+    record: source,
+    view: projectView(source),
+    preferences: defaultPreferences,
+    selection: null,
+    editable: true,
+    select: () => {},
   };
 }
 
 describe('scopeDepth', () => {
   it('walks the parent chain and stops on missing parents and cycles', () => {
     const nodes = {
-      map: scope('map'),
-      zone: scope('zone', 'map'),
-      inner: scope('inner', 'zone'),
-      orphan: scope('orphan', 'gone'),
-      'cycle-a': scope('cycle-a', 'cycle-b'),
-      'cycle-b': scope('cycle-b', 'cycle-a'),
+      map: node('map', 'group'),
+      zone: node('zone', 'group', 'map'),
+      inner: node('inner', 'module', 'zone'),
+      orphan: node('orphan', 'module', 'gone'),
+      'cycle-a': node('cycle-a', 'group', 'cycle-b'),
+      'cycle-b': node('cycle-b', 'group', 'cycle-a'),
     };
     expect(scopeDepth(nodes, nodes.map)).toBe(0);
     expect(scopeDepth(nodes, nodes.zone)).toBe(1);
@@ -33,15 +100,69 @@ describe('scopeDepth', () => {
   });
 });
 
-describe('sortParentFirst', () => {
-  it('orders every node after its parent chain, stable within a depth', () => {
-    const nodes = {
-      inner: scope('inner', 'zone'),
-      map: scope('map'),
-      zone: scope('zone', 'map'),
-      sibling: scope('sibling', 'map'),
-    };
-    expect(sortParentFirst(nodes).map((node) => node.id))
-      .toEqual(['map', 'zone', 'sibling', 'inner']);
+describe('flowNodeType', () => {
+  it('draws a record group with the container renderer', () => {
+    expect(flowNodeType('group')).toBe('scope');
+    expect(flowNodeType('comment')).toBe('comment');
+    expect(flowNodeType('tree')).toBe('tree');
+    expect(flowNodeType('module')).toBe('architecture');
+  });
+});
+
+describe('projectNodes', () => {
+  it('keeps the projected order, so every parent reaches React Flow before its children', () => {
+    const projected = projectNodes(input(record([
+      node('inner', 'module', 'zone'),
+      node('map', 'group'),
+      node('zone', 'group', 'map'),
+    ])));
+    expect(projected.map((each) => each.id)).toEqual(['map', 'zone', 'inner']);
+    expect(projected.map((each) => each.parentId)).toEqual([undefined, 'map', 'zone']);
+    expect(projected[2].extent).toBe('parent');
+  });
+
+  it('carries the geometry the view joined onto each node', () => {
+    const projected = projectNodes(input(record([node('map', 'group'), node('one', 'module', 'map')])));
+    expect(projected[1].position).toEqual({ x: 100, y: 50 });
+    expect(projected[1].width).toBe(200);
+    expect(projected[1].height).toBe(110);
+  });
+
+  it('resolves the interfaces and types a node names', () => {
+    const withObjects = record([node('map', 'group'), node('module', 'module', 'map')]);
+    withObjects.nodes.module.interfaceIds = [asId('iface-a')];
+    withObjects.nodes.module.typeIds = [asId('type-a'), asId('missing')];
+    const data = projectNodes(input(withObjects))[1].data;
+    expect(data.interfaces.map((each) => each.name)).toEqual(['send']);
+    expect(data.types.map((each) => each.name)).toEqual(['Envelope']);
+  });
+
+  it('omits a hidden group without orphaning the children it held', () => {
+    const hidden = record([node('map', 'group'), node('note', 'comment', 'map')]);
+    hidden.views['view-default'].hiddenKinds = ['group'];
+    const projected = projectNodes(input(hidden));
+    expect(projected.map((each) => each.id)).toEqual(['note']);
+    expect(projected[0].parentId).toBeUndefined();
+  });
+});
+
+describe('projectEdges', () => {
+  it('reads both endpoints off the record wire', () => {
+    const wired = record(
+      [node('map', 'group'), node('a', 'module', 'map'), node('b', 'module', 'map')],
+      [wire('wire-1', 'a', 'b')],
+    );
+    const [edge] = projectEdges(input(wired));
+    expect(edge).toMatchObject({ id: 'wire-1', source: 'a', target: 'b', type: 'elbow' });
+    expect(edge.data?.label).toBe('wire-1');
+  });
+
+  it('drops a wire whose endpoint the view hid', () => {
+    const wired = record(
+      [node('map', 'group'), node('a', 'module', 'map'), node('note', 'comment', 'map')],
+      [wire('wire-1', 'a', 'note')],
+    );
+    wired.views['view-default'].hiddenKinds = ['comment'];
+    expect(projectEdges(input(wired))).toEqual([]);
   });
 });
