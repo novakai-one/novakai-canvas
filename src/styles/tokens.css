@@ -1,0 +1,85 @@
+/**
+ * Novakai Canvas design tokens — the single vocabulary for spacing, surfaces, type,
+ * motion, and accent. Every presentation stylesheet reads these; none redefines them.
+ * Dark is the canonical brand; the light theme overrides only the surface/ink groups.
+ */
+:root {
+  /* Spacing — 4px base grid. Use these for ALL padding, gaps, and margins. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* Type — Inter everywhere; mono only for the wordmark and real terminal output. */
+  --font-ui: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --text-xs: 10.5px;   /* mono-caps kind tags, counts */
+  --text-sm: 12px;     /* secondary rows, descriptions */
+  --text-base: 13px;   /* body, fields, rail rows */
+  --text-lg: 15px;     /* panel titles */
+  --text-xl: 18px;     /* diagram title */
+  --tracking-caps: 0.08em;
+
+  /* Surfaces — page darkest, then three panel levels, children lighter than parents. */
+  --surface-page: #0d0d0f;
+  --surface-1: #121214;
+  --surface-2: #1b1b1e;
+  --surface-3: #252529;
+
+  /* Ink */
+  --ink: #ececee;
+  --ink-muted: #a2a2aa;
+  --ink-faint: #8b8b94;
+
+  /* Lines */
+  --edge-soft: #232327;
+  --edge: #2c2c31;
+
+  /* Accent — gold is scarce: one signal per screen. Sage marks settled/verified. */
+  --gold: #d0a14b;
+  --gold-bright: #e2ba6e;
+  --gold-ink: #17130a;  /* text on solid gold */
+  --sage: #78a886;
+
+  /* Wires — default must read at working zoom; faint is ONLY the dimmed state. */
+  --wire: #62626c;
+  --wire-strong: #8a8a94;
+  --wire-dim: #35353b;
+  --wire-label: var(--ink-muted);
+
+  /* Shape */
+  --radius: 5px;
+  --radius-lg: 8px;
+
+  /* Motion — structural moves are calm; feedback is quick. */
+  --motion-structural: 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-quick: 150ms ease;
+
+  /* Shell dimensions */
+  --rail-width: 264px;
+  --studio-width: 340px;
+  --rail-min: 200px;
+  --rail-max: 400px;
+  --studio-min: 280px;
+  --studio-max: 520px;
+  --header-height: 48px;
+}
+
+[data-theme='light'] {
+  --surface-page: #f7f5ef;
+  --surface-1: #f2efe7;
+  --surface-2: #faf8f2;
+  --surface-3: #ffffff;
+  --ink: #26262a;
+  --ink-muted: #5f5f66;
+  --ink-faint: #8b8b90;
+  --edge-soft: #e2ddd0;
+  --edge: #d0cabb;
+  --wire: #9b958a;
+  --wire-strong: #6f6a60;
+  --wire-dim: #ddd8cc;
+  --gold-ink: #17130a;
+}
