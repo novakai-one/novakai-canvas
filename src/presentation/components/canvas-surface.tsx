@@ -270,8 +270,10 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
     [editable, preferences, record, selection, setSelection, view],
   );
   const edges = useMemo(
-    () => projectEdges({ view, record, preferences, selection, editable, select: setSelection }),
-    [editable, preferences, record, selection, setSelection, view],
+    () => projectEdges({
+      view, record, preferences, selection, editable, select: setSelection, execute,
+    }),
+    [editable, execute, preferences, record, selection, setSelection, view],
   );
   return (
     <main className={`canvas-surface is-${mode}`} ref={camera.surface}>
