@@ -147,6 +147,114 @@
   content: "";
 }
 
+/* ---- Band ---------------------------------------------------------------
+   The strip's twin. Whatever a panel puts under its header sits at the same
+   height, above the same hairline, so both panels read as one instrument. */
+
+.panel-band {
+  display: flex;
+  flex: none;
+  align-items: center;
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--edge-soft);
+}
+
+.panel-footer {
+  flex: none;
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--edge-soft);
+}
+
+/* ---- Rail ---------------------------------------------------------------- */
+
+.rail-filter {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--edge-soft);
+  border-radius: var(--radius);
+  color: var(--ink);
+  background: var(--surface-page);
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+}
+
+.rail-filter::placeholder { color: var(--ink-faint); }
+
+/* The platform's clear button is a bright blue disc — the loudest thing in a calm rail,
+   and it would be competing with the one gold mark. Cleared by selecting and deleting. */
+.rail-filter::-webkit-search-cancel-button { appearance: none; }
+.rail-filter:focus-visible { border-color: var(--ink-faint); outline: none; }
+
+.rail-count {
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.rail-rows { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+
+.rail-row { position: relative; display: flex; align-items: center; }
+
+.rail-travel {
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.rail-row:hover > .rail-travel { background: var(--surface-2); }
+
+/* The mark is a reserved slot on every row so no label shifts when one lights up. */
+.rail-mark {
+  width: var(--space-1);
+  height: var(--space-1);
+  flex: none;
+  border-radius: 50%;
+  background: transparent;
+  transition: background var(--motion-quick);
+}
+
+/* The rail's one gold: where you are. Nothing else on this edge is lit. */
+.rail-row[data-active] .rail-mark { background: var(--gold); }
+.rail-row[data-active] .rail-label { color: var(--ink); }
+
+.rail-label {
+  overflow: hidden;
+  color: var(--ink-muted);
+  font-size: var(--text-base);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rail-action {
+  position: absolute;
+  right: var(--space-1);
+  display: grid;
+  width: var(--space-5);
+  height: var(--space-5);
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--ink-faint);
+  background: var(--surface-2);
+  font-size: var(--text-sm);
+  line-height: 1;
+  opacity: 0;
+  cursor: pointer;
+  place-items: center;
+  transition: opacity var(--motion-quick), color var(--motion-quick);
+}
+
+.rail-row:hover .rail-action,
+.rail-action:focus-visible { opacity: 1; }
+.rail-action:hover { color: var(--ink); }
+
 /* ---- Body and sections ------------------------------------------------- */
 
 .panel-body {
@@ -464,6 +572,41 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* ---- Add menu -----------------------------------------------------------
+   Toolbar chrome, but a panel-shaped surface: it lives here so it reads the
+   same token vocabulary as everything else the shell draws. */
+
+.add-menu { position: relative; }
+
+.add-menu-list {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  display: flex;
+  min-width: calc(var(--space-8) * 4);
+  flex-direction: column;
+  padding: var(--space-1);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--surface-3);
+  box-shadow: 0 var(--space-2) var(--space-6) rgb(0 0 0 / 32%);
+}
+
+.app-shell .add-menu-list button {
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--ink-muted);
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  text-align: left;
+  cursor: pointer;
+}
+
+.app-shell .add-menu-list button:hover { color: var(--ink); background: var(--surface-2); }
 
 @media (prefers-reduced-motion: reduce) {
   .panel-shell, .panel-shell * { transition-duration: 1ms !important; }

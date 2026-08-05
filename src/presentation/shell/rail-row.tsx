@@ -1,0 +1,49 @@
+import type { ReactNode } from 'react';
+
+/**
+ * One navigation row in the rail.
+ *
+ * A rail row is travel, not inspection: clicking it moves you somewhere. The active row carries
+ * the rail's single gold mark — the one thing on this edge of the screen that is lit — and every
+ * other row stays quiet. A per-row action appears only under the pointer, so a list of eighteen
+ * diagrams never becomes eighteen competing controls.
+ */
+export function RailRow({
+  action, active, label, onTravel,
+}: {
+  label: string;
+  active: boolean;
+  onTravel: () => void;
+  action?: ReactNode;
+}) {
+  return (
+    <li className="rail-row" data-active={active || undefined}>
+      <button
+        aria-current={active ? 'true' : undefined}
+        className="rail-travel"
+        onClick={onTravel}
+        title={label}
+        type="button"
+      >
+        <span aria-hidden className="rail-mark" />
+        <span className="rail-label">{label}</span>
+      </button>
+      {action}
+    </li>
+  );
+}
+
+/** A trailing control on a rail row; present in the markup, visible only on hover or focus. */
+export function RailAction({
+  glyph, label, onClick,
+}: {
+  glyph: string;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button aria-label={label} className="rail-action" onClick={onClick} title={label} type="button">
+      <span aria-hidden>{glyph}</span>
+    </button>
+  );
+}

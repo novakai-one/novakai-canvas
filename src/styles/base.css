@@ -86,8 +86,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   --motion-feedback: 160ms ease;
 }
 
-/* One definition for every control in the application. */
-.app-shell :is(.toolbar-actions, .map-picker) :is(button, select, input) {
+/* One definition for every control left over the canvas. */
+.app-shell .toolbar-actions button {
   padding: var(--control-padding);
   border: var(--control-border);
   border-radius: var(--control-radius);
@@ -97,12 +97,12 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   cursor: pointer;
 }
 
-.app-shell :is(.toolbar-actions, .map-picker) :is(button, select, input):hover {
+.app-shell .toolbar-actions button:hover {
   border-color: var(--control-border-hover);
   background: var(--control-bg-hover);
 }
 
-.app-shell :is(.toolbar-actions, .map-picker) :is(button, select):disabled {
+.app-shell .toolbar-actions button:disabled {
   opacity: var(--control-disabled-opacity);
   cursor: default;
 }

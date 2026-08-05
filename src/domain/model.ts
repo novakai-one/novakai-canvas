@@ -191,7 +191,18 @@ export interface CanvasPreferences {
     width: number;
     dimUnrelated: boolean;
   };
-  panel: { width: number; defaultTab: InspectorTab; showEmptyFields: boolean };
+  /**
+   * Panel geometry. `width` is the Studio's; the rail's and the collapsed flags are optional so
+   * a preferences file written before the rail existed still opens, at the shell's defaults.
+   */
+  panel: {
+    width: number;
+    defaultTab: InspectorTab;
+    showEmptyFields: boolean;
+    railWidth?: number;
+    railCollapsed?: boolean;
+    studioCollapsed?: boolean;
+  };
   files: { autoSave: boolean; saveDelay: number };
 }
 

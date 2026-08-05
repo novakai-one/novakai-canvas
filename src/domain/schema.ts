@@ -301,8 +301,12 @@ export const canvasPreferencesSchema = z.object({
     showLabels: z.enum(['always', 'selected', 'never']), width: z.number().min(1).max(4), dimUnrelated: z.boolean(),
   }),
   panel: z.object({
-    width: z.number().min(300).max(560), defaultTab: z.enum(['inspect', 'preferences', 'json']),
+    width: z.number().min(280).max(560), defaultTab: z.enum(['inspect', 'preferences', 'json']),
     showEmptyFields: z.boolean(),
+    // Added with the rail. Optional, so a file written before it existed still validates.
+    railWidth: z.number().min(200).max(400).optional(),
+    railCollapsed: z.boolean().optional(),
+    studioCollapsed: z.boolean().optional(),
   }),
   files: z.object({ autoSave: z.boolean(), saveDelay: z.number().min(100).max(5000) }),
 });

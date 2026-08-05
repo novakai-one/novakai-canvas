@@ -9,6 +9,7 @@ import type { CanvasPreferences, InspectorTab, Selection } from './domain/model'
 import { projectView } from './canvas';
 import { CanvasSurface } from './presentation/components/canvas-surface';
 import { Inspector } from './presentation/components/inspector';
+import { Rail } from './presentation/components/rail';
 import { useWorkspaceRecord } from './presentation/use-workspace-record';
 import { wireToneCssVariables } from './presentation/wire-styles';
 import { DEFAULT_CANVAS_MODE, type CanvasMode } from './presentation/view-mode';
@@ -205,6 +206,14 @@ export default function App(props: AppProps) {
       data-theme={preferences.appearance.theme}
       style={shellStyle}
     >
+      <Rail
+        activeDiagramId={open.id}
+        changeDiagram={changeDiagram}
+        createDiagram={createDiagram}
+        diagrams={diagrams}
+        setDiagramStatus={setDiagramStatus}
+        width={preferences.panel.railWidth ?? 264}
+      />
       <ReactFlowProvider>
         <CanvasSurface
           activeDiagramId={open.id}

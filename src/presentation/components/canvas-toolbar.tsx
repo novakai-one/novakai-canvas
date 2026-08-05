@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   createCanvasNode, placedNodes, type CreatableNodeKind, type WorldPoint,
 } from '../canvas-actions';
@@ -6,6 +6,8 @@ import type { CanvasSurfaceProps } from './canvas-surface';
 
 /** Where the user is looking, in the diagram's own coordinates — the canvas answers this. */
 type FocusPoint = () => WorldPoint;
+
+const ADDABLE: readonly CreatableNodeKind[] = ['module', 'object', 'runtime', 'resource', 'group', 'comment'];
 
 function ModeSwitch({ props }: { props: CanvasSurfaceProps }) {
   return (
@@ -19,31 +21,32 @@ function ModeSwitch({ props }: { props: CanvasSurfaceProps }) {
   );
 }
 
-function DiagramPicker({
-  props, query, setQuery, showArchived,
-}: {
-  props: CanvasSurfaceProps;
-  query: string;
-  setQuery: (query: string) => void;
-  showArchived: boolean;
-}) {
-  // The library index is the only source of this list. Its entries are a projection over the
-  // records themselves, so the picker cannot offer a diagram that has no record behind it.
-  const listed = props.diagrams.filter((entry) =>
-    (showArchived || entry.status === 'active')
-    && (entry.id === props.activeDiagramId || entry.name.toLowerCase().includes(query.toLowerCase())));
-  return (
-    <label className="map-picker">
-      <span>Diagram</span>
-      <input aria-label="Find diagram" onChange={(event) => setQuery(event.target.value)} placeholder="Find" type="search" value={query} />
-      <select aria-label="Map" disabled={props.diagrams.length === 0} value={props.activeDiagramId} onChange={(event) => props.changeDiagram(event.target.value)}>
-        {listed.map((entry) => <option key={entry.id} value={entry.id}>{entry.name}{entry.status === 'archived' ? ' · archived' : ''}</option>)}
-      </select>
-    </label>
-  );
-}
+/**
+ * Adding an object, as a menu rather than a dropdown.
+ *
+ * A native `<select>` cannot be styled, renders the operating system's own chrome in the middle
+ * of the canvas, and reads as a settings control rather than an action. This is a button and a
+ * list — the same job, in this application's own type and spacing.
+ */
+function AddMenu({ focusPoint, props }: { focusPoint: FocusPoint; props: CanvasSurfaceProps }) {
+  const [open, setOpen] = useState(false);
+  const holder = useRef<HTMLDivElement>(null);
 
-function AddObjectSelect({ focusPoint, props }: { focusPoint: FocusPoint; props: CanvasSurfaceProps }) {
+  useEffect(() => {
+    if (!open) return;
+    const dismiss = (event: Event): void => {
+      if (event instanceof KeyboardEvent && event.key !== 'Escape') return;
+      if (event.type === 'pointerdown' && holder.current?.contains(event.target as Node)) return;
+      setOpen(false);
+    };
+    window.addEventListener('pointerdown', dismiss);
+    window.addEventListener('keydown', dismiss);
+    return () => {
+      window.removeEventListener('pointerdown', dismiss);
+      window.removeEventListener('keydown', dismiss);
+    };
+  }, [open]);
+
   // A new object appears where the user is looking, in whatever frame that point falls in —
   // never at a fixed coordinate somewhere else in the diagram.
   const add = (kind: CreatableNodeKind): void => {
@@ -51,76 +54,44 @@ function AddObjectSelect({ focusPoint, props }: { focusPoint: FocusPoint; props:
     const created = createCanvasNode(placedNodes(props.view), kind, id, focusPoint());
     props.execute({ kind: 'node.add', ...created });
     props.setSelection({ kind: 'node', id: created.node.id });
+    setOpen(false);
   };
-  return (
-    <select aria-label="Add object" onChange={(event) => {
-      if (event.target.value) add(event.target.value as CreatableNodeKind);
-      event.target.value = '';
-    }} value="">
-      <option value="">＋ Add</option>
-      {(['module', 'object', 'runtime', 'resource', 'group', 'comment'] as const)
-        .map((kind) => <option key={kind} value={kind}>{kind[0].toUpperCase()}{kind.slice(1)}</option>)}
-    </select>
-  );
-}
 
-function DiagramActionSelect({
-  props, showArchived, toggleArchived,
-}: {
-  props: CanvasSurfaceProps;
-  showArchived: boolean;
-  toggleArchived: () => void;
-}) {
-  const active = props.record.status === 'active';
-  const act = (action: string): void => {
-    if (action === 'new') props.createDiagram();
-    if (action === 'status') {
-      props.setDiagramStatus(props.activeDiagramId, active ? 'archived' : 'active');
-    }
-    if (action === 'archived') toggleArchived();
-  };
   return (
-    <select aria-label="Diagram actions" onChange={(event) => { act(event.target.value); event.target.value = ''; }} value="">
-      <option value="">Diagram…</option>
-      <option value="new">New diagram</option>
-      <option value="status">{active ? 'Archive current' : 'Restore current'}</option>
-      {props.diagrams.some((entry) => entry.status === 'archived') && (
-        <option value="archived">{showArchived ? 'Hide archived' : 'Show archived'}</option>
+    <div className="add-menu" ref={holder}>
+      <button aria-expanded={open} aria-haspopup="menu" onClick={() => setOpen((shown) => !shown)} type="button">
+        ＋ Add
+      </button>
+      {open && (
+        <div className="add-menu-list" role="menu">
+          {ADDABLE.map((kind) => (
+            <button key={kind} onClick={() => add(kind)} role="menuitem" type="button">
+              {kind[0].toUpperCase()}{kind.slice(1)}
+            </button>
+          ))}
+        </div>
       )}
-    </select>
-  );
-}
-
-function EditActions({
-  focusPoint, props, showArchived, toggleArchived,
-}: {
-  focusPoint: FocusPoint;
-  props: CanvasSurfaceProps;
-  showArchived: boolean;
-  toggleArchived: () => void;
-}) {
-  return (
-    <div className="toolbar-actions">
-      <button disabled={!props.canUndo} onClick={props.undo} type="button">Undo</button>
-      <AddObjectSelect focusPoint={focusPoint} props={props} />
-      <DiagramActionSelect props={props} showArchived={showArchived} toggleArchived={toggleArchived} />
     </div>
   );
 }
 
-/** Compact, composable chrome for mode, diagram discovery, and edit intentions. */
+/**
+ * What is left over the canvas: how you are working, and whether it is saved.
+ *
+ * Choosing a diagram and searching for one belong to the rail — they are navigation, and
+ * navigation has a home now. What stays here is only what is about the canvas itself.
+ */
 export function CanvasToolbar({ focusPoint, props }: { focusPoint: FocusPoint; props: CanvasSurfaceProps }) {
-  const [query, setQuery] = useState('');
-  const [showArchived, setShowArchived] = useState(false);
   return (
     <div className="canvas-toolbar">
       <ModeSwitch props={props} />
       {props.canGoBack && <button onClick={props.goBack} type="button">← Back</button>}
-      <DiagramPicker props={props} query={query} setQuery={setQuery} showArchived={showArchived} />
       {props.mode === 'edit' && (
-        <EditActions focusPoint={focusPoint} props={props} showArchived={showArchived} toggleArchived={() => setShowArchived((shown) => !shown)} />
+        <div className="toolbar-actions">
+          <button disabled={!props.canUndo} onClick={props.undo} type="button">Undo</button>
+          <AddMenu focusPoint={focusPoint} props={props} />
+        </div>
       )}
-      <div className="file-identity"><span>{props.record.name}</span><small>r{props.record.revision}</small></div>
       {props.mode === 'edit' && (
         <span
           className="save-status"

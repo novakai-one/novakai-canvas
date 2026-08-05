@@ -6,6 +6,8 @@
  */
 export { FieldRow, SwitchRow } from './field-row';
 export { ObjectRow } from './object-row';
+export { PanelBand, PanelFooter } from './panel-band';
+export { RailAction, RailRow } from './rail-row';
 export { IconButton, PanelHeader, type PanelHeaderProps } from './panel-header';
 export { PanelBody, PanelSection } from './panel-section';
 export { PanelShell, type PanelShellProps } from './panel-shell';
