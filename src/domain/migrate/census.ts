@@ -1,4 +1,5 @@
 import type { ArchitectureDocument } from '../model';
+import type { MigratedLibrary } from '../records.ts';
 
 /**
  * A structure-independent census of everything a migration must preserve.
@@ -9,12 +10,14 @@ import type { ArchitectureDocument } from '../model';
  * dropping a wire's meaning.
  */
 export interface CanvasCensus {
-  /** Display names of every diagram, sorted. Root scope labels become diagram names. */
+  /** Display names of every diagram, sorted. */
   diagramNames: string[];
-  /** Labels of every node that remains a node, sorted. Excludes nodes promoted to diagrams. */
+  /** Labels of every node, sorted. */
   nodeLabels: string[];
   /** One signature per wire: kind, label, and endpoint IDs. Endpoint IDs survive migration. */
   wireSignatures: string[];
+  /** Signatures of relationships that crossed a diagram boundary and became library links. */
+  linkSignatures: string[];
   /** Every interface ID with its owning node, sorted. */
   interfaceSignatures: string[];
   /** Every shared type ID, sorted. */
@@ -36,20 +39,17 @@ function geometry(x: number, y: number, width: number, height: number): string {
  * `parseArchitectureDocument` first, so there is one census path rather than one per version.
  */
 export function censusOfLegacyDocument(document: ArchitectureDocument): CanvasCensus {
-  const diagramRootIds = new Set(Object.values(document.diagrams).map((diagram) => diagram.rootNodeId));
   const layout = document.layouts[document.activeLayoutId];
 
   return {
     diagramNames: Object.values(document.diagrams)
       .map((diagram) => document.nodes[diagram.rootNodeId]?.label ?? diagram.id)
       .sort(),
-    nodeLabels: Object.values(document.nodes)
-      .filter((node) => !diagramRootIds.has(node.id))
-      .map((node) => node.label)
-      .sort(),
+    nodeLabels: Object.values(document.nodes).map((node) => node.label).sort(),
     wireSignatures: Object.values(document.wires)
       .map((wire) => `${wire.kind}|${wire.label}|${wire.source}>${wire.target}`)
       .sort(),
+    linkSignatures: [],
     interfaceSignatures: Object.values(document.interfaces)
       .map((object) => `${object.ownerId}.${object.id}:${object.name}`)
       .sort(),
@@ -60,5 +60,39 @@ export function censusOfLegacyDocument(document: ArchitectureDocument): CanvasCe
         geometry(placement.position.x, placement.position.y, placement.size.width, placement.size.height),
       ])),
     appliedOperationIds: Object.keys(document.appliedOperations).sort(),
+  };
+}
+
+/**
+ * Censuses a migrated library.
+ *
+ * Produced in the same shape as the legacy census so the two can be compared field by field.
+ * Where a fact legitimately changed home — a cross-diagram wire becoming a library link — it
+ * appears under `linkSignatures`, so the comparison stays honest instead of quietly forgiving.
+ */
+export function censusOfMigratedLibrary(library: MigratedLibrary): CanvasCensus {
+  const records = Object.values(library.records);
+
+  return {
+    diagramNames: records.map((record) => record.name).sort(),
+    nodeLabels: records.flatMap((record) => Object.values(record.nodes).map((node) => node.label)).sort(),
+    wireSignatures: records
+      .flatMap((record) => Object.values(record.wires))
+      .map((wire) => `${wire.kind}|${wire.label}|${wire.source.nodeId}>${wire.target.nodeId}`)
+      .sort(),
+    linkSignatures: Object.values(library.index.links)
+      .map((link) => `${link.kind}|${link.label}|${link.source.nodeId}>${link.target.nodeId}`)
+      .sort(),
+    interfaceSignatures: records
+      .flatMap((record) => Object.values(record.interfaces))
+      .map((object) => `${object.ownerId}.${object.id}:${object.name}`)
+      .sort(),
+    typeIds: records.flatMap((record) => Object.keys(record.types)).sort(),
+    placements: Object.fromEntries(records.flatMap((record) => Object.values(record.layouts)
+      .flatMap((layout) => Object.values(layout.placements).map((placement) => [
+        placement.nodeId,
+        geometry(placement.position.x, placement.position.y, placement.size.width, placement.size.height),
+      ] as const)))),
+    appliedOperationIds: [...library.index.migratedOperations].sort(),
   };
 }

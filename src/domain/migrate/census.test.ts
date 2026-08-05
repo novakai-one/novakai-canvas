@@ -32,7 +32,7 @@ describe('real-data census', () => {
 
   it('records the counts a migration must reproduce exactly', () => {
     expect(v2.diagramNames).toHaveLength(17);
-    expect(v2.nodeLabels).toHaveLength(242);
+    expect(v2.nodeLabels).toHaveLength(259);
     expect(v2.wireSignatures).toHaveLength(287);
     expect(v2.interfaceSignatures).toHaveLength(56);
     expect(v2.typeIds).toHaveLength(73);
