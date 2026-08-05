@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "appearance": {
     "density": "comfortable",
-    "radius": 6,
+    "radius": 8,
     "theme": "dark",
     "accent": "gold"
   },
@@ -11,7 +11,8 @@
     "snapToGrid": true,
     "gridSize": 12,
     "showControls": true,
-    "showLegend": true
+    "showLegend": true,
+    "groupPadding": 40
   },
   "nodes": {
     "showKinds": true,
@@ -26,9 +27,10 @@
     "dimUnrelated": true
   },
   "panel": {
-    "width": 413,
+    "width": 338,
     "defaultTab": "inspect",
-    "showEmptyFields": false
+    "showEmptyFields": false,
+    "railWidth": 200
   },
   "files": {
     "autoSave": true,
