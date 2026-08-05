@@ -1,7 +1,10 @@
 import {
   BaseEdge, EdgeLabelRenderer, Position, useReactFlow, type Edge, type EdgeProps,
 } from '@xyflow/react';
-import { useCallback, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from 'react';
+import {
+  useCallback, useMemo, useRef, useState,
+  type CSSProperties, type PointerEvent as ReactPointerEvent,
+} from 'react';
 import type { ArchitectureEdgeData } from '../projection';
 import { wireKindColorVariable, wireKindDashArray, wireStrokeWidth } from '../wire-styles';
 import {
@@ -45,24 +48,46 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
   const label = useMemo(() => pointAlong(route.points, labelPosition), [labelPosition, route]);
 
   const setRoute = props.data?.setRoute;
-  const onLabelPointerDown = useCallback((event: PointerEvent<HTMLButtonElement>) => {
+  const onLabelPointerDown = useCallback((event: ReactPointerEvent<HTMLButtonElement>) => {
     if (!setRoute || event.button !== 0) return;
     event.stopPropagation();
     moved.current = false;
     event.currentTarget.setPointerCapture(event.pointerId);
   }, [setRoute]);
-  const onLabelPointerMove = useCallback((event: PointerEvent<HTMLButtonElement>) => {
+  const onLabelPointerMove = useCallback((event: ReactPointerEvent<HTMLButtonElement>) => {
     if (!setRoute || !event.currentTarget.hasPointerCapture(event.pointerId)) return;
     moved.current = true;
     const point = screenToFlowPosition({ x: event.clientX, y: event.clientY });
     setDragged(nearestPositionAlong(route.points, point));
   }, [route.points, screenToFlowPosition, setRoute]);
-  const onLabelPointerUp = useCallback((event: PointerEvent<HTMLButtonElement>) => {
+  const onLabelPointerUp = useCallback((event: ReactPointerEvent<HTMLButtonElement>) => {
     if (!setRoute || !event.currentTarget.hasPointerCapture(event.pointerId)) return;
     event.currentTarget.releasePointerCapture(event.pointerId);
     if (dragged !== null && moved.current) setRoute({ labelPosition: dragged });
     setDragged(null);
   }, [dragged, setRoute]);
+
+  // Shaping the corridor: one handle, dragged where the wire should pass, cleared by a
+  // double-click. The record hears one intention when the drag ends.
+  const [shaping, setShaping] = useState<{ x: number; y: number } | null>(null);
+  const shapeHandle = shaping ?? props.data?.route.waypoints[0] ?? pointAlong(route.points, 0.5);
+  const onShapePointerDown = useCallback((event: ReactPointerEvent<SVGCircleElement>) => {
+    if (!setRoute || event.button !== 0) return;
+    event.stopPropagation();
+    (event.target as SVGCircleElement).setPointerCapture(event.pointerId);
+    setShaping(screenToFlowPosition({ x: event.clientX, y: event.clientY }));
+  }, [screenToFlowPosition, setRoute]);
+  const onShapePointerMove = useCallback((event: ReactPointerEvent<SVGCircleElement>) => {
+    if (!setRoute || !(event.target as SVGCircleElement).hasPointerCapture(event.pointerId)) return;
+    event.stopPropagation();
+    setShaping(screenToFlowPosition({ x: event.clientX, y: event.clientY }));
+  }, [screenToFlowPosition, setRoute]);
+  const onShapePointerUp = useCallback((event: ReactPointerEvent<SVGCircleElement>) => {
+    if (!setRoute || !(event.target as SVGCircleElement).hasPointerCapture(event.pointerId)) return;
+    (event.target as SVGCircleElement).releasePointerCapture(event.pointerId);
+    if (shaping) setRoute({ waypoints: [shaping] });
+    setShaping(null);
+  }, [setRoute, shaping]);
 
   const visibility = props.data?.preferences.wires.showLabels;
   const showLabel = !props.data?.editable || visibility === 'always'
@@ -98,6 +123,18 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
           r={4.5}
         />
       ))}
+      {props.selected && setRoute && (
+        <circle
+          className="wire-waypoint"
+          cx={shapeHandle.x}
+          cy={shapeHandle.y}
+          onDoubleClick={(event) => { event.stopPropagation(); setRoute({ waypoints: [] }); }}
+          onPointerDown={onShapePointerDown}
+          onPointerMove={onShapePointerMove}
+          onPointerUp={onShapePointerUp}
+          r={5}
+        />
+      )}
       {showLabel && props.data?.label && (
         <EdgeLabelRenderer>
           <button

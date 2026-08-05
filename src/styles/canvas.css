@@ -326,7 +326,9 @@
   padding: 0 var(--space-1);
   border: 0;
   color: var(--wire-label);
-  background: none;
+  /* Painted in the canvas colour, so it reads as a gap in the wire rather than as a chip. A
+     halo alone left the wire showing through the spaces between words. */
+  background: var(--bg);
   font-family: var(--font-ui);
   font-size: var(--text-xs);
   line-height: 1.35;
@@ -362,6 +364,16 @@
   stroke-width: 2;
   pointer-events: none;
 }
+
+/* The corridor handle: drag to push the wire's path aside, double-click to let go of it. */
+.wire-waypoint {
+  fill: var(--surface-3);
+  stroke: var(--gold);
+  stroke-width: 1.5;
+  cursor: grab;
+}
+
+.wire-waypoint:active { cursor: grabbing; }
 
 .react-flow__edgeupdater { cursor: grab; }
 .react-flow__edge.selected .react-flow__edgeupdater:hover { cursor: grabbing; }
@@ -529,7 +541,7 @@
 
 .is-present .wire-label {
   color: var(--muted-read);
-  background: none;
+  background: var(--bg-read);
   text-shadow:
     0 0 3px var(--bg-read), 0 0 3px var(--bg-read), 0 0 3px var(--bg-read),
     1px 0 1px var(--bg-read), -1px 0 1px var(--bg-read),

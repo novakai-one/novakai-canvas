@@ -4,6 +4,7 @@ import type { CanvasPreferences, InterfaceObject, Selection, TypeObject } from '
 import type { PositionedNode, ProjectedView } from '../domain/project-view';
 import type { DiagramRecord, NodeKind, WireKind } from '../domain/records';
 import { wireKindColor } from './wire-styles';
+import type { Rect, RouteObstacle } from './edges/wire-routing';
 
 /** Presentation data required by architecture nodes. */
 export interface ArchitectureNodeData extends Record<string, unknown> {
@@ -32,6 +33,8 @@ export interface ArchitectureEdgeData extends Record<string, unknown> {
   select: () => void;
   /** The stored shape of this wire; empty when nobody has touched it. */
   route: EdgeRoute;
+  /** Rectangles this wire is unrelated to and must route around. */
+  obstacles: RouteObstacle[];
   /**
    * Shaping this wire, or absent when the host gave the projection no way to change anything.
    *
@@ -50,6 +53,74 @@ export interface ArchitectureEdgeData extends Record<string, unknown> {
 
 /** Distance between the corridors of two wires that join the same pair of nodes. */
 const LANE_GAP = 22;
+
+/**
+ * Every visible node's rectangle in diagram coordinates.
+ *
+ * Placements are stored relative to a parent, and the router thinks in absolute space, so the
+ * parent chain is folded in once here rather than by each caller.
+ */
+export function nodeRects(view: ProjectedView): Map<string, Rect> {
+  const byId = new Map(view.nodes.map((node) => [node.id as string, node]));
+  const rects = new Map<string, Rect>();
+  for (const node of view.nodes) {
+    let x = node.position.x;
+    let y = node.position.y;
+    let cursor = node.parentId as string | undefined;
+    const seen = new Set<string>([node.id as string]);
+    while (cursor && byId.has(cursor) && !seen.has(cursor)) {
+      seen.add(cursor);
+      const parent = byId.get(cursor) as PositionedNode;
+      x += parent.position.x;
+      y += parent.position.y;
+      cursor = parent.parentId as string | undefined;
+    }
+    rects.set(node.id as string, { x, y, width: node.size.width, height: node.size.height });
+  }
+  return rects;
+}
+
+/** Every node on the parent chain above one node, itself included. */
+function ancestryOf(byId: Map<string, PositionedNode>, id: string): Set<string> {
+  const chain = new Set<string>([id]);
+  let cursor = byId.get(id)?.parentId as string | undefined;
+  while (cursor && byId.has(cursor) && !chain.has(cursor)) {
+    chain.add(cursor);
+    cursor = byId.get(cursor)?.parentId as string | undefined;
+  }
+  return chain;
+}
+
+/**
+ * What one wire must not cross.
+ *
+ * Its own two ends are excluded, and so is everything on their parent chains and everything
+ * inside them: a wire leaving a group has to cross that group's frame, and a wire arriving at a
+ * group cannot avoid the things the group contains. Frames of unrelated groups are soft — a
+ * relationship that spans two groups has to cross a frame to exist at all — while an unrelated
+ * node body is the thing Chris called a massive problem, and is never acceptable.
+ */
+export function wireObstacles(
+  view: ProjectedView,
+  rects: Map<string, Rect>,
+  wire: { source: { nodeId: string }; target: { nodeId: string } },
+): RouteObstacle[] {
+  const byId = new Map(view.nodes.map((node) => [node.id as string, node]));
+  const related = new Set<string>([
+    ...ancestryOf(byId, wire.source.nodeId),
+    ...ancestryOf(byId, wire.target.nodeId),
+  ]);
+  return view.nodes.flatMap((node) => {
+    const id = node.id as string;
+    if (related.has(id)) return [];
+    // Anything inside one of the ends is as unavoidable as the end itself. Only the two ends
+    // count here: their ancestors contain the whole diagram, which would excuse everything.
+    const ancestry = ancestryOf(byId, id);
+    if (ancestry.has(wire.source.nodeId) || ancestry.has(wire.target.nodeId)) return [];
+    const rect = rects.get(id);
+    return rect ? [{ rect, soft: node.kind === 'group' }] : [];
+  });
+}
 
 /**
  * How far each wire's corridor moves so parallel wires stop drawing over each other.
@@ -230,6 +301,7 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
   const connected = connectedIds(input);
   const lanes = laneOffsets(view.wires);
   const hints = record.layouts[record.views[record.activeViewId]?.layoutId]?.wireRouteHints ?? {};
+  const rects = nodeRects(view);
   return view.wires.map((wire) => ({
     id: wire.id,
     source: wire.source.nodeId,
@@ -256,6 +328,7 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
         waypoints: hints[wire.id]?.waypoints ?? [],
         labelPosition: hints[wire.id]?.labelPosition,
       },
+      obstacles: wireObstacles(view, rects, wire),
       setRoute: execute && editable
         ? (route: Partial<EdgeRoute>) => execute({ kind: 'wire.setRoute', id: wire.id, route })
         : undefined,

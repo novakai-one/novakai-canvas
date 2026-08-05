@@ -251,11 +251,14 @@ function elbowCandidate(request: WireRouteRequest, corridor: number): Point[] {
 }
 
 /** The detour: out of both ends, then around through a side corridor. */
-function detourCandidate(request: WireRouteRequest, corridor: number): Point[] {
+function detourCandidate(
+  request: WireRouteRequest,
+  corridor: number,
+  stubs: { source: number; target: number },
+): Point[] {
   const { source, sourceSide, target, targetSide } = request;
-  const stub = request.stub ?? DEFAULT_STUB;
-  const sourceOut = advance(source, sourceSide, stub);
-  const targetOut = advance(target, targetSide, stub);
+  const sourceOut = advance(source, sourceSide, stubs.source);
+  const targetOut = advance(target, targetSide, stubs.target);
   if (isVertical(sourceSide) && isVertical(targetSide)) {
     return simplify([
       source, sourceOut,
@@ -311,19 +314,43 @@ function detourCandidates(request: WireRouteRequest, axis: 'x' | 'y'): number[] 
   const from = request.source[axis];
   const to = request.target[axis];
   const spans = (request.obstacles ?? []).map((obstacle) => obstacle.rect);
-  const lows = [Math.min(from, to), ...spans.map((rect) => (axis === 'x' ? rect.x : rect.y))];
-  const highs = [Math.max(from, to), ...spans.map((rect) =>
-    (axis === 'x' ? rect.x + rect.width : rect.y + rect.height))];
-  const outside = [
-    Math.min(...lows) - CLEARANCE * 2 + lane,
-    Math.max(...highs) + CLEARANCE * 2 + lane,
-  ];
+  const lows = spans.map((rect) => (axis === 'x' ? rect.x : rect.y));
+  const highs = spans.map((rect) => (axis === 'x' ? rect.x + rect.width : rect.y + rect.height));
+  // The clear side of each obstacle: a gap between two of them is often the only way past.
   const near = [
     Math.min(from, to) - CLEARANCE * 2 + lane,
     Math.max(from, to) + CLEARANCE * 2 + lane,
+    ...lows.map((low) => low - CLEARANCE + lane),
+    ...highs.map((high) => high + CLEARANCE + lane),
   ];
-  const preferred = from <= to ? [near[0], near[1]] : [near[1], near[0]];
-  return [...new Set([...preferred, ...outside])];
+  const middle = (from + to) / 2;
+  const sorted = [...new Set(near)].sort((left, right) =>
+    Math.abs(left - middle) - Math.abs(right - middle) || left - right);
+  // Outside everything, always kept: this is the corridor that cannot be blocked, and it must
+  // survive the cap on how many candidates are tried.
+  return [
+    ...sorted.slice(0, 12),
+    Math.min(from, to, ...lows) - CLEARANCE * 2 + lane,
+    Math.max(from, to, ...highs) + CLEARANCE * 2 + lane,
+  ];
+}
+
+/**
+ * A stub long enough to leave every obstacle behind before turning.
+ *
+ * The escape hatch of the detour family: however crowded the space between two nodes is, there
+ * is always room on the far side of all of it.
+ */
+function clearingStub(request: WireRouteRequest, axis: 'x' | 'y'): number {
+  const obstacles = request.obstacles ?? [];
+  if (obstacles.length === 0) return DEFAULT_STUB;
+  const edges = obstacles.map((obstacle) => (axis === 'y'
+    ? [obstacle.rect.y, obstacle.rect.y + obstacle.rect.height]
+    : [obstacle.rect.x, obstacle.rect.x + obstacle.rect.width])).flat();
+  const from = request.source[axis];
+  const outward = request.sourceSide === 'bottom' || request.sourceSide === 'right'
+    ? Math.max(...edges) - from : from - Math.min(...edges);
+  return Math.max(DEFAULT_STUB, outward + CLEARANCE * 2);
 }
 
 /**
@@ -348,8 +375,19 @@ export function routeWire(request: WireRouteRequest): WireRoute {
       candidates.push(elbowCandidate(request, corridor));
     }
   }
-  for (const corridor of detourCandidates(request, detourAxis).slice(0, 12)) {
-    candidates.push(detourCandidate(request, corridor));
+  // Longer stubs give the two straight runs out of the nodes somewhere else to be, which is the
+  // only freedom a detour has once its side corridor is chosen. Each end is free of the other,
+  // because the space below a source and the space above a target are rarely blocked alike; the
+  // clearing stub leaves every obstacle behind outright, so one escape can never be blocked.
+  const escape = clearingStub(request, axis);
+  const stubOptions = [request.stub ?? DEFAULT_STUB, 56, 110, escape];
+  const corridors = detourCandidates(request, detourAxis);
+  for (const source of stubOptions) {
+    for (const target of stubOptions) {
+      for (const corridor of corridors) {
+        candidates.push(detourCandidate(request, corridor, { source, target }));
+      }
+    }
   }
 
   let best: WireRoute | null = null;
