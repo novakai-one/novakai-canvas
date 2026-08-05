@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { CanvasEngine } from '../application/canvas-engine';
 import { applyLayoutProposal, previewLayout } from '../domain/layout-proposal';
 import type { ArchitectureDocument, CanvasPreferences, LayoutProposal, LayoutTarget } from '../domain/model';
@@ -49,6 +49,13 @@ export function useLayoutPreview(input: LayoutPreviewInput) {
     () => currentProposal ? applyLayoutProposal(input.document, currentProposal) : input.document,
     [currentProposal, input.document],
   );
+  const onSelectionChange = useCallback(({ nodes }: { nodes: Array<{ id: string }> }) => {
+    const nextIds = nodes.map((node) => node.id).sort();
+    setSelectedNodeIds((currentIds) =>
+      currentIds.length === nextIds.length && currentIds.every((id, index) => id === nextIds[index])
+        ? currentIds
+        : nextIds);
+  }, []);
   const refit = (): void => setFitRevision((revision) => revision + 1);
   const layout: LayoutPreviewActions = {
     proposal: currentProposal,
@@ -80,6 +87,6 @@ export function useLayoutPreview(input: LayoutPreviewInput) {
     fitRevision,
     interactionEnabled: input.editable && !currentProposal,
     layout,
-    setSelectedNodeIds,
+    onSelectionChange,
   };
 }

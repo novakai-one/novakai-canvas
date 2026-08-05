@@ -69,7 +69,7 @@ function addNodeChanges(engine: CanvasEngine, editable: boolean, changes: NodeCh
 export function CanvasSurface(props: CanvasSurfaceProps) {
   const editable = props.mode === 'edit';
   const {
-    currentProposal, displayDocument, fitRevision, interactionEnabled, layout, setSelectedNodeIds,
+    currentProposal, displayDocument, fitRevision, interactionEnabled, layout, onSelectionChange,
   } = useLayoutPreview({
     document: props.document, preferences: props.preferences, engine: props.engine,
     maps: props.maps, activeMapId: props.activeMapId, editable,
@@ -100,7 +100,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         }}
         onNodeClick={(_event, node) => props.setSelection({ kind: 'node', id: node.id })}
         onNodesChange={(changes) => addNodeChanges(props.engine, interactionEnabled, changes)} onPaneClick={() => props.setSelection(null)}
-        onSelectionChange={({ nodes: selectedNodes }) => setSelectedNodeIds(selectedNodes.map((node) => node.id).sort())}
+        onSelectionChange={onSelectionChange}
         selectionOnDrag={interactionEnabled} snapGrid={[props.preferences.canvas.gridSize, props.preferences.canvas.gridSize]}
         snapToGrid={interactionEnabled && props.preferences.canvas.snapToGrid}
       >
