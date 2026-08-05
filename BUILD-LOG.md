@@ -235,3 +235,60 @@ second audit argued.
   Worth committing.
 - **The React Flow attribution badge** sits in the corner. Hiding it is a licensing question,
   so I left it alone.
+
+---
+
+## 2026-08-06 — V3 lane build, lead: Claude Fable 5 (session after Opus stopped)
+
+Commits `8f9c267`..`67d86a8`. Three parallel Opus builder subagents (Lanes A, B, C), isolated
+worktrees, cherry-picked onto `claude/canvas-record-model` by the lead.
+
+### Skills used
+
+- `elite-codebase-engineering` (invoked at session start)
+- Superpowers standing rules (loaded at session start; no other skill invoked)
+- Subagent orchestration via the Agent tool: 3 Opus builders, lane briefs carrying Chris's
+  rules verbatim
+
+### Testing strategy
+
+- Each lane brief enumerated its exit tests before work started; tests cross public interfaces.
+- Per-lane verification loop: Lane A `npx vitest run src/domain`; Lane B running `./canvas
+  maps/read/apply/snapshot` against real worktree records; Lane C driving the app with
+  `~/.claude/browse` and reading screenshots.
+- Lead re-ran all gates after every cherry-pick: `npx tsc -b`, `npx tsc -p tsconfig.tools.json
+  --noEmit`, `npx oxlint`, `npx vite build`, full `npx vitest run`.
+- Lead personally re-verified before accepting: browser clickthrough of the merged build
+  (load, Present/Edit, diagram switch, wire select, node add reaching disk with
+  `provenance.source: "ui"`), and real CLI runs (apply idempotent at same revision, snapshot
+  SVG). Test edits reverted with `git checkout public/data`.
+- Fix rounds used: Lane A 1, Lane B 1, Lane C 0 (stopped on converge order), lead 1 (hidden-kind
+  policy collision between Lanes A and C).
+
+### Exit criteria (as enforced)
+
+- All four gates exit 0.
+- Full suite at exactly 3 failures, all pre-existing work-session-report tests. Final:
+  3 failed / 352 passed.
+- Browser verification of the listed interactions with screenshots read, not just taken.
+- CLI commands run for real against the worktree's migrated records.
+- novakai-analytics repo-wide ≥65: measured 67/100. The >86 ratchet for new code was not
+  demonstrated; reds concentrate in the out-of-scope work-session-reporting files plus
+  flags on the public export surface.
+
+### Chris's expectations, verbatim
+
+> "The code should be written with coding standards from the skill Engineering standards.
+> I expect Typescript, Human readable code, Public interfaces for all modules.
+> Novakai-analytics scores ratcheted >86 for all new code. The spec should already show the
+> module-level interface."
+
+> "You must clearly specify the stop point for any fix rounds. Focus on diffs between rounds.
+> Before any rounds, you must make it clear what the exit condition is. A new bug on round 2
+> that surfaces doesnt count as going back to round 1, that is still round 2 -> otherwise you
+> will forever reset the fix. You are better off accepting a known bug, and coming back to the
+> build plan later to address it."
+
+> "All UI changes need to be inspected in browser -> human-level interaction to see how I would
+> use it -> visually correact and structured, not just logically correct. Use Opus subagents
+> and Sonent subagents."
