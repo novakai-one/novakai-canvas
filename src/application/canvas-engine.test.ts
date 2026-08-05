@@ -50,4 +50,19 @@ describe('createCanvasEngine', () => {
     expect(engine.snapshot()).toEqual(fromDisk);
     expect(engine.persistedRevision()).toBe(9);
   });
+
+  it('undoes one complete command back to the exact prior snapshot', () => {
+    const engine = createCanvasEngine(initial, { load: async () => initial, save: async () => undefined });
+    engine.execute({
+      kind: 'node.add',
+      node: { id: 'node', kind: 'module', label: 'Module', interfaceIds: [], typeIds: [] },
+      placement: { nodeId: 'node', position: { x: 10, y: 20 }, size: { width: 160, height: 80 }, pinned: false },
+    });
+
+    expect(engine.canUndo()).toBe(true);
+    expect(engine.undo()).toBe(true);
+    expect({ ...engine.snapshot(), revision: initial.revision }).toEqual(initial);
+    expect(engine.snapshot().revision).toBe(2);
+    expect(engine.canUndo()).toBe(false);
+  });
 });

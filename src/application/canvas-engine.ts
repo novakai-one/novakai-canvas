@@ -12,6 +12,8 @@ export interface CanvasEngine {
   reload(): Promise<void>;
   /** Revision last known to match the repository — equal to snapshot().revision when clean. */
   persistedRevision(): number;
+  canUndo(): boolean;
+  undo(): boolean;
   subscribe(listener: () => void): () => void;
 }
 
@@ -22,16 +24,21 @@ export function createCanvasEngine(
 ): CanvasEngine {
   let document = initial;
   let persisted = initial.revision;
+  const history: ArchitectureDocument[] = [];
   const listeners = new Set<() => void>();
   const publish = (): void => listeners.forEach((listener) => listener());
 
   return {
     snapshot: () => document,
     execute(command) {
+      history.push(document);
+      if (history.length > 100) history.shift();
       document = applyCanvasCommand(document, command);
       publish();
     },
     replace(next) {
+      history.push(document);
+      if (history.length > 100) history.shift();
       document = next;
       publish();
     },
@@ -44,9 +51,18 @@ export function createCanvasEngine(
       const next = await repository.load();
       document = next;
       persisted = next.revision;
+      history.length = 0;
       publish();
     },
     persistedRevision: () => persisted,
+    canUndo: () => history.length > 0,
+    undo() {
+      const previous = history.pop();
+      if (!previous) return false;
+      document = { ...previous, revision: document.revision + 1 };
+      publish();
+      return true;
+    },
     subscribe(listener) {
       listeners.add(listener);
       return () => listeners.delete(listener);

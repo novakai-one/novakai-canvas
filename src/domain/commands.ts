@@ -3,6 +3,7 @@ import { layoutScopes } from './layout.ts';
 import {
   addNodePlacement, placementFor, removeNodePlacements, replacePlacement,
 } from './layouts';
+import { applyLayoutProposal } from './layout-proposal';
 
 /** Applies one intention without mutating the previous document. */
 export function applyCanvasCommand(
@@ -27,6 +28,12 @@ export function applyCanvasCommand(
         next = replacePlacement(next, { ...placement, size: command.size }, command.layoutId);
       }
       break;
+    case 'node.pin':
+      if (next.nodes[command.id]) {
+        const placement = placementFor(next, command.id, command.layoutId);
+        next = replacePlacement(next, { ...placement, pinned: command.pinned }, command.layoutId);
+      }
+      break;
     case 'node.update': if (next.nodes[command.id]) Object.assign(next.nodes[command.id], command.patch); break;
     case 'node.remove':
       delete next.nodes[command.id];
@@ -45,6 +52,7 @@ export function applyCanvasCommand(
       }
       break;
     case 'wire.remove': delete next.wires[command.id]; break;
+    case 'layout.apply': next = applyLayoutProposal(next, command.proposal); break;
     case 'scope.layout': next = layoutScopes(next, [command.id], command.layoutId, command.groupPadding); break;
   }
   next.revision += 1;

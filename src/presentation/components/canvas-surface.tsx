@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Background, BackgroundVariant, Controls, ReactFlow, type Connection, type NodeChange,
 } from '@xyflow/react';
 import type { CanvasEngine } from '../../application/canvas-engine';
-import type { ArchitectureDocument, CanvasPreferences, Selection } from '../../domain/model';
+import { applyLayoutProposal, previewLayout } from '../../domain/layout-proposal';
+import type { ArchitectureDocument, CanvasPreferences, LayoutProposal, Selection } from '../../domain/model';
 import type { ArchitectureMap } from '../../domain/maps';
 import { createCanvasNode, type CreatableNodeKind } from '../canvas-actions';
 import { projectEdges, projectNodes } from '../projection';
@@ -56,7 +57,16 @@ function connect(engine: CanvasEngine, connection: Connection): string | null {
   return id;
 }
 
-function CanvasToolbar({ props, layout }: { props: CanvasSurfaceProps; layout: () => void }) {
+interface LayoutActions {
+  apply(): void;
+  cancel(): void;
+  preview(): void;
+  undo(): void;
+  proposal: LayoutProposal | null;
+  selectedNodeCount: number;
+}
+
+function CanvasToolbar({ props, layout }: { props: CanvasSurfaceProps; layout: LayoutActions }) {
   const add = (kind: CreatableNodeKind): void => {
     if (!props.activeMapId) return;
     const id = `${kind}-${crypto.randomUUID().slice(0, 8)}`;
@@ -81,24 +91,32 @@ function CanvasToolbar({ props, layout }: { props: CanvasSurfaceProps; layout: (
       </label>
       {props.mode === 'edit' && (
         <div className="toolbar-actions">
-          <button disabled={!props.activeMapId} onClick={layout} type="button">Auto-layout</button>
-          <select
-            aria-label="Add object"
-            disabled={!props.activeMapId}
-            onChange={(event) => {
-              if (event.target.value) add(event.target.value as CreatableNodeKind);
-              event.target.value = '';
-            }}
-            value=""
-          >
-            <option value="">＋ Add</option>
-            <option value="module">Module</option>
-            <option value="object">Object</option>
-            <option value="runtime">Runtime</option>
-            <option value="resource">Resource</option>
-            <option value="group">Group</option>
-            <option value="comment">Comment</option>
-          </select>
+          {layout.proposal ? <>
+            <button onClick={layout.apply} type="button">Apply preview · {layout.proposal.affectedNodeIds.length}</button>
+            <button onClick={layout.cancel} type="button">Cancel</button>
+          </> : <>
+            <button disabled={!props.activeMapId} onClick={layout.preview} type="button">
+              {layout.selectedNodeCount > 0 ? `Preview selected · ${layout.selectedNodeCount}` : 'Preview map layout'}
+            </button>
+            <button disabled={!props.engine.canUndo()} onClick={layout.undo} type="button">Undo</button>
+            <select
+              aria-label="Add object"
+              disabled={!props.activeMapId}
+              onChange={(event) => {
+                if (event.target.value) add(event.target.value as CreatableNodeKind);
+                event.target.value = '';
+              }}
+              value=""
+            >
+              <option value="">＋ Add</option>
+              <option value="module">Module</option>
+              <option value="object">Object</option>
+              <option value="runtime">Runtime</option>
+              <option value="resource">Resource</option>
+              <option value="group">Group</option>
+              <option value="comment">Comment</option>
+            </select>
+          </>}
         </div>
       )}
       <div className="file-identity"><span>{props.document.name}</span><small>r{props.document.revision}</small></div>
@@ -115,41 +133,81 @@ function addNodeChanges(engine: CanvasEngine, editable: boolean, changes: NodeCh
 export function CanvasSurface(props: CanvasSurfaceProps) {
   const editable = props.mode === 'edit';
   const [fitRevision, setFitRevision] = useState(0);
+  const [proposal, setProposal] = useState<LayoutProposal | null>(null);
+  const [selectedNodeIds, setSelectedNodeIds] = useState<string[]>([]);
+  const currentProposal = proposal?.baseRevision === props.document.revision ? proposal : null;
+  useEffect(() => {
+    if (proposal && !currentProposal) setProposal(null);
+  }, [currentProposal, proposal]);
+  const displayDocument = useMemo(
+    () => currentProposal ? applyLayoutProposal(props.document, currentProposal) : props.document,
+    [currentProposal, props.document],
+  );
+  const interactionEnabled = editable && !currentProposal;
   const nodes = useMemo(
-    () => projectNodes(props.document, props.preferences, props.selection, editable, props.setSelection),
-    [editable, props.document, props.preferences, props.selection, props.setSelection],
+    () => projectNodes(displayDocument, props.preferences, props.selection, interactionEnabled, props.setSelection),
+    [displayDocument, interactionEnabled, props.preferences, props.selection, props.setSelection],
   );
   const edges = useMemo(
-    () => projectEdges(props.document, props.preferences, props.selection, editable, props.setSelection),
-    [editable, props.document, props.preferences, props.selection, props.setSelection],
+    () => projectEdges(displayDocument, props.preferences, props.selection, interactionEnabled, props.setSelection),
+    [displayDocument, interactionEnabled, props.preferences, props.selection, props.setSelection],
   );
-  const layout = (): void => {
+  const preview = (): void => {
     if (!props.activeMapId) return;
-    props.engine.execute({
-      kind: 'scope.layout', id: props.activeMapId, groupPadding: props.preferences.canvas.groupPadding,
-    });
+    const selectedScope = selectedNodeIds.length === 1
+      && props.document.nodes[selectedNodeIds[0]]?.kind === 'scope'
+      ? selectedNodeIds[0]
+      : undefined;
+    setProposal(previewLayout(props.document, {
+      target: selectedScope
+        ? { kind: 'scope', scopeId: selectedScope }
+        : selectedNodeIds.length > 0
+          ? { kind: 'nodes', nodeIds: selectedNodeIds }
+          : { kind: 'scope', scopeId: props.activeMapId },
+      groupPadding: props.preferences.canvas.groupPadding,
+    }));
+  };
+  const applyPreview = (): void => {
+    if (!currentProposal) return;
+    props.engine.execute({ kind: 'layout.apply', proposal: currentProposal });
+    setProposal(null);
     setFitRevision((revision) => revision + 1);
   };
+  const cancelPreview = (): void => setProposal(null);
+  const undo = (): void => {
+    if (!props.engine.undo()) return;
+    setProposal(null);
+    setFitRevision((revision) => revision + 1);
+  };
+  const layout: LayoutActions = {
+    apply: applyPreview,
+    cancel: cancelPreview,
+    preview,
+    undo,
+    proposal: currentProposal,
+    selectedNodeCount: selectedNodeIds.length,
+  };
   return (
-    <main className={`canvas-surface is-${props.mode}`}>
+    <main className={`canvas-surface is-${props.mode}${currentProposal ? ' has-layout-preview' : ''}`}>
       <ReactFlow
         key={`${props.mode}:${props.activeMapId ?? 'empty'}:${fitRevision}`}
-        colorMode={props.preferences.appearance.theme} deleteKeyCode={editable ? ['Backspace', 'Delete'] : null} edgeTypes={edgeTypes} edges={edges}
-        edgesReconnectable={editable} elementsSelectable fitView fitViewOptions={{ padding: editable ? 0.12 : 0.05, maxZoom: 1 }} minZoom={0.35}
-        nodeTypes={nodeTypes} nodes={nodes} nodesConnectable={editable} nodesDraggable={editable}
-        onConnect={(connection) => { if (!editable) return; const id = connect(props.engine, connection); if (id) props.setSelection({ kind: 'wire', id }); }}
+        colorMode={props.preferences.appearance.theme} deleteKeyCode={interactionEnabled ? ['Backspace', 'Delete'] : null} edgeTypes={edgeTypes} edges={edges}
+        edgesReconnectable={interactionEnabled} elementsSelectable fitView fitViewOptions={{ padding: editable ? 0.12 : 0.05, maxZoom: 1 }} minZoom={0.35}
+        nodeTypes={nodeTypes} nodes={nodes} nodesConnectable={interactionEnabled} nodesDraggable={interactionEnabled}
+        onConnect={(connection) => { if (!interactionEnabled) return; const id = connect(props.engine, connection); if (id) props.setSelection({ kind: 'wire', id }); }}
         onEdgeClick={(_event, edge) => props.setSelection({ kind: 'wire', id: edge.id })}
         onReconnect={(edge, connection) => {
-          if (!editable || !connection.source || !connection.target) return;
+          if (!interactionEnabled || !connection.source || !connection.target) return;
           props.engine.execute({
             kind: 'wire.reconnect', id: edge.id, source: connection.source, target: connection.target,
           });
           props.setSelection({ kind: 'wire', id: edge.id });
         }}
         onNodeClick={(_event, node) => props.setSelection({ kind: 'node', id: node.id })}
-        onNodesChange={(changes) => addNodeChanges(props.engine, editable, changes)} onPaneClick={() => props.setSelection(null)}
-        selectionOnDrag={editable} snapGrid={[props.preferences.canvas.gridSize, props.preferences.canvas.gridSize]}
-        snapToGrid={editable && props.preferences.canvas.snapToGrid}
+        onNodesChange={(changes) => addNodeChanges(props.engine, interactionEnabled, changes)} onPaneClick={() => props.setSelection(null)}
+        onSelectionChange={({ nodes: selectedNodes }) => setSelectedNodeIds(selectedNodes.map((node) => node.id).sort())}
+        selectionOnDrag={interactionEnabled} snapGrid={[props.preferences.canvas.gridSize, props.preferences.canvas.gridSize]}
+        snapToGrid={interactionEnabled && props.preferences.canvas.snapToGrid}
       >
         {props.preferences.canvas.showGrid && editable && <Background color={props.preferences.appearance.theme === 'light' ? '#d9d4c8' : '#34312b'} gap={props.preferences.canvas.gridSize * 2} variant={BackgroundVariant.Dots} />}
         {props.preferences.canvas.showControls && <Controls position="bottom-left" showInteractive={false} />}

@@ -35,6 +35,15 @@ function NodeInspection({ props, id }: { props: InspectPanelProps; id: string })
         <div><span>Types</span><strong>{node.typeIds.length}</strong></div>
         <div><span>Position</span><strong>{Math.round(placement.position.x)}, {Math.round(placement.position.y)}</strong></div>
       </div>
+      {props.editable && (
+        <Field label="Lock position">
+          <input
+            checked={placement.pinned}
+            onChange={(event) => props.execute({ kind: 'node.pin', id, pinned: event.target.checked })}
+            type="checkbox"
+          />
+        </Field>
+      )}
       {props.editable && node.kind !== 'scope' && (
         <button className="danger-action" onClick={() => { props.execute({ kind: 'node.remove', id }); props.clearSelection(); }} type="button">Delete object</button>
       )}

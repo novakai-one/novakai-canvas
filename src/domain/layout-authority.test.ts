@@ -45,4 +45,12 @@ describe('layout authority', () => {
     expect(next.layouts['layout-default'].placements.module).toBeUndefined();
     expect(next.layouts.copy.placements.module).toBeUndefined();
   });
+
+  it('pins a node in one layout without changing semantic meaning', () => {
+    const document = legacyDocument();
+    const next = applyCanvasCommand(document, { kind: 'node.pin', id: 'module', pinned: true });
+
+    expect(next.nodes.module).toEqual(document.nodes.module);
+    expect(next.layouts['layout-default'].placements.module.pinned).toBe(true);
+  });
 });

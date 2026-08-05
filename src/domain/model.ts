@@ -93,6 +93,25 @@ export interface CanvasLayout {
   wireRouteHints: Record<string, WireRouteHint>;
 }
 
+export type LayoutTarget =
+  | { kind: 'scope'; scopeId: string }
+  | { kind: 'nodes'; nodeIds: string[] };
+
+export interface LayoutRequest {
+  target: LayoutTarget;
+  layoutId?: string;
+  groupPadding?: number;
+}
+
+/** Transient, revision-bound geometry proposal; saving it requires an explicit command. */
+export interface LayoutProposal {
+  baseRevision: number;
+  layoutId: string;
+  target: LayoutTarget;
+  affectedNodeIds: string[];
+  placements: Record<string, NodePlacement>;
+}
+
 /** Semantic node joined with geometry for layout and rendering adapters. */
 export interface PositionedCanvasNode extends CanvasNode {
   position: Position;
@@ -164,10 +183,12 @@ export type CanvasCommand =
   | { kind: 'node.add'; node: CanvasNode; placement: NodePlacement }
   | { kind: 'node.move'; id: string; position: Position; layoutId?: string }
   | { kind: 'node.resize'; id: string; size: Size; layoutId?: string }
+  | { kind: 'node.pin'; id: string; pinned: boolean; layoutId?: string }
   | { kind: 'node.update'; id: string; patch: Partial<Pick<CanvasNode, 'label' | 'description' | 'kind'>> }
   | { kind: 'node.remove'; id: string }
   | { kind: 'wire.add'; wire: CanvasWire }
   | { kind: 'wire.update'; id: string; patch: Partial<Pick<CanvasWire, 'label' | 'kind'>> }
   | { kind: 'wire.reconnect'; id: string; source: string; target: string }
   | { kind: 'wire.remove'; id: string }
+  | { kind: 'layout.apply'; proposal: LayoutProposal }
   | { kind: 'scope.layout'; id: string; layoutId?: string; groupPadding?: number };
