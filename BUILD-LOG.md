@@ -99,11 +99,13 @@ n=1 in real data, so this is deliberately the smallest concept that loses nothin
 path cannot reach them. They contain real writing, e.g. *"One session ⇢ one instance. No
 shared tab, so nothing to fight over…"*.
 
-Taken: attach each to the diagram its ID and content plainly indicate (→ `project-scope`,
-`messaging-scope`, `browser-scope`) and list every reassignment in the migration report, rather
-than dropping them or inventing an "unfiled" junk diagram.
-**ASSUMPTION:** these were meant to be inside those diagrams and lost their parent. Falsified
-if Chris says they were intentionally global — then they need a home concept of their own.
+Taken — **and changed after review**: they go to a visible **Unfiled** diagram, and the
+migration report names all three. I first chose to attach them to the diagram their ID and
+content indicate (`note-browser` → `browser-scope`, and so on), which reads as helpful and is
+really a guess about Chris's intent baked irreversibly into his data. Zero interpretation and a
+visible bucket he can empty in ten seconds beats a clever guess he never sees.
+**ASSUMPTION:** Chris wants them kept at all. Falsified if he says they were scratch — then
+Unfiled is where he deletes them from, which is also fine.
 
 ### Real-data facts the migration must satisfy (measured 2026-08-06)
 
@@ -143,15 +145,31 @@ possibility structurally rather than trusting it.
 
 ## Slice progress
 
-| Slice | State | Evidence |
+| Stage | State | Evidence |
 |---|---|---|
-| Pass 1 blueprint | written | `docs/blueprint/2026-08-06-canvas-capability-blueprint.md` |
-| Ratification | running | fresh zero-context reviewer |
-| V1 Records | not started | |
-| V2 Arrangement | not started | |
-| V3 Slice layout | not started | |
-| V4 Ports & wires | not started | |
-| V5 Library | not started | |
-| V6 Agent authoring | not started | |
-| V7 Second host | not started | |
-| V8 Craft pass | not started | |
+| Pass 1 blueprint | done | `docs/blueprint/2026-08-06-canvas-capability-blueprint.md` |
+| Ratification round 1 | **failed**, 11 SEVERE | fixed at source in Revision 2 |
+| Revision 2 + Pass 2 contract | done | `docs/blueprint/2026-08-06-canvas-blueprint-r2.md` |
+| Ratification round 2 | **failed**, 7 SEVERE — narrow | fixed in Revision 2.1 and in code |
+| W1 migration + records | done | 3 real files migrate losslessly; 37 tests |
+| W1 workspace + library | done | 68 tests; atomicity, conflict, idempotency, undo, CAS |
+| W1 storage adapter | next | file-per-diagram + index |
+| W1 host rewiring | **not started** — see the decision below | |
+| W2–W8 | not started | |
+
+### D-007 — What I chose NOT to do tonight, and why
+
+The capability is complete and proven, but **the running app has not been moved onto it**. That
+was a deliberate call around 02:50, not an accident of running out of time.
+
+Rewiring the host means 10 presentation files plus 11 CLI files, and `./canvas apply` currently
+resolves wire endpoints by label across the whole document — which cannot work once a record is
+one diagram. Starting that with four hours left risks Chris waking to an app that opens to an
+error, with the CLI broken too. A half-migrated tree that can be authored from neither surface
+is strictly worse than an unmigrated one.
+
+So: the record capability is committed, tested against all three of his real files, and unused.
+The app still runs on the existing path. The remaining hours went to UI craft — which lives in
+CSS and layout and survives the swap whenever it happens.
+
+**This is the honest state: foundation proven, not yet load-bearing.**

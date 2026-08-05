@@ -43,6 +43,61 @@ layers wearing vertical clothing.
 | 22 | LOW | `move` promised with no move operation | **R-22.** Claim withdrawn; no folder concept exists. |
 | 23 | LOW | `search` ordering/matching and `save` failure detail undefined | **R-23.** Search: case-insensitive substring over diagram name and node labels, ordered by name, ties by ID. `save` distinguishes `stale-revision` from `save-failed`. |
 
+## Revision 2.1 — corrections from the second audit
+
+The re-audit returned **"not yet safe to build against, but narrow and specific"** with 7 SEVERE.
+It was right again. Corrections, in the order they matter:
+
+**C-1 (was SEVERE 1) — LBD-02 said "dissolve the root scope node". That is now WRONG and is
+withdrawn.** Child placements are stored relative to their parent (`extent: 'parent'` in the
+renderer): `project-scope` sits at 564,144 and its child `planning` at 36,48. Dissolving roots
+would have relocated every top-level frame's children to near the origin, one-way, over
+irreplaceable data — and deleted the framed box each diagram is drawn inside. **The root scope
+node is KEPT as a `group` node.** The code did this before the document caught up; the document
+was wrong, not the code.
+
+**C-2 (was SEVERE 2) — the diagram title.** Keeping the root node means the title text appears
+in `DiagramRecord.name`, on the root group node's label, and in `LibraryEntry.name`. Resolution:
+these are **one authoritative fact and two other things**. `DiagramRecord.name` is the title, and
+`diagram.rename` is its only writer. `LibraryEntry.name` is a declared projection. The root
+group's label is an ordinary node label written only by `node.update` — it coincides with the
+title at migration and may legitimately diverge later, because a drawn frame's caption is not
+the diagram's name. Blanking it to avoid the appearance of duplication was rejected: it would
+delete 17 of Chris's labels and break the losslessness proof.
+
+**C-3 (SEVERE 3) — index compare-and-swap.** `writeIndex` now takes an expected revision and
+returns an outcome. `entries` is declared derived; `rebuildIndex()` is the repair path for a
+write torn between a record and the index. Links and the migrated ledger are carried, not
+recomputed, because nothing else holds them.
+
+**C-4 (SEVERE 4) — cross-diagram links had no writer** after migration created them.
+`addLink`/`removeLink` added; both ends must resolve to existing diagrams.
+
+**C-5 (SEVERE 5) — failure states move into W1.** The silent discard (`App.tsx:48`, where a
+stale revision reloads and throws away local work while the status still reads "Saved") and the
+exception-swallowing `load()` are repaired in the slice that touches the data, not five slices
+later.
+
+**C-6 (SEVERE 6) — on-disk layout, named.** `public/data/library.json` holds the index;
+`public/data/diagrams/<diagramId>.json` holds one record each. Migration triggers on reading a
+legacy file and writes the new shape once. The dev bridge and `./canvas apply` move with it —
+and until they do, **the app keeps running on the existing path**; a half-migrated tree that
+cannot be authored from either surface is worse than an unmigrated one.
+
+**C-7 (SEVERE 7) — `PortAnchor` semantics.** `ordinal` indexes evenly-spaced attachment slots
+along a side, counted from the top-left corner clockwise, clamped to the slots available at
+render time. It is a **preference, not an identity**: it may be clamped by a resize and never
+dangles. Wire identity never depends on it. Full behaviour is W4's to prove.
+
+**Accepted MEDIUM corrections:** the ledger keeps whole operation records (not IDs);
+`fromSchemaVersion` is threaded rather than hardcoded; the census now covers descriptions,
+kinds and parentage; `node.remove` no longer deletes shared types; the migration reports types
+shared across records; `BUILD-LOG.md` is corrected where it contradicted this document.
+
+**Still open, deliberately:** `CanvasView.hiddenKinds`, additional layouts/views, and route-hint
+waypoints are settled *format* with no writer yet — their commands belong to W2 and W4. That is
+recorded here rather than discovered mid-build.
+
 ## Revised load-bearing decisions
 
 Unchanged from R1: **LBD-01** (diagram is the record and revision boundary), **LBD-03**
