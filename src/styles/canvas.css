@@ -370,6 +370,9 @@
   fill: var(--surface-3);
   stroke: var(--gold);
   stroke-width: 1.5;
+  /* An edge only hits on its visible stroke, which for a small circle is a sub-pixel ring.
+     The whole dot has to be the target or the handle cannot be grabbed at working zoom. */
+  pointer-events: all;
   cursor: grab;
 }
 

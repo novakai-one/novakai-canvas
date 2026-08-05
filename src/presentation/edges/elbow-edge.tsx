@@ -74,17 +74,17 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
   const onShapePointerDown = useCallback((event: ReactPointerEvent<SVGCircleElement>) => {
     if (!setRoute || event.button !== 0) return;
     event.stopPropagation();
-    (event.target as SVGCircleElement).setPointerCapture(event.pointerId);
+    event.currentTarget.setPointerCapture(event.pointerId);
     setShaping(screenToFlowPosition({ x: event.clientX, y: event.clientY }));
   }, [screenToFlowPosition, setRoute]);
   const onShapePointerMove = useCallback((event: ReactPointerEvent<SVGCircleElement>) => {
-    if (!setRoute || !(event.target as SVGCircleElement).hasPointerCapture(event.pointerId)) return;
+    if (!setRoute || !event.currentTarget.hasPointerCapture(event.pointerId)) return;
     event.stopPropagation();
     setShaping(screenToFlowPosition({ x: event.clientX, y: event.clientY }));
   }, [screenToFlowPosition, setRoute]);
   const onShapePointerUp = useCallback((event: ReactPointerEvent<SVGCircleElement>) => {
-    if (!setRoute || !(event.target as SVGCircleElement).hasPointerCapture(event.pointerId)) return;
-    (event.target as SVGCircleElement).releasePointerCapture(event.pointerId);
+    if (!setRoute || !event.currentTarget.hasPointerCapture(event.pointerId)) return;
+    event.currentTarget.releasePointerCapture(event.pointerId);
     if (shaping) setRoute({ waypoints: [shaping] });
     setShaping(null);
   }, [setRoute, shaping]);
