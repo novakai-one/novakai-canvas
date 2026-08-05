@@ -83,7 +83,60 @@ produced from the `real-v2-working-copy.json` fixture.
 
 **Exit:** new tests pass; full suite still 3 failures; tsc, lint, build clean.
 
-## Task 2: Dev bridge serves the record layout
+## Revision after Task 1 — prove the seam before hardening it
+
+Chris's steer, 2026-08-06: *"create a minimum real connection so that you can ensure the seam
+between modules and broader app operate and function before you spend too long creating perfect
+tests on demo data which gets changed."*
+
+Task 1 built a repository adapter against an invented wire format with no server on the other
+end, and the follow-up fix added more tests over synthetic data and found no bugs. That is the
+failure mode he is naming. Tasks 2–4 are therefore reordered: **one thin end-to-end connection
+first, verified in a real browser, then hardening.**
+
+Also binding from here: existing diagram data is not precious. There are fewer than 20 diagrams
+and an agent can recreate them cheaply. Do not spend effort defending migration fidelity beyond
+what already exists; spend it on the path that creates and edits new diagrams.
+
+## Task 2: Minimum real connection — browser reads a record from disk
+
+Goal: the smallest change that makes real data flow through the whole stack — disk → dev
+bridge → `createFileLibraryRepository` → `createCanvasLibrary` → the browser — so the seam is
+proven working before anything is polished.
+
+Scope deliberately small. Do the least that produces a running connection:
+
+- Teach `tools/json-file-bridge.ts` to serve, from `public/data/`:
+  - `GET /api/library` → `library.json`
+  - `GET /api/diagrams` → the list of diagram IDs in `public/data/diagrams/`
+  - `GET /api/diagrams/<id>` → `diagrams/<id>.json`
+  - `PUT` for the same paths, honouring the expected revision as a `?expectedRevision=N` query
+    parameter — **this must match what `src/adapters/file-library-repository.ts` already sends;
+    read that file and match it exactly rather than inventing a second format.**
+    Mismatch returns `409` with body `{ "revision": <actual> }`.
+- **One-time bootstrap:** on `GET /api/library` when `library.json` is absent and
+  `project-architecture.json` is present, run `parseArchitectureDocument` then
+  `migrateDocumentToLibrary`, write `library.json` and each `diagrams/<id>.json`, and rename the
+  legacy file to `project-architecture.pre-v3.json`. Log one line with the report counts.
+- Keep `/api/preferences` working exactly as it does now.
+- In the browser, prove the connection with the **smallest possible host change**: on startup,
+  additionally construct `createFileLibraryRepository` + `createCanvasLibrary`, and render the
+  diagram list from `library.list()` in the existing diagram picker. Everything else keeps
+  running on the current path. Do not rewrite the rendering pipeline in this task.
+
+Tests: only what is needed to keep the suite honest — the bootstrap migration running once and
+not twice, and a 409 on a stale expected revision. **Do not build an exhaustive suite over
+fixture data in this task.**
+
+**Browser verification is the deliverable, not the tests.** Run the dev server, drive it with
+`node ~/.claude/browse/browse.mjs`, and confirm: the app loads, `public/data/library.json` and
+`public/data/diagrams/*.json` now exist on disk, the legacy file has been renamed, and the
+diagram picker lists diagrams sourced from the library. Report what the screenshots showed.
+
+**Exit:** real records on disk, read by the browser through the new adapter, verified visually.
+Suite still at 3 known failures; tsc/lint/build clean.
+
+## Task 2b (deferred hardening — do not start until Task 2 is verified in a browser)
 
 Rewrite `tools/json-file-bridge.ts` so the Vite dev server serves the endpoints Task 1 expects,
 on disk as:
