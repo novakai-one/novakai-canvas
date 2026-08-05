@@ -471,3 +471,10 @@ The foundation must leave seams for these capabilities, but YAGNI applies: do no
 - Multiple layouts are useful, but the first migration only needs one layout per existing diagram.
 - Groups support modest nesting; very deep explanations move to linked diagrams.
 - Chris has not ratified this document. A future builder may prototype against it only with explicit authority and must not cite it as a law.
+
+## Verification of this documentation pass
+
+- `git diff --check` passed.
+- Mermaid CLI 11.12.0 parsed and rendered all three diagrams; the rendered PNGs were visually inspected.
+- The repository's `npm run check` reached the test suite: 133 tests passed and 3 existing work-session-report publication tests failed because the checked-in report envelope/HTML does not match their expected fields and link. This branch changes documentation only and did not attempt to repair that unrelated baseline.
+- The original working tree and its uncommitted user files were not modified.
