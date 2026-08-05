@@ -4,7 +4,11 @@ import { CanvasLoadError } from './http-json-repository.ts';
 import { diagramRecordSchema } from '../domain/record-schema.ts';
 import { migrateDocumentToLibrary } from '../domain/migrate/v2-to-v3.ts';
 import { parseArchitectureDocument } from '../domain/schema.ts';
-import type { DiagramRecord, LibraryIndex } from '../domain/records.ts';
+import type {
+  CanvasLayout, CanvasNode, CanvasView, CanvasWire, DiagramRecord, LibraryIndex, NodePlacement,
+  WireRouteHint,
+} from '../domain/records.ts';
+import type { TreeRow } from '../domain/model.ts';
 import working from '../domain/migrate/fixtures/real-v2-working-copy.json' with { type: 'json' };
 
 function sampleRecord(): DiagramRecord {
@@ -171,13 +175,157 @@ describe('file library repository', () => {
   });
 });
 
+/**
+ * A hand-built record populating every optional field and every union branch the schema
+ * accepts, so the round-trip test below cannot pass by accident of a narrow fixture. Built
+ * from `DiagramRecord`'s own field types so the compiler flags anything left out.
+ */
+function fullyPopulatedRecord(): DiagramRecord {
+  const layoutHierarchyId = 'layout-hierarchy';
+  const layoutFlowId = 'layout-flow';
+  const viewId = 'view-main';
+  const rootNode: CanvasNode = {
+    id: 'root' as never,
+    kind: 'group',
+    label: 'Root',
+    description: 'The root group node.',
+    interfaceIds: ['iface-1' as never],
+    typeIds: ['type-1' as never],
+  };
+  const childNode: CanvasNode = {
+    id: 'child' as never,
+    kind: 'module',
+    label: 'Child',
+    parentId: 'root' as never,
+    interfaceIds: [],
+    typeIds: [],
+    subjectRef: { namespace: 'ns', id: 'subject-1' },
+  };
+  const expanderNode: CanvasNode = {
+    id: 'expander' as never,
+    kind: 'object',
+    label: 'Expander',
+    interfaceIds: [],
+    typeIds: [],
+    expandsToDiagramId: 'other-diagram' as never,
+  };
+  const treeRows: TreeRow[] = [
+    { id: 'row-1', kind: 'project', status: 'active', badges: ['flagged'], label: 'Row One' },
+    { id: 'row-2', kind: 'task', parentRowId: 'row-1', badges: [] },
+  ];
+  const treeNode: CanvasNode = {
+    id: 'tree' as never, kind: 'tree', label: 'Tree', interfaceIds: [], typeIds: [], rows: treeRows,
+  };
+  const wireOne: CanvasWire = {
+    id: 'wire-1' as never,
+    kind: 'owns',
+    label: 'owns',
+    source: { nodeId: rootNode.id, anchor: { side: 'top', ordinal: 0 } },
+    target: { nodeId: childNode.id, anchor: { side: 'right', ordinal: 1 } },
+  };
+  const wireTwo: CanvasWire = {
+    id: 'wire-2' as never,
+    kind: 'references',
+    label: 'references',
+    source: { nodeId: childNode.id, anchor: { side: 'bottom', ordinal: 0 } },
+    target: { nodeId: expanderNode.id, anchor: { side: 'left', ordinal: 2 } },
+  };
+  const placements: Record<string, NodePlacement> = {
+    [rootNode.id]: {
+      nodeId: rootNode.id, position: { x: 0, y: 0 }, size: { width: 120, height: 80 }, pinned: true,
+    },
+    [childNode.id]: {
+      nodeId: childNode.id, position: { x: 200, y: 0 }, size: { width: 120, height: 80 }, pinned: false,
+    },
+    [expanderNode.id]: {
+      nodeId: expanderNode.id, position: { x: 400, y: 0 }, size: { width: 120, height: 80 }, pinned: false,
+    },
+    [treeNode.id]: {
+      nodeId: treeNode.id, position: { x: 600, y: 0 }, size: { width: 120, height: 80 }, pinned: false,
+    },
+  };
+  const wireRouteHint: WireRouteHint = {
+    wireId: wireOne.id,
+    preferredSourceSide: 'top',
+    preferredTargetSide: 'right',
+    waypoints: [{ x: 10, y: 20 }, { x: 30, y: 40 }],
+  };
+  const hierarchyLayout: CanvasLayout = {
+    id: layoutHierarchyId as never,
+    name: 'Hierarchy',
+    strategy: 'hierarchy',
+    placements,
+    wireRouteHints: { [wireOne.id]: wireRouteHint },
+  };
+  const flowLayout: CanvasLayout = {
+    id: layoutFlowId as never,
+    name: 'Flow',
+    strategy: 'flow',
+    placements,
+    wireRouteHints: {},
+  };
+  const view: CanvasView = {
+    id: viewId as never,
+    name: 'Main',
+    layoutId: hierarchyLayout.id,
+    viewport: { x: 0, y: 0, zoom: 1 },
+    collapsedNodeIds: [childNode.id],
+    hiddenKinds: ['tree'],
+  };
+  return {
+    schemaVersion: 3,
+    id: 'full-record' as never,
+    name: 'Fully Populated',
+    status: 'active',
+    revision: 1,
+    nodes: {
+      [rootNode.id]: rootNode,
+      [childNode.id]: childNode,
+      [expanderNode.id]: expanderNode,
+      [treeNode.id]: treeNode,
+    },
+    wires: { [wireOne.id]: wireOne, [wireTwo.id]: wireTwo },
+    interfaces: {
+      'iface-1': {
+        id: 'iface-1' as never, ownerId: rootNode.id, name: 'doThing', accepts: ['string'], returns: ['void'],
+      },
+    },
+    types: {
+      'type-1': { id: 'type-1' as never, name: 'Thing', fields: ['name'] },
+    },
+    layouts: { [hierarchyLayout.id]: hierarchyLayout, [flowLayout.id]: flowLayout },
+    views: { [view.id]: view },
+    activeViewId: view.id,
+    subjectRef: { namespace: 'ns', id: 'record-subject' },
+    sourceRefs: [{ namespace: 'ns', id: 'source-1', label: 'Source One' }],
+    appliedOperations: {
+      'op-1': {
+        operationId: 'op-1',
+        revision: 1,
+        actor: { id: 'agent-1', kind: 'agent' },
+        timestamp: '2024-01-01T00:00:00.000Z',
+        provenance: { source: 'agent', sourceRef: 'ref' },
+        commandKinds: ['node.add'],
+      },
+    },
+  };
+}
+
 describe('migrated record round-trip', () => {
   const migrated = migrateDocumentToLibrary(parseArchitectureDocument(working as unknown));
 
   it('survives JSON round-trip and schema parse unchanged, for every migrated record', () => {
-    for (const record of Object.values(migrated.records)) {
+    const records = Object.values(migrated.records);
+    expect(records.length).toBeGreaterThan(0);
+    for (const record of records) {
       const roundTripped = diagramRecordSchema.parse(JSON.parse(JSON.stringify(record)));
       expect(roundTripped).toEqual(record);
     }
+  });
+
+  it('survives JSON round-trip for a hand-built record populating every optional field and union branch', () => {
+    const record = fullyPopulatedRecord();
+    const roundTripped = diagramRecordSchema.parse(JSON.parse(JSON.stringify(record)));
+    expect(roundTripped).toEqual(record);
   });
 });
