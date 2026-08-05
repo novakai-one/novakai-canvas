@@ -267,11 +267,38 @@
   white-space: nowrap;
 }
 
-/* Checkboxes inherited the browser default: a bright white block that read as
-   the loudest element in a dark panel. */
-.field input[type="checkbox"] {
+/* Checkboxes inherited the browser default: a bright white block that read as the
+   loudest element in a calm dark panel, and `accent-color` only tints the checked
+   state. An unchecked box should be quiet - it is not telling you anything. */
+.app-shell :is(.field, .toggle-row) input[type="checkbox"] {
   width: 15px;
   height: 15px;
   margin: 0;
-  accent-color: var(--accent-dim);
+  border: var(--control-border);
+  border-radius: 3px;
+  background: var(--control-bg);
+  appearance: none;
+  cursor: pointer;
+  transition: background var(--motion-feedback), border-color var(--motion-feedback);
+}
+
+.app-shell :is(.field, .toggle-row) input[type="checkbox"]:hover {
+  border-color: var(--control-border-hover);
+}
+
+.app-shell :is(.field, .toggle-row) input[type="checkbox"]:checked {
+  border-color: var(--accent-dim);
+  background: var(--accent-dim);
+}
+
+/* Drawn rather than a glyph, so it stays crisp at 15px and inherits the surface. */
+.app-shell :is(.field, .toggle-row) input[type="checkbox"]:checked::after {
+  display: block;
+  width: 4px;
+  height: 8px;
+  margin: 1px 0 0 4px;
+  border: solid var(--bg);
+  border-width: 0 2px 2px 0;
+  content: "";
+  transform: rotate(45deg);
 }
