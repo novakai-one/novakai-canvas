@@ -101,6 +101,14 @@
   text-transform: uppercase;
 }
 
+/* The rail's kind tag is the wordmark — the one place mono and gold identify the product. */
+.panel-shell[data-side='left'] .panel-kind {
+  color: var(--gold);
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+}
+
 /* The one focal element of a panel: the name of what you are looking at. */
 .panel-title {
   overflow: hidden;

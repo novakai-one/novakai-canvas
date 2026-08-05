@@ -75,7 +75,7 @@ export function Rail(props: RailProps) {
       width={width}
     >
       <PanelHeader
-        kind="Novakai"
+        kind=">_ novakai"
         meta={`${total} diagrams${archived > 0 ? ` · ${archived} archived` : ''}`}
         title="Canvas"
       />

@@ -191,9 +191,9 @@ export default function App(props: AppProps) {
     });
   }, [library, open.id, openDiagram, refreshDiagrams]);
 
+  // Mode changes what you may do, not what you are looking at — selection stays.
   const changeMode = useCallback((next: CanvasMode) => {
     setMode(next);
-    setSelection(null);
   }, []);
 
   /**

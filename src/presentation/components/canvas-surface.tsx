@@ -13,7 +13,7 @@ import type { DiagramRecord } from '../../domain/records';
 import {
   escapeStep, resolveDrop, selectionResolves, type PlacedNode, type WorldPoint,
 } from '../canvas-actions';
-import { publishCanvasCamera } from '../canvas-camera';
+import { canvasCamera, publishCanvasCamera } from '../canvas-camera';
 import { projectEdges, projectNodes } from '../projection';
 import type { CanvasMode } from '../view-mode';
 import { ArchitectureNode } from '../nodes/architecture-node';
@@ -220,7 +220,14 @@ function useCamera(activeDiagramId: string): {
     attach: (instance: FlowInstance) => {
       flow.current = instance;
       const saved = cameras.current.get(activeDiagramId);
-      if (saved) instance.setViewport(saved);
+      if (saved) { instance.setViewport(saved); return; }
+      // React Flow measures before the shell's panels have their widths, so its own first fit
+      // frames a viewport that no longer exists. One more fit after layout settles corrects it.
+      window.setTimeout(() => {
+        if (!cameras.current.has(activeDiagramId)) {
+          instance.fitView({ padding: 0.1, maxZoom: 1, minZoom: 0.05 });
+        }
+      }, 90);
     },
     focusPoint: () => {
       const instance = flow.current;
@@ -233,6 +240,21 @@ function useCamera(activeDiagramId: string): {
   };
 }
 
+/**
+ * Panels push the canvas, so their movement changes what the user can see. When one finishes
+ * opening, closing, or resizing, the diagram re-frames itself calmly — the semantics table's
+ * one sanctioned camera move that the user did not make with the camera itself.
+ */
+function useRefitWhenPanelsMove(panel: CanvasPreferences['panel']): void {
+  const { railCollapsed, railWidth, studioCollapsed, width } = panel;
+  const settled = useRef(false);
+  useEffect(() => {
+    if (!settled.current) { settled.current = true; return; }
+    const timer = window.setTimeout(() => canvasCamera().fit(), TRAVEL_MS + 60);
+    return () => window.clearTimeout(timer);
+  }, [railCollapsed, railWidth, studioCollapsed, width]);
+}
+
 /** Interactive editor or clean, read-only presentation of one open diagram record. */
 export function CanvasSurface(props: CanvasSurfaceProps) {
   const {
@@ -242,6 +264,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   useEscapeStepsOutward(record, selection, setSelection);
   useSelectionReleasesWithItsObject(record, selection, setSelection);
   const camera = useCamera(activeDiagramId);
+  useRefitWhenPanelsMove(preferences.panel);
   const nodes = useMemo(
     () => projectNodes({ view, record, preferences, selection, editable, select: setSelection }),
     [editable, preferences, record, selection, setSelection, view],
