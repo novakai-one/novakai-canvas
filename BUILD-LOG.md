@@ -90,22 +90,22 @@ wrong); letting endpoints carry a foreign `diagramId` (poisons the isolation gua
 makes per-diagram records worth having).
 
 Taken: preserve it as a **library-owned cross-diagram link** — the library already owns
-cross-record truth (§10), so the fact keeps an authority without any diagram claiming it.
-n=1 in real data, so this is deliberately the smallest concept that loses nothing.
-**Chris can overturn this** — the alternative he might prefer is "just make it a subject link."
+cross-record truth, so the fact keeps an authority without any diagram claiming it.
+
+**Deferred to V4 by Chris on 2026-08-06.** The open question is whether `Agent session` and
+`Agent PTYs` are two related things or one thing drawn twice (a `subjectRef`). Chris's call:
+decide it when wires are being worked on and the relationship can be seen drawn, rather than
+argued in prose. Nothing is lost either way — the link is preserved and convertible.
 
 **H2 — three comment nodes belong to no diagram at all.** `note-scope`, `note-messaging`,
 `note-browser` sit at top level with no parent and are not diagram roots, so the current focus
 path cannot reach them. They contain real writing, e.g. *"One session ⇢ one instance. No
 shared tab, so nothing to fight over…"*.
 
-Taken — **and changed after review**: they go to a visible **Unfiled** diagram, and the
-migration report names all three. I first chose to attach them to the diagram their ID and
-content indicate (`note-browser` → `browser-scope`, and so on), which reads as helpful and is
-really a guess about Chris's intent baked irreversibly into his data. Zero interpretation and a
-visible bucket he can empty in ten seconds beats a clever guess he never sees.
-**ASSUMPTION:** Chris wants them kept at all. Falsified if he says they were scratch — then
-Unfiled is where he deletes them from, which is also fine.
+Taken: they go to a visible **Unfiled** diagram, and the migration report names all three.
+**Confirmed by Chris on 2026-08-06.** The alternative considered was attaching each to the
+diagram its ID and content indicate (`note-browser` → `browser-scope`, and so on); rejected
+because it guesses.
 
 ### Real-data facts the migration must satisfy (measured 2026-08-06)
 
