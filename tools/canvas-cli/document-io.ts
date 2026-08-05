@@ -12,8 +12,14 @@ export async function loadDocument(path: string): Promise<ArchitectureDocument> 
 /** Validates, bumps revision, writes atomically (temp + rename). Returns the new revision. */
 export async function saveDocument(path: string, doc: ArchitectureDocument): Promise<number> {
   const next = architectureDocumentSchema.parse({ ...doc, revision: doc.revision + 1 });
+  await writeDocument(path, next);
+  return next.revision;
+}
+
+/** Persists a capability-owned revision exactly, without introducing a second revision writer. */
+export async function writeDocument(path: string, doc: ArchitectureDocument): Promise<void> {
+  const next = architectureDocumentSchema.parse(doc);
   const temp = join(dirname(path), `.project-architecture-${process.pid}.tmp`);
   await writeFile(temp, `${JSON.stringify(next, null, 2)}\n`, 'utf8');
   await rename(temp, path);
-  return next.revision;
 }

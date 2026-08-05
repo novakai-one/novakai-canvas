@@ -2,8 +2,8 @@ import dagre from '@dagrejs/dagre';
 import type {
   ArchitectureDocument, LayoutProposal, LayoutRequest, NodePlacement,
 } from './model';
-import { layoutScopes } from './layout';
-import { placementFor, resolveLayout } from './layouts';
+import { layoutScopes } from './layout.ts';
+import { placementFor, resolveLayout } from './layouts.ts';
 
 function uniqueExistingNodeIds(document: ArchitectureDocument, nodeIds: string[]): string[] {
   return [...new Set(nodeIds)].filter((id) => document.nodes[id]).sort();

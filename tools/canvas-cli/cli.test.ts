@@ -70,6 +70,53 @@ describe('canvas CLI', () => {
     expect(stdout).toContain('wire "Demo client" -> "Demo broker" : acquire(AgentId) -> DemoHandle [queries]');
   });
 
+  it('describes the typed capability for an unfamiliar agent', async () => {
+    const { code, stdout } = await runCli(['describe', '--file', dataFile]);
+    expect(code).toBe(0);
+    const description = JSON.parse(stdout) as Record<string, unknown>;
+    expect(description).toMatchObject({
+      schemaVersion: 2,
+      nodeAliases: { group: 'scope' },
+      layoutTargets: ['diagram', 'group', 'nodes'],
+    });
+  });
+
+  it('applies an idempotent agent batch once and persists its authorship', async () => {
+    const before = architectureDocumentSchema.parse(JSON.parse(await readFile(dataFile, 'utf8')));
+    const changeSet = {
+      operationId: 'cli-agent-op-1',
+      expectedRevision: before.revision,
+      actor: { id: 'agent-codex', kind: 'agent' },
+      timestamp: '2026-08-05T12:00:00.000Z',
+      provenance: { source: 'cli', sourceRef: 'session-123' },
+      commands: [{
+        kind: 'node.add',
+        node: {
+          id: 'cli-added-node', kind: 'module', label: 'CLI added node',
+          parentId: 'project-scope', interfaceIds: [], typeIds: [],
+        },
+        placement: {
+          nodeId: 'cli-added-node', position: { x: 20, y: 40 },
+          size: { width: 180, height: 90 }, pinned: false,
+        },
+      }],
+    };
+    const first = await runCli(['batch', '--file', dataFile], JSON.stringify(changeSet));
+    expect(first.code, first.stderr).toBe(0);
+    expect(JSON.parse(first.stdout)).toMatchObject({ status: 'applied', revision: before.revision + 1 });
+
+    const duplicate = await runCli(['batch', '--file', dataFile], JSON.stringify(changeSet));
+    expect(duplicate.code).toBe(0);
+    expect(JSON.parse(duplicate.stdout)).toMatchObject({ status: 'duplicate', originalRevision: before.revision + 1 });
+
+    const after = architectureDocumentSchema.parse(JSON.parse(await readFile(dataFile, 'utf8')));
+    expect(after.nodes['cli-added-node']).toBeDefined();
+    expect(after.appliedOperations['cli-agent-op-1']).toMatchObject({
+      actor: { id: 'agent-codex', kind: 'agent' },
+      provenance: { source: 'cli', sourceRef: 'session-123' },
+    });
+  });
+
   it('rejects broken DSL with every error and leaves the file untouched', async () => {
     const before = await readFile(dataFile, 'utf8');
     const broken = 'scope Demo\n  wire A -> B\n  banana "Split"\n';
@@ -144,7 +191,7 @@ scope "Zoned Demo"
   it('help teaches the grammar and every verb', async () => {
     const { code, stdout } = await runCli(['help']);
     expect(code).toBe(0);
-    for (const verb of ['maps', 'read', 'apply', 'rm', 'snapshot']) expect(stdout).toContain(verb);
+    for (const verb of ['maps', 'read', 'describe', 'batch', 'apply', 'rm', 'snapshot']) expect(stdout).toContain(verb);
     expect(stdout).toContain('scope "');
     expect(stdout).toContain('wire');
     expect(stdout).toContain('->');

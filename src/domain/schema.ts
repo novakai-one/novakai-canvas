@@ -1,8 +1,11 @@
 import { z } from 'zod';
-import type { ArchitectureDocument } from './model';
+import type { ArchitectureDocument, CanvasChangeSet } from './model';
 
 const position = z.object({ x: z.number(), y: z.number() });
 const size = z.object({ width: z.number().positive(), height: z.number().positive() });
+const nodePlacement = z.object({
+  nodeId: z.string().min(1), position, size, pinned: z.boolean(),
+});
 
 const treeRows = z.array(z.object({
   id: z.string().min(1),
@@ -33,10 +36,33 @@ const typeObjects = z.record(z.string(), z.object({
   id: z.string().min(1), name: z.string(), fields: z.array(z.string()),
 }));
 
-const wires = z.record(z.string(), z.object({
+const canvasWire = z.object({
   id: z.string().min(1), source: z.string().min(1), target: z.string().min(1), label: z.string(),
   kind: z.enum(['owns', 'references', 'assigns', 'queries', 'executes', 'mentions', 'missing']),
   routing: z.literal('elbow'),
+});
+const wires = z.record(z.string(), canvasWire);
+
+const actor = z.object({
+  id: z.string().min(1),
+  kind: z.enum(['human', 'agent', 'system']),
+});
+
+const provenance = z.object({
+  source: z.enum(['ui', 'cli', 'agent', 'import', 'system']),
+  sourceRef: z.string().optional(),
+});
+
+const appliedOperations = z.record(z.string(), z.object({
+  operationId: z.string().min(1),
+  revision: z.number().int().nonnegative(),
+  actor,
+  timestamp: z.string().min(1),
+  provenance,
+  commandKinds: z.array(z.enum([
+    'node.add', 'node.move', 'node.resize', 'node.pin', 'node.update', 'node.remove',
+    'wire.add', 'wire.update', 'wire.reconnect', 'wire.remove', 'layout.apply', 'scope.layout',
+  ])),
 }));
 
 const architectureDocumentV2 = z.object({
@@ -53,12 +79,7 @@ const architectureDocumentV2 = z.object({
     id: z.string().min(1),
     name: z.string().min(1),
     strategy: z.enum(['manual', 'hierarchy']),
-    placements: z.record(z.string(), z.object({
-      nodeId: z.string().min(1),
-      position,
-      size,
-      pinned: z.boolean(),
-    })),
+    placements: z.record(z.string(), nodePlacement),
     wireRouteHints: z.record(z.string(), z.object({
       wireId: z.string().min(1),
       preferredSourceSide: z.enum(['top', 'right', 'bottom', 'left']).optional(),
@@ -66,6 +87,7 @@ const architectureDocumentV2 = z.object({
       waypoints: z.array(position),
     })),
   })),
+  appliedOperations: appliedOperations.default({}),
 }).superRefine((document, context) => {
   if (!document.layouts[document.activeLayoutId]) {
     context.addIssue({
@@ -121,12 +143,75 @@ export function parseArchitectureDocument(input: unknown): ArchitectureDocument 
         wireRouteHints: {},
       },
     },
+    appliedOperations: {},
   }) as ArchitectureDocument;
 }
 
 /** Runtime validator and migration seam for architecture documents. */
 export const architectureDocumentSchema = {
   parse: parseArchitectureDocument,
+};
+
+const layoutTarget = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('scope'), scopeId: z.string().min(1) }),
+  z.object({ kind: z.literal('nodes'), nodeIds: z.array(z.string().min(1)) }),
+]);
+
+const layoutProposal = z.object({
+  baseRevision: z.number().int().nonnegative(),
+  layoutId: z.string().min(1),
+  target: layoutTarget,
+  affectedNodeIds: z.array(z.string().min(1)),
+  placements: z.record(z.string(), nodePlacement),
+});
+
+const canvasCommand = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('node.add'), node: semanticNode, placement: nodePlacement }),
+  z.object({ kind: z.literal('node.move'), id: z.string().min(1), position, layoutId: z.string().optional() }),
+  z.object({ kind: z.literal('node.resize'), id: z.string().min(1), size, layoutId: z.string().optional() }),
+  z.object({ kind: z.literal('node.pin'), id: z.string().min(1), pinned: z.boolean(), layoutId: z.string().optional() }),
+  z.object({
+    kind: z.literal('node.update'), id: z.string().min(1),
+    patch: z.object({
+      label: z.string().optional(), description: z.string().optional(),
+      kind: z.enum(['scope', 'module', 'object', 'runtime', 'resource', 'comment', 'tree']).optional(),
+    }),
+  }),
+  z.object({ kind: z.literal('node.remove'), id: z.string().min(1) }),
+  z.object({ kind: z.literal('wire.add'), wire: canvasWire }),
+  z.object({
+    kind: z.literal('wire.update'), id: z.string().min(1),
+    patch: z.object({
+      label: z.string().optional(),
+      kind: z.enum(['owns', 'references', 'assigns', 'queries', 'executes', 'mentions', 'missing']).optional(),
+    }),
+  }),
+  z.object({
+    kind: z.literal('wire.reconnect'), id: z.string().min(1),
+    source: z.string().min(1), target: z.string().min(1),
+  }),
+  z.object({ kind: z.literal('wire.remove'), id: z.string().min(1) }),
+  z.object({ kind: z.literal('layout.apply'), proposal: layoutProposal }),
+  z.object({
+    kind: z.literal('scope.layout'), id: z.string().min(1),
+    layoutId: z.string().optional(), groupPadding: z.number().min(0).optional(),
+  }),
+]);
+
+const changeSet = z.object({
+  operationId: z.string().min(1),
+  expectedRevision: z.number().int().nonnegative(),
+  actor,
+  timestamp: z.string().min(1),
+  provenance,
+  commands: z.array(canvasCommand),
+});
+
+/** Runtime boundary for untrusted CLI and agent-authored operation batches. */
+export const canvasChangeSetSchema = {
+  parse(input: unknown): CanvasChangeSet {
+    return changeSet.parse(input) as CanvasChangeSet;
+  },
 };
 
 /** Runtime validator for presentation preferences. */

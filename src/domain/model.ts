@@ -130,6 +130,8 @@ export interface ArchitectureDocument {
   wires: Record<string, CanvasWire>;
   activeLayoutId: string;
   layouts: Record<string, CanvasLayout>;
+  /** Durable idempotency and authorship trace for atomic public operations. */
+  appliedOperations: Record<string, AppliedCanvasOperation>;
 }
 
 /** App colour theme choices. */
@@ -192,3 +194,49 @@ export type CanvasCommand =
   | { kind: 'wire.remove'; id: string }
   | { kind: 'layout.apply'; proposal: LayoutProposal }
   | { kind: 'scope.layout'; id: string; layoutId?: string; groupPadding?: number };
+
+export interface CanvasActor {
+  id: string;
+  kind: 'human' | 'agent' | 'system';
+}
+
+export interface CanvasProvenance {
+  source: 'ui' | 'cli' | 'agent' | 'import' | 'system';
+  sourceRef?: string;
+}
+
+/** One all-or-nothing public edit shared by human and agent hosts. */
+export interface CanvasChangeSet {
+  operationId: string;
+  expectedRevision: number;
+  actor: CanvasActor;
+  timestamp: string;
+  provenance: CanvasProvenance;
+  commands: CanvasCommand[];
+}
+
+export interface AppliedCanvasOperation {
+  operationId: string;
+  revision: number;
+  actor: CanvasActor;
+  timestamp: string;
+  provenance: CanvasProvenance;
+  commandKinds: CanvasCommand['kind'][];
+}
+
+export type CanvasChangeOutcome =
+  | { status: 'applied'; operationId: string; revision: number; commandsApplied: number }
+  | { status: 'duplicate'; operationId: string; originalRevision: number; revision: number }
+  | { status: 'conflict'; operationId: string; expectedRevision: number; actualRevision: number }
+  | { status: 'rejected'; operationId: string; reason: string; commandIndex?: number };
+
+/** Machine-readable vocabulary so an unfamiliar host does not inspect UI source. */
+export interface CanvasCapabilityDescription {
+  schemaVersion: ArchitectureDocument['schemaVersion'];
+  revision: number;
+  nodeKinds: NodeKind[];
+  nodeAliases: Record<string, NodeKind>;
+  wireKinds: WireKind[];
+  layoutTargets: Array<'diagram' | 'group' | 'nodes'>;
+  layoutStrategies: CanvasLayout['strategy'][];
+}

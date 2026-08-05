@@ -2,12 +2,13 @@
 
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { createCanvasEngine, canvasChangeSetSchema } from '../../src/canvas.ts';
 import type { ArchitectureDocument } from '../../src/domain/model';
 import { parseDsl } from './dsl-parse.ts';
 import { compile } from './compile.ts';
 import { layoutScopes, overlappingScopes } from './layout.ts';
 import { listMaps, printOutline, printScope } from './dsl-print.ts';
-import { loadDocument, saveDocument } from './document-io.ts';
+import { loadDocument, saveDocument, writeDocument } from './document-io.ts';
 import { renderScopeSvg } from './snapshot.ts';
 import { slugify } from './slug.ts';
 
@@ -18,6 +19,8 @@ const HELP = `canvas — draw architecture maps from your terminal
 Usage
   ./canvas maps                     list maps (top-level scopes)
   ./canvas read [map]               print a map (or all maps) as DSL
+  ./canvas describe                 print the machine-readable command vocabulary
+  ./canvas batch [json-file]        atomically apply one typed operation (file or stdin)
   ./canvas apply [dsl-file]         create/replace maps from DSL (file or stdin)
   ./canvas rm <map> [node|zone]   remove a node or zone (zones cascade), or a whole map
   ./canvas snapshot <map> [-o out]  render a map to SVG
@@ -107,6 +110,33 @@ async function main(): Promise<void> {
       return;
     }
     process.stdout.write(printScope(doc, scopeOrFail(doc, args.positional[0])));
+    return;
+  }
+
+  if (args.verb === 'describe') {
+    const doc = await loadDocument(args.file);
+    const engine = createCanvasEngine(doc, {
+      load: () => loadDocument(args.file),
+      save: (value) => writeDocument(args.file, value),
+    });
+    process.stdout.write(`${JSON.stringify(engine.describe(), null, 2)}\n`);
+    return;
+  }
+
+  if (args.verb === 'batch') {
+    const source = args.positional[0] ? readFileSync(args.positional[0], 'utf8')
+      : process.stdin.isTTY ? fail('batch needs JSON: pass a file, or pipe it in. See ./canvas describe')
+        : readFileSync(0, 'utf8');
+    const changeSet = canvasChangeSetSchema.parse(JSON.parse(source));
+    const doc = await loadDocument(args.file);
+    const engine = createCanvasEngine(doc, {
+      load: () => loadDocument(args.file),
+      save: (value) => writeDocument(args.file, value),
+    });
+    const outcome = engine.submit(changeSet);
+    if (outcome.status === 'applied') await engine.save();
+    process.stdout.write(`${JSON.stringify(outcome, null, 2)}\n`);
+    if (outcome.status === 'conflict' || outcome.status === 'rejected') process.exitCode = 2;
     return;
   }
 

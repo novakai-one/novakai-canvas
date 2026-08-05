@@ -20,6 +20,7 @@ export const emptyArchitecture: ArchitectureDocument = {
       wireRouteHints: {},
     },
   },
+  appliedOperations: {},
 };
 
 /** Safe visual defaults used when loading fails. */
