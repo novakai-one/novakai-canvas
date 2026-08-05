@@ -43,19 +43,24 @@ export interface ProjectedView {
   hiddenKinds: NodeKind[];
 }
 
-function descendantsOf(record: DiagramRecord, rootId: string): Set<string> {
-  const included = new Set<string>([rootId]);
+/**
+ * Grows a hidden set downwards until it is closed under containment.
+ *
+ * A node is drawn inside its container, so a child whose container is not drawn has nowhere to
+ * be. Leaving it in would also break the parents-before-children contract below: the renderer
+ * would be handed a child naming a parent that never arrives.
+ */
+function hideContainedNodes(record: DiagramRecord, hidden: Set<string>): void {
   let changed = true;
   while (changed) {
     changed = false;
     for (const node of Object.values(record.nodes)) {
-      if (node.parentId && included.has(node.parentId) && !included.has(node.id)) {
-        included.add(node.id);
+      if (node.parentId && hidden.has(node.parentId) && !hidden.has(node.id)) {
+        hidden.add(node.id);
         changed = true;
       }
     }
   }
-  return included;
 }
 
 function depthOf(record: DiagramRecord, nodeId: string): number {
@@ -84,17 +89,15 @@ export function projectView(record: DiagramRecord, viewId?: ViewId): ProjectedVi
   if (!layout) throw new Error(`unknown-layout:${view.layoutId}`);
 
   const hiddenKinds = new Set<string>(view.hiddenKinds);
+  const collapsed = new Set<string>(view.collapsedNodeIds);
   const hidden = new Set<string>();
-  // A collapsed group keeps its own box and hides what is inside it.
-  for (const collapsedId of view.collapsedNodeIds) {
-    if (!record.nodes[collapsedId]) continue;
-    for (const descendantId of descendantsOf(record, collapsedId)) {
-      if (descendantId !== collapsedId) hidden.add(descendantId);
-    }
-  }
   for (const node of Object.values(record.nodes)) {
+    // A collapsed group keeps its own box and hides what is inside it; a hidden kind takes its
+    // own nodes away entirely. Containment then carries both decisions down the tree.
     if (hiddenKinds.has(node.kind)) hidden.add(node.id);
+    else if (node.parentId && collapsed.has(node.parentId)) hidden.add(node.id);
   }
+  hideContainedNodes(record, hidden);
 
   const visible = Object.values(record.nodes).filter((node) => !hidden.has(node.id));
   const nodes: PositionedNode[] = visible

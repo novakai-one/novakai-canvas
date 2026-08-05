@@ -20,6 +20,14 @@ export type {
 export type {
   DiagramId, LayoutId, LinkId, NodeId, TypeId, ViewId, WireId,
 } from './domain/ids.ts';
+export { projectView } from './domain/project-view.ts';
+export type { PositionedNode, ProjectedView } from './domain/project-view.ts';
+export {
+  defaultLayoutOptions, graphOfDiagram, layoutStrategyFor, planSliceLayout,
+} from './domain/layout-strategy.ts';
+export type {
+  LayoutGraph, LayoutOptions, LayoutPlan, LayoutSliceTarget, LayoutStrategy,
+} from './domain/layout-strategy.ts';
 
 export { createCanvasEngine, type CanvasEngine } from './application/canvas-engine.ts';
 export type { JsonRepository } from './application/json-repository.ts';
