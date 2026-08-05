@@ -123,3 +123,8 @@ built as a data model, not an experience.
    subset. A surprise rough edge is a reporting failure even when the log recorded it.
 3. Every lane's exit includes "findable by a fresh user" for any control it moves or adds.
 ```
+
+### Also discovered (2026-08-06, from Chris's session diff)
+- The browser save path writes diagram records as single-line compact JSON, destroying
+  git-diffability. Pretty-print (2-space, trailing newline) must be restored in the bridge
+  write path. Slots into W-1 as a correctness fix.
