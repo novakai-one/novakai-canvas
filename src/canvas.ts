@@ -11,6 +11,7 @@ export type {
   ActorContext, CanvasWorkspace, ChangeOutcome, RecordChangeSet, RecordCommand,
 } from './application/canvas-workspace.ts';
 export { createMemoryLibraryRepository } from './adapters/memory-library-repository.ts';
+export { createFileLibraryRepository } from './adapters/file-library-repository.ts';
 export { migrateDocumentToLibrary } from './domain/migrate/v2-to-v3.ts';
 export { censusOfLegacyDocument, censusOfMigratedLibrary } from './domain/migrate/census.ts';
 export type { CanvasCensus } from './domain/migrate/census.ts';

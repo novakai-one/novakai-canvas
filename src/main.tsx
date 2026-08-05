@@ -58,8 +58,8 @@ async function bootstrapCanvas(): Promise<void> {
     { defaultPreferences },
   ] = await Promise.all([
     import('./App'),
-    import('./adapters/file-library-repository'),
-    import('./application/canvas-library'),
+    import('./canvas'),
+    import('./canvas'),
     import('./adapters/http-json-repository'),
     import('./domain/schema'),
     import('./domain/defaults'),

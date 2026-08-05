@@ -6,7 +6,7 @@ import type { JsonRepository } from './application/json-repository';
 import { asId } from './domain/id-cast';
 import type { NodeId } from './domain/ids';
 import type { CanvasPreferences, InspectorTab, Selection } from './domain/model';
-import { projectView } from './domain/project-view';
+import { projectView } from './canvas';
 import { CanvasSurface } from './presentation/components/canvas-surface';
 import { Inspector } from './presentation/components/inspector';
 import { useWorkspaceRecord } from './presentation/use-workspace-record';
