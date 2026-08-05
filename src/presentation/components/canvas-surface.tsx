@@ -1,6 +1,7 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import {
-  Background, BackgroundVariant, Controls, ReactFlow, type Connection, type NodeChange,
+  Background, BackgroundVariant, Controls, ReactFlow,
+  type Connection, type NodeChange, type Viewport,
 } from '@xyflow/react';
 import type { DiagramSummary } from '../../application/canvas-library';
 import type { RecordCommand } from '../../application/canvas-workspace';
@@ -124,6 +125,32 @@ function useSelectionReleasesWithItsObject(
   }, [record, selection, setSelection]);
 }
 
+/**
+ * Where each diagram was last left, for this session.
+ *
+ * A diagram is a place. Coming back to one and finding a different view of it is the same
+ * disorientation as coming back to a document scrolled to a line you never chose, so the camera
+ * is remembered per diagram and restored on return. Only a diagram's very first opening earns a
+ * fit; after that the user's own framing wins. Memory is deliberately session-scoped — it is a
+ * property of this sitting, not of the record, and it never reaches disk.
+ */
+function useCameraMemory(activeDiagramId: string): {
+  fitOnOpen: boolean;
+  remember: (viewport: Viewport) => void;
+  restore: (instance: { setViewport: (viewport: Viewport) => unknown }) => void;
+} {
+  const cameras = useRef(new Map<string, Viewport>());
+  const remembered = cameras.current.get(activeDiagramId);
+  return {
+    fitOnOpen: remembered === undefined,
+    remember: (viewport: Viewport) => { cameras.current.set(activeDiagramId, viewport); },
+    restore: (instance) => {
+      const saved = cameras.current.get(activeDiagramId);
+      if (saved) instance.setViewport(saved);
+    },
+  };
+}
+
 /** Interactive editor or clean, read-only presentation of one open diagram record. */
 export function CanvasSurface(props: CanvasSurfaceProps) {
   const {
@@ -132,6 +159,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   const editable = mode === 'edit';
   useEscapeStepsOutward(record, selection, setSelection);
   useSelectionReleasesWithItsObject(record, selection, setSelection);
+  const camera = useCameraMemory(activeDiagramId);
   const nodes = useMemo(
     () => projectNodes({ view, record, preferences, selection, editable, select: setSelection }),
     [editable, preferences, record, selection, setSelection, view],
@@ -142,13 +170,21 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   );
   return (
     <main className={`canvas-surface is-${mode}`}>
+      {/*
+        * The key names the diagram and nothing else. It used to name the mode too, so every
+        * Present/Edit toggle tore React Flow down and rebuilt it, and the camera snapped back to
+        * a fresh fit. What a mode changes is what you may do, not what you are looking at, so
+        * mode now reaches React Flow only through the interaction props below.
+        */}
       <ReactFlow
-        key={`${mode}:${activeDiagramId}`}
+        key={activeDiagramId}
         colorMode={preferences.appearance.theme} deleteKeyCode={editable ? ['Backspace', 'Delete'] : null} edgeTypes={edgeTypes} edges={edges}
-        edgesReconnectable={editable} elementsSelectable fitView fitViewOptions={{ padding: editable ? 0.12 : 0.05, maxZoom: 1 }} minZoom={0.35}
+        edgesReconnectable={editable} elementsSelectable fitView={camera.fitOnOpen} fitViewOptions={{ padding: editable ? 0.12 : 0.05, maxZoom: 1 }} minZoom={0.35}
         nodeTypes={nodeTypes} nodes={nodes} nodesConnectable={editable} nodesDraggable={editable}
         onConnect={(connection) => { if (!editable) return; const id = connect(execute, connection); if (id) setSelection({ kind: 'wire', id }); }}
         onEdgeClick={(_event, edge) => setSelection({ kind: 'wire', id: edge.id })}
+        onInit={camera.restore}
+        onMoveEnd={(_event, viewport) => camera.remember(viewport)}
         onReconnect={(edge, connection) => {
           if (!editable || !connection.source || !connection.target) return;
           execute({
@@ -158,11 +194,15 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         }}
         onNodeClick={(_event, node) => setSelection({ kind: 'node', id: node.id })}
         onNodesChange={(changes) => { if (editable) applyNodeChanges(execute, changes); }} onPaneClick={() => setSelection(null)}
-        selectionOnDrag={editable} snapGrid={[preferences.canvas.gridSize, preferences.canvas.gridSize]}
+        // Dragging the empty canvas moves the canvas — the one gesture everybody tries first.
+        // Box selection keeps React Flow's Shift+drag, so nothing is lost by making pan default.
+        selectionOnDrag={false} snapGrid={[preferences.canvas.gridSize, preferences.canvas.gridSize]}
         snapToGrid={editable && preferences.canvas.snapToGrid}
       >
         {preferences.canvas.showGrid && editable && <Background color={preferences.appearance.theme === 'light' ? '#d9d4c8' : '#34312b'} gap={preferences.canvas.gridSize * 2} variant={BackgroundVariant.Dots} />}
-        {preferences.canvas.showControls && <Controls position="bottom-left" showInteractive={false} />}
+        {/* Fit is never optional: it is the way back when you are lost, so it stays on screen
+          * whatever the zoom buttons are set to. */}
+        <Controls position="bottom-left" showFitView showInteractive={false} showZoom={preferences.canvas.showControls} />
       </ReactFlow>
       <Legend preferences={preferences} view={view} />
       <CanvasToolbar props={props} />
