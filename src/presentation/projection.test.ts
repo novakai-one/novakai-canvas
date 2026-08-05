@@ -118,7 +118,23 @@ describe('projectNodes', () => {
     ])));
     expect(projected.map((each) => each.id)).toEqual(['map', 'zone', 'inner']);
     expect(projected.map((each) => each.parentId)).toEqual([undefined, 'map', 'zone']);
-    expect(projected[2].extent).toBe('parent');
+  });
+
+  it('never fences a node inside its group — a group carries meaning, not walls', () => {
+    const projected = projectNodes(input(record([
+      node('map', 'group'),
+      node('inner', 'module', 'map'),
+    ])));
+    expect(projected.every((each) => each.extent === undefined)).toBe(true);
+  });
+
+  it('makes a group click-through so its empty interior belongs to the canvas', () => {
+    const projected = projectNodes(input(record([
+      node('map', 'group'),
+      node('inner', 'module', 'map'),
+    ])));
+    expect(projected.find((each) => each.id === 'map')?.style).toEqual({ pointerEvents: 'none' });
+    expect(projected.find((each) => each.id === 'inner')?.style).toBeUndefined();
   });
 
   it('carries the geometry the view joined onto each node', () => {

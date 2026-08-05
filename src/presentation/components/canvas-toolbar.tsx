@@ -1,6 +1,11 @@
 import { useState } from 'react';
-import { createCanvasNode, rootGroupId, type CreatableNodeKind } from '../canvas-actions';
+import {
+  createCanvasNode, placedNodes, type CreatableNodeKind, type WorldPoint,
+} from '../canvas-actions';
 import type { CanvasSurfaceProps } from './canvas-surface';
+
+/** Where the user is looking, in the diagram's own coordinates — the canvas answers this. */
+type FocusPoint = () => WorldPoint;
 
 function ModeSwitch({ props }: { props: CanvasSurfaceProps }) {
   return (
@@ -38,10 +43,12 @@ function DiagramPicker({
   );
 }
 
-function AddObjectSelect({ props }: { props: CanvasSurfaceProps }) {
+function AddObjectSelect({ focusPoint, props }: { focusPoint: FocusPoint; props: CanvasSurfaceProps }) {
+  // A new object appears where the user is looking, in whatever frame that point falls in —
+  // never at a fixed coordinate somewhere else in the diagram.
   const add = (kind: CreatableNodeKind): void => {
     const id = `${kind}-${crypto.randomUUID().slice(0, 8)}`;
-    const created = createCanvasNode(props.record, rootGroupId(props.record), kind, id);
+    const created = createCanvasNode(placedNodes(props.view), kind, id, focusPoint());
     props.execute({ kind: 'node.add', ...created });
     props.setSelection({ kind: 'node', id: created.node.id });
   };
@@ -85,8 +92,9 @@ function DiagramActionSelect({
 }
 
 function EditActions({
-  props, showArchived, toggleArchived,
+  focusPoint, props, showArchived, toggleArchived,
 }: {
+  focusPoint: FocusPoint;
   props: CanvasSurfaceProps;
   showArchived: boolean;
   toggleArchived: () => void;
@@ -94,14 +102,14 @@ function EditActions({
   return (
     <div className="toolbar-actions">
       <button disabled={!props.canUndo} onClick={props.undo} type="button">Undo</button>
-      <AddObjectSelect props={props} />
+      <AddObjectSelect focusPoint={focusPoint} props={props} />
       <DiagramActionSelect props={props} showArchived={showArchived} toggleArchived={toggleArchived} />
     </div>
   );
 }
 
 /** Compact, composable chrome for mode, diagram discovery, and edit intentions. */
-export function CanvasToolbar({ props }: { props: CanvasSurfaceProps }) {
+export function CanvasToolbar({ focusPoint, props }: { focusPoint: FocusPoint; props: CanvasSurfaceProps }) {
   const [query, setQuery] = useState('');
   const [showArchived, setShowArchived] = useState(false);
   return (
@@ -110,7 +118,7 @@ export function CanvasToolbar({ props }: { props: CanvasSurfaceProps }) {
       {props.canGoBack && <button onClick={props.goBack} type="button">← Back</button>}
       <DiagramPicker props={props} query={query} setQuery={setQuery} showArchived={showArchived} />
       {props.mode === 'edit' && (
-        <EditActions props={props} showArchived={showArchived} toggleArchived={() => setShowArchived((shown) => !shown)} />
+        <EditActions focusPoint={focusPoint} props={props} showArchived={showArchived} toggleArchived={() => setShowArchived((shown) => !shown)} />
       )}
       <div className="file-identity"><span>{props.record.name}</span><small>r{props.record.revision}</small></div>
       {props.mode === 'edit' && (

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, type RefObject } from 'react';
 import {
   Background, BackgroundVariant, Controls, ReactFlow,
   type Connection, type NodeChange, type Viewport,
@@ -10,7 +10,10 @@ import type { NodeId, WireId } from '../../domain/ids';
 import type { CanvasPreferences, Selection } from '../../domain/model';
 import type { ProjectedView } from '../../domain/project-view';
 import type { DiagramRecord } from '../../domain/records';
-import { escapeStep, selectionResolves } from '../canvas-actions';
+import {
+  escapeStep, resolveDrop, selectionResolves, type PlacedNode, type WorldPoint,
+} from '../canvas-actions';
+import { publishCanvasCamera } from '../canvas-camera';
 import { projectEdges, projectNodes } from '../projection';
 import type { CanvasMode } from '../view-mode';
 import { ArchitectureNode } from '../nodes/architecture-node';
@@ -59,6 +62,37 @@ function applyNodeChanges(execute: (command: RecordCommand) => void, changes: No
     }
     if (change.type === 'remove') execute({ kind: 'node.remove', id: change.id });
   });
+}
+
+/** The drawn diagram as pure geometry, which is all the placement rules need. */
+function placedNodes(view: ProjectedView): PlacedNode[] {
+  return view.nodes.map((node) => ({
+    id: node.id as string,
+    kind: node.kind,
+    parentId: node.parentId as string | undefined,
+    position: node.position,
+    size: node.size,
+  }));
+}
+
+/**
+ * Re-homes a node by where it was dropped.
+ *
+ * Membership follows placement, so a drop is two facts: which frame now holds the node, and
+ * where it sits inside that frame. The frame only changes when it actually changed, so an
+ * ordinary nudge inside a group writes no re-parent at all.
+ */
+function applyDrop(
+  execute: (command: RecordCommand) => void,
+  view: ProjectedView,
+  moved: { id: string; parentId?: string; position: WorldPoint },
+): void {
+  const placed = placedNodes(view);
+  const landed = resolveDrop(placed, moved.id, moved.position, moved.parentId);
+  if (landed.parentId !== moved.parentId) {
+    execute({ kind: 'node.reparent', id: moved.id, parentId: landed.parentId });
+  }
+  execute({ kind: 'node.move', id: moved.id, position: landed.position });
 }
 
 function connect(execute: (command: RecordCommand) => void, connection: Connection): string | null {
@@ -125,28 +159,76 @@ function useSelectionReleasesWithItsObject(
   }, [record, selection, setSelection]);
 }
 
+/** Only the parts of React Flow's instance the camera actually uses. */
+interface FlowInstance {
+  setViewport: (viewport: Viewport) => unknown;
+  getViewport: () => Viewport;
+  fitView: (options?: {
+    nodes?: { id: string }[]; duration?: number; padding?: number;
+    minZoom?: number; maxZoom?: number;
+  }) => unknown;
+  screenToFlowPosition: (point: { x: number; y: number }) => { x: number; y: number };
+}
+
+/** Calm is slow: travel is a structural move, and the eye must be able to follow it. */
+const TRAVEL_MS = 700;
+
 /**
- * Where each diagram was last left, for this session.
+ * Everything about where the canvas is looking.
  *
  * A diagram is a place. Coming back to one and finding a different view of it is the same
  * disorientation as coming back to a document scrolled to a line you never chose, so the camera
  * is remembered per diagram and restored on return. Only a diagram's very first opening earns a
  * fit; after that the user's own framing wins. Memory is deliberately session-scoped — it is a
  * property of this sitting, not of the record, and it never reaches disk.
+ *
+ * The same hook publishes the travel contract other chrome uses, and answers the one question
+ * placement needs: which point in the diagram the user is actually looking at.
  */
-function useCameraMemory(activeDiagramId: string): {
+function useCamera(activeDiagramId: string): {
+  surface: RefObject<HTMLElement | null>;
   fitOnOpen: boolean;
   remember: (viewport: Viewport) => void;
-  restore: (instance: { setViewport: (viewport: Viewport) => unknown }) => void;
+  attach: (instance: FlowInstance) => void;
+  focusPoint: () => WorldPoint;
 } {
+  const flow = useRef<FlowInstance | null>(null);
+  const surface = useRef<HTMLElement | null>(null);
   const cameras = useRef(new Map<string, Viewport>());
   const remembered = cameras.current.get(activeDiagramId);
+
+  useEffect(() => {
+    publishCanvasCamera({
+      centerOnNode: (nodeId) => {
+        const instance = flow.current;
+        if (!instance) return;
+        // Travel, not re-framing: the zoom the user chose is pinned, only the centre changes.
+        const { zoom } = instance.getViewport();
+        instance.fitView({
+          nodes: [{ id: nodeId }], duration: TRAVEL_MS, minZoom: zoom, maxZoom: zoom,
+        });
+      },
+      fit: () => flow.current?.fitView({ duration: TRAVEL_MS, padding: 0.12, maxZoom: 1 }),
+    });
+    return () => publishCanvasCamera(null);
+  }, []);
+
   return {
+    surface,
     fitOnOpen: remembered === undefined,
     remember: (viewport: Viewport) => { cameras.current.set(activeDiagramId, viewport); },
-    restore: (instance) => {
+    attach: (instance: FlowInstance) => {
+      flow.current = instance;
       const saved = cameras.current.get(activeDiagramId);
       if (saved) instance.setViewport(saved);
+    },
+    focusPoint: () => {
+      const instance = flow.current;
+      const box = surface.current?.getBoundingClientRect();
+      if (!instance || !box) return { x: 0, y: 0 };
+      return instance.screenToFlowPosition({
+        x: box.x + box.width / 2, y: box.y + box.height / 2,
+      });
     },
   };
 }
@@ -159,7 +241,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   const editable = mode === 'edit';
   useEscapeStepsOutward(record, selection, setSelection);
   useSelectionReleasesWithItsObject(record, selection, setSelection);
-  const camera = useCameraMemory(activeDiagramId);
+  const camera = useCamera(activeDiagramId);
   const nodes = useMemo(
     () => projectNodes({ view, record, preferences, selection, editable, select: setSelection }),
     [editable, preferences, record, selection, setSelection, view],
@@ -169,7 +251,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
     [editable, preferences, record, selection, setSelection, view],
   );
   return (
-    <main className={`canvas-surface is-${mode}`}>
+    <main className={`canvas-surface is-${mode}`} ref={camera.surface}>
       {/*
         * The key names the diagram and nothing else. It used to name the mode too, so every
         * Present/Edit toggle tore React Flow down and rebuilt it, and the camera snapped back to
@@ -183,8 +265,12 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         nodeTypes={nodeTypes} nodes={nodes} nodesConnectable={editable} nodesDraggable={editable}
         onConnect={(connection) => { if (!editable) return; const id = connect(execute, connection); if (id) setSelection({ kind: 'wire', id }); }}
         onEdgeClick={(_event, edge) => setSelection({ kind: 'wire', id: edge.id })}
-        onInit={camera.restore}
+        onInit={camera.attach}
         onMoveEnd={(_event, viewport) => camera.remember(viewport)}
+        onNodeDragStop={(_event, node) => {
+          if (!editable) return;
+          applyDrop(execute, view, { id: node.id, parentId: node.parentId, position: node.position });
+        }}
         onReconnect={(edge, connection) => {
           if (!editable || !connection.source || !connection.target) return;
           execute({
@@ -205,7 +291,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         <Controls position="bottom-left" showFitView showInteractive={false} showZoom={preferences.canvas.showControls} />
       </ReactFlow>
       <Legend preferences={preferences} view={view} />
-      <CanvasToolbar props={props} />
+      <CanvasToolbar focusPoint={camera.focusPoint} props={props} />
     </main>
   );
 }

@@ -135,7 +135,10 @@ export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>
       type: flowNodeType(node.kind),
       position: node.position,
       parentId,
-      extent: parentId ? 'parent' as const : undefined,
+      // Deliberately no `extent: 'parent'`. A group carries meaning; it is not a wall. Clamping
+      // a node to its container made membership a cage the user had to argue with — you could
+      // not drag a module out of the frame it was born in. Where a node may go is now the whole
+      // canvas, and where it belongs is decided on drop, by where it landed.
       width: node.size.width,
       height: node.size.height,
       selected: selection?.kind === 'node' && selection.id === node.id,
