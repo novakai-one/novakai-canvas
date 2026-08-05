@@ -53,13 +53,26 @@ describe('canvas CLI', () => {
 
   it('apply from stdin adds a valid scope and bumps revision', async () => {
     const before = architectureDocumentSchema.parse(JSON.parse(await readFile(dataFile, 'utf8')));
-    const { code, stdout } = await runCli(['apply', '--file', dataFile], DEMO);
+    const { code, stdout } = await runCli([
+      'apply', '--file', dataFile, '--operation-id', 'dsl-import-1',
+    ], DEMO);
     expect(code, stdout).toBe(0);
     expect(stdout).toContain('applied: CLI Demo');
     const after = architectureDocumentSchema.parse(JSON.parse(await readFile(dataFile, 'utf8')));
     expect(after.revision).toBe(before.revision + 1);
     expect(after.nodes['cli-demo']).toBeDefined();
     expect(after.nodes['cli-demo--demo-broker'].parentId).toBe('cli-demo');
+    expect(after.appliedOperations['dsl-import-1']).toMatchObject({
+      provenance: { source: 'cli', sourceRef: 'stdin' }, commandKinds: ['document.import'],
+    });
+
+    const duplicate = await runCli([
+      'apply', '--file', dataFile, '--operation-id', 'dsl-import-1',
+    ], DEMO);
+    expect(duplicate.code).toBe(0);
+    expect(duplicate.stdout).toContain('duplicate: CLI Demo');
+    const afterRetry = architectureDocumentSchema.parse(JSON.parse(await readFile(dataFile, 'utf8')));
+    expect(afterRetry.revision).toBe(after.revision);
   });
 
   it('read prints the applied scope as DSL', async () => {

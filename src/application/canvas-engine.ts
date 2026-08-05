@@ -1,6 +1,6 @@
 import { applyCanvasCommandBatch, CanvasCommandError } from '../domain/commands.ts';
 import type {
-  ArchitectureDocument, CanvasCapabilityDescription, CanvasChangeOutcome, CanvasChangeSet, CanvasCommand,
+  ArchitectureDocument, CanvasCapabilityDescription, CanvasChangeOutcome, CanvasChangeSet, CanvasCommand, CanvasImportSet,
   NodeKind, WireKind,
 } from '../domain/model';
 import type { JsonRepository } from './json-repository';
@@ -10,6 +10,7 @@ export interface CanvasEngine {
   snapshot(): ArchitectureDocument;
   execute(command: CanvasCommand): CanvasChangeOutcome;
   submit(changeSet: CanvasChangeSet): CanvasChangeOutcome;
+  importDocument(importSet: CanvasImportSet): CanvasChangeOutcome;
   describe(): CanvasCapabilityDescription;
   replace(document: ArchitectureDocument): void;
   save(): Promise<void>;
@@ -46,7 +47,7 @@ export function createCanvasEngine(
       'node.setDetailDiagram', 'node.reparent',
       'node.setCollapsed', 'node.remove',
       'wire.add', 'wire.update', 'wire.reconnect', 'wire.remove',
-      'layout.apply', 'scope.layout',
+      'layout.apply', 'scope.layout', 'document.import',
     ],
   });
   const submit = (changeSet: CanvasChangeSet): CanvasChangeOutcome => {
@@ -99,6 +100,46 @@ export function createCanvasEngine(
       revision: document.revision, commandsApplied: changeSet.commands.length,
     };
   };
+  const importDocument = (importSet: CanvasImportSet): CanvasChangeOutcome => {
+    const applied = document.appliedOperations[importSet.operationId];
+    if (applied) {
+      return {
+        status: 'duplicate', operationId: importSet.operationId,
+        originalRevision: applied.revision, revision: document.revision,
+      };
+    }
+    if (importSet.expectedRevision !== document.revision) {
+      return {
+        status: 'conflict', operationId: importSet.operationId,
+        expectedRevision: importSet.expectedRevision, actualRevision: document.revision,
+      };
+    }
+    if (importSet.document.id !== document.id) {
+      return { status: 'rejected', operationId: importSet.operationId, reason: 'document-id-mismatch' };
+    }
+    const revision = document.revision + 1;
+    const candidate: ArchitectureDocument = {
+      ...structuredClone(importSet.document),
+      revision,
+      appliedOperations: {
+        ...document.appliedOperations,
+        ...importSet.document.appliedOperations,
+        [importSet.operationId]: {
+          operationId: importSet.operationId,
+          revision,
+          actor: structuredClone(importSet.actor),
+          timestamp: importSet.timestamp,
+          provenance: structuredClone(importSet.provenance),
+          commandKinds: ['document.import'],
+        },
+      },
+    };
+    history.push(document);
+    if (history.length > 100) history.shift();
+    document = candidate;
+    publish();
+    return { status: 'applied', operationId: importSet.operationId, revision, commandsApplied: 1 };
+  };
 
   return {
     snapshot: () => document,
@@ -113,6 +154,7 @@ export function createCanvasEngine(
       });
     },
     submit,
+    importDocument,
     describe,
     replace(next) {
       history.push(document);

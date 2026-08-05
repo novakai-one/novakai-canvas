@@ -62,6 +62,7 @@ const appliedOperations = z.record(z.string(), z.object({
   timestamp: z.string().min(1),
   provenance,
   commandKinds: z.array(z.enum([
+    'document.import',
     'diagram.create', 'diagram.setStatus', 'diagram.setReferences',
     'node.add', 'node.move', 'node.resize', 'node.pin', 'node.update', 'node.remove',
     'node.setSubject', 'node.setDetailDiagram', 'node.reparent', 'node.setCollapsed',

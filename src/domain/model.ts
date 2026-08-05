@@ -252,7 +252,7 @@ export interface AppliedCanvasOperation {
   actor: CanvasActor;
   timestamp: string;
   provenance: CanvasProvenance;
-  commandKinds: CanvasCommand['kind'][];
+  commandKinds: Array<CanvasCommand['kind'] | 'document.import'>;
 }
 
 export type CanvasChangeOutcome =
@@ -260,6 +260,16 @@ export type CanvasChangeOutcome =
   | { status: 'duplicate'; operationId: string; originalRevision: number; revision: number }
   | { status: 'conflict'; operationId: string; expectedRevision: number; actualRevision: number }
   | { status: 'rejected'; operationId: string; reason: string; commandIndex?: number };
+
+/** Whole-document import seam used by compilers while the capability remains revision authority. */
+export interface CanvasImportSet {
+  operationId: string;
+  expectedRevision: number;
+  actor: CanvasActor;
+  timestamp: string;
+  provenance: CanvasProvenance;
+  document: ArchitectureDocument;
+}
 
 /** Machine-readable vocabulary so an unfamiliar host does not inspect UI source. */
 export interface CanvasCapabilityDescription {
@@ -270,5 +280,5 @@ export interface CanvasCapabilityDescription {
   wireKinds: WireKind[];
   layoutTargets: Array<'diagram' | 'group' | 'nodes'>;
   layoutStrategies: CanvasLayout['strategy'][];
-  commandKinds: CanvasCommand['kind'][];
+  commandKinds: Array<CanvasCommand['kind'] | 'document.import'>;
 }

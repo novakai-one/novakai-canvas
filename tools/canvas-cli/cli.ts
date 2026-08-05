@@ -1,6 +1,7 @@
 /** canvas — author architecture maps from a terse DSL. Run `./canvas help`. */
 
 import { readFileSync } from 'node:fs';
+import { randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { createCanvasEngine, canvasChangeSetSchema } from '../../src/canvas.ts';
 import type { ArchitectureDocument } from '../../src/domain/model';
@@ -27,6 +28,7 @@ Usage
   ./canvas help                     this text
 
   --file <path>   use another architecture JSON (default: public/data/project-architecture.json)
+  --operation-id <id>  stable retry identity for apply
 
 DSL — one statement per line; a scope block fully declares that map.
 Layout is automatic: never write coordinates, never edit the JSON by hand.
@@ -53,13 +55,14 @@ Layout is automatic: never write coordinates, never edit the JSON by hand.
   names         quote multi-word names: "browse CLI"; single tokens can go bare
 `;
 
-interface Args { verb: string; positional: string[]; file: string; out?: string }
+interface Args { verb: string; positional: string[]; file: string; out?: string; operationId?: string }
 
 function parseArgs(argv: string[]): Args {
   const args: Args = { verb: argv[0] ?? 'help', positional: [], file: DEFAULT_FILE };
   for (let index = 1; index < argv.length; index += 1) {
     if (argv[index] === '--file') args.file = argv[(index += 1)];
     else if (argv[index] === '-o' || argv[index] === '--out') args.out = argv[(index += 1)];
+    else if (argv[index] === '--operation-id') args.operationId = argv[(index += 1)];
     else args.positional.push(argv[index]);
   }
   return args;
@@ -168,9 +171,24 @@ async function main(): Promise<void> {
         process.stderr.write(`warning: "${laid.nodes[scopeId].label}" now overlaps "${label}" — drag or re-apply that map\n`);
       }
     }
-    const revision = await saveDocument(args.file, laid);
+    const engine = createCanvasEngine(doc, {
+      load: () => loadDocument(args.file),
+      save: (value) => writeDocument(args.file, value),
+    });
+    const outcome = engine.importDocument({
+      operationId: args.operationId ?? `cli-apply-${randomUUID()}`,
+      expectedRevision: doc.revision,
+      actor: { id: 'canvas-cli', kind: 'system' },
+      timestamp: new Date().toISOString(),
+      provenance: { source: 'cli', sourceRef: args.positional[0] ?? 'stdin' },
+      document: laid,
+    });
+    if (outcome.status === 'conflict' || outcome.status === 'rejected') {
+      fail(`apply ${outcome.status}: ${JSON.stringify(outcome)}`);
+    }
+    if (outcome.status === 'applied') await engine.save();
     const labels = compiled.touchedScopeIds.map((scopeId) => laid.nodes[scopeId].label).join(', ');
-    process.stdout.write(`applied: ${labels} (revision ${revision})\n`);
+    process.stdout.write(`${outcome.status}: ${labels} (revision ${outcome.revision})\n`);
     return;
   }
 

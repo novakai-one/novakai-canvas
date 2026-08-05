@@ -19,6 +19,7 @@ export type {
   CanvasCommand,
   CanvasDiagram,
   CanvasLayout,
+  CanvasImportSet,
   CanvasNode,
   CanvasProvenance,
   CanvasReference,
