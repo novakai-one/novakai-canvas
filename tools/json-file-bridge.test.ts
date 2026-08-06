@@ -92,6 +92,35 @@ describe('writeRecordFile', () => {
     const outcome = await writeRecordFile(file, JSON.stringify({ id: 'new', revision: 0 }), 0);
     expect(outcome).toEqual({ status: 'written' });
   });
+
+  /**
+   * The on-disk shape belongs to the bridge, not to whichever client happened to PUT.
+   * A compact body from any writer must still land as a reviewable, diffable file.
+   */
+  it('canonicalises a compact body to 2-space indent with a trailing newline', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'canvas-bridge-pretty-'));
+    const file = join(dir, 'diagrams', 'compact.json');
+    await mkdir(join(dir, 'diagrams'), { recursive: true });
+
+    const outcome = await writeRecordFile(file, '{"id":"compact","revision":0,"nodes":{}}', 0);
+
+    expect(outcome).toEqual({ status: 'written' });
+    expect(await readFile(file, 'utf8')).toBe(
+      '{\n  "id": "compact",\n  "revision": 0,\n  "nodes": {}\n}\n',
+    );
+  });
+
+  /** Canonicalising is not validating: a body this function cannot parse is still written. */
+  it('passes a non-JSON body through untouched rather than throwing', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'canvas-bridge-raw-'));
+    const file = join(dir, 'diagrams', 'raw.json');
+    await mkdir(join(dir, 'diagrams'), { recursive: true });
+
+    const outcome = await writeRecordFile(file, 'not json at all', 0);
+
+    expect(outcome).toEqual({ status: 'written' });
+    expect(await readFile(file, 'utf8')).toBe('not json at all\n');
+  });
 });
 
 /** Waits for a condition the filesystem watcher fulfils asynchronously, or gives up loudly. */

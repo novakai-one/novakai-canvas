@@ -27,6 +27,27 @@ async function bodyOf(request: IncomingMessage): Promise<string> {
   return Buffer.concat(chunks).toString('utf8');
 }
 
+/**
+ * Renders the bytes a served JSON file should hold on disk.
+ *
+ * The stored shape is this bridge's invariant, not its callers'. Every writer — the browser,
+ * the canvas CLI, a curl by hand — lands the same 2-space indented, newline-terminated form,
+ * so a diagram stays reviewable in a diff no matter which client last touched it. Leaving the
+ * format to the sender is what let one client silently minify a 300-line record into a single
+ * unreadable line.
+ *
+ * Canonicalising is deliberately not validating: a body this cannot parse is written through
+ * unchanged, so schema enforcement stays with the schema layer and a malformed PUT still
+ * fails where it already failed rather than here.
+ */
+function canonicalJson(raw: string): string {
+  try {
+    return `${JSON.stringify(JSON.parse(raw) as unknown, null, 2)}\n`;
+  } catch {
+    return raw.endsWith('\n') ? raw : `${raw}\n`;
+  }
+}
+
 async function handle(
   request: IncomingMessage,
   response: ServerResponse,
@@ -53,7 +74,7 @@ async function handle(
         return;
       }
     }
-    await writeFile(file, raw.endsWith('\n') ? raw : `${raw}\n`, 'utf8');
+    await writeFile(file, canonicalJson(raw), 'utf8');
     onWrite();
     response.statusCode = 204;
     response.end();
@@ -82,7 +103,7 @@ export async function writeRecordFile(
     ? (JSON.parse(await readFile(file, 'utf8')) as { revision?: number }).revision ?? 0
     : 0;
   if (expectedRevision !== diskRevision) return { status: 'conflict', revision: diskRevision };
-  await writeFile(file, raw.endsWith('\n') ? raw : `${raw}\n`, 'utf8');
+  await writeFile(file, canonicalJson(raw), 'utf8');
   return { status: 'written' };
 }
 

@@ -1,1 +1,1079 @@
-{"schemaVersion":3,"id":"browser-scope","name":"Agent Browser Sessions","status":"active","revision":2417,"nodes":{"browser-scope":{"id":"browser-scope","kind":"group","label":"Agent Browser Sessions","description":"Isolated per-agent browser + live off-screen mirror","interfaceIds":[],"typeIds":[]},"bs-cli":{"id":"bs-cli","kind":"module","label":"browse CLI","description":"Agent-facing: browse --session <id> goto|click|shot","parentId":"browser-scope","interfaceIds":[],"typeIds":[]},"bs-mirror":{"id":"bs-mirror","kind":"module","label":"Mirror viewer","description":"Off-screen screencast grid + copyable page URL","parentId":"browser-scope","interfaceIds":[],"typeIds":[]},"bs-session":{"id":"bs-session","kind":"object","label":"Session","description":"Agent ↔ instance binding and lifecycle","parentId":"browser-scope","interfaceIds":[],"typeIds":["bs-t-session","bs-t-handle"]},"bs-broker":{"id":"bs-broker","kind":"module","label":"Session broker","description":"acquire / release / lookup; owns pool state","parentId":"browser-scope","interfaceIds":["bs-acquire","bs-release"],"typeIds":[]},"bs-policy":{"id":"bs-policy","kind":"object","label":"Allocation policy","description":"Pure: choose free instance, grow or evict","parentId":"browser-scope","interfaceIds":[],"typeIds":[]},"bs-lease":{"id":"bs-lease","kind":"object","label":"Lease","description":"TTL claim; reclaims a dead agent's instance","parentId":"browser-scope","interfaceIds":[],"typeIds":["bs-t-lease"]},"bs-pool":{"id":"bs-pool","kind":"module","label":"Chrome pool","description":"Adapter: launches headless Chrome, own user-data-dir + port","parentId":"browser-scope","interfaceIds":["bs-launch"],"typeIds":["bs-t-instance"]},"bs-control":{"id":"bs-control","kind":"module","label":"CDP control","description":"Adapter: Playwright over CDP, target-scoped, never bringToFront","parentId":"browser-scope","interfaceIds":["bs-act"],"typeIds":["bs-t-command"]},"bs-screencast":{"id":"bs-screencast","kind":"module","label":"CDP screencast","description":"Adapter: Page.startScreencast → JPEG frames","parentId":"browser-scope","interfaceIds":["bs-frames"],"typeIds":["bs-t-frame"]},"bs-chrome":{"id":"bs-chrome","kind":"runtime","label":"Chrome instances","description":"N isolated processes, off-screen","parentId":"browser-scope","interfaceIds":[],"typeIds":["bs-t-instance"]}},"wires":{"bs-w-cli-broker":{"id":"bs-w-cli-broker","kind":"executes","label":"acquire / release","source":{"nodeId":"bs-cli"},"target":{"nodeId":"bs-broker"}},"bs-w-cli-control":{"id":"bs-w-cli-control","kind":"executes","label":"acts via","source":{"nodeId":"bs-cli"},"target":{"nodeId":"bs-control"}},"bs-w-mirror-broker":{"id":"bs-w-mirror-broker","kind":"queries","label":"lists sessions","source":{"nodeId":"bs-mirror"},"target":{"nodeId":"bs-broker"}},"bs-w-mirror-screencast":{"id":"bs-w-mirror-screencast","kind":"queries","label":"streams","source":{"nodeId":"bs-mirror"},"target":{"nodeId":"bs-screencast"}},"bs-w-broker-session":{"id":"bs-w-broker-session","kind":"owns","label":"tracks","source":{"nodeId":"bs-broker"},"target":{"nodeId":"bs-session"}},"bs-w-broker-lease":{"id":"bs-w-broker-lease","kind":"owns","label":"grants","source":{"nodeId":"bs-broker"},"target":{"nodeId":"bs-lease"}},"bs-w-broker-policy":{"id":"bs-w-broker-policy","kind":"queries","label":"decides via","source":{"nodeId":"bs-broker"},"target":{"nodeId":"bs-policy"}},"bs-w-broker-pool":{"id":"bs-w-broker-pool","kind":"executes","label":"launch / dispose","source":{"nodeId":"bs-broker"},"target":{"nodeId":"bs-pool"}},"bs-w-control-chrome":{"id":"bs-w-control-chrome","kind":"executes","label":"drives target","source":{"nodeId":"bs-control"},"target":{"nodeId":"bs-chrome"}},"bs-w-screencast-chrome":{"id":"bs-w-screencast-chrome","kind":"queries","label":"captures","source":{"nodeId":"bs-screencast"},"target":{"nodeId":"bs-chrome"}},"bs-w-pool-chrome":{"id":"bs-w-pool-chrome","kind":"owns","label":"spawns","source":{"nodeId":"bs-pool"},"target":{"nodeId":"bs-chrome"}},"bs-w-session-chrome":{"id":"bs-w-session-chrome","kind":"references","label":"endpoint","source":{"nodeId":"bs-session"},"target":{"nodeId":"bs-chrome"}}},"interfaces":{"bs-acquire":{"id":"bs-acquire","ownerId":"bs-broker","name":"acquire","accepts":["AgentId"],"returns":["SessionHandle"]},"bs-release":{"id":"bs-release","ownerId":"bs-broker","name":"release","accepts":["SessionId"],"returns":["void"]},"bs-launch":{"id":"bs-launch","ownerId":"bs-pool","name":"launch","accepts":["LaunchSpec"],"returns":["BrowserInstance"]},"bs-act":{"id":"bs-act","ownerId":"bs-control","name":"act","accepts":["SessionId","BrowserCommand"],"returns":["ActionResult"]},"bs-frames":{"id":"bs-frames","ownerId":"bs-screencast","name":"subscribe","accepts":["SessionId"],"returns":["Frame[]"]}},"types":{"bs-t-session":{"id":"bs-t-session","name":"Session","fields":["id","agentId","instancePort","status"]},"bs-t-handle":{"id":"bs-t-handle","name":"SessionHandle","fields":["sessionId","cdpEndpoint","mirrorUrl","pageUrl"]},"bs-t-lease":{"id":"bs-t-lease","name":"Lease","fields":["sessionId","agentId","expiresAt"]},"bs-t-instance":{"id":"bs-t-instance","name":"BrowserInstance","fields":["pid","port","userDataDir"]},"bs-t-command":{"id":"bs-t-command","name":"BrowserCommand","fields":["kind","selector","text"]},"bs-t-frame":{"id":"bs-t-frame","name":"Frame","fields":["sessionId","seq","jpeg"]}},"layouts":{"layout-default":{"id":"layout-default","name":"Default","strategy":"manual","placements":{"browser-scope":{"nodeId":"browser-scope","position":{"x":432,"y":2220},"size":{"width":1520,"height":780},"pinned":false},"bs-cli":{"nodeId":"bs-cli","position":{"x":216,"y":36},"size":{"width":230,"height":132},"pinned":false},"bs-mirror":{"nodeId":"bs-mirror","position":{"x":852,"y":0},"size":{"width":230,"height":132},"pinned":false},"bs-session":{"nodeId":"bs-session","position":{"x":24,"y":228},"size":{"width":230,"height":132},"pinned":false},"bs-broker":{"nodeId":"bs-broker","position":{"x":552,"y":216},"size":{"width":240,"height":140},"pinned":false},"bs-policy":{"nodeId":"bs-policy","position":{"x":1236,"y":216},"size":{"width":230,"height":132},"pinned":false},"bs-lease":{"nodeId":"bs-lease","position":{"x":1272,"y":456},"size":{"width":230,"height":132},"pinned":false},"bs-pool":{"nodeId":"bs-pool","position":{"x":60,"y":544},"size":{"width":240,"height":140},"pinned":false},"bs-control":{"nodeId":"bs-control","position":{"x":384,"y":640},"size":{"width":240,"height":140},"pinned":false},"bs-screencast":{"nodeId":"bs-screencast","position":{"x":852,"y":516},"size":{"width":240,"height":140},"pinned":false},"bs-chrome":{"nodeId":"bs-chrome","position":{"x":1272,"y":648},"size":{"width":230,"height":132},"pinned":false}},"wireRouteHints":{}}},"views":{"view-default":{"id":"view-default","name":"Default","layoutId":"layout-default","viewport":{"x":0,"y":0,"zoom":1},"collapsedNodeIds":[],"hiddenKinds":[]}},"activeViewId":"view-default","sourceRefs":[],"appliedOperations":{"ui-5dd1e2b4-8afe-4abf-9202-93244ca99b71":{"operationId":"ui-5dd1e2b4-8afe-4abf-9202-93244ca99b71","revision":2382,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:45.282Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-0f4e4ce6-aad4-4872-a189-5f81d035f1fa":{"operationId":"ui-0f4e4ce6-aad4-4872-a189-5f81d035f1fa","revision":2383,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:45.315Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-78e8b514-4dce-40b4-abe6-8fc3fae8185b":{"operationId":"ui-78e8b514-4dce-40b4-abe6-8fc3fae8185b","revision":2384,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:45.330Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-0207c3b4-41d7-4aa8-ba34-b07d7cc3757b":{"operationId":"ui-0207c3b4-41d7-4aa8-ba34-b07d7cc3757b","revision":2385,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:45.347Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-4d446056-ffbd-4482-b7a5-705e400854ee":{"operationId":"ui-4d446056-ffbd-4482-b7a5-705e400854ee","revision":2386,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:45.364Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-f80cbdd8-ed1d-4638-bd9e-72127a5d8916":{"operationId":"ui-f80cbdd8-ed1d-4638-bd9e-72127a5d8916","revision":2387,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:45.397Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-16c4dead-1b1b-4ce2-8f92-84f2dd791f49":{"operationId":"ui-16c4dead-1b1b-4ce2-8f92-84f2dd791f49","revision":2388,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:45.580Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-7560bf49-28ee-44d8-a426-a9a85cd8b4f3":{"operationId":"ui-7560bf49-28ee-44d8-a426-a9a85cd8b4f3","revision":2389,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:45.731Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-a7af30ef-8cb8-4796-949e-11b8b53acd61":{"operationId":"ui-a7af30ef-8cb8-4796-949e-11b8b53acd61","revision":2390,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:45.748Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-a6defa1b-00fd-44e2-b09c-25d7c9948cdd":{"operationId":"ui-a6defa1b-00fd-44e2-b09c-25d7c9948cdd","revision":2391,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:45.748Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-57de1fca-6944-4df5-8540-f68c5e1c493f":{"operationId":"ui-57de1fca-6944-4df5-8540-f68c5e1c493f","revision":2392,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:54.164Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-3386852a-85b7-4338-be3b-a4b5238db32f":{"operationId":"ui-3386852a-85b7-4338-be3b-a4b5238db32f","revision":2393,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:54.189Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-35b86359-cf74-4f72-be68-d25bd37276a3":{"operationId":"ui-35b86359-cf74-4f72-be68-d25bd37276a3","revision":2394,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:54.203Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-3d5123e6-f9d5-4cc9-83db-a9570095374a":{"operationId":"ui-3d5123e6-f9d5-4cc9-83db-a9570095374a","revision":2395,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:54.215Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-0b4533e6-d02e-4026-a809-0a597f28cfd1":{"operationId":"ui-0b4533e6-d02e-4026-a809-0a597f28cfd1","revision":2396,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:54.230Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-fa691d00-d18c-4246-af9b-94ffe499347a":{"operationId":"ui-fa691d00-d18c-4246-af9b-94ffe499347a","revision":2397,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:54.247Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-a7dd2c5d-fc74-40d8-806b-a785c5f1afde":{"operationId":"ui-a7dd2c5d-fc74-40d8-806b-a785c5f1afde","revision":2398,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:54.280Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-04d2f958-7ba7-4284-b9ad-78b05ae50513":{"operationId":"ui-04d2f958-7ba7-4284-b9ad-78b05ae50513","revision":2399,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:54.297Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-b767efb8-99f2-441e-abad-6cf20ac1c86e":{"operationId":"ui-b767efb8-99f2-441e-abad-6cf20ac1c86e","revision":2400,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:54.331Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-b6706436-8f15-4aee-b3af-9bd79970c89c":{"operationId":"ui-b6706436-8f15-4aee-b3af-9bd79970c89c","revision":2401,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:54.413Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-c1459f3d-3600-4f4b-b273-43e029001eff":{"operationId":"ui-c1459f3d-3600-4f4b-b273-43e029001eff","revision":2402,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:54.493Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-bb7aad8d-4d6f-4fcd-a572-a91946c32720":{"operationId":"ui-bb7aad8d-4d6f-4fcd-a572-a91946c32720","revision":2403,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:54.493Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-d281d765-f008-4367-a473-a0b760b44b2a":{"operationId":"ui-d281d765-f008-4367-a473-a0b760b44b2a","revision":2404,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:55.127Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-24529c31-ef88-4b50-8d06-cea964656023":{"operationId":"ui-24529c31-ef88-4b50-8d06-cea964656023","revision":2405,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:55.147Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-bd90fb2a-58cd-4935-bba6-c98476e82492":{"operationId":"ui-bd90fb2a-58cd-4935-bba6-c98476e82492","revision":2406,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:55.163Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-2286f564-be01-49c4-abda-30d59e1daa9c":{"operationId":"ui-2286f564-be01-49c4-abda-30d59e1daa9c","revision":2407,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:55.213Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-f6df980f-c409-477e-9433-44c64e5661e2":{"operationId":"ui-f6df980f-c409-477e-9433-44c64e5661e2","revision":2408,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:55.343Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-4a333dd5-a12a-4221-a181-61b248027bde":{"operationId":"ui-4a333dd5-a12a-4221-a181-61b248027bde","revision":2409,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:55.343Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-59105505-88d8-481a-9483-4b0828cd5ad1":{"operationId":"ui-59105505-88d8-481a-9483-4b0828cd5ad1","revision":2410,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:57.547Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-dc0cf03e-08d4-433c-b4dc-40194ffc947e":{"operationId":"ui-dc0cf03e-08d4-433c-b4dc-40194ffc947e","revision":2411,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:57.575Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-0a014bc8-7437-429a-9bcc-bbb71b549506":{"operationId":"ui-0a014bc8-7437-429a-9bcc-bbb71b549506","revision":2412,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:57.590Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-41fee249-0a19-4d51-9afb-5679071d252c":{"operationId":"ui-41fee249-0a19-4d51-9afb-5679071d252c","revision":2413,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:57.605Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-fdcc4278-526d-49b0-ada9-516b11f85b30":{"operationId":"ui-fdcc4278-526d-49b0-ada9-516b11f85b30","revision":2414,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:57.615Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-70f90aaa-7b91-4f29-9472-3665f9456593":{"operationId":"ui-70f90aaa-7b91-4f29-9472-3665f9456593","revision":2415,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:57.663Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-11a2b7f6-7c51-4449-a750-46b649e24b43":{"operationId":"ui-11a2b7f6-7c51-4449-a750-46b649e24b43","revision":2416,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:58.077Z","provenance":{"source":"ui"},"commandKinds":["node.move"]},"ui-ebff80b0-87f8-4320-84be-901decaae37e":{"operationId":"ui-ebff80b0-87f8-4320-84be-901decaae37e","revision":2417,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:34:58.078Z","provenance":{"source":"ui"},"commandKinds":["node.move"]}}}
+{
+  "schemaVersion": 3,
+  "id": "browser-scope",
+  "name": "Agent Browser Sessions",
+  "status": "active",
+  "revision": 2417,
+  "nodes": {
+    "browser-scope": {
+      "id": "browser-scope",
+      "kind": "group",
+      "label": "Agent Browser Sessions",
+      "description": "Isolated per-agent browser + live off-screen mirror",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "bs-cli": {
+      "id": "bs-cli",
+      "kind": "module",
+      "label": "browse CLI",
+      "description": "Agent-facing: browse --session <id> goto|click|shot",
+      "parentId": "browser-scope",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "bs-mirror": {
+      "id": "bs-mirror",
+      "kind": "module",
+      "label": "Mirror viewer",
+      "description": "Off-screen screencast grid + copyable page URL",
+      "parentId": "browser-scope",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "bs-session": {
+      "id": "bs-session",
+      "kind": "object",
+      "label": "Session",
+      "description": "Agent ↔ instance binding and lifecycle",
+      "parentId": "browser-scope",
+      "interfaceIds": [],
+      "typeIds": [
+        "bs-t-session",
+        "bs-t-handle"
+      ]
+    },
+    "bs-broker": {
+      "id": "bs-broker",
+      "kind": "module",
+      "label": "Session broker",
+      "description": "acquire / release / lookup; owns pool state",
+      "parentId": "browser-scope",
+      "interfaceIds": [
+        "bs-acquire",
+        "bs-release"
+      ],
+      "typeIds": []
+    },
+    "bs-policy": {
+      "id": "bs-policy",
+      "kind": "object",
+      "label": "Allocation policy",
+      "description": "Pure: choose free instance, grow or evict",
+      "parentId": "browser-scope",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "bs-lease": {
+      "id": "bs-lease",
+      "kind": "object",
+      "label": "Lease",
+      "description": "TTL claim; reclaims a dead agent's instance",
+      "parentId": "browser-scope",
+      "interfaceIds": [],
+      "typeIds": [
+        "bs-t-lease"
+      ]
+    },
+    "bs-pool": {
+      "id": "bs-pool",
+      "kind": "module",
+      "label": "Chrome pool",
+      "description": "Adapter: launches headless Chrome, own user-data-dir + port",
+      "parentId": "browser-scope",
+      "interfaceIds": [
+        "bs-launch"
+      ],
+      "typeIds": [
+        "bs-t-instance"
+      ]
+    },
+    "bs-control": {
+      "id": "bs-control",
+      "kind": "module",
+      "label": "CDP control",
+      "description": "Adapter: Playwright over CDP, target-scoped, never bringToFront",
+      "parentId": "browser-scope",
+      "interfaceIds": [
+        "bs-act"
+      ],
+      "typeIds": [
+        "bs-t-command"
+      ]
+    },
+    "bs-screencast": {
+      "id": "bs-screencast",
+      "kind": "module",
+      "label": "CDP screencast",
+      "description": "Adapter: Page.startScreencast → JPEG frames",
+      "parentId": "browser-scope",
+      "interfaceIds": [
+        "bs-frames"
+      ],
+      "typeIds": [
+        "bs-t-frame"
+      ]
+    },
+    "bs-chrome": {
+      "id": "bs-chrome",
+      "kind": "runtime",
+      "label": "Chrome instances",
+      "description": "N isolated processes, off-screen",
+      "parentId": "browser-scope",
+      "interfaceIds": [],
+      "typeIds": [
+        "bs-t-instance"
+      ]
+    }
+  },
+  "wires": {
+    "bs-w-cli-broker": {
+      "id": "bs-w-cli-broker",
+      "kind": "executes",
+      "label": "acquire / release",
+      "source": {
+        "nodeId": "bs-cli"
+      },
+      "target": {
+        "nodeId": "bs-broker"
+      }
+    },
+    "bs-w-cli-control": {
+      "id": "bs-w-cli-control",
+      "kind": "executes",
+      "label": "acts via",
+      "source": {
+        "nodeId": "bs-cli"
+      },
+      "target": {
+        "nodeId": "bs-control"
+      }
+    },
+    "bs-w-mirror-broker": {
+      "id": "bs-w-mirror-broker",
+      "kind": "queries",
+      "label": "lists sessions",
+      "source": {
+        "nodeId": "bs-mirror"
+      },
+      "target": {
+        "nodeId": "bs-broker"
+      }
+    },
+    "bs-w-mirror-screencast": {
+      "id": "bs-w-mirror-screencast",
+      "kind": "queries",
+      "label": "streams",
+      "source": {
+        "nodeId": "bs-mirror"
+      },
+      "target": {
+        "nodeId": "bs-screencast"
+      }
+    },
+    "bs-w-broker-session": {
+      "id": "bs-w-broker-session",
+      "kind": "owns",
+      "label": "tracks",
+      "source": {
+        "nodeId": "bs-broker"
+      },
+      "target": {
+        "nodeId": "bs-session"
+      }
+    },
+    "bs-w-broker-lease": {
+      "id": "bs-w-broker-lease",
+      "kind": "owns",
+      "label": "grants",
+      "source": {
+        "nodeId": "bs-broker"
+      },
+      "target": {
+        "nodeId": "bs-lease"
+      }
+    },
+    "bs-w-broker-policy": {
+      "id": "bs-w-broker-policy",
+      "kind": "queries",
+      "label": "decides via",
+      "source": {
+        "nodeId": "bs-broker"
+      },
+      "target": {
+        "nodeId": "bs-policy"
+      }
+    },
+    "bs-w-broker-pool": {
+      "id": "bs-w-broker-pool",
+      "kind": "executes",
+      "label": "launch / dispose",
+      "source": {
+        "nodeId": "bs-broker"
+      },
+      "target": {
+        "nodeId": "bs-pool"
+      }
+    },
+    "bs-w-control-chrome": {
+      "id": "bs-w-control-chrome",
+      "kind": "executes",
+      "label": "drives target",
+      "source": {
+        "nodeId": "bs-control"
+      },
+      "target": {
+        "nodeId": "bs-chrome"
+      }
+    },
+    "bs-w-screencast-chrome": {
+      "id": "bs-w-screencast-chrome",
+      "kind": "queries",
+      "label": "captures",
+      "source": {
+        "nodeId": "bs-screencast"
+      },
+      "target": {
+        "nodeId": "bs-chrome"
+      }
+    },
+    "bs-w-pool-chrome": {
+      "id": "bs-w-pool-chrome",
+      "kind": "owns",
+      "label": "spawns",
+      "source": {
+        "nodeId": "bs-pool"
+      },
+      "target": {
+        "nodeId": "bs-chrome"
+      }
+    },
+    "bs-w-session-chrome": {
+      "id": "bs-w-session-chrome",
+      "kind": "references",
+      "label": "endpoint",
+      "source": {
+        "nodeId": "bs-session"
+      },
+      "target": {
+        "nodeId": "bs-chrome"
+      }
+    }
+  },
+  "interfaces": {
+    "bs-acquire": {
+      "id": "bs-acquire",
+      "ownerId": "bs-broker",
+      "name": "acquire",
+      "accepts": [
+        "AgentId"
+      ],
+      "returns": [
+        "SessionHandle"
+      ]
+    },
+    "bs-release": {
+      "id": "bs-release",
+      "ownerId": "bs-broker",
+      "name": "release",
+      "accepts": [
+        "SessionId"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "bs-launch": {
+      "id": "bs-launch",
+      "ownerId": "bs-pool",
+      "name": "launch",
+      "accepts": [
+        "LaunchSpec"
+      ],
+      "returns": [
+        "BrowserInstance"
+      ]
+    },
+    "bs-act": {
+      "id": "bs-act",
+      "ownerId": "bs-control",
+      "name": "act",
+      "accepts": [
+        "SessionId",
+        "BrowserCommand"
+      ],
+      "returns": [
+        "ActionResult"
+      ]
+    },
+    "bs-frames": {
+      "id": "bs-frames",
+      "ownerId": "bs-screencast",
+      "name": "subscribe",
+      "accepts": [
+        "SessionId"
+      ],
+      "returns": [
+        "Frame[]"
+      ]
+    }
+  },
+  "types": {
+    "bs-t-session": {
+      "id": "bs-t-session",
+      "name": "Session",
+      "fields": [
+        "id",
+        "agentId",
+        "instancePort",
+        "status"
+      ]
+    },
+    "bs-t-handle": {
+      "id": "bs-t-handle",
+      "name": "SessionHandle",
+      "fields": [
+        "sessionId",
+        "cdpEndpoint",
+        "mirrorUrl",
+        "pageUrl"
+      ]
+    },
+    "bs-t-lease": {
+      "id": "bs-t-lease",
+      "name": "Lease",
+      "fields": [
+        "sessionId",
+        "agentId",
+        "expiresAt"
+      ]
+    },
+    "bs-t-instance": {
+      "id": "bs-t-instance",
+      "name": "BrowserInstance",
+      "fields": [
+        "pid",
+        "port",
+        "userDataDir"
+      ]
+    },
+    "bs-t-command": {
+      "id": "bs-t-command",
+      "name": "BrowserCommand",
+      "fields": [
+        "kind",
+        "selector",
+        "text"
+      ]
+    },
+    "bs-t-frame": {
+      "id": "bs-t-frame",
+      "name": "Frame",
+      "fields": [
+        "sessionId",
+        "seq",
+        "jpeg"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "browser-scope": {
+          "nodeId": "browser-scope",
+          "position": {
+            "x": 432,
+            "y": 2220
+          },
+          "size": {
+            "width": 1520,
+            "height": 780
+          },
+          "pinned": false
+        },
+        "bs-cli": {
+          "nodeId": "bs-cli",
+          "position": {
+            "x": 216,
+            "y": 36
+          },
+          "size": {
+            "width": 230,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "bs-mirror": {
+          "nodeId": "bs-mirror",
+          "position": {
+            "x": 852,
+            "y": 0
+          },
+          "size": {
+            "width": 230,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "bs-session": {
+          "nodeId": "bs-session",
+          "position": {
+            "x": 24,
+            "y": 228
+          },
+          "size": {
+            "width": 230,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "bs-broker": {
+          "nodeId": "bs-broker",
+          "position": {
+            "x": 552,
+            "y": 216
+          },
+          "size": {
+            "width": 240,
+            "height": 140
+          },
+          "pinned": false
+        },
+        "bs-policy": {
+          "nodeId": "bs-policy",
+          "position": {
+            "x": 1236,
+            "y": 216
+          },
+          "size": {
+            "width": 230,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "bs-lease": {
+          "nodeId": "bs-lease",
+          "position": {
+            "x": 1272,
+            "y": 456
+          },
+          "size": {
+            "width": 230,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "bs-pool": {
+          "nodeId": "bs-pool",
+          "position": {
+            "x": 60,
+            "y": 544
+          },
+          "size": {
+            "width": 240,
+            "height": 140
+          },
+          "pinned": false
+        },
+        "bs-control": {
+          "nodeId": "bs-control",
+          "position": {
+            "x": 384,
+            "y": 640
+          },
+          "size": {
+            "width": 240,
+            "height": 140
+          },
+          "pinned": false
+        },
+        "bs-screencast": {
+          "nodeId": "bs-screencast",
+          "position": {
+            "x": 852,
+            "y": 516
+          },
+          "size": {
+            "width": 240,
+            "height": 140
+          },
+          "pinned": false
+        },
+        "bs-chrome": {
+          "nodeId": "bs-chrome",
+          "position": {
+            "x": 1272,
+            "y": 648
+          },
+          "size": {
+            "width": 230,
+            "height": 132
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "ui-5dd1e2b4-8afe-4abf-9202-93244ca99b71": {
+      "operationId": "ui-5dd1e2b4-8afe-4abf-9202-93244ca99b71",
+      "revision": 2382,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:45.282Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-0f4e4ce6-aad4-4872-a189-5f81d035f1fa": {
+      "operationId": "ui-0f4e4ce6-aad4-4872-a189-5f81d035f1fa",
+      "revision": 2383,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:45.315Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-78e8b514-4dce-40b4-abe6-8fc3fae8185b": {
+      "operationId": "ui-78e8b514-4dce-40b4-abe6-8fc3fae8185b",
+      "revision": 2384,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:45.330Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-0207c3b4-41d7-4aa8-ba34-b07d7cc3757b": {
+      "operationId": "ui-0207c3b4-41d7-4aa8-ba34-b07d7cc3757b",
+      "revision": 2385,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:45.347Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-4d446056-ffbd-4482-b7a5-705e400854ee": {
+      "operationId": "ui-4d446056-ffbd-4482-b7a5-705e400854ee",
+      "revision": 2386,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:45.364Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-f80cbdd8-ed1d-4638-bd9e-72127a5d8916": {
+      "operationId": "ui-f80cbdd8-ed1d-4638-bd9e-72127a5d8916",
+      "revision": 2387,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:45.397Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-16c4dead-1b1b-4ce2-8f92-84f2dd791f49": {
+      "operationId": "ui-16c4dead-1b1b-4ce2-8f92-84f2dd791f49",
+      "revision": 2388,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:45.580Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-7560bf49-28ee-44d8-a426-a9a85cd8b4f3": {
+      "operationId": "ui-7560bf49-28ee-44d8-a426-a9a85cd8b4f3",
+      "revision": 2389,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:45.731Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-a7af30ef-8cb8-4796-949e-11b8b53acd61": {
+      "operationId": "ui-a7af30ef-8cb8-4796-949e-11b8b53acd61",
+      "revision": 2390,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:45.748Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-a6defa1b-00fd-44e2-b09c-25d7c9948cdd": {
+      "operationId": "ui-a6defa1b-00fd-44e2-b09c-25d7c9948cdd",
+      "revision": 2391,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:45.748Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-57de1fca-6944-4df5-8540-f68c5e1c493f": {
+      "operationId": "ui-57de1fca-6944-4df5-8540-f68c5e1c493f",
+      "revision": 2392,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:54.164Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-3386852a-85b7-4338-be3b-a4b5238db32f": {
+      "operationId": "ui-3386852a-85b7-4338-be3b-a4b5238db32f",
+      "revision": 2393,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:54.189Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-35b86359-cf74-4f72-be68-d25bd37276a3": {
+      "operationId": "ui-35b86359-cf74-4f72-be68-d25bd37276a3",
+      "revision": 2394,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:54.203Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-3d5123e6-f9d5-4cc9-83db-a9570095374a": {
+      "operationId": "ui-3d5123e6-f9d5-4cc9-83db-a9570095374a",
+      "revision": 2395,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:54.215Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-0b4533e6-d02e-4026-a809-0a597f28cfd1": {
+      "operationId": "ui-0b4533e6-d02e-4026-a809-0a597f28cfd1",
+      "revision": 2396,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:54.230Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-fa691d00-d18c-4246-af9b-94ffe499347a": {
+      "operationId": "ui-fa691d00-d18c-4246-af9b-94ffe499347a",
+      "revision": 2397,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:54.247Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-a7dd2c5d-fc74-40d8-806b-a785c5f1afde": {
+      "operationId": "ui-a7dd2c5d-fc74-40d8-806b-a785c5f1afde",
+      "revision": 2398,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:54.280Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-04d2f958-7ba7-4284-b9ad-78b05ae50513": {
+      "operationId": "ui-04d2f958-7ba7-4284-b9ad-78b05ae50513",
+      "revision": 2399,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:54.297Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-b767efb8-99f2-441e-abad-6cf20ac1c86e": {
+      "operationId": "ui-b767efb8-99f2-441e-abad-6cf20ac1c86e",
+      "revision": 2400,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:54.331Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-b6706436-8f15-4aee-b3af-9bd79970c89c": {
+      "operationId": "ui-b6706436-8f15-4aee-b3af-9bd79970c89c",
+      "revision": 2401,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:54.413Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-c1459f3d-3600-4f4b-b273-43e029001eff": {
+      "operationId": "ui-c1459f3d-3600-4f4b-b273-43e029001eff",
+      "revision": 2402,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:54.493Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-bb7aad8d-4d6f-4fcd-a572-a91946c32720": {
+      "operationId": "ui-bb7aad8d-4d6f-4fcd-a572-a91946c32720",
+      "revision": 2403,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:54.493Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-d281d765-f008-4367-a473-a0b760b44b2a": {
+      "operationId": "ui-d281d765-f008-4367-a473-a0b760b44b2a",
+      "revision": 2404,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:55.127Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-24529c31-ef88-4b50-8d06-cea964656023": {
+      "operationId": "ui-24529c31-ef88-4b50-8d06-cea964656023",
+      "revision": 2405,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:55.147Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-bd90fb2a-58cd-4935-bba6-c98476e82492": {
+      "operationId": "ui-bd90fb2a-58cd-4935-bba6-c98476e82492",
+      "revision": 2406,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:55.163Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-2286f564-be01-49c4-abda-30d59e1daa9c": {
+      "operationId": "ui-2286f564-be01-49c4-abda-30d59e1daa9c",
+      "revision": 2407,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:55.213Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-f6df980f-c409-477e-9433-44c64e5661e2": {
+      "operationId": "ui-f6df980f-c409-477e-9433-44c64e5661e2",
+      "revision": 2408,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:55.343Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-4a333dd5-a12a-4221-a181-61b248027bde": {
+      "operationId": "ui-4a333dd5-a12a-4221-a181-61b248027bde",
+      "revision": 2409,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:55.343Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-59105505-88d8-481a-9483-4b0828cd5ad1": {
+      "operationId": "ui-59105505-88d8-481a-9483-4b0828cd5ad1",
+      "revision": 2410,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:57.547Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-dc0cf03e-08d4-433c-b4dc-40194ffc947e": {
+      "operationId": "ui-dc0cf03e-08d4-433c-b4dc-40194ffc947e",
+      "revision": 2411,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:57.575Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-0a014bc8-7437-429a-9bcc-bbb71b549506": {
+      "operationId": "ui-0a014bc8-7437-429a-9bcc-bbb71b549506",
+      "revision": 2412,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:57.590Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-41fee249-0a19-4d51-9afb-5679071d252c": {
+      "operationId": "ui-41fee249-0a19-4d51-9afb-5679071d252c",
+      "revision": 2413,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:57.605Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-fdcc4278-526d-49b0-ada9-516b11f85b30": {
+      "operationId": "ui-fdcc4278-526d-49b0-ada9-516b11f85b30",
+      "revision": 2414,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:57.615Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-70f90aaa-7b91-4f29-9472-3665f9456593": {
+      "operationId": "ui-70f90aaa-7b91-4f29-9472-3665f9456593",
+      "revision": 2415,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:57.663Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-11a2b7f6-7c51-4449-a750-46b649e24b43": {
+      "operationId": "ui-11a2b7f6-7c51-4449-a750-46b649e24b43",
+      "revision": 2416,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:58.077Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-ebff80b0-87f8-4320-84be-901decaae37e": {
+      "operationId": "ui-ebff80b0-87f8-4320-84be-901decaae37e",
+      "revision": 2417,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:34:58.078Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    }
+  }
+}

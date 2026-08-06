@@ -70,8 +70,17 @@ function auditDiagram(record: DiagramRecord): Audit {
 }
 
 describe('no wire crosses a node it is unrelated to', () => {
+  /**
+   * Guards the glob, not the corpus size.
+   *
+   * A literal count here fails every time the app creates a diagram — which it can, from the
+   * rail — turning a routing gate red for a reason that has nothing to do with routing. What
+   * this must actually catch is the glob silently resolving to nothing, so it asserts a floor
+   * and lets the library grow.
+   */
   it('reads every real diagram', () => {
-    expect(records).toHaveLength(18);
+    expect(records.length).toBeGreaterThanOrEqual(18);
+    expect(records.every(([file]) => file.endsWith('.json'))).toBe(true);
   });
 
   it.each(records)('%s', (_file, record) => {

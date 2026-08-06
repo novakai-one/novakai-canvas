@@ -1,1 +1,2081 @@
-{"schemaVersion":3,"id":"command-overview","name":"Command Overview","status":"active","revision":2382,"nodes":{"command-overview":{"id":"command-overview","kind":"group","label":"Command Overview","description":"Novakai Command subdomains: folded import edges vs contract.json — red (missing) wires are drift","interfaceIds":[],"typeIds":[]},"command-overview--backend":{"id":"command-overview--backend","kind":"group","label":"Backend","parentId":"command-overview","interfaceIds":[],"typeIds":[]},"command-overview--backend--agent-orchestration":{"id":"command-overview--backend--agent-orchestration","kind":"module","label":"Agent orchestration","description":"Coordinator + executor: spawns and supervises provider CLI agents","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--analytics-engine":{"id":"command-overview--backend--analytics-engine","kind":"module","label":"Analytics engine","description":"Repo/session analytics computation behind the analytics studio","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--browser-engine":{"id":"command-overview--backend--browser-engine","kind":"module","label":"Browser engine","description":"Isolated per-agent headless Chrome host driven by tools/browse (no src imports either way — reached by CLI, not import)","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--canvas-store":{"id":"command-overview--backend--canvas-store","kind":"module","label":"Canvas store","description":"Architecture-canvas document store + file watch for the canvas studio","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--config":{"id":"command-overview--backend--config","kind":"module","label":"Config","description":"Runtime configuration manager","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--design-bridge":{"id":"command-overview--backend--design-bridge","kind":"module","label":"Design bridge","description":"Backend for the design studio","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--external-sessions":{"id":"command-overview--backend--external-sessions","kind":"module","label":"External sessions","description":"Registers terminal-spawned sessions into the durable mission graph (Agent + Presence + mailbox)","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--file-system-api":{"id":"command-overview--backend--file-system-api","kind":"module","label":"File system API","description":"Workspace file tree access for the frontend","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--messaging-tunnel":{"id":"command-overview--backend--messaging-tunnel","kind":"module","label":"Messaging tunnel","description":"Agent-to-agent DM + #team channel: REST send surface, router, append-only store, PTY delivery — see docs/agent-messaging.md","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--mission-view":{"id":"command-overview--backend--mission-view","kind":"module","label":"Mission view","description":"Mission Room read-only snapshot composition over stores, journal and live presence","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--object-model":{"id":"command-overview--backend--object-model","kind":"module","label":"Object model","description":"The ONE write interface for the durable mission graph; callers never touch stores directly","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--project-registry":{"id":"command-overview--backend--project-registry","kind":"module","label":"Project registry","description":"Project records and workspace roots","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--provider-adapters":{"id":"command-overview--backend--provider-adapters","kind":"module","label":"Provider adapters","description":"Claude/Codex CLI session adapters","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--ruleset":{"id":"command-overview--backend--ruleset","kind":"module","label":"Ruleset","description":"Agent ruleset storage","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--server-core":{"id":"command-overview--backend--server-core","kind":"module","label":"Server core","description":"Express + ws composition root: builds every hub, injects roots and seams, registers routes","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--state-manager":{"id":"command-overview--backend--state-manager","kind":"module","label":"State manager","description":"Persisted backend state","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--durable-stores":{"id":"command-overview--backend--durable-stores","kind":"module","label":"Durable stores","description":".novakai/stores engine: schema law, locking, CAS, append-only writer (facade store.mjs)","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--terminal-host":{"id":"command-overview--backend--terminal-host","kind":"module","label":"Terminal host","description":"PTY-per-agent TerminalManager: spawns, buffers and addresses live agent terminals","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--threads":{"id":"command-overview--backend--threads","kind":"module","label":"Threads","description":"Durable work objectives bound to provider sessions","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--transcript-parser":{"id":"command-overview--backend--transcript-parser","kind":"module","label":"Transcript parser","description":"Provider JSONL transcript parsing","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--backend--version-control":{"id":"command-overview--backend--version-control","kind":"module","label":"Version control","description":"Git status/diff surface for the files view","parentId":"command-overview--backend","interfaceIds":[],"typeIds":[]},"command-overview--frontend":{"id":"command-overview--frontend","kind":"group","label":"Frontend","parentId":"command-overview","interfaceIds":[],"typeIds":[]},"command-overview--frontend--agents-ui":{"id":"command-overview--frontend--agents-ui","kind":"module","label":"Agents UI","description":"Agent list and session inspection views","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--analytics-studio":{"id":"command-overview--frontend--analytics-studio","kind":"module","label":"Analytics studio","description":"Analytics workspace lens","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--board":{"id":"command-overview--frontend--board","kind":"module","label":"Board","description":"Agent board + transcript timeline widgets","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--canvas-studio":{"id":"command-overview--frontend--canvas-studio","kind":"module","label":"Canvas studio","description":"Architecture canvas lens","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--debug-panel":{"id":"command-overview--frontend--debug-panel","kind":"module","label":"Debug panel","description":"Build/debug messages panel","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--design-studio":{"id":"command-overview--frontend--design-studio","kind":"module","label":"Design studio","description":"Design workspace lens","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--details-panel":{"id":"command-overview--frontend--details-panel","kind":"module","label":"Details panel","description":"Selected-item inspector","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--files-view":{"id":"command-overview--frontend--files-view","kind":"module","label":"Files view","description":"Workspace file browser","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--frontend-models":{"id":"command-overview--frontend--frontend-models","kind":"module","label":"Frontend models","description":"src/frontend/lib: socket, chat, tunnel, mission room, attention, canvas models","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--ruleset-ui":{"id":"command-overview--frontend--ruleset-ui","kind":"module","label":"Ruleset UI","description":"Ruleset inspector","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--session-bar":{"id":"command-overview--frontend--session-bar","kind":"module","label":"Session bar","description":"Session switcher strip","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--settings":{"id":"command-overview--frontend--settings","kind":"module","label":"Settings","description":"Settings panel","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--app-shell":{"id":"command-overview--frontend--app-shell","kind":"module","label":"App shell","description":"main.tsx + components/index.tsx: mounts every view and owns top-level state","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--side-panel":{"id":"command-overview--frontend--side-panel","kind":"module","label":"Side panel","description":"Right-hand side panel chrome","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--studio-chat":{"id":"command-overview--frontend--studio-chat","kind":"module","label":"Studio chat","description":"Studio layout: rail, work head, AI chat panel, tunnel lens","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--subagent-view":{"id":"command-overview--frontend--subagent-view","kind":"module","label":"Subagent view","description":"Subagent timeline + inspector","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--ui-kit":{"id":"command-overview--frontend--ui-kit","kind":"module","label":"UI kit","description":"Shared presentational widgets","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--view-panel":{"id":"command-overview--frontend--view-panel","kind":"module","label":"View panel","description":"Timeline view filters and panel state","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--frontend--workspace":{"id":"command-overview--frontend--workspace","kind":"module","label":"Workspace","description":"Dominant workspace lenses: messages, organization, mission control","parentId":"command-overview--frontend","interfaceIds":[],"typeIds":[]},"command-overview--shared":{"id":"command-overview--shared","kind":"group","label":"Shared","parentId":"command-overview","interfaceIds":[],"typeIds":[]},"command-overview--shared--shared-contracts":{"id":"command-overview--shared--shared-contracts","kind":"module","label":"Shared contracts","description":"src/shared: the only legal frontend/backend meeting point — project, provider, missionView, canvas, analytics schemas","parentId":"command-overview--shared","interfaceIds":[],"typeIds":[]}},"wires":{"command-overview--wire-1":{"id":"command-overview--wire-1","kind":"queries","label":"reads runtime config","source":{"nodeId":"command-overview--backend--agent-orchestration"},"target":{"nodeId":"command-overview--backend--config"}},"command-overview--wire-2":{"id":"command-overview--wire-2","kind":"assigns","label":"persists coordinator state","source":{"nodeId":"command-overview--backend--agent-orchestration"},"target":{"nodeId":"command-overview--backend--state-manager"}},"command-overview--wire-3":{"id":"command-overview--wire-3","kind":"queries","label":"reads session transcripts","source":{"nodeId":"command-overview--backend--agent-orchestration"},"target":{"nodeId":"command-overview--backend--transcript-parser"}},"command-overview--wire-4":{"id":"command-overview--wire-4","kind":"references","label":"analytics types","source":{"nodeId":"command-overview--backend--analytics-engine"},"target":{"nodeId":"command-overview--shared--shared-contracts"}},"command-overview--wire-5":{"id":"command-overview--wire-5","kind":"references","label":"canvas model + validation","source":{"nodeId":"command-overview--backend--canvas-store"},"target":{"nodeId":"command-overview--shared--shared-contracts"}},"command-overview--wire-6":{"id":"command-overview--wire-6","kind":"executes","label":"mailbox registration + send seam","source":{"nodeId":"command-overview--backend--external-sessions"},"target":{"nodeId":"command-overview--backend--messaging-tunnel"}},"command-overview--wire-7":{"id":"command-overview--wire-7","kind":"references","label":"project schema","source":{"nodeId":"command-overview--backend--external-sessions"},"target":{"nodeId":"command-overview--shared--shared-contracts"}},"command-overview--wire-8":{"id":"command-overview--wire-8","kind":"executes","label":"types into PTY","source":{"nodeId":"command-overview--backend--messaging-tunnel"},"target":{"nodeId":"command-overview--backend--terminal-host"}},"command-overview--wire-9":{"id":"command-overview--wire-9","kind":"references","label":"project schema","source":{"nodeId":"command-overview--backend--messaging-tunnel"},"target":{"nodeId":"command-overview--shared--shared-contracts"}},"command-overview--wire-10":{"id":"command-overview--wire-10","kind":"queries","label":"reads message journal","source":{"nodeId":"command-overview--backend--mission-view"},"target":{"nodeId":"command-overview--backend--messaging-tunnel"}},"command-overview--wire-11":{"id":"command-overview--wire-11","kind":"queries","label":"live presence lookup","source":{"nodeId":"command-overview--backend--mission-view"},"target":{"nodeId":"command-overview--backend--terminal-host"}},"command-overview--wire-12":{"id":"command-overview--wire-12","kind":"references","label":"missionView snapshot schema","source":{"nodeId":"command-overview--backend--mission-view"},"target":{"nodeId":"command-overview--shared--shared-contracts"}},"command-overview--wire-13":{"id":"command-overview--wire-13","kind":"assigns","label":"validated append via store facade","source":{"nodeId":"command-overview--backend--object-model"},"target":{"nodeId":"command-overview--backend--durable-stores"}},"command-overview--wire-14":{"id":"command-overview--wire-14","kind":"references","label":"project schema","source":{"nodeId":"command-overview--backend--project-registry"},"target":{"nodeId":"command-overview--shared--shared-contracts"}},"command-overview--wire-15":{"id":"command-overview--wire-15","kind":"queries","label":"parses provider transcripts","source":{"nodeId":"command-overview--backend--provider-adapters"},"target":{"nodeId":"command-overview--backend--transcript-parser"}},"command-overview--wire-16":{"id":"command-overview--wire-16","kind":"references","label":"provider schema","source":{"nodeId":"command-overview--backend--provider-adapters"},"target":{"nodeId":"command-overview--shared--shared-contracts"}},"command-overview--wire-17":{"id":"command-overview--wire-17","kind":"owns","label":"composes at boot","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--agent-orchestration"}},"command-overview--wire-18":{"id":"command-overview--wire-18","kind":"owns","label":"composes at boot","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--analytics-engine"}},"command-overview--wire-19":{"id":"command-overview--wire-19","kind":"owns","label":"composes at boot","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--canvas-store"}},"command-overview--wire-20":{"id":"command-overview--wire-20","kind":"owns","label":"composes at boot","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--config"}},"command-overview--wire-21":{"id":"command-overview--wire-21","kind":"owns","label":"composes at boot","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--design-bridge"}},"command-overview--wire-22":{"id":"command-overview--wire-22","kind":"owns","label":"composes at boot","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--external-sessions"}},"command-overview--wire-23":{"id":"command-overview--wire-23","kind":"owns","label":"composes at boot","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--file-system-api"}},"command-overview--wire-24":{"id":"command-overview--wire-24","kind":"owns","label":"composes hub, injects seams","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--messaging-tunnel"}},"command-overview--wire-25":{"id":"command-overview--wire-25","kind":"owns","label":"composes hub, injects roots","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--mission-view"}},"command-overview--wire-26":{"id":"command-overview--wire-26","kind":"owns","label":"builds the ONE writer","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--object-model"}},"command-overview--wire-27":{"id":"command-overview--wire-27","kind":"owns","label":"composes at boot","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--project-registry"}},"command-overview--wire-28":{"id":"command-overview--wire-28","kind":"owns","label":"composes at boot","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--provider-adapters"}},"command-overview--wire-29":{"id":"command-overview--wire-29","kind":"owns","label":"composes at boot","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--ruleset"}},"command-overview--wire-30":{"id":"command-overview--wire-30","kind":"owns","label":"composes at boot","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--state-manager"}},"command-overview--wire-31":{"id":"command-overview--wire-31","kind":"owns","label":"owns TerminalManager","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--terminal-host"}},"command-overview--wire-32":{"id":"command-overview--wire-32","kind":"owns","label":"composes at boot","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--threads"}},"command-overview--wire-33":{"id":"command-overview--wire-33","kind":"owns","label":"composes at boot","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--transcript-parser"}},"command-overview--wire-34":{"id":"command-overview--wire-34","kind":"owns","label":"composes at boot","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--backend--version-control"}},"command-overview--wire-35":{"id":"command-overview--wire-35","kind":"references","label":"serves shared schemas","source":{"nodeId":"command-overview--backend--server-core"},"target":{"nodeId":"command-overview--shared--shared-contracts"}},"command-overview--wire-36":{"id":"command-overview--wire-36","kind":"queries","label":"resolves provider CLI launch","source":{"nodeId":"command-overview--backend--terminal-host"},"target":{"nodeId":"command-overview--backend--agent-orchestration"}},"command-overview--wire-37":{"id":"command-overview--wire-37","kind":"queries","label":"reads terminal config","source":{"nodeId":"command-overview--backend--terminal-host"},"target":{"nodeId":"command-overview--backend--config"}},"command-overview--wire-38":{"id":"command-overview--wire-38","kind":"queries","label":"encodes cwd for transcript match","source":{"nodeId":"command-overview--backend--terminal-host"},"target":{"nodeId":"command-overview--backend--transcript-parser"}},"command-overview--wire-39":{"id":"command-overview--wire-39","kind":"references","label":"provider ids","source":{"nodeId":"command-overview--backend--terminal-host"},"target":{"nodeId":"command-overview--shared--shared-contracts"}},"command-overview--wire-40":{"id":"command-overview--wire-40","kind":"executes","label":"provider session control","source":{"nodeId":"command-overview--backend--threads"},"target":{"nodeId":"command-overview--backend--provider-adapters"}},"command-overview--wire-41":{"id":"command-overview--wire-41","kind":"references","label":"project schema","source":{"nodeId":"command-overview--backend--threads"},"target":{"nodeId":"command-overview--shared--shared-contracts"}},"command-overview--wire-42":{"id":"command-overview--wire-42","kind":"references","label":"provider ids","source":{"nodeId":"command-overview--backend--transcript-parser"},"target":{"nodeId":"command-overview--shared--shared-contracts"}},"command-overview--wire-43":{"id":"command-overview--wire-43","kind":"queries","label":"file tree access","source":{"nodeId":"command-overview--backend--version-control"},"target":{"nodeId":"command-overview--backend--file-system-api"}},"command-overview--wire-44":{"id":"command-overview--wire-44","kind":"references","label":"timeline widgets","source":{"nodeId":"command-overview--frontend--agents-ui"},"target":{"nodeId":"command-overview--frontend--board"}},"command-overview--wire-45":{"id":"command-overview--wire-45","kind":"queries","label":"session + socket models","source":{"nodeId":"command-overview--frontend--agents-ui"},"target":{"nodeId":"command-overview--frontend--frontend-models"}},"command-overview--wire-46":{"id":"command-overview--wire-46","kind":"references","label":"shared widgets","source":{"nodeId":"command-overview--frontend--agents-ui"},"target":{"nodeId":"command-overview--frontend--ui-kit"}},"command-overview--wire-47":{"id":"command-overview--wire-47","kind":"references","label":"filter panel state","source":{"nodeId":"command-overview--frontend--agents-ui"},"target":{"nodeId":"command-overview--frontend--view-panel"}},"command-overview--wire-48":{"id":"command-overview--wire-48","kind":"queries","label":"analytics model","source":{"nodeId":"command-overview--frontend--analytics-studio"},"target":{"nodeId":"command-overview--frontend--frontend-models"}},"command-overview--wire-49":{"id":"command-overview--wire-49","kind":"queries","label":"highlight + session models","source":{"nodeId":"command-overview--frontend--board"},"target":{"nodeId":"command-overview--frontend--frontend-models"}},"command-overview--wire-50":{"id":"command-overview--wire-50","kind":"missing","label":"undeclared import (2 files)","source":{"nodeId":"command-overview--frontend--board"},"target":{"nodeId":"command-overview--frontend--app-shell"}},"command-overview--wire-51":{"id":"command-overview--wire-51","kind":"references","label":"shared widgets","source":{"nodeId":"command-overview--frontend--board"},"target":{"nodeId":"command-overview--frontend--ui-kit"}},"command-overview--wire-52":{"id":"command-overview--wire-52","kind":"queries","label":"canvas engine + projection","source":{"nodeId":"command-overview--frontend--canvas-studio"},"target":{"nodeId":"command-overview--frontend--frontend-models"}},"command-overview--wire-53":{"id":"command-overview--wire-53","kind":"references","label":"canvas commands + model","source":{"nodeId":"command-overview--frontend--canvas-studio"},"target":{"nodeId":"command-overview--shared--shared-contracts"}},"command-overview--wire-54":{"id":"command-overview--wire-54","kind":"references","label":"timeline model","source":{"nodeId":"command-overview--frontend--details-panel"},"target":{"nodeId":"command-overview--frontend--board"}},"command-overview--wire-55":{"id":"command-overview--wire-55","kind":"queries","label":"models","source":{"nodeId":"command-overview--frontend--details-panel"},"target":{"nodeId":"command-overview--frontend--frontend-models"}},"command-overview--wire-56":{"id":"command-overview--wire-56","kind":"missing","label":"undeclared import (1 file)","source":{"nodeId":"command-overview--frontend--details-panel"},"target":{"nodeId":"command-overview--frontend--app-shell"}},"command-overview--wire-57":{"id":"command-overview--wire-57","kind":"missing","label":"undeclared import (1 file)","source":{"nodeId":"command-overview--frontend--files-view"},"target":{"nodeId":"command-overview--frontend--app-shell"}},"command-overview--wire-58":{"id":"command-overview--wire-58","kind":"references","label":"shared widgets","source":{"nodeId":"command-overview--frontend--files-view"},"target":{"nodeId":"command-overview--frontend--ui-kit"}},"command-overview--wire-59":{"id":"command-overview--wire-59","kind":"references","label":"shared schemas over HTTP/ws payloads","source":{"nodeId":"command-overview--frontend--frontend-models"},"target":{"nodeId":"command-overview--shared--shared-contracts"}},"command-overview--wire-60":{"id":"command-overview--wire-60","kind":"references","label":"shared widgets","source":{"nodeId":"command-overview--frontend--ruleset-ui"},"target":{"nodeId":"command-overview--frontend--ui-kit"}},"command-overview--wire-61":{"id":"command-overview--wire-61","kind":"references","label":"timeline model","source":{"nodeId":"command-overview--frontend--session-bar"},"target":{"nodeId":"command-overview--frontend--board"}},"command-overview--wire-62":{"id":"command-overview--wire-62","kind":"queries","label":"models","source":{"nodeId":"command-overview--frontend--session-bar"},"target":{"nodeId":"command-overview--frontend--frontend-models"}},"command-overview--wire-63":{"id":"command-overview--wire-63","kind":"missing","label":"undeclared import (1 file)","source":{"nodeId":"command-overview--frontend--session-bar"},"target":{"nodeId":"command-overview--frontend--app-shell"}},"command-overview--wire-64":{"id":"command-overview--wire-64","kind":"references","label":"view panel state","source":{"nodeId":"command-overview--frontend--session-bar"},"target":{"nodeId":"command-overview--frontend--view-panel"}},"command-overview--wire-65":{"id":"command-overview--wire-65","kind":"references","label":"panel state","source":{"nodeId":"command-overview--frontend--settings"},"target":{"nodeId":"command-overview--frontend--view-panel"}},"command-overview--wire-66":{"id":"command-overview--wire-66","kind":"owns","label":"mounts","source":{"nodeId":"command-overview--frontend--app-shell"},"target":{"nodeId":"command-overview--frontend--agents-ui"}},"command-overview--wire-67":{"id":"command-overview--wire-67","kind":"owns","label":"mounts","source":{"nodeId":"command-overview--frontend--app-shell"},"target":{"nodeId":"command-overview--frontend--analytics-studio"}},"command-overview--wire-68":{"id":"command-overview--wire-68","kind":"owns","label":"mounts","source":{"nodeId":"command-overview--frontend--app-shell"},"target":{"nodeId":"command-overview--frontend--board"}},"command-overview--wire-69":{"id":"command-overview--wire-69","kind":"owns","label":"mounts","source":{"nodeId":"command-overview--frontend--app-shell"},"target":{"nodeId":"command-overview--frontend--canvas-studio"}},"command-overview--wire-70":{"id":"command-overview--wire-70","kind":"owns","label":"mounts","source":{"nodeId":"command-overview--frontend--app-shell"},"target":{"nodeId":"command-overview--frontend--debug-panel"}},"command-overview--wire-71":{"id":"command-overview--wire-71","kind":"owns","label":"mounts","source":{"nodeId":"command-overview--frontend--app-shell"},"target":{"nodeId":"command-overview--frontend--design-studio"}},"command-overview--wire-72":{"id":"command-overview--wire-72","kind":"owns","label":"mounts","source":{"nodeId":"command-overview--frontend--app-shell"},"target":{"nodeId":"command-overview--frontend--details-panel"}},"command-overview--wire-73":{"id":"command-overview--wire-73","kind":"owns","label":"mounts","source":{"nodeId":"command-overview--frontend--app-shell"},"target":{"nodeId":"command-overview--frontend--files-view"}},"command-overview--wire-74":{"id":"command-overview--wire-74","kind":"queries","label":"wires models into views","source":{"nodeId":"command-overview--frontend--app-shell"},"target":{"nodeId":"command-overview--frontend--frontend-models"}},"command-overview--wire-75":{"id":"command-overview--wire-75","kind":"owns","label":"mounts","source":{"nodeId":"command-overview--frontend--app-shell"},"target":{"nodeId":"command-overview--frontend--ruleset-ui"}},"command-overview--wire-76":{"id":"command-overview--wire-76","kind":"owns","label":"mounts","source":{"nodeId":"command-overview--frontend--app-shell"},"target":{"nodeId":"command-overview--frontend--session-bar"}},"command-overview--wire-77":{"id":"command-overview--wire-77","kind":"owns","label":"mounts","source":{"nodeId":"command-overview--frontend--app-shell"},"target":{"nodeId":"command-overview--frontend--settings"}},"command-overview--wire-78":{"id":"command-overview--wire-78","kind":"owns","label":"mounts","source":{"nodeId":"command-overview--frontend--app-shell"},"target":{"nodeId":"command-overview--frontend--side-panel"}},"command-overview--wire-79":{"id":"command-overview--wire-79","kind":"owns","label":"mounts studio layout","source":{"nodeId":"command-overview--frontend--app-shell"},"target":{"nodeId":"command-overview--frontend--studio-chat"}},"command-overview--wire-80":{"id":"command-overview--wire-80","kind":"owns","label":"mounts","source":{"nodeId":"command-overview--frontend--app-shell"},"target":{"nodeId":"command-overview--frontend--subagent-view"}},"command-overview--wire-81":{"id":"command-overview--wire-81","kind":"owns","label":"mounts","source":{"nodeId":"command-overview--frontend--app-shell"},"target":{"nodeId":"command-overview--frontend--view-panel"}},"command-overview--wire-82":{"id":"command-overview--wire-82","kind":"owns","label":"mounts workspace lenses","source":{"nodeId":"command-overview--frontend--app-shell"},"target":{"nodeId":"command-overview--frontend--workspace"}},"command-overview--wire-83":{"id":"command-overview--wire-83","kind":"references","label":"shared widgets","source":{"nodeId":"command-overview--frontend--side-panel"},"target":{"nodeId":"command-overview--frontend--ui-kit"}},"command-overview--wire-84":{"id":"command-overview--wire-84","kind":"queries","label":"chat + tunnel models","source":{"nodeId":"command-overview--frontend--studio-chat"},"target":{"nodeId":"command-overview--frontend--frontend-models"}},"command-overview--wire-85":{"id":"command-overview--wire-85","kind":"references","label":"missionView + provider schemas","source":{"nodeId":"command-overview--frontend--studio-chat"},"target":{"nodeId":"command-overview--shared--shared-contracts"}},"command-overview--wire-86":{"id":"command-overview--wire-86","kind":"references","label":"timeline widgets","source":{"nodeId":"command-overview--frontend--subagent-view"},"target":{"nodeId":"command-overview--frontend--board"}},"command-overview--wire-87":{"id":"command-overview--wire-87","kind":"references","label":"inspector reuse","source":{"nodeId":"command-overview--frontend--subagent-view"},"target":{"nodeId":"command-overview--frontend--details-panel"}},"command-overview--wire-88":{"id":"command-overview--wire-88","kind":"queries","label":"models","source":{"nodeId":"command-overview--frontend--subagent-view"},"target":{"nodeId":"command-overview--frontend--frontend-models"}},"command-overview--wire-89":{"id":"command-overview--wire-89","kind":"missing","label":"undeclared import (1 file)","source":{"nodeId":"command-overview--frontend--subagent-view"},"target":{"nodeId":"command-overview--frontend--app-shell"}},"command-overview--wire-90":{"id":"command-overview--wire-90","kind":"references","label":"timeline model","source":{"nodeId":"command-overview--frontend--view-panel"},"target":{"nodeId":"command-overview--frontend--board"}},"command-overview--wire-91":{"id":"command-overview--wire-91","kind":"queries","label":"models","source":{"nodeId":"command-overview--frontend--view-panel"},"target":{"nodeId":"command-overview--frontend--frontend-models"}},"command-overview--wire-92":{"id":"command-overview--wire-92","kind":"missing","label":"undeclared import (1 file)","source":{"nodeId":"command-overview--frontend--view-panel"},"target":{"nodeId":"command-overview--frontend--app-shell"}},"command-overview--wire-93":{"id":"command-overview--wire-93","kind":"queries","label":"mission room + tunnel models","source":{"nodeId":"command-overview--frontend--workspace"},"target":{"nodeId":"command-overview--frontend--frontend-models"}},"command-overview--wire-94":{"id":"command-overview--wire-94","kind":"references","label":"embeds chat panel","source":{"nodeId":"command-overview--frontend--workspace"},"target":{"nodeId":"command-overview--frontend--studio-chat"}},"command-overview--wire-95":{"id":"command-overview--wire-95","kind":"references","label":"shared widgets","source":{"nodeId":"command-overview--frontend--workspace"},"target":{"nodeId":"command-overview--frontend--ui-kit"}},"command-overview--wire-96":{"id":"command-overview--wire-96","kind":"references","label":"missionView schema","source":{"nodeId":"command-overview--frontend--workspace"},"target":{"nodeId":"command-overview--shared--shared-contracts"}},"command-overview--wire-97":{"id":"command-overview--wire-97","kind":"missing","label":"stamps durable ids + missionId (identity seam) — declared, not in code","source":{"nodeId":"command-overview--backend--messaging-tunnel"},"target":{"nodeId":"command-overview--backend--object-model"}},"command-overview--wire-98":{"id":"command-overview--wire-98","kind":"missing","label":"reads mission graph — declared, not in code","source":{"nodeId":"command-overview--backend--mission-view"},"target":{"nodeId":"command-overview--backend--object-model"}}},"interfaces":{},"types":{},"layouts":{"layout-default":{"id":"layout-default","name":"Default","strategy":"manual","placements":{"command-overview":{"nodeId":"command-overview","position":{"x":40,"y":17677},"size":{"width":4610,"height":2768},"pinned":false},"command-overview--backend":{"nodeId":"command-overview--backend","position":{"x":40,"y":56},"size":{"width":4530,"height":1182},"pinned":false},"command-overview--backend--agent-orchestration":{"nodeId":"command-overview--backend--agent-orchestration","position":{"x":3215,"y":848},"size":{"width":420,"height":120},"pinned":false},"command-overview--backend--analytics-engine":{"nodeId":"command-overview--backend--analytics-engine","position":{"x":40,"y":262},"size":{"width":420,"height":120},"pinned":false},"command-overview--backend--browser-engine":{"nodeId":"command-overview--backend--browser-engine","position":{"x":1785,"y":56},"size":{"width":420,"height":136},"pinned":false},"command-overview--backend--canvas-store":{"nodeId":"command-overview--backend--canvas-store","position":{"x":500,"y":262},"size":{"width":420,"height":120},"pinned":false},"command-overview--backend--config":{"nodeId":"command-overview--backend--config","position":{"x":2218,"y":1038},"size":{"width":233,"height":104},"pinned":false},"command-overview--backend--design-bridge":{"nodeId":"command-overview--backend--design-bridge","position":{"x":960,"y":270},"size":{"width":233,"height":104},"pinned":false},"command-overview--backend--external-sessions":{"nodeId":"command-overview--backend--external-sessions","position":{"x":3225,"y":262},"size":{"width":420,"height":120},"pinned":false},"command-overview--backend--file-system-api":{"nodeId":"command-overview--backend--file-system-api","position":{"x":1249,"y":468},"size":{"width":334,"height":104},"pinned":false},"command-overview--backend--messaging-tunnel":{"nodeId":"command-overview--backend--messaging-tunnel","position":{"x":3055,"y":452},"size":{"width":420,"height":136},"pinned":false},"command-overview--backend--mission-view":{"nodeId":"command-overview--backend--mission-view","position":{"x":2745,"y":262},"size":{"width":420,"height":120},"pinned":false},"command-overview--backend--object-model":{"nodeId":"command-overview--backend--object-model","position":{"x":2195,"y":658},"size":{"width":420,"height":120},"pinned":false},"command-overview--backend--project-registry":{"nodeId":"command-overview--backend--project-registry","position":{"x":1619,"y":270},"size":{"width":276,"height":104},"pinned":false},"command-overview--backend--provider-adapters":{"nodeId":"command-overview--backend--provider-adapters","position":{"x":3996,"y":468},"size":{"width":262,"height":104},"pinned":false},"command-overview--backend--ruleset":{"nodeId":"command-overview--backend--ruleset","position":{"x":1935,"y":270},"size":{"width":200,"height":104},"pinned":false},"command-overview--backend--server-core":{"nodeId":"command-overview--backend--server-core","position":{"x":2245,"y":64},"size":{"width":420,"height":120},"pinned":false},"command-overview--backend--state-manager":{"nodeId":"command-overview--backend--state-manager","position":{"x":3445,"y":1038},"size":{"width":200,"height":104},"pinned":false},"command-overview--backend--durable-stores":{"nodeId":"command-overview--backend--durable-stores","position":{"x":2195,"y":848},"size":{"width":420,"height":120},"pinned":false},"command-overview--backend--terminal-host":{"nodeId":"command-overview--backend--terminal-host","position":{"x":3435,"y":658},"size":{"width":420,"height":120},"pinned":false},"command-overview--backend--threads":{"nodeId":"command-overview--backend--threads","position":{"x":3935,"y":270},"size":{"width":384,"height":104},"pinned":false},"command-overview--backend--transcript-parser":{"nodeId":"command-overview--backend--transcript-parser","position":{"x":4228,"y":1038},"size":{"width":262,"height":104},"pinned":false},"command-overview--backend--version-control":{"nodeId":"command-overview--backend--version-control","position":{"x":1253,"y":270},"size":{"width":326,"height":104},"pinned":false},"command-overview--frontend":{"nodeId":"command-overview--frontend","position":{"x":40,"y":1308},"size":{"width":3630,"height":1118},"pinned":false},"command-overview--frontend--agents-ui":{"nodeId":"command-overview--frontend--agents-ui","position":{"x":1823,"y":56},"size":{"width":305,"height":104},"pinned":false},"command-overview--frontend--analytics-studio":{"nodeId":"command-overview--frontend--analytics-studio","position":{"x":551,"y":784},"size":{"width":200,"height":104},"pinned":false},"command-overview--frontend--board":{"nodeId":"command-overview--frontend--board","position":{"x":1588,"y":230},"size":{"width":319,"height":104},"pinned":false},"command-overview--frontend--canvas-studio":{"nodeId":"command-overview--frontend--canvas-studio","position":{"x":811,"y":784},"size":{"width":200,"height":104},"pinned":false},"command-overview--frontend--debug-panel":{"nodeId":"command-overview--frontend--debug-panel","position":{"x":40,"y":602},"size":{"width":211,"height":104},"pinned":false},"command-overview--frontend--design-studio":{"nodeId":"command-overview--frontend--design-studio","position":{"x":291,"y":602},"size":{"width":200,"height":104},"pinned":false},"command-overview--frontend--details-panel":{"nodeId":"command-overview--frontend--details-panel","position":{"x":1749,"y":784},"size":{"width":200,"height":104},"pinned":false},"command-overview--frontend--files-view":{"nodeId":"command-overview--frontend--files-view","position":{"x":1066,"y":602},"size":{"width":200,"height":104},"pinned":false},"command-overview--frontend--frontend-models":{"nodeId":"command-overview--frontend--frontend-models","position":{"x":2000,"y":958},"size":{"width":420,"height":120},"pinned":false},"command-overview--frontend--ruleset-ui":{"nodeId":"command-overview--frontend--ruleset-ui","position":{"x":1306,"y":602},"size":{"width":200,"height":104},"pinned":false},"command-overview--frontend--session-bar":{"nodeId":"command-overview--frontend--session-bar","position":{"x":2615,"y":602},"size":{"width":200,"height":104},"pinned":false},"command-overview--frontend--settings":{"nodeId":"command-overview--frontend--settings","position":{"x":3345,"y":602},"size":{"width":200,"height":104},"pinned":false},"command-overview--frontend--app-shell":{"nodeId":"command-overview--frontend--app-shell","position":{"x":1872,"y":404},"size":{"width":420,"height":120},"pinned":false},"command-overview--frontend--side-panel":{"nodeId":"command-overview--frontend--side-panel","position":{"x":1546,"y":602},"size":{"width":226,"height":104},"pinned":false},"command-overview--frontend--studio-chat":{"nodeId":"command-overview--frontend--studio-chat","position":{"x":2608,"y":784},"size":{"width":420,"height":104},"pinned":false},"command-overview--frontend--subagent-view":{"nodeId":"command-overview--frontend--subagent-view","position":{"x":2192,"y":602},"size":{"width":233,"height":104},"pinned":false},"command-overview--frontend--ui-kit":{"nodeId":"command-overview--frontend--ui-kit","position":{"x":1169,"y":784},"size":{"width":233,"height":104},"pinned":false},"command-overview--frontend--view-panel":{"nodeId":"command-overview--frontend--view-panel","position":{"x":3300,"y":784},"size":{"width":290,"height":104},"pinned":false},"command-overview--frontend--workspace":{"nodeId":"command-overview--frontend--workspace","position":{"x":2855,"y":594},"size":{"width":420,"height":120},"pinned":false},"command-overview--shared":{"nodeId":"command-overview--shared","position":{"x":40,"y":2496},"size":{"width":500,"height":232},"pinned":false},"command-overview--shared--shared-contracts":{"nodeId":"command-overview--shared--shared-contracts","position":{"x":40,"y":56},"size":{"width":420,"height":136},"pinned":false}},"wireRouteHints":{"command-overview--wire-45":{"wireId":"command-overview--wire-45","waypoints":[],"labelPosition":0.5343069735166068}}}},"views":{"view-default":{"id":"view-default","name":"Default","layoutId":"layout-default","viewport":{"x":0,"y":0,"zoom":1},"collapsedNodeIds":[],"hiddenKinds":[]}},"activeViewId":"view-default","sourceRefs":[],"appliedOperations":{"ui-0dab8f9e-e884-43d0-94f2-e0aabb9ffac5":{"operationId":"ui-0dab8f9e-e884-43d0-94f2-e0aabb9ffac5","revision":2382,"actor":{"id":"local-user","kind":"human"},"timestamp":"2026-08-05T21:36:31.025Z","provenance":{"source":"ui"},"commandKinds":["wire.setRoute"]}}}
+{
+  "schemaVersion": 3,
+  "id": "command-overview",
+  "name": "Command Overview",
+  "status": "active",
+  "revision": 2382,
+  "nodes": {
+    "command-overview": {
+      "id": "command-overview",
+      "kind": "group",
+      "label": "Command Overview",
+      "description": "Novakai Command subdomains: folded import edges vs contract.json — red (missing) wires are drift",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend": {
+      "id": "command-overview--backend",
+      "kind": "group",
+      "label": "Backend",
+      "parentId": "command-overview",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--agent-orchestration": {
+      "id": "command-overview--backend--agent-orchestration",
+      "kind": "module",
+      "label": "Agent orchestration",
+      "description": "Coordinator + executor: spawns and supervises provider CLI agents",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--analytics-engine": {
+      "id": "command-overview--backend--analytics-engine",
+      "kind": "module",
+      "label": "Analytics engine",
+      "description": "Repo/session analytics computation behind the analytics studio",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--browser-engine": {
+      "id": "command-overview--backend--browser-engine",
+      "kind": "module",
+      "label": "Browser engine",
+      "description": "Isolated per-agent headless Chrome host driven by tools/browse (no src imports either way — reached by CLI, not import)",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--canvas-store": {
+      "id": "command-overview--backend--canvas-store",
+      "kind": "module",
+      "label": "Canvas store",
+      "description": "Architecture-canvas document store + file watch for the canvas studio",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--config": {
+      "id": "command-overview--backend--config",
+      "kind": "module",
+      "label": "Config",
+      "description": "Runtime configuration manager",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--design-bridge": {
+      "id": "command-overview--backend--design-bridge",
+      "kind": "module",
+      "label": "Design bridge",
+      "description": "Backend for the design studio",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--external-sessions": {
+      "id": "command-overview--backend--external-sessions",
+      "kind": "module",
+      "label": "External sessions",
+      "description": "Registers terminal-spawned sessions into the durable mission graph (Agent + Presence + mailbox)",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--file-system-api": {
+      "id": "command-overview--backend--file-system-api",
+      "kind": "module",
+      "label": "File system API",
+      "description": "Workspace file tree access for the frontend",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--messaging-tunnel": {
+      "id": "command-overview--backend--messaging-tunnel",
+      "kind": "module",
+      "label": "Messaging tunnel",
+      "description": "Agent-to-agent DM + #team channel: REST send surface, router, append-only store, PTY delivery — see docs/agent-messaging.md",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--mission-view": {
+      "id": "command-overview--backend--mission-view",
+      "kind": "module",
+      "label": "Mission view",
+      "description": "Mission Room read-only snapshot composition over stores, journal and live presence",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--object-model": {
+      "id": "command-overview--backend--object-model",
+      "kind": "module",
+      "label": "Object model",
+      "description": "The ONE write interface for the durable mission graph; callers never touch stores directly",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--project-registry": {
+      "id": "command-overview--backend--project-registry",
+      "kind": "module",
+      "label": "Project registry",
+      "description": "Project records and workspace roots",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--provider-adapters": {
+      "id": "command-overview--backend--provider-adapters",
+      "kind": "module",
+      "label": "Provider adapters",
+      "description": "Claude/Codex CLI session adapters",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--ruleset": {
+      "id": "command-overview--backend--ruleset",
+      "kind": "module",
+      "label": "Ruleset",
+      "description": "Agent ruleset storage",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--server-core": {
+      "id": "command-overview--backend--server-core",
+      "kind": "module",
+      "label": "Server core",
+      "description": "Express + ws composition root: builds every hub, injects roots and seams, registers routes",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--state-manager": {
+      "id": "command-overview--backend--state-manager",
+      "kind": "module",
+      "label": "State manager",
+      "description": "Persisted backend state",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--durable-stores": {
+      "id": "command-overview--backend--durable-stores",
+      "kind": "module",
+      "label": "Durable stores",
+      "description": ".novakai/stores engine: schema law, locking, CAS, append-only writer (facade store.mjs)",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--terminal-host": {
+      "id": "command-overview--backend--terminal-host",
+      "kind": "module",
+      "label": "Terminal host",
+      "description": "PTY-per-agent TerminalManager: spawns, buffers and addresses live agent terminals",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--threads": {
+      "id": "command-overview--backend--threads",
+      "kind": "module",
+      "label": "Threads",
+      "description": "Durable work objectives bound to provider sessions",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--transcript-parser": {
+      "id": "command-overview--backend--transcript-parser",
+      "kind": "module",
+      "label": "Transcript parser",
+      "description": "Provider JSONL transcript parsing",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--backend--version-control": {
+      "id": "command-overview--backend--version-control",
+      "kind": "module",
+      "label": "Version control",
+      "description": "Git status/diff surface for the files view",
+      "parentId": "command-overview--backend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend": {
+      "id": "command-overview--frontend",
+      "kind": "group",
+      "label": "Frontend",
+      "parentId": "command-overview",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--agents-ui": {
+      "id": "command-overview--frontend--agents-ui",
+      "kind": "module",
+      "label": "Agents UI",
+      "description": "Agent list and session inspection views",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--analytics-studio": {
+      "id": "command-overview--frontend--analytics-studio",
+      "kind": "module",
+      "label": "Analytics studio",
+      "description": "Analytics workspace lens",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--board": {
+      "id": "command-overview--frontend--board",
+      "kind": "module",
+      "label": "Board",
+      "description": "Agent board + transcript timeline widgets",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--canvas-studio": {
+      "id": "command-overview--frontend--canvas-studio",
+      "kind": "module",
+      "label": "Canvas studio",
+      "description": "Architecture canvas lens",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--debug-panel": {
+      "id": "command-overview--frontend--debug-panel",
+      "kind": "module",
+      "label": "Debug panel",
+      "description": "Build/debug messages panel",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--design-studio": {
+      "id": "command-overview--frontend--design-studio",
+      "kind": "module",
+      "label": "Design studio",
+      "description": "Design workspace lens",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--details-panel": {
+      "id": "command-overview--frontend--details-panel",
+      "kind": "module",
+      "label": "Details panel",
+      "description": "Selected-item inspector",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--files-view": {
+      "id": "command-overview--frontend--files-view",
+      "kind": "module",
+      "label": "Files view",
+      "description": "Workspace file browser",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--frontend-models": {
+      "id": "command-overview--frontend--frontend-models",
+      "kind": "module",
+      "label": "Frontend models",
+      "description": "src/frontend/lib: socket, chat, tunnel, mission room, attention, canvas models",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--ruleset-ui": {
+      "id": "command-overview--frontend--ruleset-ui",
+      "kind": "module",
+      "label": "Ruleset UI",
+      "description": "Ruleset inspector",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--session-bar": {
+      "id": "command-overview--frontend--session-bar",
+      "kind": "module",
+      "label": "Session bar",
+      "description": "Session switcher strip",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--settings": {
+      "id": "command-overview--frontend--settings",
+      "kind": "module",
+      "label": "Settings",
+      "description": "Settings panel",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--app-shell": {
+      "id": "command-overview--frontend--app-shell",
+      "kind": "module",
+      "label": "App shell",
+      "description": "main.tsx + components/index.tsx: mounts every view and owns top-level state",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--side-panel": {
+      "id": "command-overview--frontend--side-panel",
+      "kind": "module",
+      "label": "Side panel",
+      "description": "Right-hand side panel chrome",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--studio-chat": {
+      "id": "command-overview--frontend--studio-chat",
+      "kind": "module",
+      "label": "Studio chat",
+      "description": "Studio layout: rail, work head, AI chat panel, tunnel lens",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--subagent-view": {
+      "id": "command-overview--frontend--subagent-view",
+      "kind": "module",
+      "label": "Subagent view",
+      "description": "Subagent timeline + inspector",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--ui-kit": {
+      "id": "command-overview--frontend--ui-kit",
+      "kind": "module",
+      "label": "UI kit",
+      "description": "Shared presentational widgets",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--view-panel": {
+      "id": "command-overview--frontend--view-panel",
+      "kind": "module",
+      "label": "View panel",
+      "description": "Timeline view filters and panel state",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--frontend--workspace": {
+      "id": "command-overview--frontend--workspace",
+      "kind": "module",
+      "label": "Workspace",
+      "description": "Dominant workspace lenses: messages, organization, mission control",
+      "parentId": "command-overview--frontend",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--shared": {
+      "id": "command-overview--shared",
+      "kind": "group",
+      "label": "Shared",
+      "parentId": "command-overview",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "command-overview--shared--shared-contracts": {
+      "id": "command-overview--shared--shared-contracts",
+      "kind": "module",
+      "label": "Shared contracts",
+      "description": "src/shared: the only legal frontend/backend meeting point — project, provider, missionView, canvas, analytics schemas",
+      "parentId": "command-overview--shared",
+      "interfaceIds": [],
+      "typeIds": []
+    }
+  },
+  "wires": {
+    "command-overview--wire-1": {
+      "id": "command-overview--wire-1",
+      "kind": "queries",
+      "label": "reads runtime config",
+      "source": {
+        "nodeId": "command-overview--backend--agent-orchestration"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--config"
+      }
+    },
+    "command-overview--wire-2": {
+      "id": "command-overview--wire-2",
+      "kind": "assigns",
+      "label": "persists coordinator state",
+      "source": {
+        "nodeId": "command-overview--backend--agent-orchestration"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--state-manager"
+      }
+    },
+    "command-overview--wire-3": {
+      "id": "command-overview--wire-3",
+      "kind": "queries",
+      "label": "reads session transcripts",
+      "source": {
+        "nodeId": "command-overview--backend--agent-orchestration"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--transcript-parser"
+      }
+    },
+    "command-overview--wire-4": {
+      "id": "command-overview--wire-4",
+      "kind": "references",
+      "label": "analytics types",
+      "source": {
+        "nodeId": "command-overview--backend--analytics-engine"
+      },
+      "target": {
+        "nodeId": "command-overview--shared--shared-contracts"
+      }
+    },
+    "command-overview--wire-5": {
+      "id": "command-overview--wire-5",
+      "kind": "references",
+      "label": "canvas model + validation",
+      "source": {
+        "nodeId": "command-overview--backend--canvas-store"
+      },
+      "target": {
+        "nodeId": "command-overview--shared--shared-contracts"
+      }
+    },
+    "command-overview--wire-6": {
+      "id": "command-overview--wire-6",
+      "kind": "executes",
+      "label": "mailbox registration + send seam",
+      "source": {
+        "nodeId": "command-overview--backend--external-sessions"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--messaging-tunnel"
+      }
+    },
+    "command-overview--wire-7": {
+      "id": "command-overview--wire-7",
+      "kind": "references",
+      "label": "project schema",
+      "source": {
+        "nodeId": "command-overview--backend--external-sessions"
+      },
+      "target": {
+        "nodeId": "command-overview--shared--shared-contracts"
+      }
+    },
+    "command-overview--wire-8": {
+      "id": "command-overview--wire-8",
+      "kind": "executes",
+      "label": "types into PTY",
+      "source": {
+        "nodeId": "command-overview--backend--messaging-tunnel"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--terminal-host"
+      }
+    },
+    "command-overview--wire-9": {
+      "id": "command-overview--wire-9",
+      "kind": "references",
+      "label": "project schema",
+      "source": {
+        "nodeId": "command-overview--backend--messaging-tunnel"
+      },
+      "target": {
+        "nodeId": "command-overview--shared--shared-contracts"
+      }
+    },
+    "command-overview--wire-10": {
+      "id": "command-overview--wire-10",
+      "kind": "queries",
+      "label": "reads message journal",
+      "source": {
+        "nodeId": "command-overview--backend--mission-view"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--messaging-tunnel"
+      }
+    },
+    "command-overview--wire-11": {
+      "id": "command-overview--wire-11",
+      "kind": "queries",
+      "label": "live presence lookup",
+      "source": {
+        "nodeId": "command-overview--backend--mission-view"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--terminal-host"
+      }
+    },
+    "command-overview--wire-12": {
+      "id": "command-overview--wire-12",
+      "kind": "references",
+      "label": "missionView snapshot schema",
+      "source": {
+        "nodeId": "command-overview--backend--mission-view"
+      },
+      "target": {
+        "nodeId": "command-overview--shared--shared-contracts"
+      }
+    },
+    "command-overview--wire-13": {
+      "id": "command-overview--wire-13",
+      "kind": "assigns",
+      "label": "validated append via store facade",
+      "source": {
+        "nodeId": "command-overview--backend--object-model"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--durable-stores"
+      }
+    },
+    "command-overview--wire-14": {
+      "id": "command-overview--wire-14",
+      "kind": "references",
+      "label": "project schema",
+      "source": {
+        "nodeId": "command-overview--backend--project-registry"
+      },
+      "target": {
+        "nodeId": "command-overview--shared--shared-contracts"
+      }
+    },
+    "command-overview--wire-15": {
+      "id": "command-overview--wire-15",
+      "kind": "queries",
+      "label": "parses provider transcripts",
+      "source": {
+        "nodeId": "command-overview--backend--provider-adapters"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--transcript-parser"
+      }
+    },
+    "command-overview--wire-16": {
+      "id": "command-overview--wire-16",
+      "kind": "references",
+      "label": "provider schema",
+      "source": {
+        "nodeId": "command-overview--backend--provider-adapters"
+      },
+      "target": {
+        "nodeId": "command-overview--shared--shared-contracts"
+      }
+    },
+    "command-overview--wire-17": {
+      "id": "command-overview--wire-17",
+      "kind": "owns",
+      "label": "composes at boot",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--agent-orchestration"
+      }
+    },
+    "command-overview--wire-18": {
+      "id": "command-overview--wire-18",
+      "kind": "owns",
+      "label": "composes at boot",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--analytics-engine"
+      }
+    },
+    "command-overview--wire-19": {
+      "id": "command-overview--wire-19",
+      "kind": "owns",
+      "label": "composes at boot",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--canvas-store"
+      }
+    },
+    "command-overview--wire-20": {
+      "id": "command-overview--wire-20",
+      "kind": "owns",
+      "label": "composes at boot",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--config"
+      }
+    },
+    "command-overview--wire-21": {
+      "id": "command-overview--wire-21",
+      "kind": "owns",
+      "label": "composes at boot",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--design-bridge"
+      }
+    },
+    "command-overview--wire-22": {
+      "id": "command-overview--wire-22",
+      "kind": "owns",
+      "label": "composes at boot",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--external-sessions"
+      }
+    },
+    "command-overview--wire-23": {
+      "id": "command-overview--wire-23",
+      "kind": "owns",
+      "label": "composes at boot",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--file-system-api"
+      }
+    },
+    "command-overview--wire-24": {
+      "id": "command-overview--wire-24",
+      "kind": "owns",
+      "label": "composes hub, injects seams",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--messaging-tunnel"
+      }
+    },
+    "command-overview--wire-25": {
+      "id": "command-overview--wire-25",
+      "kind": "owns",
+      "label": "composes hub, injects roots",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--mission-view"
+      }
+    },
+    "command-overview--wire-26": {
+      "id": "command-overview--wire-26",
+      "kind": "owns",
+      "label": "builds the ONE writer",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--object-model"
+      }
+    },
+    "command-overview--wire-27": {
+      "id": "command-overview--wire-27",
+      "kind": "owns",
+      "label": "composes at boot",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--project-registry"
+      }
+    },
+    "command-overview--wire-28": {
+      "id": "command-overview--wire-28",
+      "kind": "owns",
+      "label": "composes at boot",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--provider-adapters"
+      }
+    },
+    "command-overview--wire-29": {
+      "id": "command-overview--wire-29",
+      "kind": "owns",
+      "label": "composes at boot",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--ruleset"
+      }
+    },
+    "command-overview--wire-30": {
+      "id": "command-overview--wire-30",
+      "kind": "owns",
+      "label": "composes at boot",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--state-manager"
+      }
+    },
+    "command-overview--wire-31": {
+      "id": "command-overview--wire-31",
+      "kind": "owns",
+      "label": "owns TerminalManager",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--terminal-host"
+      }
+    },
+    "command-overview--wire-32": {
+      "id": "command-overview--wire-32",
+      "kind": "owns",
+      "label": "composes at boot",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--threads"
+      }
+    },
+    "command-overview--wire-33": {
+      "id": "command-overview--wire-33",
+      "kind": "owns",
+      "label": "composes at boot",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--transcript-parser"
+      }
+    },
+    "command-overview--wire-34": {
+      "id": "command-overview--wire-34",
+      "kind": "owns",
+      "label": "composes at boot",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--version-control"
+      }
+    },
+    "command-overview--wire-35": {
+      "id": "command-overview--wire-35",
+      "kind": "references",
+      "label": "serves shared schemas",
+      "source": {
+        "nodeId": "command-overview--backend--server-core"
+      },
+      "target": {
+        "nodeId": "command-overview--shared--shared-contracts"
+      }
+    },
+    "command-overview--wire-36": {
+      "id": "command-overview--wire-36",
+      "kind": "queries",
+      "label": "resolves provider CLI launch",
+      "source": {
+        "nodeId": "command-overview--backend--terminal-host"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--agent-orchestration"
+      }
+    },
+    "command-overview--wire-37": {
+      "id": "command-overview--wire-37",
+      "kind": "queries",
+      "label": "reads terminal config",
+      "source": {
+        "nodeId": "command-overview--backend--terminal-host"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--config"
+      }
+    },
+    "command-overview--wire-38": {
+      "id": "command-overview--wire-38",
+      "kind": "queries",
+      "label": "encodes cwd for transcript match",
+      "source": {
+        "nodeId": "command-overview--backend--terminal-host"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--transcript-parser"
+      }
+    },
+    "command-overview--wire-39": {
+      "id": "command-overview--wire-39",
+      "kind": "references",
+      "label": "provider ids",
+      "source": {
+        "nodeId": "command-overview--backend--terminal-host"
+      },
+      "target": {
+        "nodeId": "command-overview--shared--shared-contracts"
+      }
+    },
+    "command-overview--wire-40": {
+      "id": "command-overview--wire-40",
+      "kind": "executes",
+      "label": "provider session control",
+      "source": {
+        "nodeId": "command-overview--backend--threads"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--provider-adapters"
+      }
+    },
+    "command-overview--wire-41": {
+      "id": "command-overview--wire-41",
+      "kind": "references",
+      "label": "project schema",
+      "source": {
+        "nodeId": "command-overview--backend--threads"
+      },
+      "target": {
+        "nodeId": "command-overview--shared--shared-contracts"
+      }
+    },
+    "command-overview--wire-42": {
+      "id": "command-overview--wire-42",
+      "kind": "references",
+      "label": "provider ids",
+      "source": {
+        "nodeId": "command-overview--backend--transcript-parser"
+      },
+      "target": {
+        "nodeId": "command-overview--shared--shared-contracts"
+      }
+    },
+    "command-overview--wire-43": {
+      "id": "command-overview--wire-43",
+      "kind": "queries",
+      "label": "file tree access",
+      "source": {
+        "nodeId": "command-overview--backend--version-control"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--file-system-api"
+      }
+    },
+    "command-overview--wire-44": {
+      "id": "command-overview--wire-44",
+      "kind": "references",
+      "label": "timeline widgets",
+      "source": {
+        "nodeId": "command-overview--frontend--agents-ui"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--board"
+      }
+    },
+    "command-overview--wire-45": {
+      "id": "command-overview--wire-45",
+      "kind": "queries",
+      "label": "session + socket models",
+      "source": {
+        "nodeId": "command-overview--frontend--agents-ui"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--frontend-models"
+      }
+    },
+    "command-overview--wire-46": {
+      "id": "command-overview--wire-46",
+      "kind": "references",
+      "label": "shared widgets",
+      "source": {
+        "nodeId": "command-overview--frontend--agents-ui"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--ui-kit"
+      }
+    },
+    "command-overview--wire-47": {
+      "id": "command-overview--wire-47",
+      "kind": "references",
+      "label": "filter panel state",
+      "source": {
+        "nodeId": "command-overview--frontend--agents-ui"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--view-panel"
+      }
+    },
+    "command-overview--wire-48": {
+      "id": "command-overview--wire-48",
+      "kind": "queries",
+      "label": "analytics model",
+      "source": {
+        "nodeId": "command-overview--frontend--analytics-studio"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--frontend-models"
+      }
+    },
+    "command-overview--wire-49": {
+      "id": "command-overview--wire-49",
+      "kind": "queries",
+      "label": "highlight + session models",
+      "source": {
+        "nodeId": "command-overview--frontend--board"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--frontend-models"
+      }
+    },
+    "command-overview--wire-50": {
+      "id": "command-overview--wire-50",
+      "kind": "missing",
+      "label": "undeclared import (2 files)",
+      "source": {
+        "nodeId": "command-overview--frontend--board"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--app-shell"
+      }
+    },
+    "command-overview--wire-51": {
+      "id": "command-overview--wire-51",
+      "kind": "references",
+      "label": "shared widgets",
+      "source": {
+        "nodeId": "command-overview--frontend--board"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--ui-kit"
+      }
+    },
+    "command-overview--wire-52": {
+      "id": "command-overview--wire-52",
+      "kind": "queries",
+      "label": "canvas engine + projection",
+      "source": {
+        "nodeId": "command-overview--frontend--canvas-studio"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--frontend-models"
+      }
+    },
+    "command-overview--wire-53": {
+      "id": "command-overview--wire-53",
+      "kind": "references",
+      "label": "canvas commands + model",
+      "source": {
+        "nodeId": "command-overview--frontend--canvas-studio"
+      },
+      "target": {
+        "nodeId": "command-overview--shared--shared-contracts"
+      }
+    },
+    "command-overview--wire-54": {
+      "id": "command-overview--wire-54",
+      "kind": "references",
+      "label": "timeline model",
+      "source": {
+        "nodeId": "command-overview--frontend--details-panel"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--board"
+      }
+    },
+    "command-overview--wire-55": {
+      "id": "command-overview--wire-55",
+      "kind": "queries",
+      "label": "models",
+      "source": {
+        "nodeId": "command-overview--frontend--details-panel"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--frontend-models"
+      }
+    },
+    "command-overview--wire-56": {
+      "id": "command-overview--wire-56",
+      "kind": "missing",
+      "label": "undeclared import (1 file)",
+      "source": {
+        "nodeId": "command-overview--frontend--details-panel"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--app-shell"
+      }
+    },
+    "command-overview--wire-57": {
+      "id": "command-overview--wire-57",
+      "kind": "missing",
+      "label": "undeclared import (1 file)",
+      "source": {
+        "nodeId": "command-overview--frontend--files-view"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--app-shell"
+      }
+    },
+    "command-overview--wire-58": {
+      "id": "command-overview--wire-58",
+      "kind": "references",
+      "label": "shared widgets",
+      "source": {
+        "nodeId": "command-overview--frontend--files-view"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--ui-kit"
+      }
+    },
+    "command-overview--wire-59": {
+      "id": "command-overview--wire-59",
+      "kind": "references",
+      "label": "shared schemas over HTTP/ws payloads",
+      "source": {
+        "nodeId": "command-overview--frontend--frontend-models"
+      },
+      "target": {
+        "nodeId": "command-overview--shared--shared-contracts"
+      }
+    },
+    "command-overview--wire-60": {
+      "id": "command-overview--wire-60",
+      "kind": "references",
+      "label": "shared widgets",
+      "source": {
+        "nodeId": "command-overview--frontend--ruleset-ui"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--ui-kit"
+      }
+    },
+    "command-overview--wire-61": {
+      "id": "command-overview--wire-61",
+      "kind": "references",
+      "label": "timeline model",
+      "source": {
+        "nodeId": "command-overview--frontend--session-bar"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--board"
+      }
+    },
+    "command-overview--wire-62": {
+      "id": "command-overview--wire-62",
+      "kind": "queries",
+      "label": "models",
+      "source": {
+        "nodeId": "command-overview--frontend--session-bar"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--frontend-models"
+      }
+    },
+    "command-overview--wire-63": {
+      "id": "command-overview--wire-63",
+      "kind": "missing",
+      "label": "undeclared import (1 file)",
+      "source": {
+        "nodeId": "command-overview--frontend--session-bar"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--app-shell"
+      }
+    },
+    "command-overview--wire-64": {
+      "id": "command-overview--wire-64",
+      "kind": "references",
+      "label": "view panel state",
+      "source": {
+        "nodeId": "command-overview--frontend--session-bar"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--view-panel"
+      }
+    },
+    "command-overview--wire-65": {
+      "id": "command-overview--wire-65",
+      "kind": "references",
+      "label": "panel state",
+      "source": {
+        "nodeId": "command-overview--frontend--settings"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--view-panel"
+      }
+    },
+    "command-overview--wire-66": {
+      "id": "command-overview--wire-66",
+      "kind": "owns",
+      "label": "mounts",
+      "source": {
+        "nodeId": "command-overview--frontend--app-shell"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--agents-ui"
+      }
+    },
+    "command-overview--wire-67": {
+      "id": "command-overview--wire-67",
+      "kind": "owns",
+      "label": "mounts",
+      "source": {
+        "nodeId": "command-overview--frontend--app-shell"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--analytics-studio"
+      }
+    },
+    "command-overview--wire-68": {
+      "id": "command-overview--wire-68",
+      "kind": "owns",
+      "label": "mounts",
+      "source": {
+        "nodeId": "command-overview--frontend--app-shell"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--board"
+      }
+    },
+    "command-overview--wire-69": {
+      "id": "command-overview--wire-69",
+      "kind": "owns",
+      "label": "mounts",
+      "source": {
+        "nodeId": "command-overview--frontend--app-shell"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--canvas-studio"
+      }
+    },
+    "command-overview--wire-70": {
+      "id": "command-overview--wire-70",
+      "kind": "owns",
+      "label": "mounts",
+      "source": {
+        "nodeId": "command-overview--frontend--app-shell"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--debug-panel"
+      }
+    },
+    "command-overview--wire-71": {
+      "id": "command-overview--wire-71",
+      "kind": "owns",
+      "label": "mounts",
+      "source": {
+        "nodeId": "command-overview--frontend--app-shell"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--design-studio"
+      }
+    },
+    "command-overview--wire-72": {
+      "id": "command-overview--wire-72",
+      "kind": "owns",
+      "label": "mounts",
+      "source": {
+        "nodeId": "command-overview--frontend--app-shell"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--details-panel"
+      }
+    },
+    "command-overview--wire-73": {
+      "id": "command-overview--wire-73",
+      "kind": "owns",
+      "label": "mounts",
+      "source": {
+        "nodeId": "command-overview--frontend--app-shell"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--files-view"
+      }
+    },
+    "command-overview--wire-74": {
+      "id": "command-overview--wire-74",
+      "kind": "queries",
+      "label": "wires models into views",
+      "source": {
+        "nodeId": "command-overview--frontend--app-shell"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--frontend-models"
+      }
+    },
+    "command-overview--wire-75": {
+      "id": "command-overview--wire-75",
+      "kind": "owns",
+      "label": "mounts",
+      "source": {
+        "nodeId": "command-overview--frontend--app-shell"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--ruleset-ui"
+      }
+    },
+    "command-overview--wire-76": {
+      "id": "command-overview--wire-76",
+      "kind": "owns",
+      "label": "mounts",
+      "source": {
+        "nodeId": "command-overview--frontend--app-shell"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--session-bar"
+      }
+    },
+    "command-overview--wire-77": {
+      "id": "command-overview--wire-77",
+      "kind": "owns",
+      "label": "mounts",
+      "source": {
+        "nodeId": "command-overview--frontend--app-shell"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--settings"
+      }
+    },
+    "command-overview--wire-78": {
+      "id": "command-overview--wire-78",
+      "kind": "owns",
+      "label": "mounts",
+      "source": {
+        "nodeId": "command-overview--frontend--app-shell"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--side-panel"
+      }
+    },
+    "command-overview--wire-79": {
+      "id": "command-overview--wire-79",
+      "kind": "owns",
+      "label": "mounts studio layout",
+      "source": {
+        "nodeId": "command-overview--frontend--app-shell"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--studio-chat"
+      }
+    },
+    "command-overview--wire-80": {
+      "id": "command-overview--wire-80",
+      "kind": "owns",
+      "label": "mounts",
+      "source": {
+        "nodeId": "command-overview--frontend--app-shell"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--subagent-view"
+      }
+    },
+    "command-overview--wire-81": {
+      "id": "command-overview--wire-81",
+      "kind": "owns",
+      "label": "mounts",
+      "source": {
+        "nodeId": "command-overview--frontend--app-shell"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--view-panel"
+      }
+    },
+    "command-overview--wire-82": {
+      "id": "command-overview--wire-82",
+      "kind": "owns",
+      "label": "mounts workspace lenses",
+      "source": {
+        "nodeId": "command-overview--frontend--app-shell"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--workspace"
+      }
+    },
+    "command-overview--wire-83": {
+      "id": "command-overview--wire-83",
+      "kind": "references",
+      "label": "shared widgets",
+      "source": {
+        "nodeId": "command-overview--frontend--side-panel"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--ui-kit"
+      }
+    },
+    "command-overview--wire-84": {
+      "id": "command-overview--wire-84",
+      "kind": "queries",
+      "label": "chat + tunnel models",
+      "source": {
+        "nodeId": "command-overview--frontend--studio-chat"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--frontend-models"
+      }
+    },
+    "command-overview--wire-85": {
+      "id": "command-overview--wire-85",
+      "kind": "references",
+      "label": "missionView + provider schemas",
+      "source": {
+        "nodeId": "command-overview--frontend--studio-chat"
+      },
+      "target": {
+        "nodeId": "command-overview--shared--shared-contracts"
+      }
+    },
+    "command-overview--wire-86": {
+      "id": "command-overview--wire-86",
+      "kind": "references",
+      "label": "timeline widgets",
+      "source": {
+        "nodeId": "command-overview--frontend--subagent-view"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--board"
+      }
+    },
+    "command-overview--wire-87": {
+      "id": "command-overview--wire-87",
+      "kind": "references",
+      "label": "inspector reuse",
+      "source": {
+        "nodeId": "command-overview--frontend--subagent-view"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--details-panel"
+      }
+    },
+    "command-overview--wire-88": {
+      "id": "command-overview--wire-88",
+      "kind": "queries",
+      "label": "models",
+      "source": {
+        "nodeId": "command-overview--frontend--subagent-view"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--frontend-models"
+      }
+    },
+    "command-overview--wire-89": {
+      "id": "command-overview--wire-89",
+      "kind": "missing",
+      "label": "undeclared import (1 file)",
+      "source": {
+        "nodeId": "command-overview--frontend--subagent-view"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--app-shell"
+      }
+    },
+    "command-overview--wire-90": {
+      "id": "command-overview--wire-90",
+      "kind": "references",
+      "label": "timeline model",
+      "source": {
+        "nodeId": "command-overview--frontend--view-panel"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--board"
+      }
+    },
+    "command-overview--wire-91": {
+      "id": "command-overview--wire-91",
+      "kind": "queries",
+      "label": "models",
+      "source": {
+        "nodeId": "command-overview--frontend--view-panel"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--frontend-models"
+      }
+    },
+    "command-overview--wire-92": {
+      "id": "command-overview--wire-92",
+      "kind": "missing",
+      "label": "undeclared import (1 file)",
+      "source": {
+        "nodeId": "command-overview--frontend--view-panel"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--app-shell"
+      }
+    },
+    "command-overview--wire-93": {
+      "id": "command-overview--wire-93",
+      "kind": "queries",
+      "label": "mission room + tunnel models",
+      "source": {
+        "nodeId": "command-overview--frontend--workspace"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--frontend-models"
+      }
+    },
+    "command-overview--wire-94": {
+      "id": "command-overview--wire-94",
+      "kind": "references",
+      "label": "embeds chat panel",
+      "source": {
+        "nodeId": "command-overview--frontend--workspace"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--studio-chat"
+      }
+    },
+    "command-overview--wire-95": {
+      "id": "command-overview--wire-95",
+      "kind": "references",
+      "label": "shared widgets",
+      "source": {
+        "nodeId": "command-overview--frontend--workspace"
+      },
+      "target": {
+        "nodeId": "command-overview--frontend--ui-kit"
+      }
+    },
+    "command-overview--wire-96": {
+      "id": "command-overview--wire-96",
+      "kind": "references",
+      "label": "missionView schema",
+      "source": {
+        "nodeId": "command-overview--frontend--workspace"
+      },
+      "target": {
+        "nodeId": "command-overview--shared--shared-contracts"
+      }
+    },
+    "command-overview--wire-97": {
+      "id": "command-overview--wire-97",
+      "kind": "missing",
+      "label": "stamps durable ids + missionId (identity seam) — declared, not in code",
+      "source": {
+        "nodeId": "command-overview--backend--messaging-tunnel"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--object-model"
+      }
+    },
+    "command-overview--wire-98": {
+      "id": "command-overview--wire-98",
+      "kind": "missing",
+      "label": "reads mission graph — declared, not in code",
+      "source": {
+        "nodeId": "command-overview--backend--mission-view"
+      },
+      "target": {
+        "nodeId": "command-overview--backend--object-model"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "command-overview": {
+          "nodeId": "command-overview",
+          "position": {
+            "x": 40,
+            "y": 17677
+          },
+          "size": {
+            "width": 4610,
+            "height": 2768
+          },
+          "pinned": false
+        },
+        "command-overview--backend": {
+          "nodeId": "command-overview--backend",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 4530,
+            "height": 1182
+          },
+          "pinned": false
+        },
+        "command-overview--backend--agent-orchestration": {
+          "nodeId": "command-overview--backend--agent-orchestration",
+          "position": {
+            "x": 3215,
+            "y": 848
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-overview--backend--analytics-engine": {
+          "nodeId": "command-overview--backend--analytics-engine",
+          "position": {
+            "x": 40,
+            "y": 262
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-overview--backend--browser-engine": {
+          "nodeId": "command-overview--backend--browser-engine",
+          "position": {
+            "x": 1785,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 136
+          },
+          "pinned": false
+        },
+        "command-overview--backend--canvas-store": {
+          "nodeId": "command-overview--backend--canvas-store",
+          "position": {
+            "x": 500,
+            "y": 262
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-overview--backend--config": {
+          "nodeId": "command-overview--backend--config",
+          "position": {
+            "x": 2218,
+            "y": 1038
+          },
+          "size": {
+            "width": 233,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--backend--design-bridge": {
+          "nodeId": "command-overview--backend--design-bridge",
+          "position": {
+            "x": 960,
+            "y": 270
+          },
+          "size": {
+            "width": 233,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--backend--external-sessions": {
+          "nodeId": "command-overview--backend--external-sessions",
+          "position": {
+            "x": 3225,
+            "y": 262
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-overview--backend--file-system-api": {
+          "nodeId": "command-overview--backend--file-system-api",
+          "position": {
+            "x": 1249,
+            "y": 468
+          },
+          "size": {
+            "width": 334,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--backend--messaging-tunnel": {
+          "nodeId": "command-overview--backend--messaging-tunnel",
+          "position": {
+            "x": 3055,
+            "y": 452
+          },
+          "size": {
+            "width": 420,
+            "height": 136
+          },
+          "pinned": false
+        },
+        "command-overview--backend--mission-view": {
+          "nodeId": "command-overview--backend--mission-view",
+          "position": {
+            "x": 2745,
+            "y": 262
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-overview--backend--object-model": {
+          "nodeId": "command-overview--backend--object-model",
+          "position": {
+            "x": 2195,
+            "y": 658
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-overview--backend--project-registry": {
+          "nodeId": "command-overview--backend--project-registry",
+          "position": {
+            "x": 1619,
+            "y": 270
+          },
+          "size": {
+            "width": 276,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--backend--provider-adapters": {
+          "nodeId": "command-overview--backend--provider-adapters",
+          "position": {
+            "x": 3996,
+            "y": 468
+          },
+          "size": {
+            "width": 262,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--backend--ruleset": {
+          "nodeId": "command-overview--backend--ruleset",
+          "position": {
+            "x": 1935,
+            "y": 270
+          },
+          "size": {
+            "width": 200,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--backend--server-core": {
+          "nodeId": "command-overview--backend--server-core",
+          "position": {
+            "x": 2245,
+            "y": 64
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-overview--backend--state-manager": {
+          "nodeId": "command-overview--backend--state-manager",
+          "position": {
+            "x": 3445,
+            "y": 1038
+          },
+          "size": {
+            "width": 200,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--backend--durable-stores": {
+          "nodeId": "command-overview--backend--durable-stores",
+          "position": {
+            "x": 2195,
+            "y": 848
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-overview--backend--terminal-host": {
+          "nodeId": "command-overview--backend--terminal-host",
+          "position": {
+            "x": 3435,
+            "y": 658
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-overview--backend--threads": {
+          "nodeId": "command-overview--backend--threads",
+          "position": {
+            "x": 3935,
+            "y": 270
+          },
+          "size": {
+            "width": 384,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--backend--transcript-parser": {
+          "nodeId": "command-overview--backend--transcript-parser",
+          "position": {
+            "x": 4228,
+            "y": 1038
+          },
+          "size": {
+            "width": 262,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--backend--version-control": {
+          "nodeId": "command-overview--backend--version-control",
+          "position": {
+            "x": 1253,
+            "y": 270
+          },
+          "size": {
+            "width": 326,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--frontend": {
+          "nodeId": "command-overview--frontend",
+          "position": {
+            "x": 40,
+            "y": 1308
+          },
+          "size": {
+            "width": 3630,
+            "height": 1118
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--agents-ui": {
+          "nodeId": "command-overview--frontend--agents-ui",
+          "position": {
+            "x": 1823,
+            "y": 56
+          },
+          "size": {
+            "width": 305,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--analytics-studio": {
+          "nodeId": "command-overview--frontend--analytics-studio",
+          "position": {
+            "x": 551,
+            "y": 784
+          },
+          "size": {
+            "width": 200,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--board": {
+          "nodeId": "command-overview--frontend--board",
+          "position": {
+            "x": 1588,
+            "y": 230
+          },
+          "size": {
+            "width": 319,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--canvas-studio": {
+          "nodeId": "command-overview--frontend--canvas-studio",
+          "position": {
+            "x": 811,
+            "y": 784
+          },
+          "size": {
+            "width": 200,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--debug-panel": {
+          "nodeId": "command-overview--frontend--debug-panel",
+          "position": {
+            "x": 40,
+            "y": 602
+          },
+          "size": {
+            "width": 211,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--design-studio": {
+          "nodeId": "command-overview--frontend--design-studio",
+          "position": {
+            "x": 291,
+            "y": 602
+          },
+          "size": {
+            "width": 200,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--details-panel": {
+          "nodeId": "command-overview--frontend--details-panel",
+          "position": {
+            "x": 1749,
+            "y": 784
+          },
+          "size": {
+            "width": 200,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--files-view": {
+          "nodeId": "command-overview--frontend--files-view",
+          "position": {
+            "x": 1066,
+            "y": 602
+          },
+          "size": {
+            "width": 200,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--frontend-models": {
+          "nodeId": "command-overview--frontend--frontend-models",
+          "position": {
+            "x": 2000,
+            "y": 958
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--ruleset-ui": {
+          "nodeId": "command-overview--frontend--ruleset-ui",
+          "position": {
+            "x": 1306,
+            "y": 602
+          },
+          "size": {
+            "width": 200,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--session-bar": {
+          "nodeId": "command-overview--frontend--session-bar",
+          "position": {
+            "x": 2615,
+            "y": 602
+          },
+          "size": {
+            "width": 200,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--settings": {
+          "nodeId": "command-overview--frontend--settings",
+          "position": {
+            "x": 3345,
+            "y": 602
+          },
+          "size": {
+            "width": 200,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--app-shell": {
+          "nodeId": "command-overview--frontend--app-shell",
+          "position": {
+            "x": 1872,
+            "y": 404
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--side-panel": {
+          "nodeId": "command-overview--frontend--side-panel",
+          "position": {
+            "x": 1546,
+            "y": 602
+          },
+          "size": {
+            "width": 226,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--studio-chat": {
+          "nodeId": "command-overview--frontend--studio-chat",
+          "position": {
+            "x": 2608,
+            "y": 784
+          },
+          "size": {
+            "width": 420,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--subagent-view": {
+          "nodeId": "command-overview--frontend--subagent-view",
+          "position": {
+            "x": 2192,
+            "y": 602
+          },
+          "size": {
+            "width": 233,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--ui-kit": {
+          "nodeId": "command-overview--frontend--ui-kit",
+          "position": {
+            "x": 1169,
+            "y": 784
+          },
+          "size": {
+            "width": 233,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--view-panel": {
+          "nodeId": "command-overview--frontend--view-panel",
+          "position": {
+            "x": 3300,
+            "y": 784
+          },
+          "size": {
+            "width": 290,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "command-overview--frontend--workspace": {
+          "nodeId": "command-overview--frontend--workspace",
+          "position": {
+            "x": 2855,
+            "y": 594
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "command-overview--shared": {
+          "nodeId": "command-overview--shared",
+          "position": {
+            "x": 40,
+            "y": 2496
+          },
+          "size": {
+            "width": 500,
+            "height": 232
+          },
+          "pinned": false
+        },
+        "command-overview--shared--shared-contracts": {
+          "nodeId": "command-overview--shared--shared-contracts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 136
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {
+        "command-overview--wire-45": {
+          "wireId": "command-overview--wire-45",
+          "waypoints": [],
+          "labelPosition": 0.5343069735166068
+        }
+      }
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "ui-0dab8f9e-e884-43d0-94f2-e0aabb9ffac5": {
+      "operationId": "ui-0dab8f9e-e884-43d0-94f2-e0aabb9ffac5",
+      "revision": 2382,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-05T21:36:31.025Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    }
+  }
+}

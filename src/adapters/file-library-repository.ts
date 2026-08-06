@@ -63,7 +63,10 @@ async function writeValidated<T extends { revision: number }>(
   const response = await fetch(url, {
     method: 'PUT',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(parsed),
+    // Sent in the same readable form the store keeps, matching `http-json-repository`. The
+    // bridge canonicalises whatever arrives, so this is for anyone reading the wire, not the
+    // guarantee itself — the guarantee belongs to the writer of the file.
+    body: `${JSON.stringify(parsed, null, 2)}\n`,
   });
   if (response.status === 409) {
     // The body may be missing or malformed; that is a terse conflict, not a reason to throw.
