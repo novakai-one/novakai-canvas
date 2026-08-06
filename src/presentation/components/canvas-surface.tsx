@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, type RefObject } from 'react';
 import {
-  Background, BackgroundVariant, Controls, ReactFlow,
+  Background, BackgroundVariant, ConnectionMode, Controls, ReactFlow,
   type Connection, type NodeChange, type Viewport,
 } from '@xyflow/react';
 import type { DiagramSummary } from '../../application/canvas-library';
@@ -190,6 +190,7 @@ function useCamera(activeDiagramId: string): {
   fitOnOpen: boolean;
   remember: (viewport: Viewport) => void;
   attach: (instance: FlowInstance) => void;
+  publishZoom: (zoom: number) => void;
   focusPoint: () => WorldPoint;
 } {
   const flow = useRef<FlowInstance | null>(null);
@@ -217,6 +218,20 @@ function useCamera(activeDiagramId: string): {
     surface,
     fitOnOpen: remembered === undefined,
     remember: (viewport: Viewport) => { cameras.current.set(activeDiagramId, viewport); },
+
+    /**
+     * Publishes the live zoom to CSS so anything that must keep a constant *screen* size can
+     * divide by it.
+     *
+     * Written straight to the node rather than held in state: this fires on every frame of a
+     * zoom, and re-rendering the whole canvas at 60fps to move a number is a cost with no
+     * benefit. Ports are the reason it exists — drawn inside the scaled viewport they shrank
+     * to two physical pixels at the app's own default framing, which is not a small target,
+     * it is an invisible one.
+     */
+    publishZoom: (zoom: number) => {
+      surface.current?.style.setProperty('--nvk-zoom', String(zoom));
+    },
     attach: (instance: FlowInstance) => {
       flow.current = instance;
       const saved = cameras.current.get(activeDiagramId);
@@ -285,12 +300,13 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         */}
       <ReactFlow
         key={activeDiagramId}
-        colorMode={preferences.appearance.theme} deleteKeyCode={editable ? ['Backspace', 'Delete'] : null} edgeTypes={edgeTypes} edges={edges}
+        colorMode={preferences.appearance.theme} connectionMode={ConnectionMode.Loose} deleteKeyCode={editable ? ['Backspace', 'Delete'] : null} edgeTypes={edgeTypes} edges={edges}
         edgesReconnectable={editable} elementsSelectable fitView={camera.fitOnOpen} fitViewOptions={{ padding: editable ? 0.12 : 0.05, maxZoom: 1, minZoom: 0.05 }} minZoom={0.05}
         nodeTypes={nodeTypes} nodes={nodes} nodesConnectable={editable} nodesDraggable={editable}
         onConnect={(connection) => { if (!editable) return; const id = connect(execute, connection); if (id) setSelection({ kind: 'wire', id }); }}
         onEdgeClick={(_event, edge) => setSelection({ kind: 'wire', id: edge.id })}
-        onInit={camera.attach}
+        onInit={(instance) => { camera.attach(instance); camera.publishZoom(instance.getViewport().zoom); }}
+        onMove={(_event, viewport) => camera.publishZoom(viewport.zoom)}
         onMoveEnd={(_event, viewport) => camera.remember(viewport)}
         onNodeDragStop={(_event, node) => {
           if (!editable) return;

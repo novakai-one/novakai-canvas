@@ -1,8 +1,39 @@
 import { Handle, NodeResizer, Position, type NodeProps, type Node } from '@xyflow/react';
-import { ARCHITECTURE_FLOW } from '../../domain/flow';
+import { NODE_PORTS } from '../../domain/flow';
 import type { ArchitectureNodeData } from '../projection';
 
 type ArchitectureFlowNode = Node<ArchitectureNodeData, 'architecture'>;
+
+const PORT_POSITION = {
+  top: Position.Top, bottom: Position.Bottom, left: Position.Left, right: Position.Right,
+} as const;
+
+/**
+ * Every side of a node offers one port, and that port both gives and takes a wire.
+ *
+ * One source at the bottom and one target at the top meant a wire could only ever run
+ * downward, and dropping an end on any other side was a silent no-op. One handle per side —
+ * rather than an overlapping source/target pair, which strict mode refuses to join because
+ * the drop lands on whichever of the two sits on top — is what makes "drag this end to that
+ * side and have it stick" true. The canvas runs `ConnectionMode.Loose` so a single handle
+ * serves as either end; the ids are the stable side names, so a stored `preferredSide`
+ * addresses them directly.
+ */
+function NodePorts({ connectable }: { connectable: boolean }) {
+  return (
+    <>
+      {NODE_PORTS.map((side) => (
+        <Handle
+          id={side}
+          isConnectable={connectable}
+          key={side}
+          position={PORT_POSITION[side]}
+          type="source"
+        />
+      ))}
+    </>
+  );
+}
 
 /** Selectable architecture node with interface and type children. */
 export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowNode>) {
@@ -10,12 +41,11 @@ export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowN
   const showInterfaces = !editable || preferences.nodes.showInterfaces === 'always'
     || (preferences.nodes.showInterfaces === 'selected' && selected);
   const portsClass = preferences.nodes.showPorts === 'always' ? 'ports-always' : '';
-  const portPosition = { top: Position.Top, bottom: Position.Bottom } as const;
 
   return (
     <article className={`architecture-node kind-${node.kind} ${portsClass}`}>
       <NodeResizer isVisible={editable && selected} minHeight={80} minWidth={160} />
-      <Handle isConnectable={editable} type="target" position={portPosition[ARCHITECTURE_FLOW.targetPort]} />
+      <NodePorts connectable={editable} />
       <header className="node-header">
         <span className="node-label">{node.label}</span>
         {(!editable || preferences.nodes.showKinds) && <span className="node-kind">{node.kind}</span>}
@@ -52,7 +82,6 @@ export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowN
           ))}
         </div>
       )}
-      <Handle isConnectable={editable} type="source" position={portPosition[ARCHITECTURE_FLOW.sourcePort]} />
     </article>
   );
 }

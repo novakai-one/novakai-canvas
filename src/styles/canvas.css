@@ -286,14 +286,48 @@
   background: var(--accent-strong);
 }
 
-.react-flow__handle {
-  width: 7px;
-  height: 7px;
-  border: 1px solid var(--accent-dim);
-  background: var(--card-3);
+/*
+ * Ports keep a constant SCREEN size, not a constant diagram size.
+ *
+ * Drawn inside React Flow's scaled viewport, a fixed 7px port renders at 7 × zoom physical
+ * pixels — about two of them at the framing this app opens diagrams on. Dividing by the live
+ * zoom (published by useCamera) makes the dot the same size to the hand at every zoom, which
+ * is the only size that matters. Sizing by width/height rather than a scale transform keeps
+ * React Flow's own translate(-50%, -50%) centring exact, because the percentages resolve
+ * against the corrected box.
+ *
+ * Scoped to the surface so this outranks React Flow's own `.react-flow__handle` base rule,
+ * which loads after ours and otherwise pins the port back to a fixed 6px.
+ */
+.canvas-surface .react-flow__handle {
+  z-index: 5;
+  width: calc(10px / var(--nvk-zoom, 1));
+  height: calc(10px / var(--nvk-zoom, 1));
+  border: calc(1px / var(--nvk-zoom, 1)) solid var(--bg);
+  background: var(--accent);
   opacity: 0;
-  transition: opacity 120ms ease;
+  transition: opacity 120ms ease, background 120ms ease;
 }
+
+/*
+ * Ports sit just inside their edge rather than straddling it.
+ *
+ * The node clips its content (`overflow: hidden`, for the rounded corners), so a port centred
+ * on the border loses its outer half to the clip — and the side ports lost their hit test
+ * entirely to the header and interface rows painted over them. Tucking each port inward keeps
+ * the whole dot drawn and clickable without giving up the corner radius. The z-index above is
+ * the other half of that fix: ports are declared before the node's content, so without it the
+ * content wins the paint order at the same stacking level.
+ */
+.canvas-surface .react-flow__handle-left { transform: translate(0, -50%); }
+.canvas-surface .react-flow__handle-right { transform: translate(-100%, -50%); }
+.canvas-surface .react-flow__handle-top { transform: translate(-50%, 0); }
+.canvas-surface .react-flow__handle-bottom { transform: translate(-50%, -100%); }
+
+/* The port under the pointer states which one will take the wire. */
+.canvas-surface .react-flow__handle:hover,
+.canvas-surface .react-flow__handle.connectingfrom,
+.canvas-surface .react-flow__handle.connectingto { background: var(--accent-strong); }
 
 .architecture-node:hover .react-flow__handle,
 .architecture-node.ports-always .react-flow__handle,
