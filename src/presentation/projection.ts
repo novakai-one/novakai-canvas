@@ -2,10 +2,10 @@ import { MarkerType, type Edge, type Node } from '@xyflow/react';
 import type { RecordCommand } from '../application/canvas-workspace';
 import type { CanvasPreferences, InterfaceObject, Selection, TypeObject } from '../domain/model';
 import type { PositionedNode, ProjectedView } from '../domain/project-view';
-import type { DiagramRecord, NodeKind, WireKind } from '../domain/records';
+import type { DiagramRecord, NodeKind, PortSide, WireKind } from '../domain/records';
 import { ARCHITECTURE_FLOW } from '../domain/flow';
 import { wireKindColor } from './wire-styles';
-import type { Rect, RouteObstacle } from './edges/wire-routing';
+import { routeWire, type Rect, type RouteObstacle, type RouteSide } from './edges/wire-routing';
 
 /** Presentation data required by architecture nodes. */
 export interface ArchitectureNodeData extends Record<string, unknown> {
@@ -64,6 +64,89 @@ export interface ArchitectureEdgeData extends Record<string, unknown> {
 
 /** Distance between the corridors of two wires that join the same pair of nodes. */
 const LANE_GAP = 22;
+
+/**
+ * Which sides two nodes should face each other across.
+ *
+ * `ARCHITECTURE_FLOW` names one pair — bottom out, top in — and using it for every wire is why
+ * so many routes were detours: a target sitting to the left had to be left from the bottom and
+ * entered from the top, so the only way there was around. The direction between the two boxes
+ * decides instead, which is what every other diagram tool does and what makes the ordinary case
+ * a plain two-turn elbow.
+ *
+ * Overlap decides the axis before distance does. Two boxes stacked in the same column are
+ * "above and below" even when their centres differ more horizontally than vertically, and
+ * joining their sides would send the wire out and back around. A stored `preferredSide` still
+ * wins over all of this — this is only what to do when nobody has said.
+ */
+export function facingSides(
+  source: Rect,
+  target: Rect,
+): { sourceSide: PortSide; targetSide: PortSide } {
+  const spans = (aLow: number, aHigh: number, bLow: number, bHigh: number): number =>
+    Math.min(aHigh, bHigh) - Math.max(aLow, bLow);
+  const overlapX = spans(source.x, source.x + source.width, target.x, target.x + target.width);
+  const overlapY = spans(source.y, source.y + source.height, target.y, target.y + target.height);
+  const dx = (target.x + target.width / 2) - (source.x + source.width / 2);
+  const dy = (target.y + target.height / 2) - (source.y + source.height / 2);
+
+  const vertical = overlapX > 0 && overlapY <= 0 ? true
+    : overlapY > 0 && overlapX <= 0 ? false
+      : Math.abs(dy) >= Math.abs(dx);
+
+  if (vertical) {
+    return dy >= 0
+      ? { sourceSide: 'bottom', targetSide: 'top' }
+      : { sourceSide: 'top', targetSide: 'bottom' };
+  }
+  return dx >= 0
+    ? { sourceSide: 'right', targetSide: 'left' }
+    : { sourceSide: 'left', targetSide: 'right' };
+}
+
+/** Where a wire meets a rectangle on a given side. */
+function attachmentPoint(rect: Rect, side: PortSide): { x: number; y: number } {
+  if (side === 'top') return { x: rect.x + rect.width / 2, y: rect.y };
+  if (side === 'bottom') return { x: rect.x + rect.width / 2, y: rect.y + rect.height };
+  if (side === 'left') return { x: rect.x, y: rect.y + rect.height / 2 };
+  return { x: rect.x + rect.width, y: rect.y + rect.height / 2 };
+}
+
+/**
+ * The sides to actually use: the ones the boxes face across, unless that route crosses something.
+ *
+ * Choosing sides purely by direction is right for the ordinary case and wrong for the long ones —
+ * on Chris's Command Overview three wires span most of the diagram, and the facing pair sends
+ * them through a node the vertical pair clears. So the choice belongs inside the search rather
+ * than ahead of it: try the natural pair first, fall back through the others, and take the first
+ * that crosses nothing. The facing pair stands when none of them is clean, because then the
+ * crossing is a property of the layout rather than of the side.
+ */
+export function chooseSides(
+  source: Rect,
+  target: Rect,
+  obstacles: RouteObstacle[],
+): { sourceSide: PortSide; targetSide: PortSide } {
+  const facing = facingSides(source, target);
+  const alternatives: Array<{ sourceSide: PortSide; targetSide: PortSide }> = [
+    facing,
+    { sourceSide: 'bottom', targetSide: 'top' },
+    { sourceSide: 'top', targetSide: 'bottom' },
+    { sourceSide: 'right', targetSide: 'left' },
+    { sourceSide: 'left', targetSide: 'right' },
+  ];
+  for (const pair of alternatives) {
+    const route = routeWire({
+      source: attachmentPoint(source, pair.sourceSide),
+      sourceSide: pair.sourceSide as RouteSide,
+      target: attachmentPoint(target, pair.targetSide),
+      targetSide: pair.targetSide as RouteSide,
+      obstacles,
+    });
+    if (route.collisions === 0) return pair;
+  }
+  return facing;
+}
 
 /**
  * Every visible node's rectangle in diagram coordinates.
@@ -337,6 +420,22 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
   const lanes = laneOffsets(view.wires);
   const hints = record.layouts[record.views[record.activeViewId]?.layoutId]?.wireRouteHints ?? {};
   const rects = nodeRects(view);
+  /** Resolved once per wire: side choice needs the obstacle set, and so does the route. */
+  const sidesOf = new Map<string, { sourceSide: PortSide; targetSide: PortSide }>();
+  const facing = (wire: ProjectedView['wires'][number]) => {
+    const cached = sidesOf.get(wire.id as string);
+    if (cached) return cached;
+    const source = rects.get(wire.source.nodeId as string);
+    const target = rects.get(wire.target.nodeId as string);
+    const resolved = source && target
+      ? chooseSides(source, target, wireObstacles(view, rects, wire))
+      : {
+        sourceSide: ARCHITECTURE_FLOW.sourcePort as PortSide,
+        targetSide: ARCHITECTURE_FLOW.targetPort as PortSide,
+      };
+    sidesOf.set(wire.id as string, resolved);
+    return resolved;
+  };
   return view.wires.map((wire) => ({
     id: wire.id,
     source: wire.source.nodeId,
@@ -351,8 +450,8 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
      * `preferredTargetSide` have existed in the schema the whole time with no reader and no
      * writer. Naming the handle here is what gives them a reader.
      */
-    sourceHandle: hints[wire.id]?.preferredSourceSide ?? ARCHITECTURE_FLOW.sourcePort,
-    targetHandle: hints[wire.id]?.preferredTargetSide ?? ARCHITECTURE_FLOW.targetPort,
+    sourceHandle: hints[wire.id]?.preferredSourceSide ?? facing(wire).sourceSide,
+    targetHandle: hints[wire.id]?.preferredTargetSide ?? facing(wire).targetSide,
     type: 'elbow',
     selected: selection?.kind === 'wire' && selection.id === wire.id,
     zIndex: selection?.kind === 'wire' && selection.id === wire.id ? 1000 : 0,

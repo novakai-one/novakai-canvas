@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { diagramRecordSchema, projectView } from '../../canvas';
 import type { DiagramRecord } from '../../canvas';
-import { ARCHITECTURE_FLOW } from '../../domain/flow';
-import { nodeRects, wireObstacles } from '../projection';
+import { chooseSides, nodeRects, wireObstacles } from '../projection';
 import { routeCollisions, routeWire, type Rect, type RouteSide } from './wire-routing';
 
 /**
@@ -25,8 +24,19 @@ const records: Array<[string, DiagramRecord]> = Object.entries(
   ])
   .sort(([left], [right]) => left.localeCompare(right));
 
-const sourceSide = ARCHITECTURE_FLOW.sourcePort as RouteSide;
-const targetSide = ARCHITECTURE_FLOW.targetPort as RouteSide;
+/*
+ * The sides the application actually draws with.
+ *
+ * This used to pin ARCHITECTURE_FLOW's fixed bottom/top pair while `projectEdges` chose sides
+ * from geometry — the same shape of mistake as routing without obstacles: a gate measuring a
+ * route nobody renders. It asks the projection now, so the two cannot drift apart again.
+ */
+const sidesFor = (
+  source: Rect, target: Rect, obstacles: ReturnType<typeof wireObstacles>,
+): { sourceSide: RouteSide; targetSide: RouteSide } => {
+  const sides = chooseSides(source, target, obstacles);
+  return { sourceSide: sides.sourceSide as RouteSide, targetSide: sides.targetSide as RouteSide };
+};
 
 function attachment(rect: Rect, side: RouteSide): { x: number; y: number } {
   if (side === 'top') return { x: rect.x + rect.width / 2, y: rect.y };
@@ -57,9 +67,10 @@ function auditDiagram(record: DiagramRecord): Audit {
     const source = rects.get(wire.source.nodeId as string);
     const target = rects.get(wire.target.nodeId as string);
     if (!source || !target) continue;
+    const obstacles = wireObstacles(view, rects, wire);
+    const { sourceSide, targetSide } = sidesFor(source, target, obstacles);
     const from = attachment(source, sourceSide);
     const to = attachment(target, targetSide);
-    const obstacles = wireObstacles(view, rects, wire);
     const route = routeWire({ source: from, sourceSide, target: to, targetSide, obstacles });
     audit.straightCrossings += routeCollisions([from, to], obstacles).collisions;
     audit.crossings += route.collisions;
@@ -119,9 +130,10 @@ describe('obstacles are load-bearing', () => {
         const source = rects.get(wire.source.nodeId as string);
         const target = rects.get(wire.target.nodeId as string);
         if (!source || !target) continue;
+        const obstacles = wireObstacles(view, rects, wire);
+        const { sourceSide, targetSide } = sidesFor(source, target, obstacles);
         const from = attachment(source, sourceSide);
         const to = attachment(target, targetSide);
-        const obstacles = wireObstacles(view, rects, wire);
         withObstacles += routeWire({
           source: from, sourceSide, target: to, targetSide, obstacles,
         }).collisions;
