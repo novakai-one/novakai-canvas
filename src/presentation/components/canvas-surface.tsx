@@ -52,9 +52,17 @@ export interface CanvasSurfaceProps {
 
 function applyNodeChanges(execute: (command: RecordCommand) => void, changes: NodeChange[]): void {
   changes.forEach((change) => {
-    if (change.type === 'position' && change.position) {
-      execute({ kind: 'node.move', id: change.id, position: change.position });
-    }
+    /*
+     * Position is not committed here at all — `onNodeDragStop` owns it.
+     *
+     * React Flow reports a position change on every frame of a drag, and committing each one
+     * pushed dozens of records onto the history for a single gesture, so undo popped one
+     * invisible sub-pixel step and read as doing nothing. Even taking only the last frame left
+     * two writes for one drag, because the drag-stop handler commits the same move again after
+     * running it through the drop rules. The frames in flight are React Flow's to render; the
+     * position that becomes a fact is the one drag-stop resolves, and one gesture is one
+     * undoable act.
+     */
     // Only user-driven resizes (NodeResizer sets resizing) — never React Flow's
     // initial DOM measurements, which would rewrite every stored size on load.
     if (change.type === 'dimensions' && change.dimensions && change.resizing) {
