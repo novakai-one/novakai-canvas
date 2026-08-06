@@ -91,6 +91,11 @@ function PanelControls({ patch, value }: { value: CanvasPreferences; patch: Patc
         <input max="520" min="280" onChange={(event) => patch('panel', { ...value.panel, width: Number(event.target.value) })} type="range" value={value.panel.width} />
       </FieldRow>
       <SwitchRow checked={value.panel.showEmptyFields} label="Empty fields" onChange={(showEmptyFields) => patch('panel', { ...value.panel, showEmptyFields })} />
+      <SwitchRow
+        checked={value.panel.reframeOnPanelMove ?? false}
+        label="Re-frame when panels move"
+        onChange={(reframeOnPanelMove) => patch('panel', { ...value.panel, reframeOnPanelMove })}
+      />
     </PanelSection>
   );
 }

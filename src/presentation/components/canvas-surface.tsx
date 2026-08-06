@@ -327,13 +327,17 @@ function useCamera(activeDiagramId: string): {
  * one sanctioned camera move that the user did not make with the camera itself.
  */
 function useRefitWhenPanelsMove(panel: CanvasPreferences['panel']): void {
-  const { railCollapsed, railWidth, studioCollapsed, width } = panel;
+  const { railCollapsed, railWidth, reframeOnPanelMove, studioCollapsed, width } = panel;
   const settled = useRef(false);
   useEffect(() => {
     if (!settled.current) { settled.current = true; return; }
+    // Opt-in, and off by default. Moving a panel changes how much of the diagram you can see;
+    // it is not a request to look somewhere else, and the camera moving on its own is the one
+    // thing Chris has asked for twice that it must never do.
+    if (!reframeOnPanelMove) return;
     const timer = window.setTimeout(() => canvasCamera().fit(), TRAVEL_MS + 60);
     return () => window.clearTimeout(timer);
-  }, [railCollapsed, railWidth, studioCollapsed, width]);
+  }, [railCollapsed, railWidth, reframeOnPanelMove, studioCollapsed, width]);
 }
 
 /** Interactive editor or clean, read-only presentation of one open diagram record. */

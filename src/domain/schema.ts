@@ -307,6 +307,9 @@ export const canvasPreferencesSchema = z.object({
     railWidth: z.number().min(200).max(400).optional(),
     railCollapsed: z.boolean().optional(),
     studioCollapsed: z.boolean().optional(),
+    // Optional and absent means off: a file written before this setting existed must not start
+    // re-framing the camera on its owner.
+    reframeOnPanelMove: z.boolean().optional(),
   }),
   files: z.object({ autoSave: z.boolean(), saveDelay: z.number().min(100).max(5000) }),
 });

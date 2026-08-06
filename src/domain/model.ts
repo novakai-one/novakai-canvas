@@ -202,6 +202,15 @@ export interface CanvasPreferences {
     railWidth?: number;
     railCollapsed?: boolean;
     studioCollapsed?: boolean;
+    /**
+     * Whether opening or resizing a panel re-frames the diagram.
+     *
+     * Off by default, and off is the law: Chris — "I dont want things to automatically change my
+     * view focus / zoom -> Put that setting in the right panel, maybe someone will like it."
+     * Some people do like the canvas re-fitting itself into the space a panel just freed, so it
+     * stays available; it is simply never the default, and never silent.
+     */
+    reframeOnPanelMove?: boolean;
   };
   files: { autoSave: boolean; saveDelay: number };
 }
