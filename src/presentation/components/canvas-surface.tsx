@@ -143,6 +143,28 @@ function useEscapeStepsOutward(
 }
 
 /**
+ * Binds the undo everyone's hands already know.
+ *
+ * The toolbar button was the only way to undo, which means the reflex every other application
+ * on the machine has trained fires into nothing — and the more confident you are that ⌘Z has
+ * you, the more expensive its silence is. Typing in a studio field is left to the browser's own
+ * text undo, which is what the same keystroke should mean while a caret is in a field.
+ */
+function useUndoShortcut(canUndo: boolean, undo: () => void): void {
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent): void => {
+      const key = event.key.toLowerCase();
+      if (key !== 'z' || !(event.metaKey || event.ctrlKey)) return;
+      if (event.shiftKey || typingInAField(event.target)) return;
+      event.preventDefault();
+      if (canUndo) undo();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [canUndo, undo]);
+}
+
+/**
  * Drops a selection whose object has gone.
  *
  * Undo and delete can retire the selected object while the selection still names it. Left
@@ -277,6 +299,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   } = props;
   const editable = mode === 'edit';
   useEscapeStepsOutward(record, selection, setSelection);
+  useUndoShortcut(editable && props.canUndo, props.undo);
   useSelectionReleasesWithItsObject(record, selection, setSelection);
   const camera = useCamera(activeDiagramId);
   useRefitWhenPanelsMove(preferences.panel);
@@ -321,6 +344,24 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         }}
         onNodeClick={(_event, node) => setSelection({ kind: 'node', id: node.id })}
         onNodesChange={(changes) => { if (editable) applyNodeChanges(execute, changes); }} onPaneClick={() => setSelection(null)}
+        /*
+         * Scroll moves the diagram; pinch and ⌘-scroll change how close you are.
+         *
+         * React Flow ships the opposite, and the opposite is wrong here: Figma, Miro, Lucid and
+         * tldraw all pan on a two-finger scroll, so the trained reflex was zooming the canvas
+         * every time Chris tried to move around it — and with pinch already bound to zoom, there
+         * was no pan gesture on a trackpad at all.
+         */
+        panOnScroll zoomOnScroll={false} zoomOnPinch
+        /*
+         * Double-click does nothing rather than zooming.
+         *
+         * Zoom on double-click is the camera moving itself in response to an ordinary click,
+         * which is the one thing the camera must never do. It also sits on the gesture every
+         * diagram tool spends on "make a node here" — kept free deliberately, for the lane that
+         * adds create-at-cursor.
+         */
+        zoomOnDoubleClick={false}
         // Dragging the empty canvas moves the canvas — the one gesture everybody tries first.
         // Box selection keeps React Flow's Shift+drag, so nothing is lost by making pan default.
         selectionOnDrag={false} snapGrid={[preferences.canvas.gridSize, preferences.canvas.gridSize]}
