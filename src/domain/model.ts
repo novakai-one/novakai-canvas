@@ -211,6 +211,14 @@ export interface CanvasPreferences {
      * stays available; it is simply never the default, and never silent.
      */
     reframeOnPanelMove?: boolean;
+    /**
+     * How a panel body distributes its sections.
+     *
+     * `accordion` keeps one section open and its siblings one heading row each, which is what
+     * bounds how much a panel can ever show at once. `all-open` is the old everything-at-once,
+     * kept because some people want it — it is a preference, not an argument.
+     */
+    sections?: 'accordion' | 'all-open';
   };
   files: { autoSave: boolean; saveDelay: number };
 }

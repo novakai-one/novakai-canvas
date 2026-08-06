@@ -5,7 +5,7 @@ import type { CanvasWorkspace, RecordCommand } from './application/canvas-worksp
 import type { JsonRepository } from './application/json-repository';
 import { asId } from './domain/id-cast';
 import type { InterfaceId, NodeId } from './domain/ids';
-import type { CanvasPreferences, InspectorTab, Selection } from './domain/model';
+import type { CanvasPreferences, Selection } from './domain/model';
 import { projectView } from './canvas';
 import { CanvasSurface } from './presentation/components/canvas-surface';
 import { Inspector } from './presentation/components/inspector';
@@ -54,7 +54,6 @@ export default function App(props: AppProps) {
   );
   const [preferences, setPreferences] = useState(initialPreferences);
   const [selection, setSelection] = useState<Selection>(null);
-  const [tab, setTab] = useState<InspectorTab>(initialPreferences.panel.defaultTab);
   const [saveStatus, setSaveStatus] = useState<string>(SAVE_STATUS.saved);
   const [mode, setMode] = useState<CanvasMode>(DEFAULT_CANVAS_MODE);
   const [history, setHistory] = useState<string[]>([]);
@@ -110,10 +109,7 @@ export default function App(props: AppProps) {
     setSaveStatus(SAVE_STATUS.refused);
   }, [open.workspace]);
 
-  const select = useCallback((next: Selection) => {
-    setSelection(next);
-    if (next) setTab('inspect');
-  }, []);
+  const select = useCallback((next: Selection) => setSelection(next), []);
 
   /**
    * Opens another diagram through the library.
@@ -251,6 +247,23 @@ export default function App(props: AppProps) {
 
   const contents = useMemo(() => diagramContents(record, view), [record, view]);
 
+  /**
+   * The open diagram, on the clipboard.
+   *
+   * "I can just copy the json and give it to AI, they see the flow" — so this is the product's
+   * output, not a debug view, and it costs one click from anywhere in the app.
+   */
+  const copyRecord = useCallback(async (): Promise<boolean> => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(record, null, 2));
+      return true;
+    } catch (error) {
+      console.warn('[canvas] clipboard refused the record', error);
+      setSaveStatus('Could not copy');
+      return false;
+    }
+  }, [record]);
+
   const shellStyle = {
     '--node-radius': `${preferences.appearance.radius}px`,
     ...wireToneCssVariables(preferences.appearance.theme),
@@ -316,6 +329,7 @@ export default function App(props: AppProps) {
         />
       </ReactFlowProvider>
       <Inspector
+        copyRecord={copyRecord}
         addInterface={(ownerId) => {
           const id = `iface-${crypto.randomUUID().slice(0, 8)}`;
           execute({
@@ -325,21 +339,17 @@ export default function App(props: AppProps) {
           });
           select({ kind: 'interface', id });
         }}
-        canUndo={open.workspace.canUndo()}
         clearSelection={() => setSelection(null)}
         collapsed={studioCollapsed}
         diagrams={diagrams}
         editable={mode === 'edit'}
         execute={execute}
-        undo={() => { open.workspace.undo(); }}
         openDiagram={drillInto}
         preferences={preferences}
         record={record}
         select={select}
         selection={selection}
-        setTab={setTab}
         setWidth={(width) => setPanel({ width })}
-        tab={tab}
         updatePreferences={setPreferences}
         view={view}
       />

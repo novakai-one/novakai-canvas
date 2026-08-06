@@ -16,16 +16,32 @@ export interface PanelHeaderProps {
   actions?: ReactNode;
   /** The path back, drawn above the title. Omitted, or a single step, draws nothing. */
   trail?: ReactNode;
+  /**
+   * Makes the title itself the field that renames it.
+   *
+   * A header that shows a name and a body that shows the same name in a labelled input is the
+   * same fact twice, and the labelled one always won because it was the one you could type in.
+   * Editing where the name already is removes the duplicate without removing the ability.
+   */
+  rename?: (label: string) => void;
 }
 
-export function PanelHeader({ actions, kind, meta, title, trail }: PanelHeaderProps) {
+export function PanelHeader({ actions, kind, meta, rename, title, trail }: PanelHeaderProps) {
   return (
     <header className="panel-header">
       <div className="panel-identity">
         {trail}
         <span className="panel-kind">{kind}</span>
-        <h2 className="panel-title" title={title}>{title}</h2>
-        <span className="panel-meta">{meta ?? ''}</span>
+        {rename ? (
+          <input
+            aria-label="Name"
+            className="panel-title panel-title-field"
+            onChange={(event) => rename(event.target.value)}
+            title={title}
+            value={title}
+          />
+        ) : <h2 className="panel-title" title={title}>{title}</h2>}
+        {meta ? <span className="panel-meta">{meta}</span> : null}
       </div>
       <div className="panel-actions">{actions}</div>
     </header>

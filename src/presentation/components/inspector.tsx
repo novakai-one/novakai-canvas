@@ -1,47 +1,62 @@
-import { useState } from 'react';
-import type { CanvasPreferences, InspectorTab, PreferenceSection } from '../../domain/model';
+import { useCallback, useMemo, useState } from 'react';
+import type { CanvasPreferences, PreferenceSection } from '../../domain/model';
 import {
-  IconButton, PanelBody, PanelCollapse, PanelHeader, PanelShell, STUDIO_BOUNDS, TabStrip,
-  clampPanelWidth,
+  Flyout, IconButton, PanelBody, PanelCollapse, PanelHeader, PanelShell, STUDIO_BOUNDS,
+  TabStrip, clampPanelWidth, resolveOpenSection,
 } from '../shell';
 import { describeSelection, type InspectPanelProps } from './inspect-panel';
-import { JsonPanel } from './json-panel';
 import { PREFERENCE_SECTIONS, preferenceSectionMeta } from './preference-sections';
 import { PreferenceControls } from './preferences-panel';
 
 /** What the Studio inspects, plus the surfaces it can switch between. */
-export interface InspectorProps extends InspectPanelProps {
+export interface InspectorProps extends Omit<InspectPanelProps, 'isSectionOpen' | 'toggleSection'> {
   preferences: CanvasPreferences;
-  tab: InspectorTab;
-  setTab: (tab: InspectorTab) => void;
   updatePreferences: (preferences: CanvasPreferences) => void;
   collapsed: boolean;
   setWidth: (width: number) => void;
+  /** Puts the open diagram's record on the clipboard — the whole point of the tool. */
+  copyRecord: () => Promise<boolean>;
 }
 
-/** The surfaces the Studio offers for the selected object. Settings are not one of them. */
-const OBJECT_TABS = ['inspect', 'json'] as const;
-type ObjectTab = (typeof OBJECT_TABS)[number];
-
-/** An older preference file may name a tab that is now a gear; it opens on Inspect instead. */
-function objectTab(tab: InspectorTab): ObjectTab {
-  return tab === 'json' ? 'json' : 'inspect';
-}
+/** How long "Copied" stays on screen before the control goes quiet again. */
+const COPIED_MS = 1400;
 
 /**
  * The Studio: one skeleton for everything.
  *
  * Header, strip, body — in that order, at that shape, whatever is selected and whichever surface
- * is showing. Settings live behind the gear rather than beside Inspect because preferences are
- * about the application, not about the object in front of you; putting them in the same row of
- * tabs is what made the panel feel like three different panels.
+ * is showing. What changed is how much of the body is on screen at once: sections are an
+ * accordion, so a selection is one open section plus a short list of headings rather than every
+ * fact the record holds, laid out at equal weight.
+ *
+ * Settings live behind the gear rather than beside Inspect because preferences are about the
+ * application, not about the object in front of you.
  */
 export function Inspector(props: InspectorProps) {
   const [section, setSection] = useState<PreferenceSection>('canvas');
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [openSection, setOpenSection] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const width = clampPanelWidth(props.preferences.panel.width, STUDIO_BOUNDS, 340);
-  const inspection = describeSelection(props);
-  const tab = objectTab(props.tab);
+
+  const sectionMode = props.preferences.panel.sections ?? 'accordion';
+  // Two passes on purpose: the inspection has to be described before its section list is known,
+  // and the list is what decides which of them is open.
+  const listing = describeSelection({ ...props, isSectionOpen: () => true, toggleSection: () => {} });
+  const isOpen = useMemo(
+    () => resolveOpenSection(sectionMode, listing.sections, openSection),
+    [listing.sections, openSection, sectionMode],
+  );
+  const toggleSection = useCallback((id: string) => setOpenSection(id), []);
+  const inspection = describeSelection({ ...props, isSectionOpen: isOpen, toggleSection });
+
+  const copy = useCallback(() => {
+    void props.copyRecord().then((ok) => {
+      if (!ok) return;
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), COPIED_MS);
+    });
+  }, [props]);
 
   const header = settingsOpen
     ? { kind: 'Settings', title: 'Preferences', meta: preferenceSectionMeta(section) }
@@ -59,6 +74,30 @@ export function Inspector(props: InspectorProps) {
       <PanelHeader
         actions={(
           <>
+            {/*
+              * Copying the record is a first-class act, not a surface to navigate to.
+              *
+              * It was a tab called "Json" sitting beside Inspect, so handing a diagram to an
+              * agent meant switching surfaces and selecting text. One control, one click, and
+              * it says so when it has done it.
+              */}
+            {!settingsOpen && (
+              <IconButton
+                glyph={copied ? '✓' : '⧉'}
+                label={copied ? 'Copied' : 'Copy diagram JSON'}
+                onClick={copy}
+                tone={copied ? 'accent' : undefined}
+              />
+            )}
+            {!settingsOpen && inspection.remove && (
+              <Flyout
+                items={[{ id: 'remove', label: inspection.remove.label }]}
+                label="More"
+                onPick={() => inspection.remove?.run()}
+              >
+                <span aria-hidden>⋯</span>
+              </Flyout>
+            )}
             {!settingsOpen && props.selection && (
               <IconButton glyph="✕" label="Clear selection" onClick={props.clearSelection} />
             )}
@@ -73,6 +112,7 @@ export function Inspector(props: InspectorProps) {
         )}
         kind={header.kind}
         meta={header.meta}
+        rename={settingsOpen ? undefined : inspection.rename}
         title={header.title}
         trail={inspection.trail.length > 1 && !settingsOpen && (
           /*
@@ -89,17 +129,13 @@ export function Inspector(props: InspectorProps) {
           </nav>
         )}
       />
-      {settingsOpen ? (
+      {settingsOpen && (
         <TabStrip active={section} label="Preference sections" onSelect={setSection} tabs={PREFERENCE_SECTIONS} />
-      ) : (
-        <TabStrip active={tab} label="Studio surfaces" onSelect={props.setTab} tabs={OBJECT_TABS} />
       )}
       <PanelBody>
-        {settingsOpen && (
-          <PreferenceControls preferences={props.preferences} section={section} update={props.updatePreferences} />
-        )}
-        {!settingsOpen && tab === 'inspect' && inspection.body}
-        {!settingsOpen && tab === 'json' && <JsonPanel record={props.record} />}
+        {settingsOpen
+          ? <PreferenceControls preferences={props.preferences} section={section} update={props.updatePreferences} />
+          : inspection.body}
       </PanelBody>
     </PanelShell>
   );

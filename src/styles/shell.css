@@ -1093,3 +1093,54 @@ button.panel-section-head:focus-visible {
 
 .library-footer button:hover { color: var(--ink); background: var(--surface-3); }
 .library-footer button[aria-pressed='true'] { color: var(--ink); background: var(--surface-3); }
+
+/* ---- Idle studio ------------------------------------------------------- */
+
+/*
+ * Empty means empty.
+ *
+ * The panel stays — closing it is Chris's decision, not the app's — but it does not invent
+ * content to justify its own width. One sentence, quiet, vertically settled.
+ */
+.panel-idle {
+  display: grid;
+  flex: 1 1 auto;
+  padding: var(--space-8) var(--space-4);
+  color: var(--ink-faint);
+  font-size: var(--text-sm);
+  place-items: center;
+  text-align: center;
+}
+
+/* The title, when the title is the field that renames it. */
+.panel-title-field {
+  width: 100%;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: transparent;
+  font-family: var(--font-ui);
+  transition: background var(--motion-quick), border-color var(--motion-quick);
+}
+
+.panel-title-field:hover { border-color: var(--edge-soft); }
+
+.panel-title-field:focus-visible {
+  border-color: var(--ink-faint);
+  background: var(--surface-3);
+  outline: none;
+}
+
+/* An overflow menu in a header is an icon button that happens to open a list. */
+.panel-actions .flyout-trigger {
+  width: var(--space-6);
+  height: var(--space-6);
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--ink-faint);
+  font-size: var(--text-base);
+}
+
+.panel-actions .flyout-mark { display: none; }

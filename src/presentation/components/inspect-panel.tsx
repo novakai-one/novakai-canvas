@@ -6,8 +6,7 @@ import type { ProjectedView } from '../../domain/project-view';
 import type { CanvasLayout, DiagramRecord, NodePlacement } from '../../domain/records';
 import { useState } from 'react';
 import { isSignatureName } from '../../application/canvas-workspace';
-import { rootGroupId, type CreatableNodeKind } from '../canvas-actions';
-import { scopeDepth } from '../projection';
+import { rootGroupId } from '../canvas-actions';
 import { FieldRow, ObjectRow, PanelSection, SwitchRow } from '../shell';
 
 /** Everything the inspector reads about the open diagram and the library around it. */
@@ -30,19 +29,11 @@ export interface InspectPanelProps {
   editable: boolean;
   diagrams: DiagramSummary[];
   openDiagram: (diagramId: string) => void;
-  /**
-   * Making and unmaking, owned by the panel rather than by chrome floating over the canvas.
-   *
-   * Chris expected creation and undo in the side panels twice over — "I expected the present edit
-   * add undo to be in side panels", then "surprised that there is no way to add shapes like nodes
-   * and modules etc in the side panel". Creating from here also means the record of the new object
-   * is already open in front of you, so making a thing and naming it are one movement.
-   */
-  addNode?: (kind: CreatableNodeKind) => void;
   /** Gives a node a new interface and selects it, ready to be named. */
   addInterface?: (ownerId: string) => void;
-  undo?: () => void;
-  canUndo?: boolean;
+  /** Whether one section of this body is expanded. Owned by the Studio, answered per section. */
+  isSectionOpen: (sectionId: string) => boolean;
+  toggleSection: (sectionId: string) => void;
 }
 
 /** Splits a typed list, dropping the empties a trailing comma leaves behind. */
@@ -87,30 +78,6 @@ function SignatureInput({
   );
 }
 
-const ADDABLE: readonly CreatableNodeKind[] = ['module', 'object', 'runtime', 'resource', 'group', 'comment'];
-
-/** Create and undo, drawn once and shown on whichever states can offer them. */
-function MakingSection({ props }: { props: InspectPanelProps }) {
-  const { addNode, canUndo, editable, undo } = props;
-  if (!editable || !addNode) return null;
-  return (
-    <PanelSection title="Add to this diagram">
-      <div className="add-grid">
-        {ADDABLE.map((kind) => (
-          <button className="panel-button" key={kind} onClick={() => addNode(kind)} type="button">
-            {kind[0].toUpperCase()}{kind.slice(1)}
-          </button>
-        ))}
-      </div>
-      {undo && (
-        <button className="panel-button" disabled={!canUndo} onClick={undo} type="button">
-          Undo last change
-        </button>
-      )}
-    </PanelSection>
-  );
-}
-
 /**
  * What a panel needs to draw one selection.
  *
@@ -121,6 +88,23 @@ export interface Inspection {
   kind: string;
   title: string;
   meta: string;
+  /**
+   * Renaming, done where the name already is.
+   *
+   * The header showed the name and then an Identity section showed it again in a field, so the
+   * first thing every selection said was its own title twice. Present means the title itself is
+   * the input; absent means this selection cannot be renamed.
+   */
+  rename?: (label: string) => void;
+  /** One destructive act, kept out of the body and behind the header's overflow. */
+  remove?: { label: string; run: () => void };
+  /**
+   * The sections this body draws, in order.
+   *
+   * The Studio needs the list to run the accordion — which one is open, and which are one
+   * heading row each — and only the inspection knows what it is about to draw.
+   */
+  sections: readonly string[];
   body: ReactNode;
   /**
    * The path back to what you were looking at, innermost last.
@@ -158,68 +142,24 @@ function placementOf(record: DiagramRecord, nodeId: string): Pick<NodePlacement,
   return { position: placement?.position ?? { x: 0, y: 0 }, pinned: placement?.pinned ?? false };
 }
 
-function depthOf(record: DiagramRecord, nodeId: string): number {
-  const node = record.nodes[nodeId];
-  return node ? scopeDepth(record.nodes, node) : 0;
-}
-
 /**
- * What the panel shows when nothing is selected.
+ * What the panel shows when nothing is selected: nothing.
  *
- * Listing what the open diagram contains costs no extra chrome and turns the largest empty area
- * on screen into the fastest way to reach any object in it.
+ * It used to backfill with a creation palette and the whole contents list, which is how the
+ * Studio became a navigator without being asked to. The panel stays — closing it is the user's
+ * decision, never the app's — and it stays empty, because there is genuinely nothing to inspect.
  */
-function diagramContents(props: InspectPanelProps): ReactNode {
-  const { record, view } = props;
-  const rootId = rootGroupId(record);
-  const jump = props.jumpTo ?? props.select;
-  const listed = view.nodes
-    .filter((node) => node.id !== rootId)
-    .sort((left, right) => depthOf(record, left.id) - depthOf(record, right.id)
-      || left.label.localeCompare(right.label));
-
-  if (listed.length === 0) {
-    return (
-      <PanelSection fill title="Contents">
-        <div className="panel-empty">
-          <span className="panel-empty-mark" aria-hidden>⌁</span>
-          <span>Nothing drawn yet</span>
-        </div>
-      </PanelSection>
-    );
-  }
-
-  return (
-    <PanelSection fill title="Contents">
-      <ul className="object-rows">
-        {listed.map((node) => (
-          <ObjectRow
-            indent={Math.min(depthOf(record, node.id) - 1, 3) * 8}
-            key={node.id}
-            kind={node.kind}
-            label={node.label}
-            onJump={() => jump({ kind: 'node', id: node.id })}
-            onPeek={() => props.select({ kind: 'node', id: node.id })}
-            selected={false}
-          />
-        ))}
-      </ul>
-    </PanelSection>
-  );
-}
-
 function diagramInspection(props: InspectPanelProps): Inspection {
-  const objects = props.view.nodes.filter((node) => node.id !== rootGroupId(props.record)).length;
   return {
     kind: 'Diagram',
     title: props.record.name,
-    meta: `${objects} objects · ${props.view.wires.length} wires · r${props.record.revision}`,
+    meta: '',
     trail: [{ label: props.record.name, select: null }],
+    sections: [],
     body: (
-      <>
-        <MakingSection props={props} />
-        {diagramContents(props)}
-      </>
+      <div className="panel-idle">
+        <span>Select an object to inspect it.</span>
+      </div>
     ),
   };
 }
@@ -232,38 +172,68 @@ function nodeInspection(props: InspectPanelProps, id: string): Inspection {
     ? props.diagrams.find((entry) => entry.id === node.expandsToDiagramId)
     : undefined;
   const isRoot = id === rootGroupId(props.record);
-  const parent = node.parentId ? props.record.nodes[node.parentId] : undefined;
   // The record owns its own title, and the root container shows that title on the canvas. Renaming
   // one without the other would put two different names on one diagram, so they move together.
   const rename = (label: string): void => {
     props.execute({ kind: 'node.update', id, patch: { label } });
     if (isRoot && label.trim().length > 0) props.execute({ kind: 'diagram.rename', name: label });
   };
+  const section = (sectionId: string) => ({
+    sectionId,
+    open: props.isSectionOpen(sectionId),
+    onToggle: props.toggleSection,
+  });
   return {
     kind: node.kind,
     title: node.label,
-    meta: isRoot ? 'Diagram container' : `in ${parent?.label ?? props.record.name}`,
+    /*
+     * No meta line.
+     *
+     * It read "in Agent Browser Sessions" directly under a trail whose last link said exactly
+     * that, so the panel's first three lines were the name, the parent, and the parent again.
+     * The counts it carried on the diagram — objects, wires, revision — are all things the
+     * canvas itself already shows.
+     */
+    meta: '',
+    rename: props.editable ? rename : undefined,
+    remove: props.editable && !isRoot
+      ? {
+        label: 'Delete object',
+        run: () => { props.execute({ kind: 'node.remove', id }); props.clearSelection(); },
+      }
+      : undefined,
     trail: nodeTrail(props, id),
+    sections: ['description', 'interfaces', 'placement'],
     body: (
       <>
-        <PanelSection title="Identity">
-          <FieldRow label="Name">
-            <input disabled={!props.editable} onChange={(event) => rename(event.target.value)} value={node.label} />
-          </FieldRow>
-          <FieldRow label="Description">
-            <textarea
-              disabled={!props.editable}
-              onChange={(event) => props.execute({ kind: 'node.update', id, patch: { description: event.target.value } })}
-              value={node.description ?? ''}
-            />
-          </FieldRow>
+        <PanelSection {...section('description')} title="Description">
+          <textarea
+            disabled={!props.editable}
+            onChange={(event) => props.execute({ kind: 'node.update', id, patch: { description: event.target.value } })}
+            placeholder="What is this?"
+            value={node.description ?? ''}
+          />
+          {node.subjectRef && (
+            <FieldRow label="Subject"><output>{node.subjectRef.namespace}:{node.subjectRef.id}</output></FieldRow>
+          )}
+          {node.expandsToDiagramId && (
+            <FieldRow label="Detail diagram"><output>{detail?.name ?? node.expandsToDiagramId}</output></FieldRow>
+          )}
+          {detail?.status === 'active' && (
+            <button className="panel-button" onClick={() => props.openDiagram(detail.id)} type="button">Open detail →</button>
+          )}
         </PanelSection>
         {/*
           * A node's interfaces, on the node — Chris: "adding a node doesn't allow me to add
-          * interface". They were countable in Facts and reachable only by clicking a row on the
-          * canvas, which meant a node with none had no way to gain one at all.
+          * interface". The count that used to sit in a Facts grid is the section's own trailing
+          * number now, so the fact and the thing itself are one row instead of two places.
           */}
-        <PanelSection title="Interfaces">
+        <PanelSection
+          {...section('interfaces')}
+          title="Interfaces"
+          trailing={node.interfaceIds.length > 0
+            ? <span className="rail-count">{node.interfaceIds.length}</span> : undefined}
+        >
           {node.interfaceIds.length === 0
             ? <div className="panel-empty"><span>None yet</span></div>
             : (
@@ -288,23 +258,7 @@ function nodeInspection(props: InspectPanelProps, id: string): Inspection {
             </button>
           )}
         </PanelSection>
-        <PanelSection title="Facts">
-          <div className="fact-grid">
-            <div><span>Interfaces</span><strong>{node.interfaceIds.length}</strong></div>
-            <div><span>Types</span><strong>{node.typeIds.length}</strong></div>
-            <div><span>Position</span><strong>{Math.round(placement.position.x)}, {Math.round(placement.position.y)}</strong></div>
-          </div>
-          {node.subjectRef && (
-            <FieldRow label="Subject"><output>{node.subjectRef.namespace}:{node.subjectRef.id}</output></FieldRow>
-          )}
-          {node.expandsToDiagramId && (
-            <FieldRow label="Detail diagram"><output>{detail?.name ?? node.expandsToDiagramId}</output></FieldRow>
-          )}
-          {detail?.status === 'active' && (
-            <button className="panel-button" onClick={() => props.openDiagram(detail.id)} type="button">Open detail →</button>
-          )}
-        </PanelSection>
-        <PanelSection title="Placement">
+        <PanelSection {...section('placement')} title="Placement">
           <SwitchRow
             checked={placement.pinned}
             disabled={!props.editable}
@@ -320,18 +274,6 @@ function nodeInspection(props: InspectPanelProps, id: string): Inspection {
             />
           )}
         </PanelSection>
-        {props.editable && !isRoot && (
-          <PanelSection>
-            <button
-              className="panel-button"
-              data-tone="danger"
-              onClick={() => { props.execute({ kind: 'node.remove', id }); props.clearSelection(); }}
-              type="button"
-            >
-              Delete object
-            </button>
-          </PanelSection>
-        )}
       </>
     ),
   };
@@ -350,6 +292,11 @@ function typeNamed(record: DiagramRecord, name: string): { id: string } | undefi
   return match ? { id: match.id as string } : undefined;
 }
 
+/** The accordion props one section needs, so every inspection wires them the same way. */
+function sectionProps(props: InspectPanelProps, sectionId: string) {
+  return { sectionId, open: props.isSectionOpen(sectionId), onToggle: props.toggleSection };
+}
+
 function interfaceInspection(props: InspectPanelProps, id: string): Inspection {
   const item = props.record.interfaces[id];
   if (!item) return diagramInspection(props);
@@ -361,14 +308,24 @@ function interfaceInspection(props: InspectPanelProps, id: string): Inspection {
   return {
     kind: 'Interface',
     title: item.name,
-    meta: `on ${owner?.label ?? item.ownerId}`,
+    meta: '',
+    remove: props.editable
+      ? {
+        label: 'Delete interface',
+        run: () => {
+          props.execute({ kind: 'interface.remove', id });
+          props.select({ kind: 'node', id: item.ownerId });
+        },
+      }
+      : undefined,
+    sections: ['signature', 'owner', 'types'],
     trail: [
       ...nodeTrail(props, item.ownerId as string),
       { label: item.name, select: { kind: 'interface', id } },
     ],
     body: (
       <>
-        <PanelSection title="Signature">
+        <PanelSection {...sectionProps(props, 'signature')} title="Signature">
           <FieldRow hint="identifier" label="Name">
             <SignatureInput
               disabled={!props.editable}
@@ -399,19 +356,7 @@ function interfaceInspection(props: InspectPanelProps, id: string): Inspection {
             />
           </FieldRow>
         </PanelSection>
-        {props.editable && (
-          <PanelSection>
-            <button
-              className="panel-button"
-              data-tone="danger"
-              onClick={() => { props.execute({ kind: 'interface.remove', id }); props.select({ kind: 'node', id: item.ownerId }); }}
-              type="button"
-            >
-              Delete interface
-            </button>
-          </PanelSection>
-        )}
-        <PanelSection title="Owner">
+        <PanelSection {...sectionProps(props, 'owner')} title="Owner">
           <ul className="object-list">
             <ObjectRow
               kind={owner?.kind ?? 'missing'}
@@ -421,7 +366,7 @@ function interfaceInspection(props: InspectPanelProps, id: string): Inspection {
             />
           </ul>
         </PanelSection>
-        <PanelSection title="Types">
+        <PanelSection {...sectionProps(props, 'types')} title="Types">
           {signature.length === 0 ? (
             <FieldRow label="Signature"><output>Takes nothing, returns void</output></FieldRow>
           ) : (
@@ -459,13 +404,14 @@ function typeInspection(props: InspectPanelProps, id: string): Inspection {
   return {
     kind: 'Type',
     title: item.name,
-    meta: `${item.fields.length} fields · used by ${usedBy.length}`,
+    meta: '',
+    sections: ['shape'],
     trail: [
       { label: props.record.name, select: null },
       { label: item.name, select: { kind: 'type', id } },
     ],
     body: (
-      <PanelSection title="Shape">
+      <PanelSection {...sectionProps(props, 'shape')} title="Shape">
         <div className="token-row">{item.fields.map((field) => <span key={field}>{field}</span>)}</div>
         <FieldRow label="Used by"><output>{usedBy.map((node) => node.label).join(', ') || 'Nothing yet'}</output></FieldRow>
       </PanelSection>
@@ -494,14 +440,21 @@ function wireInspection(props: InspectPanelProps, id: string): Inspection {
   return {
     kind: 'Wire',
     title: wire.label || 'Unlabelled',
-    meta: `${from.label} → ${to.label}`,
+    meta: '',
+    remove: props.editable
+      ? {
+        label: 'Delete wire',
+        run: () => { props.execute({ kind: 'wire.remove', id }); props.clearSelection(); },
+      }
+      : undefined,
+    sections: ['relationship', 'endpoints', 'routing'],
     trail: [
       { label: props.record.name, select: null },
       { label: wire.label || 'Unlabelled', select: { kind: 'wire', id } },
     ],
     body: (
       <>
-        <PanelSection title="Relationship">
+        <PanelSection {...sectionProps(props, 'relationship')} title="Relationship">
           {/*
             * A wire's own record is editable here, like a node's.
             * It used to be four lines of dead text over a model that has always accepted
@@ -534,7 +487,7 @@ function wireInspection(props: InspectPanelProps, id: string): Inspection {
           * Same two acts as every other object row — peek selects, the crosshair travels — so
           * "what is this wire attached to" is answerable by clicking rather than by reading.
           */}
-        <PanelSection title="Endpoints">
+        <PanelSection {...sectionProps(props, 'endpoints')} title="Endpoints">
           <ul className="object-list">
             {[from, to].map((end, index) => (
               <ObjectRow
@@ -547,21 +500,9 @@ function wireInspection(props: InspectPanelProps, id: string): Inspection {
             ))}
           </ul>
         </PanelSection>
-        <PanelSection title="Routing">
+        <PanelSection {...sectionProps(props, 'routing')} title="Routing">
           <FieldRow label="Path"><output>Elbow</output></FieldRow>
         </PanelSection>
-        {props.editable && (
-          <PanelSection>
-            <button
-              className="panel-button"
-              data-tone="danger"
-              onClick={() => { props.execute({ kind: 'wire.remove', id }); props.clearSelection(); }}
-              type="button"
-            >
-              Delete wire
-            </button>
-          </PanelSection>
-        )}
       </>
     ),
   };
@@ -575,13 +516,14 @@ function treeRowInspection(props: InspectPanelProps, nodeId: string, rowId: stri
   return {
     kind: row.kind,
     title: row.label ?? row.id,
-    meta: `in ${node.label}`,
+    meta: '',
+    sections: ['row'],
     trail: [
       ...nodeTrail(props, nodeId),
       { label: row.label ?? row.id, select: { kind: 'tree-row', nodeId, rowId } },
     ],
     body: (
-      <PanelSection title="Row">
+      <PanelSection {...sectionProps(props, 'row')} title="Row">
         <FieldRow label="Status"><output>{row.status ?? '—'}</output></FieldRow>
         <FieldRow label="Parent"><output>{parent ? parent.id : 'top level'}</output></FieldRow>
         {row.badges.length > 0 && (

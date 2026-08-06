@@ -1,11 +1,20 @@
+/// <reference types="node" />
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
-/** One stylesheet with its comments removed, so prose about a token is not a use of it. */
+/**
+ * One stylesheet, read from disk, with its comments removed.
+ *
+ * Deliberately `fs` rather than a `?raw` import: vitest stubs CSS modules, so the import
+ * resolved to an empty string and two of the three assertions below passed against nothing.
+ * A guard that cannot fail is not a guard.
+ */
 function declarations(file: string): string {
   const path = fileURLToPath(new URL(file, import.meta.url));
-  return readFileSync(path, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const text = readFileSync(path, 'utf8');
+  if (text.length === 0) throw new Error(`${file} read as empty`);
+  return text.replace(/\/\*[\s\S]*?\*\//g, '');
 }
 
 /**
@@ -19,7 +28,9 @@ function declarations(file: string): string {
 describe('panel surface ladder', () => {
   it('never paints a panel surface with the page colour', () => {
     for (const file of ['./shell.css', './inspector.css']) {
-      expect(declarations(file), file).not.toContain('background: var(--surface-page)');
+      const text = declarations(file);
+      expect(text.length, file).toBeGreaterThan(0);
+      expect(text, file).not.toContain('background: var(--surface-page)');
     }
   });
 
@@ -31,7 +42,8 @@ describe('panel surface ladder', () => {
     const tokens = declarations('./tokens.css');
     const value = (name: string): number => {
       const hex = new RegExp(`${name}:\\s*#([0-9a-f]{6})`).exec(tokens)?.[1];
-      return hex ? parseInt(hex.slice(0, 2), 16) : Number.NaN;
+      if (!hex) throw new Error(`${name} is not defined as a hex value`);
+      return parseInt(hex.slice(0, 2), 16);
     };
     const ladder = ['--surface-page', '--surface-1', '--surface-2', '--surface-3'].map(value);
     expect(ladder).toEqual([...ladder].sort((left, right) => left - right));
