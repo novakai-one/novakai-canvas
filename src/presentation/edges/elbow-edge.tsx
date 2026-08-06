@@ -54,8 +54,51 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
   // drag ends, not sixty as the pointer moves.
   const [dragged, setDragged] = useState<number | null>(null);
   const moved = useRef(false);
+  // Measured once the label is on screen, in flow units, so the search below works in the same
+  // space the route does.
+  const [labelSize, setLabelSize] = useState({ width: 0, height: 0 });
+  const measureLabel = useCallback((element: HTMLButtonElement | null) => {
+    if (!element) return;
+    const box = element.getBoundingClientRect();
+    const zoom = Number(getComputedStyle(element).getPropertyValue('--nvk-label-zoom')) || 1;
+    const next = { width: box.width / zoom, height: box.height / zoom };
+    setLabelSize((current) => (Math.abs(current.width - next.width) < 1
+      && Math.abs(current.height - next.height) < 1 ? current : next));
+  }, []);
+
   const stored = props.data?.route.labelPosition;
-  const labelPosition = dragged ?? stored ?? DEFAULT_LABEL_POSITION;
+  /*
+   * The default label position steps aside for whatever it would land on.
+   *
+   * The midpoint of a route is often inside a node — a wire passing a box has its middle right
+   * over it — which put fifteen labels across seven of Chris's diagrams on top of node text.
+   * Positions are tried outward from the middle so the label still reads as belonging to the
+   * middle of the wire, and the first clear one wins. A position someone dragged is never
+   * second-guessed: it is already an answer to this question.
+   */
+  const clearPosition = useMemo(() => {
+    const rects = obstacles ?? [];
+    if (rects.length === 0) return DEFAULT_LABEL_POSITION;
+    // The label is a box, not a point: testing its anchor alone left it overlapping by most of
+    // its own width. Its measured half-extents are what has to clear the node.
+    const halfWidth = labelSize.width / 2;
+    const halfHeight = labelSize.height / 2;
+    const covered = (at: number): boolean => {
+      const point = pointAlong(route.points, at);
+      return rects.some(({ rect }) => point.x + halfWidth > rect.x
+        && point.x - halfWidth < rect.x + rect.width
+        && point.y + halfHeight > rect.y
+        && point.y - halfHeight < rect.y + rect.height);
+    };
+    if (!covered(DEFAULT_LABEL_POSITION)) return DEFAULT_LABEL_POSITION;
+    for (let step = 1; step <= 8; step += 1) {
+      for (const at of [DEFAULT_LABEL_POSITION - step * 0.05, DEFAULT_LABEL_POSITION + step * 0.05]) {
+        if (at > 0.06 && at < 0.94 && !covered(at)) return at;
+      }
+    }
+    return DEFAULT_LABEL_POSITION;
+  }, [labelSize.height, labelSize.width, obstacles, route]);
+  const labelPosition = dragged ?? stored ?? clearPosition;
   const label = useMemo(() => pointAlong(route.points, labelPosition), [labelPosition, route]);
 
   const setRoute = props.data?.setRoute;
@@ -201,6 +244,7 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
             onPointerDown={onLabelPointerDown}
             onPointerMove={onLabelPointerMove}
             onPointerUp={onLabelPointerUp}
+            ref={measureLabel}
             style={{
               transform: `translate(-50%, -50%) translate(${label.x}px, ${label.y}px)`,
               zIndex: props.selected ? 1001 : undefined,

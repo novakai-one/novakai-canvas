@@ -629,3 +629,7 @@
   letter-spacing: -0.01em;
   outline: none;
 }
+
+/* Labels are drawn outside the scaled viewport, so the routing search needs the zoom to convert
+   a measured pixel size back into diagram units. */
+.react-flow__edgelabel-renderer { --nvk-label-zoom: var(--nvk-zoom, 1); }
