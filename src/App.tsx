@@ -15,7 +15,7 @@ import {
   createCanvasNode, placedNodes, type CreatableNodeKind,
 } from './presentation/canvas-actions';
 import { canvasCamera } from './presentation/canvas-camera';
-import { ShellGeometryProvider } from './presentation/shell';
+import { ShellGeometryProvider, targetScale } from './presentation/shell';
 import { useWorkspaceRecord } from './presentation/use-workspace-record';
 import { wireToneCssVariables } from './presentation/wire-styles';
 import { DEFAULT_CANVAS_MODE, type CanvasMode } from './presentation/view-mode';
@@ -28,6 +28,13 @@ export interface AppProps {
   initialPreferences: CanvasPreferences;
   preferencesRepository: JsonRepository<CanvasPreferences>;
 }
+
+/** How much air each density setting puts between things, as a multiplier on the 4px grid. */
+const DENSITY_SCALE: Record<CanvasPreferences['appearance']['density'], number> = {
+  compact: 0.85,
+  comfortable: 1,
+  roomy: 1.25,
+};
 
 /** One open diagram: its identity and the workspace holding its content. */
 interface OpenDiagram { id: string; workspace: CanvasWorkspace }
@@ -285,6 +292,36 @@ export default function App(props: AppProps) {
     }
   }, [record]);
 
+  /*
+   * Every visual judgement call, handed to the user as a number.
+   *
+   * Density and text scale drive the spacing and type tokens; target scale drives every canvas
+   * control's screen size; label scale drives wire type alone. Guessing which of these Chris
+   * wants is what offering all four is for — "if I can change things myself, then you don't
+   * have to spend forever trying to guess what I want".
+   *
+   * Written to the document element, not to the shell. Every derived token —
+   * `--space-3: calc(12px * var(--density))` and its kind — is declared on `:root` and is
+   * therefore computed there, with `:root`'s own multiplier; setting a different multiplier on
+   * a descendant changes nothing, because what descendants inherit is the already-resolved
+   * value. Verified in the browser: the dot stayed twelve pixels at a scale of 1.3.
+   */
+  useEffect(() => {
+    const style = document.documentElement.style;
+    const scales: Record<string, string> = {
+      '--density': String(DENSITY_SCALE[preferences.appearance.density] ?? 1),
+      '--text-scale': String(preferences.appearance.textScale ?? 1),
+      '--target-scale': String(targetScale(preferences.canvas.targetSize ?? 'medium').multiplier),
+      '--wire-label-scale': String(preferences.wires.labelScale ?? 1),
+    };
+    for (const [name, value] of Object.entries(scales)) style.setProperty(name, value);
+  }, [
+    preferences.appearance.density,
+    preferences.appearance.textScale,
+    preferences.canvas.targetSize,
+    preferences.wires.labelScale,
+  ]);
+
   const shellStyle = {
     '--node-radius': `${preferences.appearance.radius}px`,
     ...wireToneCssVariables(preferences.appearance.theme),
@@ -303,6 +340,7 @@ export default function App(props: AppProps) {
       <div
         className={`app-shell mode-${mode}`}
         data-accent={preferences.appearance.accent}
+        data-dividers={(preferences.panel.showDividers ?? true) ? undefined : 'off'}
         data-theme={preferences.appearance.theme}
         style={shellStyle}
       >
@@ -315,7 +353,7 @@ export default function App(props: AppProps) {
         collapsed={railCollapsed}
         contents={contents}
         createDiagram={createDiagram}
-        defaultTab="build"
+        defaultTab={preferences.panel.leftDefaultTab ?? 'build'}
         diagrams={diagrams}
         editable={mode === 'edit'}
         jumpTo={jumpTo}

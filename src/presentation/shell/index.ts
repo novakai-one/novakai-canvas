@@ -17,6 +17,7 @@ export {
   resolveOpenSection, type SectionMode, type SectionOpenTest,
 } from './panel-accordion';
 export { PanelCollapse, RailToggle, StudioToggle } from './shell-controls';
+export { TARGET_SIZES, targetScale, type TargetScale, type TargetSize } from './target-scale';
 export { ShellGeometryProvider, useShellGeometry, type ShellGeometry } from './shell-geometry';
 export { TabStrip } from './tab-strip';
 export {

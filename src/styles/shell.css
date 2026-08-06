@@ -383,7 +383,7 @@
 }
 
 /* Rules are a preference: some eyes want the grouping from spacing alone. */
-.panel-shell[data-dividers='off'] .panel-section-head::after { background: transparent; }
+.app-shell[data-dividers='off'] .panel-section-head::after { background: transparent; }
 
 .panel-section-title {
   flex: none;

@@ -281,16 +281,18 @@ export const canvasChangeSetSchema = {
 export const canvasPreferencesSchema = z.object({
   schemaVersion: z.literal(1),
   appearance: z.object({
-    density: z.enum(['compact', 'comfortable']),
+    density: z.enum(['compact', 'comfortable', 'roomy']).default('comfortable'),
     radius: z.number().min(0).max(16),
     // Defaults keep preference files written before theming valid.
     theme: z.enum(['dark', 'light']).default('dark'),
     accent: z.enum(['gold', 'sage', 'slate']).default('gold'),
+    textScale: z.number().min(0.85).max(1.35).optional(),
   }),
   canvas: z.object({
     showGrid: z.boolean(), snapToGrid: z.boolean(), gridSize: z.number().min(4).max(32), showControls: z.boolean(),
     showLegend: z.boolean().default(true),
     groupPadding: z.number().min(16).max(160).default(40),
+    targetSize: z.enum(['small', 'medium', 'large']).optional(),
   }),
   nodes: z.object({
     showKinds: z.boolean(), showDescriptions: z.boolean(),
@@ -299,6 +301,10 @@ export const canvasPreferencesSchema = z.object({
   }),
   wires: z.object({
     showLabels: z.enum(['always', 'selected', 'never']), width: z.number().min(1).max(4), dimUnrelated: z.boolean(),
+    // All optional: a preferences file written before these existed opens at the old behaviour.
+    shape: z.enum(['elbow', 'straight', 'curved', 'stepped']).optional(),
+    labelScale: z.number().min(0.85).max(1.5).optional(),
+    avoidNodes: z.boolean().optional(),
   }),
   panel: z.object({
     width: z.number().min(280).max(560), defaultTab: z.enum(['inspect', 'preferences', 'json']),
@@ -310,6 +316,9 @@ export const canvasPreferencesSchema = z.object({
     // Optional and absent means off: a file written before this setting existed must not start
     // re-framing the camera on its owner.
     reframeOnPanelMove: z.boolean().optional(),
+    sections: z.enum(['accordion', 'all-open']).optional(),
+    showDividers: z.boolean().optional(),
+    leftDefaultTab: z.enum(['build', 'contents']).optional(),
   }),
   files: z.object({ autoSave: z.boolean(), saveDelay: z.number().min(100).max(5000) }),
 });

@@ -166,10 +166,18 @@ type CanvasAccent = 'gold' | 'sage' | 'slate';
 export interface CanvasPreferences {
   schemaVersion: 1;
   appearance: {
-    density: 'compact' | 'comfortable';
+    density: 'compact' | 'comfortable' | 'roomy';
     radius: number;
     theme: CanvasTheme;
     accent: CanvasAccent;
+    /**
+     * Scales every type size together.
+     *
+     * A separate knob from density because "more air" and "bigger words" are different
+     * complaints with different answers, and guessing which one is meant is exactly what
+     * offering both avoids.
+     */
+    textScale?: number;
   };
   canvas: {
     showGrid: boolean;
@@ -178,6 +186,8 @@ export interface CanvasPreferences {
     showControls: boolean;
     showLegend: boolean;
     groupPadding: number;
+    /** How large the things you grab on the canvas are: ports, handles, wire ends. */
+    targetSize?: 'small' | 'medium' | 'large';
   };
   nodes: {
     showKinds: boolean;
@@ -211,6 +221,10 @@ export interface CanvasPreferences {
     width: number;
     defaultTab: InspectorTab;
     showEmptyFields: boolean;
+    /** Section rules on or off; the spacing does the grouping either way. */
+    showDividers?: boolean;
+    /** Which left-panel surface opens with the app. */
+    leftDefaultTab?: 'build' | 'contents';
     railWidth?: number;
     railCollapsed?: boolean;
     studioCollapsed?: boolean;

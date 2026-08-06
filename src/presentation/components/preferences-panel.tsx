@@ -1,5 +1,6 @@
 import type { CanvasPreferences, PreferenceSection } from '../../domain/model';
-import { FieldRow, PanelSection, SwitchRow } from '../shell';
+import { FieldRow, PanelSection, SwitchRow, TARGET_SIZES, targetScale } from '../shell';
+import { WIRE_SHAPES, WIRE_SHAPE_HINTS } from '../edges/wire-shape';
 
 type Patch = <K extends keyof CanvasPreferences>(key: K, value: CanvasPreferences[K]) => void;
 
@@ -18,6 +19,20 @@ function ThemeControls({ patch, value }: { value: CanvasPreferences; patch: Patc
       </FieldRow>
       <FieldRow hint={`${value.appearance.radius}px`} label="Corner radius">
         <input max="16" min="0" onChange={(event) => patch('appearance', { ...value.appearance, radius: Number(event.target.value) })} type="range" value={value.appearance.radius} />
+      </FieldRow>
+      {/*
+        * Breathing room and type size, as two numbers rather than one taste.
+        * "Roomier" and "bigger words" are different complaints, so they get different knobs.
+        */}
+      <FieldRow label="Density">
+        <select onChange={(event) => patch('appearance', { ...value.appearance, density: event.target.value as CanvasPreferences['appearance']['density'] })} value={value.appearance.density}>
+          <option value="compact">Compact</option>
+          <option value="comfortable">Comfortable</option>
+          <option value="roomy">Roomy</option>
+        </select>
+      </FieldRow>
+      <FieldRow hint={`${Math.round((value.appearance.textScale ?? 1) * 100)}%`} label="Text size">
+        <input max="1.35" min="0.85" onChange={(event) => patch('appearance', { ...value.appearance, textScale: Number(event.target.value) })} step="0.05" type="range" value={value.appearance.textScale ?? 1} />
       </FieldRow>
     </PanelSection>
   );
@@ -38,6 +53,17 @@ function CanvasControls({ patch, value }: { value: CanvasPreferences; patch: Pat
         </FieldRow>
         <FieldRow hint={`${value.canvas.groupPadding}px`} label="Group breathing room">
           <input max="160" min="16" onChange={(event) => patch('canvas', { ...value.canvas, groupPadding: Number(event.target.value) })} step="8" type="range" value={value.canvas.groupPadding} />
+        </FieldRow>
+        {/* How big the things you have to hit are: ports, resize corners, wire ends. */}
+        <FieldRow
+          hint={`${targetScale(value.canvas.targetSize ?? 'medium').dot}px dots`}
+          label="Control size"
+        >
+          <select onChange={(event) => patch('canvas', { ...value.canvas, targetSize: event.target.value as CanvasPreferences['canvas']['targetSize'] })} value={value.canvas.targetSize ?? 'medium'}>
+            {TARGET_SIZES.map((size) => (
+              <option key={size} value={size}>{size[0].toUpperCase()}{size.slice(1)}</option>
+            ))}
+          </select>
         </FieldRow>
       </PanelSection>
     </>
@@ -80,6 +106,22 @@ function WireControls({ patch, value }: { value: CanvasPreferences; patch: Patch
       <FieldRow hint={`${value.wires.width}px`} label="Width">
         <input max="4" min="1" onChange={(event) => patch('wires', { ...value.wires, width: Number(event.target.value) })} step="0.25" type="range" value={value.wires.width} />
       </FieldRow>
+      {/* Shape is a look, not a route: every value draws the points the router already chose. */}
+      <FieldRow hint={WIRE_SHAPE_HINTS[value.wires.shape ?? 'elbow']} label="Shape">
+        <select onChange={(event) => patch('wires', { ...value.wires, shape: event.target.value as CanvasPreferences['wires']['shape'] })} value={value.wires.shape ?? 'elbow'}>
+          {WIRE_SHAPES.map((shape) => (
+            <option key={shape} value={shape}>{shape[0].toUpperCase()}{shape.slice(1)}</option>
+          ))}
+        </select>
+      </FieldRow>
+      <FieldRow hint={`${Math.round((value.wires.labelScale ?? 1) * 100)}%`} label="Label size">
+        <input max="1.5" min="0.85" onChange={(event) => patch('wires', { ...value.wires, labelScale: Number(event.target.value) })} step="0.05" type="range" value={value.wires.labelScale ?? 1} />
+      </FieldRow>
+      <SwitchRow
+        checked={value.wires.avoidNodes ?? true}
+        label="Route around nodes"
+        onChange={(avoidNodes) => patch('wires', { ...value.wires, avoidNodes })}
+      />
     </PanelSection>
   );
 }
@@ -91,6 +133,27 @@ function PanelControls({ patch, value }: { value: CanvasPreferences; patch: Patc
         <input max="520" min="280" onChange={(event) => patch('panel', { ...value.panel, width: Number(event.target.value) })} type="range" value={value.panel.width} />
       </FieldRow>
       <SwitchRow checked={value.panel.showEmptyFields} label="Empty fields" onChange={(showEmptyFields) => patch('panel', { ...value.panel, showEmptyFields })} />
+      {/*
+        * One section open at a time is what bounds how much a panel can show. `all-open` is the
+        * old everything-at-once, kept because it is a preference rather than an argument.
+        */}
+      <FieldRow label="Sections">
+        <select onChange={(event) => patch('panel', { ...value.panel, sections: event.target.value as CanvasPreferences['panel']['sections'] })} value={value.panel.sections ?? 'accordion'}>
+          <option value="accordion">One at a time</option>
+          <option value="all-open">All open</option>
+        </select>
+      </FieldRow>
+      <FieldRow label="Left panel opens on">
+        <select onChange={(event) => patch('panel', { ...value.panel, leftDefaultTab: event.target.value as CanvasPreferences['panel']['leftDefaultTab'] })} value={value.panel.leftDefaultTab ?? 'build'}>
+          <option value="build">Build</option>
+          <option value="contents">Contents</option>
+        </select>
+      </FieldRow>
+      <SwitchRow
+        checked={value.panel.showDividers ?? true}
+        label="Section rules"
+        onChange={(showDividers) => patch('panel', { ...value.panel, showDividers })}
+      />
       <SwitchRow
         checked={value.panel.reframeOnPanelMove ?? false}
         label="Re-frame when panels move"
