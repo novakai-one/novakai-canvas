@@ -17,6 +17,45 @@ before it is claimed. Ordered by how many times Chris has raised it, then by pay
 
 ---
 
+## Outcome — all six slices landed
+
+| Slice | Commit | Verified by |
+|---|---|---|
+| S1 studio owns create + undo | `fa07124` | toolbar down to Present/Edit/Saved; adding a Runtime from the panel takes 11 nodes → 12 and opens its Name field |
+| S2 search, not filter | `781e5e3` | "broker" surfaces *Session broker — Agent Browser Sessions*; clicking selects `bs-broker` |
+| S3 readable rail + Recent | `224b03c` | three Mission Control rows read as distinct tails at minimum width; Recent lists newest-first |
+| S4 breadcrumbs | `7dd4a6e` | diagram › node › interface, and the trail walks back |
+| S5 rename on the canvas | `2e922c3` | double-click renames on canvas and disk; Escape restores |
+| S6 interfaces + signature rule | `50c6734` | invalid signature refused and marked; `AgentId, Frame[]` commits |
+
+Final sweep: 12 behaviours green, no page errors. `src/` suites 328 passing, 1 pre-existing
+`work-session-report` failure untouched.
+
+### Two things found while doing this, fixed in passing
+
+- `projectNodes` was never given `execute`, so node data had no way to change anything while
+  `projectEdges` beside it always had. That asymmetry is why wires grew editing affordances over
+  three lanes and nodes did not — and why S5 was impossible before it was fixed.
+- `wire.update` / `interface.update` did not exist as record commands at all. The read-only wire
+  and interface panels were not neglect; there was nothing to call.
+
+### Deliberate deviation
+
+Present/Edit stays over the canvas rather than moving into a side panel. It is a mode for the
+canvas and the canvas is what it changes. Stated rather than done silently.
+
+### Still open after these slices
+
+- Wire ends can be moved to any port and stick, but a **new** wire's sides are only stored when
+  React Flow reports a handle on the drop; a drop resolved without one still falls back.
+- No create-on-canvas gesture. Double-click is now free for it, deliberately, but unbuilt.
+- Node **descriptions** are still studio-only; S5 covers the title, not the body.
+- Types have no structured editor — only interfaces gained one.
+- Untested by me: marquee multi-select, ⌥-drag clone, copy/paste, alignment guides, the
+  Theme/Nodes/Wires/Panel/Files preference tabs, and 18 of the 19 diagrams.
+
+---
+
 ## S1 — The studio owns creating and undoing
 
 **Why first:** raised twice (#1 and #2 are the same complaint from two directions). The floating

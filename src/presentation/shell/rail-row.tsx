@@ -1,20 +1,5 @@
 import type { ReactNode } from 'react';
-
-/**
- * How much of a name is protected from truncation.
- *
- * Long enough to tell four "Mission Control UX 22-Jul — …" rows apart, short enough that the
- * head still shows what family a diagram belongs to at the rail's minimum width.
- */
-const TAIL_LENGTH = 16;
-
-export function tail(label: string): string {
-  return label.length <= TAIL_LENGTH ? label : label.slice(-TAIL_LENGTH);
-}
-
-export function head(label: string): string {
-  return label.length <= TAIL_LENGTH ? '' : label.slice(0, -TAIL_LENGTH);
-}
+import { head, tail } from './rail-label';
 
 /**
  * One navigation row in the rail.
