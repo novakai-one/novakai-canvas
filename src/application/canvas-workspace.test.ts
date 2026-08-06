@@ -154,4 +154,75 @@ describe('canvas workspace', () => {
       provenance: { source: 'agent' },
     });
   });
+
+  /**
+   * A wire's own words are editable, like a node's.
+   *
+   * The studio could only ever delete a wire because no command existed to change one, which is
+   * what made its panel read-only while the node panel was a full editor.
+   */
+  it('rewrites a wire label and kind without touching its ends', () => {
+    const workspace = createCanvasWorkspace(openMessagingScope(), human);
+    const before = workspace.snapshot();
+    const [id, original] = Object.entries(before.wires)[0];
+
+    const outcome = workspace.submit(batch(
+      [{ kind: 'wire.update', id, patch: { label: 'renamed', kind: 'queries' } }],
+      before.revision,
+      'op-wire-update',
+    ));
+
+    expect(outcome.status).toBe('applied');
+    const after = workspace.snapshot().wires[id];
+    expect(after).toMatchObject({ label: 'renamed', kind: 'queries' });
+    expect(after.source).toEqual(original.source);
+    expect(after.target).toEqual(original.target);
+  });
+
+  it('refuses to update a wire that is not there', () => {
+    const workspace = createCanvasWorkspace(openMessagingScope(), human);
+    const outcome = workspace.submit(batch(
+      [{ kind: 'wire.update', id: 'no-such-wire', patch: { label: 'x' } }],
+      workspace.snapshot().revision,
+      'op-wire-missing',
+    ));
+
+    expect(outcome).toMatchObject({ status: 'rejected', reason: 'wire-not-found:no-such-wire' });
+  });
+
+  it('renames an interface and refuses to blank its name', () => {
+    const workspace = createCanvasWorkspace(openMessagingScope(), human);
+    const id = Object.keys(workspace.snapshot().interfaces)[0];
+
+    const renamed = workspace.submit(batch(
+      [{ kind: 'interface.update', id, patch: { name: 'renamedCall' } }],
+      workspace.snapshot().revision,
+      'op-iface-rename',
+    ));
+    expect(renamed.status).toBe('applied');
+    expect(workspace.snapshot().interfaces[id].name).toBe('renamedCall');
+
+    const blanked = workspace.submit(batch(
+      [{ kind: 'interface.update', id, patch: { name: '  ' } }],
+      workspace.snapshot().revision,
+      'op-iface-blank',
+    ));
+    expect(blanked).toMatchObject({ status: 'rejected', reason: 'interface-name-empty' });
+  });
+
+  /** Undo is only trustworthy if it restores content exactly, including a wire's words. */
+  it('restores a wire edit on undo', () => {
+    const workspace = createCanvasWorkspace(openMessagingScope(), human);
+    const [id, original] = Object.entries(workspace.snapshot().wires)[0];
+
+    workspace.submit(batch(
+      [{ kind: 'wire.update', id, patch: { label: 'temporary' } }],
+      workspace.snapshot().revision,
+      'op-wire-undo',
+    ));
+    expect(workspace.snapshot().wires[id].label).toBe('temporary');
+
+    expect(workspace.undo()).toBe(true);
+    expect(workspace.snapshot().wires[id].label).toBe(original.label);
+  });
 });

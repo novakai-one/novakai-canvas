@@ -27,7 +27,14 @@ export type RecordCommand =
   | { kind: 'wire.add'; wire: DiagramRecord['wires'][string] }
   | { kind: 'wire.reconnect'; id: string; source?: string; target?: string }
   | { kind: 'wire.setRoute'; id: string; route: RouteInput }
+  /** A wire's own words. Its ends move through `wire.reconnect`, which has its own rules. */
+  | {
+    kind: 'wire.update';
+    id: string;
+    patch: { label?: string; kind?: DiagramRecord['wires'][string]['kind'] };
+  }
   | { kind: 'wire.remove'; id: string }
+  | { kind: 'interface.update'; id: string; patch: { name?: string } }
   | { kind: 'view.setCollapsed'; id: string; collapsed: boolean }
   | { kind: 'view.setViewport'; viewport: { x: number; y: number; zoom: number } }
   | { kind: 'diagram.rename'; name: string };
@@ -140,8 +147,14 @@ function validate(record: DiagramRecord, command: RecordCommand): void {
       }
       return;
     }
-    case 'wire.remove':
+    case 'wire.update': case 'wire.remove':
       if (!record.wires[command.id]) throw new Error(`wire-not-found:${command.id}`);
+      return;
+    case 'interface.update':
+      if (!record.interfaces[command.id]) throw new Error(`interface-not-found:${command.id}`);
+      if (command.patch.name !== undefined && command.patch.name.trim().length === 0) {
+        throw new Error('interface-name-empty');
+      }
       return;
     case 'view.setCollapsed':
       requireNode(record, command.id);
@@ -225,6 +238,12 @@ function apply(record: DiagramRecord, command: RecordCommand): DiagramRecord {
       };
       break;
     }
+    case 'wire.update':
+      Object.assign(next.wires[command.id], command.patch);
+      break;
+    case 'interface.update':
+      Object.assign(next.interfaces[command.id], command.patch);
+      break;
     case 'wire.remove':
       delete next.wires[command.id];
       for (const each of Object.values(next.layouts)) delete each.wireRouteHints[command.id];

@@ -194,19 +194,80 @@ function nodeInspection(props: InspectPanelProps, id: string): Inspection {
   };
 }
 
+/**
+ * Finds the type record a signature names, so a name can become the thing it refers to.
+ *
+ * Types are first-class records with their own ids, and the signature stores their names; the
+ * panel rendered those names as dead strings and threw the join away. Matching by name is what
+ * the stored signature supports today — an unmatched name simply stays text rather than
+ * pretending to be a link.
+ */
+function typeNamed(record: DiagramRecord, name: string): { id: string } | undefined {
+  const match = Object.values(record.types).find((type) => type.name === name);
+  return match ? { id: match.id as string } : undefined;
+}
+
 function interfaceInspection(props: InspectPanelProps, id: string): Inspection {
   const item = props.record.interfaces[id];
   if (!item) return diagramInspection(props);
+  const owner = props.record.nodes[item.ownerId];
+  const signature = [
+    ...item.accepts.map((name) => ({ role: 'accepts', name })),
+    ...item.returns.map((name) => ({ role: 'returns', name })),
+  ];
   return {
     kind: 'Interface',
     title: item.name,
-    meta: `on ${props.record.nodes[item.ownerId]?.label ?? item.ownerId}`,
+    meta: `on ${owner?.label ?? item.ownerId}`,
     body: (
-      <PanelSection title="Signature">
-        <FieldRow label="Owner"><output>{props.record.nodes[item.ownerId]?.label ?? item.ownerId}</output></FieldRow>
-        <FieldRow label="Accepts"><output>{item.accepts.join(', ') || 'Nothing'}</output></FieldRow>
-        <FieldRow label="Returns"><output>{item.returns.join(', ') || 'void'}</output></FieldRow>
-      </PanelSection>
+      <>
+        <PanelSection title="Signature">
+          <FieldRow label="Name">
+            <input
+              disabled={!props.editable}
+              onChange={(event) => props.execute({
+                kind: 'interface.update', id, patch: { name: event.target.value },
+              })}
+              value={item.name}
+            />
+          </FieldRow>
+        </PanelSection>
+        <PanelSection title="Owner">
+          <ul className="object-list">
+            <ObjectRow
+              kind={owner?.kind ?? 'missing'}
+              label={owner?.label ?? item.ownerId}
+              onJump={() => (props.jumpTo ?? props.select)({ kind: 'node', id: item.ownerId })}
+              onPeek={() => props.select({ kind: 'node', id: item.ownerId })}
+            />
+          </ul>
+        </PanelSection>
+        <PanelSection title="Types">
+          {signature.length === 0 ? (
+            <FieldRow label="Signature"><output>Takes nothing, returns void</output></FieldRow>
+          ) : (
+            <ul className="object-list">
+              {signature.map((entry, index) => {
+                const type = typeNamed(props.record, entry.name);
+                return type ? (
+                  <ObjectRow
+                    key={`${entry.role}-${entry.name}-${index}`}
+                    kind={entry.role}
+                    label={entry.name}
+                    onJump={() => (props.jumpTo ?? props.select)({ kind: 'type', id: type.id })}
+                    onPeek={() => props.select({ kind: 'type', id: type.id })}
+                  />
+                ) : (
+                  <li className="object-row is-plain" key={`${entry.role}-${entry.name}-${index}`}>
+                    <span className="object-row-kind">{entry.role}</span>
+                    <span className="object-row-label">{entry.name}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </PanelSection>
+      </>
     ),
   };
 }
@@ -229,22 +290,75 @@ function typeInspection(props: InspectPanelProps, id: string): Inspection {
   };
 }
 
+/**
+ * The relationships a wire may express, in the order the legend teaches them.
+ *
+ * `missing` is deliberately absent: it is a degraded state the model records when a wire has
+ * lost an end, never something a person chooses.
+ */
+const WIRE_KINDS = ['owns', 'references', 'queries', 'executes', 'assigns', 'mentions'] as const;
+
 function wireInspection(props: InspectPanelProps, id: string): Inspection {
   const wire = props.record.wires[id];
   if (!wire) return diagramInspection(props);
-  const from = props.record.nodes[wire.source.nodeId]?.label ?? wire.source.nodeId;
-  const to = props.record.nodes[wire.target.nodeId]?.label ?? wire.target.nodeId;
+  const endpoint = (nodeId: string): { id: string; label: string; kind: string } => ({
+    id: nodeId,
+    label: props.record.nodes[nodeId]?.label ?? nodeId,
+    kind: props.record.nodes[nodeId]?.kind ?? 'missing',
+  });
+  const from = endpoint(wire.source.nodeId);
+  const to = endpoint(wire.target.nodeId);
   return {
     kind: 'Wire',
     title: wire.label || 'Unlabelled',
-    meta: `${from} → ${to}`,
+    meta: `${from.label} → ${to.label}`,
     body: (
       <>
         <PanelSection title="Relationship">
-          <FieldRow label="Label"><output>{wire.label || 'Unlabelled'}</output></FieldRow>
-          <FieldRow label="Kind"><output>{wire.kind}</output></FieldRow>
-          <FieldRow label="From"><output>{from}</output></FieldRow>
-          <FieldRow label="To"><output>{to}</output></FieldRow>
+          {/*
+            * A wire's own record is editable here, like a node's.
+            * It used to be four lines of dead text over a model that has always accepted
+            * `wire.update`, so the panel's grammar changed depending on what you clicked.
+            */}
+          <FieldRow label="Label">
+            <input
+              disabled={!props.editable}
+              onChange={(event) => props.execute({ kind: 'wire.update', id, patch: { label: event.target.value } })}
+              value={wire.label ?? ''}
+            />
+          </FieldRow>
+          <FieldRow label="Kind">
+            <select
+              disabled={!props.editable}
+              onChange={(event) => props.execute({
+                kind: 'wire.update', id, patch: { kind: event.target.value as typeof WIRE_KINDS[number] },
+              })}
+              value={wire.kind}
+            >
+              {WIRE_KINDS.map((choice) => <option key={choice} value={choice}>{choice}</option>)}
+              {!WIRE_KINDS.includes(wire.kind as typeof WIRE_KINDS[number]) && (
+                <option value={wire.kind}>{wire.kind}</option>
+              )}
+            </select>
+          </FieldRow>
+        </PanelSection>
+        {/*
+          * Endpoints are the objects themselves, not their names.
+          * Same two acts as every other object row — peek selects, the crosshair travels — so
+          * "what is this wire attached to" is answerable by clicking rather than by reading.
+          */}
+        <PanelSection title="Endpoints">
+          <ul className="object-list">
+            {[from, to].map((end, index) => (
+              <ObjectRow
+                key={`${end.id}-${index === 0 ? 'from' : 'to'}`}
+                kind={index === 0 ? 'from' : 'to'}
+                label={`${end.label}`}
+                onJump={() => (props.jumpTo ?? props.select)({ kind: 'node', id: end.id })}
+                onPeek={() => props.select({ kind: 'node', id: end.id })}
+              />
+            ))}
+          </ul>
         </PanelSection>
         <PanelSection title="Routing">
           <FieldRow label="Path"><output>Elbow</output></FieldRow>
