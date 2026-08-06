@@ -74,18 +74,20 @@
    the canvas, so it stays reachable whether a panel is open or closed. */
 
 /*
- * A panel toggle lives on the seam it moves.
+ * The way back into a panel that is closed.
  *
- * These were a pair in the floating toolbar, mid-canvas, and Chris's review reported them as
- * not existing. Pinning each to the canvas edge its panel opens on is what makes them findable
- * by looking at the thing they affect. They stay quiet until the pointer is near — this is
- * chrome over a diagram, and the diagram is what the screen is for.
+ * Only drawn while its panel is shut — an open panel carries its own close control in its
+ * header, so the seam stays empty for the 99% of the time both panels are open. Vertically
+ * centred rather than pinned to the top: the top corner already belongs to the canvas toolbar,
+ * and two controls fighting over one corner is how the old pair became unfindable. The middle
+ * of the seam is also simply where a closed panel is, so it is where a hand reaches.
  */
 .edge-toggle {
   position: absolute;
   z-index: 12;
-  top: var(--space-3);
+  top: 50%;
   opacity: 0.35;
+  transform: translateY(-50%);
   transition: opacity var(--motion-feedback);
 }
 
@@ -243,7 +245,7 @@
   border: 1px solid var(--edge-soft);
   border-radius: var(--radius);
   color: var(--ink);
-  background: var(--surface-page);
+  background: var(--surface-3);
   font-family: var(--font-ui);
   font-size: var(--text-base);
 }
@@ -342,7 +344,15 @@
   padding: var(--space-4);
 }
 
-.panel-section + .panel-section { border-top: 1px solid var(--edge-soft); }
+/*
+ * Breathing room does the grouping; the rule only confirms it.
+ *
+ * A full-width border between every section drew one line per boundary and made the body a
+ * ladder. The gap between sections is deliberately larger than any gap inside one, so the
+ * grouping is legible from spacing alone — which is the whole of "minimal and low
+ * stimulation" expressed as two numbers.
+ */
+.panel-section + .panel-section { padding-top: var(--space-6); }
 
 /* One section may own the leftover height — the contents list, the JSON view. */
 .panel-section[data-fill] { overflow: hidden; flex: 1 1 auto; min-height: 0; }
@@ -350,17 +360,62 @@
 
 .panel-section-head {
   display: flex;
+  width: 100%;
   align-items: center;
-  justify-content: space-between;
+  padding: 0;
+  border: 0;
+  background: transparent;
   gap: var(--space-2);
+  text-align: left;
 }
 
+/*
+ * The hairline the heading sits in.
+ *
+ * It starts after the title and its count and runs to the panel's inner edge, so one line
+ * carries both "this is a group" and "this is where it begins".
+ */
+.panel-section-head::after {
+  height: 1px;
+  flex: 1 1 auto;
+  background: var(--edge-soft);
+  content: "";
+}
+
+/* Rules are a preference: some eyes want the grouping from spacing alone. */
+.panel-shell[data-dividers='off'] .panel-section-head::after { background: transparent; }
+
 .panel-section-title {
+  flex: none;
   color: var(--ink-faint);
   font-size: var(--text-xs);
+  font-family: var(--font-mono);
   font-weight: 600;
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
+}
+
+/* A collapsed section is one row, and that row has to say it can be opened. */
+button.panel-section-head { cursor: pointer; }
+button.panel-section-head:hover .panel-section-title { color: var(--ink-muted); }
+
+.panel-section-mark {
+  order: 3;
+  flex: none;
+  margin-left: var(--space-2);
+  color: var(--ink-faint);
+  font-size: var(--text-sm);
+  line-height: 1;
+  transition: transform var(--motion-quick), color var(--motion-quick);
+}
+
+.panel-section[data-open] > .panel-section-head .panel-section-mark {
+  transform: rotate(90deg);
+}
+
+button.panel-section-head:focus-visible {
+  outline: 1px solid var(--ink-faint);
+  outline-offset: var(--space-1);
 }
 
 .panel-section-body {
@@ -400,8 +455,15 @@
   border: 1px solid var(--edge);
   border-radius: var(--radius);
   color: var(--ink);
-  /* Inputs are inset: darker than the panel they sit in. */
-  background: var(--surface-page);
+  /*
+   * A control is the deepest thing in a panel, so it is the LIGHTEST thing in a panel.
+   *
+   * These were painted `--surface-page`, the darkest value in the system and darker than the
+   * panel holding them, which inverted the surface ladder and made every field read as a hole
+   * cut in the panel. Children are lighter than their parent: the final surface a hand lands
+   * on is never the dark one.
+   */
+  background: var(--surface-3);
   font-family: var(--font-ui);
   font-size: var(--text-base);
 }
@@ -449,7 +511,8 @@
   padding: 0;
   border: 1px solid var(--edge);
   border-radius: 3px;
-  background: var(--surface-page);
+  /* A control is the lightest surface in a panel, checkboxes included. */
+  background: var(--surface-3);
   appearance: none;
   cursor: pointer;
   transition: background var(--motion-quick), border-color var(--motion-quick);
@@ -468,7 +531,8 @@
   width: 4px;
   height: 8px;
   margin: 1px 0 0 4px;
-  border: solid var(--surface-page);
+  /* The tick is cut out of the filled box, so it takes the panel's own colour, not the page's. */
+  border: solid var(--surface-1);
   border-width: 0 2px 2px 0;
   content: "";
   transform: rotate(45deg);
@@ -603,7 +667,7 @@
   border: 1px solid var(--edge-soft);
   border-radius: var(--radius);
   color: var(--ink-muted);
-  background: var(--surface-page);
+  background: var(--surface-3);
   font-family: var(--font-ui);
   font-size: var(--text-sm);
   line-height: 1.55;

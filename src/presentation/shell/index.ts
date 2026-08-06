@@ -9,9 +9,12 @@ export { ObjectRow } from './object-row';
 export { PanelBand, PanelFooter } from './panel-band';
 export { RailAction, RailRow } from './rail-row';
 export { IconButton, PanelHeader, type PanelHeaderProps } from './panel-header';
-export { PanelBody, PanelSection } from './panel-section';
+export { PanelBody, PanelSection, type PanelSectionProps } from './panel-section';
 export { PanelShell, type PanelShellProps } from './panel-shell';
-export { RailToggle, StudioToggle } from './shell-controls';
+export {
+  resolveOpenSection, type SectionMode, type SectionOpenTest,
+} from './panel-accordion';
+export { PanelCollapse, RailToggle, StudioToggle } from './shell-controls';
 export { ShellGeometryProvider, useShellGeometry, type ShellGeometry } from './shell-geometry';
 export { TabStrip } from './tab-strip';
 export {

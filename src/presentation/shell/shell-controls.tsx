@@ -2,41 +2,49 @@ import { IconButton } from './panel-header';
 import { useShellGeometry } from './shell-geometry';
 
 /**
- * Each toggle sits on the edge it governs.
+ * Closing a panel is the panel's own business; re-opening one is the canvas's.
  *
- * They used to be a matched pair in the floating toolbar, mid-canvas and nowhere near either
- * panel — and Chris's review reported them as not existing at all. A control nobody can find is
- * a control that is not there, and the place to look for "close this panel" is the seam between
- * that panel and the canvas. So the rail's toggle rides the canvas's left edge and the studio's
- * its right, which is also the boundary that moves when either one opens.
+ * An open panel carries its close control in its own header (`PanelCollapse` below), which is
+ * where a hand goes to look for it and is one fewer thing floating over the diagram. Once the
+ * panel is gone that header is gone with it, so the edge keeps the way back — and only then.
+ * A pair of permanent arrows on both seams was two marks earning nothing for the 99% of the
+ * time both panels are open.
  *
- * Each glyph still points where its panel is about to go: away to its own edge when open, back
- * toward the middle when closed.
+ * Each glyph points where its panel is about to go.
  */
 export function RailToggle() {
   const { railCollapsed, toggleRail } = useShellGeometry();
+  if (!railCollapsed) return null;
   return (
     <div className="edge-toggle edge-toggle--rail">
-      <IconButton
-        glyph={railCollapsed ? '⇥' : '⇤'}
-        label={railCollapsed ? 'Show diagrams' : 'Hide diagrams'}
-        onClick={toggleRail}
-        pressed={railCollapsed}
-      />
+      <IconButton glyph="⇥" label="Show diagrams" onClick={toggleRail} />
     </div>
   );
 }
 
 export function StudioToggle() {
   const { studioCollapsed, toggleStudio } = useShellGeometry();
+  if (!studioCollapsed) return null;
   return (
     <div className="edge-toggle edge-toggle--studio">
-      <IconButton
-        glyph={studioCollapsed ? '⇤' : '⇥'}
-        label={studioCollapsed ? 'Show studio' : 'Hide studio'}
-        onClick={toggleStudio}
-        pressed={studioCollapsed}
-      />
+      <IconButton glyph="⇤" label="Show studio" onClick={toggleStudio} />
     </div>
+  );
+}
+
+/**
+ * The close control an open panel wears in its own header.
+ *
+ * `side` names the panel, not the direction: the rail closes leftward and the studio
+ * rightward, and the glyph says so.
+ */
+export function PanelCollapse({ side }: { side: 'left' | 'right' }) {
+  const { toggleRail, toggleStudio } = useShellGeometry();
+  return (
+    <IconButton
+      glyph={side === 'left' ? '⇤' : '⇥'}
+      label={side === 'left' ? 'Hide diagrams' : 'Hide studio'}
+      onClick={side === 'left' ? toggleRail : toggleStudio}
+    />
   );
 }

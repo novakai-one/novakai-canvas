@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import type { CanvasPreferences, InspectorTab, PreferenceSection } from '../../domain/model';
 import {
-  IconButton, PanelBody, PanelHeader, PanelShell, STUDIO_BOUNDS, TabStrip, clampPanelWidth,
+  IconButton, PanelBody, PanelCollapse, PanelHeader, PanelShell, STUDIO_BOUNDS, TabStrip,
+  clampPanelWidth,
 } from '../shell';
 import { describeSelection, type InspectPanelProps } from './inspect-panel';
 import { JsonPanel } from './json-panel';
@@ -67,6 +68,7 @@ export function Inspector(props: InspectorProps) {
               onClick={() => setSettingsOpen((open) => !open)}
               pressed={settingsOpen}
             />
+            <PanelCollapse side="right" />
           </>
         )}
         kind={header.kind}

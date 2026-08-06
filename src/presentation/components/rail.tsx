@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import type { DiagramSummary } from '../../application/canvas-library';
 import {
-  PanelBand, PanelBody, PanelFooter, PanelHeader, PanelSection, PanelShell, RAIL_BOUNDS,
-  RailAction, RailRow, clampPanelWidth,
+  PanelBand, PanelBody, PanelCollapse, PanelFooter, PanelHeader, PanelSection, PanelShell,
+  RAIL_BOUNDS, RailAction, RailRow, clampPanelWidth,
 } from '../shell';
 import { findObjects, groupDiagrams } from './rail-filter';
 
@@ -86,6 +86,7 @@ export function Rail(props: RailProps) {
       width={width}
     >
       <PanelHeader
+        actions={<PanelCollapse side="left" />}
         kind=">_ novakai"
         meta={`${total} diagrams${archived > 0 ? ` · ${archived} archived` : ''}`}
         title="Canvas"

@@ -4,24 +4,54 @@
  * Dark is the canonical brand; the light theme overrides only the surface/ink groups.
  */
 :root {
+  /*
+   * Two multipliers the user owns.
+   *
+   * Every spacing and type value below is derived from one of them, so "roomier" and "bigger
+   * text" are one number each rather than a sweep through the stylesheets. Guessing which
+   * density Chris wants is the thing these exist to avoid: the preference is the answer.
+   */
+  --density: 1;
+  --text-scale: 1;
+
   /* Spacing — 4px base grid. Use these for ALL padding, gaps, and margins. */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
+  --space-1: calc(4px * var(--density));
+  --space-2: calc(8px * var(--density));
+  --space-3: calc(12px * var(--density));
+  --space-4: calc(16px * var(--density));
+  --space-5: calc(20px * var(--density));
+  --space-6: calc(24px * var(--density));
+  --space-8: calc(32px * var(--density));
 
   /* Type — Inter everywhere; mono only for the wordmark and real terminal output. */
   --font-ui: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --text-xs: 10.5px;   /* mono-caps kind tags, counts */
-  --text-sm: 12px;     /* secondary rows, descriptions */
-  --text-base: 13px;   /* body, fields, rail rows */
-  --text-lg: 15px;     /* panel titles */
-  --text-xl: 18px;     /* diagram title */
+  --text-xs: calc(10.5px * var(--text-scale));   /* mono-caps kind tags, counts */
+  --text-sm: calc(12px * var(--text-scale));     /* secondary rows, descriptions */
+  --text-base: calc(13px * var(--text-scale));   /* body, fields, rail rows */
+  --text-lg: calc(15px * var(--text-scale));     /* panel titles */
+  --text-xl: calc(18px * var(--text-scale));     /* diagram title */
+  /*
+   * Wire labels are read at a distance, over a moving background, inside a scaled viewport —
+   * the one place --text-xs was never enough. Sized on its own token so making labels legible
+   * cannot quietly enlarge every count and kind tag in the panels.
+   */
+  --text-wire: calc(12px * var(--text-scale) * var(--wire-label-scale, 1));
   --tracking-caps: 0.08em;
+
+  /*
+   * Canvas hit targets, in SCREEN pixels.
+   *
+   * Anything drawn inside React Flow's viewport must divide by --nvk-zoom to hold these sizes;
+   * a value used raw shrinks with the zoom and becomes something you aim at rather than click.
+   * --target-grab is deliberately much larger than the dot it surrounds: the visible mark stays
+   * calm while the region that answers the pointer is generous, which is what stops a wire end
+   * from snapping back when you let go a moment early.
+   */
+  --target-scale: 1;
+  --target-sm: calc(9px * var(--target-scale));    /* resize handles */
+  --target-md: calc(12px * var(--target-scale));   /* wire endpoints and waypoints */
+  --target-grab: calc(22px * var(--target-scale)); /* invisible pointer region around a dot */
 
   /* Surfaces — page darkest, then three panel levels, children lighter than parents. */
   --surface-page: #0d0d0f;

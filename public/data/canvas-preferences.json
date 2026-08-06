@@ -30,7 +30,8 @@
     "width": 338,
     "defaultTab": "inspect",
     "showEmptyFields": false,
-    "railWidth": 200
+    "railWidth": 200,
+    "railCollapsed": false
   },
   "files": {
     "autoSave": true,
