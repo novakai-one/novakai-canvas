@@ -34,7 +34,13 @@ export type RecordCommand =
     patch: { label?: string; kind?: DiagramRecord['wires'][string]['kind'] };
   }
   | { kind: 'wire.remove'; id: string }
-  | { kind: 'interface.update'; id: string; patch: { name?: string } }
+  | { kind: 'interface.add'; ownerId: string; iface: DiagramRecord['interfaces'][string] }
+  | {
+    kind: 'interface.update';
+    id: string;
+    patch: { name?: string; accepts?: string[]; returns?: string[] };
+  }
+  | { kind: 'interface.remove'; id: string }
   | { kind: 'view.setCollapsed'; id: string; collapsed: boolean }
   | { kind: 'view.setViewport'; viewport: { x: number; y: number; zoom: number } }
   | { kind: 'diagram.rename'; name: string };
@@ -97,6 +103,38 @@ function requireNode(record: DiagramRecord, id: string): void {
   if (!record.nodes[id]) throw new Error(`node-not-found:${id}`);
 }
 
+/**
+ * What a name in a signature is allowed to be.
+ *
+ * Chris: a node's body "would need to conform to typescript or some standard so people don't
+ * write random stuff." A TypeScript identifier is that standard, and it is the one the diagrams
+ * already follow — `acquire`, `AgentId`, `SessionHandle`. Generic and array forms are allowed
+ * because real signatures use them (`Frame[]`), but prose is not: a signature that cannot be
+ * read as code is a note, and notes belong in the description.
+ */
+const IDENTIFIER = /^[A-Za-z_$][A-Za-z0-9_$]*(<[A-Za-z0-9_$,\s[\]<>]+>)?(\[\])*$/;
+
+export function isSignatureName(value: string): boolean {
+  return IDENTIFIER.test(value.trim());
+}
+
+/** Rejects a signature the model could not render, naming the part that was wrong. */
+function requireSignature(
+  name: string | undefined,
+  accepts: readonly string[] | undefined,
+  returns: readonly string[] | undefined,
+): void {
+  if (name !== undefined) {
+    if (name.trim().length === 0) throw new Error('interface-name-empty');
+    if (!isSignatureName(name)) throw new Error(`interface-name-not-an-identifier:${name}`);
+  }
+  for (const [role, list] of [['accepts', accepts], ['returns', returns]] as const) {
+    for (const entry of list ?? []) {
+      if (!isSignatureName(entry)) throw new Error(`${role}-not-a-type:${entry}`);
+    }
+  }
+}
+
 function validate(record: DiagramRecord, command: RecordCommand): void {
   switch (command.kind) {
     case 'node.add':
@@ -150,11 +188,19 @@ function validate(record: DiagramRecord, command: RecordCommand): void {
     case 'wire.update': case 'wire.remove':
       if (!record.wires[command.id]) throw new Error(`wire-not-found:${command.id}`);
       return;
+    case 'interface.add':
+      requireNode(record, command.ownerId);
+      if (record.interfaces[command.iface.id]) {
+        throw new Error(`interface-already-exists:${command.iface.id}`);
+      }
+      requireSignature(command.iface.name, command.iface.accepts, command.iface.returns);
+      return;
     case 'interface.update':
       if (!record.interfaces[command.id]) throw new Error(`interface-not-found:${command.id}`);
-      if (command.patch.name !== undefined && command.patch.name.trim().length === 0) {
-        throw new Error('interface-name-empty');
-      }
+      requireSignature(command.patch.name, command.patch.accepts, command.patch.returns);
+      return;
+    case 'interface.remove':
+      if (!record.interfaces[command.id]) throw new Error(`interface-not-found:${command.id}`);
       return;
     case 'view.setCollapsed':
       requireNode(record, command.id);
@@ -241,9 +287,26 @@ function apply(record: DiagramRecord, command: RecordCommand): DiagramRecord {
     case 'wire.update':
       Object.assign(next.wires[command.id], command.patch);
       break;
+    case 'interface.add':
+      next.interfaces[command.iface.id] = command.iface;
+      next.nodes[command.ownerId].interfaceIds = [
+        ...next.nodes[command.ownerId].interfaceIds, command.iface.id,
+      ] as never;
+      break;
     case 'interface.update':
       Object.assign(next.interfaces[command.id], command.patch);
       break;
+    case 'interface.remove': {
+      // An interface belongs to its owner, so removing it takes the reference with it — a node
+      // pointing at an interface that is gone would render as a blank row nobody can delete.
+      const owner = next.interfaces[command.id].ownerId;
+      delete next.interfaces[command.id];
+      if (next.nodes[owner]) {
+        next.nodes[owner].interfaceIds = next.nodes[owner].interfaceIds
+          .filter((id) => id !== command.id) as never;
+      }
+      break;
+    }
     case 'wire.remove':
       delete next.wires[command.id];
       for (const each of Object.values(next.layouts)) delete each.wireRouteHints[command.id];

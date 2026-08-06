@@ -4,7 +4,7 @@ import type { CanvasLibrary, DiagramSummary } from './application/canvas-library
 import type { CanvasWorkspace, RecordCommand } from './application/canvas-workspace';
 import type { JsonRepository } from './application/json-repository';
 import { asId } from './domain/id-cast';
-import type { NodeId } from './domain/ids';
+import type { InterfaceId, NodeId } from './domain/ids';
 import type { CanvasPreferences, InspectorTab, Selection } from './domain/model';
 import { projectView } from './canvas';
 import { CanvasSurface } from './presentation/components/canvas-surface';
@@ -294,6 +294,15 @@ export default function App(props: AppProps) {
           const created = createCanvasNode(placedNodes(view), kind, id, canvasCamera().focusPoint());
           execute({ kind: 'node.add', ...created });
           select({ kind: 'node', id: created.node.id });
+        }}
+        addInterface={(ownerId) => {
+          const id = `iface-${crypto.randomUUID().slice(0, 8)}`;
+          execute({
+            kind: 'interface.add',
+            ownerId,
+            iface: { id: asId<InterfaceId>(id), ownerId: asId<NodeId>(ownerId), name: 'newCall', accepts: [], returns: [] },
+          });
+          select({ kind: 'interface', id });
         }}
         canUndo={open.workspace.canUndo()}
         clearSelection={() => setSelection(null)}

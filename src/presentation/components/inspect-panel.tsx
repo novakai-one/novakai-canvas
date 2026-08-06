@@ -4,6 +4,8 @@ import type { RecordCommand } from '../../application/canvas-workspace';
 import type { Selection } from '../../domain/model';
 import type { ProjectedView } from '../../domain/project-view';
 import type { CanvasLayout, DiagramRecord, NodePlacement } from '../../domain/records';
+import { useState } from 'react';
+import { isSignatureName } from '../../application/canvas-workspace';
 import { rootGroupId, type CreatableNodeKind } from '../canvas-actions';
 import { scopeDepth } from '../projection';
 import { FieldRow, ObjectRow, PanelSection, SwitchRow } from '../shell';
@@ -37,8 +39,52 @@ export interface InspectPanelProps {
    * is already open in front of you, so making a thing and naming it are one movement.
    */
   addNode?: (kind: CreatableNodeKind) => void;
+  /** Gives a node a new interface and selects it, ready to be named. */
+  addInterface?: (ownerId: string) => void;
   undo?: () => void;
   canUndo?: boolean;
+}
+
+/** Splits a typed list, dropping the empties a trailing comma leaves behind. */
+function splitTypes(value: string): string[] {
+  return value.split(',').map((part) => part.trim()).filter((part) => part.length > 0);
+}
+
+/**
+ * A signature field that refuses what the model cannot render.
+ *
+ * Chris asked that a node's body "conform to typescript or some standard so people don't write
+ * random stuff". The workspace enforces that — it is a rule about the record, not about a form —
+ * so this only has to say so before the keystroke is wasted: it holds a local draft, marks it
+ * when it is not a valid identifier, and commits nothing until it is.
+ */
+function SignatureInput({
+  disabled, list, onCommit, value,
+}: {
+  value: string;
+  disabled?: boolean;
+  list?: boolean;
+  onCommit: (next: string) => void;
+}) {
+  const [draft, setDraft] = useState<string | null>(null);
+  const shown = draft ?? value;
+  const parts = list ? splitTypes(shown) : [shown];
+  const valid = shown.trim().length === 0 ? list === true : parts.every(isSignatureName);
+  const commit = (): void => {
+    if (draft !== null && valid && draft !== value) onCommit(draft);
+    setDraft(null);
+  };
+  return (
+    <input
+      data-invalid={!valid || undefined}
+      disabled={disabled}
+      onBlur={commit}
+      onChange={(event) => setDraft(event.target.value)}
+      onKeyDown={(event) => { if (event.key === 'Enter') commit(); if (event.key === 'Escape') setDraft(null); }}
+      title={valid ? undefined : 'Must be an identifier, like SessionHandle or Frame[]'}
+      value={shown}
+    />
+  );
 }
 
 const ADDABLE: readonly CreatableNodeKind[] = ['module', 'object', 'runtime', 'resource', 'group', 'comment'];
@@ -212,6 +258,36 @@ function nodeInspection(props: InspectPanelProps, id: string): Inspection {
             />
           </FieldRow>
         </PanelSection>
+        {/*
+          * A node's interfaces, on the node — Chris: "adding a node doesn't allow me to add
+          * interface". They were countable in Facts and reachable only by clicking a row on the
+          * canvas, which meant a node with none had no way to gain one at all.
+          */}
+        <PanelSection title="Interfaces">
+          {node.interfaceIds.length === 0
+            ? <div className="panel-empty"><span>None yet</span></div>
+            : (
+              <ul className="object-list">
+                {node.interfaceIds.map((interfaceId) => {
+                  const item = props.record.interfaces[interfaceId];
+                  return item ? (
+                    <ObjectRow
+                      key={interfaceId}
+                      kind="interface"
+                      label={`${item.name}(${item.accepts.join(', ')})`}
+                      onJump={() => props.select({ kind: 'interface', id: interfaceId })}
+                      onPeek={() => props.select({ kind: 'interface', id: interfaceId })}
+                    />
+                  ) : null;
+                })}
+              </ul>
+            )}
+          {props.editable && props.addInterface && (
+            <button className="panel-button" onClick={() => props.addInterface?.(id)} type="button">
+              + Add interface
+            </button>
+          )}
+        </PanelSection>
         <PanelSection title="Facts">
           <div className="fact-grid">
             <div><span>Interfaces</span><strong>{node.interfaceIds.length}</strong></div>
@@ -293,16 +369,48 @@ function interfaceInspection(props: InspectPanelProps, id: string): Inspection {
     body: (
       <>
         <PanelSection title="Signature">
-          <FieldRow label="Name">
-            <input
+          <FieldRow hint="identifier" label="Name">
+            <SignatureInput
               disabled={!props.editable}
-              onChange={(event) => props.execute({
-                kind: 'interface.update', id, patch: { name: event.target.value },
+              onCommit={(next) => props.execute({
+                kind: 'interface.update', id, patch: { name: next },
               })}
               value={item.name}
             />
           </FieldRow>
+          <FieldRow hint="comma separated types" label="Accepts">
+            <SignatureInput
+              disabled={!props.editable}
+              list
+              onCommit={(next) => props.execute({
+                kind: 'interface.update', id, patch: { accepts: splitTypes(next) },
+              })}
+              value={item.accepts.join(', ')}
+            />
+          </FieldRow>
+          <FieldRow hint="comma separated types" label="Returns">
+            <SignatureInput
+              disabled={!props.editable}
+              list
+              onCommit={(next) => props.execute({
+                kind: 'interface.update', id, patch: { returns: splitTypes(next) },
+              })}
+              value={item.returns.join(', ')}
+            />
+          </FieldRow>
         </PanelSection>
+        {props.editable && (
+          <PanelSection>
+            <button
+              className="panel-button"
+              data-tone="danger"
+              onClick={() => { props.execute({ kind: 'interface.remove', id }); props.select({ kind: 'node', id: item.ownerId }); }}
+              type="button"
+            >
+              Delete interface
+            </button>
+          </PanelSection>
+        )}
         <PanelSection title="Owner">
           <ul className="object-list">
             <ObjectRow

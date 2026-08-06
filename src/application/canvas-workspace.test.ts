@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { parseArchitectureDocument } from '../domain/schema';
 import { migrateDocumentToLibrary } from '../domain/migrate/v2-to-v3';
-import { createCanvasWorkspace, type ActorContext, type RecordCommand } from './canvas-workspace';
+import {
+  createCanvasWorkspace, isSignatureName, type ActorContext, type RecordCommand,
+} from './canvas-workspace';
 import type { DiagramRecord } from '../domain/records';
 import working from '../domain/migrate/fixtures/real-v2-working-copy.json' with { type: 'json' };
 
@@ -224,5 +226,51 @@ describe('canvas workspace', () => {
 
     expect(workspace.undo()).toBe(true);
     expect(workspace.snapshot().wires[id].label).toBe(original.label);
+  });
+
+  /**
+   * Chris asked that a node's body "conform to typescript or some standard so people don't write
+   * random stuff". The standard is an identifier, and it belongs to the record, not to a form.
+   */
+  it('refuses a signature that is prose rather than types', () => {
+    const workspace = createCanvasWorkspace(openMessagingScope(), human);
+    const id = Object.keys(workspace.snapshot().interfaces)[0];
+
+    const outcome = workspace.submit(batch(
+      [{ kind: 'interface.update', id, patch: { accepts: ['a thing the user typed'] } }],
+      workspace.snapshot().revision,
+      'op-prose',
+    ));
+
+    expect(outcome).toMatchObject({ status: 'rejected' });
+    expect((outcome as { reason: string }).reason).toContain('accepts-not-a-type');
+  });
+
+  it('accepts the shapes real signatures actually use', () => {
+    expect(['acquire', 'AgentId', 'Frame[]', 'Map<string, Frame>', '$ref', '_private']
+      .every(isSignatureName)).toBe(true);
+    expect(['', 'two words', '1st', 'has-dash', 'semi;colon'].some(isSignatureName)).toBe(false);
+  });
+
+  it('gives a node an interface and takes the reference away again with it', () => {
+    const workspace = createCanvasWorkspace(openMessagingScope(), human);
+    const ownerId = Object.keys(workspace.snapshot().nodes)[1];
+    const before = workspace.snapshot().nodes[ownerId].interfaceIds.length;
+
+    const added = workspace.submit(batch([{
+      kind: 'interface.add',
+      ownerId,
+      iface: { id: 'iface-new', ownerId, name: 'newCall', accepts: [], returns: [] },
+    } as RecordCommand], workspace.snapshot().revision, 'op-iface-add'));
+    expect(added.status).toBe('applied');
+    expect(workspace.snapshot().nodes[ownerId].interfaceIds).toHaveLength(before + 1);
+
+    workspace.submit(batch(
+      [{ kind: 'interface.remove', id: 'iface-new' }],
+      workspace.snapshot().revision,
+      'op-iface-remove',
+    ));
+    expect(workspace.snapshot().interfaces['iface-new']).toBeUndefined();
+    expect(workspace.snapshot().nodes[ownerId].interfaceIds).toHaveLength(before);
   });
 });
