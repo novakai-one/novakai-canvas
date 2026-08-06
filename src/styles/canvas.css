@@ -278,9 +278,20 @@
 /* Resize affordances: quiet until selected, gold while active. */
 .scope-node .react-flow__resize-control { pointer-events: all; }
 .react-flow__resize-control.line { border-color: color-mix(in srgb, var(--accent-strong) 45%, transparent); }
-.react-flow__resize-control.handle {
-  width: 7px;
-  height: 7px;
+/*
+ * Resize handles are sized in plain screen pixels.
+ *
+ * Measured, not assumed: React Flow already draws these outside the scaled viewport, so a value
+ * here is screen pixels as written and dividing by --nvk-zoom made them three times too big.
+ * The wire ends and the ports genuinely are inside the transform and genuinely do need the
+ * division — these do not, and the difference is only visible from the browser.
+ *
+ * Scoped to the surface so this outranks React Flow's own rule, which loads after ours and
+ * otherwise pins the handle back to five physical pixels.
+ */
+.canvas-surface .react-flow__resize-control.handle {
+  width: var(--target-sm);
+  height: var(--target-sm);
   border: none;
   border-radius: 2px;
   background: var(--accent-strong);
@@ -358,7 +369,13 @@
      halo alone left the wire showing through the spaces between words. */
   background: var(--bg);
   font-family: var(--font-ui);
-  font-size: var(--text-xs);
+  /*
+   * A label is read at a distance, over a moving background, inside a scaled viewport. At
+   * --text-xs in diagram units it rendered at about six physical pixels at working zoom, which
+   * is not small type, it is unreadable type. Constant on screen, and sized by its own token so
+   * making wire labels legible cannot enlarge every count and kind tag in the panels.
+   */
+  font-size: calc(var(--text-wire) / var(--nvk-label-zoom, 1));
   line-height: 1.35;
   letter-spacing: 0.01em;
   white-space: nowrap;
@@ -387,43 +404,41 @@
  * which is larger than the dot on purpose.
  */
 .wire-endpoint {
+  r: calc(var(--target-md) / 2 / var(--nvk-zoom, 1));
   fill: var(--gold);
   stroke: var(--bg);
-  stroke-width: 2;
+  stroke-width: calc(2px / var(--nvk-zoom, 1));
   pointer-events: none;
 }
 
 /*
- * The end of a selected wire is the thing you grab to move it.
- *
- * It has to win the pointer against the node port underneath it, which is why the selected
- * edge's layer is lifted above the nodes below — otherwise the port takes the mousedown and
- * starts a new wire instead of moving this one's end.
+ * A selected wire's ends have to win the pointer against the node ports underneath them, which
+ * is why the selected edge's layer is lifted above the nodes below — otherwise a port takes the
+ * mousedown and starts a new wire instead of moving this one's end. The grabbing itself belongs
+ * to `.wire-grab`, which is the invisible circle drawn over each dot.
  */
-.wire-endpoint.is-grabbable {
-  pointer-events: all;
-  cursor: grab;
-}
-
-.wire-endpoint.is-grabbable:active { cursor: grabbing; }
 
 .canvas-surface .react-flow__edge.selected { z-index: 1001 !important; }
 
 /* The corridor handle: drag to push the wire's path aside, double-click to let go of it. */
 .wire-waypoint {
+  r: calc(var(--target-md) / 2 / var(--nvk-zoom, 1));
   fill: var(--surface-3);
   stroke: var(--gold);
-  stroke-width: 1.5;
-  /* An edge only hits on its visible stroke, which for a small circle is a sub-pixel ring.
-     The whole dot has to be the target or the handle cannot be grabbed at working zoom. */
-  pointer-events: all;
-  cursor: grab;
+  stroke-width: calc(1.5px / var(--nvk-zoom, 1));
+  pointer-events: none;
 }
 
-.wire-waypoint:active { cursor: grabbing; }
-
-.react-flow__edgeupdater { cursor: grab; }
-.react-flow__edge.selected .react-flow__edgeupdater:hover { cursor: grabbing; }
+/*
+ * React Flow's own reconnect anchors take no pointer input.
+ *
+ * This edge moves its ends itself (`moveEnd`), because React Flow reconnects by listening
+ * within a radius of an invisible anchor that a node's port sits on top of and swallows. Both
+ * mechanisms being live meant the unreliable one painted over the reliable one: probing the
+ * grab circle found `react-flow__edgeupdater` at its centre and for the first eight pixels out,
+ * so the generous target existed and could not be reached.
+ */
+.canvas-surface .react-flow__edgeupdater { pointer-events: none; }
 
 /* A selected wire's contract must stay readable above everything else. */
 .wire-label.is-selected {
@@ -633,3 +648,21 @@
 /* Labels are drawn outside the scaled viewport, so the routing search needs the zoom to convert
    a measured pixel size back into diagram units. */
 .react-flow__edgelabel-renderer { --nvk-label-zoom: var(--nvk-zoom, 1); }
+
+/*
+ * The region that answers the pointer around a wire's end or its corridor handle.
+ *
+ * Invisible and much larger than the dot it surrounds. Chris: "if I let go too soon, the wire
+ * snaps back" — the mark was eight physical pixels across at working zoom, so the release had
+ * to land inside it. The visible dot stays small, which is what keeps the canvas calm; the
+ * thing you grab is nearly three times wider.
+ */
+.wire-grab {
+  r: calc(var(--target-grab) / 2 / var(--nvk-zoom, 1));
+  fill: transparent;
+  stroke: none;
+  pointer-events: all;
+  cursor: grab;
+}
+
+.wire-grab:active { cursor: grabbing; }

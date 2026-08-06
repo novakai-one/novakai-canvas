@@ -23,6 +23,10 @@ const SIDE_OF_POSITION: Record<Position, RouteSide> = {
 /** Where the label sits when nobody has moved it: the middle of the wire. */
 const DEFAULT_LABEL_POSITION = 0.5;
 
+function clamp(value: number, low: number, high: number): number {
+  return Math.min(Math.max(value, low), high);
+}
+
 /** Restrained selectable elbow wire; kind decides dash and colour, the router decides the path. */
 export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
   const { screenToFlowPosition } = useReactFlow();
@@ -124,7 +128,16 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
   // Shaping the corridor: one handle, dragged where the wire should pass, cleared by a
   // double-click. The record hears one intention when the drag ends.
   const [shaping, setShaping] = useState<{ x: number; y: number } | null>(null);
-  const shapeHandle = shaping ?? props.data?.route.waypoints[0] ?? pointAlong(route.points, 0.5);
+  /*
+   * The corridor handle steps aside from the label.
+   *
+   * Both defaulted to the middle of the wire, so the handle sat inside the label's own text —
+   * "gr(o)ts" — and the two competed for the same pointer. The label owns the middle, because
+   * it is the thing being read; the handle takes a fifth of the way further along, which is
+   * still plainly on this wire and no longer on top of its name.
+   */
+  const handleAt = clamp(labelPosition + 0.2, 0.12, 0.88);
+  const shapeHandle = shaping ?? props.data?.route.waypoints[0] ?? pointAlong(route.points, handleAt);
   const onShapePointerDown = useCallback((event: ReactPointerEvent<SVGCircleElement>) => {
     if (!setRoute || event.button !== 0) return;
     event.stopPropagation();
@@ -209,29 +222,47 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
         The reconnect targets React Flow already listens on are invisible. A selected wire shows
         where its ends are, so "drag this somewhere else" is an offer rather than a secret.
       */}
-      {ends.map((end, index) => end && (
-        <circle
-          className={`wire-endpoint${moveEnd ? ' is-grabbable' : ''}`}
-          cx={dragEnd?.end === (index === 0 ? 'source' : 'target') ? dragEnd.x : end.x}
-          cy={dragEnd?.end === (index === 0 ? 'source' : 'target') ? dragEnd.y : end.y}
-          key={index === 0 ? 'source' : 'target'}
-          onPointerDown={onEndPointerDown(index === 0 ? 'source' : 'target')}
-          onPointerMove={onEndPointerMove}
-          onPointerUp={onEndPointerUp}
-          r={7}
-        />
-      ))}
+      {/*
+        Two circles per end: the mark you see, and the region you grab.
+
+        The radii are set in CSS so they can divide by the live zoom and stay a constant size to
+        the hand. The grab circle is invisible and much wider than the dot — releasing a few
+        pixels off the mark used to miss it entirely and the wire read as snapping back.
+      */}
+      {ends.map((end, index) => {
+        const which = index === 0 ? 'source' : 'target';
+        if (!end) return null;
+        const x = dragEnd?.end === which ? dragEnd.x : end.x;
+        const y = dragEnd?.end === which ? dragEnd.y : end.y;
+        return (
+          <g key={which}>
+            <circle className="wire-endpoint" cx={x} cy={y} />
+            {moveEnd && (
+              <circle
+                className="wire-grab"
+                cx={x}
+                cy={y}
+                onPointerDown={onEndPointerDown(which)}
+                onPointerMove={onEndPointerMove}
+                onPointerUp={onEndPointerUp}
+              />
+            )}
+          </g>
+        );
+      })}
       {props.selected && setRoute && (
-        <circle
-          className="wire-waypoint"
-          cx={shapeHandle.x}
-          cy={shapeHandle.y}
-          onDoubleClick={(event) => { event.stopPropagation(); setRoute({ waypoints: [] }); }}
-          onPointerDown={onShapePointerDown}
-          onPointerMove={onShapePointerMove}
-          onPointerUp={onShapePointerUp}
-          r={5}
-        />
+        <g>
+          <circle className="wire-waypoint" cx={shapeHandle.x} cy={shapeHandle.y} />
+          <circle
+            className="wire-grab"
+            cx={shapeHandle.x}
+            cy={shapeHandle.y}
+            onDoubleClick={(event) => { event.stopPropagation(); setRoute({ waypoints: [] }); }}
+            onPointerDown={onShapePointerDown}
+            onPointerMove={onShapePointerMove}
+            onPointerUp={onShapePointerUp}
+          />
+        </g>
       )}
       {showLabel && props.data?.label && (
         <EdgeLabelRenderer>
