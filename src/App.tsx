@@ -10,7 +10,10 @@ import { projectView } from './canvas';
 import { CanvasSurface } from './presentation/components/canvas-surface';
 import { Inspector } from './presentation/components/inspector';
 import { Rail } from './presentation/components/rail';
-import { createCanvasNode, placedNodes } from './presentation/canvas-actions';
+import { diagramContents } from './presentation/components/diagram-contents';
+import {
+  createCanvasNode, placedNodes, type CreatableNodeKind,
+} from './presentation/canvas-actions';
 import { canvasCamera } from './presentation/canvas-camera';
 import { ShellGeometryProvider } from './presentation/shell';
 import { useWorkspaceRecord } from './presentation/use-workspace-record';
@@ -134,12 +137,6 @@ export default function App(props: AppProps) {
     return opened;
   }, [library]);
 
-  /** Where you have been this sitting. Session-scoped by design: it never reaches disk. */
-  const [recentDiagramIds, setRecentDiagramIds] = useState<string[]>([]);
-  useEffect(() => {
-    setRecentDiagramIds((trail) => [open.id, ...trail.filter((id) => id !== open.id)].slice(0, 8));
-  }, [open.id]);
-
   const changeDiagram = useCallback((diagramId: string) => {
     if (diagramId === open.id) return;
     void openDiagram(diagramId);
@@ -233,6 +230,27 @@ export default function App(props: AppProps) {
     setPreferences((current) => ({ ...current, panel: { ...current.panel, ...patch } }));
   }, []);
 
+  /**
+   * Placing a shape, in one place.
+   *
+   * The left panel owns this now; the Studio used to carry a six-button grid because it had the
+   * room, not because creating things has anything to do with inspecting them.
+   */
+  const addNode = useCallback((kind: CreatableNodeKind) => {
+    const id = `${kind}-${crypto.randomUUID().slice(0, 8)}`;
+    const created = createCanvasNode(placedNodes(view), kind, id, canvasCamera().focusPoint());
+    execute({ kind: 'node.add', ...created });
+    select({ kind: 'node', id: created.node.id });
+  }, [execute, select, view]);
+
+  /** Travel to an object: select it, then let the camera ease to it. */
+  const jumpTo = useCallback((next: Selection) => {
+    select(next);
+    if (next?.kind === 'node') canvasCamera().centerOnNode(next.id);
+  }, [select]);
+
+  const contents = useMemo(() => diagramContents(record, view), [record, view]);
+
   const shellStyle = {
     '--node-radius': `${preferences.appearance.radius}px`,
     ...wireToneCssVariables(preferences.appearance.theme),
@@ -256,14 +274,23 @@ export default function App(props: AppProps) {
       >
       <Rail
         activeDiagramId={open.id}
+        activeDiagramName={record.name}
+        addNode={addNode}
+        canUndo={open.workspace.canUndo()}
         changeDiagram={changeDiagram}
         collapsed={railCollapsed}
+        contents={contents}
         createDiagram={createDiagram}
+        defaultTab="build"
         diagrams={diagrams}
+        editable={mode === 'edit'}
+        jumpTo={jumpTo}
         openAtObject={openAtObject}
-        recentDiagramIds={recentDiagramIds}
+        select={select}
+        selection={selection}
         setDiagramStatus={setDiagramStatus}
         setWidth={(railWidth) => setPanel({ railWidth })}
+        undo={() => { open.workspace.undo(); }}
         width={preferences.panel.railWidth ?? 264}
       />
       <ReactFlowProvider>
@@ -289,12 +316,6 @@ export default function App(props: AppProps) {
         />
       </ReactFlowProvider>
       <Inspector
-        addNode={(kind) => {
-          const id = `${kind}-${crypto.randomUUID().slice(0, 8)}`;
-          const created = createCanvasNode(placedNodes(view), kind, id, canvasCamera().focusPoint());
-          execute({ kind: 'node.add', ...created });
-          select({ kind: 'node', id: created.node.id });
-        }}
         addInterface={(ownerId) => {
           const id = `iface-${crypto.randomUUID().slice(0, 8)}`;
           execute({

@@ -809,3 +809,287 @@ button.panel-section-head:focus-visible {
 
 .panel-trail button:hover { color: var(--ink); text-decoration: underline; }
 .panel-trail-sep { padding: 0 var(--space-1); opacity: 0.55; }
+
+/* ---- Left rail: where you are, and what you can put on the canvas ------- */
+
+/*
+ * The diagram's name, and the way to a different one.
+ *
+ * This row replaces a permanently-open list of nineteen. It is the only navigation the rail
+ * keeps, because navigating is something you do once and then not again for an hour.
+ */
+.rail-switcher {
+  position: relative;
+  flex: none;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--edge-soft);
+}
+
+.rail-switcher > button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--ink);
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--motion-quick), border-color var(--motion-quick);
+}
+
+.rail-switcher > button:hover { background: var(--surface-2); }
+.rail-switcher > button[aria-expanded='true'] {
+  border-color: var(--edge);
+  background: var(--surface-2);
+}
+
+.rail-switcher-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rail-switcher-mark { flex: none; color: var(--ink-faint); font-size: var(--text-sm); }
+
+/* ---- Build rows -------------------------------------------------------- */
+
+/*
+ * Three rows, always the same three, always in the same place.
+ *
+ * Shape carries its chosen kind as a subtitle so the button never lies about what it will
+ * place, and the kind is changed through a flyout that opens over its neighbours rather than
+ * pushing them down.
+ */
+.build-rows { display: flex; flex-direction: column; gap: var(--space-2); }
+
+.build-row {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-1);
+}
+
+.build-place {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--edge-soft);
+  border-radius: var(--radius);
+  color: var(--ink);
+  background: var(--surface-2);
+  font-family: var(--font-ui);
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--motion-quick), border-color var(--motion-quick);
+}
+
+.build-place:hover:not(:disabled) { border-color: var(--edge); background: var(--surface-3); }
+.build-place:disabled { color: var(--ink-faint); cursor: default; }
+.build-place:focus-visible { border-color: var(--ink-faint); outline: none; }
+
+.build-row-label { font-size: var(--text-base); }
+.build-row-kind {
+  overflow: hidden;
+  color: var(--ink-faint);
+  font-size: var(--text-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- Flyout ------------------------------------------------------------ */
+
+.flyout { position: relative; flex: none; display: flex; }
+
+.flyout-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--edge-soft);
+  border-radius: var(--radius);
+  color: var(--ink-muted);
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: color var(--motion-quick), background var(--motion-quick);
+}
+
+.flyout-trigger:hover { color: var(--ink); background: var(--surface-2); }
+.flyout[data-open] .flyout-trigger { color: var(--ink); background: var(--surface-2); }
+.flyout-mark { color: var(--ink-faint); }
+.flyout[data-open] .flyout-mark { transform: rotate(90deg); }
+
+/*
+ * Drawn over the rows below it, never between them.
+ *
+ * The whole reason this is not an inline expansion: every row keeps its position while the
+ * menu is open, so nothing under the pointer moves.
+ */
+/*
+ * Portalled to the body and positioned against the trigger's rect.
+ *
+ * Any menu drawn inside `.panel-shell` is clipped by it, whichever direction it opens; the only
+ * honest answer is to draw it outside and put it back where it belongs.
+ */
+.flyout-menu {
+  position: fixed;
+  z-index: 200;
+  display: flex;
+  min-width: 184px;
+  flex-direction: column;
+  padding: var(--space-2);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--surface-3);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 35%);
+}
+
+.flyout-menu-title {
+  padding: var(--space-1) var(--space-2) var(--space-2);
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.flyout-menu button {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: var(--space-2);
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--ink);
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  cursor: pointer;
+  text-align: left;
+}
+
+.flyout-menu button:hover { background: var(--surface-2); }
+.flyout-menu button[data-current] .flyout-item-label { color: var(--gold); }
+.flyout-item-hint { color: var(--ink-faint); font-size: var(--text-sm); }
+
+/* ---- Library overlay --------------------------------------------------- */
+
+/*
+ * The library, drawn over the canvas rather than inside the rail.
+ *
+ * It is wider than the panel that opens it on purpose: a diagram name and the diagram an
+ * object lives in both need room, and the rail's own width is a property of the rail, not of
+ * this question.
+ */
+.library-overlay {
+  position: fixed;
+  z-index: 200;
+  display: flex;
+  max-height: 60vh;
+  width: 320px;
+  flex-direction: column;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+  box-shadow: 0 16px 40px rgb(0 0 0 / 45%);
+}
+
+.library-search { flex: none; padding: var(--space-3); border-bottom: 1px solid var(--edge-soft); }
+
+.library-search input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--edge-soft);
+  border-radius: var(--radius);
+  color: var(--ink);
+  background: var(--surface-3);
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+}
+
+.library-search input::placeholder { color: var(--ink-faint); }
+.library-search input::-webkit-search-cancel-button { appearance: none; }
+.library-search input:focus-visible { border-color: var(--ink-faint); outline: none; }
+
+.library-body { overflow-y: auto; flex: 1 1 auto; min-height: 0; }
+
+.library-rows { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+
+.library-rows li { display: flex; align-items: center; gap: var(--space-1); }
+
+.library-rows li > button:first-child {
+  display: flex;
+  overflow: hidden;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1px;
+  padding: var(--space-2);
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--ink);
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  cursor: pointer;
+  text-align: left;
+}
+
+.library-rows li > button:first-child:hover { background: var(--surface-3); }
+.library-rows li[data-active] > button:first-child { color: var(--gold); }
+
+.library-row-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.library-row-where { color: var(--ink-faint); font-size: var(--text-sm); }
+
+.library-row-action {
+  flex: none;
+  width: var(--space-6);
+  height: var(--space-6);
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--ink-faint);
+  background: transparent;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--motion-quick), color var(--motion-quick);
+}
+
+.library-rows li:hover .library-row-action,
+.library-row-action:focus-visible { opacity: 1; }
+.library-row-action:hover { color: var(--ink); background: var(--surface-3); }
+
+.library-more { padding: var(--space-2); color: var(--ink-faint); font-size: var(--text-sm); }
+
+.library-footer {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-top: 1px solid var(--edge-soft);
+}
+
+.library-footer button {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--edge-soft);
+  border-radius: var(--radius);
+  color: var(--ink-muted);
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: color var(--motion-quick), background var(--motion-quick);
+}
+
+.library-footer button:hover { color: var(--ink); background: var(--surface-3); }
+.library-footer button[aria-pressed='true'] { color: var(--ink); background: var(--surface-3); }

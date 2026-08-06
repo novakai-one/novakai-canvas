@@ -1,79 +1,182 @@
 import { useState } from 'react';
 import type { DiagramSummary } from '../../application/canvas-library';
+import type { Selection } from '../../domain/model';
 import {
-  PanelBand, PanelBody, PanelCollapse, PanelFooter, PanelHeader, PanelSection, PanelShell,
-  RAIL_BOUNDS, RailAction, RailRow, clampPanelWidth,
+  Flyout, ObjectRow, PanelBody, PanelCollapse, PanelHeader, PanelSection, PanelShell,
+  RAIL_BOUNDS, TabStrip, clampPanelWidth,
 } from '../shell';
-import { findObjects, groupDiagrams } from './rail-filter';
+import type { CreatableNodeKind } from '../canvas-actions';
+import { contentIndent, type ContentRow } from './diagram-contents';
+import { LibraryOverlay } from './library-overlay';
 
-/** What the rail needs from the library, and the three things it can ask of it. */
+/** The two things the left panel is for: changing the canvas, and finding what is on it. */
+const RAIL_TABS = ['build', 'contents'] as const;
+export type RailTab = (typeof RAIL_TABS)[number];
+
+/**
+ * The four kinds one Shape can be.
+ *
+ * They are one row and a flyout rather than four buttons because they are the same act — put a
+ * box on the canvas — differing only in what the box means. Four peers beside Group and Note
+ * said all six were the same sort of thing, and they are not: Group is a container and Note is
+ * annotation, while these four are just a property of the shape you placed.
+ */
+const SHAPE_KINDS: readonly { id: CreatableNodeKind; label: string; hint: string }[] = [
+  { id: 'module', label: 'Module', hint: 'A part that does something' },
+  { id: 'object', label: 'Object', hint: 'A thing that is passed around' },
+  { id: 'runtime', label: 'Runtime', hint: 'Something running' },
+  { id: 'resource', label: 'Resource', hint: 'Something stored or external' },
+];
+
+/** What the rail needs to change the canvas, and to say where you are. */
 export interface RailProps {
   diagrams: DiagramSummary[];
   activeDiagramId: string;
-  /** Travel: opens the diagram. The rail is the only chrome that moves you between them. */
+  activeDiagramName: string;
   changeDiagram: (diagramId: string) => void;
   createDiagram: () => void;
   /** Travel to one object a search named: opens its diagram and lands on it. */
   openAtObject: (diagramId: string, label: string) => void;
-  /** Most-recently-opened first, this sitting only — a property of the session, not the record. */
-  recentDiagramIds: readonly string[];
   setDiagramStatus: (diagramId: string, status: 'active' | 'archived') => void;
+  /** Everything below here changes what is on the canvas — the rail's actual job. */
+  editable: boolean;
+  addNode: (kind: CreatableNodeKind) => void;
+  canUndo: boolean;
+  undo: () => void;
+  contents: readonly ContentRow[];
+  selection: Selection;
+  /** Peek: selects and leaves the camera exactly where it is. */
+  select: (selection: Selection) => void;
+  /** Travel: selects and eases the canvas to it. */
+  jumpTo: (selection: Selection) => void;
   width: number;
   collapsed: boolean;
   setWidth: (width: number) => void;
+  defaultTab: RailTab;
 }
 
-function RailList({
-  diagrams, onStatus, onTravel, activeDiagramId, statusAction, statusGlyph, statusLabel,
-}: {
-  diagrams: DiagramSummary[];
-  activeDiagramId: string;
-  onTravel: (id: string) => void;
-  onStatus: (id: string, status: 'active' | 'archived') => void;
-  statusAction: 'active' | 'archived';
-  statusGlyph: string;
-  statusLabel: string;
-}) {
+/**
+ * The three things you can put on a canvas, and they are not peers.
+ *
+ * Shape is the one you reach for; its kind is a choice inside it. Group contains other shapes.
+ * Note is annotation and is not part of the model at all. The hierarchy is in the layout, not
+ * in a label explaining it.
+ */
+function BuildTab(props: RailProps) {
+  const [kind, setKind] = useState<CreatableNodeKind>('module');
+  const chosen = SHAPE_KINDS.find((entry) => entry.id === kind) ?? SHAPE_KINDS[0];
+
   return (
-    <ul className="rail-rows">
-      {diagrams.map((entry) => (
-        <RailRow
-          action={(
-            <RailAction
-              glyph={statusGlyph}
-              label={`${statusLabel} ${entry.name}`}
-              onClick={() => onStatus(entry.id, statusAction)}
-            />
-          )}
-          active={entry.id === activeDiagramId}
-          key={entry.id}
-          label={entry.name}
-          onTravel={() => onTravel(entry.id)}
-        />
-      ))}
-    </ul>
+    <>
+      <PanelSection title="Shape">
+        <div className="build-rows">
+          <div className="build-row build-row--primary">
+            <button
+              className="build-place"
+              disabled={!props.editable}
+              onClick={() => props.addNode(kind)}
+              type="button"
+            >
+              <span className="build-row-label">Shape</span>
+              <span className="build-row-kind">{chosen.label}</span>
+            </button>
+            <Flyout
+              current={kind}
+              items={SHAPE_KINDS}
+              label="What kind"
+              onPick={(picked) => setKind(picked as CreatableNodeKind)}
+            >
+              <span className="build-row-change">Kind</span>
+            </Flyout>
+          </div>
+          <div className="build-row">
+            <button
+              className="build-place"
+              disabled={!props.editable}
+              onClick={() => props.addNode('group')}
+              type="button"
+            >
+              <span className="build-row-label">Group</span>
+              <span className="build-row-kind">Contains shapes</span>
+            </button>
+          </div>
+          <div className="build-row">
+            <button
+              className="build-place"
+              disabled={!props.editable}
+              onClick={() => props.addNode('comment')}
+              type="button"
+            >
+              <span className="build-row-label">Note</span>
+              <span className="build-row-kind">Not part of the model</span>
+            </button>
+          </div>
+        </div>
+      </PanelSection>
+      <PanelSection title="History">
+        <button
+          className="panel-button"
+          disabled={!props.editable || !props.canUndo}
+          onClick={props.undo}
+          type="button"
+        >
+          Undo last change
+        </button>
+      </PanelSection>
+    </>
+  );
+}
+
+/** What is on the canvas, as a list you can peek at or travel to. */
+function ContentsTab(props: RailProps) {
+  if (props.contents.length === 0) {
+    return (
+      <PanelSection fill title="Objects">
+        <div className="panel-empty">
+          <span className="panel-empty-mark" aria-hidden>⌁</span>
+          <span>Nothing drawn yet</span>
+        </div>
+      </PanelSection>
+    );
+  }
+  const selectedId = props.selection?.kind === 'node' ? props.selection.id : null;
+  return (
+    <PanelSection
+      fill
+      title="Objects"
+      trailing={<span className="rail-count">{props.contents.length}</span>}
+    >
+      <ul className="object-rows">
+        {props.contents.map((row) => (
+          <ObjectRow
+            indent={contentIndent(row.depth)}
+            key={row.id}
+            kind={row.kind}
+            label={row.label}
+            onJump={() => props.jumpTo({ kind: 'node', id: row.id })}
+            onPeek={() => props.select({ kind: 'node', id: row.id })}
+            selected={row.id === selectedId}
+          />
+        ))}
+      </ul>
+    </PanelSection>
   );
 }
 
 /**
- * The left rail: where you are, and everywhere you could be instead.
+ * The left rail: everything that changes the canvas, and nothing else.
  *
- * It replaces a dropdown and a search box that lived in a floating toolbar. A list organised by
- * meaning, with counts and one lit row, answers "where am I" without being asked — which a
- * collapsed `<select>` never could.
+ * It used to be a nineteen-row file list occupying a full column permanently, which answered a
+ * question asked once a session and then held the space for the rest of it. Choosing a diagram
+ * moved into an overlay behind the diagram's own name; what took its place is the work — the
+ * shapes, and the list of what is already drawn.
+ *
+ * The rows never move. Every row in the Build tab is in the same place whatever is happening,
+ * because a menu that reflows under the hand cannot be learned.
  */
 export function Rail(props: RailProps) {
-  const [query, setQuery] = useState('');
-  const groups = groupDiagrams(props.diagrams, query, props.activeDiagramId);
-  const objects = findObjects(props.diagrams, query);
-  // Recent is only worth its space when there is a list long enough to get lost in, and only
-  // while nothing is being searched — a search already IS the shortcut.
-  const recent = query.trim().length > 0 ? [] : props.recentDiagramIds
-    .map((id) => groups.active.find((entry) => entry.id === id))
-    .filter((entry): entry is DiagramSummary => Boolean(entry))
-    .slice(0, 5);
-  const total = props.diagrams.filter((entry) => entry.status === 'active').length;
-  const archived = props.diagrams.length - total;
+  const [tab, setTab] = useState<RailTab>(props.defaultTab);
+  const [library, setLibrary] = useState<{ top: number; left: number } | null>(null);
   const width = clampPanelWidth(props.width, RAIL_BOUNDS, 264);
 
   return (
@@ -88,94 +191,40 @@ export function Rail(props: RailProps) {
       <PanelHeader
         actions={<PanelCollapse side="left" />}
         kind=">_ novakai"
-        meta={`${total} diagrams${archived > 0 ? ` · ${archived} archived` : ''}`}
         title="Canvas"
+        meta=""
       />
-      <PanelBand>
-        <input
-          aria-label="Search diagrams and objects"
-          className="rail-filter"
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search diagrams and objects"
-          type="search"
-          value={query}
-        />
-      </PanelBand>
+      <div className="rail-switcher">
+        <button
+          aria-expanded={library !== null}
+          aria-haspopup="dialog"
+          onClick={(event) => {
+            const box = event.currentTarget.getBoundingClientRect();
+            setLibrary((open) => (open ? null : { top: box.bottom + 4, left: box.left }));
+          }}
+          title={props.activeDiagramName}
+          type="button"
+        >
+          <span className="rail-switcher-name">{props.activeDiagramName}</span>
+          <span aria-hidden className="rail-switcher-mark">▾</span>
+        </button>
+        {library && (
+          <LibraryOverlay
+            activeDiagramId={props.activeDiagramId}
+            at={library}
+            changeDiagram={props.changeDiagram}
+            close={() => setLibrary(null)}
+            createDiagram={props.createDiagram}
+            diagrams={props.diagrams}
+            openAtObject={props.openAtObject}
+            setDiagramStatus={props.setDiagramStatus}
+          />
+        )}
+      </div>
+      <TabStrip active={tab} label="Left panel surfaces" onSelect={setTab} tabs={RAIL_TABS} />
       <PanelBody>
-        {/*
-          * The objects a search found, above the diagrams that contain them.
-          * A search whose only answer is "these documents somewhere" is the filter Chris
-          * was complaining about; the match itself is the answer.
-          */}
-        {objects.total > 0 && (
-          <PanelSection
-            title="Objects"
-            trailing={<span className="rail-count">{objects.total}</span>}
-          >
-            <ul className="rail-rows">
-              {objects.hits.map((hit) => (
-                <li className="rail-hit" key={`${hit.diagramId}:${hit.label}`}>
-                  <button
-                    className="rail-travel"
-                    onClick={() => props.openAtObject(hit.diagramId, hit.label)}
-                    type="button"
-                  >
-                    <span className="rail-hit-label">{hit.label}</span>
-                    <span className="rail-hit-where">{hit.diagramName}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-            {objects.total > objects.hits.length && (
-              <div className="rail-more">{objects.total - objects.hits.length} more — keep typing</div>
-            )}
-          </PanelSection>
-        )}
-        {recent.length > 1 && groups.active.length > 8 && (
-          <PanelSection title="Recent" trailing={<span className="rail-count">{recent.length}</span>}>
-            <RailList
-              activeDiagramId={props.activeDiagramId}
-              diagrams={recent}
-              onStatus={props.setDiagramStatus}
-              onTravel={props.changeDiagram}
-              statusAction="archived"
-              statusGlyph="↓"
-              statusLabel="Archive"
-            />
-          </PanelSection>
-        )}
-        <PanelSection title="All diagrams" trailing={<span className="rail-count">{groups.active.length}</span>}>
-          {groups.active.length === 0
-            ? <div className="panel-empty"><span>No match</span></div>
-            : (
-              <RailList
-                activeDiagramId={props.activeDiagramId}
-                diagrams={groups.active}
-                onStatus={props.setDiagramStatus}
-                onTravel={props.changeDiagram}
-                statusAction="archived"
-                statusGlyph="↓"
-                statusLabel="Archive"
-              />
-            )}
-        </PanelSection>
-        {groups.archived.length > 0 && (
-          <PanelSection title="Archived" trailing={<span className="rail-count">{groups.archived.length}</span>}>
-            <RailList
-              activeDiagramId={props.activeDiagramId}
-              diagrams={groups.archived}
-              onStatus={props.setDiagramStatus}
-              onTravel={props.changeDiagram}
-              statusAction="active"
-              statusGlyph="↑"
-              statusLabel="Restore"
-            />
-          </PanelSection>
-        )}
+        {tab === 'build' ? <BuildTab {...props} /> : <ContentsTab {...props} />}
       </PanelBody>
-      <PanelFooter>
-        <button className="panel-button" onClick={props.createDiagram} type="button">+ New diagram</button>
-      </PanelFooter>
     </PanelShell>
   );
 }

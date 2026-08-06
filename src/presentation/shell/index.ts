@@ -5,7 +5,9 @@
  * the same shell dresses the rail, the Studio, and any future panel without a change in here.
  */
 export { FieldRow, SwitchRow } from './field-row';
+export { Flyout, type FlyoutItem, type FlyoutProps } from './flyout';
 export { ObjectRow } from './object-row';
+export { head, oneLine, tail } from './rail-label';
 export { PanelBand, PanelFooter } from './panel-band';
 export { RailAction, RailRow } from './rail-row';
 export { IconButton, PanelHeader, type PanelHeaderProps } from './panel-header';
