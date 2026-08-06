@@ -76,6 +76,31 @@ export interface Inspection {
   title: string;
   meta: string;
   body: ReactNode;
+  /**
+   * The path back to what you were looking at, innermost last.
+   *
+   * Chris: the studio "changes my selection without breadcrumbs". Derived from the selection
+   * rather than kept as a history stack on purpose — a stack can disagree with the model after
+   * an undo or a delete, whereas a path computed from what is selected right now cannot. The
+   * final step is the current thing and is not drawn as a link.
+   */
+  trail: Array<{ label: string; select: Selection }>;
+}
+
+/** The path from the open diagram down to one node, through the groups that contain it. */
+function nodeTrail(props: InspectPanelProps, id: string): Array<{ label: string; select: Selection }> {
+  const rootId = rootGroupId(props.record);
+  const steps: Array<{ label: string; select: Selection }> = [];
+  let cursor: string | undefined = id;
+  const guard = new Set<string>();
+  while (cursor && !guard.has(cursor)) {
+    guard.add(cursor);
+    const node = props.record.nodes[cursor];
+    if (!node) break;
+    if (cursor !== rootId) steps.unshift({ label: node.label, select: { kind: 'node', id: cursor } });
+    cursor = node.parentId as string | undefined;
+  }
+  return [{ label: props.record.name, select: null }, ...steps];
 }
 
 function activeLayout(record: DiagramRecord): CanvasLayout | undefined {
@@ -143,6 +168,7 @@ function diagramInspection(props: InspectPanelProps): Inspection {
     kind: 'Diagram',
     title: props.record.name,
     meta: `${objects} objects · ${props.view.wires.length} wires · r${props.record.revision}`,
+    trail: [{ label: props.record.name, select: null }],
     body: (
       <>
         <MakingSection props={props} />
@@ -171,6 +197,7 @@ function nodeInspection(props: InspectPanelProps, id: string): Inspection {
     kind: node.kind,
     title: node.label,
     meta: isRoot ? 'Diagram container' : `in ${parent?.label ?? props.record.name}`,
+    trail: nodeTrail(props, id),
     body: (
       <>
         <PanelSection title="Identity">
@@ -259,6 +286,10 @@ function interfaceInspection(props: InspectPanelProps, id: string): Inspection {
     kind: 'Interface',
     title: item.name,
     meta: `on ${owner?.label ?? item.ownerId}`,
+    trail: [
+      ...nodeTrail(props, item.ownerId as string),
+      { label: item.name, select: { kind: 'interface', id } },
+    ],
     body: (
       <>
         <PanelSection title="Signature">
@@ -321,6 +352,10 @@ function typeInspection(props: InspectPanelProps, id: string): Inspection {
     kind: 'Type',
     title: item.name,
     meta: `${item.fields.length} fields · used by ${usedBy.length}`,
+    trail: [
+      { label: props.record.name, select: null },
+      { label: item.name, select: { kind: 'type', id } },
+    ],
     body: (
       <PanelSection title="Shape">
         <div className="token-row">{item.fields.map((field) => <span key={field}>{field}</span>)}</div>
@@ -352,6 +387,10 @@ function wireInspection(props: InspectPanelProps, id: string): Inspection {
     kind: 'Wire',
     title: wire.label || 'Unlabelled',
     meta: `${from.label} → ${to.label}`,
+    trail: [
+      { label: props.record.name, select: null },
+      { label: wire.label || 'Unlabelled', select: { kind: 'wire', id } },
+    ],
     body: (
       <>
         <PanelSection title="Relationship">
@@ -429,6 +468,10 @@ function treeRowInspection(props: InspectPanelProps, nodeId: string, rowId: stri
     kind: row.kind,
     title: row.label ?? row.id,
     meta: `in ${node.label}`,
+    trail: [
+      ...nodeTrail(props, nodeId),
+      { label: row.label ?? row.id, select: { kind: 'tree-row', nodeId, rowId } },
+    ],
     body: (
       <PanelSection title="Row">
         <FieldRow label="Status"><output>{row.status ?? '—'}</output></FieldRow>

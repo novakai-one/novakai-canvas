@@ -14,12 +14,15 @@ export interface PanelHeaderProps {
   /** One quiet line of context under the title; kept to a line so the block never grows. */
   meta?: string;
   actions?: ReactNode;
+  /** The path back, drawn above the title. Omitted, or a single step, draws nothing. */
+  trail?: ReactNode;
 }
 
-export function PanelHeader({ actions, kind, meta, title }: PanelHeaderProps) {
+export function PanelHeader({ actions, kind, meta, title, trail }: PanelHeaderProps) {
   return (
     <header className="panel-header">
       <div className="panel-identity">
+        {trail}
         <span className="panel-kind">{kind}</span>
         <h2 className="panel-title" title={title}>{title}</h2>
         <span className="panel-meta">{meta ?? ''}</span>

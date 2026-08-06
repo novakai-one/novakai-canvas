@@ -72,6 +72,20 @@ export function Inspector(props: InspectorProps) {
         kind={header.kind}
         meta={header.meta}
         title={header.title}
+        trail={inspection.trail.length > 1 && !settingsOpen && (
+          /*
+            * The path back. Every step but the last is a link, because the last one is where
+            * you already are — clicking it would be a no-op dressed as a way out.
+            */
+          <nav aria-label="Path back" className="panel-trail">
+            {inspection.trail.slice(0, -1).map((step, index) => (
+              <span key={`${step.select ? JSON.stringify(step.select) : 'root'}-${index}`}>
+                <button onClick={() => props.select(step.select)} type="button">{step.label}</button>
+                <span aria-hidden className="panel-trail-sep">›</span>
+              </span>
+            ))}
+          </nav>
+        )}
       />
       {settingsOpen ? (
         <TabStrip active={section} label="Preference sections" onSelect={setSection} tabs={PREFERENCE_SECTIONS} />
