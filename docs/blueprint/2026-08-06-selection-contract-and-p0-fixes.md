@@ -277,6 +277,50 @@ pass). A hardcoded corpus count breaks every time the UI creates a diagram — w
 
 ---
 
+---
+
+## Outcome (2026-08-06)
+
+Six commits on `claude/canvas-cohesion`, each driven in a real browser before being claimed.
+
+| Task | State | Evidence |
+|---|---|---|
+| 1 — bridge owns the on-disk format | **done** | UI edit writes 1114 readable lines where it wrote 1; 5 damaged files restored, each verified byte-identical as parsed JSON |
+| 2 — ports you can hit | **done** | 2px → 10px, constant from 0.18× to 1.64×; four sides; all four connect |
+| 3 — navigation defaults | **done** | scroll pans, ⌘-scroll zooms, double-click inert, ⌘Z undoes |
+| 4 — wire + interface studios | **done** | `wire.update` / `interface.update` added to the record layer; label, kind and name editable; endpoints and types navigable |
+| 5 — routing gate unstuck | **done** | asserts a floor, not a literal corpus size |
+| — panel toggles findable | **done** (added) | moved from mid-canvas to the seam each panel opens on |
+| — one drag is one undo step | **done** (added) | found while verifying Task 3; see correction below |
+
+### Correction to my earlier review
+
+I reported "undo covers layout — P7 disproven". **That was wrong.** Undo did not restore a node
+move; I read a screenshot that merely looked right instead of comparing the transform. The
+cause was real and is now fixed: React Flow reports a position change per frame and each was
+committed, so one drag cost dozens of history entries and undo popped an invisible sub-pixel
+step. Position is now written only by `onNodeDragStop`.
+
+### Known-remaining, explicitly not done
+
+Named here so none of it arrives as a surprise:
+
+- **No breadcrumb in the studio.** Clicking a row still replaces the contents list with no path
+  back. The contract in Part 1 says navigate must leave one; the endpoint and type rows added in
+  Task 4 inherit this gap.
+- **Rail is still a flat alphabetical list**, unreadable at narrow widths, and "Filter" is still
+  a filter rather than a search that reaches node labels. Fable's W-2 covers this; untouched.
+- **No create-on-canvas.** Double-click is now free for it, deliberately, but the gesture is not
+  built — nor is drag-a-wire-into-empty-space-makes-a-node.
+- **Present/Edit, Add and Undo still live in the floating toolbar**, not the side panels as Chris
+  expected. Fable's W-1 covers this; only the panel toggles moved.
+- **`preferredSide` is not stored on drop.** The four ports connect and stick for the session,
+  but the router does not yet persist which side a wire end was dropped on.
+- **Untested by me:** marquee multi-select, ⌥-drag clone, copy/paste, alignment guides, the
+  Theme/Nodes/Wires/Panel/Files preference tabs, and 18 of the 19 diagrams.
+- **3 pre-existing test failures remain** in `report-session` / `work-session-report`. They were
+  red at baseline, are unrelated to the canvas, and were deliberately left alone.
+
 ## Verification standard for this plan
 
 Per Chris's standing rule, **no item is reported done until it has been driven in a real
