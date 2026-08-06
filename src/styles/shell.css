@@ -711,3 +711,10 @@
   color: var(--faint);
   font-size: 10.5px;
 }
+
+/* The head gives way under pressure; the tail, which is what tells two rows apart, does not. */
+.rail-label { display: flex; min-width: 0; align-items: baseline; }
+/* `pre` so the space where the head meets the tail survives — without it "Agent Browser"
+   renders as "AgentBrowser". */
+.rail-label-head { overflow: hidden; flex: 0 1 auto; text-overflow: ellipsis; white-space: pre; }
+.rail-label-tail { flex: 0 0 auto; white-space: nowrap; }

@@ -8,7 +8,13 @@
 /** The bounds one side of the shell may be dragged between. */
 export interface PanelBounds { min: number; max: number }
 
-export const RAIL_BOUNDS: PanelBounds = { min: 200, max: 400 };
+/*
+ * The rail's floor is the width at which its rows are still readable.
+ *
+ * Raised from 200: below this the label had no room left after the active mark and the hover
+ * action, and Chris's report was that names became unidentifiable when he narrowed it.
+ */
+export const RAIL_BOUNDS: PanelBounds = { min: 232, max: 400 };
 export const STUDIO_BOUNDS: PanelBounds = { min: 280, max: 520 };
 
 /** Holds a width inside its bounds; a missing or nonsense width falls back to `fallback`. */

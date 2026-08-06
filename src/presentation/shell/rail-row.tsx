@@ -1,6 +1,22 @@
 import type { ReactNode } from 'react';
 
 /**
+ * How much of a name is protected from truncation.
+ *
+ * Long enough to tell four "Mission Control UX 22-Jul — …" rows apart, short enough that the
+ * head still shows what family a diagram belongs to at the rail's minimum width.
+ */
+const TAIL_LENGTH = 16;
+
+export function tail(label: string): string {
+  return label.length <= TAIL_LENGTH ? label : label.slice(-TAIL_LENGTH);
+}
+
+export function head(label: string): string {
+  return label.length <= TAIL_LENGTH ? '' : label.slice(0, -TAIL_LENGTH);
+}
+
+/**
  * One navigation row in the rail.
  *
  * A rail row is travel, not inspection: clicking it moves you somewhere. The active row carries
@@ -26,7 +42,18 @@ export function RailRow({
         type="button"
       >
         <span aria-hidden className="rail-mark" />
-        <span className="rail-label">{label}</span>
+        {/*
+          * The end of the name survives, not just the start.
+          *
+          * Four of Chris's diagrams begin "Mission Control UX 22-Jul — ", so plain end-ellipsis
+          * rendered them as four identical rows: unreadable exactly as he described, and worse
+          * than unreadable because they looked like duplicates. The head gives way and the tail
+          * — which is what actually distinguishes them — is always drawn.
+          */}
+        <span className="rail-label">
+          <span className="rail-label-head">{head(label)}</span>
+          <span className="rail-label-tail">{tail(label)}</span>
+        </span>
       </button>
       {action}
     </li>

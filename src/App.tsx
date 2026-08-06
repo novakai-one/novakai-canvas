@@ -134,6 +134,12 @@ export default function App(props: AppProps) {
     return opened;
   }, [library]);
 
+  /** Where you have been this sitting. Session-scoped by design: it never reaches disk. */
+  const [recentDiagramIds, setRecentDiagramIds] = useState<string[]>([]);
+  useEffect(() => {
+    setRecentDiagramIds((trail) => [open.id, ...trail.filter((id) => id !== open.id)].slice(0, 8));
+  }, [open.id]);
+
   const changeDiagram = useCallback((diagramId: string) => {
     if (diagramId === open.id) return;
     void openDiagram(diagramId);
@@ -255,6 +261,7 @@ export default function App(props: AppProps) {
         createDiagram={createDiagram}
         diagrams={diagrams}
         openAtObject={openAtObject}
+        recentDiagramIds={recentDiagramIds}
         setDiagramStatus={setDiagramStatus}
         setWidth={(railWidth) => setPanel({ railWidth })}
         width={preferences.panel.railWidth ?? 264}

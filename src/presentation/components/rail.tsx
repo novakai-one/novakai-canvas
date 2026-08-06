@@ -15,6 +15,8 @@ export interface RailProps {
   createDiagram: () => void;
   /** Travel to one object a search named: opens its diagram and lands on it. */
   openAtObject: (diagramId: string, label: string) => void;
+  /** Most-recently-opened first, this sitting only — a property of the session, not the record. */
+  recentDiagramIds: readonly string[];
   setDiagramStatus: (diagramId: string, status: 'active' | 'archived') => void;
   width: number;
   collapsed: boolean;
@@ -64,6 +66,12 @@ export function Rail(props: RailProps) {
   const [query, setQuery] = useState('');
   const groups = groupDiagrams(props.diagrams, query, props.activeDiagramId);
   const objects = findObjects(props.diagrams, query);
+  // Recent is only worth its space when there is a list long enough to get lost in, and only
+  // while nothing is being searched — a search already IS the shortcut.
+  const recent = query.trim().length > 0 ? [] : props.recentDiagramIds
+    .map((id) => groups.active.find((entry) => entry.id === id))
+    .filter((entry): entry is DiagramSummary => Boolean(entry))
+    .slice(0, 5);
   const total = props.diagrams.filter((entry) => entry.status === 'active').length;
   const archived = props.diagrams.length - total;
   const width = clampPanelWidth(props.width, RAIL_BOUNDS, 264);
@@ -122,7 +130,20 @@ export function Rail(props: RailProps) {
             )}
           </PanelSection>
         )}
-        <PanelSection title="Diagrams" trailing={<span className="rail-count">{groups.active.length}</span>}>
+        {recent.length > 1 && groups.active.length > 8 && (
+          <PanelSection title="Recent" trailing={<span className="rail-count">{recent.length}</span>}>
+            <RailList
+              activeDiagramId={props.activeDiagramId}
+              diagrams={recent}
+              onStatus={props.setDiagramStatus}
+              onTravel={props.changeDiagram}
+              statusAction="archived"
+              statusGlyph="↓"
+              statusLabel="Archive"
+            />
+          </PanelSection>
+        )}
+        <PanelSection title="All diagrams" trailing={<span className="rail-count">{groups.active.length}</span>}>
           {groups.active.length === 0
             ? <div className="panel-empty"><span>No match</span></div>
             : (
