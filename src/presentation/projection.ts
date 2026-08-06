@@ -10,6 +10,8 @@ import type { Rect, RouteObstacle } from './edges/wire-routing';
 /** Presentation data required by architecture nodes. */
 export interface ArchitectureNodeData extends Record<string, unknown> {
   node: PositionedNode;
+  /** Renames the node from the canvas itself; absent on a read-only host. */
+  rename?: (id: string, label: string) => void;
   interfaces: InterfaceObject[];
   types: TypeObject[];
   preferences: CanvasPreferences;
@@ -293,6 +295,9 @@ export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>
         : node.kind === 'comment' ? 3 : 2,
       data: {
         node,
+        rename: input.execute && editable
+          ? (id: string, label: string) => input.execute?.({ kind: 'node.update', id, patch: { label } })
+          : undefined,
         interfaces: node.interfaceIds.flatMap((id) => record.interfaces[id] ? [record.interfaces[id]] : []),
         types: node.typeIds.flatMap((id) => record.types[id] ? [record.types[id]] : []),
         preferences,

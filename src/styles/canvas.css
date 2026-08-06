@@ -618,3 +618,20 @@
 
 .react-flow__controls-button:hover { background: var(--hover); }
 .react-flow__controls-button svg { fill: currentColor; }
+
+/* Renaming happens where the node is; the affordance stays quiet until you are on it. */
+.node-label.is-renamable { cursor: text; }
+
+.node-label-input {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--accent);
+  color: var(--ink-strong);
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  outline: none;
+}

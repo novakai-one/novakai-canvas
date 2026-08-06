@@ -348,8 +348,10 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   const camera = useCamera(activeDiagramId);
   useRefitWhenPanelsMove(preferences.panel);
   const nodes = useMemo(
-    () => projectNodes({ view, record, preferences, selection, editable, select: setSelection }),
-    [editable, preferences, record, selection, setSelection, view],
+    () => projectNodes({
+      view, record, preferences, selection, editable, select: setSelection, execute,
+    }),
+    [editable, execute, preferences, record, selection, setSelection, view],
   );
   const edges = useMemo(
     () => projectEdges({
