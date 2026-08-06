@@ -4,7 +4,7 @@ import type { RecordCommand } from '../../application/canvas-workspace';
 import type { Selection } from '../../domain/model';
 import type { ProjectedView } from '../../domain/project-view';
 import type { CanvasLayout, DiagramRecord, NodePlacement } from '../../domain/records';
-import { rootGroupId } from '../canvas-actions';
+import { rootGroupId, type CreatableNodeKind } from '../canvas-actions';
 import { scopeDepth } from '../projection';
 import { FieldRow, ObjectRow, PanelSection, SwitchRow } from '../shell';
 
@@ -28,6 +28,41 @@ export interface InspectPanelProps {
   editable: boolean;
   diagrams: DiagramSummary[];
   openDiagram: (diagramId: string) => void;
+  /**
+   * Making and unmaking, owned by the panel rather than by chrome floating over the canvas.
+   *
+   * Chris expected creation and undo in the side panels twice over — "I expected the present edit
+   * add undo to be in side panels", then "surprised that there is no way to add shapes like nodes
+   * and modules etc in the side panel". Creating from here also means the record of the new object
+   * is already open in front of you, so making a thing and naming it are one movement.
+   */
+  addNode?: (kind: CreatableNodeKind) => void;
+  undo?: () => void;
+  canUndo?: boolean;
+}
+
+const ADDABLE: readonly CreatableNodeKind[] = ['module', 'object', 'runtime', 'resource', 'group', 'comment'];
+
+/** Create and undo, drawn once and shown on whichever states can offer them. */
+function MakingSection({ props }: { props: InspectPanelProps }) {
+  const { addNode, canUndo, editable, undo } = props;
+  if (!editable || !addNode) return null;
+  return (
+    <PanelSection title="Add to this diagram">
+      <div className="add-grid">
+        {ADDABLE.map((kind) => (
+          <button className="panel-button" key={kind} onClick={() => addNode(kind)} type="button">
+            {kind[0].toUpperCase()}{kind.slice(1)}
+          </button>
+        ))}
+      </div>
+      {undo && (
+        <button className="panel-button" disabled={!canUndo} onClick={undo} type="button">
+          Undo last change
+        </button>
+      )}
+    </PanelSection>
+  );
 }
 
 /**
@@ -108,7 +143,12 @@ function diagramInspection(props: InspectPanelProps): Inspection {
     kind: 'Diagram',
     title: props.record.name,
     meta: `${objects} objects · ${props.view.wires.length} wires · r${props.record.revision}`,
-    body: diagramContents(props),
+    body: (
+      <>
+        <MakingSection props={props} />
+        {diagramContents(props)}
+      </>
+    ),
   };
 }
 

@@ -11,14 +11,14 @@ describe('canvasCamera', () => {
 
   it('hands callers the open canvas once it publishes one', () => {
     const centerOnNode = vi.fn();
-    publishCanvasCamera({ centerOnNode, fit: vi.fn() });
+    publishCanvasCamera({ centerOnNode, fit: vi.fn(), focusPoint: vi.fn(() => ({ x: 0, y: 0 })) });
     canvasCamera().centerOnNode('bs-broker');
     expect(centerOnNode).toHaveBeenCalledWith('bs-broker');
   });
 
   it('stops travelling once the canvas withdraws', () => {
     const centerOnNode = vi.fn();
-    publishCanvasCamera({ centerOnNode, fit: vi.fn() });
+    publishCanvasCamera({ centerOnNode, fit: vi.fn(), focusPoint: vi.fn(() => ({ x: 0, y: 0 })) });
     publishCanvasCamera(null);
     canvasCamera().centerOnNode('bs-broker');
     expect(centerOnNode).not.toHaveBeenCalled();

@@ -268,6 +268,14 @@ function useCamera(activeDiagramId: string): {
         });
       },
       fit: () => flow.current?.fitView({ duration: TRAVEL_MS, padding: 0.12, maxZoom: 1 }),
+      focusPoint: () => {
+        const instance = flow.current;
+        const box = surface.current?.getBoundingClientRect();
+        if (!instance || !box) return { x: 0, y: 0 };
+        return instance.screenToFlowPosition({
+          x: box.x + box.width / 2, y: box.y + box.height / 2,
+        });
+      },
     });
     return () => publishCanvasCamera(null);
   }, []);
@@ -413,7 +421,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         <Controls position="bottom-left" showFitView showInteractive={false} showZoom={preferences.canvas.showControls} />
       </ReactFlow>
       <Legend preferences={preferences} view={view} />
-      <CanvasToolbar focusPoint={camera.focusPoint} props={props} />
+      <CanvasToolbar props={props} />
       {/* Anchored to the canvas's own edges, which are exactly the seams the panels open on. */}
       <RailToggle />
       <StudioToggle />

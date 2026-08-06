@@ -10,6 +10,8 @@ import { projectView } from './canvas';
 import { CanvasSurface } from './presentation/components/canvas-surface';
 import { Inspector } from './presentation/components/inspector';
 import { Rail } from './presentation/components/rail';
+import { createCanvasNode, placedNodes } from './presentation/canvas-actions';
+import { canvasCamera } from './presentation/canvas-camera';
 import { ShellGeometryProvider } from './presentation/shell';
 import { useWorkspaceRecord } from './presentation/use-workspace-record';
 import { wireToneCssVariables } from './presentation/wire-styles';
@@ -260,11 +262,19 @@ export default function App(props: AppProps) {
         />
       </ReactFlowProvider>
       <Inspector
+        addNode={(kind) => {
+          const id = `${kind}-${crypto.randomUUID().slice(0, 8)}`;
+          const created = createCanvasNode(placedNodes(view), kind, id, canvasCamera().focusPoint());
+          execute({ kind: 'node.add', ...created });
+          select({ kind: 'node', id: created.node.id });
+        }}
+        canUndo={open.workspace.canUndo()}
         clearSelection={() => setSelection(null)}
         collapsed={studioCollapsed}
         diagrams={diagrams}
         editable={mode === 'edit'}
         execute={execute}
+        undo={() => { open.workspace.undo(); }}
         openDiagram={drillInto}
         preferences={preferences}
         record={record}

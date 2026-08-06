@@ -14,9 +14,21 @@ export interface CanvasCamera {
   centerOnNode: (nodeId: string) => void;
   /** Frames the whole diagram. */
   fit: () => void;
+  /**
+   * The point in the diagram the user is currently looking at.
+   *
+   * Read, not moved — this is how chrome outside the canvas places something "here" without
+   * knowing what "here" means. The studio creates objects with it, so a new object lands in
+   * view rather than at a fixed coordinate somewhere else in the diagram.
+   */
+  focusPoint: () => { x: number; y: number };
 }
 
-const NOWHERE_TO_GO: CanvasCamera = { centerOnNode: () => {}, fit: () => {} };
+const NOWHERE_TO_GO: CanvasCamera = {
+  centerOnNode: () => {},
+  fit: () => {},
+  focusPoint: () => ({ x: 0, y: 0 }),
+};
 
 let published: CanvasCamera | null = null;
 
