@@ -310,19 +310,13 @@
 }
 
 /*
- * Ports sit just inside their edge rather than straddling it.
+ * Ports straddle their edge, evenly, on all four sides.
  *
- * The node clips its content (`overflow: hidden`, for the rounded corners), so a port centred
- * on the border loses its outer half to the clip — and the side ports lost their hit test
- * entirely to the header and interface rows painted over them. Tucking each port inward keeps
- * the whole dot drawn and clickable without giving up the corner radius. The z-index above is
- * the other half of that fix: ports are declared before the node's content, so without it the
- * content wins the paint order at the same stacking level.
+ * They were tucked inward to survive the node body's rounded-corner clip, which left right and
+ * bottom a full diameter deeper than top and left, and moved the anchor React Flow derives from
+ * a handle so wires began inside the box. Rendering the ports outside the clipped body (see
+ * architecture-node.tsx) removes the reason to tuck them, so React Flow's own centring stands.
  */
-.canvas-surface .react-flow__handle-left { transform: translate(0, -50%); }
-.canvas-surface .react-flow__handle-right { transform: translate(-100%, -50%); }
-.canvas-surface .react-flow__handle-top { transform: translate(-50%, 0); }
-.canvas-surface .react-flow__handle-bottom { transform: translate(-50%, -100%); }
 
 /* The port under the pointer states which one will take the wire. */
 .canvas-surface .react-flow__handle:hover,

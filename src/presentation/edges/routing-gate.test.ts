@@ -99,3 +99,39 @@ describe('no wire crosses a node it is unrelated to', () => {
     expect(performance.now() - started).toBeLessThan(2000);
   });
 });
+
+/**
+ * The gate is only worth having if the application takes the path it measures.
+ *
+ * It did not: `projectEdges` computed each wire's obstacles and handed them over in edge data,
+ * and the renderer's `routeWire` call dropped them — so this suite proved node-avoidance on a
+ * code path the canvas never executed, and stayed green while wires cut through nodes on
+ * screen. This pins the premise: obstacles must actually change the answer.
+ */
+describe('obstacles are load-bearing', () => {
+  it('routes differently once it is told what is in the way', () => {
+    let withObstacles = 0;
+    let blind = 0;
+    for (const [, record] of records) {
+      const view = projectView(record);
+      const rects = nodeRects(view);
+      for (const wire of view.wires) {
+        const source = rects.get(wire.source.nodeId as string);
+        const target = rects.get(wire.target.nodeId as string);
+        if (!source || !target) continue;
+        const from = attachment(source, sourceSide);
+        const to = attachment(target, targetSide);
+        const obstacles = wireObstacles(view, rects, wire);
+        withObstacles += routeWire({
+          source: from, sourceSide, target: to, targetSide, obstacles,
+        }).collisions;
+        blind += routeCollisions(
+          routeWire({ source: from, sourceSide, target: to, targetSide }).points,
+          obstacles,
+        ).collisions;
+      }
+    }
+    expect(withObstacles).toBe(0);
+    expect(blind).toBeGreaterThan(0);
+  });
+});

@@ -62,10 +62,20 @@ export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowN
   const portsClass = preferences.nodes.showPorts === 'always' ? 'ports-always' : '';
 
   return (
-    <article className={`architecture-node kind-${node.kind} ${portsClass}`}>
-      <NodeResizer isVisible={editable && selected} minHeight={80} minWidth={160} />
-      <NodePorts connectable={editable} />
-      <header className="node-header">
+    /*
+      * Ports are siblings of the body, not children of it.
+      *
+      * The body clips its content for its rounded corners, which ate the outer half of every
+      * port and forced them inward — leaving the right and bottom dots a full diameter further
+      * in than the top and left, and, worse, moving the anchor React Flow derives from them so
+      * every wire began *inside* the node and had to climb out. Out here, under React Flow's own
+      * unclipped node wrapper, a port sits centred on the edge again: symmetric, and the wire
+      * starts exactly where the box ends.
+      */
+    <>
+      <article className={`architecture-node kind-${node.kind} ${portsClass}`}>
+        <NodeResizer isVisible={editable && selected} minHeight={80} minWidth={160} />
+        <header className="node-header">
         <NodeLabel
           editable={editable}
           label={node.label}
@@ -92,7 +102,7 @@ export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowN
           ))}
         </div>
       )}
-      {(!editable || preferences.nodes.showTypes) && types.length > 0 && (
+        {(!editable || preferences.nodes.showTypes) && types.length > 0 && (
         <div className="type-list">
           {types.map((item) => (
             <button
@@ -105,6 +115,8 @@ export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowN
           ))}
         </div>
       )}
-    </article>
+      </article>
+      <NodePorts connectable={editable} />
+    </>
   );
 }

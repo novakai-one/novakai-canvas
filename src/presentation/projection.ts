@@ -121,7 +121,7 @@ export function wireObstacles(
     ...ancestryOf(byId, wire.source.nodeId),
     ...ancestryOf(byId, wire.target.nodeId),
   ]);
-  return view.nodes.flatMap((node) => {
+  const others = view.nodes.flatMap((node) => {
     const id = node.id as string;
     if (related.has(id)) return [];
     // Anything inside one of the ends is as unavoidable as the end itself. Only the two ends
@@ -131,6 +131,27 @@ export function wireObstacles(
     const rect = rects.get(id);
     return rect ? [{ rect, soft: node.kind === 'group' }] : [];
   });
+
+  /*
+   * A wire's own two nodes are solid to it as well.
+   *
+   * Excluding them entirely let the router treat either box as free space and take the short way
+   * through it: one real wire left the bottom of CDP control, turned immediately, and climbed
+   * back up through the node it had just left to reach a corridor above its target — the hook
+   * Chris could not draw. Leaving a port is still free, because collision is measured strictly
+   * inside a rectangle and a stub running out from a border anchor only ever touches it.
+   *
+   * Skipped when one end contains the other: a wire from a group to something inside it has no
+   * route that does not enter the group, and scoring that as a fault would reject every
+   * candidate equally and leave the choice to noise.
+   */
+  const sourceAncestry = ancestryOf(byId, wire.source.nodeId);
+  const targetAncestry = ancestryOf(byId, wire.target.nodeId);
+  const nested = sourceAncestry.has(wire.target.nodeId) || targetAncestry.has(wire.source.nodeId);
+  if (nested) return others;
+  const ownRects = [wire.source.nodeId, wire.target.nodeId]
+    .flatMap((id) => { const rect = rects.get(id); return rect ? [{ rect, soft: false }] : []; });
+  return [...others, ...ownRects];
 }
 
 /**

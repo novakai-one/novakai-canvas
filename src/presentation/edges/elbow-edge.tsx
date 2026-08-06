@@ -28,14 +28,25 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
   const { screenToFlowPosition } = useReactFlow();
   const lane = props.data?.lane ?? 0;
   const waypoints = props.data?.route.waypoints;
+  /*
+   * The obstacles reach the router.
+   *
+   * `projectEdges` has always computed what each wire must route around and handed it over in
+   * edge data — and this call dropped it, so the drawn route was the one the router picks when
+   * it believes the canvas is empty. The routing gate calls `routeWire` *with* obstacles, which
+   * is why it stayed green while wires visibly cut through nodes on screen: it was proving a
+   * code path the application never executed.
+   */
+  const obstacles = props.data?.obstacles;
   const route = useMemo(() => routeWire({
     source: { x: props.sourceX, y: props.sourceY },
     sourceSide: SIDE_OF_POSITION[props.sourcePosition],
     target: { x: props.targetX, y: props.targetY },
     targetSide: SIDE_OF_POSITION[props.targetPosition],
+    obstacles,
     waypoints,
     lane,
-  }), [lane, props.sourcePosition, props.sourceX, props.sourceY,
+  }), [lane, obstacles, props.sourcePosition, props.sourceX, props.sourceY,
     props.targetPosition, props.targetX, props.targetY, waypoints]);
   const path = useMemo(() => routePath(route.points, 6), [route]);
 
