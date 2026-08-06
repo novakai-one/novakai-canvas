@@ -8,8 +8,9 @@ import {
 import type { ArchitectureEdgeData } from '../projection';
 import { wireKindColorVariable, wireKindDashArray, wireStrokeWidth } from '../wire-styles';
 import {
-  nearestPositionAlong, pointAlong, routePath, routeWire, type RouteSide,
+  nearestPositionAlong, pointAlong, routeWire, type RouteSide,
 } from './wire-routing';
+import { asWireShape, wirePath } from './wire-shape';
 
 type ElbowFlowEdge = Edge<ArchitectureEdgeData, 'elbow'>;
 
@@ -52,7 +53,15 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
     lane,
   }), [lane, obstacles, props.sourcePosition, props.sourceX, props.sourceY,
     props.targetPosition, props.targetX, props.targetY, waypoints]);
-  const path = useMemo(() => routePath(route.points, 6), [route]);
+  /*
+   * Shape is a look, not a route.
+   *
+   * Every shape draws the SAME points the router chose, so choosing curves cannot make a wire
+   * start cutting through a node — obstacle avoidance happens before this line and is not
+   * something a preference can switch off.
+   */
+  const shape = asWireShape(props.data?.preferences.wires.shape);
+  const path = useMemo(() => wirePath(route.points, shape), [route, shape]);
 
   // While the label is being dragged its place is local: the record hears one intention when the
   // drag ends, not sixty as the pointer moves.

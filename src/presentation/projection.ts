@@ -474,7 +474,15 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
         waypoints: hints[wire.id]?.waypoints ?? [],
         labelPosition: hints[wire.id]?.labelPosition,
       },
-      obstacles: wireObstacles(view, rects, wire),
+      /*
+       * Turning avoidance off is a preference, not a bug.
+       *
+       * `avoidNodes` off hands the router an empty obstacle set, which is exactly what it used
+       * to receive by accident. On is the default and the standard the routing gate enforces
+       * over every real diagram; off exists for anyone who wants the shortest line and will
+       * place their own corridors.
+       */
+      obstacles: (preferences.wires.avoidNodes ?? true) ? wireObstacles(view, rects, wire) : [],
       setRoute: execute && editable
         ? (route: Partial<EdgeRoute>) => execute({ kind: 'wire.setRoute', id: wire.id, route })
         : undefined,

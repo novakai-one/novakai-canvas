@@ -190,6 +190,18 @@ export interface CanvasPreferences {
     showLabels: 'always' | 'selected' | 'never';
     width: number;
     dimUnrelated: boolean;
+    /**
+     * How wires are drawn along the route the router chose.
+     *
+     * Shape only: every value draws the SAME points, so choosing curves can never make a wire
+     * start cutting through a node. Optional, so a preferences file written before shapes
+     * existed opens at the elbow this app has always drawn.
+     */
+    shape?: 'elbow' | 'straight' | 'curved' | 'stepped';
+    /** Scales the wire-label type on its own, without touching the panels. */
+    labelScale?: number;
+    /** Whether the router detours around unrelated nodes. On is the standard. */
+    avoidNodes?: boolean;
   };
   /**
    * Panel geometry. `width` is the Studio's; the rail's and the collapsed flags are optional so

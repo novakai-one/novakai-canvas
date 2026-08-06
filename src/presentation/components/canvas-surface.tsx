@@ -13,7 +13,8 @@ import type { CanvasPreferences, Selection } from '../../domain/model';
 import type { ProjectedView } from '../../domain/project-view';
 import type { DiagramRecord } from '../../domain/records';
 import {
-  escapeStep, resolveDrop, selectionResolves, type PlacedNode, type WorldPoint,
+  createCanvasNode, escapeStep, resolveDrop, selectionResolves,
+  type CreatableNodeKind, type PlacedNode, type WorldPoint,
 } from '../canvas-actions';
 import { canvasCamera, publishCanvasCamera } from '../canvas-camera';
 import { RailToggle, StudioToggle } from '../shell';
@@ -39,6 +40,8 @@ export interface CanvasSurfaceProps {
   setSelection: (selection: Selection) => void;
   /** The one way the canvas changes anything; every intention reaches the open workspace here. */
   execute: (command: RecordCommand) => void;
+  /** Several commands as one revision, for a gesture that produces more than one fact. */
+  executeAll: (commands: RecordCommand[]) => void;
   saveStatus: string;
   diagrams: DiagramSummary[];
   activeDiagramId: string;
@@ -129,6 +132,21 @@ function rememberSides(
   if (!preferredSourceSide && !preferredTargetSide) return;
   execute({ kind: 'wire.setRoute', id, route: { preferredSourceSide, preferredTargetSide } });
 }
+
+/**
+ * A wire dragged onto empty canvas makes the thing it was reaching for.
+ *
+ * React Flow reports a connection that landed on nothing by calling `onConnectEnd` with no
+ * connection — which used to mean the gesture was simply discarded, so "drag out to add the
+ * next box" did nothing at all. It is one undoable act: the node appears where the pointer let
+ * go, the wire joins it, and the new node is selected and ready to be named.
+ *
+ * The side the drag started from decides which side the wire arrives on, so a wire pulled to
+ * the right enters the new node from its left rather than from wherever the default says.
+ */
+const OPPOSITE_SIDE: Record<PortSide, PortSide> = {
+  top: 'bottom', bottom: 'top', left: 'right', right: 'left',
+};
 
 function connect(execute: (command: RecordCommand) => void, connection: Connection): string | null {
   if (!connection.source || !connection.target) return null;
@@ -250,6 +268,8 @@ function useCamera(activeDiagramId: string): {
   attach: (instance: FlowInstance) => void;
   publishZoom: (zoom: number) => void;
   focusPoint: () => WorldPoint;
+  /** One screen point in diagram coordinates — where a pointer actually let go. */
+  toWorld: (point: { x: number; y: number }) => WorldPoint;
 } {
   const flow = useRef<FlowInstance | null>(null);
   const surface = useRef<HTMLElement | null>(null);
@@ -318,6 +338,8 @@ function useCamera(activeDiagramId: string): {
         x: box.x + box.width / 2, y: box.y + box.height / 2,
       });
     },
+    toWorld: (point: { x: number; y: number }) =>
+      flow.current?.screenToFlowPosition(point) ?? { x: 0, y: 0 },
   };
 }
 
@@ -351,6 +373,40 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   useSelectionReleasesWithItsObject(record, selection, setSelection);
   const camera = useCamera(activeDiagramId);
   useRefitWhenPanelsMove(preferences.panel);
+  /** The port a drag began on, remembered until it lands somewhere or on nothing. */
+  const dragFrom = useRef<{ nodeId: string; side?: PortSide } | null>(null);
+
+  const growFromPort = (at: WorldPoint): void => {
+    const from = dragFrom.current;
+    dragFrom.current = null;
+    if (!editable || !from) return;
+    const kind: CreatableNodeKind = 'module';
+    const id = `${kind}-${crypto.randomUUID().slice(0, 8)}`;
+    const created = createCanvasNode(placedNodes(view), kind, id, at);
+    const wireId = `wire-${crypto.randomUUID().slice(0, 8)}`;
+    props.executeAll([
+      { kind: 'node.add', ...created },
+      {
+        kind: 'wire.add',
+        wire: {
+          id: asId<WireId>(wireId),
+          kind: 'references',
+          label: 'connects',
+          source: { nodeId: asId<NodeId>(from.nodeId) },
+          target: { nodeId: created.node.id },
+        },
+      },
+      ...(from.side
+        ? [{
+          kind: 'wire.setRoute' as const,
+          id: wireId,
+          route: { preferredSourceSide: from.side, preferredTargetSide: OPPOSITE_SIDE[from.side] },
+        }]
+        : []),
+    ]);
+    setSelection({ kind: 'node', id: created.node.id as string });
+  };
+
   const nodes = useMemo(
     () => projectNodes({
       view, record, preferences, selection, editable, select: setSelection, execute,
@@ -377,6 +433,19 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         edgesReconnectable={editable} elementsSelectable fitView={camera.fitOnOpen} fitViewOptions={{ padding: editable ? 0.12 : 0.05, maxZoom: 1, minZoom: 0.05 }} minZoom={0.05}
         nodeTypes={nodeTypes} nodes={nodes} nodesConnectable={editable} nodesDraggable={editable}
         onConnect={(connection) => { if (!editable) return; const id = connect(execute, connection); if (id) setSelection({ kind: 'wire', id }); }}
+        onConnectStart={(_event, params) => {
+          dragFrom.current = params.nodeId
+            ? { nodeId: params.nodeId, side: sideOfHandle(params.handleId) }
+            : null;
+        }}
+        onConnectEnd={(event, state) => {
+          // A drag that found a port is `onConnect`'s business; only a drop on nothing is ours.
+          if (state.isValid) { dragFrom.current = null; return; }
+          const point = 'changedTouches' in event
+            ? { x: event.changedTouches[0].clientX, y: event.changedTouches[0].clientY }
+            : { x: event.clientX, y: event.clientY };
+          growFromPort(camera.toWorld(point));
+        }}
         onEdgeClick={(_event, edge) => setSelection({ kind: 'wire', id: edge.id })}
         onInit={(instance) => { camera.attach(instance); camera.publishZoom(instance.getViewport().zoom); }}
         onMove={(_event, viewport) => camera.publishZoom(viewport.zoom)}

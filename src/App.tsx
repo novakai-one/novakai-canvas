@@ -100,6 +100,27 @@ export default function App(props: AppProps) {
     return () => window.clearTimeout(timer);
   }, [preferences, preferencesRepository]);
 
+  /**
+   * Several commands, one revision, one undo.
+   *
+   * A gesture that produces two facts — dragging a wire onto empty canvas makes a node AND the
+   * wire to it — is still one act to the person who made it, so it has to come back off the
+   * history in one press. The workspace has always accepted a batch; the host only ever used
+   * the single-command convenience.
+   */
+  const executeAll = useCallback((commands: RecordCommand[]) => {
+    if (commands.length === 0) return;
+    const outcome = open.workspace.submit({
+      operationId: `studio-${crypto.randomUUID()}`,
+      expectedRevision: open.workspace.snapshot().revision,
+      timestamp: new Date().toISOString(),
+      commands,
+    });
+    if (outcome.status === 'applied') return;
+    console.warn('[canvas] batch not applied', outcome, commands);
+    setSaveStatus(SAVE_STATUS.refused);
+  }, [open.workspace]);
+
   const execute = useCallback((command: RecordCommand) => {
     const outcome = open.workspace.execute(command);
     if (outcome.status === 'applied') return;
@@ -316,6 +337,7 @@ export default function App(props: AppProps) {
           createDiagram={createDiagram}
           diagrams={diagrams}
           execute={execute}
+          executeAll={executeAll}
           goBack={goBack}
           mode={mode}
           preferences={preferences}
