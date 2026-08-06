@@ -681,3 +681,33 @@
 @media (prefers-reduced-motion: reduce) {
   .panel-shell, .panel-shell * { transition-duration: 1ms !important; }
 }
+
+/*
+ * A search result is the object, and where it lives.
+ *
+ * The label leads because that is what was typed; the diagram is the answer to "where", set
+ * quietly beneath it so the list still scans as one column of things rather than two.
+ */
+.rail-hit .rail-travel {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.rail-hit .rail-travel:hover { background: var(--hover); }
+.rail-hit-label { color: var(--ink); font-size: 12.5px; }
+.rail-hit-where { color: var(--faint); font-size: 10.5px; }
+
+.rail-more {
+  padding: var(--space-1) var(--space-3) var(--space-2);
+  color: var(--faint);
+  font-size: 10.5px;
+}

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { DiagramSummary } from '../../application/canvas-library';
 import { asId } from '../../domain/id-cast';
 import type { DiagramId } from '../../domain/ids';
-import { groupDiagrams } from './rail-filter';
+import { findObjects, groupDiagrams } from './rail-filter';
 
 function entry(id: string, name: string, status: 'active' | 'archived', nodeLabels: string[] = []): DiagramSummary {
   return { id: asId<DiagramId>(id), name, status, revision: 1, nodeLabels };
@@ -47,5 +47,33 @@ describe('groupDiagrams', () => {
   it('narrows the archived group too', () => {
     expect(groupDiagrams(library, 'tunnel', 'browser').archived.map((item) => item.id))
       .toEqual(['old-atlas']);
+  });
+});
+
+describe('findObjects', () => {
+  it('names the matching objects and the diagram each one lives in', () => {
+    const found = findObjects(library, 'broker');
+    expect(found.hits).toEqual([
+      { label: 'Session broker', diagramId: 'overview', diagramName: 'Command Overview' },
+    ]);
+    expect(found.total).toBe(1);
+  });
+
+  it('finds nothing for an empty query rather than everything', () => {
+    expect(findObjects(library, '   ')).toEqual({ hits: [], total: 0 });
+  });
+
+  it('reaches archived diagrams too, because the object is still somewhere', () => {
+    expect(findObjects(library, 'tunnel').hits.map((hit) => hit.diagramName))
+      .toEqual(['Messaging Atlas']);
+  });
+
+  /** A cap that hides how much it hid reads as "that is everything" when it is not. */
+  it('reports the full total even when it returns a capped list', () => {
+    const many = Array.from({ length: 9 }, (_, index) =>
+      entry(`d${index}`, `Diagram ${index}`, 'active', ['Shared name']));
+    const found = findObjects(many, 'shared', 4);
+    expect(found.hits).toHaveLength(4);
+    expect(found.total).toBe(9);
   });
 });

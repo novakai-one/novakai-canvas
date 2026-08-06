@@ -4,7 +4,7 @@ import {
   PanelBand, PanelBody, PanelFooter, PanelHeader, PanelSection, PanelShell, RAIL_BOUNDS,
   RailAction, RailRow, clampPanelWidth,
 } from '../shell';
-import { groupDiagrams } from './rail-filter';
+import { findObjects, groupDiagrams } from './rail-filter';
 
 /** What the rail needs from the library, and the three things it can ask of it. */
 export interface RailProps {
@@ -13,6 +13,8 @@ export interface RailProps {
   /** Travel: opens the diagram. The rail is the only chrome that moves you between them. */
   changeDiagram: (diagramId: string) => void;
   createDiagram: () => void;
+  /** Travel to one object a search named: opens its diagram and lands on it. */
+  openAtObject: (diagramId: string, label: string) => void;
   setDiagramStatus: (diagramId: string, status: 'active' | 'archived') => void;
   width: number;
   collapsed: boolean;
@@ -61,6 +63,7 @@ function RailList({
 export function Rail(props: RailProps) {
   const [query, setQuery] = useState('');
   const groups = groupDiagrams(props.diagrams, query, props.activeDiagramId);
+  const objects = findObjects(props.diagrams, query);
   const total = props.diagrams.filter((entry) => entry.status === 'active').length;
   const archived = props.diagrams.length - total;
   const width = clampPanelWidth(props.width, RAIL_BOUNDS, 264);
@@ -81,15 +84,44 @@ export function Rail(props: RailProps) {
       />
       <PanelBand>
         <input
-          aria-label="Filter diagrams"
+          aria-label="Search diagrams and objects"
           className="rail-filter"
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Filter"
+          placeholder="Search diagrams and objects"
           type="search"
           value={query}
         />
       </PanelBand>
       <PanelBody>
+        {/*
+          * The objects a search found, above the diagrams that contain them.
+          * A search whose only answer is "these documents somewhere" is the filter Chris
+          * was complaining about; the match itself is the answer.
+          */}
+        {objects.total > 0 && (
+          <PanelSection
+            title="Objects"
+            trailing={<span className="rail-count">{objects.total}</span>}
+          >
+            <ul className="rail-rows">
+              {objects.hits.map((hit) => (
+                <li className="rail-hit" key={`${hit.diagramId}:${hit.label}`}>
+                  <button
+                    className="rail-travel"
+                    onClick={() => props.openAtObject(hit.diagramId, hit.label)}
+                    type="button"
+                  >
+                    <span className="rail-hit-label">{hit.label}</span>
+                    <span className="rail-hit-where">{hit.diagramName}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+            {objects.total > objects.hits.length && (
+              <div className="rail-more">{objects.total - objects.hits.length} more — keep typing</div>
+            )}
+          </PanelSection>
+        )}
         <PanelSection title="Diagrams" trailing={<span className="rail-count">{groups.active.length}</span>}>
           {groups.active.length === 0
             ? <div className="panel-empty"><span>No match</span></div>

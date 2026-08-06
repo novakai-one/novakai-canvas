@@ -139,6 +139,25 @@ export default function App(props: AppProps) {
     void openDiagram(diagramId);
   }, [open.id, openDiagram]);
 
+  /**
+   * Opens a diagram and lands on the object a search result named.
+   *
+   * The library index stores object *labels*, not ids — enough to answer "which diagram is this
+   * in", not enough to point at the thing. So the id is resolved against the record once it is
+   * loaded. That is a lookup at the moment of use, not a stored join: nothing durable ever
+   * refers to an object by its name.
+   */
+  const openAtObject = useCallback((diagramId: string, label: string) => {
+    void openDiagram(diagramId).then((opened) => {
+      if (!opened) return;
+      const record = opened.snapshot();
+      const match = Object.values(record.nodes).find((node) => node.label === label);
+      if (!match) return;
+      setSelection({ kind: 'node', id: match.id as string });
+      canvasCamera().centerOnNode(match.id as string);
+    });
+  }, [openDiagram]);
+
   const drillInto = useCallback((diagramId: string) => {
     const from = open.id;
     void openDiagram(diagramId).then((opened) => {
@@ -235,6 +254,7 @@ export default function App(props: AppProps) {
         collapsed={railCollapsed}
         createDiagram={createDiagram}
         diagrams={diagrams}
+        openAtObject={openAtObject}
         setDiagramStatus={setDiagramStatus}
         setWidth={(railWidth) => setPanel({ railWidth })}
         width={preferences.panel.railWidth ?? 264}

@@ -14,6 +14,44 @@ export interface RailGroups {
  * the filter reads the objects inside a diagram as well as its name, because the question is
  * usually "where does the session broker live", not "what was that diagram called".
  */
+/** One object a search found, and the diagram it lives in. */
+export interface ObjectHit {
+  label: string;
+  diagramId: string;
+  diagramName: string;
+}
+
+/**
+ * The objects a query names, across the whole library.
+ *
+ * Narrowing the diagram list already used object labels, but it only ever answered "which
+ * diagrams" — the object that caused the match stayed invisible, which is why the control read
+ * as a filter rather than a search. These are the matches themselves, so the answer to "where
+ * does the session broker live" is on screen rather than inferred.
+ *
+ * Capped, and the caller is told when it capped: a silent truncation reads as "that is
+ * everything" when it is not.
+ */
+export function findObjects(
+  diagrams: readonly DiagramSummary[],
+  query: string,
+  limit = 12,
+): { hits: ObjectHit[]; total: number } {
+  const needle = query.trim().toLowerCase();
+  if (needle.length === 0) return { hits: [], total: 0 };
+  const all: ObjectHit[] = [];
+  for (const entry of diagrams) {
+    for (const label of entry.nodeLabels) {
+      if (label.toLowerCase().includes(needle)) {
+        all.push({ label, diagramId: entry.id, diagramName: entry.name });
+      }
+    }
+  }
+  all.sort((left, right) => left.label.localeCompare(right.label)
+    || left.diagramName.localeCompare(right.diagramName));
+  return { hits: all.slice(0, limit), total: all.length };
+}
+
 export function groupDiagrams(
   diagrams: readonly DiagramSummary[],
   query: string,
