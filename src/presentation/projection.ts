@@ -3,6 +3,7 @@ import type { RecordCommand } from '../application/canvas-workspace';
 import type { CanvasPreferences, InterfaceObject, Selection, TypeObject } from '../domain/model';
 import type { PositionedNode, ProjectedView } from '../domain/project-view';
 import type { DiagramRecord, NodeKind, WireKind } from '../domain/records';
+import { ARCHITECTURE_FLOW } from '../domain/flow';
 import { wireKindColor } from './wire-styles';
 import type { Rect, RouteObstacle } from './edges/wire-routing';
 
@@ -42,6 +43,14 @@ export interface ArchitectureEdgeData extends Record<string, unknown> {
    * without pretending to own a workspace.
    */
   setRoute?: (route: Partial<EdgeRoute>) => void;
+  /**
+   * Re-attaches one end of this wire to a node, and to a side of it.
+   *
+   * Separate from `setRoute` because it changes what the wire means, not how it is drawn: the
+   * node is a fact of the record, the side a fact of the layout. Optional for the same reason
+   * as `setRoute` — a read-only host projects wires without owning a workspace.
+   */
+  moveEnd?: (end: 'source' | 'target', nodeId: string, side?: string) => void;
   /**
    * Signed perpendicular offset that keeps wires sharing a node pair apart.
    *
@@ -306,6 +315,18 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
     id: wire.id,
     source: wire.source.nodeId,
     target: wire.target.nodeId,
+    /*
+     * The side a wire attaches to is a stored fact, not a constant.
+     *
+     * These were never set, so React Flow fell back to a node's default port and the elbow
+     * renderer — which reads its sides straight off React Flow's resolved positions — redrew
+     * every wire on the default sides on every render. Dropping an end on another port looked
+     * like it "snapped back"; in truth nothing had ever recorded it. `preferredSourceSide` and
+     * `preferredTargetSide` have existed in the schema the whole time with no reader and no
+     * writer. Naming the handle here is what gives them a reader.
+     */
+    sourceHandle: hints[wire.id]?.preferredSourceSide ?? ARCHITECTURE_FLOW.sourcePort,
+    targetHandle: hints[wire.id]?.preferredTargetSide ?? ARCHITECTURE_FLOW.targetPort,
     type: 'elbow',
     selected: selection?.kind === 'wire' && selection.id === wire.id,
     zIndex: selection?.kind === 'wire' && selection.id === wire.id ? 1000 : 0,
@@ -331,6 +352,26 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
       obstacles: wireObstacles(view, rects, wire),
       setRoute: execute && editable
         ? (route: Partial<EdgeRoute>) => execute({ kind: 'wire.setRoute', id: wire.id, route })
+        : undefined,
+      moveEnd: execute && editable
+        ? (end: 'source' | 'target', nodeId: string, side?: string) => {
+          const isSide = side === 'top' || side === 'right' || side === 'bottom' || side === 'left';
+          execute({
+            kind: 'wire.reconnect',
+            id: wire.id,
+            source: end === 'source' ? nodeId : (wire.source.nodeId as string),
+            target: end === 'target' ? nodeId : (wire.target.nodeId as string),
+          });
+          if (isSide) {
+            execute({
+              kind: 'wire.setRoute',
+              id: wire.id,
+              route: end === 'source'
+                ? { preferredSourceSide: side }
+                : { preferredTargetSide: side },
+            });
+          }
+        }
         : undefined,
     },
   }));

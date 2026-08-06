@@ -6,7 +6,9 @@ import {
 import type { DiagramSummary } from '../../application/canvas-library';
 import type { RecordCommand } from '../../application/canvas-workspace';
 import { asId } from '../../domain/id-cast';
+import { NODE_PORTS } from '../../domain/flow';
 import type { NodeId, WireId } from '../../domain/ids';
+import type { PortSide } from '../../domain/records';
 import type { CanvasPreferences, Selection } from '../../domain/model';
 import type { ProjectedView } from '../../domain/project-view';
 import type { DiagramRecord } from '../../domain/records';
@@ -104,6 +106,30 @@ function applyDrop(
   execute({ kind: 'node.move', id: moved.id, position: landed.position });
 }
 
+/**
+ * Reads the side a drag actually landed on, if it named one.
+ *
+ * Port ids are the side names, so a handle id is already the stored value. Anything else — a
+ * node kind that has not adopted the shared ports, or a drop React Flow resolved without a
+ * handle — returns undefined and leaves the router on its default rather than storing a side
+ * that does not exist.
+ */
+function sideOfHandle(handleId: string | null | undefined): PortSide | undefined {
+  return NODE_PORTS.includes(handleId as PortSide) ? (handleId as PortSide) : undefined;
+}
+
+/** Records which ports a wire's ends were dropped on, so the next render honours them. */
+function rememberSides(
+  execute: (command: RecordCommand) => void,
+  id: string,
+  connection: { sourceHandle?: string | null; targetHandle?: string | null },
+): void {
+  const preferredSourceSide = sideOfHandle(connection.sourceHandle);
+  const preferredTargetSide = sideOfHandle(connection.targetHandle);
+  if (!preferredSourceSide && !preferredTargetSide) return;
+  execute({ kind: 'wire.setRoute', id, route: { preferredSourceSide, preferredTargetSide } });
+}
+
 function connect(execute: (command: RecordCommand) => void, connection: Connection): string | null {
   if (!connection.source || !connection.target) return null;
   const id = `wire-${crypto.randomUUID().slice(0, 8)}`;
@@ -117,6 +143,7 @@ function connect(execute: (command: RecordCommand) => void, connection: Connecti
       target: { nodeId: asId<NodeId>(connection.target) },
     },
   });
+  rememberSides(execute, id, connection);
   return id;
 }
 
@@ -349,6 +376,10 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
           execute({
             kind: 'wire.reconnect', id: edge.id, source: connection.source, target: connection.target,
           });
+          // Moving an end to a different port of the same node is a real edit, and the only
+          // thing that changed is the side — so the side has to be written, or the next render
+          // puts the wire back where the default says it goes.
+          rememberSides(execute, edge.id, connection);
           setSelection({ kind: 'wire', id: edge.id });
         }}
         onNodeClick={(_event, node) => setSelection({ kind: 'node', id: node.id })}

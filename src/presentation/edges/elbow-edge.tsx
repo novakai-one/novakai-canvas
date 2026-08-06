@@ -99,6 +99,47 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
     strokeDasharray: wireKindDashArray(kind) || undefined,
     '--wire-stroke': wireKindColorVariable(kind),
   } as CSSProperties;
+  /*
+   * Moving an end is this wire's job, not React Flow's.
+   *
+   * React Flow reconnects by listening for a mousedown within a radius of the edge's end — an
+   * invisible target that a node's own port now sits directly on top of and swallows. So the
+   * end you can see is the end you drag: pointer capture here, and on release the port under
+   * the cursor decides both the node and the side. That side is then stored, which is the half
+   * that never existed — `preferredSourceSide`/`preferredTargetSide` have been in the schema
+   * with no writer, so every previous attempt was redrawn on the default side and read as
+   * snapping back.
+   */
+  const moveEnd = props.data?.moveEnd;
+  const [dragEnd, setDragEnd] = useState<{ end: 'source' | 'target'; x: number; y: number } | null>(null);
+  const onEndPointerDown = useCallback((end: 'source' | 'target') =>
+    (event: ReactPointerEvent<SVGCircleElement>) => {
+      if (!moveEnd || event.button !== 0) return;
+      event.stopPropagation();
+      event.currentTarget.setPointerCapture(event.pointerId);
+      setDragEnd({ end, ...screenToFlowPosition({ x: event.clientX, y: event.clientY }) });
+    }, [moveEnd, screenToFlowPosition]);
+  const onEndPointerMove = useCallback((event: ReactPointerEvent<SVGCircleElement>) => {
+    if (!moveEnd || !event.currentTarget.hasPointerCapture(event.pointerId)) return;
+    event.stopPropagation();
+    setDragEnd((current) => current && {
+      ...current, ...screenToFlowPosition({ x: event.clientX, y: event.clientY }),
+    });
+  }, [moveEnd, screenToFlowPosition]);
+  const onEndPointerUp = useCallback((event: ReactPointerEvent<SVGCircleElement>) => {
+    if (!moveEnd || !event.currentTarget.hasPointerCapture(event.pointerId)) return;
+    event.currentTarget.releasePointerCapture(event.pointerId);
+    const end = dragEnd?.end;
+    setDragEnd(null);
+    if (!end) return;
+    // The port under the release point names both the node and the side in one lookup.
+    const under = document.elementFromPoint(event.clientX, event.clientY);
+    const port = under?.closest<HTMLElement>('.react-flow__handle');
+    const nodeId = port?.closest<HTMLElement>('.react-flow__node')?.dataset.id;
+    if (!port || !nodeId) return;
+    moveEnd(end, nodeId, port.dataset.handleid);
+  }, [dragEnd, moveEnd]);
+
   const ends = props.selected && props.data?.editable
     ? [route.points[0], route.points.at(-1)] : [];
   return (
@@ -116,11 +157,14 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
       */}
       {ends.map((end, index) => end && (
         <circle
-          className="wire-endpoint"
-          cx={end.x}
-          cy={end.y}
+          className={`wire-endpoint${moveEnd ? ' is-grabbable' : ''}`}
+          cx={dragEnd?.end === (index === 0 ? 'source' : 'target') ? dragEnd.x : end.x}
+          cy={dragEnd?.end === (index === 0 ? 'source' : 'target') ? dragEnd.y : end.y}
           key={index === 0 ? 'source' : 'target'}
-          r={4.5}
+          onPointerDown={onEndPointerDown(index === 0 ? 'source' : 'target')}
+          onPointerMove={onEndPointerMove}
+          onPointerUp={onEndPointerUp}
+          r={7}
         />
       ))}
       {props.selected && setRoute && (

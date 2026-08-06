@@ -1,5 +1,5 @@
-import { Handle, NodeResizer, Position, type Node, type NodeProps } from '@xyflow/react';
-import { ARCHITECTURE_FLOW } from '../../domain/flow';
+import { NodeResizer, type Node, type NodeProps } from '@xyflow/react';
+import { NodePorts } from './node-ports';
 import type { ArchitectureNodeData } from '../projection';
 
 type ScopeFlowNode = Node<ArchitectureNodeData, 'scope'>;
@@ -14,17 +14,15 @@ type ScopeFlowNode = Node<ArchitectureNodeData, 'scope'>;
  * the single interaction Chris named as the worst of the canvas.
  */
 export function ScopeNode({ data, selected }: NodeProps<ScopeFlowNode>) {
-  const portPosition = { top: Position.Top, bottom: Position.Bottom } as const;
   const standalone = data.node.label.startsWith('Standalone');
   return (
     <section className={`scope-node${standalone ? ' scope-node--standalone' : ''}${selected ? ' is-selected' : ''}`}>
       <NodeResizer isVisible={data.editable && selected} minHeight={160} minWidth={320} />
-      <Handle isConnectable={data.editable} type="target" position={portPosition[ARCHITECTURE_FLOW.targetPort]} />
+      <NodePorts connectable={data.editable} />
       <span
         className="scope-node__title"
         onClick={(event) => { event.stopPropagation(); data.select({ kind: 'node', id: data.node.id }); }}
       >{data.node.label}</span>
-      <Handle isConnectable={data.editable} type="source" position={portPosition[ARCHITECTURE_FLOW.sourcePort]} />
     </section>
   );
 }

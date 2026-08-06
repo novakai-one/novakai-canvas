@@ -399,6 +399,22 @@
   pointer-events: none;
 }
 
+/*
+ * The end of a selected wire is the thing you grab to move it.
+ *
+ * It has to win the pointer against the node port underneath it, which is why the selected
+ * edge's layer is lifted above the nodes below — otherwise the port takes the mousedown and
+ * starts a new wire instead of moving this one's end.
+ */
+.wire-endpoint.is-grabbable {
+  pointer-events: all;
+  cursor: grab;
+}
+
+.wire-endpoint.is-grabbable:active { cursor: grabbing; }
+
+.canvas-surface .react-flow__edge.selected { z-index: 1001 !important; }
+
 /* The corridor handle: drag to push the wire's path aside, double-click to let go of it. */
 .wire-waypoint {
   fill: var(--surface-3);
