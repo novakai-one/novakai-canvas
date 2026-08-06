@@ -73,7 +73,28 @@
    The one place panel geometry is governed from. It rides the toolbar, over
    the canvas, so it stays reachable whether a panel is open or closed. */
 
-.shell-controls { display: flex; gap: var(--space-1); }
+/*
+ * A panel toggle lives on the seam it moves.
+ *
+ * These were a pair in the floating toolbar, mid-canvas, and Chris's review reported them as
+ * not existing. Pinning each to the canvas edge its panel opens on is what makes them findable
+ * by looking at the thing they affect. They stay quiet until the pointer is near — this is
+ * chrome over a diagram, and the diagram is what the screen is for.
+ */
+.edge-toggle {
+  position: absolute;
+  z-index: 12;
+  top: var(--space-3);
+  opacity: 0.35;
+  transition: opacity var(--motion-feedback);
+}
+
+.edge-toggle--rail { left: var(--space-2); }
+.edge-toggle--studio { right: var(--space-2); }
+
+.edge-toggle:hover,
+.edge-toggle:focus-within,
+.canvas-surface:hover .edge-toggle { opacity: 1; }
 
 /* ---- Header ------------------------------------------------------------ */
 

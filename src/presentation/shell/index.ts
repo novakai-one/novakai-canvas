@@ -11,7 +11,7 @@ export { RailAction, RailRow } from './rail-row';
 export { IconButton, PanelHeader, type PanelHeaderProps } from './panel-header';
 export { PanelBody, PanelSection } from './panel-section';
 export { PanelShell, type PanelShellProps } from './panel-shell';
-export { ShellControls } from './shell-controls';
+export { RailToggle, StudioToggle } from './shell-controls';
 export { ShellGeometryProvider, useShellGeometry, type ShellGeometry } from './shell-geometry';
 export { TabStrip } from './tab-strip';
 export {

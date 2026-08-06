@@ -14,6 +14,7 @@ import {
   escapeStep, resolveDrop, selectionResolves, type PlacedNode, type WorldPoint,
 } from '../canvas-actions';
 import { canvasCamera, publishCanvasCamera } from '../canvas-camera';
+import { RailToggle, StudioToggle } from '../shell';
 import { projectEdges, projectNodes } from '../projection';
 import type { CanvasMode } from '../view-mode';
 import { ArchitectureNode } from '../nodes/architecture-node';
@@ -382,6 +383,9 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
       </ReactFlow>
       <Legend preferences={preferences} view={view} />
       <CanvasToolbar focusPoint={camera.focusPoint} props={props} />
+      {/* Anchored to the canvas's own edges, which are exactly the seams the panels open on. */}
+      <RailToggle />
+      <StudioToggle />
     </main>
   );
 }
