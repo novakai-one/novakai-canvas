@@ -62,7 +62,9 @@ export interface CanvasSurfaceProps {
  * so the overlay is what lets a drag or resize be seen while it happens, and keeping the
  * frames out of `execute` is what keeps one gesture one undoable act (d5f5980). The
  * position that becomes a fact is the one drag-stop / resize-end resolves. Removals are
- * not a gesture — they execute immediately, as before.
+ * not a gesture — they execute immediately, as before — but they still end one: a node
+ * deleted mid-gesture takes its frames with it, or they linger as a ghost the next
+ * resize could commit.
  */
 function applyNodeChanges(
   execute: (command: RecordCommand) => void,
@@ -70,7 +72,7 @@ function applyNodeChanges(
   changes: NodeChange[],
 ): void {
   changes.forEach((change) => {
-    if (change.type === 'remove') { execute({ kind: 'node.remove', id: change.id }); return; }
+    if (change.type === 'remove') execute({ kind: 'node.remove', id: change.id });
     frame(change);
   });
 }
