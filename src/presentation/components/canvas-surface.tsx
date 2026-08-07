@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, type RefObject } from 'react';
+import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import {
   Background, BackgroundVariant, ConnectionMode, Controls, ReactFlow,
   type Connection, type NodeChange, type Viewport,
@@ -19,6 +19,7 @@ import {
 import { canvasCamera, publishCanvasCamera } from '../canvas-camera';
 import { RailToggle, StudioToggle } from '../shell';
 import { projectEdges, projectNodes } from '../projection';
+import { applyFrame, clearInFlight, mergeInFlight, type InFlight } from '../in-flight';
 import type { CanvasMode } from '../view-mode';
 import { ArchitectureNode } from '../nodes/architecture-node';
 import { CommentNode } from '../nodes/comment-node';
@@ -56,25 +57,21 @@ export interface CanvasSurfaceProps {
   setDiagramStatus: (diagramId: string, status: 'active' | 'archived') => void;
 }
 
-function applyNodeChanges(execute: (command: RecordCommand) => void, changes: NodeChange[]): void {
+/*
+ * Gesture frames go to the in-flight overlay, not the record: React Flow is controlled,
+ * so the overlay is what lets a drag or resize be seen while it happens, and keeping the
+ * frames out of `execute` is what keeps one gesture one undoable act (d5f5980). The
+ * position that becomes a fact is the one drag-stop / resize-end resolves. Removals are
+ * not a gesture — they execute immediately, as before.
+ */
+function applyNodeChanges(
+  execute: (command: RecordCommand) => void,
+  frame: (change: NodeChange) => void,
+  changes: NodeChange[],
+): void {
   changes.forEach((change) => {
-    /*
-     * Position is not committed here at all — `onNodeDragStop` owns it.
-     *
-     * React Flow reports a position change on every frame of a drag, and committing each one
-     * pushed dozens of records onto the history for a single gesture, so undo popped one
-     * invisible sub-pixel step and read as doing nothing. Even taking only the last frame left
-     * two writes for one drag, because the drag-stop handler commits the same move again after
-     * running it through the drop rules. The frames in flight are React Flow's to render; the
-     * position that becomes a fact is the one drag-stop resolves, and one gesture is one
-     * undoable act.
-     */
-    // Only user-driven resizes (NodeResizer sets resizing) — never React Flow's
-    // initial DOM measurements, which would rewrite every stored size on load.
-    if (change.type === 'dimensions' && change.dimensions && change.resizing) {
-      execute({ kind: 'node.resize', id: change.id, size: change.dimensions });
-    }
-    if (change.type === 'remove') execute({ kind: 'node.remove', id: change.id });
+    if (change.type === 'remove') { execute({ kind: 'node.remove', id: change.id }); return; }
+    frame(change);
   });
 }
 
@@ -375,6 +372,9 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   useRefitWhenPanelsMove(preferences.panel);
   /** The port a drag began on, remembered until it lands somewhere or on nothing. */
   const dragFrom = useRef<{ nodeId: string; side?: PortSide } | null>(null);
+  const [inFlight, setInFlight] = useState<InFlight>({});
+  // A leftover frame from another diagram would drag a ghost across the switch.
+  useEffect(() => setInFlight({}), [activeDiagramId]);
 
   const growFromPort = (at: WorldPoint): void => {
     const from = dragFrom.current;
@@ -408,10 +408,11 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   };
 
   const nodes = useMemo(
-    () => projectNodes({
-      view, record, preferences, selection, editable, select: setSelection, execute,
-    }),
-    [editable, execute, preferences, record, selection, setSelection, view],
+    () => mergeInFlight(
+      projectNodes({ view, record, preferences, selection, editable, select: setSelection, execute }),
+      inFlight,
+    ),
+    [editable, execute, inFlight, preferences, record, selection, setSelection, view],
   );
   const edges = useMemo(
     () => projectEdges({
@@ -453,6 +454,8 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         onNodeDragStop={(_event, node) => {
           if (!editable) return;
           applyDrop(execute, view, { id: node.id, parentId: node.parentId, position: node.position });
+          // The drop is a fact now; the frames that previewed it must not linger as a ghost.
+          setInFlight((current) => clearInFlight(current, node.id));
         }}
         onReconnect={(edge, connection) => {
           if (!editable || !connection.source || !connection.target) return;
@@ -466,7 +469,9 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
           setSelection({ kind: 'wire', id: edge.id });
         }}
         onNodeClick={(_event, node) => setSelection({ kind: 'node', id: node.id })}
-        onNodesChange={(changes) => { if (editable) applyNodeChanges(execute, changes); }} onPaneClick={() => setSelection(null)}
+        onNodesChange={(changes) => {
+          if (editable) applyNodeChanges(execute, (change) => setInFlight((current) => applyFrame(current, change)), changes);
+        }} onPaneClick={() => setSelection(null)}
         /*
          * Scroll moves the diagram; pinch and ⌘-scroll change how close you are.
          *
