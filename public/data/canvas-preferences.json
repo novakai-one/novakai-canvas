@@ -27,11 +27,13 @@
     "dimUnrelated": true
   },
   "panel": {
-    "width": 338,
+    "width": 457,
     "defaultTab": "inspect",
     "showEmptyFields": false,
-    "railWidth": 200,
-    "railCollapsed": false
+    "railWidth": 387,
+    "railCollapsed": false,
+    "studioCollapsed": false,
+    "reframeOnPanelMove": false
   },
   "files": {
     "autoSave": true,
