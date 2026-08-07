@@ -67,7 +67,14 @@ export interface CanvasLibrary {
    * migrated ledger — are preserved rather than recomputed, because nothing else holds them.
    */
   rebuildIndex(): Promise<LibraryIndex>;
-  /** Persists an open workspace and refreshes its index entry. */
+  /**
+   * Persists an open workspace and refreshes its index entry.
+   *
+   * "Written" means both halves landed: the record and the entry the library lists it by. If
+   * the record lands but the entry's compare-and-swap loses a race, the index is re-read and
+   * the entry retried once; a save that still cannot refresh the entry reports failure rather
+   * than leave the dropdown describing a diagram the record no longer matches.
+   */
   save(id: string): Promise<WriteOutcome>;
   index(): LibraryIndex;
 }
@@ -130,6 +137,14 @@ export function createCanvasLibrary(
 ): CanvasLibrary {
   let current = index;
   const open = new Map<string, CanvasWorkspace>();
+  // The revision of each open diagram's record as this session last landed it on disk. The
+  // write compare-and-swap expects against this, never against the index entry: the entry is a
+  // projection a torn save can leave behind the record, and expecting against it wedges every
+  // later save on a conflict the user cannot resolve.
+  const lastSynced = new Map<string, number>();
+  // Diagrams whose record is on disk but whose index entry is owed, because a save was torn
+  // between the two writes. The next save retries the entry without rewriting the record.
+  const indexDirty = new Set<string>();
 
   const entries = (includeArchived: boolean): DiagramSummary[] => Object.values(current.entries)
     .filter((entry) => includeArchived || entry.status === 'active')
@@ -166,6 +181,7 @@ export function createCanvasLibrary(
       const record = await repository.readDiagram(id);
       const workspace = createCanvasWorkspace(record, context);
       open.set(id, workspace);
+      lastSynced.set(id, record.revision);
       return workspace;
     },
 
@@ -176,6 +192,7 @@ export function createCanvasLibrary(
       if (outcome.status !== 'written') {
         return { status: 'diagram-already-exists', id };
       }
+      lastSynced.set(id, record.revision);
       const committed = await commitIndex(withEntry(record));
       if (committed.status === 'stale-revision') {
         return { status: 'index-conflict', actualRevision: committed.actualRevision };
@@ -208,6 +225,8 @@ export function createCanvasLibrary(
       const remaining = { ...current.entries };
       delete remaining[id];
       open.delete(id);
+      lastSynced.delete(id);
+      indexDirty.delete(id);
       await commitIndex({
         ...current,
         entries: remaining,
@@ -229,10 +248,37 @@ export function createCanvasLibrary(
       const workspace = open.get(id);
       if (!workspace) return { status: 'save-failed', reason: `not-open:${id}` };
       const record = workspace.snapshot();
-      const expected = current.entries[id]?.revision ?? record.revision;
-      const outcome = await repository.writeDiagram(record, expected);
-      if (outcome.status === 'written') await commitIndex(withEntry(record));
-      return outcome;
+      const synced = lastSynced.get(id) ?? record.revision;
+      if (synced !== record.revision) {
+        const outcome = await repository.writeDiagram(record, synced);
+        // A genuine external edit conflicts here and is surfaced, never retried into an
+        // overwrite: reconciliation is for the derived index, not the authoritative record.
+        if (outcome.status !== 'written') return outcome;
+        // The record moved even if the index commit below fails, so the marker advances now
+        // and the entry is marked owed; otherwise the next save would expect a revision the
+        // file no longer has and conflict forever.
+        lastSynced.set(id, record.revision);
+        indexDirty.add(id);
+      } else if (!indexDirty.has(id)) {
+        return { status: 'written', revision: record.revision };
+      }
+      const committed = await commitIndex(withEntry(record));
+      if (committed.status === 'written') {
+        indexDirty.delete(id);
+        return { status: 'written', revision: record.revision };
+      }
+      if (committed.status !== 'stale-revision') return committed;
+      // Another writer moved the index under this save. The entry is derived from the record,
+      // so re-read the index and retry once against its current revision; the record itself is
+      // already on disk and is not rewritten. A second conflict means the index is contended,
+      // and the save must say so rather than report "written" over a stale dropdown.
+      current = await repository.readIndex();
+      const retried = await commitIndex(withEntry(record));
+      if (retried.status === 'written') {
+        indexDirty.delete(id);
+        return { status: 'written', revision: record.revision };
+      }
+      return { status: 'save-failed', reason: `index-conflict:${retried.status}` };
     },
 
     async addLink(link) {
