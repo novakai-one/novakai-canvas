@@ -1,4 +1,16 @@
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+
+/**
+ * What a committed title edit becomes.
+ *
+ * Typing is a draft, so spaces and half-written words are fine mid-edit; the rules bite only
+ * at commit: the name is trimmed, and an edit that trims to nothing — or to what was already
+ * there — commits nothing at all, leaving the field to revert to the record's name.
+ */
+export function titleCommit(draft: string, title: string): string | null {
+  const name = draft.trim();
+  return name.length === 0 || name === title ? null : name;
+}
 
 /**
  * The one header every panel wears.
@@ -31,15 +43,28 @@ export interface PanelHeaderProps {
 export function PanelHeader({ actions, focusTitle, kind, meta, rename, title, trail }: PanelHeaderProps) {
   const titleField = useRef<HTMLInputElement | null>(null);
   /*
+   * A local draft, committed on blur/Enter — the same shape NodeLabel and SignatureInput
+   * already have. Feeding the record's name straight back per keystroke meant the rename's
+   * trim ate trailing spaces as they were typed ("My Diagram" was untypeable) and an emptied
+   * field snapped back before a new name could be written.
+   */
+  const [draft, setDraft] = useState<string | null>(null);
+  /*
    * An effect, not an inline ref callback: an inline ref re-fires on every render, which would
    * re-select the text under the user's next keystroke. This fires when the flag turns true —
-   * the parent spends it on the first keystroke, so the selection happens exactly once.
+   * the parent spends it on the first commit, so the selection happens exactly once.
    */
   useEffect(() => {
     if (!focusTitle || !titleField.current) return;
     titleField.current.focus();
     titleField.current.select();
   }, [focusTitle]);
+  const commitTitle = (): void => {
+    if (draft === null) return;
+    const name = titleCommit(draft, title);
+    setDraft(null);
+    if (name !== null) rename?.(name);
+  };
   return (
     <header className="panel-header">
       <div className="panel-identity">
@@ -49,10 +74,15 @@ export function PanelHeader({ actions, focusTitle, kind, meta, rename, title, tr
           <input
             aria-label="Name"
             className="panel-title panel-title-field"
-            onChange={(event) => rename(event.target.value)}
+            onBlur={commitTitle}
+            onChange={(event) => setDraft(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') commitTitle();
+              if (event.key === 'Escape') setDraft(null);
+            }}
             ref={titleField}
             title={title}
-            value={title}
+            value={draft ?? title}
           />
         ) : <h2 className="panel-title" title={title}>{title}</h2>}
         {meta ? <span className="panel-meta">{meta}</span> : null}
