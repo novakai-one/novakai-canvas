@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 
 /**
  * The one header every panel wears.
@@ -24,9 +24,22 @@ export interface PanelHeaderProps {
    * Editing where the name already is removes the duplicate without removing the ability.
    */
   rename?: (label: string) => void;
+  /** Focuses the title field once, text selected — used the moment a thing is born nameless. */
+  focusTitle?: boolean;
 }
 
-export function PanelHeader({ actions, kind, meta, rename, title, trail }: PanelHeaderProps) {
+export function PanelHeader({ actions, focusTitle, kind, meta, rename, title, trail }: PanelHeaderProps) {
+  const titleField = useRef<HTMLInputElement | null>(null);
+  /*
+   * An effect, not an inline ref callback: an inline ref re-fires on every render, which would
+   * re-select the text under the user's next keystroke. This fires when the flag turns true —
+   * the parent spends it on the first keystroke, so the selection happens exactly once.
+   */
+  useEffect(() => {
+    if (!focusTitle || !titleField.current) return;
+    titleField.current.focus();
+    titleField.current.select();
+  }, [focusTitle]);
   return (
     <header className="panel-header">
       <div className="panel-identity">
@@ -37,6 +50,7 @@ export function PanelHeader({ actions, kind, meta, rename, title, trail }: Panel
             aria-label="Name"
             className="panel-title panel-title-field"
             onChange={(event) => rename(event.target.value)}
+            ref={titleField}
             title={title}
             value={title}
           />

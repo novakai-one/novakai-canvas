@@ -16,6 +16,8 @@ export interface InspectorProps extends Omit<InspectPanelProps, 'isSectionOpen' 
   setWidth: (width: number) => void;
   /** Puts the open diagram's record on the clipboard — the whole point of the tool. */
   copyRecord: () => Promise<boolean>;
+  /** Passed to the header: a brand-new diagram's title field wakes up focused, text selected. */
+  focusTitle?: boolean;
 }
 
 /** How long "Copied" stays on screen before the control goes quiet again. */
@@ -110,6 +112,7 @@ export function Inspector(props: InspectorProps) {
             <PanelCollapse side="right" />
           </>
         )}
+        focusTitle={settingsOpen ? undefined : props.focusTitle}
         kind={header.kind}
         meta={header.meta}
         rename={settingsOpen ? undefined : inspection.rename}

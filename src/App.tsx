@@ -61,6 +61,8 @@ export default function App(props: AppProps) {
   );
   const [preferences, setPreferences] = useState(initialPreferences);
   const [selection, setSelection] = useState<Selection>(null);
+  /** The diagram just created, whose name the user has not typed yet. Spent on first rename. */
+  const [freshDiagramId, setFreshDiagramId] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<string>(SAVE_STATUS.saved);
   const [mode, setMode] = useState<CanvasMode>(DEFAULT_CANVAS_MODE);
   const [history, setHistory] = useState<string[]>([]);
@@ -157,6 +159,8 @@ export default function App(props: AppProps) {
     }
     setOpen({ id: diagramId, workspace: opened });
     setSelection(null);
+    // Switching away spends the new-diagram focus flag with everything else session-local.
+    setFreshDiagramId(null);
     setSaveStatus(SAVE_STATUS.saved);
     return opened;
   }, [library]);
@@ -221,7 +225,13 @@ export default function App(props: AppProps) {
         },
         placement: { position: { x: 0, y: 0 }, size: { width: 1000, height: 700 } },
       });
-      setSelection({ kind: 'node', id: diagramId });
+      /*
+       * Born nameless: select nothing, so the panel shows the diagram itself — not the root
+       * node — and flag it so the header's title field wakes up focused with "Untitled
+       * diagram" selected, ready to type over.
+       */
+      setSelection(null);
+      setFreshDiagramId(diagramId);
     });
   }, [library, openDiagram, refreshDiagrams]);
 
@@ -404,7 +414,13 @@ export default function App(props: AppProps) {
         diagrams={diagrams}
         editable={mode === 'edit'}
         execute={execute}
-        executeAll={executeAll}
+        executeAll={(commands) => {
+          // The first batched act on a fresh diagram is its rename — that spends the flag,
+          // so the title field stops re-selecting the text under the user's typing.
+          setFreshDiagramId(null);
+          executeAll(commands);
+        }}
+        focusTitle={open.id === freshDiagramId}
         openDiagram={drillInto}
         preferences={preferences}
         record={record}
