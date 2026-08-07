@@ -3,111 +3,111 @@
   "id": "mission-control-ux-22-jul-identity-outcomes",
   "name": "Mission Control UX 22-Jul — Identity & Outcomes",
   "status": "active",
-  "revision": 2381,
+  "revision": 2433,
   "nodes": {
     "mission-control-ux-22-jul-identity-outcomes": {
       "id": "mission-control-ux-22-jul-identity-outcomes",
       "kind": "group",
       "label": "Mission Control UX 22-Jul — Identity & Outcomes",
+      "description": "Exact lineage for the Mission Room header, outcome, promises and decision state",
       "interfaceIds": [],
-      "typeIds": [],
-      "description": "Exact lineage for the Mission Room header, outcome, promises and decision state"
+      "typeIds": []
     },
     "mission-control-ux-22-jul-identity-outcomes--note-1-all-live-values-travel-t": {
       "id": "mission-control-ux-22-jul-identity-outcomes--note-1-all-live-values-travel-t",
       "kind": "comment",
       "label": "All LIVE values travel through MissionViewHub -> MissionSnapshot. The wires name their atomic origin.",
+      "parentId": "mission-control-ux-22-jul-identity-outcomes",
       "interfaceIds": [],
-      "typeIds": [],
-      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+      "typeIds": []
     },
     "mission-control-ux-22-jul-identity-outcomes--missions-jsonl": {
       "id": "mission-control-ux-22-jul-identity-outcomes--missions-jsonl",
       "kind": "resource",
       "label": "missions.jsonl",
+      "description": "ATOMIC · .novakai/stores/missions.jsonl",
+      "parentId": "mission-control-ux-22-jul-identity-outcomes",
       "interfaceIds": [],
       "typeIds": [
         "mission-control-ux-22-jul-identity-outcomes--missions-jsonl--type-fields"
-      ],
-      "description": "ATOMIC · .novakai/stores/missions.jsonl",
-      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+      ]
     },
     "mission-control-ux-22-jul-identity-outcomes--okrs-jsonl": {
       "id": "mission-control-ux-22-jul-identity-outcomes--okrs-jsonl",
       "kind": "resource",
       "label": "okrs.jsonl",
+      "description": "ATOMIC · objective title resolves only through mission.refs[kind=objective]",
+      "parentId": "mission-control-ux-22-jul-identity-outcomes",
       "interfaceIds": [],
       "typeIds": [
         "mission-control-ux-22-jul-identity-outcomes--okrs-jsonl--type-fields"
-      ],
-      "description": "ATOMIC · objective title resolves only through mission.refs[kind=objective]",
-      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+      ]
     },
     "mission-control-ux-22-jul-identity-outcomes--requests-jsonl": {
       "id": "mission-control-ux-22-jul-identity-outcomes--requests-jsonl",
       "kind": "resource",
       "label": "requests.jsonl",
+      "description": "ATOMIC · a pending request needs an explicit mission ref to set needsChris",
+      "parentId": "mission-control-ux-22-jul-identity-outcomes",
       "interfaceIds": [],
       "typeIds": [
         "mission-control-ux-22-jul-identity-outcomes--requests-jsonl--type-fields"
-      ],
-      "description": "ATOMIC · a pending request needs an explicit mission ref to set needsChris",
-      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+      ]
     },
     "mission-control-ux-22-jul-identity-outcomes--v4-static-copy": {
       "id": "mission-control-ux-22-jul-identity-outcomes--v4-static-copy",
       "kind": "runtime",
       "label": "V4 Static Copy",
+      "description": "DEMO ONLY · friendly headline, short summary and three promises live in mission-room-v4.html",
+      "parentId": "mission-control-ux-22-jul-identity-outcomes",
       "interfaceIds": [],
       "typeIds": [
         "mission-control-ux-22-jul-identity-outcomes--v4-static-copy--type-fixture"
-      ],
-      "description": "DEMO ONLY · friendly headline, short summary and three promises live in mission-room-v4.html",
-      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+      ]
     },
     "mission-control-ux-22-jul-identity-outcomes--mission-title": {
       "id": "mission-control-ux-22-jul-identity-outcomes--mission-title",
       "kind": "object",
       "label": "Mission Title",
+      "description": "LIVE / PARTIAL · official title is live; V4's friendly headline and kicker are fixture-authored",
+      "parentId": "mission-control-ux-22-jul-identity-outcomes",
       "interfaceIds": [
         "mission-control-ux-22-jul-identity-outcomes--mission-title--if-show"
       ],
-      "typeIds": [],
-      "description": "LIVE / PARTIAL · official title is live; V4's friendly headline and kicker are fixture-authored",
-      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+      "typeIds": []
     },
     "mission-control-ux-22-jul-identity-outcomes--mission-outcome": {
       "id": "mission-control-ux-22-jul-identity-outcomes--mission-outcome",
       "kind": "object",
       "label": "Mission Outcome",
+      "description": "PARTIAL · pulse.outcome is live, but the stored outcome is currently a long completion report rather than concise intent",
+      "parentId": "mission-control-ux-22-jul-identity-outcomes",
       "interfaceIds": [
         "mission-control-ux-22-jul-identity-outcomes--mission-outcome--if-show"
       ],
-      "typeIds": [],
-      "description": "PARTIAL · pulse.outcome is live, but the stored outcome is currently a long completion report rather than concise intent",
-      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+      "typeIds": []
     },
     "mission-control-ux-22-jul-identity-outcomes--three-promises": {
       "id": "mission-control-ux-22-jul-identity-outcomes--three-promises",
       "kind": "object",
       "label": "Three Promises",
+      "description": "MISSING · no structured successCriteria[] or promises[] field exists; V4 hardcodes Protect, Preserve and Reveal",
+      "parentId": "mission-control-ux-22-jul-identity-outcomes",
       "interfaceIds": [
         "mission-control-ux-22-jul-identity-outcomes--three-promises--if-show"
       ],
-      "typeIds": [],
-      "description": "MISSING · no structured successCriteria[] or promises[] field exists; V4 hardcodes Protect, Preserve and Reveal",
-      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+      "typeIds": []
     },
     "mission-control-ux-22-jul-identity-outcomes--health-and-needs-you": {
       "id": "mission-control-ux-22-jul-identity-outcomes--health-and-needs-you",
       "kind": "object",
       "label": "Health and Needs You",
+      "description": "LIVE / DERIVED · health = attention or read issues; needsYou = pending request explicitly linked to mission",
+      "parentId": "mission-control-ux-22-jul-identity-outcomes",
       "interfaceIds": [
         "mission-control-ux-22-jul-identity-outcomes--health-and-needs-you--if-show"
       ],
-      "typeIds": [],
-      "description": "LIVE / DERIVED · health = attention or read issues; needsYou = pending request explicitly linked to mission",
-      "parentId": "mission-control-ux-22-jul-identity-outcomes"
+      "typeIds": []
     }
   },
   "wires": {
@@ -312,8 +312,8 @@
         "mission-control-ux-22-jul-identity-outcomes--note-1-all-live-values-travel-t": {
           "nodeId": "mission-control-ux-22-jul-identity-outcomes--note-1-all-live-values-travel-t",
           "position": {
-            "x": 500,
-            "y": 73
+            "x": 480,
+            "y": 240
           },
           "size": {
             "width": 280,
@@ -324,8 +324,8 @@
         "mission-control-ux-22-jul-identity-outcomes--missions-jsonl": {
           "nodeId": "mission-control-ux-22-jul-identity-outcomes--missions-jsonl",
           "position": {
-            "x": 1796,
-            "y": 45
+            "x": 1824,
+            "y": 24
           },
           "size": {
             "width": 420,
@@ -340,7 +340,7 @@
             "y": 56
           },
           "size": {
-            "width": 420,
+            "width": 396,
             "height": 144
           },
           "pinned": false
@@ -396,8 +396,8 @@
         "mission-control-ux-22-jul-identity-outcomes--three-promises": {
           "nodeId": "mission-control-ux-22-jul-identity-outcomes--three-promises",
           "position": {
-            "x": 1460,
-            "y": 957
+            "x": 1644,
+            "y": 732
           },
           "size": {
             "width": 420,
@@ -418,7 +418,29 @@
           "pinned": false
         }
       },
-      "wireRouteHints": {}
+      "wireRouteHints": {
+        "mission-control-ux-22-jul-identity-outcomes--wire-8": {
+          "wireId": "mission-control-ux-22-jul-identity-outcomes--wire-8",
+          "preferredSourceSide": "right",
+          "preferredTargetSide": "top",
+          "waypoints": [
+            {
+              "x": 2388,
+              "y": 9240
+            }
+          ],
+          "labelPosition": 0.49775538143874143
+        },
+        "mission-control-ux-22-jul-identity-outcomes--wire-6": {
+          "wireId": "mission-control-ux-22-jul-identity-outcomes--wire-6",
+          "waypoints": [
+            {
+              "x": 1704,
+              "y": 9120
+            }
+          ]
+        }
+      }
     }
   },
   "views": {
@@ -437,5 +459,786 @@
   },
   "activeViewId": "view-default",
   "sourceRefs": [],
-  "appliedOperations": {}
+  "appliedOperations": {
+    "ui-2a1677cf-bf77-4009-aeb5-5bee42661473": {
+      "operationId": "ui-2a1677cf-bf77-4009-aeb5-5bee42661473",
+      "revision": 2382,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T11:49:40.275Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "ui-e720d891-2159-4dac-b256-4f1d6a7fb532": {
+      "operationId": "ui-e720d891-2159-4dac-b256-4f1d6a7fb532",
+      "revision": 2383,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T11:49:44.565Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.remove"
+      ]
+    },
+    "ui-2dde0897-0c6b-4ae4-aab3-ee24666b9fb0": {
+      "operationId": "ui-2dde0897-0c6b-4ae4-aab3-ee24666b9fb0",
+      "revision": 2384,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T11:49:46.539Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "ui-2939a97a-abee-404f-9e16-0b23c199da2f": {
+      "operationId": "ui-2939a97a-abee-404f-9e16-0b23c199da2f",
+      "revision": 2385,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T11:49:47.620Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.remove"
+      ]
+    },
+    "ui-cad19074-d194-4293-9503-1cc47ec7e7d6": {
+      "operationId": "ui-cad19074-d194-4293-9503-1cc47ec7e7d6",
+      "revision": 2386,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T11:49:49.057Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "ui-bc284a97-b48c-4bc8-97c4-d4d7640366dd": {
+      "operationId": "ui-bc284a97-b48c-4bc8-97c4-d4d7640366dd",
+      "revision": 2387,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T11:49:49.969Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.remove"
+      ]
+    },
+    "ui-44890aad-041e-473c-a905-56666673a556": {
+      "operationId": "ui-44890aad-041e-473c-a905-56666673a556",
+      "revision": 2388,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:14:13.023Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-65748b92-f3c2-4bce-bd27-019f4793d380": {
+      "operationId": "ui-65748b92-f3c2-4bce-bd27-019f4793d380",
+      "revision": 2389,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:14:15.290Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-63e84881-3e4f-49f1-af9f-bb7a1a587e79": {
+      "operationId": "ui-63e84881-3e4f-49f1-af9f-bb7a1a587e79",
+      "revision": 2390,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:14:17.589Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-b270b3f3-372d-44bd-8ab0-4d773731c48e": {
+      "operationId": "ui-b270b3f3-372d-44bd-8ab0-4d773731c48e",
+      "revision": 2391,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:14:19.972Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-8344e297-f41f-4d68-87ca-8db70b0c2c61": {
+      "operationId": "ui-8344e297-f41f-4d68-87ca-8db70b0c2c61",
+      "revision": 2392,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:14:53.206Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-15d5e46f-3405-4f06-8643-4bb8e539d634": {
+      "operationId": "ui-15d5e46f-3405-4f06-8643-4bb8e539d634",
+      "revision": 2393,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:15:33.690Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "wire.reconnect"
+      ]
+    },
+    "ui-bd435de3-1820-4950-9c36-139718c638f0": {
+      "operationId": "ui-bd435de3-1820-4950-9c36-139718c638f0",
+      "revision": 2394,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:15:33.692Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-09bbec70-2e2e-4174-8abf-211303438d7d": {
+      "operationId": "ui-09bbec70-2e2e-4174-8abf-211303438d7d",
+      "revision": 2395,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:15:50.908Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-6ec1da3a-b137-4ee2-85d6-04f79052ebc8": {
+      "operationId": "ui-6ec1da3a-b137-4ee2-85d6-04f79052ebc8",
+      "revision": 2396,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:16:15.489Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-9693d162-5ee3-462b-a99b-3d421cb5a741": {
+      "operationId": "ui-9693d162-5ee3-462b-a99b-3d421cb5a741",
+      "revision": 2397,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:16:24.156Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-ff6d87a2-5943-42c3-b60c-5f9f21858ad1": {
+      "operationId": "ui-ff6d87a2-5943-42c3-b60c-5f9f21858ad1",
+      "revision": 2398,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:16:46.706Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-60ce36fe-7c5c-4c93-bb01-1fa169ae1e71": {
+      "operationId": "ui-60ce36fe-7c5c-4c93-bb01-1fa169ae1e71",
+      "revision": 2399,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:53.996Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-e1660f71-d9d7-48c5-9f4d-6bdd9c5f3d25": {
+      "operationId": "ui-e1660f71-d9d7-48c5-9f4d-6bdd9c5f3d25",
+      "revision": 2400,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.121Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-edef162a-6fcb-4603-88e3-894812047f13": {
+      "operationId": "ui-edef162a-6fcb-4603-88e3-894812047f13",
+      "revision": 2401,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.196Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-0c3ff8f7-b80c-4c3b-8bc9-6803349585a5": {
+      "operationId": "ui-0c3ff8f7-b80c-4c3b-8bc9-6803349585a5",
+      "revision": 2402,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.213Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-c1ea1642-4145-4f54-aa7f-68f13b1d8132": {
+      "operationId": "ui-c1ea1642-4145-4f54-aa7f-68f13b1d8132",
+      "revision": 2403,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.229Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-483236cf-289c-4ea5-a711-a8150f49b04a": {
+      "operationId": "ui-483236cf-289c-4ea5-a711-a8150f49b04a",
+      "revision": 2404,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.246Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-27e866d6-a2fa-4892-9c4c-a67d8e531bfa": {
+      "operationId": "ui-27e866d6-a2fa-4892-9c4c-a67d8e531bfa",
+      "revision": 2405,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.263Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-5bd50ed5-aa3c-4809-a6ec-b22183660e7a": {
+      "operationId": "ui-5bd50ed5-aa3c-4809-a6ec-b22183660e7a",
+      "revision": 2406,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.279Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-5fff57e6-d02b-4e9d-8075-49a5c80b7146": {
+      "operationId": "ui-5fff57e6-d02b-4e9d-8075-49a5c80b7146",
+      "revision": 2407,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.296Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-38839123-0427-4909-85d4-48b83422691c": {
+      "operationId": "ui-38839123-0427-4909-85d4-48b83422691c",
+      "revision": 2408,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.313Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-4b3943dd-64a6-4d4e-91ff-d20e1ffc383c": {
+      "operationId": "ui-4b3943dd-64a6-4d4e-91ff-d20e1ffc383c",
+      "revision": 2409,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.329Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-1ceaac0e-562b-446a-9bf5-50f6b43a07cd": {
+      "operationId": "ui-1ceaac0e-562b-446a-9bf5-50f6b43a07cd",
+      "revision": 2410,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.363Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-ead67ea6-2bb0-45e2-80e4-2320d05549e3": {
+      "operationId": "ui-ead67ea6-2bb0-45e2-80e4-2320d05549e3",
+      "revision": 2411,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.379Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-d0490783-1264-4414-95e8-068ee9e36b6a": {
+      "operationId": "ui-d0490783-1264-4414-95e8-068ee9e36b6a",
+      "revision": 2412,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.413Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-12a0ad3f-4a03-4136-ad02-8b46ba37701b": {
+      "operationId": "ui-12a0ad3f-4a03-4136-ad02-8b46ba37701b",
+      "revision": 2413,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.429Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-0e8841ef-6bdf-4947-90b4-f21b91b57940": {
+      "operationId": "ui-0e8841ef-6bdf-4947-90b4-f21b91b57940",
+      "revision": 2414,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.446Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-d7249c2a-378d-4ae2-be33-4306b7040c94": {
+      "operationId": "ui-d7249c2a-378d-4ae2-be33-4306b7040c94",
+      "revision": 2415,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.546Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-1139b993-2db7-4510-8a94-b195623352f2": {
+      "operationId": "ui-1139b993-2db7-4510-8a94-b195623352f2",
+      "revision": 2416,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.596Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-f3d0b61e-6c79-4970-986e-880004fec873": {
+      "operationId": "ui-f3d0b61e-6c79-4970-986e-880004fec873",
+      "revision": 2417,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.646Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-61dbf1c6-2cb8-45e0-ab40-1b826de9a589": {
+      "operationId": "ui-61dbf1c6-2cb8-45e0-ab40-1b826de9a589",
+      "revision": 2418,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.696Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-0ff93e94-2873-4174-89c3-a6ab635919aa": {
+      "operationId": "ui-0ff93e94-2873-4174-89c3-a6ab635919aa",
+      "revision": 2419,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.713Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-3b0d10d9-4716-4a9e-8a9e-1ec66dbea174": {
+      "operationId": "ui-3b0d10d9-4716-4a9e-8a9e-1ec66dbea174",
+      "revision": 2420,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.729Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-5f549e9c-1fee-47b5-a091-25b6d8dcaf4e": {
+      "operationId": "ui-5f549e9c-1fee-47b5-a091-25b6d8dcaf4e",
+      "revision": 2421,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.746Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-0a0abe5e-c806-4d52-b0c4-d863029c6671": {
+      "operationId": "ui-0a0abe5e-c806-4d52-b0c4-d863029c6671",
+      "revision": 2422,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.763Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-f8cc1334-ef41-49c2-a453-e9da21b8f469": {
+      "operationId": "ui-f8cc1334-ef41-49c2-a453-e9da21b8f469",
+      "revision": 2423,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.779Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-58c50ce6-ab89-481b-9b77-7cb3fdaf0f2e": {
+      "operationId": "ui-58c50ce6-ab89-481b-9b77-7cb3fdaf0f2e",
+      "revision": 2424,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.796Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-2e971675-5075-47f4-bbbb-a9d8bcaf75eb": {
+      "operationId": "ui-2e971675-5075-47f4-bbbb-a9d8bcaf75eb",
+      "revision": 2425,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.813Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-052d27e4-7e47-46be-9424-f7e78ff1949a": {
+      "operationId": "ui-052d27e4-7e47-46be-9424-f7e78ff1949a",
+      "revision": 2426,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.829Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-ac4b1751-95b3-4980-9b07-61849348c876": {
+      "operationId": "ui-ac4b1751-95b3-4980-9b07-61849348c876",
+      "revision": 2427,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.846Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-883ba9fa-82da-4325-ba47-e07c04720810": {
+      "operationId": "ui-883ba9fa-82da-4325-ba47-e07c04720810",
+      "revision": 2428,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.863Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-19b0fad5-5695-490d-a8a6-edacbceb5223": {
+      "operationId": "ui-19b0fad5-5695-490d-a8a6-edacbceb5223",
+      "revision": 2429,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:54.896Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-666f0b1e-0751-4f76-8940-1786f4bdaf76": {
+      "operationId": "ui-666f0b1e-0751-4f76-8940-1786f4bdaf76",
+      "revision": 2430,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:58.272Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "wire.add"
+      ]
+    },
+    "ui-86bc1b57-660b-4c39-b98e-8826d9da308c": {
+      "operationId": "ui-86bc1b57-660b-4c39-b98e-8826d9da308c",
+      "revision": 2431,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:17:58.273Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-4f55abe1-182a-4987-a93e-57d0eae86747": {
+      "operationId": "ui-4f55abe1-182a-4987-a93e-57d0eae86747",
+      "revision": 2432,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:18:06.138Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "wire.remove"
+      ]
+    },
+    "ui-162b7019-a71d-4717-b7d1-91a890dc0f14": {
+      "operationId": "ui-162b7019-a71d-4717-b7d1-91a890dc0f14",
+      "revision": 2433,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T12:18:35.205Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    }
+  }
 }

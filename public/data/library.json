@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "revision": 30,
+  "revision": 54,
   "entries": {
     "project-scope": {
       "id": "project-scope",
@@ -41,7 +41,7 @@
       "id": "browser-scope",
       "name": "Agent Browser Sessions",
       "status": "active",
-      "revision": 2417,
+      "revision": 2429,
       "nodeLabels": [
         "Agent Browser Sessions",
         "Allocation policy",
@@ -150,7 +150,7 @@
       "id": "mission-control-ux-22-jul-identity-outcomes",
       "name": "Mission Control UX 22-Jul — Identity & Outcomes",
       "status": "active",
-      "revision": 2381,
+      "revision": 2433,
       "nodeLabels": [
         "All LIVE values travel through MissionViewHub -> MissionSnapshot. The wires name their atomic origin.",
         "Health and Needs You",

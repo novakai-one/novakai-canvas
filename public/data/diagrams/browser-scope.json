@@ -3,7 +3,7 @@
   "id": "browser-scope",
   "name": "Agent Browser Sessions",
   "status": "active",
-  "revision": 2417,
+  "revision": 2429,
   "nodes": {
     "browser-scope": {
       "id": "browser-scope",
@@ -433,12 +433,12 @@
         "bs-broker": {
           "nodeId": "bs-broker",
           "position": {
-            "x": 552,
-            "y": 216
+            "x": 564,
+            "y": 192
           },
           "size": {
-            "width": 240,
-            "height": 140
+            "width": 300,
+            "height": 224
           },
           "pinned": false
         },
@@ -1068,6 +1068,186 @@
         "kind": "human"
       },
       "timestamp": "2026-08-05T21:34:58.078Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-9f9ee733-c97c-4cfb-bbba-65d56b329d13": {
+      "operationId": "ui-9f9ee733-c97c-4cfb-bbba-65d56b329d13",
+      "revision": 2418,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T10:53:12.472Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-77e0b5b1-9c5d-4c6b-85a1-52b6fd475a20": {
+      "operationId": "ui-77e0b5b1-9c5d-4c6b-85a1-52b6fd475a20",
+      "revision": 2419,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T10:53:15.780Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-34d61be6-f36c-4de1-8d24-621adfe55b91": {
+      "operationId": "ui-34d61be6-f36c-4de1-8d24-621adfe55b91",
+      "revision": 2420,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T10:53:15.819Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-0cae37d9-1318-4559-9a9c-f1ae4acfaf71": {
+      "operationId": "ui-0cae37d9-1318-4559-9a9c-f1ae4acfaf71",
+      "revision": 2421,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T10:53:15.846Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-d9a92feb-d062-4ece-8348-be27bd9b9423": {
+      "operationId": "ui-d9a92feb-d062-4ece-8348-be27bd9b9423",
+      "revision": 2422,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T10:53:15.868Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-0186b99a-2e3d-4d52-b358-a86db9a696bd": {
+      "operationId": "ui-0186b99a-2e3d-4d52-b358-a86db9a696bd",
+      "revision": 2423,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T10:53:15.880Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-82238911-e94f-4459-9503-a6d1d9f9a51c": {
+      "operationId": "ui-82238911-e94f-4459-9503-a6d1d9f9a51c",
+      "revision": 2424,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T10:53:15.912Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-cc31f82d-c7a1-4a3a-9f6d-7ba6a90ecef4": {
+      "operationId": "ui-cc31f82d-c7a1-4a3a-9f6d-7ba6a90ecef4",
+      "revision": 2425,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T10:53:15.929Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-7c1454b9-2b7d-43e8-9f06-07e2bb415278": {
+      "operationId": "ui-7c1454b9-2b7d-43e8-9f06-07e2bb415278",
+      "revision": 2426,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T10:53:16.012Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-73df2a20-6722-41f0-8aa0-8c621814dacd": {
+      "operationId": "ui-73df2a20-6722-41f0-8aa0-8c621814dacd",
+      "revision": 2427,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T10:53:16.029Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-21ff9962-31d3-47c6-95ae-0ad2a5ab2a4f": {
+      "operationId": "ui-21ff9962-31d3-47c6-95ae-0ad2a5ab2a4f",
+      "revision": 2428,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T10:53:17.938Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-e2970ed8-6e00-459a-a0e6-a3b7e11ccf39": {
+      "operationId": "ui-e2970ed8-6e00-459a-a0e6-a3b7e11ccf39",
+      "revision": 2429,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-06T11:10:11.287Z",
       "provenance": {
         "source": "ui"
       },
