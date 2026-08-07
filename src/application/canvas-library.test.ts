@@ -2,7 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { parseArchitectureDocument } from '../domain/schema';
 import { migrateDocumentToLibrary } from '../domain/migrate/v2-to-v3';
 import { createMemoryLibraryRepository } from '../adapters/memory-library-repository';
-import { createCanvasLibrary, type CanvasLibrary } from './canvas-library';
+import {
+  createCanvasLibrary,
+  type CanvasLibrary,
+  type CanvasLibraryRepository,
+  type WriteOutcome,
+} from './canvas-library';
 import type { ActorContext, CanvasWorkspace } from './canvas-workspace';
 import working from '../domain/migrate/fixtures/real-v2-working-copy.json' with { type: 'json' };
 
@@ -170,3 +175,127 @@ function allDiagramIds(): string[] {
   const migrated = migrateDocumentToLibrary(parseArchitectureDocument(working as unknown));
   return Object.keys(migrated.records);
 }
+
+/**
+ * A library whose index writes can be made to conflict on demand.
+ *
+ * The race these tests drive — a second host landing an index write between this session's
+ * diagram write and its index commit — cannot be interleaved from outside `save`, so the
+ * repository wrapper refuses the next `indexConflicts` index writes exactly the way a real
+ * compare-and-swap race would. `writes.diagrams` counts record writes so a save can prove it
+ * did not rewrite a record that was already on disk.
+ */
+function openRacingLibrary(): {
+  library: CanvasLibrary;
+  repository: CanvasLibraryRepository;
+  race: { indexConflicts: number };
+  writes: { diagrams: number };
+} {
+  const migrated = migrateDocumentToLibrary(parseArchitectureDocument(working as unknown));
+  const inner = createMemoryLibraryRepository(migrated, {});
+  const race = { indexConflicts: 0 };
+  const writes = { diagrams: 0 };
+  const repository: CanvasLibraryRepository = {
+    ...inner,
+    writeDiagram(record, expectedRevision) {
+      writes.diagrams += 1;
+      return inner.writeDiagram(record, expectedRevision);
+    },
+    writeIndex(index, expectedRevision) {
+      if (race.indexConflicts > 0) {
+        race.indexConflicts -= 1;
+        return Promise.resolve<WriteOutcome>({
+          status: 'stale-revision', actualRevision: expectedRevision + 1,
+        });
+      }
+      return inner.writeIndex(index, expectedRevision);
+    },
+  };
+  return {
+    library: createCanvasLibrary(repository, migrated.index, human),
+    repository: inner,
+    race,
+    writes,
+  };
+}
+
+describe('save integrity', () => {
+  it('reports failure when the record saved but the index commit is refused', async () => {
+    const { library, repository, race } = openRacingLibrary();
+    const workspace = await openWorkspace(library, 'messaging-scope');
+    workspace.execute({ kind: 'diagram.rename', name: 'Agent Messaging (edited)' });
+    // The first commit and the one retry both lose the race.
+    race.indexConflicts = 2;
+
+    const outcome = await library.save('messaging-scope');
+
+    // The record landed but the entry did not, so "written" would be a lie the dropdown
+    // then contradicts: the file holds the edit while the index still lists the old name.
+    expect(outcome).toMatchObject({ status: 'save-failed' });
+    expect((await repository.readDiagram('messaging-scope')).name).toBe('Agent Messaging (edited)');
+    expect(library.list().find((entry) => entry.id === 'messaging-scope')?.name)
+      .toBe('Agent Messaging');
+  });
+
+  it('retries the index commit once against the freshly read index', async () => {
+    const { library, race } = openRacingLibrary();
+    const workspace = await openWorkspace(library, 'messaging-scope');
+    workspace.execute({ kind: 'diagram.rename', name: 'Agent Messaging (edited)' });
+    race.indexConflicts = 1;
+
+    expect(await library.save('messaging-scope')).toMatchObject({ status: 'written' });
+    expect(library.list().find((entry) => entry.id === 'messaging-scope')?.name)
+      .toBe('Agent Messaging (edited)');
+  });
+
+  it('recovers the index entry on the next save without rewriting the record', async () => {
+    const { library, race, writes } = openRacingLibrary();
+    const workspace = await openWorkspace(library, 'messaging-scope');
+    workspace.execute({ kind: 'diagram.rename', name: 'Agent Messaging (edited)' });
+    race.indexConflicts = 2;
+    await library.save('messaging-scope');
+    const writesAfterTornSave = writes.diagrams;
+
+    // No new edit: the record is already on disk, so only the owed index entry is written.
+    const outcome = await library.save('messaging-scope');
+
+    expect(outcome).toMatchObject({ status: 'written' });
+    expect(writes.diagrams).toBe(writesAfterTornSave);
+    const entry = library.list().find((listed) => listed.id === 'messaging-scope');
+    expect(entry?.name).toBe('Agent Messaging (edited)');
+    expect(entry?.revision).toBe(workspace.snapshot().revision);
+  });
+
+  it('heals an index entry the disk already left behind the record', async () => {
+    // The torn state the bug left behind: the record's revision moved past the entry's, and
+    // expecting against the entry made every later save conflict forever.
+    const migrated = migrateDocumentToLibrary(parseArchitectureDocument(working as unknown));
+    const torn = structuredClone(migrated);
+    torn.records['messaging-scope'].revision += 5;
+    const repository = createMemoryLibraryRepository(torn, {});
+    const library = createCanvasLibrary(repository, torn.index, human);
+    const workspace = await openWorkspace(library, 'messaging-scope');
+    workspace.execute({ kind: 'diagram.rename', name: 'Agent Messaging (healed)' });
+
+    expect(await library.save('messaging-scope')).toMatchObject({ status: 'written' });
+    const entry = library.list().find((listed) => listed.id === 'messaging-scope');
+    expect(entry?.name).toBe('Agent Messaging (healed)');
+    expect(entry?.revision).toBe(workspace.snapshot().revision);
+  });
+
+  it('still refuses to overwrite a record another host changed', async () => {
+    const { library, repository } = openRacingLibrary();
+    const workspace = await openWorkspace(library, 'messaging-scope');
+    const external = await repository.readDiagram('messaging-scope');
+    await repository.writeDiagram(
+      { ...external, name: 'Changed elsewhere', revision: external.revision + 1 },
+      external.revision,
+    );
+    workspace.execute({ kind: 'diagram.rename', name: 'My edit' });
+
+    expect(await library.save('messaging-scope')).toMatchObject({ status: 'stale-revision' });
+    // The conflict is surfaced, never retried into an overwrite.
+    expect(await library.save('messaging-scope')).toMatchObject({ status: 'stale-revision' });
+    expect((await repository.readDiagram('messaging-scope')).name).toBe('Changed elsewhere');
+  });
+});

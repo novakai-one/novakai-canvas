@@ -88,6 +88,33 @@ describe('canvas workspace', () => {
     expect(after.appliedOperations['op-undo']).toBeDefined();
   });
 
+  it('undoes a move+resize batch as one gesture', () => {
+    const workspace = createCanvasWorkspace(openMessagingScope(), human);
+    const before = workspace.snapshot();
+    const nodeId = Object.keys(before.nodes)[0];
+    // Placements live per layout; read the one layout that holds this node.
+    const placementOf = (record: DiagramRecord) => Object.values(record.layouts)
+      .map((layout) => layout.placements[nodeId])
+      .find((placement) => placement !== undefined);
+    const origin = placementOf(before);
+    if (!origin) throw new Error('fixture node has no placement');
+
+    workspace.submit(batch([
+      { kind: 'node.move', id: nodeId, position: { x: 50, y: 60 } },
+      { kind: 'node.resize', id: nodeId, size: { width: 400, height: 300 } },
+    ], before.revision, 'op-resize'));
+
+    const settled = placementOf(workspace.snapshot());
+    expect(settled?.position).toEqual({ x: 50, y: 60 });
+    expect(settled?.size).toEqual({ width: 400, height: 300 });
+
+    expect(workspace.undo()).toBe(true);
+
+    const after = placementOf(workspace.snapshot());
+    expect(after?.position).toEqual(origin.position);
+    expect(after?.size).toEqual(origin.size);
+  });
+
   it('takes a removed node\'s wires, geometry, interfaces and types with it', () => {
     const workspace = createCanvasWorkspace(openMessagingScope(), human);
     const record = workspace.snapshot();

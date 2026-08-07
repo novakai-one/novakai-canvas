@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { RecordCommand } from '../../application/canvas-workspace';
 import { asId } from '../../domain/id-cast';
 import type { NodeId } from '../../domain/ids';
 import type { ProjectedView } from '../../domain/project-view';
@@ -42,6 +43,7 @@ function props(overrides: Partial<InspectPanelProps> = {}): InspectPanelProps {
     view,
     selection: { kind: 'node', id: 'broker' },
     execute: () => {},
+    executeAll: () => {},
     clearSelection: () => {},
     select: () => {},
     editable: true,
@@ -86,5 +88,19 @@ describe('inspection shape', () => {
     const inspection = describeSelection(props({ selection: null }));
     expect(inspection.sections).toEqual([]);
     expect(inspection.meta).toBe('');
+  });
+
+  it('the diagram itself renames through the header, keeping the root frame caption in step', () => {
+    const batches: RecordCommand[][] = [];
+    const inspection = describeSelection(props({
+      selection: null,
+      executeAll: (commands) => batches.push(commands),
+    }));
+    expect(inspection.rename).toBeTypeOf('function');
+    inspection.rename?.('Agent Messaging');
+    expect(batches).toEqual([[
+      { kind: 'diagram.rename', name: 'Agent Messaging' },
+      { kind: 'node.update', id: 'root', patch: { label: 'Agent Messaging' } },
+    ]]);
   });
 });

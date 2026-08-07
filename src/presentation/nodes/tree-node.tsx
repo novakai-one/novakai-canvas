@@ -21,7 +21,7 @@ export function TreeNode({ data, selected }: NodeProps<TreeFlowNode>) {
   const rows = orderedTreeRows(node.rows ?? []);
   return (
     <article className="tree-node">
-      <NodeResizer isVisible={editable && selected} minHeight={80} minWidth={240} />
+      <NodeResizer isVisible={editable && selected} minHeight={80} minWidth={240} onResizeEnd={() => data.resizeEnd?.(node.id as string)} />
       <header className="node-header">
         <span className="node-label">{node.label}</span>
         <span className="node-kind">tree</span>

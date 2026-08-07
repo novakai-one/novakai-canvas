@@ -16,6 +16,8 @@ export interface InspectPanelProps {
   view: ProjectedView;
   selection: Selection;
   execute: (command: RecordCommand) => void;
+  /** Several commands, one undoable act — for renames and gestures that write two facts. */
+  executeAll: (commands: RecordCommand[]) => void;
   clearSelection: () => void;
   /** Peek: selects the object and leaves the camera exactly where it is. */
   select: (selection: Selection) => void;
@@ -150,10 +152,26 @@ function placementOf(record: DiagramRecord, nodeId: string): Pick<NodePlacement,
  * decision, never the app's — and it stays empty, because there is genuinely nothing to inspect.
  */
 function diagramInspection(props: InspectPanelProps): Inspection {
+  const rootId = rootGroupId(props.record);
   return {
     kind: 'Diagram',
     title: props.record.name,
     meta: '',
+    /*
+     * The record owns the diagram's name and the root frame wears it on the canvas, so one
+     * edit writes both — batched, because one rename is one undoable act. This is the same
+     * pairing nodeInspection makes for the root node; the diagram just never had a door in.
+     */
+    rename: props.editable && rootId
+      ? (label: string) => {
+        const name = label.trim();
+        if (name.length === 0) return;
+        props.executeAll([
+          { kind: 'diagram.rename', name },
+          { kind: 'node.update', id: rootId, patch: { label: name } },
+        ]);
+      }
+      : undefined,
     trail: [{ label: props.record.name, select: null }],
     sections: [],
     body: (

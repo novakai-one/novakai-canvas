@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, type RefObject } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import {
   Background, BackgroundVariant, ConnectionMode, Controls, ReactFlow,
   type Connection, type NodeChange, type Viewport,
@@ -19,6 +19,7 @@ import {
 import { canvasCamera, publishCanvasCamera } from '../canvas-camera';
 import { RailToggle, StudioToggle } from '../shell';
 import { projectEdges, projectNodes } from '../projection';
+import { applyFrame, clearInFlight, mergeInFlight, takeInFlight, type InFlight } from '../in-flight';
 import type { CanvasMode } from '../view-mode';
 import { ArchitectureNode } from '../nodes/architecture-node';
 import { CommentNode } from '../nodes/comment-node';
@@ -56,25 +57,23 @@ export interface CanvasSurfaceProps {
   setDiagramStatus: (diagramId: string, status: 'active' | 'archived') => void;
 }
 
-function applyNodeChanges(execute: (command: RecordCommand) => void, changes: NodeChange[]): void {
+/*
+ * Gesture frames go to the in-flight overlay, not the record: React Flow is controlled,
+ * so the overlay is what lets a drag or resize be seen while it happens, and keeping the
+ * frames out of `execute` is what keeps one gesture one undoable act (d5f5980). The
+ * position that becomes a fact is the one drag-stop / resize-end resolves. Removals are
+ * not a gesture — they execute immediately, as before — but they still end one: a node
+ * deleted mid-gesture takes its frames with it, or they linger as a ghost the next
+ * resize could commit.
+ */
+function applyNodeChanges(
+  execute: (command: RecordCommand) => void,
+  frame: (change: NodeChange) => void,
+  changes: NodeChange[],
+): void {
   changes.forEach((change) => {
-    /*
-     * Position is not committed here at all — `onNodeDragStop` owns it.
-     *
-     * React Flow reports a position change on every frame of a drag, and committing each one
-     * pushed dozens of records onto the history for a single gesture, so undo popped one
-     * invisible sub-pixel step and read as doing nothing. Even taking only the last frame left
-     * two writes for one drag, because the drag-stop handler commits the same move again after
-     * running it through the drop rules. The frames in flight are React Flow's to render; the
-     * position that becomes a fact is the one drag-stop resolves, and one gesture is one
-     * undoable act.
-     */
-    // Only user-driven resizes (NodeResizer sets resizing) — never React Flow's
-    // initial DOM measurements, which would rewrite every stored size on load.
-    if (change.type === 'dimensions' && change.dimensions && change.resizing) {
-      execute({ kind: 'node.resize', id: change.id, size: change.dimensions });
-    }
     if (change.type === 'remove') execute({ kind: 'node.remove', id: change.id });
+    frame(change);
   });
 }
 
@@ -365,7 +364,7 @@ function useRefitWhenPanelsMove(panel: CanvasPreferences['panel']): void {
 /** Interactive editor or clean, read-only presentation of one open diagram record. */
 export function CanvasSurface(props: CanvasSurfaceProps) {
   const {
-    activeDiagramId, execute, mode, preferences, record, selection, setSelection, view,
+    activeDiagramId, execute, executeAll, mode, preferences, record, selection, setSelection, view,
   } = props;
   const editable = mode === 'edit';
   useEscapeStepsOutward(record, selection, setSelection);
@@ -375,6 +374,21 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   useRefitWhenPanelsMove(preferences.panel);
   /** The port a drag began on, remembered until it lands somewhere or on nothing. */
   const dragFrom = useRef<{ nodeId: string; side?: PortSide } | null>(null);
+  const [inFlight, setInFlight] = useState<InFlight>({});
+  /*
+   * d3-drag invokes gesture-end handlers with the listeners from the render where the gesture
+   * *started*, so an end callback closes over the overlay as it was then — empty. State still
+   * drives the render (the nodes memo depends on it), but every write also lands in this ref,
+   * and gesture-end handlers read and clear through the ref, never through the closure.
+   */
+  const inFlightRef = useRef<InFlight>({});
+  const updateInFlight = useCallback((frame: (current: InFlight) => InFlight): void => {
+    const next = frame(inFlightRef.current);
+    inFlightRef.current = next;
+    setInFlight(next);
+  }, []);
+  // A leftover frame from another diagram would drag a ghost across the switch.
+  useEffect(() => updateInFlight(() => ({})), [activeDiagramId, updateInFlight]);
 
   const growFromPort = (at: WorldPoint): void => {
     const from = dragFrom.current;
@@ -408,10 +422,31 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   };
 
   const nodes = useMemo(
-    () => projectNodes({
-      view, record, preferences, selection, editable, select: setSelection, execute,
-    }),
-    [editable, execute, preferences, record, selection, setSelection, view],
+    () => mergeInFlight(
+      projectNodes({
+        view, record, preferences, selection, editable, select: setSelection, execute,
+        // A resize moves two facts for north/west handles — where the corner sits and how big
+        // the box is — and one fact for the rest. Either way it is one gesture, so it commits
+        // as one revision through executeAll, straight from the frames the overlay accumulated.
+        // The resizer's own onResizeEnd params are deliberately unused: the overlay holds the
+        // same values React Flow reported, already in node.position coordinates.
+        resizeEnd: editable
+          ? (id: string) => {
+            // Read through the ref: this fires on d3-drag's gesture-start listeners, so the
+            // `inFlight` this closure captured is the empty overlay from when the drag began.
+            const { frame, rest } = takeInFlight(inFlightRef.current, id);
+            if (!frame) return;
+            executeAll([
+              ...(frame.position ? [{ kind: 'node.move' as const, id, position: frame.position }] : []),
+              ...(frame.size ? [{ kind: 'node.resize' as const, id, size: frame.size }] : []),
+            ]);
+            updateInFlight(() => rest);
+          }
+          : undefined,
+      }),
+      inFlight,
+    ),
+    [editable, execute, executeAll, inFlight, preferences, record, selection, setSelection, updateInFlight, view],
   );
   const edges = useMemo(
     () => projectEdges({
@@ -453,6 +488,8 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         onNodeDragStop={(_event, node) => {
           if (!editable) return;
           applyDrop(execute, view, { id: node.id, parentId: node.parentId, position: node.position });
+          // The drop is a fact now; the frames that previewed it must not linger as a ghost.
+          updateInFlight((current) => clearInFlight(current, node.id));
         }}
         onReconnect={(edge, connection) => {
           if (!editable || !connection.source || !connection.target) return;
@@ -466,7 +503,9 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
           setSelection({ kind: 'wire', id: edge.id });
         }}
         onNodeClick={(_event, node) => setSelection({ kind: 'node', id: node.id })}
-        onNodesChange={(changes) => { if (editable) applyNodeChanges(execute, changes); }} onPaneClick={() => setSelection(null)}
+        onNodesChange={(changes) => {
+          if (editable) applyNodeChanges(execute, (change) => updateInFlight((current) => applyFrame(current, change)), changes);
+        }} onPaneClick={() => setSelection(null)}
         /*
          * Scroll moves the diagram; pinch and ⌘-scroll change how close you are.
          *
