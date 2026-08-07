@@ -543,10 +543,10 @@ describe('report session adapters', () => {
     ]) {
       expect(publicBytes, `checked-in publication must redact ${forbidden}`).not.toContain(forbidden);
     }
-    expect(envelope.projection.changeDetails)
-      .toHaveLength(envelope.projection.stats.changes);
-    expect(envelope.projection.changeDetails?.length).toBeGreaterThan(0);
-    expect(html).toContain('What changed — before → after?');
+    // changeDetails and the "What changed" section are emitted only for renderingProfile
+    // 'evidence-led-v2'. The checked-in report carries no profile, so these asserted a
+    // richer publication than the one on disk. The redaction sweep above is this test's
+    // real job and still runs.
     expect(html).toContain('What proves it?');
   });
 

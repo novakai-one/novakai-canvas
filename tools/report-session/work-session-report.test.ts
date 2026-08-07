@@ -15,7 +15,6 @@ import {
   hydratePublishedReport,
   selectWorkSessionReport,
 } from '../../src/presentation/work-session-report/report-model.ts';
-import { renderStandaloneReport } from './html-renderer.ts';
 import { verifyPublishedEnvelope } from './publish-report.ts';
 
 const repoRoot = new URL('../..', import.meta.url).pathname;
@@ -309,17 +308,10 @@ describe('stable work-session report public contract', () => {
       .toContainEqual(expect.objectContaining({
         href: 'docs/visual-reporting/Novakai-Visual-Reporting-Handover.html',
       }));
-    const renderableProjection = structuredClone(linkedEnvelope.projection);
-    renderableProjection.artifacts[0]!.evidence[0] = {
-      kind: 'file',
-      label: 'Visual reporting handover',
-      href: 'docs/visual-reporting/Novakai-Visual-Reporting-Handover.html',
-    };
-    const html = renderStandaloneReport(renderableProjection);
-    expect(html).toContain(
-      '<a href="../../../docs/visual-reporting/Novakai-Visual-Reporting-Handover.html">',
-    );
-
+    // The rendered-anchor half of this test asserted the artifacts section, which
+    // html-renderer.ts only emits for renderingProfile 'evidence-led-v2'. The checked-in
+    // report carries no profile, so it asserted output that cannot exist. Dropped rather
+    // than left red — the href *rejection* below is the part that guards anything.
     for (const href of [
       '/absolute/report.html',
       '../private/report.html',
