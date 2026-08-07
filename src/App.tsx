@@ -404,6 +404,7 @@ export default function App(props: AppProps) {
         diagrams={diagrams}
         editable={mode === 'edit'}
         execute={execute}
+        executeAll={executeAll}
         openDiagram={drillInto}
         preferences={preferences}
         record={record}

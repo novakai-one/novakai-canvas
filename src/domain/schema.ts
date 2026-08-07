@@ -63,7 +63,7 @@ const appliedOperations = z.record(z.string(), z.object({
   provenance,
   commandKinds: z.array(z.enum([
     'document.import',
-    'diagram.create', 'diagram.setStatus', 'diagram.setReferences',
+    'diagram.create', 'diagram.rename', 'diagram.setStatus', 'diagram.setReferences',
     'node.add', 'node.move', 'node.resize', 'node.pin', 'node.update', 'node.remove',
     'node.setSubject', 'node.setDetailDiagram', 'node.reparent', 'node.setCollapsed',
     'wire.add', 'wire.update', 'wire.reconnect', 'wire.remove', 'layout.apply', 'scope.layout',
