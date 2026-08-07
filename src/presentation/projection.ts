@@ -12,6 +12,8 @@ export interface ArchitectureNodeData extends Record<string, unknown> {
   node: PositionedNode;
   /** Renames the node from the canvas itself; absent on a read-only host. */
   rename?: (id: string, label: string) => void;
+  /** A resize gesture ended; absent on a read-only host. */
+  resizeEnd?: (id: string) => void;
   interfaces: InterfaceObject[];
   types: TypeObject[];
   preferences: CanvasPreferences;
@@ -278,6 +280,8 @@ export interface ProjectionInput {
    * wires and simply gets no editing affordances, rather than being handed a fake workspace.
    */
   execute?: (command: RecordCommand) => void;
+  /** A resize gesture ended; the host commits the accumulated frame as one revision. */
+  resizeEnd?: (id: string) => void;
 }
 
 /** The minimum a node must expose to be placed in the parent chain. */
@@ -402,6 +406,7 @@ export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>
         rename: input.execute && editable
           ? (id: string, label: string) => input.execute?.({ kind: 'node.update', id, patch: { label } })
           : undefined,
+        resizeEnd: input.resizeEnd && editable ? input.resizeEnd : undefined,
         interfaces: node.interfaceIds.flatMap((id) => record.interfaces[id] ? [record.interfaces[id]] : []),
         types: node.typeIds.flatMap((id) => record.types[id] ? [record.types[id]] : []),
         preferences,

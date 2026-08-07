@@ -362,7 +362,7 @@ function useRefitWhenPanelsMove(panel: CanvasPreferences['panel']): void {
 /** Interactive editor or clean, read-only presentation of one open diagram record. */
 export function CanvasSurface(props: CanvasSurfaceProps) {
   const {
-    activeDiagramId, execute, mode, preferences, record, selection, setSelection, view,
+    activeDiagramId, execute, executeAll, mode, preferences, record, selection, setSelection, view,
   } = props;
   const editable = mode === 'edit';
   useEscapeStepsOutward(record, selection, setSelection);
@@ -409,10 +409,28 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
 
   const nodes = useMemo(
     () => mergeInFlight(
-      projectNodes({ view, record, preferences, selection, editable, select: setSelection, execute }),
+      projectNodes({
+        view, record, preferences, selection, editable, select: setSelection, execute,
+        // A resize moves two facts for north/west handles — where the corner sits and how big
+        // the box is — and one fact for the rest. Either way it is one gesture, so it commits
+        // as one revision through executeAll, straight from the frames the overlay accumulated.
+        // The resizer's own onResizeEnd params are deliberately unused: the overlay holds the
+        // same values React Flow reported, already in node.position coordinates.
+        resizeEnd: editable
+          ? (id: string) => {
+            const frame = inFlight[id];
+            if (!frame) return;
+            executeAll([
+              ...(frame.position ? [{ kind: 'node.move' as const, id, position: frame.position }] : []),
+              ...(frame.size ? [{ kind: 'node.resize' as const, id, size: frame.size }] : []),
+            ]);
+            setInFlight((current) => clearInFlight(current, id));
+          }
+          : undefined,
+      }),
       inFlight,
     ),
-    [editable, execute, inFlight, preferences, record, selection, setSelection, view],
+    [editable, execute, executeAll, inFlight, preferences, record, selection, setSelection, view],
   );
   const edges = useMemo(
     () => projectEdges({
