@@ -51,3 +51,16 @@ export function clearInFlight(inFlight: InFlight, id: string): InFlight {
   delete next[id];
   return next;
 }
+
+/**
+ * Reads one node's frames and drops them in one step — what a gesture-end handler needs.
+ *
+ * Gesture-end callbacks can close over a stale overlay (d3-drag keeps the listeners from the
+ * render where the gesture started), so the caller reads this from a ref mirror rather than
+ * from React state, and needs the frame and the cleared overlay out of the same read.
+ */
+export function takeInFlight(inFlight: InFlight, id: string): { frame?: InFlightFrame; rest: InFlight } {
+  const frame = inFlight[id];
+  if (!frame) return { rest: inFlight };
+  return { frame, rest: clearInFlight(inFlight, id) };
+}

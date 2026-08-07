@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import {
   Background, BackgroundVariant, ConnectionMode, Controls, ReactFlow,
   type Connection, type NodeChange, type Viewport,
@@ -19,7 +19,7 @@ import {
 import { canvasCamera, publishCanvasCamera } from '../canvas-camera';
 import { RailToggle, StudioToggle } from '../shell';
 import { projectEdges, projectNodes } from '../projection';
-import { applyFrame, clearInFlight, mergeInFlight, type InFlight } from '../in-flight';
+import { applyFrame, clearInFlight, mergeInFlight, takeInFlight, type InFlight } from '../in-flight';
 import type { CanvasMode } from '../view-mode';
 import { ArchitectureNode } from '../nodes/architecture-node';
 import { CommentNode } from '../nodes/comment-node';
@@ -373,8 +373,20 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   /** The port a drag began on, remembered until it lands somewhere or on nothing. */
   const dragFrom = useRef<{ nodeId: string; side?: PortSide } | null>(null);
   const [inFlight, setInFlight] = useState<InFlight>({});
+  /*
+   * d3-drag invokes gesture-end handlers with the listeners from the render where the gesture
+   * *started*, so an end callback closes over the overlay as it was then — empty. State still
+   * drives the render (the nodes memo depends on it), but every write also lands in this ref,
+   * and gesture-end handlers read and clear through the ref, never through the closure.
+   */
+  const inFlightRef = useRef<InFlight>({});
+  const updateInFlight = useCallback((frame: (current: InFlight) => InFlight): void => {
+    const next = frame(inFlightRef.current);
+    inFlightRef.current = next;
+    setInFlight(next);
+  }, []);
   // A leftover frame from another diagram would drag a ghost across the switch.
-  useEffect(() => setInFlight({}), [activeDiagramId]);
+  useEffect(() => updateInFlight(() => ({})), [activeDiagramId, updateInFlight]);
 
   const growFromPort = (at: WorldPoint): void => {
     const from = dragFrom.current;
@@ -418,19 +430,21 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         // same values React Flow reported, already in node.position coordinates.
         resizeEnd: editable
           ? (id: string) => {
-            const frame = inFlight[id];
+            // Read through the ref: this fires on d3-drag's gesture-start listeners, so the
+            // `inFlight` this closure captured is the empty overlay from when the drag began.
+            const { frame, rest } = takeInFlight(inFlightRef.current, id);
             if (!frame) return;
             executeAll([
               ...(frame.position ? [{ kind: 'node.move' as const, id, position: frame.position }] : []),
               ...(frame.size ? [{ kind: 'node.resize' as const, id, size: frame.size }] : []),
             ]);
-            setInFlight((current) => clearInFlight(current, id));
+            updateInFlight(() => rest);
           }
           : undefined,
       }),
       inFlight,
     ),
-    [editable, execute, executeAll, inFlight, preferences, record, selection, setSelection, view],
+    [editable, execute, executeAll, inFlight, preferences, record, selection, setSelection, updateInFlight, view],
   );
   const edges = useMemo(
     () => projectEdges({
@@ -473,7 +487,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
           if (!editable) return;
           applyDrop(execute, view, { id: node.id, parentId: node.parentId, position: node.position });
           // The drop is a fact now; the frames that previewed it must not linger as a ghost.
-          setInFlight((current) => clearInFlight(current, node.id));
+          updateInFlight((current) => clearInFlight(current, node.id));
         }}
         onReconnect={(edge, connection) => {
           if (!editable || !connection.source || !connection.target) return;
@@ -488,7 +502,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         }}
         onNodeClick={(_event, node) => setSelection({ kind: 'node', id: node.id })}
         onNodesChange={(changes) => {
-          if (editable) applyNodeChanges(execute, (change) => setInFlight((current) => applyFrame(current, change)), changes);
+          if (editable) applyNodeChanges(execute, (change) => updateInFlight((current) => applyFrame(current, change)), changes);
         }} onPaneClick={() => setSelection(null)}
         /*
          * Scroll moves the diagram; pinch and ⌘-scroll change how close you are.
