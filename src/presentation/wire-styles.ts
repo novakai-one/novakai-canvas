@@ -1,6 +1,7 @@
 /** The one kind→style mapping shared by edges, the legend, and SVG snapshots. */
 
-import type { CanvasTheme, WireKind } from '../domain/model';
+import type { CanvasPreferences, CanvasTheme, WireKind } from '../domain/model';
+import { WIRE_LABEL_SIZE_LIMITS } from '../domain/wire-label-size.ts';
 
 type WireDash = 'solid' | 'dashed' | 'dotted' | 'dashdot';
 type WireTone = 'neutral' | 'sage' | 'steel' | 'slate' | 'violet' | 'amber' | 'rust';
@@ -54,6 +55,17 @@ const WIRE_TONE_COLORS: Record<WireTone, Record<CanvasTheme, string>> = {
  * a wire disappears into the background at the zoom real diagrams are read at.
  */
 const MINIMUM_STROKE = 1.7;
+
+/** Label type and the zoom where keeping it screen-sized would exceed its chosen maximum. */
+export function wireLabelSizing(preferences: CanvasPreferences): {
+  baseSize: number; maximumSize: number; minimumZoom: number;
+} {
+  const baseSize = WIRE_LABEL_SIZE_LIMITS.base
+    * (preferences.appearance.textScale ?? 1)
+    * (preferences.wires.labelScale ?? 1);
+  const maximumSize = preferences.wires.maxLabelSize ?? WIRE_LABEL_SIZE_LIMITS.defaultMaximum;
+  return { baseSize, maximumSize, minimumZoom: baseSize / maximumSize };
+}
 
 /** Stroke width for one wire, never thinner than the legibility floor. */
 export function wireStrokeWidth(preferred: number | undefined): number {

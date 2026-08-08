@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from 'react';
+import {
+  useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type RefObject,
+} from 'react';
 import {
   Background, BackgroundVariant, ConnectionMode, Controls, ReactFlow,
   type Connection, type NodeChange, type Viewport,
@@ -28,6 +30,7 @@ import { TreeNode } from '../nodes/tree-node';
 import { ElbowEdge } from '../edges/elbow-edge';
 import { Legend } from './legend';
 import { CanvasToolbar } from './canvas-toolbar';
+import { wireLabelSizing } from '../wire-styles';
 
 const nodeTypes = { architecture: ArchitectureNode, comment: CommentNode, scope: ScopeNode, tree: TreeNode };
 const edgeTypes = { elbow: ElbowEdge };
@@ -262,7 +265,7 @@ const TRAVEL_MS = 700;
  * The same hook publishes the travel contract other chrome uses, and answers the one question
  * placement needs: which point in the diagram the user is actually looking at.
  */
-function useCamera(activeDiagramId: string): {
+function useCamera(activeDiagramId: string, minimumWireLabelZoom: number): {
   surface: RefObject<HTMLElement | null>;
   fitOnOpen: boolean;
   remember: (viewport: Viewport) => void;
@@ -301,6 +304,19 @@ function useCamera(activeDiagramId: string): {
     return () => publishCanvasCamera(null);
   }, []);
 
+  const publishZoom = useCallback((zoom: number): void => {
+    const element = surface.current;
+    if (!element) return;
+    element.style.setProperty('--nvk-zoom', String(zoom));
+    element.toggleAttribute('data-wire-labels-hidden', zoom <= minimumWireLabelZoom);
+  }, [minimumWireLabelZoom]);
+
+  // A preference change must take effect immediately, without waiting for the camera to move.
+  useEffect(() => {
+    const zoom = flow.current?.getViewport().zoom;
+    if (zoom !== undefined) publishZoom(zoom);
+  }, [publishZoom]);
+
   return {
     surface,
     fitOnOpen: remembered === undefined,
@@ -316,9 +332,7 @@ function useCamera(activeDiagramId: string): {
      * to two physical pixels at the app's own default framing, which is not a small target,
      * it is an invisible one.
      */
-    publishZoom: (zoom: number) => {
-      surface.current?.style.setProperty('--nvk-zoom', String(zoom));
-    },
+    publishZoom,
     attach: (instance: FlowInstance) => {
       flow.current = instance;
       const saved = cameras.current.get(activeDiagramId);
@@ -369,10 +383,11 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
     activeDiagramId, execute, executeAll, mode, preferences, record, selection, setSelection, view,
   } = props;
   const editable = mode === 'edit';
+  const labelSizing = wireLabelSizing(preferences);
   useEscapeStepsOutward(record, selection, setSelection);
   useUndoShortcut(editable && props.canUndo, props.undo);
   useSelectionReleasesWithItsObject(record, selection, setSelection);
-  const camera = useCamera(activeDiagramId);
+  const camera = useCamera(activeDiagramId, labelSizing.minimumZoom);
   useRefitWhenPanelsMove(preferences.panel);
   /** The port a drag began on, remembered until it lands somewhere or on nothing. */
   const dragFrom = useRef<{ nodeId: string; side?: PortSide } | null>(null);
@@ -463,7 +478,14 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
     [editable, execute, preferences, record, selection, setSelection, view],
   );
   return (
-    <main className={`canvas-surface is-${mode}`} ref={camera.surface}>
+    <main
+      className={`canvas-surface is-${mode}`}
+      ref={camera.surface}
+      style={{
+        '--wire-label-base-size': `${labelSizing.baseSize}px`,
+        '--wire-label-max-size': `${labelSizing.maximumSize}px`,
+      } as CSSProperties}
+    >
       {/*
         * The key names the diagram and nothing else. It used to name the mode too, so every
         * Present/Edit toggle tore React Flow down and rebuilt it, and the camera snapped back to

@@ -44,6 +44,7 @@ describe('preference defaults', () => {
     // Absent means "the behaviour this file was written under", which for every one of the new
     // settings is the same as the default. Nothing changes shape under an old owner.
     expect(parsed.wires.shape).toBeUndefined();
+    expect(parsed.wires.maxLabelSize).toBeUndefined();
     expect(parsed.panel.sections).toBeUndefined();
     expect(parsed.canvas.targetSize).toBeUndefined();
   });
@@ -54,5 +55,9 @@ describe('preference defaults', () => {
       appearance: { ...defaultPreferences.appearance, textScale: 4 },
     };
     expect(() => canvasPreferencesSchema.parse(tooBig)).toThrow();
+    expect(() => canvasPreferencesSchema.parse({
+      ...defaultPreferences,
+      wires: { ...defaultPreferences.wires, maxLabelSize: 30 },
+    })).toThrow();
   });
 });

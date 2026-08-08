@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { ArchitectureDocument, CanvasChangeSet } from './model.ts';
+import { WIRE_LABEL_SIZE_LIMITS } from './wire-label-size.ts';
 
 const position = z.object({ x: z.number(), y: z.number() });
 const size = z.object({ width: z.number().positive(), height: z.number().positive() });
@@ -304,6 +305,10 @@ export const canvasPreferencesSchema = z.object({
     // All optional: a preferences file written before these existed opens at the old behaviour.
     shape: z.enum(['elbow', 'straight', 'curved', 'stepped']).optional(),
     labelScale: z.number().min(0.85).max(1.5).optional(),
+    maxLabelSize: z.number()
+      .min(WIRE_LABEL_SIZE_LIMITS.minimum)
+      .max(WIRE_LABEL_SIZE_LIMITS.maximum)
+      .optional(),
     avoidNodes: z.boolean().optional(),
   }),
   panel: z.object({

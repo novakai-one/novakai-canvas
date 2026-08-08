@@ -1,0 +1,528 @@
+{
+  "schemaVersion": 3,
+  "id": "diagram-06d510a2",
+  "name": "Agent-Operations-SOP",
+  "status": "active",
+  "revision": 22,
+  "nodes": {
+    "diagram-06d510a2": {
+      "id": "diagram-06d510a2",
+      "kind": "group",
+      "label": "Agent-Operations-SOP",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "group-8662263a": {
+      "id": "group-8662263a",
+      "kind": "group",
+      "label": "New group",
+      "parentId": "diagram-06d510a2",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "module-ffcb2b6e": {
+      "id": "module-ffcb2b6e",
+      "kind": "module",
+      "label": "New module",
+      "parentId": "diagram-06d510a2",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "object-98329928": {
+      "id": "object-98329928",
+      "kind": "object",
+      "label": "New object",
+      "parentId": "diagram-06d510a2",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "object-e4e61abd": {
+      "id": "object-e4e61abd",
+      "kind": "object",
+      "label": "New object",
+      "parentId": "diagram-06d510a2",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "module-66bcc19d": {
+      "id": "module-66bcc19d",
+      "kind": "module",
+      "label": "New module",
+      "parentId": "diagram-06d510a2",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "resource-fc91e262": {
+      "id": "resource-fc91e262",
+      "kind": "resource",
+      "label": "New resource",
+      "parentId": "diagram-06d510a2",
+      "interfaceIds": [],
+      "typeIds": []
+    }
+  },
+  "wires": {},
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "diagram-06d510a2": {
+          "nodeId": "diagram-06d510a2",
+          "position": {
+            "x": -1500,
+            "y": -36
+          },
+          "size": {
+            "width": 2440,
+            "height": 940
+          },
+          "pinned": false
+        },
+        "group-8662263a": {
+          "nodeId": "group-8662263a",
+          "position": {
+            "x": 36,
+            "y": 198
+          },
+          "size": {
+            "width": 480,
+            "height": 300
+          },
+          "pinned": false
+        },
+        "module-ffcb2b6e": {
+          "nodeId": "module-ffcb2b6e",
+          "position": {
+            "x": 512,
+            "y": 857
+          },
+          "size": {
+            "width": 200,
+            "height": 110
+          },
+          "pinned": false
+        },
+        "object-98329928": {
+          "nodeId": "object-98329928",
+          "position": {
+            "x": 512,
+            "y": 857
+          },
+          "size": {
+            "width": 200,
+            "height": 110
+          },
+          "pinned": false
+        },
+        "object-e4e61abd": {
+          "nodeId": "object-e4e61abd",
+          "position": {
+            "x": 168,
+            "y": 540
+          },
+          "size": {
+            "width": 200,
+            "height": 110
+          },
+          "pinned": false
+        },
+        "module-66bcc19d": {
+          "nodeId": "module-66bcc19d",
+          "position": {
+            "x": 72,
+            "y": 828
+          },
+          "size": {
+            "width": 200,
+            "height": 110
+          },
+          "pinned": false
+        },
+        "resource-fc91e262": {
+          "nodeId": "resource-fc91e262",
+          "position": {
+            "x": 260,
+            "y": 689
+          },
+          "size": {
+            "width": 200,
+            "height": 110
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {
+        "wire-11410351": {
+          "wireId": "wire-11410351",
+          "preferredSourceSide": "bottom",
+          "preferredTargetSide": "top",
+          "waypoints": []
+        },
+        "wire-aea81d91": {
+          "wireId": "wire-aea81d91",
+          "preferredSourceSide": "right",
+          "preferredTargetSide": "left",
+          "waypoints": []
+        }
+      }
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "ui-7974311a-e066-4273-b117-9b6c7af06064": {
+      "operationId": "ui-7974311a-e066-4273-b117-9b6c7af06064",
+      "revision": 1,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:52:47.535Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "studio-e5da5135-d2ea-47b8-90a8-f68c09c3cba8": {
+      "operationId": "studio-e5da5135-d2ea-47b8-90a8-f68c09c3cba8",
+      "revision": 2,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:53:19.057Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "diagram.rename",
+        "node.update"
+      ]
+    },
+    "ui-9a753c4b-c4ea-4133-bdb2-06ae282530fe": {
+      "operationId": "ui-9a753c4b-c4ea-4133-bdb2-06ae282530fe",
+      "revision": 3,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:53:23.971Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "studio-623fe40d-f59c-4d84-b621-189892108d97": {
+      "operationId": "studio-623fe40d-f59c-4d84-b621-189892108d97",
+      "revision": 4,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:53:30.121Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-72437917-b017-4878-a955-b5c8efe470b7": {
+      "operationId": "studio-72437917-b017-4878-a955-b5c8efe470b7",
+      "revision": 5,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:53:39.754Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "studio-f3c80619-b76c-48ec-b480-276b9ee1fd58": {
+      "operationId": "studio-f3c80619-b76c-48ec-b480-276b9ee1fd58",
+      "revision": 6,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:53:44.504Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move",
+        "node.resize"
+      ]
+    },
+    "studio-7cd757ab-58ea-49c8-946d-5a4b4fdf6ce8": {
+      "operationId": "studio-7cd757ab-58ea-49c8-946d-5a4b4fdf6ce8",
+      "revision": 7,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:53:49.538Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.add",
+        "wire.add",
+        "wire.setRoute"
+      ]
+    },
+    "ui-a6ecb2ca-5970-4a24-adfb-9c175e9d235a": {
+      "operationId": "ui-a6ecb2ca-5970-4a24-adfb-9c175e9d235a",
+      "revision": 8,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:53:51.385Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.remove"
+      ]
+    },
+    "ui-5d32f1f7-23ee-485a-bff5-9426dd1210ae": {
+      "operationId": "ui-5d32f1f7-23ee-485a-bff5-9426dd1210ae",
+      "revision": 9,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:54:37.504Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "studio-41a20ef3-3c56-428f-bdd0-57b64e07070c": {
+      "operationId": "studio-41a20ef3-3c56-428f-bdd0-57b64e07070c",
+      "revision": 10,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:54:41.237Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.add",
+        "wire.add",
+        "wire.setRoute"
+      ]
+    },
+    "studio-efffe8a2-1161-40a0-a5c0-d90ad62aafe7": {
+      "operationId": "studio-efffe8a2-1161-40a0-a5c0-d90ad62aafe7",
+      "revision": 11,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:54:47.737Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-8de8f500-e8d7-449b-ac2b-d98926b1d24e": {
+      "operationId": "studio-8de8f500-e8d7-449b-ac2b-d98926b1d24e",
+      "revision": 12,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:54:49.953Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-8a9ab2db-9eba-41e2-8857-8779836192d1": {
+      "operationId": "studio-8a9ab2db-9eba-41e2-8857-8779836192d1",
+      "revision": 13,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:54:51.386Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-793aadd9-89cd-4101-aa7a-99663b553ff9": {
+      "operationId": "ui-793aadd9-89cd-4101-aa7a-99663b553ff9",
+      "revision": 14,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:54:54.857Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.remove"
+      ]
+    },
+    "ui-4317e9ad-2762-4c6e-a298-c29c23715a5d": {
+      "operationId": "ui-4317e9ad-2762-4c6e-a298-c29c23715a5d",
+      "revision": 15,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:54:56.149Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.remove"
+      ]
+    },
+    "ui-d0bc6e48-6e2a-4e47-a7c4-08c1a7271d8c": {
+      "operationId": "ui-d0bc6e48-6e2a-4e47-a7c4-08c1a7271d8c",
+      "revision": 16,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:55:05.171Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "ui-5dd4fd74-d7f6-47b5-817a-6de686ec7361": {
+      "operationId": "ui-5dd4fd74-d7f6-47b5-817a-6de686ec7361",
+      "revision": 17,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:55:09.554Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "ui-fbf94fbe-af02-496c-ad1a-95583ad6719d": {
+      "operationId": "ui-fbf94fbe-af02-496c-ad1a-95583ad6719d",
+      "revision": 18,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:55:11.887Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "studio-89d2c4f2-bdcd-4ca3-8cc9-19529dd58727": {
+      "operationId": "studio-89d2c4f2-bdcd-4ca3-8cc9-19529dd58727",
+      "revision": 19,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:55:14.737Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-cf128a34-785e-4a74-bf34-2674d9280668": {
+      "operationId": "ui-cf128a34-785e-4a74-bf34-2674d9280668",
+      "revision": 20,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:55:19.304Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "studio-932f1d61-cf59-4768-867b-9e61855706c6": {
+      "operationId": "studio-932f1d61-cf59-4768-867b-9e61855706c6",
+      "revision": 21,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:55:21.320Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-d84ef1c8-8369-44fe-b006-ef071c852adb": {
+      "operationId": "ui-d84ef1c8-8369-44fe-b006-ef071c852adb",
+      "revision": 22,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-08T10:55:26.953Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    }
+  }
+}
