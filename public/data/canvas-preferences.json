@@ -3,7 +3,7 @@
   "appearance": {
     "density": "comfortable",
     "radius": 8,
-    "theme": "dark",
+    "theme": "light",
     "accent": "gold"
   },
   "canvas": {
@@ -24,7 +24,8 @@
   "wires": {
     "showLabels": "always",
     "width": 1.25,
-    "dimUnrelated": true
+    "dimUnrelated": true,
+    "labelScale": 1
   },
   "panel": {
     "width": 457,
@@ -32,7 +33,7 @@
     "showEmptyFields": false,
     "railWidth": 387,
     "railCollapsed": false,
-    "studioCollapsed": false,
+    "studioCollapsed": true,
     "reframeOnPanelMove": false
   },
   "files": {

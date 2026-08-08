@@ -1,4 +1,5 @@
 import type { CanvasPreferences, PreferenceSection } from '../../domain/model';
+import { WIRE_LABEL_SIZE_LIMITS } from '../../domain/wire-label-size';
 import { FieldRow, PanelSection, SwitchRow, TARGET_SIZES, targetScale } from '../shell';
 import { WIRE_SHAPES, WIRE_SHAPE_HINTS } from '../edges/wire-shape';
 
@@ -95,6 +96,7 @@ function NodeControls({ patch, value }: { value: CanvasPreferences; patch: Patch
 }
 
 function WireControls({ patch, value }: { value: CanvasPreferences; patch: Patch }) {
+  const maxLabelSize = value.wires.maxLabelSize ?? WIRE_LABEL_SIZE_LIMITS.defaultMaximum;
   return (
     <PanelSection title="Drawing">
       <SwitchRow checked={value.wires.dimUnrelated} label="Dim unrelated" onChange={(dimUnrelated) => patch('wires', { ...value.wires, dimUnrelated })} />
@@ -116,6 +118,16 @@ function WireControls({ patch, value }: { value: CanvasPreferences; patch: Patch
       </FieldRow>
       <FieldRow hint={`${Math.round((value.wires.labelScale ?? 1) * 100)}%`} label="Label size">
         <input max="1.5" min="0.85" onChange={(event) => patch('wires', { ...value.wires, labelScale: Number(event.target.value) })} step="0.05" type="range" value={value.wires.labelScale ?? 1} />
+      </FieldRow>
+      <FieldRow hint={`${maxLabelSize}px`} label="Maximum label size">
+        <input
+          max={WIRE_LABEL_SIZE_LIMITS.maximum}
+          min={WIRE_LABEL_SIZE_LIMITS.minimum}
+          onChange={(event) => patch('wires', { ...value.wires, maxLabelSize: Number(event.target.value) })}
+          step="1"
+          type="range"
+          value={maxLabelSize}
+        />
       </FieldRow>
       <SwitchRow
         checked={value.wires.avoidNodes ?? true}

@@ -210,6 +210,8 @@ export interface CanvasPreferences {
     shape?: 'elbow' | 'straight' | 'curved' | 'stepped';
     /** Scales the wire-label type on its own, without touching the panels. */
     labelScale?: number;
+    /** Largest label type in diagram pixels; labels disappear when zoom would exceed it. */
+    maxLabelSize?: number;
     /** Whether the router detours around unrelated nodes. On is the standard. */
     avoidNodes?: boolean;
   };

@@ -375,7 +375,10 @@
    * is not small type, it is unreadable type. Constant on screen, and sized by its own token so
    * making wire labels legible cannot enlarge every count and kind tag in the panels.
    */
-  font-size: calc(var(--text-wire) / var(--nvk-label-zoom, 1));
+  font-size: min(
+    calc(var(--wire-label-base-size, 12px) / var(--nvk-label-zoom, 1)),
+    var(--wire-label-max-size, 13px)
+  );
   line-height: 1.35;
   letter-spacing: 0.01em;
   white-space: nowrap;
@@ -395,6 +398,12 @@
 .wire-label:hover { color: var(--ink); }
 .wire-label.is-movable { cursor: grab; }
 .wire-label.is-movable:active { cursor: grabbing; }
+
+/* Below the chosen semantic-zoom boundary, labels become clutter rather than explanation. */
+.canvas-surface[data-wire-labels-hidden] .wire-label {
+  visibility: hidden;
+  pointer-events: none;
+}
 
 /*
  * The ends of a selected wire.

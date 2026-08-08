@@ -1,4 +1,5 @@
 import type { ArchitectureDocument, CanvasPreferences } from './model';
+import { WIRE_LABEL_SIZE_LIMITS } from './wire-label-size';
 
 /** Safe empty document used when loading fails. */
 export const emptyArchitecture: ArchitectureDocument = {
@@ -51,6 +52,7 @@ export const defaultPreferences: CanvasPreferences = {
     dimUnrelated: true,
     shape: 'elbow',
     labelScale: 1,
+    maxLabelSize: WIRE_LABEL_SIZE_LIMITS.defaultMaximum,
     avoidNodes: true,
   },
   panel: {

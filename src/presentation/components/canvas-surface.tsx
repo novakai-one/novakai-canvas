@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from 'react';
+import {
+  useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type RefObject,
+} from 'react';
 import {
   Background, BackgroundVariant, ConnectionMode, Controls, ReactFlow,
   type Connection, type NodeChange, type Viewport,
@@ -28,6 +30,7 @@ import { TreeNode } from '../nodes/tree-node';
 import { ElbowEdge } from '../edges/elbow-edge';
 import { Legend } from './legend';
 import { CanvasToolbar } from './canvas-toolbar';
+import { wireLabelSizing } from '../wire-styles';
 
 const nodeTypes = { architecture: ArchitectureNode, comment: CommentNode, scope: ScopeNode, tree: TreeNode };
 const edgeTypes = { elbow: ElbowEdge };
@@ -96,16 +99,18 @@ function placedNodes(view: ProjectedView): PlacedNode[] {
  * ordinary nudge inside a group writes no re-parent at all.
  */
 function applyDrop(
-  execute: (command: RecordCommand) => void,
+  executeAll: (commands: RecordCommand[]) => void,
   view: ProjectedView,
   moved: { id: string; parentId?: string; position: WorldPoint },
 ): void {
   const placed = placedNodes(view);
   const landed = resolveDrop(placed, moved.id, moved.position, moved.parentId);
-  if (landed.parentId !== moved.parentId) {
-    execute({ kind: 'node.reparent', id: moved.id, parentId: landed.parentId });
-  }
-  execute({ kind: 'node.move', id: moved.id, position: landed.position });
+  executeAll([
+    ...(landed.parentId !== moved.parentId
+      ? [{ kind: 'node.reparent' as const, id: moved.id, parentId: landed.parentId }]
+      : []),
+    { kind: 'node.move', id: moved.id, position: landed.position },
+  ]);
 }
 
 /**
@@ -260,7 +265,7 @@ const TRAVEL_MS = 700;
  * The same hook publishes the travel contract other chrome uses, and answers the one question
  * placement needs: which point in the diagram the user is actually looking at.
  */
-function useCamera(activeDiagramId: string): {
+function useCamera(activeDiagramId: string, minimumWireLabelZoom: number): {
   surface: RefObject<HTMLElement | null>;
   fitOnOpen: boolean;
   remember: (viewport: Viewport) => void;
@@ -299,6 +304,19 @@ function useCamera(activeDiagramId: string): {
     return () => publishCanvasCamera(null);
   }, []);
 
+  const publishZoom = useCallback((zoom: number): void => {
+    const element = surface.current;
+    if (!element) return;
+    element.style.setProperty('--nvk-zoom', String(zoom));
+    element.toggleAttribute('data-wire-labels-hidden', zoom <= minimumWireLabelZoom);
+  }, [minimumWireLabelZoom]);
+
+  // A preference change must take effect immediately, without waiting for the camera to move.
+  useEffect(() => {
+    const zoom = flow.current?.getViewport().zoom;
+    if (zoom !== undefined) publishZoom(zoom);
+  }, [publishZoom]);
+
   return {
     surface,
     fitOnOpen: remembered === undefined,
@@ -314,9 +332,7 @@ function useCamera(activeDiagramId: string): {
      * to two physical pixels at the app's own default framing, which is not a small target,
      * it is an invisible one.
      */
-    publishZoom: (zoom: number) => {
-      surface.current?.style.setProperty('--nvk-zoom', String(zoom));
-    },
+    publishZoom,
     attach: (instance: FlowInstance) => {
       flow.current = instance;
       const saved = cameras.current.get(activeDiagramId);
@@ -367,10 +383,11 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
     activeDiagramId, execute, executeAll, mode, preferences, record, selection, setSelection, view,
   } = props;
   const editable = mode === 'edit';
+  const labelSizing = wireLabelSizing(preferences);
   useEscapeStepsOutward(record, selection, setSelection);
   useUndoShortcut(editable && props.canUndo, props.undo);
   useSelectionReleasesWithItsObject(record, selection, setSelection);
-  const camera = useCamera(activeDiagramId);
+  const camera = useCamera(activeDiagramId, labelSizing.minimumZoom);
   useRefitWhenPanelsMove(preferences.panel);
   /** The port a drag began on, remembered until it lands somewhere or on nothing. */
   const dragFrom = useRef<{ nodeId: string; side?: PortSide } | null>(null);
@@ -421,32 +438,38 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
     setSelection({ kind: 'node', id: created.node.id as string });
   };
 
+  /*
+   * The committed projection must not depend on gesture frames. React Flow keeps DOM measurements
+   * against these object identities; rebuilding every node for one moving node makes every edge
+   * temporarily lose an initialized endpoint.
+   */
+  const projectedNodes = useMemo(
+    () => projectNodes({
+      view, record, preferences, selection, editable, select: setSelection, execute,
+      // A resize moves two facts for north/west handles — where the corner sits and how big
+      // the box is — and one fact for the rest. Either way it is one gesture, so it commits
+      // as one revision through executeAll, straight from the frames the overlay accumulated.
+      // The resizer's own onResizeEnd params are deliberately unused: the overlay holds the
+      // same values React Flow reported, already in node.position coordinates.
+      resizeEnd: editable
+        ? (id: string) => {
+          // Read through the ref: this fires on d3-drag's gesture-start listeners, so the
+          // `inFlight` this closure captured is the empty overlay from when the drag began.
+          const { frame, rest } = takeInFlight(inFlightRef.current, id);
+          if (!frame) return;
+          executeAll([
+            ...(frame.position ? [{ kind: 'node.move' as const, id, position: frame.position }] : []),
+            ...(frame.size ? [{ kind: 'node.resize' as const, id, size: frame.size }] : []),
+          ]);
+          updateInFlight(() => rest);
+        }
+        : undefined,
+    }),
+    [editable, execute, executeAll, preferences, record, selection, setSelection, updateInFlight, view],
+  );
   const nodes = useMemo(
-    () => mergeInFlight(
-      projectNodes({
-        view, record, preferences, selection, editable, select: setSelection, execute,
-        // A resize moves two facts for north/west handles — where the corner sits and how big
-        // the box is — and one fact for the rest. Either way it is one gesture, so it commits
-        // as one revision through executeAll, straight from the frames the overlay accumulated.
-        // The resizer's own onResizeEnd params are deliberately unused: the overlay holds the
-        // same values React Flow reported, already in node.position coordinates.
-        resizeEnd: editable
-          ? (id: string) => {
-            // Read through the ref: this fires on d3-drag's gesture-start listeners, so the
-            // `inFlight` this closure captured is the empty overlay from when the drag began.
-            const { frame, rest } = takeInFlight(inFlightRef.current, id);
-            if (!frame) return;
-            executeAll([
-              ...(frame.position ? [{ kind: 'node.move' as const, id, position: frame.position }] : []),
-              ...(frame.size ? [{ kind: 'node.resize' as const, id, size: frame.size }] : []),
-            ]);
-            updateInFlight(() => rest);
-          }
-          : undefined,
-      }),
-      inFlight,
-    ),
-    [editable, execute, executeAll, inFlight, preferences, record, selection, setSelection, updateInFlight, view],
+    () => mergeInFlight(projectedNodes, inFlight),
+    [inFlight, projectedNodes],
   );
   const edges = useMemo(
     () => projectEdges({
@@ -455,7 +478,14 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
     [editable, execute, preferences, record, selection, setSelection, view],
   );
   return (
-    <main className={`canvas-surface is-${mode}`} ref={camera.surface}>
+    <main
+      className={`canvas-surface is-${mode}`}
+      ref={camera.surface}
+      style={{
+        '--wire-label-base-size': `${labelSizing.baseSize}px`,
+        '--wire-label-max-size': `${labelSizing.maximumSize}px`,
+      } as CSSProperties}
+    >
       {/*
         * The key names the diagram and nothing else. It used to name the mode too, so every
         * Present/Edit toggle tore React Flow down and rebuilt it, and the camera snapped back to
@@ -487,7 +517,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         onMoveEnd={(_event, viewport) => camera.remember(viewport)}
         onNodeDragStop={(_event, node) => {
           if (!editable) return;
-          applyDrop(execute, view, { id: node.id, parentId: node.parentId, position: node.position });
+          applyDrop(executeAll, view, { id: node.id, parentId: node.parentId, position: node.position });
           // The drop is a fact now; the frames that previewed it must not linger as a ghost.
           updateInFlight((current) => clearInFlight(current, node.id));
         }}

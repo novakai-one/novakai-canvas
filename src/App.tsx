@@ -306,8 +306,8 @@ export default function App(props: AppProps) {
    * Every visual judgement call, handed to the user as a number.
    *
    * Density and text scale drive the spacing and type tokens; target scale drives every canvas
-   * control's screen size; label scale drives wire type alone. Guessing which of these Chris
-   * wants is what offering all four is for — "if I can change things myself, then you don't
+   * control's screen size. Wire-label sizing stays with the canvas because its maximum also
+   * decides when labels disappear. Guessing which of these Chris wants is what offering them
    * have to spend forever trying to guess what I want".
    *
    * Written to the document element, not to the shell. Every derived token —
@@ -322,14 +322,12 @@ export default function App(props: AppProps) {
       '--density': String(DENSITY_SCALE[preferences.appearance.density] ?? 1),
       '--text-scale': String(preferences.appearance.textScale ?? 1),
       '--target-scale': String(targetScale(preferences.canvas.targetSize ?? 'medium').multiplier),
-      '--wire-label-scale': String(preferences.wires.labelScale ?? 1),
     };
     for (const [name, value] of Object.entries(scales)) style.setProperty(name, value);
   }, [
     preferences.appearance.density,
     preferences.appearance.textScale,
     preferences.canvas.targetSize,
-    preferences.wires.labelScale,
   ]);
 
   const shellStyle = {

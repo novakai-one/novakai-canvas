@@ -5,6 +5,7 @@ import type { NodeId } from '../domain/ids';
 import { projectView } from '../domain/project-view';
 import type { CanvasNode, CanvasWire, DiagramRecord } from '../domain/records';
 import { flowNodeType, projectEdges, projectNodes, scopeDepth } from './projection';
+import { mergeInFlight } from './in-flight';
 
 function node(id: string, kind: CanvasNode['kind'], parentId?: string): CanvasNode {
   return {
@@ -142,6 +143,24 @@ describe('projectNodes', () => {
     expect(projected[1].position).toEqual({ x: 100, y: 50 });
     expect(projected[1].width).toBe(200);
     expect(projected[1].height).toBe(110);
+  });
+
+  it('initializes React Flow measurements from authoritative layout geometry', () => {
+    const projected = projectNodes(input(record([node('map', 'group'), node('one', 'module', 'map')])));
+    expect(projected[1].measured).toEqual({ width: 200, height: 110 });
+  });
+
+  it('replaces only the node under a gesture and keeps its initialized measurements', () => {
+    const projected = projectNodes(input(record([
+      node('map', 'group'), node('one', 'module', 'map'), node('two', 'module', 'map'),
+    ])));
+    const merged = mergeInFlight(projected, { one: { position: { x: 240, y: 180 } } });
+    expect(merged[1]).not.toBe(projected[1]);
+    expect(merged[1]).toMatchObject({
+      position: { x: 240, y: 180 }, measured: { width: 200, height: 110 },
+    });
+    expect(merged[0]).toBe(projected[0]);
+    expect(merged[2]).toBe(projected[2]);
   });
 
   it('resolves the interfaces and types a node names', () => {

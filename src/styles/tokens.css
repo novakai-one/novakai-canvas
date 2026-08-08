@@ -31,12 +31,6 @@
   --text-base: calc(13px * var(--text-scale));   /* body, fields, rail rows */
   --text-lg: calc(15px * var(--text-scale));     /* panel titles */
   --text-xl: calc(18px * var(--text-scale));     /* diagram title */
-  /*
-   * Wire labels are read at a distance, over a moving background, inside a scaled viewport —
-   * the one place --text-xs was never enough. Sized on its own token so making labels legible
-   * cannot quietly enlarge every count and kind tag in the panels.
-   */
-  --text-wire: calc(12px * var(--text-scale) * var(--wire-label-scale, 1));
   --tracking-caps: 0.08em;
 
   /*

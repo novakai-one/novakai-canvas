@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "revision": 54,
+  "revision": 83,
   "entries": {
     "project-scope": {
       "id": "project-scope",
@@ -41,7 +41,7 @@
       "id": "browser-scope",
       "name": "Agent Browser Sessions",
       "status": "active",
-      "revision": 2429,
+      "revision": 2435,
       "nodeLabels": [
         "Agent Browser Sessions",
         "Allocation policy",
@@ -414,6 +414,21 @@
         "New group",
         "New module",
         "Untitled diagram"
+      ]
+    },
+    "diagram-06d510a2": {
+      "id": "diagram-06d510a2",
+      "name": "Agent-Operations-SOP",
+      "status": "active",
+      "revision": 22,
+      "nodeLabels": [
+        "Agent-Operations-SOP",
+        "New group",
+        "New module",
+        "New module",
+        "New object",
+        "New object",
+        "New resource"
       ]
     }
   },

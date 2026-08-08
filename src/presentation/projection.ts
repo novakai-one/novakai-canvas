@@ -385,6 +385,10 @@ export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>
       // canvas, and where it belongs is decided on drop, by where it landed.
       width: node.size.width,
       height: node.size.height,
+      // Width and height are layout facts, not incidental DOM measurements. Carrying the same
+      // geometry in React Flow's initialized field means replacing the one node under a gesture
+      // cannot briefly make its connected edges unrenderable.
+      measured: { width: node.size.width, height: node.size.height },
       selected: selection?.kind === 'node' && selection.id === node.id,
       className: dimming && !connected.has(node.id) && node.kind !== 'group' ? 'is-dimmed' : '',
       // A group is a frame, not a surface: its whole box is click-through, and only the parts
