@@ -96,16 +96,18 @@ function placedNodes(view: ProjectedView): PlacedNode[] {
  * ordinary nudge inside a group writes no re-parent at all.
  */
 function applyDrop(
-  execute: (command: RecordCommand) => void,
+  executeAll: (commands: RecordCommand[]) => void,
   view: ProjectedView,
   moved: { id: string; parentId?: string; position: WorldPoint },
 ): void {
   const placed = placedNodes(view);
   const landed = resolveDrop(placed, moved.id, moved.position, moved.parentId);
-  if (landed.parentId !== moved.parentId) {
-    execute({ kind: 'node.reparent', id: moved.id, parentId: landed.parentId });
-  }
-  execute({ kind: 'node.move', id: moved.id, position: landed.position });
+  executeAll([
+    ...(landed.parentId !== moved.parentId
+      ? [{ kind: 'node.reparent' as const, id: moved.id, parentId: landed.parentId }]
+      : []),
+    { kind: 'node.move', id: moved.id, position: landed.position },
+  ]);
 }
 
 /**
@@ -421,32 +423,38 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
     setSelection({ kind: 'node', id: created.node.id as string });
   };
 
+  /*
+   * The committed projection must not depend on gesture frames. React Flow keeps DOM measurements
+   * against these object identities; rebuilding every node for one moving node makes every edge
+   * temporarily lose an initialized endpoint.
+   */
+  const projectedNodes = useMemo(
+    () => projectNodes({
+      view, record, preferences, selection, editable, select: setSelection, execute,
+      // A resize moves two facts for north/west handles — where the corner sits and how big
+      // the box is — and one fact for the rest. Either way it is one gesture, so it commits
+      // as one revision through executeAll, straight from the frames the overlay accumulated.
+      // The resizer's own onResizeEnd params are deliberately unused: the overlay holds the
+      // same values React Flow reported, already in node.position coordinates.
+      resizeEnd: editable
+        ? (id: string) => {
+          // Read through the ref: this fires on d3-drag's gesture-start listeners, so the
+          // `inFlight` this closure captured is the empty overlay from when the drag began.
+          const { frame, rest } = takeInFlight(inFlightRef.current, id);
+          if (!frame) return;
+          executeAll([
+            ...(frame.position ? [{ kind: 'node.move' as const, id, position: frame.position }] : []),
+            ...(frame.size ? [{ kind: 'node.resize' as const, id, size: frame.size }] : []),
+          ]);
+          updateInFlight(() => rest);
+        }
+        : undefined,
+    }),
+    [editable, execute, executeAll, preferences, record, selection, setSelection, updateInFlight, view],
+  );
   const nodes = useMemo(
-    () => mergeInFlight(
-      projectNodes({
-        view, record, preferences, selection, editable, select: setSelection, execute,
-        // A resize moves two facts for north/west handles — where the corner sits and how big
-        // the box is — and one fact for the rest. Either way it is one gesture, so it commits
-        // as one revision through executeAll, straight from the frames the overlay accumulated.
-        // The resizer's own onResizeEnd params are deliberately unused: the overlay holds the
-        // same values React Flow reported, already in node.position coordinates.
-        resizeEnd: editable
-          ? (id: string) => {
-            // Read through the ref: this fires on d3-drag's gesture-start listeners, so the
-            // `inFlight` this closure captured is the empty overlay from when the drag began.
-            const { frame, rest } = takeInFlight(inFlightRef.current, id);
-            if (!frame) return;
-            executeAll([
-              ...(frame.position ? [{ kind: 'node.move' as const, id, position: frame.position }] : []),
-              ...(frame.size ? [{ kind: 'node.resize' as const, id, size: frame.size }] : []),
-            ]);
-            updateInFlight(() => rest);
-          }
-          : undefined,
-      }),
-      inFlight,
-    ),
-    [editable, execute, executeAll, inFlight, preferences, record, selection, setSelection, updateInFlight, view],
+    () => mergeInFlight(projectedNodes, inFlight),
+    [inFlight, projectedNodes],
   );
   const edges = useMemo(
     () => projectEdges({
@@ -487,7 +495,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         onMoveEnd={(_event, viewport) => camera.remember(viewport)}
         onNodeDragStop={(_event, node) => {
           if (!editable) return;
-          applyDrop(execute, view, { id: node.id, parentId: node.parentId, position: node.position });
+          applyDrop(executeAll, view, { id: node.id, parentId: node.parentId, position: node.position });
           // The drop is a fact now; the frames that previewed it must not linger as a ghost.
           updateInFlight((current) => clearInFlight(current, node.id));
         }}
