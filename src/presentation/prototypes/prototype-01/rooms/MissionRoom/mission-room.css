@@ -1,0 +1,155 @@
+/**
+ * The Document projection: the same objects, in a reading order.
+ * Indentation carries containment, so the hierarchy is legible without a tree control.
+ */
+.mission-document {
+  height: 100%;
+  overflow-y: auto;
+  padding: var(--space-8) var(--space-6) var(--space-16);
+  background: var(--surface-page);
+}
+
+.mission-document__sheet {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.mission-document__outcome {
+  margin: 0 0 var(--space-8);
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+  color: var(--ink-muted);
+  max-width: 62ch;
+}
+
+.mission-document__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: var(--space-8) 0 var(--space-3);
+  padding-bottom: var(--space-2);
+  font-size: var(--text-eyebrow);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border-bottom: var(--border) solid var(--rule-hair);
+}
+
+.mission-document__count { font-variant-numeric: tabular-nums; letter-spacing: 0; }
+
+.mission-document__rows { display: flex; flex-direction: column; }
+
+.document-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: stretch;
+  border-bottom: var(--border) solid var(--rule-hair);
+  transition: background-color var(--motion-feedback) var(--ease-out);
+}
+
+.document-row:hover { background: var(--surface-1); }
+
+.document-row[data-selected='true'] {
+  background: var(--surface-1);
+  box-shadow: inset var(--border-emphasis) 0 0 0 var(--ink-faint);
+}
+
+.document-row__body {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-3);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  min-width: 0;
+}
+
+/* Depth as an indent rule, not a chevron: the same drafting line as the World. */
+.document-row__rule {
+  width: 0;
+  border-left: var(--border) solid var(--rule);
+  align-self: stretch;
+}
+
+.document-row[data-depth='0'] .document-row__body { padding-left: var(--space-2); }
+.document-row[data-depth='1'] .document-row__body { padding-left: var(--space-8); }
+.document-row[data-depth='2'] .document-row__body { padding-left: var(--space-16); }
+.document-row[data-depth='0'] .document-row__rule { border-left-color: var(--rule-spine); }
+
+.document-row__text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.document-row__title {
+  font-size: var(--text-base);
+  color: var(--ink);
+}
+
+.document-row__condition {
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.document-row__open {
+  flex: none;
+  align-self: center;
+  width: 26px;
+  height: 26px;
+  margin-right: var(--space-2);
+  display: grid;
+  place-items: center;
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+  background: transparent;
+  border: var(--border) solid var(--rule);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color var(--motion-feedback) var(--ease-out),
+    border-color var(--motion-feedback) var(--ease-out);
+}
+
+.document-row__open:hover { color: var(--ink); border-color: var(--ink-faint); }
+
+.mission-document__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mission-document__list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  border-bottom: var(--border) solid var(--rule-hair);
+}
+
+.mission-document__link {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  flex: 1;
+  padding: var(--space-3) var(--space-2);
+  text-align: left;
+  font-size: var(--text-base);
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: color var(--motion-feedback) var(--ease-out);
+}
+
+.mission-document__link:hover { color: var(--attention); }

@@ -1,0 +1,272 @@
+/**
+ * The Mission World: the plumb line, its clamps, its branches, and the bob.
+ *
+ * Reduced motion replaces the draw with an immediate full-length line. The drawing is a
+ * flourish; the line is the information.
+ */
+.mission-world {
+  position: relative;
+  height: 100%;
+  overflow: auto;
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.018), transparent 55%),
+    var(--surface-sunken);
+}
+
+.mission-world--empty {
+  display: grid;
+  place-items: center;
+  padding: var(--space-8);
+}
+
+.mission-world__canvas {
+  position: relative;
+  min-width: 100%;
+  min-height: 100%;
+  padding: var(--space-6);
+}
+
+.mission-world__lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: var(--layer-canvas);
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* ── The plumb line ───────────────────────────────────────────────────────── */
+.mission-world__spine {
+  stroke: var(--rule-spine);
+  stroke-width: 1;
+  transform-origin: 0 0;
+  animation: spine-draw var(--motion-structural) var(--ease-draw) both;
+}
+
+/* The bright reach: how far the sequence has actually got. No progress bar needed. */
+.mission-world__reach {
+  stroke: var(--ink-faint);
+  stroke-width: 2;
+  animation: spine-draw var(--motion-structural) var(--ease-draw) both;
+}
+
+@keyframes spine-draw {
+  from { scale: 1 0; }
+  to { scale: 1 1; }
+}
+
+.mission-world__clamp-line {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.mission-world__sequence-arrow {
+  fill: none;
+  stroke: var(--rule-spine);
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mission-world__branch {
+  fill: none;
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  animation: branch-draw var(--motion-structural) var(--ease-draw) forwards;
+}
+
+@keyframes branch-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* The bob: it has not landed while the mission is unfinished. */
+.mission-world__bob rect {
+  fill: var(--surface-sunken);
+  stroke: var(--rule-spine);
+  stroke-width: 1;
+}
+
+.mission-world__bob[data-landed='true'] rect {
+  fill: var(--settled);
+  stroke: var(--settled);
+}
+
+/* ── Nodes ────────────────────────────────────────────────────────────────── */
+.stage-node {
+  animation: node-arrive var(--motion-panel) var(--ease-enter) both;
+}
+
+@keyframes node-arrive {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.stage-node {
+  position: absolute;
+  z-index: var(--layer-nodes);
+  display: flex;
+  flex-direction: column;
+  /* Fixed height, matching NODE_HEIGHT in reveal-tree.ts: the clamp has to land on
+     the line, and a node that grows with its text would drift off it. */
+  height: 140px;
+  background: var(--surface-2);
+  border: var(--border) solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
+  transition:
+    border-color var(--motion-feedback) var(--ease-out),
+    box-shadow var(--motion-select) var(--ease-out),
+    background-color var(--motion-feedback) var(--ease-out);
+}
+
+.stage-node:hover { border-color: var(--rule-strong); background: var(--surface-3); }
+
+.stage-node[data-selected='true'] {
+  z-index: var(--layer-selected);
+  border-color: var(--ink-faint);
+  box-shadow: var(--shadow-panel), inset 0 0 0 var(--border-emphasis) var(--ink-faint);
+}
+
+.stage-node[data-attention='true'] {
+  border-color: var(--attention);
+  background: linear-gradient(var(--attention-wash), var(--attention-wash)), var(--surface-2);
+}
+
+/* The clamp that fixes the node to its line. */
+.stage-node__clamp {
+  position: absolute;
+  left: -5px;
+  top: calc(50% - 5px);
+  width: 9px;
+  height: 9px;
+  rotate: 45deg;
+  background: var(--surface-2);
+  border: var(--border) solid var(--rule-strong);
+}
+
+.stage-node[data-selected='true'] .stage-node__clamp { border-color: var(--ink-faint); }
+.stage-node[data-attention='true'] .stage-node__clamp { background: var(--attention); border-color: var(--attention); }
+.stage-node[data-status='done'] .stage-node__clamp { background: var(--settled); border-color: var(--settled); }
+
+.stage-node__body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius) var(--radius) 0 0;
+  cursor: pointer;
+}
+
+.stage-node__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.stage-node__title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.stage-node__fact {
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--ink-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Status: a distinct glyph per state, so the word is not the only carrier and colour
+   is never the only cue. */
+.stage-node__mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 12px;
+  height: 12px;
+}
+
+.stage-node__mark-glyph {
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid var(--ink-faint);
+  border-radius: 50%;
+}
+
+.stage-node__mark[data-status='done'] .stage-node__mark-glyph {
+  background: var(--settled);
+  border-color: var(--settled);
+}
+
+.stage-node__mark[data-status='active'] .stage-node__mark-glyph {
+  border-radius: 0;
+  rotate: 45deg;
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+.stage-node__mark[data-status='blocked'] .stage-node__mark-glyph {
+  border-radius: 0;
+  border-color: var(--danger-strong);
+  background: var(--danger-strong);
+}
+
+.stage-node__mark[data-status='paused'] .stage-node__mark-glyph {
+  border-radius: 0;
+  border-color: var(--ink-faint);
+}
+
+.stage-node__actions {
+  display: flex;
+  flex: none;
+  gap: 0;
+  border-top: var(--border) solid var(--rule-hair);
+}
+
+.stage-node__action {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    color var(--motion-feedback) var(--ease-out),
+    background-color var(--motion-feedback) var(--ease-out);
+}
+
+.stage-node__action:hover { color: var(--ink); background: var(--surface-3); }
+.stage-node__action + .stage-node__action { border-left: var(--border) solid var(--rule-hair); }
+
+.stage-node__action-chevron {
+  rotate: 0deg;
+  transition: rotate var(--motion-structural) var(--ease-draw);
+}
+
+.stage-node__action[data-revealed='true'] { color: var(--ink); }
+.stage-node__action[data-revealed='true'] .stage-node__action-chevron { rotate: 90deg; }
+
+/* Revealed structure sits one shade quieter than the spine it branches from, so depth
+   reads without a second colour. */
+.stage-node[data-depth='1'] { background: var(--surface-1); }
+.stage-node[data-depth='2'] { background: var(--surface-1); border-style: dashed; }
+.stage-node[data-depth='2'] .stage-node__clamp { border-style: dashed; }

@@ -1,1 +1,2 @@
-{"id":"team_<slug>","kind":"team","ts":"ISO-8601 timestamp","name":"string","refs":"Ref[]; exactly one mission ref"}
+{"id":"team_tunnel","kind":"team","ts":"2026-07-16T10:05:00Z","name":"Tunnel team","refs":[{"kind":"mission","value":"mission_tunnel"}]}
+{"id":"team_attention","kind":"team","ts":"2026-07-29T11:35:00Z","name":"Attention team","refs":[{"kind":"mission","value":"mission_attention"}]}

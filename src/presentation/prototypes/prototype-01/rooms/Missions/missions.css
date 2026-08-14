@@ -1,0 +1,86 @@
+/** Missions — the library grid and the create form. Composition only. */
+.missions {
+  height: 100%;
+  overflow-y: auto;
+  padding: var(--space-6) var(--space-6) var(--space-16);
+  background: var(--surface-page);
+}
+
+.missions__sheet {
+  max-width: var(--content-max);
+  margin: 0 auto;
+}
+
+.missions__toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding-bottom: var(--space-4);
+  border-bottom: var(--border) solid var(--rule-hair);
+}
+
+.missions__toolbar > :last-child { margin-left: auto; }
+
+.missions__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.missions__reach { font-variant-numeric: tabular-nums; }
+
+/* ── Create form ──────────────────────────────────────────────────────────── */
+.missions__create {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+  padding: var(--space-5);
+  background: var(--surface-1);
+  border: var(--border) solid var(--rule);
+  border-radius: var(--radius);
+  animation: missions-create-in var(--motion-panel) var(--ease-enter);
+}
+
+@keyframes missions-create-in {
+  from { opacity: 0; translate: 0 -6px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+.missions__create-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.missions__label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+}
+
+.missions__input {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-base);
+  color: var(--ink);
+  background: var(--surface-2);
+  border: var(--border) solid var(--rule);
+  border-radius: var(--radius);
+  transition: border-color var(--motion-feedback) var(--ease-out);
+}
+
+.missions__input::placeholder { color: var(--ink-faint); }
+.missions__input:hover { border-color: var(--rule-strong); }
+.missions__input:focus { outline: none; border-color: var(--ink-faint); }
+.missions__input:focus-visible { outline: var(--focus-width) solid var(--focus-color); }
+
+.missions__input--area { resize: vertical; line-height: var(--leading-normal); }
+
+.missions__create-actions {
+  display: flex;
+  justify-content: flex-end;
+}

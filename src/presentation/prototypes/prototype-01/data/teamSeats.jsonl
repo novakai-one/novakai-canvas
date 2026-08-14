@@ -1,1 +1,7 @@
-{"teamSeatId":"string","kind":"teamSeat","teamId":"string","roleProfileId":"string","agentId":"string | null"}
+{"teamSeatId":"seat_tunnel_orchestrator","kind":"teamSeat","teamId":"team_tunnel","roleProfileId":"role_orchestrator","agentId":"agent_7f3c1a20-4d61-4c0b-9d2e-8a5f1b3c9e04"}
+{"teamSeatId":"seat_tunnel_builder","kind":"teamSeat","teamId":"team_tunnel","roleProfileId":"role_builder","agentId":"agent_2b9d47e1-0f6a-4c33-b8e5-61c4a7d90f12"}
+{"teamSeatId":"seat_tunnel_build-verifier","kind":"teamSeat","teamId":"team_tunnel","roleProfileId":"role_build-verifier","agentId":"agent_c41e8a75-3b22-4f19-a6d0-90b7e5f42c88"}
+{"teamSeatId":"seat_tunnel_spec-auditor","kind":"teamSeat","teamId":"team_tunnel","roleProfileId":"role_spec-auditor","agentId":null}
+{"teamSeatId":"seat_tunnel_vault","kind":"teamSeat","teamId":"team_tunnel","roleProfileId":"role_vault-agent","agentId":"agent_5d0f61b3-8e94-4a27-91cc-2f7ab6039d15"}
+{"teamSeatId":"seat_attention_orchestrator","kind":"teamSeat","teamId":"team_attention","roleProfileId":"role_orchestrator","agentId":"agent_9a2c30df-71b5-4e08-83fa-4d6190e7c521"}
+{"teamSeatId":"seat_attention_builder","kind":"teamSeat","teamId":"team_attention","roleProfileId":"role_builder","agentId":"agent_e8741f26-5c0d-49b3-ae12-73f95d80a6b4"}

@@ -1,0 +1,99 @@
+/** ObjectCard — flat, ruled, and quiet. No shadow at rest; the border does the work. */
+.object-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-1);
+  border: var(--border) solid var(--rule-hair);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition:
+    border-color var(--motion-feedback) var(--ease-out),
+    background-color var(--motion-feedback) var(--ease-out),
+    box-shadow var(--motion-select) var(--ease-out);
+}
+
+.object-card:hover { border-color: var(--rule); background: var(--surface-2); }
+
+.object-card[data-selected='true'] {
+  border-color: var(--ink-faint);
+  background: var(--surface-2);
+  box-shadow: inset var(--border-emphasis) 0 0 0 var(--ink-faint);
+}
+
+.object-card[data-attention='true'] {
+  border-color: var(--attention);
+  background: linear-gradient(var(--attention-wash), var(--attention-wash)), var(--surface-1);
+}
+
+.object-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+  padding: var(--space-4);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.object-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.object-card__title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.object-card__summary {
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--ink-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.object-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  border-top: var(--border) solid var(--rule-hair);
+}
+
+.object-card__footer-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+  min-width: 0;
+}
+
+.object-card__open {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+  background: transparent;
+  border: var(--border) solid var(--rule);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    color var(--motion-feedback) var(--ease-out),
+    border-color var(--motion-feedback) var(--ease-out);
+}
+
+.object-card__open:hover { color: var(--ink); border-color: var(--ink-faint); }

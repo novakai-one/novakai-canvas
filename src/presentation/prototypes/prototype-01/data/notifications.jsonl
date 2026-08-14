@@ -1,1 +1,5 @@
-{"notificationId":"string","kind":"notification","principalId":"string","subjectRef":{"kind":"string","id":"string"},"status":"string"}
+{"notificationId":"notif_interrupt-ordering","kind":"notification","principalId":"principal_chris","subjectRef":{"kind":"request","id":"request_interrupt-ordering"},"status":"unread"}
+{"notificationId":"notif_verifier-replacement","kind":"notification","principalId":"principal_chris","subjectRef":{"kind":"request","id":"request_verifier-replacement"},"status":"unread"}
+{"notificationId":"notif_beck-failed","kind":"notification","principalId":"principal_chris","subjectRef":{"kind":"agent","id":"agent_c41e8a75-3b22-4f19-a6d0-90b7e5f42c88"},"status":"unread"}
+{"notificationId":"notif_scene-format-done","kind":"notification","principalId":"principal_chris","subjectRef":{"kind":"mission","id":"mission_scene-format"},"status":"read"}
+{"notificationId":"notif_message-waiting","kind":"notification","principalId":"principal_chris","subjectRef":{"kind":"thread","id":"thread_tunnel-transport"},"status":"unread"}

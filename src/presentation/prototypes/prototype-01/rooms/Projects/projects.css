@@ -1,0 +1,213 @@
+/**
+ * Projects — columns, because a project is a container and a column reads as one.
+ * Kanban was the inspiration; the state model here is the mission's, not the column's.
+ */
+.projects {
+  height: 100%;
+  overflow: auto;
+  padding: var(--space-6);
+  background: var(--surface-page);
+}
+
+.projects__board {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-start;
+  min-height: 100%;
+}
+
+.project-column {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  flex: none;
+  background: var(--surface-1);
+  border: var(--border) solid var(--rule-hair);
+  border-radius: var(--radius);
+  transition: border-color var(--motion-feedback) var(--ease-out);
+}
+
+.project-column:hover { border-color: var(--rule); }
+.project-column[data-selected='true'] { border-color: var(--ink-faint); }
+
+.project-column__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-bottom: var(--border) solid var(--rule-hair);
+}
+
+.project-column__identity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.project-column__title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-display);
+  color: var(--ink);
+}
+
+.project-column__focus {
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
+.project-column__head-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: none;
+}
+
+.project-column__count {
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-faint);
+}
+
+.project-column__open,
+.project-column__mission-open {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+  background: transparent;
+  border: var(--border) solid var(--rule);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color var(--motion-feedback) var(--ease-out),
+    border-color var(--motion-feedback) var(--ease-out);
+}
+
+.project-column__open:hover,
+.project-column__mission-open:hover { color: var(--ink); border-color: var(--ink-faint); }
+
+.project-column__missions {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-2);
+  gap: 2px;
+  min-height: 60px;
+}
+
+.project-column__missions .empty-state {
+  padding: var(--space-4) var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.project-column__mission {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--space-2);
+  padding-right: var(--space-2);
+  border-radius: var(--radius-sm);
+  transition: background-color var(--motion-feedback) var(--ease-out);
+}
+
+.project-column__mission:hover { background: var(--surface-2); }
+
+.project-column__mission[data-selected='true'] {
+  background: var(--surface-2);
+  box-shadow: inset var(--border-emphasis) 0 0 0 var(--ink-faint);
+}
+
+.project-column__mission[data-attention='true'] {
+  background: var(--attention-wash);
+  box-shadow: inset var(--border-emphasis) 0 0 0 var(--attention);
+}
+
+.project-column__mission-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.project-column__mission-title {
+  font-size: var(--text-base);
+  color: var(--ink);
+}
+
+.project-column__add {
+  margin: 0 var(--space-2) var(--space-2);
+  padding: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+  text-align: left;
+  background: transparent;
+  border: var(--border) dashed var(--rule);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color var(--motion-feedback) var(--ease-out),
+    border-color var(--motion-feedback) var(--ease-out);
+}
+
+.project-column__add:hover { color: var(--ink); border-color: var(--rule-strong); }
+
+.project-column__draft,
+.projects__new-form {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0 var(--space-2) var(--space-2);
+}
+
+.project-column__draft-input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--ink);
+  background: var(--surface-2);
+  border: var(--border) solid var(--rule);
+  border-radius: var(--radius-sm);
+}
+
+.project-column__draft-input:focus { outline: none; border-color: var(--ink-faint); }
+
+.projects__new {
+  width: 260px;
+  flex: none;
+  padding-top: var(--space-1);
+}
+
+.projects__new-button {
+  width: 100%;
+  padding: var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+  text-align: left;
+  background: transparent;
+  border: var(--border) dashed var(--rule);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition:
+    color var(--motion-feedback) var(--ease-out),
+    border-color var(--motion-feedback) var(--ease-out);
+}
+
+.projects__new-button:hover { color: var(--ink); border-color: var(--rule-strong); }
+
+.projects__new-form { margin: 0; flex-direction: column; }
