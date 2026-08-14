@@ -1,0 +1,1 @@
+{"id":"task_<slug>","kind":"task","ts":"ISO-8601 timestamp","title":"string","status":"todo | doing | done | blocked","priority":"string","refs":"Ref[]","created":"ISO-8601 timestamp","updated":"ISO-8601 timestamp","notes":"string","blockedReason":"string; only while blocked"}

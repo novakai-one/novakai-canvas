@@ -1,0 +1,1 @@
+{"id":"agent_<uuid>","kind":"agent","ts":"ISO-8601 timestamp","name":"string","provider":"string","status":"spawning | live | failed | retired","sessionId":"string | null","sessions":"string[]","refs":"Ref[]","updated":"ISO-8601 timestamp"}

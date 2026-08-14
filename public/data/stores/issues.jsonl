@@ -1,0 +1,1 @@
+{"id":"issue_<slug>","kind":"issue","ts":"ISO-8601 timestamp","title":"string","status":"string","severity":"string","body":"string","refs":"Ref[]","updated":"ISO-8601 timestamp"}

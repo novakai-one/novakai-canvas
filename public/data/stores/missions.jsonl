@@ -1,0 +1,1 @@
+{"id":"mission_<slug>","kind":"mission","ts":"ISO-8601 timestamp","title":"string","status":"string","priority":"string","owner":"string","refs":"Ref[]","created":"ISO-8601 timestamp","updated":"ISO-8601 timestamp","notes":"string"}

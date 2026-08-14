@@ -1,0 +1,1 @@
+{"id":"request_<slug>","kind":"request","ts":"ISO-8601 timestamp","status":"pending | answered","question":"string","options":"string[]","refs":"Ref[]","answer":"string","decision":"decision id","updated":"ISO-8601 timestamp"}

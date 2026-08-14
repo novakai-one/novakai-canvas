@@ -1,0 +1,1 @@
+{"messageId":"string","kind":"message","threadId":"string","senderId":"string","body":"string","createdAt":"ISO-8601 timestamp","refs":"Ref[]"}

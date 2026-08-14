@@ -1,0 +1,1 @@
+{"agentRunId":"string","kind":"agentRun","agentId":"string","taskId":"string","status":"string","startedAt":"ISO-8601 timestamp","endedAt":"ISO-8601 timestamp | null"}

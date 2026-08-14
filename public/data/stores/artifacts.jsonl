@@ -1,0 +1,1 @@
+{"id":"artifact_<slug>","kind":"artifact","ts":"ISO-8601 timestamp","title":"string","path":"string; exactly one of path or url","url":"string; exactly one of path or url","refs":"Ref[]; at least one mission or task ref"}
