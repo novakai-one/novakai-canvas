@@ -1,13 +1,9 @@
-/**
- * The Mission World: the plumb line, its clamps, its branches, and the bob.
- *
- * Reduced motion replaces the draw with an immediate full-length line. The drawing is a
- * flourish; the line is the information.
- */
+/** Mission World's visual language. Canvas mechanics live in WorldCanvas. */
 .mission-world {
   position: relative;
   height: 100%;
-  overflow: auto;
+  min-height: 0;
+  overflow: hidden;
   background:
     radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.018), transparent 55%),
     var(--surface-sunken);
@@ -19,78 +15,19 @@
   padding: var(--space-8);
 }
 
-.mission-world__canvas {
-  position: relative;
-  min-width: 100%;
-  min-height: 100%;
-  padding: var(--space-6);
-}
-
-.mission-world__lines {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: var(--layer-canvas);
-  overflow: visible;
-  pointer-events: none;
-}
-
-/* ── The plumb line ───────────────────────────────────────────────────────── */
-.mission-world__spine {
-  stroke: var(--rule-spine);
-  stroke-width: 1;
-  transform-origin: 0 0;
-  animation: spine-draw var(--motion-structural) var(--ease-draw) both;
-}
-
-/* The bright reach: how far the sequence has actually got. No progress bar needed. */
-.mission-world__reach {
-  stroke: var(--ink-faint);
-  stroke-width: 2;
-  animation: spine-draw var(--motion-structural) var(--ease-draw) both;
-}
-
-@keyframes spine-draw {
-  from { scale: 1 0; }
-  to { scale: 1 1; }
-}
-
-.mission-world__clamp-line {
-  stroke: var(--rule);
-  stroke-width: 1;
-}
-
-.mission-world__sequence-arrow {
-  fill: none;
-  stroke: var(--rule-spine);
-  stroke-width: 1.25;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.mission-world__branch {
+.mission-world .mission-flow__edge .react-flow__edge-path {
   fill: none;
   stroke: var(--rule-strong);
   stroke-width: 1;
-  stroke-dasharray: 900;
-  stroke-dashoffset: 900;
-  animation: branch-draw var(--motion-structural) var(--ease-draw) forwards;
 }
 
-@keyframes branch-draw {
-  to { stroke-dashoffset: 0; }
-}
-
-/* The bob: it has not landed while the mission is unfinished. */
-.mission-world__bob rect {
-  fill: var(--surface-sunken);
+.mission-world .mission-flow__edge--sequence .react-flow__edge-path {
   stroke: var(--rule-spine);
-  stroke-width: 1;
+  stroke-width: 1.25;
 }
 
-.mission-world__bob[data-landed='true'] rect {
-  fill: var(--settled);
-  stroke: var(--settled);
+.mission-world .mission-flow__edge--branch .react-flow__edge-path {
+  stroke-dasharray: 6 5;
 }
 
 /* ── Nodes ────────────────────────────────────────────────────────────────── */
@@ -104,13 +41,15 @@
 }
 
 .stage-node {
-  position: absolute;
+  position: relative;
   z-index: var(--layer-nodes);
   display: flex;
   flex-direction: column;
   /* Fixed height, matching NODE_HEIGHT in reveal-tree.ts: the clamp has to land on
      the line, and a node that grows with its text would drift off it. */
   height: 140px;
+  width: 268px;
+  box-sizing: border-box;
   background: var(--surface-2);
   border: var(--border) solid var(--rule);
   border-radius: var(--radius);
@@ -119,6 +58,23 @@
     border-color var(--motion-feedback) var(--ease-out),
     box-shadow var(--motion-select) var(--ease-out),
     background-color var(--motion-feedback) var(--ease-out);
+}
+
+.mission-world .react-flow__handle {
+  width: 7px;
+  height: 7px;
+  min-width: 0;
+  min-height: 0;
+  opacity: 0;
+  background: var(--rule-strong);
+  border: 1px solid var(--surface-sunken);
+  pointer-events: none;
+  transition: opacity var(--motion-feedback) var(--ease-out);
+}
+
+.mission-world .react-flow__node:hover .react-flow__handle,
+.mission-world .react-flow__node.selected .react-flow__handle {
+  opacity: 0.7;
 }
 
 .stage-node:hover { border-color: var(--rule-strong); background: var(--surface-3); }
