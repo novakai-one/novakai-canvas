@@ -1,228 +1,137 @@
-/** Mission World's visual language. Canvas mechanics live in WorldCanvas. */
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/** Mission-local art direction. Canvas mechanics remain in WorldCanvas. */
 .mission-world {
+  --mission-void: #0a0d10;
+  --mission-graphite: #14191e;
+  --mission-steel: #272d33;
+  --mission-blueprint: #718293;
+  --mission-gold: #d2a74a;
+  --mission-chalk: #e8e4dc;
   position: relative;
   height: 100%;
   min-height: 0;
   overflow: hidden;
+  color: var(--mission-chalk);
   background:
-    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.018), transparent 55%),
-    var(--surface-sunken);
+    radial-gradient(ellipse at 25% 24%, rgba(89, 113, 130, 0.25), transparent 38%),
+    radial-gradient(ellipse at 70% 58%, rgba(210, 167, 74, 0.08), transparent 31%),
+    radial-gradient(ellipse at 48% 72%, rgba(54, 74, 87, 0.18), transparent 45%),
+    linear-gradient(145deg, #111920, #0b1014 58%, #090c0f);
 }
 
-.mission-world--empty {
-  display: grid;
-  place-items: center;
-  padding: var(--space-8);
-}
-
-.mission-world .mission-flow__edge .react-flow__edge-path {
-  fill: none;
-  stroke: var(--rule-strong);
-  stroke-width: 1;
-}
-
-.mission-world .mission-flow__edge--sequence .react-flow__edge-path {
-  stroke: var(--rule-spine);
-  stroke-width: 1.25;
-}
-
-.mission-world .mission-flow__edge--branch .react-flow__edge-path {
-  stroke-dasharray: 6 5;
-}
-
-/* ── Nodes ────────────────────────────────────────────────────────────────── */
-.stage-node {
-  animation: node-arrive var(--motion-panel) var(--ease-enter) both;
-}
-
-@keyframes node-arrive {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.stage-node {
-  position: relative;
-  z-index: var(--layer-nodes);
-  display: flex;
-  flex-direction: column;
-  /* Fixed height, matching NODE_HEIGHT in reveal-tree.ts: the clamp has to land on
-     the line, and a node that grows with its text would drift off it. */
-  height: 140px;
-  width: 268px;
-  box-sizing: border-box;
-  background: var(--surface-2);
-  border: var(--border) solid var(--rule);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-raised);
-  transition:
-    border-color var(--motion-feedback) var(--ease-out),
-    box-shadow var(--motion-select) var(--ease-out),
-    background-color var(--motion-feedback) var(--ease-out);
-}
-
-.mission-world .react-flow__handle {
-  width: 7px;
-  height: 7px;
-  min-width: 0;
-  min-height: 0;
-  opacity: 0;
-  background: var(--rule-strong);
-  border: 1px solid var(--surface-sunken);
-  pointer-events: none;
-  transition: opacity var(--motion-feedback) var(--ease-out);
-}
-
-.mission-world .react-flow__node:hover .react-flow__handle,
-.mission-world .react-flow__node.selected .react-flow__handle {
-  opacity: 0.7;
-}
-
-.stage-node:hover { border-color: var(--rule-strong); background: var(--surface-3); }
-
-.stage-node[data-selected='true'] {
-  z-index: var(--layer-selected);
-  border-color: var(--ink-faint);
-  box-shadow: var(--shadow-panel), inset 0 0 0 var(--border-emphasis) var(--ink-faint);
-}
-
-.stage-node[data-attention='true'] {
-  border-color: var(--attention);
-  background: linear-gradient(var(--attention-wash), var(--attention-wash)), var(--surface-2);
-}
-
-/* The clamp that fixes the node to its line. */
-.stage-node__clamp {
+.mission-world::before {
   position: absolute;
-  left: -5px;
-  top: calc(50% - 5px);
-  width: 9px;
-  height: 9px;
-  rotate: 45deg;
-  background: var(--surface-2);
-  border: var(--border) solid var(--rule-strong);
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  background-image:
+    linear-gradient(132deg, transparent 0 38%, rgba(126,148,163,.045) 38.1% 38.2%, transparent 38.3% 100%),
+    radial-gradient(rgba(148, 166, 177, 0.2) 0.7px, transparent 0.8px);
+  background-size: 100% 100%, 31px 31px;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,.9), transparent 79%);
+  opacity: 0.58;
 }
 
-.stage-node[data-selected='true'] .stage-node__clamp { border-color: var(--ink-faint); }
-.stage-node[data-attention='true'] .stage-node__clamp { background: var(--attention); border-color: var(--attention); }
-.stage-node[data-status='done'] .stage-node__clamp { background: var(--settled); border-color: var(--settled); }
+.mission-world::after {
+  position: absolute;
+  z-index: 45;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  box-shadow: inset 0 0 72px rgba(0, 0, 0, 0.35), inset 0 -80px 90px rgba(0, 0, 0, 0.16);
+}
 
-.stage-node__body {
+.mission-world--empty { display: grid; place-items: center; padding: var(--space-8); }
+.mission-world .world-canvas { z-index: 1; }
+
+.mission-world__readout {
+  position: absolute;
+  z-index: 50;
+  top: 22px;
+  left: 26px;
   display: flex;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
   flex-direction: column;
-  gap: var(--space-1);
-  padding: var(--space-3) var(--space-4);
-  text-align: left;
-  background: transparent;
-  border: 0;
-  border-radius: var(--radius) var(--radius) 0 0;
-  cursor: pointer;
+  gap: 5px;
+  max-width: 390px;
+  pointer-events: none;
 }
-
-.stage-node__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
+.mission-world__readout span,
+.mission-world__tier {
+  color: rgba(210, 167, 74, 0.72);
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
-
-.stage-node__title {
-  font-size: var(--text-lg);
-  font-weight: var(--weight-medium);
-  line-height: var(--leading-tight);
-  color: var(--ink);
-}
-
-.stage-node__fact {
-  font-size: var(--text-sm);
-  line-height: var(--leading-normal);
-  color: var(--ink-muted);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+.mission-world__readout strong {
   overflow: hidden;
-}
-
-/* Status: a distinct glyph per state, so the word is not the only carrier and colour
-   is never the only cue. */
-.stage-node__mark {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 12px;
-  height: 12px;
-}
-
-.stage-node__mark-glyph {
-  width: 8px;
-  height: 8px;
-  border: 1.5px solid var(--ink-faint);
-  border-radius: 50%;
-}
-
-.stage-node__mark[data-status='done'] .stage-node__mark-glyph {
-  background: var(--settled);
-  border-color: var(--settled);
-}
-
-.stage-node__mark[data-status='active'] .stage-node__mark-glyph {
-  border-radius: 0;
-  rotate: 45deg;
-  border-color: var(--ink);
-  background: var(--ink);
-}
-
-.stage-node__mark[data-status='blocked'] .stage-node__mark-glyph {
-  border-radius: 0;
-  border-color: var(--danger-strong);
-  background: var(--danger-strong);
-}
-
-.stage-node__mark[data-status='paused'] .stage-node__mark-glyph {
-  border-radius: 0;
-  border-color: var(--ink-faint);
-}
-
-.stage-node__actions {
-  display: flex;
-  flex: none;
-  gap: 0;
-  border-top: var(--border) solid var(--rule-hair);
-}
-
-.stage-node__action {
-  flex: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  padding: var(--space-2);
-  font-size: var(--text-xs);
-  color: var(--ink-faint);
-  background: transparent;
-  border: 0;
-  cursor: pointer;
+  color: rgba(232, 228, 220, 0.9);
+  font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   white-space: nowrap;
-  transition:
-    color var(--motion-feedback) var(--ease-out),
-    background-color var(--motion-feedback) var(--ease-out);
+  text-overflow: ellipsis;
 }
 
-.stage-node__action:hover { color: var(--ink); background: var(--surface-3); }
-.stage-node__action + .stage-node__action { border-left: var(--border) solid var(--rule-hair); }
+.mission-world__tier {
+  position: absolute;
+  z-index: 50;
+  right: 26px;
+  bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: none;
+  color: rgba(113, 130, 147, 0.42);
+}
+.mission-world__tier > span { margin-right: 5px; }
+.mission-world__tier i { font-style: normal; }
+.mission-world__tier i[data-active='true'] { color: var(--mission-gold); }
+.mission-world__tier i::before { margin-right: 6px; content: '—'; color: rgba(113, 130, 147, 0.32); }
 
-.stage-node__action-chevron {
-  rotate: 0deg;
-  transition: rotate var(--motion-structural) var(--ease-draw);
+.mission-world .react-flow__background { display: none; }
+.mission-world .react-flow__edge { z-index: 3 !important; }
+.mission-world .react-flow__node { z-index: 12; }
+.mission-world .react-flow__node.selected { z-index: 32 !important; }
+.mission-world .react-flow__node {
+  animation: mission-station-settle 520ms cubic-bezier(.16,1,.3,1) both;
+}
+.mission-world[data-selected='true'] .react-flow__node:not(.selected) { filter: brightness(.88) saturate(.82); }
+
+@keyframes mission-station-settle {
+  from { opacity: 0; translate: 0 -18px; }
+  to { opacity: 1; translate: 0 0; }
 }
 
-.stage-node__action[data-revealed='true'] { color: var(--ink); }
-.stage-node__action[data-revealed='true'] .stage-node__action-chevron { rotate: 90deg; }
+.mission-world .react-flow__controls {
+  left: 20px;
+  bottom: 18px;
+  background: rgba(11, 14, 17, 0.86);
+  border: 1px solid rgba(113, 130, 147, 0.23);
+  border-radius: 9px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.28);
+  backdrop-filter: blur(12px);
+}
+.mission-world .react-flow__controls-button {
+  width: 31px;
+  height: 31px;
+  color: rgba(205, 210, 212, 0.56);
+  border-bottom-color: rgba(113, 130, 147, 0.18);
+}
+.mission-world .react-flow__controls-button:hover { color: var(--mission-gold); background: rgba(210,167,74,.06); }
 
-/* Revealed structure sits one shade quieter than the spine it branches from, so depth
-   reads without a second colour. */
-.stage-node[data-depth='1'] { background: var(--surface-1); }
-.stage-node[data-depth='2'] { background: var(--surface-1); border-style: dashed; }
-.stage-node[data-depth='2'] .stage-node__clamp { border-style: dashed; }
+@media (max-width: 900px) {
+  .mission-world__readout { max-width: 260px; }
+  .mission-world__tier { display: none; }
+  .mission-stage-inspector { right: 12px; top: 12px; max-height: calc(100% - 24px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mission-world *, .mission-world *::before, .mission-world *::after {
+    scroll-behavior: auto !important;
+  }
+  .mission-world .react-flow__node { animation: none; }
+}

@@ -80,14 +80,17 @@ function RelatedObjectRow({ record }: { record: ObjectRecord }) {
 }
 
 export function InspectorPanel() {
-  const { selected, graph, select, enterRoom, room, toggleReveal, revealed, patch, elected } = useStore();
+  const { selected, graph, select, enterRoom, room, projection, patch, elected } = useStore();
   const [answered, setAnswered] = useState<string | null>(null);
 
   useEffect(() => {
     setAnswered(null);
   }, [selected?.id]);
 
-  if (!selected) {
+  const missionWorldOwnsInspector =
+    selected?.kind === 'stage' && room.kind === 'mission' && projection === 'world';
+
+  if (!selected || missionWorldOwnsInspector) {
     return <aside className="inspector-panel" data-state="closed" aria-hidden="true" />;
   }
 
@@ -103,11 +106,6 @@ export function InspectorPanel() {
       records: graph.relatedBy(selected.id, relation),
     }))
     .filter((section) => section.records.length > 0);
-
-  const isStageInMissionRoom = selected.kind === 'stage' && room.kind === 'mission';
-  const childCount = graph
-    .relatedBy(selected.id, 'contains')
-    .filter((r) => r.kind === 'stage' && r.fields.parentStageId === selected.id).length;
 
   const options = Array.isArray(selected.fields.options) ? (selected.fields.options as string[]) : [];
   const pending = selected.kind === 'request' && field(selected, 'status') === 'pending';
@@ -191,11 +189,6 @@ export function InspectorPanel() {
       </div>
 
       <footer className="inspector-panel__actions">
-        {isStageInMissionRoom && childCount > 0 && (
-          <ActionButton onClick={() => toggleReveal(selected.id)}>
-            {revealed.includes(selected.id) ? 'Hide from canvas' : `Show on canvas (${childCount})`}
-          </ActionButton>
-        )}
         {target && !alreadyHere && (
           <RoomAction onClick={() => enterRoom(target)}>
             Open {KIND_LABEL[selected.kind]}

@@ -3,26 +3,42 @@ import {
   Controls,
   ReactFlow,
   ReactFlowProvider,
+  ViewportPortal,
   useNodesState,
+  useReactFlow,
   type Edge,
+  type EdgeTypes,
+  type FitViewOptions,
   type Node,
   type NodeTypes,
   type Viewport,
 } from '@xyflow/react';
-import { useEffect } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import './world-canvas.css';
 
 const rememberedViewports = new Map<string, Viewport>();
 const rememberedPositions = new Map<string, Map<string, Node['position']>>();
 
-export interface WorldCanvasProps<NodeType extends Node = Node> {
+export type CanvasCameraRequest = {
+  key: string;
+  nodeIds: readonly string[];
+  padding?: FitViewOptions['padding'];
+  viewportInsets?: FitViewOptions['padding'];
+  maxZoom?: number;
+  duration?: number;
+};
+
+export interface WorldCanvasProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
   viewportKey: string;
   nodes: readonly NodeType[];
-  edges: readonly Edge[];
+  edges: readonly EdgeType[];
   nodeTypes: NodeTypes;
+  edgeTypes?: EdgeTypes;
   selectedId: string | null;
   onSelect: (id: string | null) => void;
-  onOpen?: (id: string) => void;
+  onZoomChange?: (zoom: number) => void;
+  cameraRequest?: CanvasCameraRequest | null;
+  canvasChildren?: ReactNode;
   showControls?: boolean;
 }
 
@@ -36,19 +52,23 @@ function restorePositions<NodeType extends Node>(viewportKey: string, nodes: rea
   });
 }
 
-function WorldCanvasSurface<NodeType extends Node>({
+function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
   viewportKey,
   nodes: incomingNodes,
   edges,
   nodeTypes,
+  edgeTypes,
   selectedId,
   onSelect,
-  onOpen,
+  onZoomChange,
+  cameraRequest,
+  canvasChildren,
   showControls = true,
-}: WorldCanvasProps<NodeType>) {
+}: WorldCanvasProps<NodeType, EdgeType>) {
   const [nodes, setNodes, onNodesChange] = useNodesState<NodeType>(
     restorePositions(viewportKey, incomingNodes),
   );
+  const { fitView } = useReactFlow<NodeType, EdgeType>();
   const rememberedViewport = rememberedViewports.get(viewportKey);
 
   useEffect(() => {
@@ -60,25 +80,49 @@ function WorldCanvasSurface<NodeType extends Node>({
     );
   }, [incomingNodes, selectedId, setNodes, viewportKey]);
 
+  useEffect(() => {
+    if (!cameraRequest || cameraRequest.nodeIds.length === 0) return;
+
+    let secondFrame = 0;
+    const firstFrame = requestAnimationFrame(() => {
+      secondFrame = requestAnimationFrame(() => {
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        void fitView({
+          nodes: cameraRequest.nodeIds.map((id) => ({ id })),
+          padding: cameraRequest.viewportInsets ?? cameraRequest.padding ?? 0.16,
+          minZoom: 0.28,
+          maxZoom: cameraRequest.maxZoom ?? 0.96,
+          duration: reduceMotion ? 0 : (cameraRequest.duration ?? 480),
+        });
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(firstFrame);
+      cancelAnimationFrame(secondFrame);
+    };
+  }, [cameraRequest, fitView, nodes.length]);
+
   return (
-    <ReactFlow<NodeType, Edge>
+    <ReactFlow<NodeType, EdgeType>
       className="world-canvas__surface"
       nodes={nodes}
       edges={[...edges]}
       nodeTypes={nodeTypes}
+      edgeTypes={edgeTypes}
       onNodesChange={onNodesChange}
       onNodeClick={(_, node) => onSelect(node.id)}
-      onNodeDoubleClick={(_, node) => onOpen?.(node.id)}
       onNodeDragStop={(_, node) => {
         const positions = rememberedPositions.get(viewportKey) ?? new Map();
         positions.set(node.id, node.position);
         rememberedPositions.set(viewportKey, positions);
       }}
       onPaneClick={() => onSelect(null)}
+      onMove={(_, viewport) => onZoomChange?.(viewport.zoom)}
       onMoveEnd={(_, viewport) => rememberedViewports.set(viewportKey, viewport)}
       defaultViewport={rememberedViewport}
       fitView={!rememberedViewport}
-      fitViewOptions={{ padding: 0.22, minZoom: 0.45, maxZoom: 1 }}
+      fitViewOptions={{ padding: 0.15, minZoom: 0.42, maxZoom: 0.9 }}
       minZoom={0.2}
       maxZoom={2.5}
       nodesConnectable={false}
@@ -87,6 +131,7 @@ function WorldCanvasSurface<NodeType extends Node>({
       zoomOnDoubleClick={false}
       proOptions={{ hideAttribution: true }}
     >
+      {canvasChildren && <ViewportPortal>{canvasChildren}</ViewportPortal>}
       {showControls && <Controls position="bottom-left" showInteractive={false} />}
     </ReactFlow>
   );
@@ -98,7 +143,9 @@ function WorldCanvasSurface<NodeType extends Node>({
  * It owns the canvas mechanics while callers keep ownership of node rendering,
  * graph-to-position mapping, edge styling, and room-specific actions.
  */
-export function WorldCanvas<NodeType extends Node>(props: WorldCanvasProps<NodeType>) {
+export function WorldCanvas<NodeType extends Node, EdgeType extends Edge = Edge>(
+  props: WorldCanvasProps<NodeType, EdgeType>,
+) {
   return (
     <div className="world-canvas">
       <ReactFlowProvider>
