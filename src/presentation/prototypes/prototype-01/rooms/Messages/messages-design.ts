@@ -1,7 +1,8 @@
-import type { ComponentType } from 'react';
+import type { RoomDesign } from '../../designs/room-design';
 import type { ObjectRecord } from '../../object-graph/contract';
 import type { ObjectGraph } from '../../object-graph/graph';
 
+/** Read-only Room state supplied to any Messages design. */
 export type MessagesDesignData = {
   graph: ObjectGraph;
   threads: readonly ObjectRecord[];
@@ -10,6 +11,7 @@ export type MessagesDesignData = {
   initialThreadId?: string;
 };
 
+/** Host actions available to any Messages design. */
 export type MessagesDesignCommands = {
   select(record: ObjectRecord | null): void;
   canOpen(record: ObjectRecord): boolean;
@@ -18,14 +20,11 @@ export type MessagesDesignCommands = {
   startConversation(agent: ObjectRecord): string;
 };
 
-/** The entire contract a disposable Messages design may depend on. */
+/** The entire Messages contract a disposable design may depend on. */
 export type MessagesDesignProps = {
   data: MessagesDesignData;
   commands: MessagesDesignCommands;
 };
 
-export type MessagesDesign = {
-  id: string;
-  label: string;
-  View: ComponentType<MessagesDesignProps>;
-};
+/** A disposable Messages Room design registered through the generic Room seam. */
+export type MessagesDesign = RoomDesign<MessagesDesignProps>;

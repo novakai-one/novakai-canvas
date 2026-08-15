@@ -14,7 +14,13 @@ export type WorldCameraPadding =
       left: number | string;
     };
 
-export type FrameNodesCameraCommand = {
+/** A position inside the visible canvas, expressed as ratios from its top-left corner. */
+export type WorldViewportAnchor = {
+  horizontalRatio: number;
+  verticalRatio: number;
+};
+
+type FrameNodesCameraCommand = {
   type: 'frame-nodes';
   key: string;
   nodeIds: readonly string[];
@@ -24,7 +30,7 @@ export type FrameNodesCameraCommand = {
   duration?: number;
 };
 
-export type FocusNodeCameraCommand = {
+type FocusNodeCameraCommand = {
   type: 'focus-node';
   key: string;
   nodeId: string;
@@ -33,9 +39,20 @@ export type FocusNodeCameraCommand = {
   duration?: number;
 };
 
+/** Places a node at a deliberate point in the viewport instead of always centring it. */
+type FocusNodeAtAnchorCameraCommand = {
+  type: 'focus-node-at-anchor';
+  key: string;
+  nodeId: string;
+  anchor: WorldViewportAnchor;
+  zoom?: number;
+  duration?: number;
+};
+
 export type WorldCameraCommand =
   | FrameNodesCameraCommand
   | FocusNodeCameraCommand
+  | FocusNodeAtAnchorCameraCommand
   | {
       type: 'set-viewport';
       key: string;
@@ -47,21 +64,18 @@ export type WorldCameraCommand =
       key: string;
       viewportKey?: string;
       duration?: number;
+    }
+  | {
+      type: 'set-zoom';
+      key: string;
+      zoom: number;
+      duration?: number;
     };
 
-/** Interaction policy a design may customise without importing React Flow props. */
-export type WorldCanvasInteraction = {
-  nodesDraggable?: boolean;
-  panOnDrag?: boolean | number[];
-  panOnScroll?: boolean;
-  zoomOnScroll?: boolean;
-  zoomOnPinch?: boolean;
-  zoomOnDoubleClick?: boolean;
-  minZoom?: number;
-  maxZoom?: number;
-  translateExtent?: [[number, number], [number, number]];
-  nodeExtent?: [[number, number], [number, number]];
-};
-
-/** Maps optical zoom to a design-owned semantic tier. */
-export type ZoomTierResolver<TTier> = (zoom: number, previousTier: TTier) => TTier;
+/** Typed result returned after the canvas interprets a camera command. */
+export type WorldCameraOutcome =
+  | 'applied'
+  | 'node-missing'
+  | 'viewport-missing'
+  | 'no-nodes'
+  | 'not-ready';
