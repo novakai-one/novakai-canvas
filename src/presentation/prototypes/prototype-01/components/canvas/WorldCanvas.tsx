@@ -15,6 +15,15 @@ import {
 } from '@xyflow/react';
 import { useEffect, type ReactNode } from 'react';
 import './world-canvas.css';
+import {
+  executeWorldCameraCommand,
+  type WorldCameraRuntime,
+} from './world-camera-runtime';
+import type {
+  WorldCameraCommand,
+  WorldCameraPadding,
+  WorldCanvasInteraction,
+} from './world-camera';
 
 const rememberedViewports = new Map<string, Viewport>();
 const rememberedPositions = new Map<string, Map<string, Node['position']>>();
@@ -22,8 +31,8 @@ const rememberedPositions = new Map<string, Map<string, Node['position']>>();
 export type CanvasCameraRequest = {
   key: string;
   nodeIds: readonly string[];
-  padding?: FitViewOptions['padding'];
-  viewportInsets?: FitViewOptions['padding'];
+  padding?: WorldCameraPadding;
+  viewportInsets?: WorldCameraPadding;
   maxZoom?: number;
   duration?: number;
 };
@@ -37,7 +46,10 @@ export interface WorldCanvasProps<NodeType extends Node = Node, EdgeType extends
   selectedId: string | null;
   onSelect: (id: string | null) => void;
   onZoomChange?: (zoom: number) => void;
+  cameraCommand?: WorldCameraCommand | null;
+  /** @deprecated Prefer cameraCommand. Kept so the current Mission prototype stays untouched. */
   cameraRequest?: CanvasCameraRequest | null;
+  interaction?: WorldCanvasInteraction;
   canvasChildren?: ReactNode;
   showControls?: boolean;
 }
@@ -61,14 +73,16 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
   selectedId,
   onSelect,
   onZoomChange,
+  cameraCommand,
   cameraRequest,
+  interaction,
   canvasChildren,
   showControls = true,
 }: WorldCanvasProps<NodeType, EdgeType>) {
   const [nodes, setNodes, onNodesChange] = useNodesState<NodeType>(
     restorePositions(viewportKey, incomingNodes),
   );
-  const { fitView } = useReactFlow<NodeType, EdgeType>();
+  const { fitView, setViewport } = useReactFlow<NodeType, EdgeType>();
   const rememberedViewport = rememberedViewports.get(viewportKey);
 
   useEffect(() => {
@@ -81,19 +95,45 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
   }, [incomingNodes, selectedId, setNodes, viewportKey]);
 
   useEffect(() => {
-    if (!cameraRequest || cameraRequest.nodeIds.length === 0) return;
+    const command: WorldCameraCommand | null = cameraCommand ?? (
+      cameraRequest
+        ? {
+            type: 'frame-nodes',
+            key: cameraRequest.key,
+            nodeIds: cameraRequest.nodeIds,
+            padding: cameraRequest.viewportInsets ?? cameraRequest.padding,
+            maxZoom: cameraRequest.maxZoom,
+            duration: cameraRequest.duration,
+          }
+        : null
+    );
+    if (!command) return;
 
     let secondFrame = 0;
     const firstFrame = requestAnimationFrame(() => {
       secondFrame = requestAnimationFrame(() => {
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        void fitView({
-          nodes: cameraRequest.nodeIds.map((id) => ({ id })),
-          padding: cameraRequest.viewportInsets ?? cameraRequest.padding ?? 0.16,
-          minZoom: 0.28,
-          maxZoom: cameraRequest.maxZoom ?? 0.96,
-          duration: reduceMotion ? 0 : (cameraRequest.duration ?? 480),
-        });
+        const duration = (requested?: number) => reduceMotion ? 0 : (requested ?? 480);
+        const runtime: WorldCameraRuntime = {
+          frameNodes: (nodeIds, options) => fitView({
+            nodes: nodeIds.map((id) => ({ id })),
+            padding: (options.padding ?? 0.16) as FitViewOptions['padding'],
+            minZoom: options.minZoom ?? 0.28,
+            maxZoom: options.maxZoom ?? 0.96,
+            duration: duration(options.duration),
+          }),
+          setViewport: (viewport, requestedDuration) => setViewport(
+            viewport,
+            { duration: duration(requestedDuration) },
+          ),
+          restoreViewport: (key, requestedDuration) => {
+            const viewport = rememberedViewports.get(key);
+            return viewport
+              ? setViewport(viewport, { duration: duration(requestedDuration) })
+              : Promise.resolve(false);
+          },
+        };
+        void executeWorldCameraCommand(command, runtime);
       });
     });
 
@@ -101,7 +141,7 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
       cancelAnimationFrame(firstFrame);
       cancelAnimationFrame(secondFrame);
     };
-  }, [cameraRequest, fitView, nodes.length]);
+  }, [cameraCommand, cameraRequest, fitView, nodes.length, setViewport]);
 
   return (
     <ReactFlow<NodeType, EdgeType>
@@ -123,12 +163,19 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
       defaultViewport={rememberedViewport}
       fitView={!rememberedViewport}
       fitViewOptions={{ padding: 0.15, minZoom: 0.42, maxZoom: 0.9 }}
-      minZoom={0.2}
-      maxZoom={2.5}
+      minZoom={interaction?.minZoom ?? 0.2}
+      maxZoom={interaction?.maxZoom ?? 2.5}
+      nodesDraggable={interaction?.nodesDraggable ?? true}
+      panOnDrag={interaction?.panOnDrag ?? true}
+      panOnScroll={interaction?.panOnScroll ?? false}
+      zoomOnScroll={interaction?.zoomOnScroll ?? true}
+      zoomOnPinch={interaction?.zoomOnPinch ?? true}
+      zoomOnDoubleClick={interaction?.zoomOnDoubleClick ?? false}
+      translateExtent={interaction?.translateExtent}
+      nodeExtent={interaction?.nodeExtent}
       nodesConnectable={false}
       edgesFocusable={false}
       deleteKeyCode={null}
-      zoomOnDoubleClick={false}
       proOptions={{ hideAttribution: true }}
     >
       {canvasChildren && <ViewportPortal>{canvasChildren}</ViewportPortal>}
