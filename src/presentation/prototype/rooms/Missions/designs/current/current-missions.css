@@ -1,0 +1,192 @@
+/** Missions — the library grid and the create form. Composition only. */
+.missions {
+  height: 100%;
+  overflow-y: auto;
+  padding: var(--space-6) var(--space-6) var(--space-16);
+  background: var(--surface-page);
+}
+
+.missions__sheet {
+  max-width: var(--content-max);
+  margin: 0 auto;
+}
+
+.missions__toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding-bottom: var(--space-4);
+  border-bottom: var(--border) solid var(--rule-hair);
+}
+
+.missions__toolbar > :last-child { margin-left: auto; }
+
+.missions__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.missions__reach { font-variant-numeric: tabular-nums; }
+
+/* ── Mission card ───────────────────────────────────────────────────────── */
+.missions-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface-1);
+  border: var(--border) solid var(--rule-hair);
+  border-radius: var(--radius);
+  transition:
+    border-color var(--motion-feedback) var(--ease-out),
+    background-color var(--motion-feedback) var(--ease-out),
+    box-shadow var(--motion-select) var(--ease-out);
+}
+
+.missions-card:hover {
+  background: var(--surface-2);
+  border-color: var(--rule);
+}
+
+.missions-card[data-selected='true'] {
+  background: var(--surface-2);
+  border-color: var(--ink-faint);
+  box-shadow: inset var(--border-emphasis) 0 0 0 var(--ink-faint);
+}
+
+.missions-card[data-attention='true'] {
+  background: linear-gradient(var(--attention-wash), var(--attention-wash)), var(--surface-1);
+  border-color: var(--attention);
+}
+
+.missions-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+}
+
+.missions-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.missions-card__title {
+  color: var(--ink);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+}
+
+.missions-card__summary {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.missions-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  border-top: var(--border) solid var(--rule-hair);
+}
+
+.missions-card__footer-left {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: var(--space-3);
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+}
+
+.missions-card__open {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+  cursor: pointer;
+  background: transparent;
+  border: var(--border) solid var(--rule);
+  border-radius: var(--radius-sm);
+  transition:
+    color var(--motion-feedback) var(--ease-out),
+    border-color var(--motion-feedback) var(--ease-out);
+}
+
+.missions-card__open:hover {
+  color: var(--ink);
+  border-color: var(--ink-faint);
+}
+
+/* ── Create form ──────────────────────────────────────────────────────────── */
+.missions__create {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+  padding: var(--space-5);
+  background: var(--surface-1);
+  border: var(--border) solid var(--rule);
+  border-radius: var(--radius);
+  animation: missions-create-in var(--motion-panel) var(--ease-enter);
+}
+
+@keyframes missions-create-in {
+  from { opacity: 0; translate: 0 -6px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+.missions__create-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.missions__label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+}
+
+.missions__input {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-base);
+  color: var(--ink);
+  background: var(--surface-2);
+  border: var(--border) solid var(--rule);
+  border-radius: var(--radius);
+  transition: border-color var(--motion-feedback) var(--ease-out);
+}
+
+.missions__input::placeholder { color: var(--ink-faint); }
+.missions__input:hover { border-color: var(--rule-strong); }
+.missions__input:focus { outline: none; border-color: var(--ink-faint); }
+.missions__input:focus-visible { outline: var(--focus-width) solid var(--focus-color); }
+
+.missions__input--area { resize: vertical; line-height: var(--leading-normal); }
+
+.missions__create-actions {
+  display: flex;
+  justify-content: flex-end;
+}
