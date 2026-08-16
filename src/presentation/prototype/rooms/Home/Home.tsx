@@ -2,15 +2,13 @@
  * Personal orientation, and the way into everything else.
  *
  * Home duplicates the rail's job so a collapsed rail costs nothing, and it holds the
- * objects you pinned. A destination and a pin behave the same way as everything else:
- * selecting shows you what it is, and a separate control takes you there.
+ * objects you pinned. The host resolves each pin's subject and the navigation policy;
+ * designs only ever see subject + canOpen.
  */
-import './home.css';
 import { AREAS, useStore, type AreaKey } from '../../app/store';
-import { field } from '../../object-graph/graph';
-import { KIND_LABEL } from '../../object-graph/contract';
-import { StateChip } from '../../components/ui/ui';
 import { roomFor } from '../../room-navigation/room-for';
+import type { HomeDesignCommands, HomeDesignData, HomeDestination, HomePin } from './home-design';
+import { resolveHomeDesign } from './home-design-registry';
 
 const DESTINATION_LINE: Record<AreaKey, string> = {
   home: 'Where you are.',
@@ -21,8 +19,11 @@ const DESTINATION_LINE: Record<AreaKey, string> = {
   'agent-roles': 'Blueprints a seat can request.',
 };
 
+/** Composition root that supplies orientation data and host commands to a Home design. */
 export function Home() {
   const { graph, goToArea, feed, select, selected, enterRoom, elected } = useStore();
+  const design = resolveHomeDesign(typeof window === 'undefined' ? '' : window.location.search);
+  const DesignView = design.View;
 
   const counts: Partial<Record<AreaKey, string>> = {
     'command-center': `${feed.length} waiting`,
@@ -32,90 +33,41 @@ export function Home() {
     'agent-roles': `${graph.byKind('agentRoleProfile').length} blueprints`,
   };
 
-  const pins = graph
+  const destinations: HomeDestination[] = AREAS
+    .filter((area) => area.key !== 'home')
+    .map((area) => ({
+      key: area.key,
+      label: area.label,
+      line: DESTINATION_LINE[area.key],
+      count: counts[area.key] ?? '',
+      needsAttention: area.key === 'command-center' && Boolean(elected),
+    }));
+
+  const pins: HomePin[] = graph
     .byKind('pin')
     .slice()
-    .sort((a, b) => Number(a.fields.order ?? 0) - Number(b.fields.order ?? 0));
+    .sort((a, b) => Number(a.fields.order ?? 0) - Number(b.fields.order ?? 0))
+    .flatMap((pin) => {
+      const subject = graph.relatedBy(pin.id, 'pins')[0];
+      return subject ? [{ pin, subject, canOpen: roomFor(subject) !== null }] : [];
+    });
 
-  return (
-    <div className="home">
-      <div className="home__sheet">
-        <section>
-          <h2 className="home__heading">Rooms</h2>
-          <div className="home__destinations">
-            {AREAS.filter((area) => area.key !== 'home').map((area) => (
-              <div
-                className="destination"
-                key={area.key}
-                data-attention={area.key === 'command-center' && Boolean(elected)}
-              >
-                <span className="destination__rule" aria-hidden="true" />
-                <div className="destination__text">
-                  <span className="eyebrow">Room</span>
-                  <span className="destination__title">{area.label}</span>
-                  <span className="destination__line">{DESTINATION_LINE[area.key]}</span>
-                </div>
-                <div className="destination__foot">
-                  <span className="destination__count">{counts[area.key]}</span>
-                  <button
-                    type="button"
-                    className="destination__enter"
-                    onClick={() => goToArea(area.key)}
-                  >
-                    Enter Room
-                    <span aria-hidden="true">↗</span>
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+  const data: HomeDesignData = {
+    graph,
+    destinations,
+    pins,
+    selected,
+    attentionSubjectId: elected?.subject.id ?? null,
+  };
 
-        <section>
-          <h2 className="home__heading">Pinned</h2>
-          <div className="home__pins">
-            {pins.map((pin) => {
-              const subject = graph.relatedBy(pin.id, 'pins')[0];
-              if (!subject) return null;
-              const room = roomFor(subject);
-              const status = field(subject, 'status');
-              return (
-                <div
-                  className="pin-card"
-                  key={pin.id}
-                  data-selected={selected?.id === subject.id}
-                  data-attention={elected?.subject.id === subject.id}
-                >
-                  <button type="button" className="pin-card__body" onClick={() => select(subject.id)}>
-                    <span className="pin-card__head">
-                      <span className="eyebrow">{KIND_LABEL[subject.kind]}</span>
-                      {status && <StateChip state={status} />}
-                    </span>
-                    <span className="pin-card__title">{subject.title}</span>
-                    <span className="pin-card__line">
-                      {field(subject, 'notes') ||
-                        field(subject, 'focus') ||
-                        field(subject, 'description') ||
-                        `${graph.related(subject.id).length} connected objects`}
-                    </span>
-                  </button>
-                  {room && (
-                    <button
-                      type="button"
-                      className="pin-card__open"
-                      onClick={() => enterRoom(room)}
-                      title={`Open ${KIND_LABEL[subject.kind]}`}
-                    >
-                      Open {KIND_LABEL[subject.kind]}
-                      <span aria-hidden="true">↗</span>
-                    </button>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      </div>
-    </div>
-  );
+  const commands: HomeDesignCommands = {
+    select: (record) => select(record?.id ?? null),
+    open: (record) => {
+      const room = roomFor(record);
+      if (room) enterRoom(room);
+    },
+    goToArea,
+  };
+
+  return <DesignView data={data} commands={commands} />;
 }

@@ -5,7 +5,8 @@
  * a Room change never costs you your location.
  */
 import './prototype-app.css';
-import { roomKey, StoreProvider, useStore, type Room } from './store';
+import { roomKey, StoreProvider, useStore, type Projection, type Room } from './store';
+import { childStages, type ObjectGraph } from '../object-graph/graph';
 import { NavigationRail } from '../components/NavigationRail/NavigationRail';
 import { ContextHeader } from '../components/ContextHeader/ContextHeader';
 import { InspectorPanel } from '../components/InspectorPanel/InspectorPanel';
@@ -22,8 +23,12 @@ import { resolveCommandCenterDesign } from '../rooms/CommandCenter/command-cente
 import { resolveMessagesDesign } from '../rooms/Messages/messages-design-registry';
 import { resolveMissionsDesign } from '../rooms/Missions/missions-design-registry';
 import { resolveProjectsDesign } from '../rooms/Projects/projects-design-registry';
+import { resolveObjectRoomDesign } from '../rooms/ObjectRoom/object-room-design-registry';
+import { resolveStageDesign } from '../rooms/StageRoom/stage-design-registry';
+import { resolveAgentRolesDesign } from '../rooms/AgentRoles/agent-roles-design-registry';
+import { resolveHomeDesign } from '../rooms/Home/home-design-registry';
 
-function activeDesignOwnsInspector(room: Room): boolean {
+function activeDesignOwnsInspector(room: Room, graph: ObjectGraph, projection: Projection): boolean {
   const search = typeof window === 'undefined' ? '' : window.location.search;
   if (room.kind === 'area' && room.area === 'command-center') {
     return resolveCommandCenterDesign(search).ownsInspector ?? false;
@@ -36,6 +41,21 @@ function activeDesignOwnsInspector(room: Room): boolean {
   }
   if (room.kind === 'area' && room.area === 'projects') {
     return resolveProjectsDesign(search).ownsInspector ?? false;
+  }
+  if (room.kind === 'project' || room.kind === 'agent') {
+    return resolveObjectRoomDesign(search).ownsInspector ?? false;
+  }
+  if (room.kind === 'stage') {
+    // A stage design only owns the inspector while the sheet actually renders —
+    // the host's world-projection branch must never hide the global inspector.
+    const worldRenders = projection === 'world' && childStages(graph, room.subjectId).length > 0;
+    return (resolveStageDesign(search).ownsInspector ?? false) && !worldRenders;
+  }
+  if (room.kind === 'role' || (room.kind === 'area' && room.area === 'agent-roles')) {
+    return resolveAgentRolesDesign(search).ownsInspector ?? false;
+  }
+  if (room.kind === 'area' && room.area === 'home') {
+    return resolveHomeDesign(search).ownsInspector ?? false;
   }
   return false;
 }
@@ -75,7 +95,7 @@ function ActiveRoom() {
 }
 
 function Shell() {
-  const { room, select, loadWarnings } = useStore();
+  const { room, graph, projection, select, loadWarnings } = useStore();
 
   return (
     <div
@@ -99,7 +119,7 @@ function Shell() {
           <ActiveRoom />
         </main>
       </div>
-      <InspectorPanel hidden={activeDesignOwnsInspector(room)} />
+      <InspectorPanel hidden={activeDesignOwnsInspector(room, graph, projection)} />
     </div>
   );
 }
