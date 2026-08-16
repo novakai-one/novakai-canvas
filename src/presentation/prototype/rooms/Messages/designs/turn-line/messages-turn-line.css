@@ -1,0 +1,910 @@
+/**
+ * Turn Line: a lit plane with a seam down the middle.
+ *
+ * Three altitudes — ground, blocks, floating reader. The seam is the only light source,
+ * so every block's shadow falls away from it and the plane is brightest where the turn
+ * changes hands. Nothing here is drawn for texture: the ruler measures the wait axis,
+ * the fog measures distance, block height measures how deep an exchange has gone, and
+ * gold appears exactly once.
+ */
+
+.turn-line {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--surface-page);
+}
+
+.turn-line--empty {
+  display: grid;
+  place-content: center;
+  gap: var(--space-4);
+}
+
+/* ---------- the plane ---------- */
+
+.tl-field {
+  position: absolute;
+  inset: 0;
+}
+
+/* Distance turns to air: the far half of the field is fog, not emptiness. */
+.tl-field__sky {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 46%;
+  background:
+    linear-gradient(180deg, #101014 0%, rgba(16, 16, 20, 0) 100%),
+    radial-gradient(120% 90% at 50% 100%, rgba(208, 161, 75, 0.05), transparent 60%);
+}
+
+.tl-field__ground {
+  position: absolute;
+  inset: 88px 0 0 0;
+  overflow: hidden;
+  background:
+    radial-gradient(66% 56% at 50% 104%, rgba(158, 158, 184, 0.11), transparent 64%),
+    radial-gradient(46% 30% at 50% 0%, rgba(120, 120, 150, 0.07), transparent 70%),
+    linear-gradient(180deg, #0b0b0e 0%, #121215 26%, #191920 74%, #1c1c23 100%);
+}
+
+/* The horizon: one hairline is enough to say the surface ends. */
+.tl-field__ground::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rule-strong) 26%, var(--rule-strong) 74%, transparent);
+  opacity: 0.85;
+}
+
+/* The field names itself, lying flat on its own surface. */
+.tl-field__wordmark {
+  position: absolute;
+  top: 3%;
+  left: 50%;
+  font: var(--weight-semibold) clamp(38px, 6vw, 86px) / 1 var(--font-display);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #ffffff;
+  opacity: 0.028;
+  transform: translateX(-50%) perspective(560px) rotateX(70deg) scaleY(1.8);
+  transform-origin: 50% 0;
+}
+
+/* ---------- the wait axis, inscribed on the ground ---------- */
+
+.tl-field__ruler {
+  position: absolute;
+  inset: 96px 0 56px 0;
+  pointer-events: none;
+}
+
+.tl-field__ruler i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--rule-hair) 30%, var(--rule) 100%);
+}
+
+.tl-field__ruler i::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  font: var(--weight-regular) var(--text-eyebrow) / 1 var(--font-mono);
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  opacity: 0.55;
+  transform: translateX(-50%);
+}
+
+/* ---------- the seam: the turn boundary, and the light ---------- */
+
+.tl-field__seam {
+  position: absolute;
+  top: 72px;
+  bottom: 44px;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, #55555f 22%, #9a9aab 100%);
+  box-shadow:
+    0 0 30px 8px rgba(170, 170, 200, 0.09),
+    0 0 96px 40px rgba(150, 150, 185, 0.05);
+}
+
+.tl-field__side-label {
+  position: absolute;
+  top: 74px;
+  margin: 0;
+  font: var(--weight-medium) var(--text-eyebrow) / 1 var(--font-ui);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.tl-field__side-label[data-side='you'] {
+  text-align: right;
+}
+
+/* ---------- blocks ---------- */
+
+.tl-field__markers {
+  position: absolute;
+  inset: 0;
+}
+
+.tl-marker {
+  position: absolute;
+  width: var(--tl-width);
+  padding: 0;
+  background: none;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  transform: translate(-50%, -100%) scale(var(--tl-scale));
+  transform-origin: 50% 100%;
+  opacity: calc(1 - var(--tl-haze) * 0.42);
+  transition:
+    opacity var(--motion-structural) var(--ease-out),
+    transform var(--motion-structural) var(--ease-out),
+    left var(--motion-structural) var(--ease-out),
+    top var(--motion-structural) var(--ease-out);
+}
+
+.tl-marker:hover,
+.tl-marker:focus-visible {
+  opacity: 1;
+  z-index: var(--layer-selected);
+}
+
+.tl-marker:focus-visible {
+  outline: none;
+}
+
+.tl-marker__block {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: linear-gradient(180deg, #26262c 0%, #1a1a1f 100%);
+  border: var(--border) solid var(--rule);
+  border-top-color: rgba(236, 236, 238, 0.09);
+  border-radius: var(--radius);
+  box-shadow:
+    0 var(--tl-extrude) 0 0 #0e0e11,
+    0 calc(var(--tl-extrude) + 1px) 0 0 #000000,
+    calc(var(--tl-cast) * 16px) calc(var(--tl-extrude) + 14px) 22px rgba(0, 0, 0, 0.62);
+  transition:
+    box-shadow var(--motion-attention-release) var(--ease-out),
+    background var(--motion-attention-release) var(--ease-out),
+    border-color var(--motion-attention-release) var(--ease-out);
+}
+
+.tl-marker:hover .tl-marker__block,
+.tl-marker:focus-visible .tl-marker__block {
+  border-color: var(--rule-strong);
+}
+
+.tl-marker[data-open] .tl-marker__block {
+  border-color: var(--rule-spine);
+  background: linear-gradient(180deg, #2e2e35 0%, #1f1f25 100%);
+}
+
+.tl-marker__mono {
+  font: var(--weight-medium) var(--text-eyebrow) / 1 var(--font-ui);
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+
+.tl-marker__name {
+  overflow: hidden;
+  font: var(--weight-semibold) var(--text-sm) / 1.2 var(--font-ui);
+  letter-spacing: var(--tracking-display);
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tl-marker__wait {
+  font: var(--weight-regular) var(--text-eyebrow) / 1 var(--font-mono);
+  color: var(--ink-faint);
+}
+
+/* A working presence, stated once and quietly. */
+.tl-marker__pulse {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 5px;
+  height: 5px;
+  background: var(--settled);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #16161a;
+}
+
+/* Nothing said yet: a footprint waiting for its first word. */
+.tl-marker[data-ghost] .tl-marker__block {
+  background: none;
+  border-style: dashed;
+  border-color: var(--rule-strong);
+  box-shadow: none;
+}
+
+.tl-marker[data-ghost] .tl-marker__name {
+  color: var(--ink-muted);
+}
+
+/* The one elected subject: physically taller, lit, and flagged. */
+.tl-marker[data-tone='amber'] {
+  opacity: 1;
+  z-index: var(--layer-selected);
+}
+
+/* It rises: taller face, taller side, its own ring of light. */
+.tl-marker[data-tone='amber'] .tl-marker__block {
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-4);
+  background: linear-gradient(180deg, var(--attention-bright) 0%, var(--attention) 100%);
+  border-color: var(--attention-bright);
+  box-shadow:
+    0 calc(var(--tl-extrude) + 8px) 0 0 #6d5223,
+    0 calc(var(--tl-extrude) + 9px) 0 0 #000000,
+    calc(var(--tl-cast) * 22px) calc(var(--tl-extrude) + 22px) 30px rgba(0, 0, 0, 0.7),
+    0 0 0 5px rgba(208, 161, 75, 0.1),
+    0 0 18px 0 rgba(208, 161, 75, 0.1);
+}
+
+.tl-marker[data-tone='amber'] .tl-marker__mono,
+.tl-marker[data-tone='amber'] .tl-marker__wait {
+  color: rgba(23, 19, 10, 0.66);
+}
+
+.tl-marker[data-tone='amber'] .tl-marker__name {
+  color: var(--ink-on-gold);
+}
+
+.tl-marker[data-tone='amber'] .tl-marker__pulse {
+  background: #17130a;
+  box-shadow: 0 0 0 2px var(--attention-bright);
+}
+
+.tl-marker__flag {
+  position: absolute;
+  bottom: calc(100% + 16px);
+  left: 50%;
+  padding: 3px var(--space-2);
+  font: var(--weight-medium) var(--text-eyebrow) / 1 var(--font-ui);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-on-gold);
+  white-space: nowrap;
+  background: var(--attention-bright);
+  border-radius: var(--radius-sm);
+  transform: translateX(-50%);
+}
+
+/* The stem: the flag is planted in the block, not floating near it. */
+.tl-marker__flag::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 1px;
+  height: 16px;
+  background: linear-gradient(180deg, var(--attention-bright), rgba(226, 186, 110, 0.2));
+}
+
+/* Released: the block settles, the gold drains, the field goes quiet. */
+.tl-marker[data-tone='settled'] .tl-marker__block {
+  background: linear-gradient(180deg, #2a3730 0%, #1c241f 100%);
+  border-color: color-mix(in srgb, var(--settled) 45%, transparent);
+  box-shadow:
+    0 4px 0 0 #0e0e11,
+    0 5px 0 0 #000000,
+    calc(var(--tl-cast) * 10px) 12px 18px rgba(0, 0, 0, 0.5);
+}
+
+.tl-marker[data-tone='settled'] .tl-marker__name {
+  color: var(--settled);
+}
+
+/* ---------- what did not fit is counted, never dropped ---------- */
+
+.tl-overflow {
+  position: absolute;
+  z-index: var(--layer-chrome);
+  transform: translateX(-50%);
+}
+
+.tl-overflow__handle {
+  padding: var(--space-1) var(--space-3);
+  font: var(--weight-regular) var(--text-eyebrow) / 1 var(--font-mono);
+  color: var(--ink-faint);
+  background: linear-gradient(180deg, rgba(30, 30, 36, 0.9), rgba(18, 18, 22, 0.9));
+  border: var(--border) dashed var(--rule-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color var(--motion-feedback) var(--ease-out);
+}
+
+.tl-overflow__handle:hover {
+  color: var(--ink);
+}
+
+.tl-overflow__list {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  left: 50%;
+  z-index: var(--layer-chrome);
+  width: 240px;
+  max-height: 260px;
+  margin: 0;
+  padding: var(--space-1);
+  overflow-y: auto;
+  list-style: none;
+  background: var(--surface-2);
+  border: var(--border) solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-panel);
+  transform: translateX(-50%);
+}
+
+.tl-overflow__list button {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-2);
+  font: var(--weight-regular) var(--text-sm) / 1.2 var(--font-ui);
+  color: var(--ink-muted);
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.tl-overflow__list button:hover {
+  color: var(--ink);
+  background: var(--surface-3);
+}
+
+.tl-overflow__wait {
+  font-family: var(--font-mono);
+  font-size: var(--text-eyebrow);
+  color: var(--ink-faint);
+}
+
+/* ---------- chrome: two lines, both facts ---------- */
+
+.tl-field__legend {
+  position: absolute;
+  bottom: var(--space-4);
+  left: var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+  font: var(--weight-regular) var(--text-eyebrow) / 1 var(--font-ui);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.tl-field__legend dt {
+  color: var(--ink-muted);
+}
+
+.tl-field__legend dd {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  opacity: 0.75;
+}
+
+.tl-field__legend dd::before {
+  content: '';
+  width: 14px;
+  height: 1px;
+  background: var(--rule-spine);
+}
+
+.tl-field__legend dd[data-tier='hours']::before {
+  background: var(--rule);
+}
+
+.tl-field__legend dd[data-tier='days']::before {
+  background: var(--rule-hair);
+}
+
+.tl-field__status {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-6);
+  display: flex;
+  gap: var(--space-4);
+  margin: 0;
+  font: var(--weight-regular) var(--text-eyebrow) / 1 var(--font-ui);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.tl-field__status [data-attention='true'] {
+  color: var(--ink);
+}
+
+.tl-field__clock {
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+}
+
+.tl-field__start {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-6);
+  padding: var(--space-2) var(--space-3);
+  font: var(--weight-medium) var(--text-sm) / 1 var(--font-ui);
+  color: var(--ink-muted);
+  background: color-mix(in srgb, var(--surface-2) 70%, transparent);
+  border: var(--border) solid var(--rule);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition:
+    color var(--motion-feedback) var(--ease-out),
+    border-color var(--motion-feedback) var(--ease-out);
+}
+
+.tl-field__start:hover {
+  color: var(--ink);
+  border-color: var(--rule-spine);
+}
+
+/* ---------- the tether: one line, captioned ---------- */
+
+.tl-tether {
+  position: fixed;
+  inset: 0;
+  z-index: var(--layer-chrome);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.tl-tether line {
+  stroke: var(--wire);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+  opacity: 0.75;
+}
+
+.tl-tether circle {
+  fill: var(--wire-strong);
+}
+
+.tl-tether text {
+  font-family: var(--font-mono);
+  font-size: var(--text-eyebrow);
+  fill: var(--ink-faint);
+  letter-spacing: 0.06em;
+}
+
+/* ---------- the reading surface, held against the window ---------- */
+
+.tl-reader {
+  position: fixed;
+  top: var(--header-height);
+  right: 0;
+  bottom: 0;
+  z-index: var(--layer-inspector);
+  display: flex;
+  flex-direction: column;
+  width: min(418px, 40vw);
+  /* Translucent on purpose: the plane stays visible under the reader, so the block you
+     opened is still where you left it rather than replaced by a panel. */
+  background: color-mix(in srgb, var(--surface-2) 94%, transparent);
+  border-left: var(--border) solid var(--rule);
+  box-shadow: var(--shadow-dialog);
+  /* Light blur only: a heavy blur turns a lit block behind the panel into a smear. */
+  backdrop-filter: blur(6px);
+  animation: tl-reader-in var(--motion-panel) var(--ease-enter);
+}
+
+/* The lit top edge says this surface came out of the seam. */
+.tl-reader::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rule-spine));
+}
+
+@keyframes tl-reader-in {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+}
+
+.tl-reader__head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+}
+
+.tl-reader__mono {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  font: var(--weight-medium) var(--text-xs) / 1 var(--font-ui);
+  color: var(--ink-muted);
+  background: var(--surface-3);
+  border-radius: var(--radius);
+}
+
+.tl-reader__identity {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.tl-reader__kind {
+  font: var(--weight-medium) var(--text-eyebrow) / 1 var(--font-ui);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.tl-reader__name {
+  overflow: hidden;
+  font: var(--weight-semibold) var(--text-lg) / 1.15 var(--font-display);
+  letter-spacing: var(--tracking-display);
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tl-reader__holder {
+  font: var(--weight-regular) var(--text-eyebrow) / 1.2 var(--font-mono);
+  color: var(--ink-faint);
+}
+
+.tl-reader__live {
+  font: var(--weight-regular) var(--text-eyebrow) / 1 var(--font-ui);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--settled);
+}
+
+.tl-reader__close,
+.tl-bloom__close,
+.tl-dock__close {
+  padding: 0 var(--space-1);
+  font-size: var(--text-lg);
+  line-height: 1;
+  color: var(--ink-faint);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.tl-reader__close:hover,
+.tl-bloom__close:hover,
+.tl-dock__close:hover {
+  color: var(--ink);
+}
+
+.tl-reader__attached {
+  display: grid;
+  gap: var(--space-1);
+  padding: 0 var(--space-5) var(--space-4);
+  border-bottom: var(--border) solid var(--rule-hair);
+}
+
+.tl-reader__attached-row {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.tl-reader__attached-label {
+  font: var(--weight-regular) var(--text-eyebrow) / 1 var(--font-ui);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.tl-reader__attached-title {
+  overflow: hidden;
+  font: var(--weight-regular) var(--text-sm) / 1.3 var(--font-ui);
+  color: var(--ink-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Anything scrolled past is counted at the edge that hides it. */
+.tl-reader__earlier {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: var(--space-2) var(--space-5) 0;
+  font: var(--weight-regular) var(--text-eyebrow) / 1 var(--font-mono);
+  color: var(--ink-faint);
+  background: linear-gradient(180deg, var(--surface-2) 40%, transparent);
+}
+
+.tl-reader__scroll {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-height: 0;
+  padding: var(--space-4) var(--space-5) var(--space-6);
+  overflow-y: auto;
+}
+
+.tl-reader__opening {
+  margin: 0;
+  font: var(--weight-regular) var(--text-sm) / 1.5 var(--font-ui);
+  color: var(--ink-faint);
+}
+
+.tl-reader__turn {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+}
+
+.tl-reader__turn[data-mine] {
+  justify-items: end;
+}
+
+.tl-reader__byline {
+  margin: 0;
+  font: var(--weight-regular) var(--text-eyebrow) / 1 var(--font-mono);
+  color: var(--ink-faint);
+}
+
+.tl-reader__body {
+  max-width: 92%;
+  margin: 0;
+  padding: var(--space-3);
+  font: var(--weight-regular) var(--text-base) / var(--leading-normal) var(--font-ui);
+  color: var(--ink);
+  background: var(--surface-1);
+  border-radius: var(--radius);
+}
+
+.tl-reader__turn[data-mine] .tl-reader__body {
+  background: var(--surface-3);
+}
+
+.tl-reader__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.tl-reader__chip {
+  max-width: 240px;
+  overflow: hidden;
+  padding: var(--space-1) var(--space-2);
+  font: var(--weight-regular) var(--text-xs) / 1.2 var(--font-ui);
+  color: var(--ink-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: none;
+  border: var(--border) solid var(--rule);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color var(--motion-feedback) var(--ease-out),
+    border-color var(--motion-feedback) var(--ease-out);
+}
+
+.tl-reader__chip:hover,
+.tl-reader__chip[data-revealed] {
+  color: var(--ink);
+  border-color: var(--rule-spine);
+}
+
+/* ---------- context, revealed in place ---------- */
+
+.tl-bloom {
+  display: grid;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-3);
+  background: var(--surface-3);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
+  animation: tl-bloom-in var(--motion-disclose) var(--ease-enter);
+}
+
+@keyframes tl-bloom-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.tl-bloom__head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.tl-bloom__kind {
+  font: var(--weight-medium) var(--text-eyebrow) / 1 var(--font-ui);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.tl-bloom__title {
+  margin: 0;
+  font: var(--weight-semibold) var(--text-base) / 1.3 var(--font-ui);
+  color: var(--ink);
+}
+
+.tl-bloom__summary {
+  margin: 0;
+  font: var(--weight-regular) var(--text-sm) / var(--leading-normal) var(--font-ui);
+  color: var(--ink-muted);
+}
+
+.tl-bloom__status,
+.tl-bloom__also {
+  margin: 0;
+  font: var(--weight-regular) var(--text-eyebrow) / 1.3 var(--font-mono);
+  color: var(--ink-faint);
+}
+
+/* ---------- composer ---------- */
+
+.tl-reader__composer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-top: var(--border) solid var(--rule-hair);
+}
+
+.tl-reader__draft {
+  min-height: 64px;
+  padding: var(--space-3);
+  font: var(--weight-regular) var(--text-base) / var(--leading-normal) var(--font-ui);
+  color: var(--ink);
+  background: var(--surface-1);
+  border: var(--border) solid var(--rule);
+  border-radius: var(--radius);
+  resize: none;
+}
+
+.tl-reader__draft::placeholder {
+  color: var(--ink-faint);
+}
+
+.tl-reader__send {
+  padding: var(--space-2) var(--space-4);
+  font: var(--weight-medium) var(--text-sm) / 1 var(--font-ui);
+  color: var(--ink);
+  background: var(--surface-3);
+  border: var(--border) solid var(--rule-strong);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.tl-reader__send:disabled {
+  color: var(--ink-faint);
+  cursor: default;
+  opacity: 0.6;
+}
+
+.tl-reader__send:not(:disabled):hover {
+  border-color: var(--rule-spine);
+}
+
+/* ---------- the dock ---------- */
+
+.tl-dock {
+  position: fixed;
+  top: calc(var(--header-height) + var(--space-8));
+  left: calc(var(--rail-width) + var(--space-6));
+  z-index: var(--layer-dialog);
+  width: 280px;
+  padding: var(--space-4);
+  background: var(--surface-2);
+  border: var(--border) solid var(--rule);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-dialog);
+}
+
+.tl-dock__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.tl-dock__title {
+  margin: 0;
+  font: var(--weight-semibold) var(--text-base) / 1 var(--font-ui);
+  color: var(--ink);
+}
+
+.tl-dock__empty {
+  margin: 0;
+  font: var(--weight-regular) var(--text-sm) / var(--leading-normal) var(--font-ui);
+  color: var(--ink-faint);
+}
+
+.tl-dock__list {
+  display: grid;
+  gap: 2px;
+  max-height: 320px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.tl-dock__list button {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-2);
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.tl-dock__list button:hover {
+  background: var(--surface-3);
+}
+
+.tl-dock__name {
+  font: var(--weight-medium) var(--text-sm) / 1.2 var(--font-ui);
+  color: var(--ink);
+}
+
+.tl-dock__detail {
+  font: var(--weight-regular) var(--text-eyebrow) / 1 var(--font-mono);
+  color: var(--ink-faint);
+}
+
+/* ---------- focus and reduced motion ---------- */
+
+.turn-line :focus-visible {
+  outline: var(--focus-width) solid var(--focus-color);
+  outline-offset: var(--focus-offset);
+}
+
+.tl-marker:focus-visible .tl-marker__block {
+  outline: var(--focus-width) solid var(--focus-color);
+  outline-offset: var(--focus-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .turn-line *,
+  .tl-reader,
+  .tl-bloom {
+    transition-duration: 1ms !important;
+    animation-duration: 1ms !important;
+  }
+}
