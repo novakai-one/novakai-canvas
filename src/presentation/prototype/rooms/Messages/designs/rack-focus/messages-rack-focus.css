@@ -1,0 +1,804 @@
+/**
+ * Rack Focus — a corridor of hanging glass.
+ *
+ * Every lever encodes meaning: z-depth is recency, sage light is liveness, the etched
+ * seal is a mission binding, amber extrusion is the one elected attention subject.
+ * The corridor is the world; the dock is the flat, viewport-anchored reading surface.
+ */
+
+.rack-room {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  height: 100%;
+  min-height: 0;
+  overflow: clip;
+  background: var(--surface-page);
+}
+
+/* ---------------------------------------------------------------- corridor */
+
+.rack-corridor {
+  position: relative;
+  /* clip, not hidden: the 3D scene must never be scrolled by focus/scrollIntoView. */
+  overflow: clip;
+  perspective: 950px;
+  perspective-origin: 50% 38%;
+  background: radial-gradient(120% 95% at 55% 30%, #101014 0%, #0b0b0e 55%, #070709 100%);
+}
+
+/* The ground plane: a faint drafting grid receding to the vanishing line. */
+.rack-floor {
+  position: absolute;
+  left: -30%;
+  right: -30%;
+  bottom: -12%;
+  height: 68%;
+  transform: perspective(950px) rotateX(58deg);
+  transform-origin: 50% 100%;
+  background-image:
+    repeating-linear-gradient(rgba(236, 236, 238, 0.03) 0 1px, transparent 1px 72px),
+    repeating-linear-gradient(90deg, rgba(236, 236, 238, 0.022) 0 1px, transparent 1px 88px);
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.9) 20%, transparent 96%);
+  pointer-events: none;
+}
+
+/* The room names itself on its own floor. */
+.rack-floor__word {
+  position: absolute;
+  top: 4%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-size: 170px;
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(236, 236, 238, 0.035);
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Particulate air: still dust, never motion. */
+.rack-dust {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 18% 26%, rgba(236, 236, 238, 0.2), transparent 100%),
+    radial-gradient(1px 1px at 64% 14%, rgba(236, 236, 238, 0.14), transparent 100%),
+    radial-gradient(1.5px 1.5px at 42% 58%, rgba(236, 236, 238, 0.1), transparent 100%),
+    radial-gradient(1px 1px at 81% 44%, rgba(236, 236, 238, 0.16), transparent 100%),
+    radial-gradient(1px 1px at 30% 76%, rgba(236, 236, 238, 0.08), transparent 100%),
+    radial-gradient(1.5px 1.5px at 72% 68%, rgba(236, 236, 238, 0.07), transparent 100%);
+  pointer-events: none;
+}
+
+.rack-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(115% 100% at 50% 40%, transparent 52%, rgba(5, 5, 7, 0.6) 100%);
+  pointer-events: none;
+}
+
+/* Containers never catch clicks: their flat z=0 planes would occlude deep glass. */
+.rack-space {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+/* One berth in the corridor: pane + floor mark travel together when focus racks. */
+.rack-slot {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  transition:
+    transform 700ms cubic-bezier(0.22, 0.9, 0.24, 1),
+    opacity 700ms ease,
+    filter 700ms ease;
+}
+
+.rack-slot:not([data-hidden='true']) .rack-pane,
+.rack-slot:not([data-hidden='true']) .rack-seat,
+.rack-slot:not([data-hidden='true']) .rack-roster {
+  pointer-events: auto;
+}
+
+/* ------------------------------------------------------------------- glass */
+
+.rack-pane {
+  position: relative;
+  display: block;
+  width: 244px;
+  min-height: 132px;
+  padding: var(--space-4);
+  text-align: left;
+  font-family: var(--font-ui);
+  color: var(--ink);
+  background: linear-gradient(160deg, rgba(37, 37, 41, 0.88), rgba(18, 18, 20, 0.94));
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition:
+    border-color 700ms ease,
+    box-shadow 700ms ease,
+    transform 700ms cubic-bezier(0.22, 0.9, 0.24, 1);
+}
+
+.rack-pane:focus-visible {
+  outline: 1px solid var(--wire-strong);
+  outline-offset: 3px;
+}
+
+.rack-pane[data-focused='true'] {
+  border-color: var(--rule-spine);
+  box-shadow:
+    0 1px 0 rgba(236, 236, 238, 0.09) inset,
+    0 26px 60px rgba(0, 0, 0, 0.62);
+}
+
+/* Unread carries itself in luminance, not ornament. */
+.rack-pane[data-unread='true'] {
+  border-color: var(--rule-strong);
+}
+
+.rack-pane[data-unread='true'] .rack-pane__name {
+  font-weight: var(--weight-semibold);
+}
+
+/* A live agent lights its glass from inside. */
+.rack-pane[data-live='true'] {
+  box-shadow:
+    inset 0 0 38px rgba(120, 168, 134, 0.13),
+    0 22px 44px rgba(0, 0, 0, 0.5);
+}
+
+.rack-pane__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-bottom: var(--space-2);
+  border-radius: 50%;
+  background: var(--surface-3);
+  border: 1px solid var(--rule-strong);
+  font-size: var(--text-eyebrow);
+  font-weight: var(--weight-semibold);
+  color: var(--ink-muted);
+}
+
+.rack-pane__name {
+  display: block;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-display);
+}
+
+.rack-pane__live {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--settled);
+}
+
+/* What the agent is doing, in its own words — state as data, not direction. */
+.rack-pane__doing {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--ink-faint);
+}
+
+/* The mission binding, etched into the glass. Standalone panes simply stay clear. */
+.rack-pane__seal {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  max-width: 70%;
+  overflow: hidden;
+  padding: 3px 7px;
+  border: 1px solid rgba(236, 236, 238, 0.09);
+  border-radius: 3px;
+  transform: rotate(-4deg);
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: rgba(236, 236, 238, 0.16);
+  pointer-events: none;
+}
+
+/* ------------------------------------------------- amber: urgency as geometry */
+
+/* The elected pane is thicker glass: proud of its berth, with visible side faces. */
+.rack-pane[data-amber='true'] {
+  transform: translateZ(26px);
+  border-color: var(--attention);
+  box-shadow:
+    0 0 0 1px rgba(208, 161, 75, 0.32),
+    inset 0 0 32px rgba(208, 161, 75, 0.09),
+    0 26px 64px rgba(208, 161, 75, 0.16);
+}
+
+.rack-pane__side {
+  position: absolute;
+  background: linear-gradient(rgba(226, 186, 110, 0.28), rgba(208, 161, 75, 0.12));
+  border: 1px solid rgba(208, 161, 75, 0.42);
+  transition:
+    background 700ms ease,
+    border-color 700ms ease;
+}
+
+.rack-pane__side--left {
+  top: 4px;
+  bottom: -4px;
+  left: -13px;
+  width: 13px;
+  transform-origin: right center;
+  transform: skewY(24deg);
+}
+
+.rack-pane__side--bottom {
+  left: -12px;
+  right: 8px;
+  bottom: -9px;
+  height: 9px;
+  transform-origin: center top;
+  transform: skewX(56deg);
+}
+
+.rack-pane__flag {
+  position: absolute;
+  top: -22px;
+  left: -1px;
+  padding: 3px 9px;
+  border-radius: 3px 3px 0 0;
+  background: var(--attention);
+  color: var(--ink-on-gold);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: background 700ms ease;
+}
+
+/* Release: the answered pane settles to sage and the room goes calm. */
+.rack-pane[data-settled='true'] {
+  transform: translateZ(0);
+  border-color: var(--settled);
+  box-shadow:
+    inset 0 0 32px rgba(120, 168, 134, 0.12),
+    0 22px 44px rgba(0, 0, 0, 0.5);
+}
+
+.rack-pane[data-settled='true'] .rack-pane__flag {
+  background: var(--settled);
+}
+
+.rack-pane[data-settled='true'] .rack-pane__side {
+  background: linear-gradient(rgba(120, 168, 134, 0.2), rgba(120, 168, 134, 0.08));
+  border-color: rgba(120, 168, 134, 0.35);
+}
+
+/* ------------------------------------------------------------ berth + seat */
+
+/* The recency order, etched on the floor beneath each pane. */
+.rack-berth {
+  position: absolute;
+  top: calc(100% + 16px);
+  left: 50%;
+  transform: translateX(-50%) rotateX(52deg);
+  padding: 2px 8px;
+  border: 1px solid var(--rule-hair);
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+  opacity: 0.55;
+  white-space: nowrap;
+  transition: opacity 700ms ease;
+}
+
+.rack-berth[data-focused='true'] {
+  opacity: 0.9;
+  color: var(--ink-muted);
+}
+
+/* Dashed absence: the open seat where the next conversation will hang. */
+.rack-seat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: flex-start;
+  width: 244px;
+  min-height: 132px;
+  padding: var(--space-4);
+  background: rgba(18, 18, 20, 0.35);
+  border: 1px dashed var(--rule-strong);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 240ms ease, background 240ms ease;
+}
+
+.rack-seat:hover,
+.rack-seat:focus-visible {
+  border-color: var(--wire-strong);
+  background: rgba(27, 27, 30, 0.5);
+  outline: none;
+}
+
+.rack-seat__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.rack-seat__hint {
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+}
+
+.rack-roster {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 10px);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 244px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: var(--space-3);
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+}
+
+.rack-roster__eyebrow {
+  padding: 0 var(--space-2) var(--space-2);
+  font-size: var(--text-eyebrow);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.rack-roster__option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2);
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.rack-roster__option:hover,
+.rack-roster__option:focus-visible {
+  background: var(--surface-3);
+  outline: none;
+}
+
+.rack-roster__initials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  border: 1px solid var(--rule-strong);
+  font-size: 9px;
+  font-weight: var(--weight-semibold);
+  color: var(--ink-muted);
+}
+
+.rack-roster__empty {
+  padding: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
+/* ------------------------------------------------------------ edge honesty */
+
+/* What the haze hides, admitted out loud. */
+.rack-edge {
+  position: absolute;
+  z-index: 30;
+  padding: 4px 12px;
+  border: 1px dashed var(--rule-strong);
+  border-radius: 999px;
+  background: rgba(13, 13, 15, 0.55);
+  box-shadow: 0 0 34px 20px rgba(11, 11, 14, 0.45);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: color 240ms ease, border-color 240ms ease;
+}
+
+.rack-edge:hover,
+.rack-edge:focus-visible {
+  color: var(--ink-muted);
+  border-color: var(--wire-strong);
+  outline: none;
+}
+
+.rack-edge--deeper {
+  left: 50%;
+  top: 30%;
+  transform: translateX(-50%);
+}
+
+.rack-edge--nearer {
+  left: var(--space-6);
+  bottom: var(--space-6);
+}
+
+/* The seat is real even when the camera is deep: the front of the corridor, admitted. */
+.rack-edge--seat {
+  left: var(--space-6);
+  bottom: calc(var(--space-6) + 42px);
+}
+
+/* ----------------------------------------------------------------- the dock */
+
+.rack-dock {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--surface-1);
+  border-left: 1px solid var(--rule-hair);
+}
+
+.rack-dock__head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-2) var(--space-3);
+  align-items: center;
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--rule-hair);
+}
+
+.rack-dock__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  border: 1px solid var(--rule-strong);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--ink-muted);
+}
+
+.rack-dock__identity {
+  display: flex;
+  flex-direction: column;
+}
+
+.rack-dock__eyebrow {
+  font-size: var(--text-eyebrow);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.rack-dock__live {
+  font-style: normal;
+  color: var(--settled);
+}
+
+.rack-dock__name {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-display);
+  color: var(--ink);
+}
+
+.rack-dock__attached {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.rack-dock__body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  mask-image: linear-gradient(to bottom, transparent 0, black 28px, black 100%);
+}
+
+.rack-dock__earlier {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  align-self: center;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  border: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+}
+
+.rack-dock__empty {
+  margin: auto;
+  padding: var(--space-6);
+  font-size: var(--text-base);
+  color: var(--ink-faint);
+  text-align: center;
+}
+
+.rack-turn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  align-items: flex-start;
+  max-width: 88%;
+}
+
+.rack-turn[data-mine='true'] {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.rack-turn__meta {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.rack-turn__bubble {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--rule-hair);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--ink);
+}
+
+.rack-turn[data-mine='true'] .rack-turn__bubble {
+  background: var(--surface-3);
+}
+
+.rack-turn__citations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.rack-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--surface-2);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 240ms ease, color 240ms ease;
+}
+
+.rack-chip:hover,
+.rack-chip:focus-visible {
+  border-color: var(--rule-spine);
+  color: var(--ink);
+  outline: none;
+}
+
+.rack-chip[data-active='true'] {
+  border-color: var(--wire-strong);
+  color: var(--ink);
+}
+
+.rack-chip__kind {
+  font-size: var(--text-eyebrow);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.rack-dock__composer {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-end;
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  border-top: 1px solid var(--rule-hair);
+}
+
+.rack-dock__input {
+  flex: 1;
+  resize: none;
+  padding: var(--space-3);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--surface-2);
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--ink);
+}
+
+.rack-dock__input:focus-visible {
+  outline: none;
+  border-color: var(--rule-spine);
+}
+
+.rack-dock__send {
+  padding: var(--space-2) var(--space-4);
+  border: none;
+  border-radius: 5px;
+  background: var(--attention);
+  color: var(--ink-on-gold);
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+}
+
+.rack-dock__send:disabled {
+  background: var(--surface-3);
+  color: var(--ink-faint);
+  cursor: default;
+}
+
+/* ------------------------------------------------------- wall inspector */
+
+.rack-tether {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 45;
+  pointer-events: none;
+}
+
+.rack-tether line {
+  stroke: var(--wire);
+  stroke-width: 1;
+  stroke-dasharray: 4 5;
+}
+
+.rack-tether text {
+  fill: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-anchor: middle;
+}
+
+.rack-wall {
+  position: absolute;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  animation: rack-wall-in 240ms ease;
+}
+
+@keyframes rack-wall-in {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+}
+
+.rack-wall__kind {
+  font-size: var(--text-eyebrow);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.rack-wall__status {
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--ink-muted);
+}
+
+.rack-wall__title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-display);
+  color: var(--ink);
+}
+
+.rack-wall__preview {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--ink-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.rack-wall__actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.rack-wall__open,
+.rack-wall__close {
+  padding: var(--space-1) var(--space-3);
+  border-radius: 4px;
+  border: 1px solid var(--rule);
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition: border-color 240ms ease, color 240ms ease;
+}
+
+.rack-wall__open:hover,
+.rack-wall__open:focus-visible,
+.rack-wall__close:hover,
+.rack-wall__close:focus-visible {
+  border-color: var(--rule-spine);
+  color: var(--ink);
+  outline: none;
+}
+
+/* ----------------------------------------------------------------- motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .rack-slot,
+  .rack-pane,
+  .rack-berth,
+  .rack-wall {
+    transition-duration: 1ms;
+    animation-duration: 1ms;
+  }
+}

@@ -9,6 +9,7 @@ import { standingWaveDesign } from './designs/standing-wave';
 import { catenaryDesign } from './designs/catenary';
 import { vigilDesign } from './designs/vigil';
 import { switchboardDesign } from './designs/switchboard';
+import { rackFocusDesign } from './designs/rack-focus';
 
 /** The design selected whenever the URL requests no known Messages design. */
 const DEFAULT_MESSAGES_DESIGN_ID = currentMessagesDesign.id;
@@ -23,6 +24,7 @@ const designs: readonly MessagesDesign[] = [
   catenaryDesign,
   vigilDesign,
   switchboardDesign,
+  rackFocusDesign,
 ];
 
 const messagesDesignRegistry = createDesignRegistry(
