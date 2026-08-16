@@ -8,7 +8,7 @@ import { resolveMessagesDesign } from './messages-design-registry';
 
 /** Composition root: translates the app store into the stable Messages design contract. */
 export function Messages({ threadId }: { threadId?: string }) {
-  const { graph, select, selected, addRecord, enterRoom, patch } = useStore();
+  const { graph, select, selected, elected, addRecord, enterRoom, patch } = useStore();
   const design = resolveMessagesDesign(typeof window === 'undefined' ? '' : window.location.search);
   const DesignView = design.View;
 
@@ -53,6 +53,7 @@ export function Messages({ threadId }: { threadId?: string }) {
     threads: graph.byKind('thread'),
     liveAgents: graph.byKind('agent').filter((agent) => field(agent, 'status') === 'live'),
     selected,
+    attentionSubjectId: elected?.subject.id ?? null,
     initialThreadId: threadId,
   };
 

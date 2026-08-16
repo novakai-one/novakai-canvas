@@ -21,6 +21,7 @@ export type WorldCameraRuntime = {
   focusNodeAtAnchor(
     nodeId: string,
     anchor: WorldViewportAnchor,
+    nodeAnchor?: WorldViewportAnchor,
     zoom?: number,
     duration?: number,
   ): Promise<WorldCameraOutcome>;
@@ -55,6 +56,7 @@ export function executeWorldCameraCommand(
       return runtime.focusNodeAtAnchor(
         command.nodeId,
         command.anchor,
+        command.nodeAnchor,
         command.zoom,
         command.duration,
       );

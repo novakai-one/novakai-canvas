@@ -8,6 +8,7 @@ export type MessagesDesignData = {
   threads: readonly ObjectRecord[];
   liveAgents: readonly ObjectRecord[];
   selected: ObjectRecord | null;
+  attentionSubjectId: string | null;
   initialThreadId?: string;
 };
 

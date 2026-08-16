@@ -1,6 +1,9 @@
 /** The axis along which designs permit nodes to move. */
 export type CanvasNodeDragAxis = 'both' | 'horizontal' | 'vertical';
 
+/** Direction used when a design treats scrolling as canvas movement. */
+export type CanvasScrollPanDirection = 'free' | 'horizontal' | 'vertical';
+
 /** Framework-neutral interaction choices available to disposable spatial designs. */
 export type WorldCanvasInteraction = {
   nodesDraggable?: boolean;
@@ -9,6 +12,7 @@ export type WorldCanvasInteraction = {
   selectionOnDrag?: boolean;
   panOnDrag?: boolean | number[];
   panOnScroll?: boolean;
+  panOnScrollDirection?: CanvasScrollPanDirection;
   zoomOnScroll?: boolean;
   zoomOnPinch?: boolean;
   zoomOnDoubleClick?: boolean;
@@ -28,6 +32,7 @@ export type ResolvedWorldCanvasInteraction = {
   selectionOnDrag: boolean;
   panOnDrag: boolean | number[];
   panOnScroll: boolean;
+  panOnScrollDirection: CanvasScrollPanDirection;
   zoomOnScroll: boolean;
   zoomOnPinch: boolean;
   zoomOnDoubleClick: boolean;
@@ -50,6 +55,7 @@ export function resolveWorldCanvasInteraction(
     selectionOnDrag: interaction.selectionOnDrag ?? false,
     panOnDrag: interaction.panOnDrag ?? true,
     panOnScroll: interaction.panOnScroll ?? false,
+    panOnScrollDirection: interaction.panOnScrollDirection ?? 'free',
     zoomOnScroll: interaction.zoomOnScroll ?? true,
     zoomOnPinch: interaction.zoomOnPinch ?? true,
     zoomOnDoubleClick: interaction.zoomOnDoubleClick ?? false,

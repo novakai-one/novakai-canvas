@@ -1,6 +1,7 @@
 import '@xyflow/react/dist/style.css';
 import {
   Controls,
+  PanOnScrollMode,
   ReactFlow,
   ReactFlowProvider,
   ViewportPortal,
@@ -34,6 +35,7 @@ import {
 import {
   resolveWorldCanvasInteraction,
   type CanvasNodeDragAxis,
+  type CanvasScrollPanDirection,
   type WorldCanvasInteraction,
 } from './canvas-interaction';
 import type { CanvasRuntime } from './canvas-runtime';
@@ -44,6 +46,7 @@ import type {
   WorldCameraCommand,
   WorldCameraOutcome,
   WorldCameraPadding,
+  WorldViewport,
 } from './world-camera';
 
 /** Compatibility request retained while the current Mission World moves to camera commands. */
@@ -66,6 +69,12 @@ export interface WorldCanvasProps<NodeType extends Node = Node, EdgeType extends
   selectedId: string | null;
   onSelect: (id: string | null) => void;
   onZoomChange?: (zoom: number) => void;
+  onViewportChange?: (viewport: WorldViewport) => void;
+  resolveNodeChanges?: (
+    changes: NodeChange<NodeType>[],
+    currentNodes: readonly NodeType[],
+  ) => NodeType[];
+  onNodesChanged?: (nodes: readonly NodeType[]) => void;
   cameraCommand?: WorldCameraCommand | null;
   /** @deprecated Prefer cameraCommand. Kept so the current Mission prototype stays untouched. */
   cameraRequest?: CanvasCameraRequest | null;
@@ -73,6 +82,8 @@ export interface WorldCanvasProps<NodeType extends Node = Node, EdgeType extends
   canvasChildren?: ReactNode;
   screenChildren?: ReactNode;
   showControls?: boolean;
+  initialViewport?: WorldViewport;
+  fitViewOnMount?: boolean;
 }
 
 function cameraRequestToCommand(
@@ -117,6 +128,12 @@ function constrainNodeMovement<NodeType extends Node>(
   });
 }
 
+function reactFlowScrollMode(direction: CanvasScrollPanDirection): PanOnScrollMode {
+  if (direction === 'horizontal') return PanOnScrollMode.Horizontal;
+  if (direction === 'vertical') return PanOnScrollMode.Vertical;
+  return PanOnScrollMode.Free;
+}
+
 function scheduleCameraCommand(
   command: WorldCameraCommand,
   execute: (commandToExecute: WorldCameraCommand) => Promise<WorldCameraOutcome>,
@@ -144,19 +161,24 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
   selectedId,
   onSelect,
   onZoomChange,
+  onViewportChange,
+  resolveNodeChanges,
+  onNodesChanged,
   cameraCommand,
   cameraRequest,
   interaction,
   canvasChildren,
   screenChildren,
   showControls = true,
+  initialViewport,
+  fitViewOnMount,
 }: WorldCanvasProps<NodeType, EdgeType> & {
   canvasElementRef: RefObject<HTMLDivElement | null>;
 }) {
   const rememberedViewport = readRememberedViewport(viewportKey);
   const resolvedInteraction = resolveWorldCanvasInteraction(interaction);
   const [viewport, setCurrentViewport] = useState<Viewport>(
-    rememberedViewport ?? { x: 0, y: 0, zoom: 1 },
+    rememberedViewport ?? initialViewport ?? { x: 0, y: 0, zoom: 1 },
   );
   const [nodes, setNodes, applyNodeChanges] = useNodesState<NodeType>(
     restoreNodePositions(viewportKey, incomingNodes),
@@ -209,12 +231,28 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
   }, [cameraCommand, cameraRequest, executeCameraCommand, nodes.length]);
 
   const handleNodeChanges = useCallback((changes: NodeChange<NodeType>[]) => {
-    applyNodeChanges(constrainNodeMovement(
+    const constrainedChanges = constrainNodeMovement(
       changes,
       nodes,
       resolvedInteraction.nodeDragAxis,
-    ));
-  }, [applyNodeChanges, nodes, resolvedInteraction.nodeDragAxis]);
+    );
+
+    if (!resolveNodeChanges) {
+      applyNodeChanges(constrainedChanges);
+      return;
+    }
+
+    const nextNodes = resolveNodeChanges(constrainedChanges, nodes);
+    setNodes(nextNodes);
+    onNodesChanged?.(nextNodes);
+  }, [
+    applyNodeChanges,
+    nodes,
+    onNodesChanged,
+    resolveNodeChanges,
+    resolvedInteraction.nodeDragAxis,
+    setNodes,
+  ]);
 
   const handleNodeDragStop: OnNodeDrag<NodeType> = useCallback((_, node) => {
     if (resolvedInteraction.rememberNodePositions) {
@@ -225,7 +263,8 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
   const handleMove: OnMove = useCallback((_, nextViewport) => {
     setCurrentViewport(nextViewport);
     onZoomChange?.(nextViewport.zoom);
-  }, [onZoomChange]);
+    onViewportChange?.(nextViewport);
+  }, [onViewportChange, onZoomChange]);
 
   const handleMoveEnd: OnMove = useCallback((_, nextViewport) => {
     if (resolvedInteraction.rememberViewport) {
@@ -247,8 +286,8 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
         onPaneClick={() => onSelect(null)}
         onMove={handleMove}
         onMoveEnd={handleMoveEnd}
-        defaultViewport={rememberedViewport}
-        fitView={!rememberedViewport}
+        defaultViewport={rememberedViewport ?? initialViewport}
+        fitView={fitViewOnMount ?? (!rememberedViewport && !initialViewport)}
         fitViewOptions={{ padding: 0.15, minZoom: 0.42, maxZoom: 0.9 }}
         minZoom={resolvedInteraction.minZoom}
         maxZoom={resolvedInteraction.maxZoom}
@@ -257,6 +296,7 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
         selectionOnDrag={resolvedInteraction.selectionOnDrag}
         panOnDrag={resolvedInteraction.panOnDrag}
         panOnScroll={resolvedInteraction.panOnScroll}
+        panOnScrollMode={reactFlowScrollMode(resolvedInteraction.panOnScrollDirection)}
         zoomOnScroll={resolvedInteraction.zoomOnScroll}
         zoomOnPinch={resolvedInteraction.zoomOnPinch}
         zoomOnDoubleClick={resolvedInteraction.zoomOnDoubleClick}

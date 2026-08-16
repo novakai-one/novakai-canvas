@@ -1,15 +1,23 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useStore } from '../../app/store';
 import { KIND_LABEL, RELATION_LABEL, type ObjectRecord, type RelationType } from '../../object-graph/contract';
-import { childStages, field } from '../../object-graph/graph';
-import { roomFor } from '../../room-navigation/room-for';
+import { childStages, field, type ObjectGraph } from '../../object-graph/graph';
 import { summaryFor } from '../../components/InspectorPanel/inspector-content';
 import './mission-stage-inspector.css';
 
-function RelatedRow({ record }: { record: ObjectRecord }) {
-  const { graph, select, enterRoom } = useStore();
+function RelatedRow({
+  record,
+  graph,
+  onSelect,
+  canOpen,
+  onOpen,
+}: {
+  record: ObjectRecord;
+  graph: ObjectGraph;
+  onSelect(id: string | null): void;
+  canOpen(record: ObjectRecord): boolean;
+  onOpen(record: ObjectRecord): void;
+}) {
   const [open, setOpen] = useState(false);
-  const room = roomFor(record);
   const summary = summaryFor(record) || field(record, 'body') || field(record, 'result');
 
   return (
@@ -27,20 +35,20 @@ function RelatedRow({ record }: { record: ObjectRecord }) {
         </span>
         {field(record, 'status') && <em>{field(record, 'status')}</em>}
       </button>
-      {room && (
+      {canOpen(record) && (
         <button
           type="button"
           className="mission-stage-related__open"
           aria-label={`Open ${record.title}`}
           title={`Open ${record.title}`}
-          onClick={() => enterRoom(room)}
+          onClick={() => onOpen(record)}
         >↗</button>
       )}
       {open && (
         <div className="mission-stage-related__preview">
           {summary && <p>{summary}</p>}
           <span>{graph.related(record.id).length} connected objects</span>
-          <button type="button" onClick={() => select(record.id)}>Inspect this instead</button>
+          <button type="button" onClick={() => onSelect(record.id)}>Inspect this instead</button>
         </div>
       )}
     </div>
@@ -51,15 +59,26 @@ function RelatedRow({ record }: { record: ObjectRecord }) {
 export function MissionStageInspector({
   stageId,
   sequenceLabel,
+  graph,
+  revealedStageIds,
+  attentionSubjectId,
+  onSelect,
+  canOpen,
+  onOpenRecord,
   onReveal,
   onOpen,
 }: {
   stageId: string;
   sequenceLabel: string;
+  graph: ObjectGraph;
+  revealedStageIds: readonly string[];
+  attentionSubjectId: string | null;
+  onSelect(id: string | null): void;
+  canOpen(record: ObjectRecord): boolean;
+  onOpenRecord(record: ObjectRecord): void;
   onReveal: () => void;
   onOpen: () => void;
 }) {
-  const { graph, select, revealed, elected } = useStore();
   const stage = graph.get(stageId);
   const [openSections, setOpenSections] = useState<ReadonlySet<RelationType>>(
     () => new Set<RelationType>(['contains']),
@@ -81,8 +100,8 @@ export function MissionStageInspector({
 
   const status = field(stage, 'status') || 'planned';
   const condition = field(stage, 'condition');
-  const isRevealed = revealed.includes(stageId);
-  const isAttention = elected?.subject.id === stageId;
+  const isRevealed = revealedStageIds.includes(stageId);
+  const isAttention = attentionSubjectId === stageId;
 
   return (
     <aside
@@ -97,7 +116,7 @@ export function MissionStageInspector({
           <span>Stage · selected</span>
           <h2>{stage.title}</h2>
         </div>
-        <button type="button" onClick={() => select(null)} aria-label="Close Stage inspector">×</button>
+        <button type="button" onClick={() => onSelect(null)} aria-label="Close Stage inspector">×</button>
       </header>
 
       <div className="mission-stage-inspector__body">
@@ -138,7 +157,14 @@ export function MissionStageInspector({
               {open && (
                 <div className="mission-stage-inspector__rows">
                   {records.slice(0, 8).map((record) => (
-                    <RelatedRow key={`${relation}:${record.id}`} record={record} />
+                    <RelatedRow
+                      key={`${relation}:${record.id}`}
+                      record={record}
+                      graph={graph}
+                      onSelect={onSelect}
+                      canOpen={canOpen}
+                      onOpen={onOpenRecord}
+                    />
                   ))}
                 </div>
               )}

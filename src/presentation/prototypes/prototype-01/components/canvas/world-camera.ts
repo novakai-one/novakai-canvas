@@ -45,6 +45,7 @@ type FocusNodeAtAnchorCameraCommand = {
   key: string;
   nodeId: string;
   anchor: WorldViewportAnchor;
+  nodeAnchor?: WorldViewportAnchor;
   zoom?: number;
   duration?: number;
 };

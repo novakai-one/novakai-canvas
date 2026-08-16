@@ -69,6 +69,7 @@ async function focusNodeAtAnchor<NodeType extends Node, EdgeType extends Edge>(
   options: ReactFlowCanvasAdapterOptions<NodeType, EdgeType>,
   nodeId: string,
   anchor: WorldViewportAnchor,
+  nodeAnchor?: WorldViewportAnchor,
   requestedZoom?: number,
   requestedDuration?: number,
 ): Promise<WorldCameraOutcome> {
@@ -82,16 +83,18 @@ async function focusNodeAtAnchor<NodeType extends Node, EdgeType extends Edge>(
   if (requestedZoom !== undefined && requestedZoom <= 0) return 'not-ready';
 
   const nodeBounds = options.reactFlow.getNodesBounds([nodeId]);
-  const nodeCenterX = nodeBounds.x + nodeBounds.width / 2;
-  const nodeCenterY = nodeBounds.y + nodeBounds.height / 2;
+  const nodeTargetX = nodeBounds.x
+    + nodeBounds.width * (nodeAnchor?.horizontalRatio ?? 0.5);
+  const nodeTargetY = nodeBounds.y
+    + nodeBounds.height * (nodeAnchor?.verticalRatio ?? 0.5);
   const zoom = requestedZoom ?? options.reactFlow.getViewport().zoom;
 
   const canvasCenterX = canvasBounds.left + canvasBounds.width / 2;
   const canvasCenterY = canvasBounds.top + canvasBounds.height / 2;
   const anchorX = canvasBounds.left + canvasBounds.width * anchor.horizontalRatio;
   const anchorY = canvasBounds.top + canvasBounds.height * anchor.verticalRatio;
-  const flowCenterX = nodeCenterX - (anchorX - canvasCenterX) / zoom;
-  const flowCenterY = nodeCenterY - (anchorY - canvasCenterY) / zoom;
+  const flowCenterX = nodeTargetX - (anchorX - canvasCenterX) / zoom;
+  const flowCenterY = nodeTargetY - (anchorY - canvasCenterY) / zoom;
 
   const applied = await options.reactFlow.setCenter(flowCenterX, flowCenterY, {
     zoom,
@@ -190,8 +193,8 @@ export function createReactFlowCanvasAdapter<
   return {
     cameraRuntime: {
       frameNodes: (nodeIds, cameraOptions) => frameNodes(options, nodeIds, cameraOptions),
-      focusNodeAtAnchor: (nodeId, anchor, zoom, duration) => (
-        focusNodeAtAnchor(options, nodeId, anchor, zoom, duration)
+      focusNodeAtAnchor: (nodeId, anchor, nodeAnchor, zoom, duration) => (
+        focusNodeAtAnchor(options, nodeId, anchor, nodeAnchor, zoom, duration)
       ),
       setViewport: (viewport, duration) => setViewport(options, viewport, duration),
       restoreViewport: (memoryKey, duration) => (
