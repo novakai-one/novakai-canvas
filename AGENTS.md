@@ -2,6 +2,16 @@ Creating New Prototypes.
 
 New UI Component prototypes are to be created in /src/presentation/prototype/rooms
 
+## Browser verification
+
+- Read `~/.agents/browse/README.md` before the first browser check.
+- Use only the shared browser driver: `node ~/.agents/browse/browse.mjs <command>`.
+- Run browser commands with the working directory set to `~/.agents/browse`.
+- Do not use, install, or invoke repo-local Playwright, `playwright-cli`, or `npx playwright`.
+- Inspect `~/.agents/browse/latest.png`; preserve evidence with `shot <name>`.
+- Finish with `node browse.mjs close`. The watchdog closes forgotten headless sessions after 15 idle minutes.
+- When several agents are active, take turns using the shared browser because it drives one canonical page.
+
 ---
 # Novakai Canvas
 
