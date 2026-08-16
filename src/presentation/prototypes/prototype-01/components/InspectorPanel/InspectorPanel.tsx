@@ -79,7 +79,7 @@ function RelatedObjectRow({ record }: { record: ObjectRecord }) {
   );
 }
 
-export function InspectorPanel() {
+export function InspectorPanel({ hidden = false }: { hidden?: boolean }) {
   const { selected, graph, select, enterRoom, room, projection, patch, elected } = useStore();
   const [answered, setAnswered] = useState<string | null>(null);
 
@@ -90,7 +90,7 @@ export function InspectorPanel() {
   const missionWorldOwnsInspector =
     selected?.kind === 'stage' && room.kind === 'mission' && projection === 'world';
 
-  if (!selected || missionWorldOwnsInspector) {
+  if (!selected || missionWorldOwnsInspector || hidden) {
     return <aside className="inspector-panel" data-state="closed" aria-hidden="true" />;
   }
 

@@ -4,9 +4,11 @@ import type {
   CommandCenterDesignProps,
 } from './command-center-design';
 import { currentCommandCenterDesign } from './designs/current';
+import { causalFieldDesign } from './designs/causal-field';
+import { causalLoomDesign } from './designs/causal-loom';
 
 const commandCenterDesignRegistry = createDesignRegistry<CommandCenterDesignProps>(
-  [currentCommandCenterDesign],
+  [currentCommandCenterDesign, causalFieldDesign, causalLoomDesign],
   currentCommandCenterDesign.id,
 );
 

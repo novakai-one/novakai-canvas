@@ -5,6 +5,7 @@ import type {
   CommandCenterDesignData,
 } from './command-center-design';
 import { resolveCommandCenterDesign } from './command-center-design-registry';
+import { applyAttentionCommand } from './apply-attention-command';
 
 /** Composition root that supplies app state to the selected Command Center design. */
 export function CommandCenter() {
@@ -23,8 +24,12 @@ export function CommandCenter() {
 
   const commands: CommandCenterDesignCommands = {
     select,
-    patch,
-    addRecord,
+    act: (item, action, input) => applyAttentionCommand(
+      item,
+      action,
+      input,
+      { graph, patch, addRecord },
+    ),
     canOpen: (record) => roomFor(record) !== null,
     open: (record) => {
       const room = roomFor(record);

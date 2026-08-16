@@ -68,6 +68,8 @@ export interface WorldCanvasProps<NodeType extends Node = Node, EdgeType extends
   edgeTypes?: EdgeTypes;
   selectedId: string | null;
   onSelect: (id: string | null) => void;
+  resolveSelectionId?: (node: NodeType) => string | null;
+  isNodeSelected?: (node: NodeType, selectedId: string | null) => boolean;
   onZoomChange?: (zoom: number) => void;
   onViewportChange?: (viewport: WorldViewport) => void;
   resolveNodeChanges?: (
@@ -82,6 +84,7 @@ export interface WorldCanvasProps<NodeType extends Node = Node, EdgeType extends
   canvasChildren?: ReactNode;
   screenChildren?: ReactNode;
   showControls?: boolean;
+  surfaceClassName?: string;
   initialViewport?: WorldViewport;
   fitViewOnMount?: boolean;
 }
@@ -160,6 +163,8 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
   edgeTypes,
   selectedId,
   onSelect,
+  resolveSelectionId,
+  isNodeSelected,
   onZoomChange,
   onViewportChange,
   resolveNodeChanges,
@@ -170,6 +175,7 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
   canvasChildren,
   screenChildren,
   showControls = true,
+  surfaceClassName,
   initialViewport,
   fitViewOnMount,
 }: WorldCanvasProps<NodeType, EdgeType> & {
@@ -214,10 +220,13 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
 
     setNodes(restoredNodes.map((node) => ({
       ...node,
-      selected: node.id === selectedId,
+      selected: isNodeSelected
+        ? isNodeSelected(node, selectedId)
+        : node.id === selectedId,
     })));
   }, [
     incomingNodes,
+    isNodeSelected,
     resolvedInteraction.rememberNodePositions,
     selectedId,
     setNodes,
@@ -275,13 +284,15 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
   return (
     <CanvasRuntimeProvider runtime={runtime}>
       <ReactFlow<NodeType, EdgeType>
-        className="world-canvas__surface"
+        className={['world-canvas__surface', surfaceClassName].filter(Boolean).join(' ')}
         nodes={nodes}
         edges={[...edges]}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         onNodesChange={handleNodeChanges}
-        onNodeClick={(_, node) => onSelect(node.id)}
+        onNodeClick={(_, node) => onSelect(
+          resolveSelectionId ? resolveSelectionId(node) : node.id,
+        )}
         onNodeDragStop={handleNodeDragStop}
         onPaneClick={() => onSelect(null)}
         onMove={handleMove}

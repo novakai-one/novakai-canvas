@@ -5,7 +5,7 @@
  * a Room change never costs you your location.
  */
 import './prototype-01-app.css';
-import { roomKey, StoreProvider, useStore } from './store';
+import { roomKey, StoreProvider, useStore, type Room } from './store';
 import { NavigationRail } from '../components/NavigationRail/NavigationRail';
 import { ContextHeader } from '../components/ContextHeader/ContextHeader';
 import { InspectorPanel } from '../components/InspectorPanel/InspectorPanel';
@@ -18,6 +18,19 @@ import { AgentRoles } from '../rooms/AgentRoles/AgentRoles';
 import { MissionRoom } from '../rooms/MissionRoom/MissionRoom';
 import { StageRoom } from '../rooms/StageRoom/StageRoom';
 import { AgentRoom, ProjectRoom } from '../rooms/ObjectRoom/ObjectRoom';
+import { resolveCommandCenterDesign } from '../rooms/CommandCenter/command-center-design-registry';
+import { resolveMessagesDesign } from '../rooms/Messages/messages-design-registry';
+
+function activeDesignOwnsInspector(room: Room): boolean {
+  const search = typeof window === 'undefined' ? '' : window.location.search;
+  if (room.kind === 'area' && room.area === 'command-center') {
+    return resolveCommandCenterDesign(search).ownsInspector ?? false;
+  }
+  if (room.kind === 'thread' || (room.kind === 'area' && room.area === 'messages')) {
+    return resolveMessagesDesign(search).ownsInspector ?? false;
+  }
+  return false;
+}
 
 function ActiveRoom() {
   const { room } = useStore();
@@ -78,7 +91,7 @@ function Shell() {
           <ActiveRoom />
         </main>
       </div>
-      <InspectorPanel />
+      <InspectorPanel hidden={activeDesignOwnsInspector(room)} />
     </div>
   );
 }

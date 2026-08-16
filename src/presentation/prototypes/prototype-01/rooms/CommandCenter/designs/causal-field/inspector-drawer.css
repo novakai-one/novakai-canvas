@@ -1,0 +1,250 @@
+/*
+ * The drawer the field's inspector lives in: pushes the canvas up, never covers it.
+ * Children sit lighter than the parent surface; the resize handle stays invisible
+ * until wanted. The tether lands on the header — panel and chip read as one body.
+ */
+
+.inspector-drawer {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-top: var(--border) solid var(--rule-strong);
+  background: var(--surface-1);
+  box-shadow: 0 -14px 36px rgba(0, 0, 0, 0.45);
+  animation: inspector-drawer-rise var(--motion-structural) var(--ease-enter);
+  overflow: hidden;
+  z-index: calc(var(--layer-inspector) - 1);
+}
+
+@keyframes inspector-drawer-rise {
+  from {
+    height: 0;
+    opacity: 0.4;
+  }
+}
+
+.inspector-drawer__handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+  cursor: row-resize;
+  z-index: 2;
+  touch-action: none;
+}
+
+.inspector-drawer__handle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  width: 44px;
+  height: 3px;
+  transform: translateX(-50%);
+  border-radius: 2px;
+  background: var(--rule-strong);
+  opacity: 0;
+  transition: opacity var(--motion-feedback) var(--ease-standard);
+}
+
+.inspector-drawer__handle:hover::after,
+.inspector-drawer__handle[data-dragging='true']::after {
+  opacity: 1;
+}
+
+.inspector-drawer__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6) var(--space-3);
+}
+
+.inspector-drawer__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.inspector-drawer__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.inspector-drawer__body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 280px minmax(220px, 1fr) 340px;
+  gap: var(--space-6);
+  padding: 0 var(--space-6) var(--space-5);
+  overflow-y: auto;
+}
+
+.inspector-drawer__column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.inspector-drawer__column-label {
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-eyebrow);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.inspector-drawer__summary {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--ink-muted);
+}
+
+.inspector-drawer__id {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+}
+
+.inspector-drawer__quiet {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
+.inspector-drawer__option {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  border: var(--border) solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  cursor: pointer;
+  transition:
+    border-color var(--motion-feedback) var(--ease-standard),
+    background var(--motion-feedback) var(--ease-standard);
+}
+
+.inspector-drawer__option:hover {
+  border-color: var(--rule-spine);
+  background: var(--surface-3);
+}
+
+.inspector-drawer__option[data-chosen='true'] {
+  border-color: var(--settled);
+  background: var(--settled-wash);
+}
+
+/* ---- Chain rows: the chips already on the field, spoken again -------------- */
+
+.drawer-chain-row {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  border-radius: var(--radius);
+  transition: background var(--motion-feedback) var(--ease-standard);
+}
+
+.drawer-chain-row[data-lit='true'] {
+  background: var(--surface-2);
+}
+
+.drawer-chain-row__disclose {
+  flex: 1;
+  display: flex;
+  min-width: 0;
+  padding: var(--space-2) var(--space-2);
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.drawer-chain-row__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.drawer-chain-row__title {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drawer-chain-row__open {
+  padding: var(--space-1) var(--space-2);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--ink-faint);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: color var(--motion-feedback) var(--ease-standard), background var(--motion-feedback) var(--ease-standard);
+}
+
+.drawer-chain-row__open:hover {
+  color: var(--ink);
+  background: var(--surface-3);
+}
+
+.drawer-chain-row__context {
+  flex-basis: 100%;
+  padding: 0 var(--space-2) var(--space-2);
+}
+
+.drawer-chain-row__context p {
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--ink-muted);
+}
+
+.drawer-chain-row__context-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+}
+
+.drawer-chain-row__inspect {
+  padding: var(--space-1) var(--space-2);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--ink-muted);
+  font-size: var(--text-xs);
+  cursor: pointer;
+}
+
+.drawer-chain-row__inspect:hover {
+  color: var(--ink);
+  background: var(--surface-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inspector-drawer {
+    animation: none;
+  }
+}

@@ -2,6 +2,7 @@ import { createDesignRegistry } from '../../designs/design-registry';
 import type { MessagesDesign } from './messages-design';
 import { currentMessagesDesign } from './designs/current';
 import { correspondenceLedgerDesign } from './designs/ledger';
+import { transcriptAtlasDesign } from './designs/atlas';
 
 /** The design selected whenever the URL requests no known Messages design. */
 const DEFAULT_MESSAGES_DESIGN_ID = currentMessagesDesign.id;
@@ -9,6 +10,7 @@ const DEFAULT_MESSAGES_DESIGN_ID = currentMessagesDesign.id;
 const designs: readonly MessagesDesign[] = [
   currentMessagesDesign,
   correspondenceLedgerDesign,
+  transcriptAtlasDesign,
 ];
 
 const messagesDesignRegistry = createDesignRegistry(

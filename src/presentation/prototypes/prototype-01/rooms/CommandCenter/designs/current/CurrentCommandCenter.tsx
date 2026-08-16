@@ -6,7 +6,6 @@
  * Room. Selecting a row opens its inspector and moves nothing.
  */
 import '../../command-center.css';
-import { makeRecord, sessionId } from '../../../../app/store';
 import { REASON_GROUPS, REASON_LABEL, type AttentionItem } from '../../../../attention/feed';
 import { field } from '../../../../object-graph/graph';
 import { KIND_LABEL } from '../../../../object-graph/contract';
@@ -16,9 +15,6 @@ import type {
   CommandCenterDesignData,
   CommandCenterDesignProps,
 } from '../../command-center-design';
-
-/** A new agent to take over a seat whose occupant stopped. */
-const REPLACEMENTS = ['Rune', 'Vell', 'Orin', 'Perrin'];
 
 function AttentionRow({
   item,
@@ -32,63 +28,17 @@ function AttentionRow({
   commands: CommandCenterDesignCommands;
 }) {
   const { selected, graph } = data;
-  const { select, patch, addRecord } = commands;
+  const { select } = commands;
   const openTarget = graph.get(item.openId);
   const canOpen = openTarget ? commands.canOpen(openTarget) : false;
 
   /** Every action here edits state in place. None of them changes the Room. */
   const act = (kind: string) => {
-    const subject = item.subject;
-    switch (item.reason) {
-      case 'decision':
-        select(subject.id);
-        return;
-      case 'blocked':
-        patch(subject.id, { status: 'todo', blockedReason: '' });
-        return;
-      case 'agent-failed': {
-        if (kind === 'stop') {
-          patch(subject.id, { status: 'retired' });
-          return;
-        }
-        const name = REPLACEMENTS[Math.floor(Math.random() * REPLACEMENTS.length)];
-        const id = sessionId('agent', name);
-        addRecord(
-          makeRecord(id, 'agent', name, {
-            status: 'live',
-            provider: 'anthropic',
-            sessionId: `sess_${name.toLowerCase()}_new`,
-            updated: new Date().toISOString(),
-          }),
-        );
-        patch(subject.id, { status: 'retired' });
-        const seat = graph.relatedBy(subject.id, 'occupies')[0];
-        if (seat) patch(seat.id, { agentId: id });
-        return;
-      }
-      case 'seat-vacant': {
-        const name = REPLACEMENTS[Math.floor(Math.random() * REPLACEMENTS.length)];
-        const id = sessionId('agent', name);
-        addRecord(
-          makeRecord(id, 'agent', name, {
-            status: 'live',
-            provider: 'anthropic',
-            sessionId: `sess_${name.toLowerCase()}_new`,
-            updated: new Date().toISOString(),
-          }),
-        );
-        patch(subject.id, { agentId: id });
-        return;
-      }
-      case 'issue':
-        patch(subject.id, { status: 'resolved' });
-        return;
-      case 'message-waiting':
-        patch(subject.id, { status: 'read' });
-        return;
-      default:
-        patch(subject.id, { attentionState: 'settled' });
+    if (item.reason === 'decision') {
+      select(item.subject.id);
+      return;
     }
+    commands.act(item, kind as AttentionItem['actions'][number]['kind']);
   };
 
   return (
