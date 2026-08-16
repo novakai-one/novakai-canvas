@@ -3,5 +3,5 @@
 {"id":"pin_command","kind":"pin","ts":"2026-08-10T09:00:00Z","principalId":"principal_chris","subjectRef":{"kind":"project","id":"proj_command"},"order":3}
 {"id":"pin_verifier-role","kind":"pin","ts":"2026-08-12T09:00:00Z","principalId":"principal_chris","subjectRef":{"kind":"agentRoleProfile","id":"role_build-verifier"},"order":4}
 {"id":"pin_mcux_mission","kind":"pin","ts":"2026-08-15T09:05:00Z","principalId":"principal_chris","subjectRef":{"kind":"mission","id":"mission_mission-control-ux"},"order":5}
-{"id":"pin_visibility_mission","kind":"pin","ts":"2026-08-15T10:41:00Z","principalId":"principal_chris","subjectRef":{"kind":"mission","id":"mission_external-session-visibility"},"order":6}
+{"id":"pin_visibility_mission","kind":"pin","ts":"2026-08-15T10:41:00Z","principalId":"principal_chris","subjectRef":{"kind":"mission","id":"mission_external-session-visibility-recovery"},"order":6}
 {"id":"pin_vt_mission","kind":"pin","ts":"2026-08-15T15:15:00Z","principalId":"principal_chris","subjectRef":{"kind":"mission","id":"mission_visual-truth"},"order":7}

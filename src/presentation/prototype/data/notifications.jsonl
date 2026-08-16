@@ -5,7 +5,7 @@
 {"notificationId":"notif_message-waiting","kind":"notification","principalId":"principal_chris","subjectRef":{"kind":"thread","id":"thread_tunnel-transport"},"status":"unread"}
 {"notificationId":"notif_mcux_click-failure","kind":"notification","principalId":"principal_chris","subjectRef":{"kind":"issue","id":"issue_mc-dm-row-click-noop"},"status":"unread"}
 {"notificationId":"notif_mcux_verifier-reply","kind":"notification","principalId":"principal_chris","subjectRef":{"kind":"thread","id":"thread_mcux_verification"},"status":"unread"}
-{"notificationId":"notif_visibility_build-active","kind":"notification","principalId":"principal_chris","subjectRef":{"kind":"task","id":"task_vis-backend-registration"},"status":"unread"}
+{"notificationId":"notif_visibility_build-active","kind":"notification","principalId":"principal_chris","subjectRef":{"kind":"task","id":"task_vis-backend-registration-recovery"},"status":"unread"}
 {"notificationId":"notif_visibility_identity-answered","kind":"notification","principalId":"principal_chris","subjectRef":{"kind":"request","id":"request_visibility_identity"},"status":"read"}
 {"notificationId":"notif_vt_report-blocked","kind":"notification","principalId":"principal_chris","subjectRef":{"kind":"task","id":"task_vt-cold-audits"},"status":"unread"}
 {"notificationId":"notif_vt_data-reopened","kind":"notification","principalId":"principal_chris","subjectRef":{"kind":"task","id":"task_vt-retire-stale-identities"},"status":"unread"}

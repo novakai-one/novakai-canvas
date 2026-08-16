@@ -8,9 +8,9 @@
 {"teamSeatId":"seat_mcux_orchestrator","kind":"teamSeat","teamId":"team_mission-control-ux","roleProfileId":"role_orchestrator","agentId":"agent_fa0d4893-5736-4f2d-b77f-7e5eeb126e36"}
 {"teamSeatId":"seat_mcux_builder","kind":"teamSeat","teamId":"team_mission-control-ux","roleProfileId":"role_builder","agentId":"agent_2e57e618-3ee1-49cc-ab9e-3f945afd5a5f"}
 {"teamSeatId":"seat_mcux_verifier","kind":"teamSeat","teamId":"team_mission-control-ux","roleProfileId":"role_build-verifier","agentId":"agent_4c3a4cba-9b91-4f2a-ba50-9cb13fb54fc9"}
-{"teamSeatId":"seat_visibility_manager","kind":"teamSeat","teamId":"team_external-session-visibility","roleProfileId":"role_orchestrator","agentId":"agent_7698bef8-6493-4672-a648-ce3fba573d5a"}
-{"teamSeatId":"seat_visibility_builder","kind":"teamSeat","teamId":"team_external-session-visibility","roleProfileId":"role_builder","agentId":"agent_29b00827-e3ad-498f-bcd9-2567cfbd9e0b"}
-{"teamSeatId":"seat_visibility_auditor","kind":"teamSeat","teamId":"team_external-session-visibility","roleProfileId":"role_build-verifier","agentId":"agent_38f4706c-705a-40fe-a757-71c84b719d3d"}
+{"teamSeatId":"seat_visibility_manager","kind":"teamSeat","teamId":"team_external-session-visibility-recovery","roleProfileId":"role_orchestrator","agentId":"agent_7698bef8-6493-4672-a648-ce3fba573d5a"}
+{"teamSeatId":"seat_visibility_builder","kind":"teamSeat","teamId":"team_external-session-visibility-recovery","roleProfileId":"role_builder","agentId":"agent_29b00827-e3ad-498f-bcd9-2567cfbd9e0b"}
+{"teamSeatId":"seat_visibility_auditor","kind":"teamSeat","teamId":"team_external-session-visibility-recovery","roleProfileId":"role_build-verifier","agentId":"agent_38f4706c-705a-40fe-a757-71c84b719d3d"}
 {"teamSeatId":"seat_vt_manager","kind":"teamSeat","teamId":"team_visual-truth","roleProfileId":"role_orchestrator","agentId":"agent_925b0dcd-b5cf-4454-abe0-aff90b50d155"}
 {"teamSeatId":"seat_vt_builder","kind":"teamSeat","teamId":"team_visual-truth","roleProfileId":"role_builder","agentId":"agent_ef05dd62-3b9a-48ca-a618-4d4536442a44"}
 {"teamSeatId":"seat_vt_plan-auditor","kind":"teamSeat","teamId":"team_visual-truth","roleProfileId":"role_build-verifier","agentId":"agent_d972b042-7d90-4ed0-887c-8c23d5d9e26c"}
