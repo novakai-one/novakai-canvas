@@ -21,6 +21,7 @@ import { AgentRoom, ProjectRoom } from '../rooms/ObjectRoom/ObjectRoom';
 import { resolveCommandCenterDesign } from '../rooms/CommandCenter/command-center-design-registry';
 import { resolveMessagesDesign } from '../rooms/Messages/messages-design-registry';
 import { resolveMissionsDesign } from '../rooms/Missions/missions-design-registry';
+import { resolveProjectsDesign } from '../rooms/Projects/projects-design-registry';
 
 function activeDesignOwnsInspector(room: Room): boolean {
   const search = typeof window === 'undefined' ? '' : window.location.search;
@@ -32,6 +33,9 @@ function activeDesignOwnsInspector(room: Room): boolean {
   }
   if (room.kind === 'area' && room.area === 'missions') {
     return resolveMissionsDesign(search).ownsInspector ?? false;
+  }
+  if (room.kind === 'area' && room.area === 'projects') {
+    return resolveProjectsDesign(search).ownsInspector ?? false;
   }
   return false;
 }
