@@ -8,6 +8,7 @@ import { signalOrreryDesign } from './designs/signal-orrery';
 import { standingWaveDesign } from './designs/standing-wave';
 import { catenaryDesign } from './designs/catenary';
 import { vigilDesign } from './designs/vigil';
+import { switchboardDesign } from './designs/switchboard';
 
 /** The design selected whenever the URL requests no known Messages design. */
 const DEFAULT_MESSAGES_DESIGN_ID = currentMessagesDesign.id;
@@ -21,6 +22,7 @@ const designs: readonly MessagesDesign[] = [
   standingWaveDesign,
   catenaryDesign,
   vigilDesign,
+  switchboardDesign,
 ];
 
 const messagesDesignRegistry = createDesignRegistry(

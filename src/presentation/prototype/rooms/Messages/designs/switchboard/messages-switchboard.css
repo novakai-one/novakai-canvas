@@ -1,0 +1,831 @@
+/*
+ * Switchboard field. Every rule maps a fact onto a spatial lever:
+ * stem light = liveness, drop + scale + contrast = recency, the single amber
+ * edge = the one thing that needs you, dashed captioned hairline = a real
+ * Mission tie. The rest of the surface stays near-monochrome and quiet.
+ */
+
+.swb-field {
+  --swb-head-height: 72px;
+  --swb-field-top: 20px;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 90% 60% at 50% 18%, rgba(236, 236, 238, 0.025), transparent 70%),
+    #0d0d0f;
+}
+
+/* ---- atmosphere: floor grid, ground text, vignette ---- */
+
+.swb-field__floor {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 58%;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(236, 236, 238, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(236, 236, 238, 0.05) 1px, transparent 1px);
+  background-size: 64px 64px;
+  transform: perspective(900px) rotateX(58deg) scale(1.7);
+  transform-origin: bottom center;
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.9) 20%, transparent 90%);
+}
+
+.swb-field__ground-text {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%) perspective(600px) rotateX(52deg);
+  transform-origin: bottom center;
+  font-size: 118px;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(236, 236, 238, 0.035);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+.swb-field::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 120% 90% at 50% 30%, transparent 55%, rgba(0, 0, 0, 0.55));
+}
+
+/* ---- the time rules: silence made measurable ---- */
+
+.swb-field__ticks {
+  position: absolute;
+  inset: calc(var(--swb-field-top) + var(--swb-head-height)) 0 auto 0;
+  pointer-events: none;
+}
+
+.swb-tick {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid rgba(236, 236, 238, 0.045);
+}
+
+.swb-tick__label {
+  position: absolute;
+  top: -7px;
+  left: 14px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(139, 139, 148, 0.55);
+}
+
+/* ---- rails ---- */
+
+.swb-field__rails {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 100%;
+  padding: var(--swb-field-top) 150px 0 56px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  transition: filter 700ms ease, opacity 700ms ease;
+}
+
+.swb-field__rails[data-dimmed='true'] {
+  filter: blur(2.5px) brightness(0.6);
+  pointer-events: none;
+}
+
+.swb-rail {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 190px;
+}
+
+.swb-rail__head {
+  position: relative;
+  z-index: 2;
+  height: var(--swb-head-height);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  text-align: center;
+}
+
+.swb-rail__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #a2a2aa;
+}
+
+.swb-rail[data-live='true'] .swb-rail__name {
+  color: #ececee;
+}
+
+.swb-rail__role {
+  color: #6f6f78;
+}
+
+/* Liveness is the stem's light, nothing else. */
+.swb-rail__stem {
+  position: absolute;
+  top: 48px;
+  bottom: 6%;
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(236, 236, 238, 0.12),
+    rgba(236, 236, 238, 0.05) 60%,
+    transparent
+  );
+}
+
+.swb-rail[data-live='true'] .swb-rail__stem {
+  background: linear-gradient(
+    180deg,
+    rgba(236, 236, 238, 0.55),
+    rgba(236, 236, 238, 0.14) 55%,
+    transparent
+  );
+  animation: swb-stem-breathe 5s ease-in-out infinite;
+}
+
+@keyframes swb-stem-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.65;
+  }
+}
+
+.swb-rail__hangs {
+  position: absolute;
+  top: var(--swb-head-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+/* ---- plaques: conversations hanging by recency ---- */
+
+.swb-plaque-slot {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 176px;
+  margin-left: -88px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: transform 700ms ease, opacity 700ms ease;
+}
+
+.swb-plaque {
+  width: 100%;
+  text-align: left;
+  padding: 9px 12px 10px;
+  border: 1px solid #26262b;
+  border-radius: 6px;
+  background: #1b1b1e;
+  color: #ececee;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+  transition: transform 700ms ease, border-color 300ms ease;
+}
+
+.swb-plaque:hover {
+  border-color: #3a3a40;
+}
+
+.swb-plaque[data-ghost='true'] {
+  border-style: dashed;
+  background: rgba(27, 27, 30, 0.5);
+}
+
+.swb-plaque__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8b8b94;
+  margin-bottom: 5px;
+}
+
+.swb-plaque__unread {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ececee;
+  margin-left: auto;
+}
+
+.swb-plaque__last {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #a2a2aa;
+}
+
+/* The one amber object on the board: lit edge, full size, immune to fading. */
+.swb-plaque[data-amber='true'] {
+  border-color: #d0a14b;
+  background: #1e1a12;
+  box-shadow:
+    0 0 0 1px rgba(208, 161, 75, 0.35),
+    0 14px 44px rgba(208, 161, 75, 0.14),
+    0 10px 28px rgba(0, 0, 0, 0.5);
+}
+
+.swb-plaque__needs-you {
+  color: #e2ba6e;
+  margin-left: auto;
+}
+
+/* While a conversation is raised, the panel carries the signal — never two ambers. */
+.swb-field[data-raised='true'] .swb-plaque[data-amber='true'] {
+  border-color: #26262b;
+  background: #1b1b1e;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+}
+
+.swb-field[data-raised='true'] .swb-plaque__needs-you {
+  color: #8b8b94;
+}
+
+/* Addressed this session: the amber releases to settled sage. */
+.swb-plaque[data-released='true'] {
+  border-color: rgba(120, 168, 134, 0.6);
+  background: #161a17;
+  box-shadow:
+    0 0 0 1px rgba(120, 168, 134, 0.22),
+    0 10px 28px rgba(0, 0, 0, 0.45);
+}
+
+/* The moment the panel lowers, the settled plaque is revealed mid-exhale: a slow
+ * amber-to-sage settle that Chris actually sees. */
+.swb-field:not([data-raised='true']) .swb-plaque[data-released='true'] {
+  animation: swb-settle 1100ms ease;
+}
+
+@keyframes swb-settle {
+  0% {
+    border-color: #d0a14b;
+    background: #1e1a12;
+    box-shadow:
+      0 0 0 1px rgba(208, 161, 75, 0.35),
+      0 14px 44px rgba(208, 161, 75, 0.14);
+  }
+  100% {
+    border-color: rgba(120, 168, 134, 0.6);
+    background: #161a17;
+    box-shadow:
+      0 0 0 1px rgba(120, 168, 134, 0.22),
+      0 10px 28px rgba(0, 0, 0, 0.45);
+  }
+}
+
+/* ---- the Mission tie: dashed, captioned, only when real ---- */
+
+.swb-tie {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6f6f78;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.swb-tie:hover {
+  color: #a2a2aa;
+}
+
+.swb-tie__line {
+  flex: 0 0 16px;
+  border-top: 1px dashed #3a3a40;
+}
+
+.swb-tie__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- the right edge: nothing falls off the board silently ---- */
+
+.swb-edge {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 130px;
+  pointer-events: none;
+  background: linear-gradient(to right, transparent, rgba(13, 13, 15, 0.92) 78%);
+}
+
+.swb-edge__count {
+  position: absolute;
+  z-index: 3;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8b8b94;
+}
+
+.swb-edge__count:hover {
+  color: #ececee;
+}
+
+/* ---- the raised reading panel ---- */
+
+/* Fixed to the Room's viewport rect, so field scrolling can never carry it away. */
+.swb-overlay {
+  position: fixed;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.swb-panel {
+  position: absolute;
+  pointer-events: auto;
+  left: 46%;
+  top: 47%;
+  transform: translate(-50%, -50%);
+  width: min(640px, 76%);
+  max-height: 80%;
+  display: flex;
+  flex-direction: column;
+  background: #17171a;
+  border: 1px solid #2a2a2e;
+  border-radius: 8px;
+  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.65);
+  animation: swb-panel-raise 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* The amber-to-sage hand-over must be watchable, not instant. */
+  transition: box-shadow 700ms ease;
+}
+
+.swb-panel[data-amber='true'] {
+  box-shadow:
+    0 0 0 1px rgba(208, 161, 75, 0.4),
+    0 32px 90px rgba(0, 0, 0, 0.65);
+}
+
+.swb-panel[data-released='true'] {
+  box-shadow:
+    0 0 0 1px rgba(120, 168, 134, 0.45),
+    0 32px 90px rgba(0, 0, 0, 0.65);
+}
+
+@keyframes swb-panel-raise {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -46%) scale(0.975);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.swb-panel__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid #232327;
+}
+
+.swb-panel__monogram {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #252529;
+  color: #a2a2aa;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+}
+
+.swb-panel__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.swb-panel__name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ececee;
+}
+
+.swb-tie--panel {
+  margin-left: auto;
+}
+
+.swb-panel__close {
+  border: none;
+  background: none;
+  color: #8b8b94;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 6px;
+}
+
+.swb-panel__close:hover {
+  color: #ececee;
+}
+
+.swb-panel__body {
+  flex: 1;
+  min-height: 120px;
+  overflow-y: auto;
+  padding: 8px 22px 14px;
+}
+
+.swb-panel__empty {
+  color: #8b8b94;
+  font-size: 13px;
+  padding: 28px 0;
+  text-align: center;
+}
+
+.swb-turn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 16px 0;
+}
+
+.swb-turn[data-mine='true'] {
+  align-items: flex-end;
+}
+
+.swb-turn__meta {
+  font-size: 10.5px;
+  color: #8b8b94;
+  margin-bottom: 4px;
+}
+
+.swb-turn__bubble {
+  max-width: 82%;
+  text-align: left;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #26262b;
+  background: #1f1f23;
+  color: #ececee;
+  font-size: 13.5px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.swb-turn[data-mine='true'] .swb-turn__bubble {
+  background: #2a2a30;
+  border-color: #2a2a30;
+}
+
+.swb-turn__bubble[data-selected='true'] {
+  border-color: #a2a2aa;
+}
+
+.swb-turn__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 7px;
+  max-width: 82%;
+}
+
+.swb-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 5px 10px;
+  border: 1px dashed #3a3a40;
+  border-radius: 4px;
+  background: none;
+  color: #a2a2aa;
+  font-size: 11.5px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.swb-chip:hover {
+  border-color: #55555c;
+  color: #ececee;
+}
+
+.swb-chip[data-selected='true'] {
+  border-style: solid;
+  border-color: #a2a2aa;
+  background: #1f1f23;
+  color: #ececee;
+}
+
+.swb-panel__composer {
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px 14px;
+  border-top: 1px solid #232327;
+}
+
+.swb-panel__input {
+  flex: 1;
+  resize: none;
+  padding: 10px 12px;
+  border: 1px solid #26262b;
+  border-radius: 6px;
+  background: #101013;
+  color: #ececee;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.swb-panel__input:focus {
+  outline: none;
+  border-color: #3a3a40;
+}
+
+.swb-panel__input::placeholder {
+  color: #6f6f78;
+}
+
+/* Quiet by design: the amber edge is the only signal this screen ever spends. */
+.swb-panel__send {
+  align-self: stretch;
+  padding: 0 20px;
+  border: 1px solid #3a3a40;
+  border-radius: 6px;
+  background: none;
+  color: #ececee;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.swb-panel__send:hover:not(:disabled) {
+  background: #252529;
+}
+
+.swb-panel__send:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ---- the tethered disclosure card ---- */
+
+.swb-tether {
+  position: absolute;
+  left: 100%;
+  width: 30px;
+  height: 1px;
+  background: #3a3a40;
+}
+
+.swb-card-slot {
+  position: absolute;
+  left: calc(100% + 30px);
+  top: 16px;
+  width: 276px;
+}
+
+.swb-card-slot--field {
+  position: absolute;
+  left: auto;
+  right: 28px;
+  top: 92px;
+  z-index: 6;
+}
+
+.swb-card {
+  max-height: 58vh;
+  overflow-y: auto;
+  background: #202024;
+  border: 1px solid #2e2e33;
+  border-radius: 6px;
+  padding: 14px 16px 16px;
+  box-shadow: 0 18px 56px rgba(0, 0, 0, 0.5);
+  animation: swb-card-fold 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: left center;
+}
+
+@keyframes swb-card-fold {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.swb-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.swb-card__title {
+  margin: 3px 0 0;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #ececee;
+  line-height: 1.35;
+}
+
+.swb-card__close {
+  border: none;
+  background: none;
+  color: #8b8b94;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 4px;
+}
+
+.swb-card__close:hover {
+  color: #ececee;
+}
+
+.swb-card__status {
+  margin: 9px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #a2a2aa;
+}
+
+.swb-card__status[data-state='live'],
+.swb-card__status[data-state='active'],
+.swb-card__status[data-state='done'],
+.swb-card__status[data-state='doing'] {
+  color: #78a886;
+}
+
+.swb-card__claim {
+  margin: 9px 0 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #a2a2aa;
+}
+
+.swb-card__relation {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-top: 9px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: #26262b;
+  cursor: pointer;
+}
+
+.swb-card__relation:hover {
+  border-color: #3a3a40;
+}
+
+.swb-card__relation-title {
+  display: block;
+  margin-top: 3px;
+  font-size: 12.5px;
+  color: #ececee;
+}
+
+.swb-card__open {
+  display: block;
+  width: 100%;
+  margin-top: 13px;
+  padding: 8px 10px;
+  border: 1px solid #3a3a40;
+  border-radius: 4px;
+  background: none;
+  color: #ececee;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.swb-card__open:hover {
+  background: #2a2a30;
+}
+
+/* ---- shared small type ---- */
+
+.swb-eyebrow {
+  display: inline-block;
+  font-size: 9.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #8b8b94;
+}
+
+/* ---- new-conversation rail ---- */
+
+.swb-rail--new .swb-rail__head--new {
+  width: 100%;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.swb-rail--new .swb-rail__name {
+  font-size: 18px;
+  font-weight: 400;
+  color: #6f6f78;
+}
+
+.swb-rail--new:hover .swb-rail__name,
+.swb-rail--new[data-picking='true'] .swb-rail__name {
+  color: #ececee;
+}
+
+.swb-rail--new .swb-rail__stem {
+  background: linear-gradient(
+    180deg,
+    rgba(236, 236, 238, 0.1),
+    transparent 70%
+  );
+  border-left: 1px dashed rgba(236, 236, 238, 0.08);
+  width: 0;
+}
+
+.swb-rail--new .swb-rail__hangs {
+  left: 50%;
+  right: auto;
+  width: 176px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  padding-bottom: 24px;
+  z-index: 3;
+}
+
+.swb-plaque--pick {
+  border-style: dashed;
+  background: rgba(27, 27, 30, 0.7);
+  box-shadow: none;
+}
+
+.swb-plaque--pick:hover {
+  border-color: #55555c;
+  background: #1b1b1e;
+}
+
+.swb-plaque--pick .swb-plaque__meta {
+  color: #ececee;
+  text-transform: none;
+  font-size: 12.5px;
+  letter-spacing: 0;
+  margin-bottom: 2px;
+}
+
+/* ---- calm for those who ask for it ---- */
+
+@media (prefers-reduced-motion: reduce) {
+  .swb-panel,
+  .swb-card {
+    animation: none;
+  }
+  .swb-rail[data-live='true'] .swb-rail__stem {
+    animation: none;
+  }
+  .swb-field:not([data-raised='true']) .swb-plaque[data-released='true'] {
+    animation: none;
+  }
+  .swb-plaque-slot,
+  .swb-plaque,
+  .swb-field__rails {
+    transition: none;
+  }
+}
