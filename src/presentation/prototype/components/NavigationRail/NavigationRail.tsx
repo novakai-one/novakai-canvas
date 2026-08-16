@@ -6,7 +6,11 @@
  * Mission-internal hierarchy — that is the breadcrumb's job.
  */
 import './navigation-rail.css';
+import { useState } from 'react';
 import { AREAS, useStore, type AreaKey } from '../../app/store';
+import { DesignSwitcher } from '../DesignSwitcher/DesignSwitcher';
+
+const SWITCHER_OPEN_KEY = 'novakai-design-switcher-open';
 
 const ICON: Record<AreaKey, string> = {
   home: 'M3 9.2 10 3.5l7 5.7V17a1 1 0 0 1-1 1h-4v-5H8v5H4a1 1 0 0 1-1-1Z',
@@ -21,6 +25,15 @@ const STROKE_ICONS: ReadonlySet<AreaKey> = new Set(['missions', 'agent-roles']);
 
 export function NavigationRail() {
   const { area, goToArea, railCollapsed, toggleRail, feed, elected, graph } = useStore();
+
+  // Dev-only design switcher; the open-flag survives the reload a design switch causes.
+  const [switcherOpen, setSwitcherOpen] = useState(
+    () => sessionStorage.getItem(SWITCHER_OPEN_KEY) === '1',
+  );
+  const toggleSwitcher = () => {
+    sessionStorage.setItem(SWITCHER_OPEN_KEY, switcherOpen ? '' : '1');
+    setSwitcherOpen(!switcherOpen);
+  };
 
   /** A count per area, so the rail says how much is waiting without a badge on every row. */
   const counts: Partial<Record<AreaKey, number>> = {
@@ -79,11 +92,12 @@ export function NavigationRail() {
       </ul>
 
       <div className="navigation-rail__footer">
-        <span className="navigation-rail__person" title="Chris">
+        <span className="navigation-rail__person" title="Chris" onClick={toggleSwitcher}>
           CD
         </span>
         <span className="navigation-rail__label navigation-rail__person-name">Chris</span>
       </div>
+      {switcherOpen && <DesignSwitcher onClose={toggleSwitcher} />}
     </nav>
   );
 }

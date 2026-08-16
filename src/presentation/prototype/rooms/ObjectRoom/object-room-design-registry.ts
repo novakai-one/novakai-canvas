@@ -7,6 +7,11 @@ const objectRoomDesignRegistry = createDesignRegistry<ObjectRoomDesignProps>(
   currentObjectRoomDesign.id,
 );
 
+/** Lists every design available to the Object Room selector. */
+export function listObjectRoomDesigns(): readonly ObjectRoomDesign[] {
+  return objectRoomDesignRegistry.list();
+}
+
 /** Resolves the URL design ID with a deliberate fallback to the current reading layout. */
 export function resolveObjectRoomDesign(search: string): ObjectRoomDesign {
   const requestedId = new URLSearchParams(search).get('objectRoomDesign');

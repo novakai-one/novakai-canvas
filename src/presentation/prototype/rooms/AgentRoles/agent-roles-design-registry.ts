@@ -7,6 +7,11 @@ const agentRolesDesignRegistry = createDesignRegistry<AgentRolesDesignProps>(
   currentAgentRolesDesign.id,
 );
 
+/** Lists every design available to the Agent Roles selector. */
+export function listAgentRolesDesigns(): readonly AgentRolesDesign[] {
+  return agentRolesDesignRegistry.list();
+}
+
 /** Resolves the URL design ID with a deliberate fallback to the current role library. */
 export function resolveAgentRolesDesign(search: string): AgentRolesDesign {
   const requestedId = new URLSearchParams(search).get('agentRolesDesign');
