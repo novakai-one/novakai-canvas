@@ -17,3 +17,13 @@
 {"teamSeatId":"seat_vt_report-01","kind":"teamSeat","teamId":"team_visual-truth-audit-chain","roleProfileId":"role_build-verifier","agentId":"agent_visual-report-01"}
 {"teamSeatId":"seat_vt_report-02","kind":"teamSeat","teamId":"team_visual-truth-audit-chain","roleProfileId":"role_build-verifier","agentId":"agent_visual-report-02"}
 {"teamSeatId":"seat_vt_report-03","kind":"teamSeat","teamId":"team_visual-truth-audit-chain","roleProfileId":"role_build-verifier","agentId":"agent_visual-report-03"}
+{"teamSeatId":"seat_vis_manager","kind":"teamSeat","teamId":"team_external-session-visibility","roleProfileId":"role_orchestrator","agentId":"agent_7698bef8-6493-4672-a648-ce3fba573d5a"}
+{"teamSeatId":"seat_vis_worker","kind":"teamSeat","teamId":"team_external-session-visibility","roleProfileId":"role_builder","agentId":"agent_29b00827-e3ad-498f-bcd9-2567cfbd9e0b"}
+{"teamSeatId":"seat_vis_auditor","kind":"teamSeat","teamId":"team_external-session-visibility","roleProfileId":"role_build-verifier","agentId":"agent_38f4706c-705a-40fe-a757-71c84b719d3d"}
+{"teamSeatId":"seat_control-ux_manager","kind":"teamSeat","teamId":"team_control-ux","roleProfileId":"role_orchestrator","agentId":"agent_fa0d4893-5736-4f2d-b77f-7e5eeb126e36"}
+{"teamSeatId":"seat_control-ux_worker1","kind":"teamSeat","teamId":"team_control-ux","roleProfileId":"role_builder","agentId":"agent_050ee880-2fc6-4ce0-84a2-9bdb72cfb9df"}
+{"teamSeatId":"seat_control-ux_worker2","kind":"teamSeat","teamId":"team_control-ux","roleProfileId":"role_builder","agentId":"agent_2e57e618-3ee1-49cc-ab9e-3f945afd5a5f"}
+{"teamSeatId":"seat_control-ux_auditor1","kind":"teamSeat","teamId":"team_control-ux","roleProfileId":"role_build-verifier","agentId":"agent_762a28d2-34ff-4362-9a0b-227b01e366da"}
+{"teamSeatId":"seat_control-ux_auditor2","kind":"teamSeat","teamId":"team_control-ux","roleProfileId":"role_build-verifier","agentId":"agent_4c3a4cba-9b91-4f2a-ba50-9cb13fb54fc9"}
+{"teamSeatId":"seat_cli_manager","kind":"teamSeat","teamId":"team_nvk-mission-cli","roleProfileId":"role_orchestrator","agentId":"agent_6e568fc9-0e1f-4527-a037-0b132ef7eee0"}
+{"teamSeatId":"seat_cli_worker","kind":"teamSeat","teamId":"team_nvk-mission-cli","roleProfileId":"role_builder","agentId":"agent_39d4bb78-b731-4e34-b922-b80a44de5251"}

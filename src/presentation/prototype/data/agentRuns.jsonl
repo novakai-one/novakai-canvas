@@ -19,3 +19,7 @@
 {"agentRunId":"run_vt_report-03","kind":"agentRun","agentId":"agent_visual-report-03","taskId":"task_vt-cold-audits","status":"ended","startedAt":"2026-08-15T14:40:00Z","endedAt":"2026-08-15T15:10:00Z"}
 {"agentRunId":"run_vt_chief-06","kind":"agentRun","agentId":"agent_8a51ab56-9f1a-47cf-9751-7f9cfb16cb13","taskId":"task_vt_manage-contract","status":"ended","startedAt":"2026-08-15T11:00:00Z","endedAt":"2026-08-15T12:42:00Z"}
 {"agentRunId":"run_vt_chief-07","kind":"agentRun","agentId":"agent_bba1cbab-b99c-41d5-acfb-cded266687c0","taskId":"task_vt-interim-redeploy","status":"ended","startedAt":"2026-08-15T12:45:00Z","endedAt":"2026-08-15T12:49:00Z"}
+{"agentRunId":"run_vis-worker","kind":"agentRun","agentId":"agent_29b00827-e3ad-498f-bcd9-2567cfbd9e0b","taskId":"task_vis-live-proof","status":"succeeded","startedAt":"2026-07-22T23:30:00Z","endedAt":"2026-07-22T23:50:00Z"}
+{"agentRunId":"run_cux-worker-02","kind":"agentRun","agentId":"agent_2e57e618-3ee1-49cc-ab9e-3f945afd5a5f","taskId":"task_ux-w-people","status":"succeeded","startedAt":"2026-07-23T04:35:00Z","endedAt":"2026-07-23T05:10:00Z"}
+{"agentRunId":"run_cux-auditor-02","kind":"agentRun","agentId":"agent_4c3a4cba-9b91-4f2a-ba50-9cb13fb54fc9","taskId":"task_ux-verify","status":"succeeded","startedAt":"2026-07-23T04:42:00Z","endedAt":"2026-07-23T07:40:00Z"}
+{"agentRunId":"run_cli-worker","kind":"agentRun","agentId":"agent_39d4bb78-b731-4e34-b922-b80a44de5251","taskId":"task_mission-cli-verb","status":"succeeded","startedAt":"2026-07-23T00:00:00Z","endedAt":"2026-07-23T02:10:00Z"}
