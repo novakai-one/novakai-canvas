@@ -1,3 +1,8 @@
+Creating New Prototypes.
+
+New UI Component prototypes are to be created in /src/presentation/prototype/rooms
+
+---
 # Novakai Canvas
 
 ## Authoring maps (agents: start here)

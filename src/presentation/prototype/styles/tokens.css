@@ -1,8 +1,8 @@
 /**
- * Novakai prototype-01 design tokens.
+ * Novakai prototype design tokens.
  *
  * The single shared visual vocabulary for the six Rooms. Every stylesheet under
- * prototype-01/ reads these; none redefines them. Dark is the only theme here.
+ * The prototype reads these; none redefines them. Dark is the only theme here.
  */
 :root {
   --density: 1;

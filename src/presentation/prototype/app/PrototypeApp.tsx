@@ -4,7 +4,7 @@
  * The shell persists across every Room. Only the workspace swaps, so a load failure or
  * a Room change never costs you your location.
  */
-import './prototype-01-app.css';
+import './prototype-app.css';
 import { roomKey, StoreProvider, useStore, type Room } from './store';
 import { NavigationRail } from '../components/NavigationRail/NavigationRail';
 import { ContextHeader } from '../components/ContextHeader/ContextHeader';
@@ -96,7 +96,7 @@ function Shell() {
   );
 }
 
-export default function Prototype01App() {
+export default function PrototypeApp() {
   return (
     <StoreProvider>
       <Shell />
