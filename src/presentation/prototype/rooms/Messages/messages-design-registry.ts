@@ -11,6 +11,7 @@ import { vigilDesign } from './designs/vigil';
 import { switchboardDesign } from './designs/switchboard';
 import { rackFocusDesign } from './designs/rack-focus';
 import { turnLineDesign } from './designs/turn-line';
+import { gravityWellDesign } from './designs/gravity-well';
 
 /** The design selected whenever the URL requests no known Messages design. */
 const DEFAULT_MESSAGES_DESIGN_ID = currentMessagesDesign.id;
@@ -27,6 +28,7 @@ const designs: readonly MessagesDesign[] = [
   switchboardDesign,
   rackFocusDesign,
   turnLineDesign,
+  gravityWellDesign,
 ];
 
 const messagesDesignRegistry = createDesignRegistry(
