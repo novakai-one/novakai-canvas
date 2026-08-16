@@ -16,3 +16,4 @@
 {"id":"thread_external-session-visibility","kind":"thread","ts":"2026-07-22T22:00:00Z","roomId":"mission_external-session-visibility","refs":[{"kind":"mission","value":"mission_external-session-visibility"},{"kind":"agent","value":"agent_7698bef8-6493-4672-a648-ce3fba573d5a"}]}
 {"id":"thread_control-ux","kind":"thread","ts":"2026-07-23T04:20:00Z","roomId":"mission_control-ux","refs":[{"kind":"mission","value":"mission_control-ux"},{"kind":"agent","value":"agent_fa0d4893-5736-4f2d-b77f-7e5eeb126e36"}]}
 {"id":"thread_nvk-mission-cli","kind":"thread","ts":"2026-07-22T23:33:00Z","roomId":"mission_nvk-mission-cli","refs":[{"kind":"mission","value":"mission_nvk-mission-cli"},{"kind":"agent","value":"agent_6e568fc9-0e1f-4527-a037-0b132ef7eee0"}]}
+{"id":"thread_scout-standalone","kind":"thread","ts":"2026-08-16T09:30:00Z","roomId":"","refs":[{"kind":"agent","value":"agent_9e0f5c72-1b8d-4a6e-9c3f-2d7a8b4e6f10"}]}
