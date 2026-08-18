@@ -260,11 +260,31 @@ export function useBenchController({ data, commands }: MessagesDesignProps): Ben
       dispatch({ type: 'inspect-message', threadId, messageId });
       commandsRef.current.select(modelRef.current.recordsById.get(messageId) ?? null);
     },
+    expandMessageRelation: (threadId, messageId, relation, recordId) => {
+      dispatch({
+        type: 'expand-message-relation',
+        threadId,
+        messageId,
+        relation,
+        recordId,
+      });
+      commandsRef.current.select(modelRef.current.recordsById.get(recordId) ?? null);
+    },
     expandRelation: (trailId, parentStepId, relation, recordId) => {
       dispatch({ type: 'expand-relation', trailId, parentStepId, relation, recordId });
       commandsRef.current.select(modelRef.current.recordsById.get(recordId) ?? null);
     },
     closeTrailStep: (trailId, stepId) => dispatch({ type: 'close-trail-step', trailId, stepId }),
+    answerDecisionRequest: (context, ruling) => {
+      const trimmedRuling = ruling.trim();
+      if (!trimmedRuling) return;
+      const decisionId = commandsRef.current.answerDecisionRequest({
+        requestId: context.requestId,
+        ruling: trimmedRuling,
+      });
+      dispatch({ type: 'append-decision', context, decisionId });
+      commandsRef.current.select(modelRef.current.recordsById.get(context.requestId) ?? null);
+    },
     selectRecord: (recordId) => commandsRef.current.select(
       recordId ? modelRef.current.recordsById.get(recordId) ?? null : null,
     ),

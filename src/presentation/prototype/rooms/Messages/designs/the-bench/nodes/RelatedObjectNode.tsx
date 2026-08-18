@@ -19,7 +19,18 @@ export function RelatedObjectNode({ data, selected }: NodeProps<BenchRelatedObje
           ×
         </button>
       </header>
-      <ObjectNodeBody record={data.record} actions={data.actions} />
+      <ObjectNodeBody
+        record={data.record}
+        relations={data.relations}
+        decisionRequest={data.decisionRequest}
+        onExpand={(relation) => data.actions.expandRelation(
+          data.trail.id,
+          data.step.id,
+          relation.relation,
+          relation.record.id,
+        )}
+        actions={data.actions}
+      />
     </aside>
   );
 }

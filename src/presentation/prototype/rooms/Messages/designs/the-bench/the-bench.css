@@ -210,6 +210,14 @@
   opacity: 0;
 }
 
+.the-bench[data-zen-thread]:not([data-zen-thread='none']) .react-flow__node-bench-message-inspector,
+.the-bench[data-zen-thread]:not([data-zen-thread='none']) .react-flow__node-bench-related-object,
+.the-bench[data-zen-thread]:not([data-zen-thread='none']) .react-flow__edge-bench-inspection {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .the-bench {
     --bench-motion-feedback: 0ms;

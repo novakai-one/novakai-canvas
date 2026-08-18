@@ -1,4 +1,4 @@
-import { BaseEdge, getBezierPath, type EdgeProps } from '@xyflow/react';
+import { BaseEdge, EdgeLabelRenderer, getBezierPath, type EdgeProps } from '@xyflow/react';
 import type { BenchCanvasEdge } from '../model/bench-projection';
 
 /** Restrained amber bezier used only while an inspection trail exists. */
@@ -13,7 +13,7 @@ export function InspectionWire({
   markerEnd,
   data,
 }: EdgeProps<BenchCanvasEdge>) {
-  const [path] = getBezierPath({
+  const [path, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
     targetX,
@@ -23,12 +23,24 @@ export function InspectionWire({
     curvature: 0.42,
   });
   return (
-    <BaseEdge
-      id={id}
-      path={path}
-      markerEnd={markerEnd}
-      className="bench-inspection-wire"
-      data-emphasized={data?.emphasized ?? false}
-    />
+    <>
+      <BaseEdge
+        id={id}
+        path={path}
+        markerEnd={markerEnd}
+        className="bench-inspection-wire"
+        data-emphasized={data?.emphasized ?? false}
+      />
+      {data?.label && (
+        <EdgeLabelRenderer>
+          <span
+            className="bench-inspection-wire__label"
+            style={{ transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)` }}
+          >
+            {data.label}
+          </span>
+        </EdgeLabelRenderer>
+      )}
+    </>
   );
 }

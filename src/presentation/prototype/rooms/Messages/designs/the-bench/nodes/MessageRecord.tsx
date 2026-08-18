@@ -40,9 +40,23 @@ export function MessageRecord({
         <footer className="bench-message__relations">
           <span className="bench-message__chips">
             {message.relations.slice(0, 3).map((relation) => (
-              <span key={`${relation.relation}:${relation.record.id}`}>
+              <button
+                type="button"
+                className="nodrag"
+                key={`${relation.relation}:${relation.record.id}`}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  actions.expandMessageRelation(
+                    threadId,
+                    message.record.id,
+                    relation.relation,
+                    relation.record.id,
+                  );
+                }}
+                aria-label={`Inspect ${relation.record.title}`}
+              >
                 {KIND_LABEL[relation.record.kind]} · {relation.record.title}
-              </span>
+              </button>
             ))}
           </span>
           <button

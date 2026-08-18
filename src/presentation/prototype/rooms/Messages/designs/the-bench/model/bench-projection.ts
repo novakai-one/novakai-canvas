@@ -1,30 +1,28 @@
 import type { Edge, Node } from '@xyflow/react';
 import { relationsFor } from '../../../../../components/InspectorPanel/inspector-content';
-import { KIND_LABEL, RELATION_LABEL, type ObjectRecord, type Related } from '../../../../../object-graph/contract';
-import { field } from '../../../../../object-graph/graph';
+import { KIND_LABEL, RELATION_LABEL, type ObjectRecord } from '../../../../../object-graph/contract';
+import { field, type ObjectGraph } from '../../../../../object-graph/graph';
 import type { WorldPoint } from '../../../../../components/canvas/WorldCanvas';
 import type { MessagesDesignData } from '../../../messages-design';
 import {
   BENCH_CARD_SIZE,
   BENCH_FRAME_SIZE,
-  BENCH_INSPECTOR_SIZE,
   BENCH_THREAD_SIZE,
   conversationPoint,
-  layoutInspectionTrail,
   placementMapOf,
   type BenchPlacement,
 } from './bench-layout';
+import { projectInspectionTrails } from './bench-inspection-projection';
 import type {
   BenchConversation,
+  BenchDecisionRequest,
   BenchMessage,
-  BenchMessageRelation,
   BenchMissionTone,
   BenchModel,
   BenchNodeActions,
+  BenchObjectRelation,
   BenchParticipant,
   BenchState,
-  BenchInspectionTrail,
-  BenchTrailStep,
   ConversationNodeData,
   InspectionWireData,
   MessageInspectorNodeData,
@@ -90,12 +88,21 @@ function participantFor(record: ObjectRecord): BenchParticipant {
   };
 }
 
-function orderedRelations(related: readonly Related[]): BenchMessageRelation[] {
-  const preferredOrder = relationsFor('message');
-  return related
-    .slice()
+function relationsForRecord(graph: ObjectGraph, record: ObjectRecord): BenchObjectRelation[] {
+  const preferredOrder = relationsFor(record.kind);
+  const seen = new Set<string>();
+  return graph.related(record.id)
+    .filter((entry) => {
+      const key = `${entry.relation}:${entry.record.id}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
     .sort((left, right) => (
-      preferredOrder.indexOf(left.relation) - preferredOrder.indexOf(right.relation)
+      (preferredOrder.indexOf(left.relation) < 0 ? Number.MAX_SAFE_INTEGER : preferredOrder.indexOf(left.relation))
+      - (preferredOrder.indexOf(right.relation) < 0 ? Number.MAX_SAFE_INTEGER : preferredOrder.indexOf(right.relation))
+      || left.relation.localeCompare(right.relation)
+      || left.record.id.localeCompare(right.record.id)
     ))
     .map((entry) => ({
       relation: entry.relation,
@@ -114,18 +121,49 @@ function messageFor(data: MessagesDesignData, record: ObjectRecord): BenchMessag
     body: field(record, 'body') || record.title,
     createdAt: field(record, 'createdAt') || record.createdAt,
     isMine: senderId === 'principal_chris',
-    relations: orderedRelations(data.graph.related(record.id)),
+    relations: relationsForRecord(data.graph, record),
   };
 }
 
 function isConversationBlocked(conversation: {
   participants: readonly BenchParticipant[];
-  messages: readonly BenchMessage[];
+  pendingDecisionRequests: readonly BenchDecisionRequest[];
 }): boolean {
   if (conversation.participants.some((participant) => participant.status === 'failed')) return true;
-  return conversation.messages.some((message) => message.relations.some((relation) => (
-    field(relation.record, 'status') === 'blocked'
-  )));
+  return conversation.pendingDecisionRequests.length > 0;
+}
+
+function decisionRequestsFor(
+  data: MessagesDesignData,
+  threadId: string,
+  messages: readonly BenchMessage[],
+): BenchDecisionRequest[] {
+  const requests = new Map<string, BenchDecisionRequest>();
+  for (const message of messages) {
+    for (const relation of message.relations) {
+      const request = relation.record;
+      if (request.kind !== 'request' || field(request, 'status') !== 'pending' || requests.has(request.id)) {
+        continue;
+      }
+      const agent = data.graph.relatedOfKind(request.id, 'blocks', 'agent')[0];
+      const options = Array.isArray(request.fields.options)
+        ? request.fields.options.filter((option): option is string => typeof option === 'string')
+        : [];
+      requests.set(request.id, {
+        record: request,
+        question: field(request, 'question') || request.title,
+        agentName: agent?.title ?? 'Agent',
+        options,
+        context: {
+          threadId,
+          rootMessageId: message.record.id,
+          requestId: request.id,
+          requestRelation: relation.relation,
+        },
+      });
+    }
+  }
+  return [...requests.values()];
 }
 
 function conversationFor(data: MessagesDesignData, thread: ObjectRecord): BenchConversation {
@@ -139,7 +177,7 @@ function conversationFor(data: MessagesDesignData, thread: ObjectRecord): BenchC
   const composingParticipant = participants.find((participant) => (
     participant.record.fields.composing === true
   ));
-  const conversationBase = { participants, messages };
+  const pendingDecisionRequests = decisionRequestsFor(data, thread.id, messages);
 
   return {
     thread,
@@ -150,8 +188,9 @@ function conversationFor(data: MessagesDesignData, thread: ObjectRecord): BenchC
     previewLines: messages.slice(-2).map((message) => message.body),
     unreadCount: notifications.filter((record) => field(record, 'status') === 'unread').length,
     lastActivityAt: messages.at(-1)?.createdAt ?? thread.createdAt,
-    isBlocked: isConversationBlocked(conversationBase),
+    isBlocked: isConversationBlocked({ participants, pendingDecisionRequests }),
     composingAgentName: composingParticipant?.record.title ?? null,
+    pendingDecisionRequests,
   };
 }
 
@@ -181,6 +220,12 @@ export function buildBenchModel(data: MessagesDesignData): BenchModel {
       .map((thread) => conversationFor(data, thread)),
     data.initialThreadId,
   );
+  const relationsByRecordId = new Map(data.graph.all.map((record) => (
+    [record.id, relationsForRecord(data.graph, record)] as const
+  )));
+  const decisionRequestsById = new Map(conversations.flatMap((conversation) => (
+    conversation.pendingDecisionRequests.map((request) => [request.record.id, request] as const)
+  )));
   return {
     conversations,
     conversationsById: new Map(conversations.map((conversation) => [conversation.thread.id, conversation])),
@@ -188,6 +233,8 @@ export function buildBenchModel(data: MessagesDesignData): BenchModel {
       conversation.messages.map((message) => [message.record.id, message] as const)
     ))),
     recordsById: new Map(data.graph.all.map((record) => [record.id, record])),
+    relationsByRecordId,
+    decisionRequestsById,
     missions: data.graph.byKind('mission'),
     liveAgents: data.liveAgents,
   };
@@ -282,109 +329,6 @@ function draftNodes(
   }];
 }
 
-type TrailStepProjectionInput = {
-  readonly trail: BenchInspectionTrail;
-  readonly step: BenchTrailStep;
-  readonly position: WorldPoint;
-  readonly message: BenchMessage;
-  readonly model: BenchModel;
-  readonly actions: BenchNodeActions;
-};
-
-function relationInspectorProjection({
-  trail,
-  step,
-  position,
-  message,
-  actions,
-}: TrailStepProjectionInput): BenchCanvasProjection {
-  return {
-    nodes: [{
-      id: step.id,
-      type: 'bench-message-inspector',
-      position,
-      data: { kind: 'message-inspector', selectionId: message.record.id, trail, step, message, actions },
-      style: { width: BENCH_INSPECTOR_SIZE.width },
-      zIndex: 1200,
-    }],
-    edges: [{
-      id: `wire:${trail.id}:${step.id}`,
-      type: 'bench-inspection',
-      source: trail.threadId,
-      sourceHandle: `message:${trail.rootMessageId}:inspect`,
-      target: step.id,
-      targetHandle: 'trail-target',
-      data: { trailId: trail.id, emphasized: true },
-    }],
-  };
-}
-
-function relatedObjectProjection(input: TrailStepProjectionInput): BenchCanvasProjection {
-  const { trail, step, position, model, actions } = input;
-  const record = step.recordId ? model.recordsById.get(step.recordId) : undefined;
-  if (!record || !step.parentStepId) return { nodes: [], edges: [] };
-
-  return {
-    nodes: [{
-      id: step.id,
-      type: 'bench-related-object',
-      position,
-      data: { kind: 'related-object', selectionId: record.id, trail, step, record, actions },
-      style: { width: BENCH_INSPECTOR_SIZE.width },
-      zIndex: 1190,
-    }],
-    edges: [{
-      id: `wire:${trail.id}:${step.id}`,
-      type: 'bench-inspection',
-      source: step.parentStepId,
-      sourceHandle: `relation:${step.relation}:${record.id}`,
-      target: step.id,
-      targetHandle: 'trail-target',
-      data: { trailId: trail.id, emphasized: false },
-    }],
-  };
-}
-
-function appendProjection(
-  target: { nodes: BenchCanvasNode[]; edges: BenchCanvasEdge[] },
-  addition: BenchCanvasProjection,
-): void {
-  target.nodes.push(...addition.nodes);
-  target.edges.push(...addition.edges);
-}
-
-function trailProjection(
-  model: BenchModel,
-  state: BenchState,
-  placements: readonly BenchPlacement[],
-  actions: BenchNodeActions,
-): BenchCanvasProjection {
-  const nodes: BenchCanvasNode[] = [];
-  const edges: BenchCanvasEdge[] = [];
-  const placementMap = placementMapOf(placements);
-
-  state.session.trails.forEach((trail, trailIndex) => {
-    const conversationIndex = model.conversations.findIndex((item) => item.thread.id === trail.threadId);
-    const message = model.messagesById.get(trail.rootMessageId);
-    if (conversationIndex < 0 || !message) return;
-    const conversationPosition = conversationPoint(trail.threadId, conversationIndex, placementMap);
-    const layout = layoutInspectionTrail(trail, state, conversationPosition, trailIndex);
-
-    for (const step of trail.steps) {
-      const position = placementMap.get(step.id)?.position ?? layout.get(step.id);
-      if (!position) continue;
-      const input = { trail, step, position, message, model, actions };
-      appendProjection(
-        { nodes, edges },
-        step.kind === 'relations'
-          ? relationInspectorProjection(input)
-          : relatedObjectProjection(input),
-      );
-    }
-  });
-  return { nodes, edges };
-}
-
 /** Purely projects Bench state and neutral placement snapshots into canvas records. */
 export function projectBenchCanvas(
   model: BenchModel,
@@ -411,6 +355,6 @@ export function projectBenchCanvas(
   );
   const trails = placements === null
     ? { nodes: [], edges: [] }
-    : trailProjection(model, state, placements, actions);
+    : projectInspectionTrails(model, state, placements, actions);
   return { nodes: [...frames, ...conversations, ...drafts, ...trails.nodes], edges: trails.edges };
 }

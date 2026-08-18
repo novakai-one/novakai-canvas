@@ -10,6 +10,9 @@ export const BENCH_THREAD_SIZE = { width: 420, height: 640 } as const;
 /** Fixed inspection-node geometry used by rightward trail layout. */
 export const BENCH_INSPECTOR_SIZE = { width: 280, height: 320 } as const;
 
+/** Fixed generic related-object geometry used by every inspected kind. */
+export const BENCH_RELATED_OBJECT_SIZE = { width: 300, height: 392 } as const;
+
 /** Fixed semantic-frame geometry; children retain their absolute world positions. */
 export const BENCH_FRAME_SIZE = { width: 760, height: 720 } as const;
 
@@ -39,8 +42,8 @@ const DEFAULT_CONVERSATION_POINTS: readonly WorldPoint[] = [
 ];
 
 const INSPECTION_GAP_X = 88;
-const INSPECTION_STEP_X = BENCH_INSPECTOR_SIZE.width + 72;
 const INSPECTION_STEP_Y = 48;
+const INSPECTION_ROW_STEP = BENCH_RELATED_OBJECT_SIZE.height + INSPECTION_STEP_Y;
 
 /** Snaps a world point to the configured drag grid. */
 export function snapBenchPoint(point: WorldPoint, step = 8): WorldPoint {
@@ -68,15 +71,35 @@ export function conversationPoint(
   return { x: point.x + row * 64, y: point.y + row * 760 };
 }
 
-function trailDepth(trail: BenchInspectionTrail, stepId: string): number {
-  const byId = new Map(trail.steps.map((step) => [step.id, step]));
-  let depth = 0;
-  let current = byId.get(stepId);
-  while (current?.parentStepId) {
-    depth += 1;
-    current = byId.get(current.parentStepId);
+function layoutLanes(trail: BenchInspectionTrail): ReadonlyMap<string, number> {
+  const lanes = new Map<string, number>();
+  const children = new Map<string, BenchInspectionTrail['steps'][number][]>();
+  for (const step of trail.steps) {
+    if (!step.parentStepId) continue;
+    const siblings = children.get(step.parentStepId) ?? [];
+    siblings.push(step);
+    children.set(step.parentStepId, siblings);
   }
-  return depth;
+  for (const siblings of children.values()) {
+    siblings.sort((left, right) => (
+      left.siblingOrder - right.siblingOrder || left.id.localeCompare(right.id)
+    ));
+  }
+
+  const root = trail.steps.find((step) => step.parentStepId === null);
+  if (!root) return lanes;
+  lanes.set(root.id, 0);
+  let nextUnusedLane = 1;
+  const placeChildren = (parentId: string): void => {
+    const parentLane = lanes.get(parentId) ?? 0;
+    (children.get(parentId) ?? []).forEach((child, index) => {
+      const lane = index === 0 ? parentLane : nextUnusedLane++;
+      lanes.set(child.id, lane);
+      placeChildren(child.id);
+    });
+  };
+  placeChildren(root.id);
+  return lanes;
 }
 
 /** Places an inspection trail to the right of its restored conversation parent. */
@@ -85,17 +108,42 @@ export function layoutInspectionTrail(
   state: BenchState,
   conversationPosition: WorldPoint,
   trailIndex: number,
+  placements: BenchPlacementMap,
 ): BenchTrailLayout {
   const conversationWidth = state.session.openThreadIds.includes(trail.threadId)
     ? BENCH_THREAD_SIZE.width
     : BENCH_CARD_SIZE.width;
   const relationX = conversationPosition.x + conversationWidth + INSPECTION_GAP_X;
   const relationY = conversationPosition.y + 64 + trailIndex * INSPECTION_STEP_Y;
-  const positions = trail.steps.map((step) => {
-    const depth = trailDepth(trail, step.id);
-    return [step.id, { x: relationX + depth * INSPECTION_STEP_X, y: relationY }] as const;
-  });
-  return new Map(positions);
+  const lanes = layoutLanes(trail);
+  const stepsById = new Map(trail.steps.map((step) => [step.id, step]));
+  const proposed = new Map<string, WorldPoint>();
+  const resolved = new Map<string, WorldPoint>();
+
+  for (const step of trail.steps) {
+    if (!step.parentStepId) {
+      const position = snapBenchPoint({ x: relationX, y: relationY });
+      proposed.set(step.id, position);
+      resolved.set(step.id, placements.get(step.id)?.position ?? position);
+      continue;
+    }
+
+    const parent = stepsById.get(step.parentStepId);
+    const parentPosition = resolved.get(step.parentStepId);
+    if (!parent || !parentPosition) continue;
+    const parentWidth = parent.kind === 'relations'
+      ? BENCH_INSPECTOR_SIZE.width
+      : BENCH_RELATED_OBJECT_SIZE.width;
+    const parentLane = lanes.get(parent.id) ?? 0;
+    const lane = lanes.get(step.id) ?? parentLane;
+    const position = snapBenchPoint({
+      x: parentPosition.x + parentWidth + INSPECTION_GAP_X,
+      y: lane === parentLane ? parentPosition.y : relationY + lane * INSPECTION_ROW_STEP,
+    });
+    proposed.set(step.id, position);
+    resolved.set(step.id, placements.get(step.id)?.position ?? position);
+  }
+  return proposed;
 }
 
 /** Finds an unoccupied point for later pane-created nodes. */

@@ -3,6 +3,7 @@ import type {
   BenchConversationFrame,
   BenchInspectionTrail,
   BenchSessionSnapshot,
+  BenchTrailStep,
 } from './bench-model';
 
 const BENCH_SESSION_STORAGE_KEY = 'novakai:messages:the-bench:session:v1';
@@ -22,6 +23,7 @@ const trailStepSchema = z.object({
   parentStepId: z.string().min(1).nullable(),
   recordId: z.string().min(1).nullable(),
   relation: relationSchema.nullable(),
+  siblingOrder: z.number().int().nonnegative().optional(),
 }).strict();
 
 const trailSchema = z.object({
@@ -84,6 +86,53 @@ function copySnapshot(snapshot: BenchSessionSnapshot): BenchSessionSnapshot {
   };
 }
 
+function normalizedTrailSteps(
+  trail: StoredBenchSessionV1['session']['trails'][number],
+): BenchTrailStep[] {
+  const seenIds = new Set<string>();
+  const retainedIds = new Set<string>();
+  const usedOrdersByParent = new Map<string, Set<number>>();
+  const siblingCountByParent = new Map<string, number>();
+  const steps: BenchTrailStep[] = [];
+  let hasRoot = false;
+
+  for (const step of trail.steps) {
+    if (seenIds.has(step.id)) continue;
+    seenIds.add(step.id);
+    if (!step.recordId) continue;
+
+    const isRoot = step.kind === 'relations'
+      && step.parentStepId === null
+      && step.recordId === trail.rootMessageId
+      && !hasRoot;
+    const isChild = step.kind === 'object'
+      && step.parentStepId !== null
+      && retainedIds.has(step.parentStepId);
+    if (!isRoot && !isChild) continue;
+
+    const parentKey = step.parentStepId ?? '__root__';
+    const siblingCount = siblingCountByParent.get(parentKey) ?? 0;
+    siblingCountByParent.set(parentKey, siblingCount + 1);
+    const usedOrders = usedOrdersByParent.get(parentKey) ?? new Set<number>();
+    let siblingOrder = isRoot ? 0 : (step.siblingOrder ?? siblingCount);
+    while (usedOrders.has(siblingOrder)) siblingOrder += 1;
+    usedOrders.add(siblingOrder);
+    usedOrdersByParent.set(parentKey, usedOrders);
+
+    steps.push({
+      id: step.id,
+      kind: step.kind,
+      parentStepId: step.parentStepId,
+      recordId: step.recordId,
+      relation: step.relation,
+      siblingOrder,
+    });
+    retainedIds.add(step.id);
+    if (isRoot) hasRoot = true;
+  }
+  return steps;
+}
+
 function normalizedSession(stored: StoredBenchSessionV1['session']): BenchSessionSnapshot {
   const trailIds = new Set<string>();
   const frameIds = new Set<string>();
@@ -96,12 +145,8 @@ function normalizedSession(stored: StoredBenchSessionV1['session']): BenchSessio
         trailIds.add(trail.id);
         return true;
       })
-      .map((trail) => ({
-        ...trail,
-        steps: trail.steps.filter((step, index, steps) => (
-          steps.findIndex((candidate) => candidate.id === step.id) === index
-        )).map((step) => ({ ...step })),
-      })),
+      .map((trail) => ({ ...trail, steps: normalizedTrailSteps(trail) }))
+      .filter((trail) => trail.steps.length > 0),
     frames: stored.frames
       .filter((frame) => {
         if (frameIds.has(frame.id)) return false;

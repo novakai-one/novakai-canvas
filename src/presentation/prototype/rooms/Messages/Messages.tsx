@@ -1,9 +1,13 @@
 import { useCallback } from 'react';
 import { makeRecord, sessionId, useStore } from '../../app/store';
 import { field } from '../../object-graph/graph';
-import type { ObjectRecord } from '../../object-graph/contract';
+import type { ObjectId, ObjectRecord } from '../../object-graph/contract';
 import { roomFor } from '../../room-navigation/room-for';
-import type { MessagesDesignCommands, MessagesDesignData } from './messages-design';
+import type {
+  AnswerDecisionRequestInput,
+  MessagesDesignCommands,
+  MessagesDesignData,
+} from './messages-design';
 import { resolveMessagesDesign } from './messages-design-registry';
 
 /** Composition root: translates the app store into the stable Messages design contract. */
@@ -81,6 +85,49 @@ export function Messages({ threadId }: { threadId?: string }) {
     patch(activeThreadId, { roomId: missionId });
   }, [graph, patch, replaceRefs]);
 
+  const answerDecisionRequest = useCallback(({
+    requestId,
+    ruling,
+  }: AnswerDecisionRequestInput): ObjectId => {
+    const request = graph.get(requestId);
+    if (!request || request.kind !== 'request') {
+      throw new Error(`Cannot answer missing Decision Request: ${requestId}`);
+    }
+
+    const trimmedRuling = ruling.trim();
+    if (!trimmedRuling) throw new Error('A Decision ruling cannot be empty.');
+
+    const existingDecisionId = field(request, 'decision');
+    const existingDecision = existingDecisionId ? graph.get(existingDecisionId) : undefined;
+    if (existingDecision?.kind === 'decision') return existingDecision.id;
+
+    const timestamp = new Date().toISOString();
+    const decisionId = sessionId('decision', trimmedRuling);
+    const decision = makeRecord(
+      decisionId,
+      'decision',
+      trimmedRuling,
+      {
+        ts: timestamp,
+        body: trimmedRuling,
+        principalId: 'principal_chris',
+      },
+      [{ kind: 'request', value: requestId }],
+    );
+    addRecord({ ...decision, createdAt: timestamp });
+    patch(requestId, {
+      status: 'answered',
+      answer: trimmedRuling,
+      decision: decisionId,
+      updated: timestamp,
+    });
+    for (const notification of graph.byKind('notification')) {
+      const subject = notification.fields.subjectRef as { id?: unknown } | undefined;
+      if (subject?.id === requestId) patch(notification.id, { status: 'read' });
+    }
+    return decisionId;
+  }, [addRecord, graph, patch]);
+
   const data: MessagesDesignData = {
     graph,
     threads: graph.byKind('thread'),
@@ -102,6 +149,7 @@ export function Messages({ threadId }: { threadId?: string }) {
     markThreadRead,
     archiveThread,
     attachThreadToMission,
+    answerDecisionRequest,
   };
 
   return <DesignView data={data} commands={commands} />;

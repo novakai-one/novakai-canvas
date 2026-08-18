@@ -22,8 +22,8 @@ export type BenchMissionContext = {
   readonly tone: BenchMissionTone;
 };
 
-/** One typed relationship exposed from a message. */
-export type BenchMessageRelation = {
+/** One typed graph relationship projected for any inspectable record. */
+export type BenchObjectRelation = {
   readonly relation: RelationType;
   readonly label: string;
   readonly record: ObjectRecord;
@@ -37,7 +37,26 @@ export type BenchMessage = {
   readonly body: string;
   readonly createdAt: string;
   readonly isMine: boolean;
-  readonly relations: readonly BenchMessageRelation[];
+  readonly relations: readonly BenchObjectRelation[];
+};
+
+/** Semantic location of one blocking Request inside an investigation. */
+export type BenchDecisionRequestContext = {
+  readonly threadId: ObjectId;
+  readonly rootMessageId: ObjectId;
+  readonly requestId: ObjectId;
+  readonly requestRelation: RelationType;
+  readonly trailId?: BenchTrailId;
+  readonly requestStepId?: BenchTrailStepId;
+};
+
+/** Graph-backed Decision Request prepared for normal and Zen presentation. */
+export type BenchDecisionRequest = {
+  readonly record: ObjectRecord;
+  readonly question: string;
+  readonly agentName: string;
+  readonly options: readonly string[];
+  readonly context: BenchDecisionRequestContext;
 };
 
 /** One conversation and all context needed by every Bench view state. */
@@ -52,6 +71,7 @@ export type BenchConversation = {
   readonly lastActivityAt: string;
   readonly isBlocked: boolean;
   readonly composingAgentName: string | null;
+  readonly pendingDecisionRequests: readonly BenchDecisionRequest[];
 };
 
 /** Read-only relational model built from the Messages host data. */
@@ -60,6 +80,8 @@ export type BenchModel = {
   readonly conversationsById: ReadonlyMap<ObjectId, BenchConversation>;
   readonly messagesById: ReadonlyMap<ObjectId, BenchMessage>;
   readonly recordsById: ReadonlyMap<ObjectId, ObjectRecord>;
+  readonly relationsByRecordId: ReadonlyMap<ObjectId, readonly BenchObjectRelation[]>;
+  readonly decisionRequestsById: ReadonlyMap<ObjectId, BenchDecisionRequest>;
   readonly missions: readonly ObjectRecord[];
   readonly liveAgents: readonly ObjectRecord[];
 };
@@ -75,8 +97,9 @@ export type BenchTrailStep = {
   readonly id: BenchTrailStepId;
   readonly kind: 'relations' | 'object';
   readonly parentStepId: BenchTrailStepId | null;
-  readonly recordId: ObjectId | null;
+  readonly recordId: ObjectId;
   readonly relation: RelationType | null;
+  readonly siblingOrder: number;
 };
 
 /** The sideways relationship path rooted at one exact message. */
@@ -121,6 +144,13 @@ export type BenchAction =
   | { readonly type: 'collapse-conversation'; readonly threadId: ObjectId }
   | { readonly type: 'inspect-message'; readonly threadId: ObjectId; readonly messageId: ObjectId }
   | {
+      readonly type: 'expand-message-relation';
+      readonly threadId: ObjectId;
+      readonly messageId: ObjectId;
+      readonly relation: RelationType;
+      readonly recordId: ObjectId;
+    }
+  | {
       readonly type: 'expand-relation';
       readonly trailId: BenchTrailId;
       readonly parentStepId: BenchTrailStepId;
@@ -128,6 +158,11 @@ export type BenchAction =
       readonly recordId: ObjectId;
     }
   | { readonly type: 'close-trail-step'; readonly trailId: BenchTrailId; readonly stepId: BenchTrailStepId }
+  | {
+      readonly type: 'append-decision';
+      readonly context: BenchDecisionRequestContext;
+      readonly decisionId: ObjectId;
+    }
   | { readonly type: 'remember-scroll'; readonly threadId: ObjectId; readonly scrollTop: number }
   | { readonly type: 'set-zoom-tier'; readonly tier: BenchZoomTier }
   | { readonly type: 'focus-conversation'; readonly threadId: ObjectId }
@@ -154,6 +189,12 @@ export type BenchNodeActions = {
   openConversation(threadId: ObjectId): void;
   collapseConversation(threadId: ObjectId): void;
   inspectMessage(threadId: ObjectId, messageId: ObjectId): void;
+  expandMessageRelation(
+    threadId: ObjectId,
+    messageId: ObjectId,
+    relation: RelationType,
+    recordId: ObjectId,
+  ): void;
   expandRelation(
     trailId: BenchTrailId,
     parentStepId: BenchTrailStepId,
@@ -161,6 +202,7 @@ export type BenchNodeActions = {
     recordId: ObjectId,
   ): void;
   closeTrailStep(trailId: BenchTrailId, stepId: BenchTrailStepId): void;
+  answerDecisionRequest(context: BenchDecisionRequestContext, ruling: string): void;
   selectRecord(recordId: ObjectId | null): void;
   canTravel(recordId: ObjectId): boolean;
   travel(recordId: ObjectId): void;
@@ -221,12 +263,15 @@ export type RelatedObjectNodeData = Record<string, unknown> & {
   readonly trail: BenchInspectionTrail;
   readonly step: BenchTrailStep;
   readonly record: ObjectRecord;
+  readonly relations: readonly BenchObjectRelation[];
+  readonly decisionRequest: BenchDecisionRequest | null;
   readonly actions: BenchNodeActions;
 };
 
 /** Data carried by the custom inspection edge. */
 export type InspectionWireData = Record<string, unknown> & {
   readonly trailId: BenchTrailId;
+  readonly label: string;
   readonly emphasized: boolean;
 };
 

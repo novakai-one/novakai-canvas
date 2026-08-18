@@ -1,6 +1,12 @@
 import type { RoomDesign } from '../../designs/room-design';
-import type { ObjectRecord } from '../../object-graph/contract';
+import type { ObjectId, ObjectRecord } from '../../object-graph/contract';
 import type { ObjectGraph } from '../../object-graph/graph';
+
+/** One host-owned ruling applied to an authoritative Decision Request. */
+export type AnswerDecisionRequestInput = {
+  readonly requestId: ObjectId;
+  readonly ruling: string;
+};
 
 /** Read-only Room state supplied to any Messages design. */
 export type MessagesDesignData = {
@@ -22,6 +28,7 @@ export type MessagesDesignCommands = {
   markThreadRead(threadId: string): void;
   archiveThread(threadId: string): void;
   attachThreadToMission(threadId: string, missionId: string): void;
+  answerDecisionRequest(input: AnswerDecisionRequestInput): ObjectId;
 };
 
 /** The entire Messages contract a disposable design may depend on. */

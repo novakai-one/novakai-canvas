@@ -1,6 +1,6 @@
 import { Handle, Position, type NodeProps } from '@xyflow/react';
-import { KIND_LABEL } from '../../../../../object-graph/contract';
 import type { BenchMessageInspectorCanvasNode } from '../model/bench-projection';
+import { ObjectRelationRows } from './ObjectNodeBody';
 import './inspection.css';
 
 /** Thin first trail node listing the exact message's typed relationships. */
@@ -23,32 +23,15 @@ export function MessageInspectorNode({ data, selected }: NodeProps<BenchMessageI
         </button>
       </header>
       <p className="bench-inspector-node__excerpt">{data.message.body}</p>
-      <div className="bench-inspector-node__relations">
-        {data.message.relations.map((relation) => (
-          <div className="bench-relation-row" key={`${relation.relation}:${relation.record.id}`}>
-            <button
-              type="button"
-              className="nodrag"
-              onClick={() => data.actions.expandRelation(
-                data.trail.id,
-                data.step.id,
-                relation.relation,
-                relation.record.id,
-              )}
-            >
-              <span>{relation.label}</span>
-              <strong>{relation.record.title}</strong>
-              <small>{KIND_LABEL[relation.record.kind]}</small>
-            </button>
-            <Handle
-              id={`relation:${relation.relation}:${relation.record.id}`}
-              className="bench-relation-row__source"
-              type="source"
-              position={Position.Right}
-            />
-          </div>
-        ))}
-      </div>
+      <ObjectRelationRows
+        relations={data.message.relations}
+        onExpand={(relation) => data.actions.expandRelation(
+          data.trail.id,
+          data.step.id,
+          relation.relation,
+          relation.record.id,
+        )}
+      />
     </aside>
   );
 }
