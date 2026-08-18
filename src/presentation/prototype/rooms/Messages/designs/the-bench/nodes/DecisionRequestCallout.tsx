@@ -13,12 +13,15 @@ export function DecisionRequestCallout({
   readonly actions: BenchNodeActions;
 }) {
   const [isAnswering, setAnswering] = useState(false);
-  const inspect = () => actions.expandMessageRelation(
-    request.context.threadId,
-    request.context.rootMessageId,
-    request.context.requestRelation,
-    request.context.requestId,
-  );
+  const inspect = () => {
+    actions.openConversation(request.context.threadId);
+    actions.expandMessageRelation(
+      request.context.threadId,
+      request.context.rootMessageId,
+      request.context.requestRelation,
+      request.context.requestId,
+    );
+  };
 
   return (
     <aside className="bench-decision-callout nodrag" aria-label="Pending Decision Request">
