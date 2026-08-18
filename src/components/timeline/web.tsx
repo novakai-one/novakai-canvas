@@ -1,4 +1,5 @@
 import { NodeResizer, type Node, type NodeProps } from '@xyflow/react';
+import { NodePorts } from '../../presentation/nodes/node-ports';
 import type { ArchitectureNodeData } from '../../presentation/projection.ts';
 
 type TimelineFlowNode = Node<ArchitectureNodeData, 'timeline'>;
@@ -10,6 +11,7 @@ export function TimelineNode({ data, selected }: NodeProps<TimelineFlowNode>) {
   return (
     <article className="tree-node timeline-node">
       <NodeResizer isVisible={editable && selected} minHeight={80} minWidth={220} onResizeEnd={() => data.resizeEnd?.(node.id as string)} />
+      <NodePorts connectable={editable} />
       <header className="node-header">
         <span className="node-label">{node.label}</span>
         <span className="node-kind">timeline</span>
