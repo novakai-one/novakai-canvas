@@ -5,6 +5,16 @@ export type WorldViewport = {
   zoom: number;
 };
 
+/** Compatibility request retained while the current Mission World moves to camera commands. */
+export type CanvasCameraRequest = {
+  key: string;
+  nodeIds: readonly string[];
+  padding?: WorldCameraPadding;
+  viewportInsets?: WorldCameraPadding;
+  maxZoom?: number;
+  duration?: number;
+};
+
 export type WorldCameraPadding =
   | number
   | {
@@ -72,6 +82,22 @@ export type WorldCameraCommand =
       zoom: number;
       duration?: number;
     };
+
+/** Translates the legacy request shape at the shared-canvas boundary. */
+export function cameraRequestToCommand(
+  request: CanvasCameraRequest | null | undefined,
+): WorldCameraCommand | null {
+  if (!request) return null;
+
+  return {
+    type: 'frame-nodes',
+    key: request.key,
+    nodeIds: request.nodeIds,
+    padding: request.viewportInsets ?? request.padding,
+    maxZoom: request.maxZoom,
+    duration: request.duration,
+  };
+}
 
 /** Typed result returned after the canvas interprets a camera command. */
 export type WorldCameraOutcome =

@@ -22,6 +22,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type MouseEvent as ReactMouseEvent,
   type ReactNode,
   type RefObject,
 } from 'react';
@@ -33,6 +34,12 @@ import {
   restoreNodePositions,
 } from './canvas-memory';
 import {
+  placementsFromNodes,
+  type CanvasDragGrid,
+  type CanvasPlacementChange,
+  type WorldPoint,
+} from './canvas-placement';
+import {
   resolveWorldCanvasInteraction,
   type CanvasNodeDragAxis,
   type CanvasScrollPanDirection,
@@ -43,21 +50,20 @@ import { CanvasRuntimeProvider } from './CanvasRuntimeProvider';
 import { createReactFlowCanvasAdapter } from './react-flow-canvas-adapter';
 import { executeWorldCameraCommand } from './world-camera-runtime';
 import type {
+  CanvasCameraRequest,
   WorldCameraCommand,
   WorldCameraOutcome,
-  WorldCameraPadding,
   WorldViewport,
 } from './world-camera';
+import { cameraRequestToCommand } from './world-camera';
 
-/** Compatibility request retained while the current Mission World moves to camera commands. */
-export type CanvasCameraRequest = {
-  key: string;
-  nodeIds: readonly string[];
-  padding?: WorldCameraPadding;
-  viewportInsets?: WorldCameraPadding;
-  maxZoom?: number;
-  duration?: number;
-};
+export type {
+  CanvasDragGrid,
+  CanvasNodePlacement,
+  CanvasPlacementChange,
+  WorldPoint,
+} from './canvas-placement';
+export type { CanvasCameraRequest } from './world-camera';
 
 /** The stable canvas surface available to disposable spatial Room designs. */
 export interface WorldCanvasProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
@@ -72,6 +78,9 @@ export interface WorldCanvasProps<NodeType extends Node = Node, EdgeType extends
   isNodeSelected?: (node: NodeType, selectedId: string | null) => boolean;
   onZoomChange?: (zoom: number) => void;
   onViewportChange?: (viewport: WorldViewport) => void;
+  dragGrid?: CanvasDragGrid;
+  onPaneDoubleClick?: (position: WorldPoint) => void;
+  onPlacementChange?: (change: CanvasPlacementChange) => void;
   resolveNodeChanges?: (
     changes: NodeChange<NodeType>[],
     currentNodes: readonly NodeType[],
@@ -87,21 +96,6 @@ export interface WorldCanvasProps<NodeType extends Node = Node, EdgeType extends
   surfaceClassName?: string;
   initialViewport?: WorldViewport;
   fitViewOnMount?: boolean;
-}
-
-function cameraRequestToCommand(
-  request: CanvasCameraRequest | null | undefined,
-): WorldCameraCommand | null {
-  if (!request) return null;
-
-  return {
-    type: 'frame-nodes',
-    key: request.key,
-    nodeIds: request.nodeIds,
-    padding: request.viewportInsets ?? request.padding,
-    maxZoom: request.maxZoom,
-    duration: request.duration,
-  };
 }
 
 function constrainNodeMovement<NodeType extends Node>(
@@ -167,6 +161,9 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
   isNodeSelected,
   onZoomChange,
   onViewportChange,
+  dragGrid,
+  onPaneDoubleClick,
+  onPlacementChange,
   resolveNodeChanges,
   onNodesChanged,
   cameraCommand,
@@ -189,6 +186,8 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
   const [nodes, setNodes, applyNodeChanges] = useNodesState<NodeType>(
     restoreNodePositions(viewportKey, incomingNodes),
   );
+  const emittedRestoreRef = useRef(false);
+  const emittedInitialViewportRef = useRef(false);
   const reactFlow = useReactFlow<NodeType, EdgeType>();
 
   const reactFlowAdapter = useMemo(
@@ -224,14 +223,31 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
         ? isNodeSelected(node, selectedId)
         : node.id === selectedId,
     })));
+
+    if (!emittedRestoreRef.current) {
+      emittedRestoreRef.current = true;
+      onPlacementChange?.({
+        cause: 'restore',
+        movedNodeId: null,
+        placements: placementsFromNodes(restoredNodes),
+      });
+    }
   }, [
     incomingNodes,
     isNodeSelected,
     resolvedInteraction.rememberNodePositions,
+    onPlacementChange,
     selectedId,
     setNodes,
     viewportKey,
   ]);
+
+  useEffect(() => {
+    if (emittedInitialViewportRef.current) return;
+    emittedInitialViewportRef.current = true;
+    onZoomChange?.(viewport.zoom);
+    onViewportChange?.(viewport);
+  }, [onViewportChange, onZoomChange, viewport]);
 
   useEffect(() => {
     const command = cameraCommand ?? cameraRequestToCommand(cameraRequest);
@@ -267,7 +283,27 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
     if (resolvedInteraction.rememberNodePositions) {
       rememberNodePosition(viewportKey, node.id, node.position);
     }
-  }, [resolvedInteraction.rememberNodePositions, viewportKey]);
+
+    const settledNodes = nodes.map((candidate) => (
+      candidate.id === node.id
+        ? { ...candidate, position: { ...node.position } }
+        : candidate
+    ));
+    onPlacementChange?.({
+      cause: 'drag-end',
+      movedNodeId: node.id,
+      placements: placementsFromNodes(settledNodes),
+    });
+  }, [nodes, onPlacementChange, resolvedInteraction.rememberNodePositions, viewportKey]);
+
+  const handlePaneDoubleClick = useCallback((event: ReactMouseEvent<HTMLDivElement>) => {
+    if (!onPaneDoubleClick || !(event.target instanceof Element)) return;
+    if (!event.target.classList.contains('react-flow__pane')) return;
+    onPaneDoubleClick(reactFlow.screenToFlowPosition({
+      x: event.clientX,
+      y: event.clientY,
+    }));
+  }, [onPaneDoubleClick, reactFlow]);
 
   const handleMove: OnMove = useCallback((_, nextViewport) => {
     setCurrentViewport(nextViewport);
@@ -283,7 +319,8 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
 
   return (
     <CanvasRuntimeProvider runtime={runtime}>
-      <ReactFlow<NodeType, EdgeType>
+      <div className="world-canvas__event-surface" onDoubleClick={handlePaneDoubleClick}>
+        <ReactFlow<NodeType, EdgeType>
         className={['world-canvas__surface', surfaceClassName].filter(Boolean).join(' ')}
         nodes={nodes}
         edges={[...edges]}
@@ -311,16 +348,19 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
         zoomOnScroll={resolvedInteraction.zoomOnScroll}
         zoomOnPinch={resolvedInteraction.zoomOnPinch}
         zoomOnDoubleClick={resolvedInteraction.zoomOnDoubleClick}
+        snapToGrid={Boolean(dragGrid)}
+        snapGrid={dragGrid ? [dragGrid.xStep, dragGrid.yStep] : undefined}
         translateExtent={resolvedInteraction.translateExtent}
         nodeExtent={resolvedInteraction.nodeExtent}
         nodesConnectable={false}
         edgesFocusable={false}
         deleteKeyCode={null}
         proOptions={{ hideAttribution: true }}
-      >
-        {canvasChildren && <ViewportPortal>{canvasChildren}</ViewportPortal>}
-        {showControls && <Controls position="bottom-left" showInteractive={false} />}
-      </ReactFlow>
+        >
+          {canvasChildren && <ViewportPortal>{canvasChildren}</ViewportPortal>}
+          {showControls && <Controls position="bottom-left" showInteractive={false} />}
+        </ReactFlow>
+      </div>
       {screenChildren}
     </CanvasRuntimeProvider>
   );
