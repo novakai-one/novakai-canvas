@@ -111,6 +111,21 @@ describe('renderRecordSvg', () => {
   });
 });
 
+describe('renderRecordSvg with a tree node', () => {
+  it('renders the tree label and each row exactly as before extraction into the component', () => {
+    const dsl = `
+scope "Tree Snap"
+  tree "Store hierarchy"
+    row proj1 project label "Project One"
+    row task1 task in-progress parent=proj1
+`;
+    const svg = renderRecordSvg(buildRecord(dsl));
+    expect(svg).toMatch(/<text[^>]*font-family="Inter, sans-serif"[^>]*font-weight="600"[^>]*>Store hierarchy<\/text>/);
+    expect(svg).toMatch(/<text[^>]*font-family="SFMono-Regular, Consolas, monospace"[^>]*font-weight="600"[^>]*>Project One<\/text>/);
+    expect(svg).toMatch(/<text[^>]*font-family="SFMono-Regular, Consolas, monospace"[^>]*>task1  \[in-progress\]<\/text>/);
+  });
+});
+
 describe('renderRecordSvg with nested zones', () => {
   it('places deep descendants at accumulated absolute positions', () => {
     const svg = renderRecordSvg(buildNested());

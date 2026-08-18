@@ -1,10 +1,8 @@
 /**
  * `comment` nodes are free-text notes (DSL keyword `note`), sized purely from label length.
  *
- * The formula is copied — not moved — from `src/domain/layout.ts`'s private `estimateCommentSize`:
- * `contentSize()` there still calls its own copy for now, and gets rewired onto this component in
- * a later task. Duplicating a two-line formula keeps that file working without adding an export
- * it doesn't otherwise need.
+ * `src/domain/layout.ts`'s `contentSize()` dispatches here through the registry instead of
+ * keeping its own copy of this formula.
  */
 
 import type { DiagramComponent } from '../component.ts';

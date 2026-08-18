@@ -4,7 +4,7 @@
  * `kind`, so one factory produces all four registry entries.
  */
 
-import { estimateNodeSize } from '../../domain/layout.ts';
+import { estimateNodeSize } from './measure.ts';
 import type { DiagramComponent } from '../component.ts';
 
 export function cardComponent(kind: 'module' | 'object' | 'runtime' | 'resource'): DiagramComponent {

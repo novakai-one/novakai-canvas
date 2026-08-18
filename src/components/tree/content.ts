@@ -1,6 +1,6 @@
 /** Pure derivations over tree-node rows shared by layout and renderers. */
 
-import type { TreeRow } from './model';
+import type { TreeRow } from '../../domain/model.ts';
 
 /** Indentation depth of a row via its parent chain (cycle-safe). */
 export function treeRowDepth(rows: TreeRow[], row: TreeRow): number {

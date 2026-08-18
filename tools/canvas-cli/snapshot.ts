@@ -3,8 +3,8 @@
 import type { DiagramRecord } from '../../src/canvas.ts';
 import { placedNodes, rootGroupId, type PlacedNode } from './record-graph.ts';
 import { ARCHITECTURE_FLOW } from '../../src/domain/flow.ts';
-import { orderedTreeRows, treeRowDepth, treeRowText } from '../../src/domain/tree.ts';
-import { TREE_TONE_COLORS, wireKindColor, wireKindDashArray } from '../../src/presentation/wire-styles.ts';
+import { componentFor } from '../../src/components/registry.ts';
+import { wireKindColor, wireKindDashArray } from '../../src/presentation/wire-styles.ts';
 
 const COLORS = {
   page: '#0d0d0f',
@@ -137,23 +137,9 @@ export function renderRecordSvg(record: DiagramRecord): string {
       });
       continue;
     }
-    if (node.kind === 'tree') {
-      parts.push(
-        `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="${COLORS.card}" stroke="${COLORS.border}" rx="6"/>`,
-        `<text x="${x + 14}" y="${y + 24}" fill="${COLORS.ink}" font-family="${FONT}" font-size="13" font-weight="600">${esc(node.label)}</text>`,
-      );
-      const rows = node.rows ?? [];
-      orderedTreeRows(rows).forEach((row, index) => {
-        const tone = row.kind === 'project' ? 'project'
-          : row.kind === 'bucket' ? 'muted'
-            : row.status === 'done' ? 'done'
-              : row.status === 'in-progress' ? 'active'
-                : row.status === 'todo' || row.status === 'retired' ? 'muted' : 'tombstone';
-        const fill = TREE_TONE_COLORS[tone].dark;
-        const rowX = x + 16 + treeRowDepth(rows, row) * 20;
-        const weight = row.kind === 'project' || row.kind === 'bucket' ? ' font-weight="600"' : '';
-        parts.push(`<text x="${rowX}" y="${y + 48 + index * 24}" fill="${fill}" font-family="SFMono-Regular, Consolas, monospace" font-size="11"${weight}>${esc(treeRowText(row))}</text>`);
-      });
+    const componentSvg = componentFor(node.kind).renderSvg?.(node, { x, y, width, height });
+    if (componentSvg !== undefined) {
+      parts.push(componentSvg);
       continue;
     }
     parts.push(

@@ -2,14 +2,17 @@
 
 import dagre from '@dagrejs/dagre';
 import { ARCHITECTURE_FLOW } from './flow.ts';
-import type { ArchitectureDocument, PositionedCanvasNode, TreeRow } from './model.ts';
+import type { ArchitectureDocument, PositionedCanvasNode } from './model.ts';
+import type { CanvasNode as RecordNode } from './records.ts';
 import { positionedNodes, resolveLayout } from './layouts.ts';
-import { orderedTreeRows, treeRowDepth, treeRowText } from './tree.ts';
+import { componentFor } from '../components/registry.ts';
+
+/** Re-exported for existing callers (`tools/canvas-cli/layout.ts` re-exports this on the public path). */
+export { estimateNodeSize } from '../components/card/measure.ts';
 
 const DEFAULT_GROUP_PADDING = 40;
 const SCOPE_GAP = 80;
 const NEW_SCOPE_X = 40;
-const CHAR_WIDTH = 7.2;
 const GRID_COL_GAP = 40;
 const GRID_ROW_GAP = 70;
 /** Widest row the zone grid packs before wrapping; keeps aspect ratio bounded. */
@@ -20,45 +23,18 @@ type PositionedDocument = Omit<ArchitectureDocument, 'nodes'> & {
   nodes: Record<string, PositionedCanvasNode>;
 };
 
-/** Generous stored size that prevents presentation adapters clipping content. */
-export function estimateNodeSize(
-  label: string,
-  description: string | undefined,
-  interfaceLines: string[],
-  typeLines: string[],
-): Size {
-  const longestLine = Math.max(
-    label.length,
-    ...interfaceLines.map((line) => line.length),
-    ...typeLines.map((line) => line.length),
-    description ? Math.min(description.length, 55) : 0,
-  );
-  const width = Math.min(420, Math.max(200, Math.round(24 + CHAR_WIDTH * longestLine)));
-  const charsPerLine = Math.max(30, Math.floor(width / CHAR_WIDTH));
-  const descriptionBlock = description ? 24 + 16 * Math.ceil(description.length / charsPerLine) : 0;
-  const height = 48 + descriptionBlock + 26 * interfaceLines.length + 24 * typeLines.length + 16;
-  return { width, height };
-}
-
-function estimateCommentSize(label: string): Size {
-  return { width: 280, height: 48 + 21 * Math.ceil(label.length / 34) };
-}
-
-function estimateTreeSize(rows: TreeRow[]): Size {
-  const ordered = orderedTreeRows(rows);
-  const longest = Math.max(0, ...ordered.map(
-    (row) => treeRowDepth(rows, row) * 20 + treeRowText(row).length * 7.6,
-  ));
-  return {
-    width: Math.min(640, Math.max(280, Math.round(36 + longest))),
-    height: 56 + ordered.length * 24 + 14,
-  };
-}
-
+/**
+ * Content-driven size for one node, dispatched through the component registry.
+ *
+ * `document.nodes[nodeId]` is shaped by the legacy document model (`./model.ts`): plain string
+ * ids and a `kind` union that says `scope` where the registry says `group`. Every kind this
+ * function ever sees (`module`/`object`/`runtime`/`resource`/`comment`/`tree` — never `scope`,
+ * since callers skip scope-kind children before reaching here) is structurally identical to the
+ * registry's `RecordNode` shape, so the cast is safe; TypeScript just can't see across the two
+ * id/kind vocabularies on its own.
+ */
 function contentSize(document: PositionedDocument, nodeId: string): Size {
   const node = document.nodes[nodeId];
-  if (node.kind === 'comment') return estimateCommentSize(node.label);
-  if (node.kind === 'tree') return estimateTreeSize(node.rows ?? []);
   const interfaceLines = node.interfaceIds.map((id) => {
     const item = document.interfaces[id];
     return `${item.name}(${item.accepts.join(', ')}) -> ${item.returns.join(', ')}`;
@@ -67,7 +43,7 @@ function contentSize(document: PositionedDocument, nodeId: string): Size {
     const item = document.types[id];
     return `${item.name} { ${item.fields.join(', ')} }`;
   });
-  return estimateNodeSize(node.label, node.description, interfaceLines, typeLines);
+  return componentFor(node.kind).measure(node as unknown as RecordNode, { interfaceLines, typeLines });
 }
 
 function directChildren(document: PositionedDocument, containerId: string): string[] {
