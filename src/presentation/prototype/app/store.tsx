@@ -36,9 +36,9 @@ export const AREAS: readonly { key: AreaKey; label: string }[] = [
   { key: 'command-center', label: 'Command Center' },
   { key: 'missions', label: 'Missions' },
   { key: 'projects', label: 'Projects' },
-  { key: 'canvas', label: 'Canvas' },
   { key: 'messages', label: 'Messages' },
   { key: 'agent-roles', label: 'Agent Roles' },
+  { key: 'canvas', label: 'Canvas' },
 ];
 
 /** A Room identifies the object that owns the current context. */

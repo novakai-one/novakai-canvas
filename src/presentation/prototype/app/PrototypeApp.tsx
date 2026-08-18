@@ -4,6 +4,7 @@
  * The shell persists across every Room. Only the workspace swaps, so a load failure or
  * a Room change never costs you your location.
  */
+import { useEffect, useState } from 'react';
 import './prototype-app.css';
 import { roomKey, StoreProvider, useStore, type Projection, type Room } from './store';
 import { childStages, type ObjectGraph } from '../object-graph/graph';
@@ -88,7 +89,8 @@ function ActiveRoom() {
         case 'projects':
           return <Projects />;
         case 'canvas':
-          return <CanvasRoom />;
+          // Canvas is the persistent sibling owned by Shell, never a keyed Room child.
+          return null;
         case 'messages':
           return <Messages />;
         case 'agent-roles':
@@ -99,31 +101,37 @@ function ActiveRoom() {
 
 function Shell() {
   const { room, graph, projection, select, loadWarnings } = useStore();
-  const canvasOwnsWorkspaceChrome = room.kind === 'area' && room.area === 'canvas';
+  const canvasActive = room.kind === 'area' && room.area === 'canvas';
+  const [canvasWasOpened, setCanvasWasOpened] = useState(canvasActive);
+
+  useEffect(() => {
+    if (canvasActive) setCanvasWasOpened(true);
+  }, [canvasActive]);
 
   return (
     <div
       className="prototype-shell"
       onKeyDown={(event) => {
         // Esc closes the inspector first. It never navigates on its own.
-        if (!canvasOwnsWorkspaceChrome && event.key === 'Escape') select(null);
+        if (!canvasActive && event.key === 'Escape') select(null);
       }}
     >
       <NavigationRail />
       <div className="prototype-shell__main">
-        {!canvasOwnsWorkspaceChrome && <ContextHeader />}
-        {!canvasOwnsWorkspaceChrome && loadWarnings.length > 0 && (
+        {!canvasActive && <ContextHeader />}
+        {!canvasActive && loadWarnings.length > 0 && (
           <p className="prototype-shell__warning" role="status">
             {loadWarnings.length} fixture {loadWarnings.length === 1 ? 'line' : 'lines'} could not be
             read: {loadWarnings[0]}
           </p>
         )}
-        {/* Keyed on the Room so a Room change is a real remount, not a partial redraw. */}
-        <main className="prototype-shell__workspace" key={roomKey(room)}>
-          <ActiveRoom />
+        <main className="prototype-shell__workspace">
+          {(canvasActive || canvasWasOpened) && <CanvasRoom active={canvasActive} />}
+          {/* Ordinary Rooms remount on navigation; Canvas retains its in-memory session. */}
+          {!canvasActive && <ActiveRoom key={roomKey(room)} />}
         </main>
       </div>
-      {!canvasOwnsWorkspaceChrome && (
+      {!canvasActive && (
         <InspectorPanel hidden={activeDesignOwnsInspector(room, graph, projection)} />
       )}
     </div>

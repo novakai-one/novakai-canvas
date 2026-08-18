@@ -31,6 +31,7 @@ import { ElbowEdge } from '../edges/elbow-edge';
 import { Legend } from './legend';
 import { CanvasToolbar } from './canvas-toolbar';
 import { wireLabelSizing } from '../wire-styles';
+import { useCanvasActivity } from '../shell/canvas-activity-context';
 
 const nodeTypes = { architecture: ArchitectureNode, comment: CommentNode, scope: ScopeNode, tree: TreeNode };
 const edgeTypes = { elbow: ElbowEdge };
@@ -184,11 +185,13 @@ function typingInAField(target: EventTarget | null): boolean {
  * selection, one step at a time, until there is none.
  */
 function useEscapeStepsOutward(
+  active: boolean,
   record: DiagramRecord,
   selection: Selection,
   setSelection: (selection: Selection) => void,
 ): void {
   useEffect(() => {
+    if (!active) return;
     const onKeyDown = (event: KeyboardEvent): void => {
       if (event.key !== 'Escape' || typingInAField(event.target)) return;
       if (!selection) return;
@@ -197,7 +200,7 @@ function useEscapeStepsOutward(
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [record, selection, setSelection]);
+  }, [active, record, selection, setSelection]);
 }
 
 /**
@@ -208,8 +211,9 @@ function useEscapeStepsOutward(
  * you, the more expensive its silence is. Typing in a studio field is left to the browser's own
  * text undo, which is what the same keystroke should mean while a caret is in a field.
  */
-function useUndoShortcut(canUndo: boolean, undo: () => void): void {
+function useUndoShortcut(active: boolean, canUndo: boolean, undo: () => void): void {
   useEffect(() => {
+    if (!active) return;
     const onKeyDown = (event: KeyboardEvent): void => {
       const key = event.key.toLowerCase();
       if (key !== 'z' || !(event.metaKey || event.ctrlKey)) return;
@@ -219,7 +223,7 @@ function useUndoShortcut(canUndo: boolean, undo: () => void): void {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [canUndo, undo]);
+  }, [active, canUndo, undo]);
 }
 
 /**
@@ -382,10 +386,11 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   const {
     activeDiagramId, execute, executeAll, mode, preferences, record, selection, setSelection, view,
   } = props;
+  const active = useCanvasActivity();
   const editable = mode === 'edit';
   const labelSizing = wireLabelSizing(preferences);
-  useEscapeStepsOutward(record, selection, setSelection);
-  useUndoShortcut(editable && props.canUndo, props.undo);
+  useEscapeStepsOutward(active, record, selection, setSelection);
+  useUndoShortcut(active, editable && props.canUndo, props.undo);
   useSelectionReleasesWithItsObject(record, selection, setSelection);
   const camera = useCamera(activeDiagramId, labelSizing.minimumZoom);
   useRefitWhenPanelsMove(preferences.panel);
@@ -494,7 +499,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         */}
       <ReactFlow
         key={activeDiagramId}
-        colorMode={preferences.appearance.theme} connectionMode={ConnectionMode.Loose} deleteKeyCode={editable ? ['Backspace', 'Delete'] : null} edgeTypes={edgeTypes} edges={edges}
+        colorMode={preferences.appearance.theme} connectionMode={ConnectionMode.Loose} deleteKeyCode={active && editable ? ['Backspace', 'Delete'] : null} edgeTypes={edgeTypes} edges={edges}
         edgesReconnectable={editable} elementsSelectable fitView={camera.fitOnOpen} fitViewOptions={{ padding: editable ? 0.12 : 0.05, maxZoom: 1, minZoom: 0.05 }} minZoom={0.05}
         nodeTypes={nodeTypes} nodes={nodes} nodesConnectable={editable} nodesDraggable={editable}
         onConnect={(connection) => { if (!editable) return; const id = connect(execute, connection); if (id) setSelection({ kind: 'wire', id }); }}

@@ -5,6 +5,7 @@ import { createHttpJsonRepository } from '../../adapters/http-json-repository';
 import { canvasPreferencesSchema } from '../../domain/schema';
 import { defaultPreferences } from '../../domain/defaults';
 import { LoadFailure } from '../components/load-failure';
+import { CanvasActivityProvider } from '../shell/canvas-activity-provider';
 import '@xyflow/react/dist/style.css';
 import '../../styles.css';
 import './canvas-studio-host.css';
@@ -12,6 +13,8 @@ import './canvas-studio-host.css';
 /** The only fact a host supplies: who its Canvas changes are attributed to. */
 export interface CanvasStudioHostProps {
   actor: ActorContext;
+  /** Whether this mounted studio currently owns visible host interaction. */
+  active?: boolean;
 }
 
 type CanvasStudioSession = AppProps;
@@ -93,7 +96,7 @@ function ExternalChangeNotice({ reload }: { reload: () => void }) {
  * Loading failures stay visible and inert. External file changes are announced, never applied
  * automatically: the person decides when replacing the current in-memory session is safe.
  */
-export function CanvasStudioHost({ actor }: CanvasStudioHostProps) {
+export function CanvasStudioHost({ active = true, actor }: CanvasStudioHostProps) {
   const [reload, setReload] = useState(0);
   const [externalChange, setExternalChange] = useState(false);
   const [state, setState] = useState<HostState>({ status: 'loading' });
@@ -138,18 +141,20 @@ export function CanvasStudioHost({ actor }: CanvasStudioHostProps) {
   }, []);
 
   return (
-    <section className="canvas-host" aria-label="Canvas studio">
-      {externalChange && (
-        <ExternalChangeNotice reload={() => {
-          setExternalChange(false);
-          setReload((current) => current + 1);
-        }} />
-      )}
-      {state.status === 'loading' && (
-        <main className="canvas-host__state" role="status">Loading Canvas…</main>
-      )}
-      {state.status === 'failed' && <LoadFailure detail={state.detail} />}
-      {state.status === 'ready' && <App key={state.generation} {...state.session} />}
-    </section>
+    <CanvasActivityProvider active={active}>
+      <section className="canvas-host" aria-label="Canvas studio">
+        {externalChange && (
+          <ExternalChangeNotice reload={() => {
+            setExternalChange(false);
+            setReload((current) => current + 1);
+          }} />
+        )}
+        {state.status === 'loading' && (
+          <main className="canvas-host__state" role="status">Loading Canvas…</main>
+        )}
+        {state.status === 'failed' && <LoadFailure detail={state.detail} />}
+        {state.status === 'ready' && <App key={state.generation} {...state.session} />}
+      </section>
+    </CanvasActivityProvider>
   );
 }

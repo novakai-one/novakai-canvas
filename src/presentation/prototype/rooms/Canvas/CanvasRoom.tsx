@@ -14,11 +14,16 @@ const PROTOTYPE_ACTOR: ActorContext = {
 };
 
 /** The production Canvas capability mounted as a first-class prototype Room. */
-export function CanvasRoom() {
+export function CanvasRoom({ active }: { active: boolean }) {
   return (
-    <section className="canvas-room" aria-label="Canvas Room">
+    <section
+      aria-hidden={!active}
+      className="canvas-room"
+      data-active={active}
+      aria-label="Canvas Room"
+    >
       <Suspense fallback={<main className="canvas-room__loading" role="status">Loading Canvas…</main>}>
-        <CanvasStudioHost actor={PROTOTYPE_ACTOR} />
+        <CanvasStudioHost active={active} actor={PROTOTYPE_ACTOR} />
       </Suspense>
     </section>
   );

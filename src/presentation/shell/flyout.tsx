@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useCanvasActivity } from './canvas-activity-context';
 import { useCanvasPortalTarget } from './canvas-portal-context';
 
 /** One choice a flyout offers. */
@@ -37,8 +38,13 @@ export function Flyout({ children, current, items, label, onPick }: FlyoutProps)
   const root = useRef<HTMLDivElement | null>(null);
   const menu = useRef<HTMLDivElement | null>(null);
   const portalTarget = useCanvasPortalTarget();
+  const active = useCanvasActivity();
 
   useEffect(() => {
+    if (!active) {
+      if (open) setOpen(false);
+      return;
+    }
     if (!open) return;
     const onPointerDown = (event: PointerEvent): void => {
       const target = event.target as Node;
@@ -54,7 +60,7 @@ export function Flyout({ children, current, items, label, onPick }: FlyoutProps)
       window.removeEventListener('pointerdown', onPointerDown);
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [open]);
+  }, [active, open]);
 
   return (
     <div className="flyout" data-open={open || undefined} ref={root}>

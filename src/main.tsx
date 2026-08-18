@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import type { ActorContext } from './application/canvas-workspace';
+import './styles/standalone.css';
 
 /** Who this host acts as. Every change it submits carries this attribution, never a caller's. */
 const LOCAL_USER: ActorContext = {
