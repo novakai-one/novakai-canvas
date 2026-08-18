@@ -6,10 +6,13 @@
 
 import { orderedTreeRows, treeRowDepth, treeRowText } from './content.ts';
 import { TREE_TONE_COLORS } from '../../presentation/wire-styles.ts';
+import type { TreeRow } from '../../domain/model.ts';
 import type { DiagramComponent } from '../component.ts';
 
 const COLORS = { card: '#252529', ink: '#ececee', border: '#2f2f34' };
 const FONT = 'Inter, sans-serif';
+const ROW_KINDS = new Set(['project', 'mission', 'task', 'bucket']);
+const ROW_SHAPE = 'row <id> <kind> [status] [parent=<id>] [badges=a,b] [label "text"]';
 
 function esc(text: string): string {
   return text
@@ -23,6 +26,43 @@ export const treeComponent: DiagramComponent = {
   kind: 'tree',
   dslKeyword: 'tree',
   layoutRole: 'leaf',
+  dslChildren: [{
+    keyword: 'row',
+    parse(tokens) {
+      if (tokens.length < 3) {
+        return {
+          error: 'row needs an id and a kind',
+          hint: 'row mission_x mission [status] [parent=<id>] [badges=a,b] [label "text"]',
+        };
+      }
+      if (!ROW_KINDS.has(tokens[2])) {
+        return { error: `unknown row kind "${tokens[2]}"`, hint: `use one of: ${[...ROW_KINDS].join(', ')}` };
+      }
+      const row: TreeRow = { id: tokens[1], kind: tokens[2] as TreeRow['kind'], badges: [] };
+      for (let index = 3; index < tokens.length; index += 1) {
+        const token = tokens[index];
+        if (token === 'label' && tokens[index + 1] !== undefined) {
+          row.label = tokens[(index += 1)];
+        } else if (token.startsWith('parent=')) {
+          row.parentRowId = token.slice('parent='.length);
+        } else if (token.startsWith('badges=')) {
+          row.badges = token.slice('badges='.length).split(',').filter((badge) => badge.length > 0);
+        } else if (row.status === undefined && !token.includes('=')) {
+          row.status = token;
+        } else {
+          return { error: `unexpected "${token}" in row`, hint: ROW_SHAPE };
+        }
+      }
+      return { content: row };
+    },
+    print(node) {
+      return (node.rows ?? []).map((row) => `  row ${row.id} ${row.kind}`
+        + `${row.status ? ` ${row.status}` : ''}`
+        + `${row.parentRowId ? ` parent=${row.parentRowId}` : ''}`
+        + `${row.badges.length > 0 ? ` badges=${row.badges.join(',')}` : ''}`
+        + `${row.label ? ` label "${row.label}"` : ''}`);
+    },
+  }],
   measure(node) {
     const rows = node.rows ?? [];
     const ordered = orderedTreeRows(rows);

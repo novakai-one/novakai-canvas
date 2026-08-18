@@ -1,4 +1,15 @@
-/** Line-oriented DSL parser. Collects every error; never throws. */
+/**
+ * Line-oriented DSL parser. Collects every error; never throws.
+ *
+ * The shape vocabulary — which keyword declares which node kind, and which child lines a node
+ * may own — comes from the component registry, so a new shape is a registration, not an edit
+ * here. Only grammar words are written down in this file: `scope`, `end`, `wire`, `type`, and
+ * method lines, plus the two statements whose shape is not "keyword name [description]"
+ * (`zone`, which opens a block, and `note`, which takes text only).
+ */
+
+import type { DslChildStatement } from '../../src/components/component.ts';
+import { allComponents } from '../../src/components/registry.ts';
 
 export interface ParseError { line: number; message: string; hint: string }
 export interface InterfaceAst { name: string; accepts: string[]; returns: string[] }
@@ -36,10 +47,27 @@ export interface ZoneAst {
 }
 export interface ScopeAst { label: string; description?: string; nodes: NodeAst[]; wires: WireAst[]; zones: ZoneAst[] }
 
-const NODE_KEYWORDS = new Set(['module', 'object', 'runtime', 'resource', 'tree']);
-const TREE_ROW_KINDS = new Set(['project', 'mission', 'task', 'bucket']);
+/** Keywords that open a nested container block, closed by `end`. */
+const CONTAINER_KEYWORDS = new Set(
+  allComponents().filter((component) => component.layoutRole === 'container')
+    .map((component) => component.dslKeyword),
+);
+/** Keyword -> node kind for every non-container shape in the registry. */
+const NODE_KINDS = new Map(
+  allComponents().filter((component) => component.layoutRole !== 'container')
+    .map((component) => [component.dslKeyword, component.kind]),
+);
+/** Child lines a node owns (tree's `row`), by keyword, with the kind allowed to hold them. */
+const CHILD_STATEMENTS = new Map<string, { kind: string; owner: string; statement: DslChildStatement }>(
+  allComponents().flatMap((component) => (component.dslChildren ?? []).map(
+    (statement) => [statement.keyword, { kind: component.kind, owner: component.dslKeyword, statement }] as const,
+  )),
+);
 const WIRE_KINDS = new Set(['owns', 'references', 'assigns', 'queries', 'executes', 'mentions', 'missing']);
-const STATEMENTS = 'scope, zone, end, module, object, runtime, resource, tree, note, row, type, wire';
+const STATEMENTS = [
+  'scope', ...allComponents().map((component) => component.dslKeyword), 'end',
+  ...CHILD_STATEMENTS.keys(), 'type', 'wire',
+].join(', ');
 
 /** Splits a line into tokens, treating double-quoted spans as single tokens. */
 function tokenize(line: string): { tokens: string[]; error?: string } {
@@ -153,9 +181,13 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
       continue;
     }
 
-    if (line.startsWith('row ') || line === 'row') {
-      if (!node || node.kind !== 'tree') {
-        fail('row outside a tree node', 'declare a tree first: tree "Store hierarchy"');
+    const child = CHILD_STATEMENTS.get(line.split(/\s/)[0]);
+    if (child) {
+      if (!node || node.kind !== child.kind) {
+        fail(
+          `${child.statement.keyword} outside a ${child.kind} node`,
+          `declare a ${child.owner} first, then indent its ${child.statement.keyword} lines under it`,
+        );
         continue;
       }
       const { tokens, error } = tokenize(line);
@@ -163,33 +195,14 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         fail(`${error} in "${line}"`, 'close the double quote');
         continue;
       }
-      if (tokens.length < 3) {
-        fail('row needs an id and a kind', 'row mission_x mission [status] [parent=<id>] [badges=a,b] [label "text"]');
+      const parsed = child.statement.parse(tokens, lineNumber);
+      if ('error' in parsed) {
+        fail(parsed.error, parsed.hint);
         continue;
       }
-      if (!TREE_ROW_KINDS.has(tokens[2])) {
-        fail(`unknown row kind "${tokens[2]}"`, `use one of: ${[...TREE_ROW_KINDS].join(', ')}`);
-        continue;
-      }
-      const row: TreeRowAst = { id: tokens[1], kind: tokens[2] as TreeRowAst['kind'], badges: [] };
-      let invalid = false;
-      for (let index = 3; index < tokens.length; index += 1) {
-        const token = tokens[index];
-        if (token === 'label' && tokens[index + 1] !== undefined) {
-          row.label = tokens[(index += 1)];
-        } else if (token.startsWith('parent=')) {
-          row.parentRowId = token.slice('parent='.length);
-        } else if (token.startsWith('badges=')) {
-          row.badges = token.slice('badges='.length).split(',').filter((badge) => badge.length > 0);
-        } else if (row.status === undefined && !token.includes('=')) {
-          row.status = token;
-        } else {
-          fail(`unexpected "${token}" in row`, 'row <id> <kind> [status] [parent=<id>] [badges=a,b] [label "text"]');
-          invalid = true;
-          break;
-        }
-      }
-      if (!invalid) node.rows.push(row);
+      // `rows` is the AST's only child-content bucket today; the second child-owning kind is
+      // what earns a generic one.
+      node.rows.push(parsed.content as TreeRowAst);
       continue;
     }
 
@@ -237,13 +250,13 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
       continue;
     }
 
-    if (keyword === 'zone') {
+    if (CONTAINER_KEYWORDS.has(keyword)) {
       if (!scope) {
-        fail('zone outside a scope', 'declare a scope first: scope "My System"');
+        fail(`${keyword} outside a scope`, 'declare a scope first: scope "My System"');
         continue;
       }
       if (tokens.length < 2) {
-        fail('zone needs a name', 'zone "Stores" "optional description"');
+        fail(`${keyword} needs a name`, `${keyword} "Stores" "optional description"`);
         continue;
       }
       const zone: ZoneAst = { label: tokens[1], description: tokens[2], nodes: [], zones: [], line: lineNumber };
@@ -268,7 +281,10 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
       continue;
     }
 
-    if (keyword === 'note') {
+    const kind = NODE_KINDS.get(keyword);
+
+    // `note` is the one shape whose statement is text only: no description, no member lines.
+    if (keyword === 'note' && kind !== undefined) {
       if (!scope) {
         fail('note outside a scope', 'declare a scope first: scope "My System"');
         continue;
@@ -277,12 +293,12 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         fail('note needs text', 'note "Why this shape is load-bearing."');
         continue;
       }
-      nodeSink().push({ kind: 'comment', label: tokens[1], interfaces: [], types: [], rows: [] });
+      nodeSink().push({ kind: kind as NodeAst['kind'], label: tokens[1], interfaces: [], types: [], rows: [] });
       node = null;
       continue;
     }
 
-    if (NODE_KEYWORDS.has(keyword)) {
+    if (kind !== undefined) {
       if (!scope) {
         fail(`${keyword} outside a scope`, 'declare a scope first: scope "My System"');
         continue;
@@ -292,7 +308,7 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         continue;
       }
       node = {
-        kind: keyword as NodeAst['kind'],
+        kind: kind as NodeAst['kind'],
         label: tokens[1],
         description: tokens[2],
         interfaces: [],

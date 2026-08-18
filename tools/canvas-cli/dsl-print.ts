@@ -1,6 +1,7 @@
 /** Prints a diagram record back as round-trippable DSL — the cheap way to reload context. */
 
 import type { CrossDiagramLink, DiagramRecord } from '../../src/canvas.ts';
+import { componentFor } from '../../src/components/registry.ts';
 import { placedNodes, rootGroupId, type PlacedNode } from './record-graph.ts';
 
 /**
@@ -68,17 +69,16 @@ export function printRecord(record: DiagramRecord, context?: CrossDiagramContext
 
   const emitContainer = (containerId: string | undefined, indent: string): void => {
     for (const node of childrenOf(nodes, containerId)) {
-      if (node.kind === 'group') {
-        lines.push(`${indent}zone ${quote(node.label)}${node.description ? ` ${quote(node.description)}` : ''}`);
+      const component = componentFor(node.kind);
+      const declaration = `${indent}${component.dslKeyword} ${quote(node.label)}`
+        + `${node.description ? ` ${quote(node.description)}` : ''}`;
+      if (component.layoutRole === 'container') {
+        lines.push(declaration);
         emitContainer(node.id as string, `${indent}  `);
         lines.push(`${indent}end`);
         continue;
       }
-      if (node.kind === 'comment') {
-        lines.push(`${indent}note ${quote(node.label)}`);
-        continue;
-      }
-      lines.push(`${indent}${node.kind} ${quote(node.label)}${node.description ? ` ${quote(node.description)}` : ''}`);
+      lines.push(declaration);
       for (const interfaceId of node.interfaceIds) {
         const method = record.interfaces[interfaceId];
         if (!method) continue;
@@ -89,11 +89,10 @@ export function printRecord(record: DiagramRecord, context?: CrossDiagramContext
         if (!type) continue;
         lines.push(`${indent}  type ${type.name} { ${type.fields.join(', ')} }`);
       }
-      for (const row of node.rows ?? []) {
-        lines.push(`${indent}  row ${row.id} ${row.kind}${row.status ? ` ${row.status}` : ''}`
-          + `${row.parentRowId ? ` parent=${row.parentRowId}` : ''}`
-          + `${row.badges.length > 0 ? ` badges=${row.badges.join(',')}` : ''}`
-          + `${row.label ? ` label ${quote(row.label)}` : ''}`);
+      // Child lines (tree's `row`) are printed by the component that owns them, already
+      // 2-space indented relative to their node statement.
+      for (const statement of component.dslChildren ?? []) {
+        for (const childLine of statement.print(node)) lines.push(`${indent}${childLine}`);
       }
     }
   };

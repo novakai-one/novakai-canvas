@@ -93,6 +93,46 @@ describe('printLibrary / listMaps', () => {
   });
 });
 
+describe('every node-declaring keyword round-trips', () => {
+  // One scope using every statement a component declares: the four card keywords, tree with a
+  // row, note, and a zone holding a node. Guards the parse → print → parse path while the
+  // vocabulary moves from hardcoded lists to the component registry.
+  const EVERY_KEYWORD_DSL = `
+scope "Every Keyword" "one of each"
+  module "A module" "with a description"
+    call(In) -> Out
+    type Shape { a, b }
+  object "An object"
+  runtime "A runtime"
+  resource "a-resource.json"
+  note "A free-text note."
+  tree "A tree"
+    row proj1 project active label "Project One"
+    row task1 task in-progress parent=proj1 badges=team,outcome
+  zone "A zone" "holding one node"
+    module "zoned module"
+  end
+  wire "A module" -> "zoned module" : call(In) -> Out [queries]
+`;
+
+  it('parses, prints, and re-parses to the same record content', () => {
+    const record = buildRecord(EVERY_KEYWORD_DSL);
+    expect(Object.values(record.nodes).map((node) => node.kind).sort()).toEqual(
+      ['comment', 'group', 'group', 'module', 'module', 'object', 'resource', 'runtime', 'tree'],
+    );
+    const printed = printRecord(record);
+    for (const statement of ['module "A module"', 'object "An object"', 'runtime "A runtime"',
+      'resource "a-resource.json"', 'note "A free-text note."', 'tree "A tree"',
+      'zone "A zone"', 'row proj1 project active label "Project One"',
+      'row task1 task in-progress parent=proj1 badges=team,outcome']) {
+      expect(printed).toContain(statement);
+    }
+    const reapplied = buildRecord(printed, { [record.id]: record });
+    expect(content(reapplied)).toEqual(content(record));
+    expect(printRecord(reapplied)).toBe(printed);
+  });
+});
+
 describe('printRecord with nested zones', () => {
   const ZONED_DSL = `
 scope "Mission Map"

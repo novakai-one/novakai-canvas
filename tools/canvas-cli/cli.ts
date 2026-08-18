@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import type {
   CanvasLibrary, CrossDiagramLink, DiagramRecord, RecordCommand,
 } from '../../src/canvas.ts';
+import { kindList } from '../../src/components/registry.ts';
 import { parseDsl } from './dsl-parse.ts';
 import { compile, type CrossDiagramWire } from './compile.ts';
 import { listMaps, printLibrary, printRecord, type CrossDiagramContext } from './dsl-print.ts';
@@ -304,7 +305,8 @@ function describeCapability(): unknown {
     schemaVersion: 3,
     unit: 'diagram-record',
     commandKinds: [...COMMAND_KINDS],
-    nodeKinds: ['group', 'module', 'object', 'runtime', 'resource', 'comment', 'tree'],
+    nodeKinds: [...kindList()],
+    // The DSL says `scope` for the root group; `zone` (the component's keyword) is the nested form.
     nodeAliases: { group: 'scope' },
     wireKinds: ['owns', 'references', 'assigns', 'queries', 'executes', 'mentions', 'missing'],
     changeSet: {
