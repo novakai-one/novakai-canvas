@@ -8,7 +8,16 @@ import { resolveMessagesDesign } from './messages-design-registry';
 
 /** Composition root: translates the app store into the stable Messages design contract. */
 export function Messages({ threadId }: { threadId?: string }) {
-  const { graph, select, selected, elected, addRecord, enterRoom, patch } = useStore();
+  const {
+    graph,
+    select,
+    selected,
+    elected,
+    addRecord,
+    enterRoom,
+    patch,
+    replaceRefs,
+  } = useStore();
   const design = resolveMessagesDesign(typeof window === 'undefined' ? '' : window.location.search);
   const DesignView = design.View;
 
@@ -48,6 +57,30 @@ export function Messages({ threadId }: { threadId?: string }) {
     return id;
   }, [addRecord, graph]);
 
+  const markThreadRead = useCallback((activeThreadId: string) => {
+    for (const notification of graph.byKind('notification')) {
+      const subject = notification.fields.subjectRef as { id?: unknown } | undefined;
+      if (subject?.id === activeThreadId && field(notification, 'status') === 'unread') {
+        patch(notification.id, { status: 'read' });
+      }
+    }
+  }, [graph, patch]);
+
+  const archiveThread = useCallback((activeThreadId: string) => {
+    patch(activeThreadId, { archived: true });
+  }, [patch]);
+
+  const attachThreadToMission = useCallback((activeThreadId: string, missionId: string) => {
+    const thread = graph.get(activeThreadId);
+    const mission = graph.get(missionId);
+    if (!thread || thread.kind !== 'thread' || !mission || mission.kind !== 'mission') return;
+    replaceRefs(activeThreadId, [
+      ...thread.refs.filter((ref) => ref.kind !== 'mission'),
+      { kind: 'mission', value: missionId },
+    ]);
+    patch(activeThreadId, { roomId: missionId });
+  }, [graph, patch, replaceRefs]);
+
   const data: MessagesDesignData = {
     graph,
     threads: graph.byKind('thread'),
@@ -66,6 +99,9 @@ export function Messages({ threadId }: { threadId?: string }) {
     },
     send,
     startConversation,
+    markThreadRead,
+    archiveThread,
+    attachThreadToMission,
   };
 
   return <DesignView data={data} commands={commands} />;

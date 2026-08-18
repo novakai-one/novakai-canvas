@@ -19,6 +19,9 @@ export type MessagesDesignCommands = {
   open(record: ObjectRecord): void;
   send(threadId: string, body: string): void;
   startConversation(agent: ObjectRecord): string;
+  markThreadRead(threadId: string): void;
+  archiveThread(threadId: string): void;
+  attachThreadToMission(threadId: string, missionId: string): void;
 };
 
 /** The entire Messages contract a disposable design may depend on. */

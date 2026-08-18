@@ -60,6 +60,8 @@ export type BenchModel = {
   readonly conversationsById: ReadonlyMap<ObjectId, BenchConversation>;
   readonly messagesById: ReadonlyMap<ObjectId, BenchMessage>;
   readonly recordsById: ReadonlyMap<ObjectId, ObjectRecord>;
+  readonly missions: readonly ObjectRecord[];
+  readonly liveAgents: readonly ObjectRecord[];
 };
 
 /** Stable identity for one inspection trail. */
@@ -92,6 +94,11 @@ export type BenchConversationFrame = {
   readonly conversationIds: readonly ObjectId[];
 };
 
+/** Durable identity for the one spatial conversation draft. */
+export type BenchPendingDraft = {
+  readonly id: string;
+};
+
 /** Semantic session state that deliberately excludes canvas placement and zoom. */
 export type BenchSessionSnapshot = {
   readonly openThreadIds: readonly ObjectId[];
@@ -99,6 +106,7 @@ export type BenchSessionSnapshot = {
   readonly frames: readonly BenchConversationFrame[];
   readonly scrollTopByThreadId: Readonly<Record<ObjectId, number>>;
   readonly focusedThreadId: ObjectId | null;
+  readonly pendingDraft: BenchPendingDraft | null;
 };
 
 /** Complete reducer state for The Bench. */
@@ -124,7 +132,22 @@ export type BenchAction =
   | { readonly type: 'set-zoom-tier'; readonly tier: BenchZoomTier }
   | { readonly type: 'focus-conversation'; readonly threadId: ObjectId }
   | { readonly type: 'clear-focus' }
-  | { readonly type: 'remove-frame'; readonly frameId: string };
+  | { readonly type: 'create-draft'; readonly draftId: string }
+  | { readonly type: 'cancel-draft' }
+  | { readonly type: 'accept-draft'; readonly threadId: ObjectId }
+  | { readonly type: 'create-frame'; readonly frame: BenchConversationFrame }
+  | { readonly type: 'rename-frame'; readonly frameId: string; readonly name: string }
+  | { readonly type: 'set-frame-membership'; readonly threadId: ObjectId; readonly frameId: string | null }
+  | { readonly type: 'remove-frame'; readonly frameId: string }
+  | { readonly type: 'clear-trails' }
+  | { readonly type: 'prune-conversation'; readonly threadId: ObjectId }
+  | {
+      readonly type: 'reconcile-session';
+      readonly threadIds: readonly ObjectId[];
+      readonly messageIds: readonly ObjectId[];
+      readonly recordIds: readonly ObjectId[];
+    }
+  | { readonly type: 'restore-session'; readonly session: BenchSessionSnapshot };
 
 /** Stable actions supplied to canvas nodes without exposing reducer dispatch. */
 export type BenchNodeActions = {
@@ -143,6 +166,11 @@ export type BenchNodeActions = {
   travel(recordId: ObjectId): void;
   sendMessage(threadId: ObjectId, body: string): void;
   rememberTranscriptScroll(threadId: ObjectId, scrollTop: number): void;
+  markThreadRead(threadId: ObjectId): void;
+  attachThreadToMission(threadId: ObjectId, missionId: ObjectId): void;
+  archiveConversation(threadId: ObjectId): void;
+  renameFrame(frameId: string, name: string): void;
+  removeFrame(frameId: string): void;
 };
 
 /** Data rendered by the stable conversation canvas node. */
@@ -154,6 +182,25 @@ export type ConversationNodeData = Record<string, unknown> & {
   readonly isFocused: boolean;
   readonly tier: BenchZoomTier;
   readonly savedScrollTop: number;
+  readonly missions: readonly ObjectRecord[];
+  readonly actions: BenchNodeActions;
+};
+
+/** Data rendered by the spatial draft node. */
+export type DraftConversationNodeData = Record<string, unknown> & {
+  readonly kind: 'draft-conversation';
+  readonly selectionId: string;
+  readonly draft: BenchPendingDraft;
+  readonly agents: readonly ObjectRecord[];
+  readonly accept: (agent: ObjectRecord) => void;
+  readonly cancel: () => void;
+};
+
+/** Data rendered by a semantic conversation frame. */
+export type ConversationFrameNodeData = Record<string, unknown> & {
+  readonly kind: 'conversation-frame';
+  readonly selectionId: string;
+  readonly frame: BenchConversationFrame;
   readonly actions: BenchNodeActions;
 };
 
@@ -181,4 +228,11 @@ export type RelatedObjectNodeData = Record<string, unknown> & {
 export type InspectionWireData = Record<string, unknown> & {
   readonly trailId: BenchTrailId;
   readonly emphasized: boolean;
+};
+
+/** One newly opened node that may require an explicit reveal. */
+export type BenchOffscreenCandidate = {
+  readonly nodeId: string;
+  readonly kind: 'conversation' | 'message-inspector' | 'related-object';
+  readonly openedSequence: number;
 };

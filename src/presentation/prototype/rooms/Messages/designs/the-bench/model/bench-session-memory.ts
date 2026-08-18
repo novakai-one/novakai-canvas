@@ -1,10 +1,63 @@
+import { z } from 'zod';
 import type {
   BenchConversationFrame,
   BenchInspectionTrail,
   BenchSessionSnapshot,
 } from './bench-model';
 
-let rememberedSession: BenchSessionSnapshot | null = null;
+const BENCH_SESSION_STORAGE_KEY = 'novakai:messages:the-bench:session:v1';
+
+const relationSchema = z.enum([
+  'belongsTo', 'contains', 'assignedTo', 'assigned', 'requests', 'requestedBy',
+  'occupiedBy', 'occupies', 'attempts', 'attemptedBy', 'pursues', 'pursuedBy',
+  'produces', 'producedBy', 'cites', 'citedBy', 'discusses', 'discussedIn',
+  'references', 'referencedBy', 'blocks', 'blockedBy', 'resolves', 'resolvedBy',
+  'raisedAgainst', 'hasIssue', 'about', 'notified', 'createdFrom', 'originOf',
+  'staffedBy', 'pins', 'pinnedBy',
+]);
+
+const trailStepSchema = z.object({
+  id: z.string().min(1),
+  kind: z.enum(['relations', 'object']),
+  parentStepId: z.string().min(1).nullable(),
+  recordId: z.string().min(1).nullable(),
+  relation: relationSchema.nullable(),
+}).strict();
+
+const trailSchema = z.object({
+  id: z.string().min(1),
+  threadId: z.string().min(1),
+  rootMessageId: z.string().min(1),
+  steps: z.array(trailStepSchema),
+}).strict();
+
+const frameSchema = z.object({
+  id: z.string().min(1),
+  name: z.string(),
+  conversationIds: z.array(z.string().min(1)),
+}).strict();
+
+const storedBenchSessionSchema = z.object({
+  schemaVersion: z.literal(1),
+  session: z.object({
+    openThreadIds: z.array(z.string().min(1)),
+    trails: z.array(trailSchema),
+    frames: z.array(frameSchema),
+    scrollTopByThreadId: z.record(z.string(), z.number().finite().nonnegative()),
+    focusedThreadId: z.string().min(1).nullable(),
+    pendingDraft: z.object({ id: z.string().min(1) }).strict().nullable().optional(),
+  }).strict(),
+}).strict();
+
+type StoredBenchSessionV1 = z.infer<typeof storedBenchSessionSchema>;
+type PersistenceBackend = 'browser' | 'volatile';
+
+let backend: PersistenceBackend = 'browser';
+let volatileSession: BenchSessionSnapshot | null = null;
+
+function unique(values: readonly string[]): string[] {
+  return [...new Set(values)];
+}
 
 function copyTrail(trail: BenchInspectionTrail): BenchInspectionTrail {
   return {
@@ -27,15 +80,110 @@ function copySnapshot(snapshot: BenchSessionSnapshot): BenchSessionSnapshot {
     frames: snapshot.frames.map(copyFrame),
     scrollTopByThreadId: { ...snapshot.scrollTopByThreadId },
     focusedThreadId: snapshot.focusedThreadId,
+    pendingDraft: snapshot.pendingDraft ? { ...snapshot.pendingDraft } : null,
   };
 }
 
-/** Reads semantic Bench state without retaining a mutable caller reference. */
-export function readBenchSession(): BenchSessionSnapshot | null {
-  return rememberedSession ? copySnapshot(rememberedSession) : null;
+function normalizedSession(stored: StoredBenchSessionV1['session']): BenchSessionSnapshot {
+  const trailIds = new Set<string>();
+  const frameIds = new Set<string>();
+  const framedConversationIds = new Set<string>();
+  return {
+    openThreadIds: unique(stored.openThreadIds),
+    trails: stored.trails
+      .filter((trail) => {
+        if (trailIds.has(trail.id)) return false;
+        trailIds.add(trail.id);
+        return true;
+      })
+      .map((trail) => ({
+        ...trail,
+        steps: trail.steps.filter((step, index, steps) => (
+          steps.findIndex((candidate) => candidate.id === step.id) === index
+        )).map((step) => ({ ...step })),
+      })),
+    frames: stored.frames
+      .filter((frame) => {
+        if (frameIds.has(frame.id)) return false;
+        frameIds.add(frame.id);
+        return true;
+      })
+      .map((frame) => ({
+        ...frame,
+        conversationIds: unique(frame.conversationIds).filter((conversationId) => {
+          if (framedConversationIds.has(conversationId)) return false;
+          framedConversationIds.add(conversationId);
+          return true;
+        }),
+      })),
+    scrollTopByThreadId: { ...stored.scrollTopByThreadId },
+    focusedThreadId: stored.focusedThreadId,
+    pendingDraft: stored.pendingDraft ? { ...stored.pendingDraft } : null,
+  };
 }
 
-/** Remembers semantic Bench state without coordinates, viewport, or framework objects. */
+function removeInvalidBrowserSnapshot(): void {
+  try {
+    window.localStorage.removeItem(BENCH_SESSION_STORAGE_KEY);
+  } catch {
+    backend = 'volatile';
+  }
+}
+
+/** Reads and validates the cumulative semantic Bench session through one owned seam. */
+export function readBenchSession(): BenchSessionSnapshot | null {
+  if (backend === 'volatile' || typeof window === 'undefined') {
+    return volatileSession ? copySnapshot(volatileSession) : null;
+  }
+
+  try {
+    const raw = window.localStorage.getItem(BENCH_SESSION_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = storedBenchSessionSchema.safeParse(JSON.parse(raw) as unknown);
+    if (!parsed.success) {
+      removeInvalidBrowserSnapshot();
+      return null;
+    }
+    return normalizedSession(parsed.data.session);
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      removeInvalidBrowserSnapshot();
+      return null;
+    }
+    backend = 'volatile';
+    return volatileSession ? copySnapshot(volatileSession) : null;
+  }
+}
+
+/** Remembers semantic Bench state without coordinates, viewport, search, markers or Zen. */
 export function rememberBenchSession(snapshot: BenchSessionSnapshot): void {
-  rememberedSession = copySnapshot(snapshot);
+  const copy = copySnapshot(snapshot);
+  if (backend === 'volatile' || typeof window === 'undefined') {
+    volatileSession = copy;
+    return;
+  }
+
+  try {
+    const stored: StoredBenchSessionV1 = {
+      schemaVersion: 1,
+      session: {
+        openThreadIds: [...copy.openThreadIds],
+        trails: copy.trails.map((trail) => ({
+          ...trail,
+          steps: trail.steps.map((step) => ({ ...step })),
+        })),
+        frames: copy.frames.map((frame) => ({
+          ...frame,
+          conversationIds: [...frame.conversationIds],
+        })),
+        scrollTopByThreadId: { ...copy.scrollTopByThreadId },
+        focusedThreadId: copy.focusedThreadId,
+        pendingDraft: copy.pendingDraft ? { ...copy.pendingDraft } : null,
+      },
+    };
+    window.localStorage.setItem(BENCH_SESSION_STORAGE_KEY, JSON.stringify(stored));
+  } catch {
+    backend = 'volatile';
+    volatileSession = copy;
+  }
 }

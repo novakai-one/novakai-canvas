@@ -28,14 +28,18 @@ import {
 } from 'react';
 import './world-canvas.css';
 import {
+  applyCanvasPlacementCommand,
   readRememberedViewport,
-  rememberNodePosition,
+  rememberInitialNodePlacements,
+  rememberNodePlacements,
   rememberViewport,
-  restoreNodePositions,
+  restoreNodePlacements,
 } from './canvas-memory';
 import {
   placementsFromNodes,
   type CanvasDragGrid,
+  type CanvasPlacementCommand,
+  type CanvasPlacementCommandOutcome,
   type CanvasPlacementChange,
   type WorldPoint,
 } from './canvas-placement';
@@ -60,6 +64,8 @@ import { cameraRequestToCommand } from './world-camera';
 export type {
   CanvasDragGrid,
   CanvasNodePlacement,
+  CanvasPlacementCommand,
+  CanvasPlacementCommandOutcome,
   CanvasPlacementChange,
   WorldPoint,
 } from './canvas-placement';
@@ -81,6 +87,8 @@ export interface WorldCanvasProps<NodeType extends Node = Node, EdgeType extends
   dragGrid?: CanvasDragGrid;
   onPaneDoubleClick?: (position: WorldPoint) => void;
   onPlacementChange?: (change: CanvasPlacementChange) => void;
+  placementCommand?: CanvasPlacementCommand | null;
+  onPlacementCommandOutcome?: (outcome: CanvasPlacementCommandOutcome) => void;
   resolveNodeChanges?: (
     changes: NodeChange<NodeType>[],
     currentNodes: readonly NodeType[],
@@ -164,6 +172,8 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
   dragGrid,
   onPaneDoubleClick,
   onPlacementChange,
+  placementCommand,
+  onPlacementCommandOutcome,
   resolveNodeChanges,
   onNodesChanged,
   cameraCommand,
@@ -183,11 +193,15 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
   const [viewport, setCurrentViewport] = useState<Viewport>(
     rememberedViewport ?? initialViewport ?? { x: 0, y: 0, zoom: 1 },
   );
-  const [nodes, setNodes, applyNodeChanges] = useNodesState<NodeType>(
-    restoreNodePositions(viewportKey, incomingNodes),
-  );
+  const initialNodesRef = useRef<NodeType[] | null>(null);
+  if (!initialNodesRef.current) {
+    initialNodesRef.current = restoreNodePlacements(viewportKey, incomingNodes);
+  }
+  const [nodes, setNodes, applyNodeChanges] = useNodesState<NodeType>(initialNodesRef.current);
   const emittedRestoreRef = useRef(false);
   const emittedInitialViewportRef = useRef(false);
+  const executedPlacementCommandKeysRef = useRef(new Set<string>());
+  const placementCommandEmissionRef = useRef(false);
   const reactFlow = useReactFlow<NodeType, EdgeType>();
 
   const reactFlowAdapter = useMemo(
@@ -213,8 +227,24 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
   };
 
   useEffect(() => {
+    if (!placementCommand || executedPlacementCommandKeysRef.current.has(placementCommand.key)) return;
+    executedPlacementCommandKeysRef.current.add(placementCommand.key);
+
+    const replacementTargets = new Set(placementCommand.mutations
+      .filter((mutation) => mutation.type === 'replace-node-identity')
+      .map((mutation) => mutation.toNodeId));
+    rememberInitialNodePlacements(
+      viewportKey,
+      incomingNodes.filter((node) => !replacementTargets.has(node.id)),
+    );
+    const outcome = applyCanvasPlacementCommand(viewportKey, placementCommand);
+    if (outcome.status === 'applied') placementCommandEmissionRef.current = true;
+    onPlacementCommandOutcome?.(outcome);
+  }, [incomingNodes, onPlacementCommandOutcome, placementCommand, viewportKey]);
+
+  useEffect(() => {
     const restoredNodes = resolvedInteraction.rememberNodePositions
-      ? restoreNodePositions(viewportKey, incomingNodes)
+      ? restoreNodePlacements(viewportKey, incomingNodes)
       : [...incomingNodes];
 
     setNodes(restoredNodes.map((node) => ({
@@ -224,8 +254,9 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
         : node.id === selectedId,
     })));
 
-    if (!emittedRestoreRef.current) {
+    if (!emittedRestoreRef.current || placementCommandEmissionRef.current) {
       emittedRestoreRef.current = true;
+      placementCommandEmissionRef.current = false;
       onPlacementChange?.({
         cause: 'restore',
         movedNodeId: null,
@@ -280,19 +311,19 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
   ]);
 
   const handleNodeDragStop: OnNodeDrag<NodeType> = useCallback((_, node) => {
-    if (resolvedInteraction.rememberNodePositions) {
-      rememberNodePosition(viewportKey, node.id, node.position);
-    }
-
     const settledNodes = nodes.map((candidate) => (
       candidate.id === node.id
         ? { ...candidate, position: { ...node.position } }
         : candidate
     ));
+    const settledPlacements = placementsFromNodes(settledNodes);
+    if (resolvedInteraction.rememberNodePositions) {
+      rememberNodePlacements(viewportKey, settledPlacements);
+    }
     onPlacementChange?.({
       cause: 'drag-end',
       movedNodeId: node.id,
-      placements: placementsFromNodes(settledNodes),
+      placements: settledPlacements,
     });
   }, [nodes, onPlacementChange, resolvedInteraction.rememberNodePositions, viewportKey]);
 

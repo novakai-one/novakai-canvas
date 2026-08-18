@@ -9,6 +9,7 @@ const KEYBOARD_ZOOM_STEP = 0.12;
 export type BenchKeyInput = {
   readonly key: string;
   readonly metaKey: boolean;
+  readonly ctrlKey: boolean;
   readonly currentZoom: number;
   readonly activeThreadId: string | null;
 };
@@ -38,16 +39,21 @@ export function buildFocusConversationCommand(threadId: string): WorldCameraComm
   };
 }
 
-/** Builds the explicit reveal command used by later dock and search controls. */
-export function buildRevealConversationCommand(threadId: string): WorldCameraCommand {
+/** Builds the explicit reveal command used by dock, search and offscreen controls. */
+export function buildRevealNodeCommand(nodeId: string): WorldCameraCommand {
   return {
     type: 'focus-node-at-anchor',
-    key: `bench:reveal:${threadId}`,
-    nodeId: threadId,
+    key: `bench:reveal:${nodeId}:${Date.now()}`,
+    nodeId,
     anchor: { horizontalRatio: 0.5, verticalRatio: 0.5 },
     zoom: 0.88,
     duration: 360,
   };
+}
+
+/** Conversation-specific alias retained for design callers. */
+export function buildRevealConversationCommand(threadId: string): WorldCameraCommand {
+  return buildRevealNodeCommand(threadId);
 }
 
 /** Builds the command that restores the remembered Bench viewport. */
@@ -62,12 +68,6 @@ export function buildRestoreViewportCommand(): WorldCameraCommand {
 
 /** Translates a supported keyboard gesture into semantic or camera intent. */
 export function interpretBenchKey(input: BenchKeyInput): BenchKeyResult {
-  if (input.key.toLowerCase() === 'f' && input.activeThreadId) {
-    return {
-      action: { type: 'focus-conversation', threadId: input.activeThreadId },
-      cameraCommand: buildFocusConversationCommand(input.activeThreadId),
-    };
-  }
   if (input.key === '[' || input.key === ']') {
     const direction = input.key === '[' ? -1 : 1;
     return {

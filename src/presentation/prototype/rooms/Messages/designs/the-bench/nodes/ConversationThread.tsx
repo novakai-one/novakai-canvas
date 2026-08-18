@@ -1,14 +1,18 @@
+import type { ObjectRecord } from '../../../../../object-graph/contract';
 import type { BenchConversation, BenchNodeActions } from '../model/bench-model';
+import { ConversationMenu } from './ConversationMenu';
 import { MessageComposer } from './MessageComposer';
 import { MessageTranscript } from './MessageTranscript';
 
 /** Full thread that expands in the stable conversation node without moving it. */
 export function ConversationThread({
   conversation,
+  missions,
   savedScrollTop,
   actions,
 }: {
   conversation: BenchConversation;
+  missions: readonly ObjectRecord[];
   savedScrollTop: number;
   actions: BenchNodeActions;
 }) {
@@ -27,6 +31,7 @@ export function ConversationThread({
           )}
           <strong>{agentName}</strong>
         </span>
+        <ConversationMenu conversation={conversation} missions={missions} actions={actions} />
         <button
           type="button"
           className="bench-thread__collapse nodrag"

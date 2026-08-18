@@ -6,6 +6,11 @@
   --bench-canvas-glow: rgba(59, 71, 73, 0.22);
   --bench-field-vignette: rgba(0, 0, 0, 0.2);
   --bench-field-grain: rgba(255, 255, 255, 0.008);
+  --bench-overlay-surface: rgba(20, 27, 29, 0.9);
+  --bench-overlay-surface-solid: #151b1d;
+  --bench-modal-scrim: rgba(5, 8, 9, 0.72);
+  --bench-frame-fill: rgba(34, 42, 44, 0.34);
+  --bench-frame-rule: rgba(189, 143, 85, 0.34);
   --bench-surface-rest: #1a2022;
   --bench-surface-open: #1e2527;
   --bench-surface-inset: #111618;
@@ -29,9 +34,14 @@
   --bench-thread-height: 640px;
   --bench-radius-card: 10px;
   --bench-radius-control: 5px;
+  --bench-radius-dock: 22px;
+  --bench-radius-frame: 14px;
+  --bench-radius-pill: 18px;
   --bench-border-card: 1px solid var(--bench-rule-soft);
   --bench-shadow-card: 0 16px 40px rgba(0, 0, 0, 0.32), 0 1px 0 rgba(255, 255, 255, 0.025) inset;
   --bench-shadow-open: 0 24px 72px rgba(0, 0, 0, 0.42), 0 1px 0 rgba(255, 255, 255, 0.035) inset;
+  --bench-shadow-overlay: 0 20px 56px rgba(0, 0, 0, 0.46);
+  --bench-shadow-frame: 0 0 0 1px color-mix(in srgb, var(--bench-frame-rule) 20%, transparent) inset;
   --bench-font-display: var(--font-display);
   --bench-font-body: var(--font-ui);
   --bench-font-record: var(--font-mono);
@@ -42,6 +52,9 @@
   --bench-layer-node: 10;
   --bench-layer-open: 20;
   --bench-layer-screen: 30;
+  --bench-layer-overlay: 50;
+  --bench-layer-modal: 70;
+  --bench-layer-zen: 80;
 }
 
 .the-bench {
@@ -119,6 +132,7 @@
 }
 
 .bench-thread__collapse,
+.bench-conversation-menu__trigger,
 .bench-inspector-node__close,
 .bench-related-node__header button {
   display: grid;
@@ -152,7 +166,7 @@
   position: absolute;
   z-index: var(--bench-layer-screen);
   right: var(--space-5);
-  bottom: var(--space-5);
+  bottom: 72px;
   display: grid;
   grid-template-columns: auto auto;
   align-items: baseline;
@@ -186,14 +200,14 @@
   color: var(--bench-ink-secondary);
 }
 
-.the-bench[data-focused-thread]:not([data-focused-thread='none']) .bench-conversation {
-  opacity: 0.12;
-  filter: saturate(0.25);
+.the-bench[data-zen-thread]:not([data-zen-thread='none']) .world-canvas__event-surface {
+  opacity: 0.08;
+  filter: saturate(0.2);
+  pointer-events: none;
 }
 
-.the-bench[data-focused-thread]:not([data-focused-thread='none']) .bench-conversation[data-focused='true'] {
-  opacity: 1;
-  filter: none;
+.the-bench[data-zen-thread]:not([data-zen-thread='none']) .the-bench__scale {
+  opacity: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

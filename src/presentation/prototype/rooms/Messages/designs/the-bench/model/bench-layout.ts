@@ -1,5 +1,5 @@
 import type { CanvasNodePlacement, WorldPoint } from '../../../../../components/canvas/WorldCanvas';
-import type { BenchInspectionTrail, BenchState } from './bench-model';
+import type { BenchInspectionTrail, BenchModel, BenchState } from './bench-model';
 
 /** Fixed card geometry required by the Bench contract. */
 export const BENCH_CARD_SIZE = { width: 320, height: 128 } as const;
@@ -9,6 +9,12 @@ export const BENCH_THREAD_SIZE = { width: 420, height: 640 } as const;
 
 /** Fixed inspection-node geometry used by rightward trail layout. */
 export const BENCH_INSPECTOR_SIZE = { width: 280, height: 320 } as const;
+
+/** Fixed semantic-frame geometry; children retain their absolute world positions. */
+export const BENCH_FRAME_SIZE = { width: 760, height: 720 } as const;
+
+/** Header area reserved for naming and moving a frame. */
+export const BENCH_FRAME_HEADER_HEIGHT = 48;
 
 /** Framework-neutral placement consumed by Bench layout. */
 export type BenchPlacement = CanvasNodePlacement;
@@ -28,6 +34,8 @@ const DEFAULT_CONVERSATION_POINTS: readonly WorldPoint[] = [
   { x: 936, y: 296 },
   { x: 304, y: 560 },
   { x: 760, y: 584 },
+  { x: 1136, y: 544 },
+  { x: 72, y: 824 },
 ];
 
 const INSPECTION_GAP_X = 88;
@@ -94,16 +102,49 @@ export function layoutInspectionTrail(
 export function firstFreePoint(
   requested: WorldPoint,
   occupied: readonly WorldPoint[],
+  visibleBounds?: { readonly minX: number; readonly maxX: number; readonly minY: number; readonly maxY: number },
 ): WorldPoint {
-  let candidate = snapBenchPoint(requested);
+  const origin = snapBenchPoint(requested);
   const conflicts = (point: WorldPoint) => occupied.some((other) => (
     Math.abs(other.x - point.x) < BENCH_CARD_SIZE.width
     && Math.abs(other.y - point.y) < BENCH_CARD_SIZE.height
   ));
-  while (conflicts(candidate)) {
-    candidate = { x: candidate.x + 40, y: candidate.y + 40 };
+  if (!conflicts(origin)) return origin;
+
+  if (visibleBounds) {
+    const candidates: WorldPoint[] = [];
+    for (let y = visibleBounds.minY; y <= visibleBounds.maxY; y += 40) {
+      for (let x = visibleBounds.minX; x <= visibleBounds.maxX; x += 40) {
+        candidates.push(snapBenchPoint({ x, y }));
+      }
+    }
+    candidates.sort((left, right) => (
+      Math.hypot(left.x - origin.x, left.y - origin.y)
+      - Math.hypot(right.x - origin.x, right.y - origin.y)
+    ));
+    const visibleCandidate = candidates.find((candidate) => !conflicts(candidate));
+    if (visibleCandidate) return visibleCandidate;
   }
-  return candidate;
+
+  const stepX = BENCH_CARD_SIZE.width + 40;
+  const stepY = BENCH_CARD_SIZE.height + 40;
+  for (let radius = 1; radius <= 8; radius += 1) {
+    const offsets = [
+      { x: 0, y: radius },
+      { x: radius, y: 0 },
+      { x: -radius, y: 0 },
+      { x: 0, y: -radius },
+      { x: radius, y: radius },
+      { x: -radius, y: radius },
+      { x: radius, y: -radius },
+      { x: -radius, y: -radius },
+    ];
+    for (const offset of offsets) {
+      const candidate = { x: origin.x + offset.x * stepX, y: origin.y + offset.y * stepY };
+      if (!conflicts(candidate)) return candidate;
+    }
+  }
+  return { x: origin.x + stepX * 9, y: origin.y };
 }
 
 /** Returns the frame position produced by dropping one conversation near another. */
@@ -112,4 +153,104 @@ export function frameDropPoint(first: WorldPoint, second: WorldPoint): WorldPoin
     x: Math.min(first.x, second.x) - 24,
     y: Math.min(first.y, second.y) - 40,
   });
+}
+
+type WorldRect = WorldPoint & { readonly width: number; readonly height: number };
+
+/** Deterministic semantic result of one committed conversation drag. */
+export type BenchFrameDropIntent =
+  | { readonly type: 'none' }
+  | { readonly type: 'join'; readonly threadId: string; readonly frameId: string }
+  | { readonly type: 'release'; readonly threadId: string }
+  | {
+      readonly type: 'create';
+      readonly threadId: string;
+      readonly targetThreadId: string;
+      readonly position: WorldPoint;
+    };
+
+function conversationRect(
+  threadId: string,
+  placement: BenchPlacement,
+  state: BenchState,
+): WorldRect {
+  const size = state.session.openThreadIds.includes(threadId) ? BENCH_THREAD_SIZE : BENCH_CARD_SIZE;
+  return { ...placement.position, ...size };
+}
+
+function overlapRatio(first: WorldRect, second: WorldRect): number {
+  const width = Math.max(0, Math.min(first.x + first.width, second.x + second.width) - Math.max(first.x, second.x));
+  const height = Math.max(0, Math.min(first.y + first.height, second.y + second.height) - Math.max(first.y, second.y));
+  const smallerArea = Math.min(first.width * first.height, second.width * second.height);
+  return smallerArea === 0 ? 0 : (width * height) / smallerArea;
+}
+
+function frameForThread(state: BenchState, threadId: string): string | null {
+  return state.session.frames.find((frame) => frame.conversationIds.includes(threadId))?.id ?? null;
+}
+
+function frameInteriorContains(frame: BenchPlacement, point: WorldPoint): boolean {
+  return point.x >= frame.position.x
+    && point.x <= frame.position.x + BENCH_FRAME_SIZE.width
+    && point.y >= frame.position.y + BENCH_FRAME_HEADER_HEIGHT
+    && point.y <= frame.position.y + BENCH_FRAME_SIZE.height;
+}
+
+/** Applies the frozen 40% frame rule to one complete absolute placement snapshot. */
+export function resolveBenchFrameDrop(
+  movedNodeId: string,
+  placements: readonly BenchPlacement[],
+  model: BenchModel,
+  state: BenchState,
+): BenchFrameDropIntent {
+  if (!model.conversationsById.has(movedNodeId)) return { type: 'none' };
+  const placementMap = placementMapOf(placements);
+  const movedPlacement = placementMap.get(movedNodeId);
+  if (!movedPlacement) return { type: 'none' };
+  const movedRect = conversationRect(movedNodeId, movedPlacement, state);
+  const center = {
+    x: movedRect.x + movedRect.width / 2,
+    y: movedRect.y + movedRect.height / 2,
+  };
+  const currentFrameId = frameForThread(state, movedNodeId);
+
+  const containingFrames = state.session.frames
+    .map((frame) => ({ frame, placement: placementMap.get(frame.id) }))
+    .filter((entry): entry is { frame: typeof entry.frame; placement: BenchPlacement } => (
+      Boolean(entry.placement && frameInteriorContains(entry.placement, center))
+    ))
+    .sort((left, right) => left.frame.id.localeCompare(right.frame.id));
+  const destinationFrame = containingFrames[0]?.frame;
+  if (destinationFrame) {
+    return destinationFrame.id === currentFrameId
+      ? { type: 'none' }
+      : { type: 'join', threadId: movedNodeId, frameId: destinationFrame.id };
+  }
+
+  if (currentFrameId) return { type: 'release', threadId: movedNodeId };
+
+  const qualifying = model.conversations
+    .filter((conversation) => conversation.thread.id !== movedNodeId)
+    .map((conversation) => {
+      const placement = placementMap.get(conversation.thread.id);
+      if (!placement) return null;
+      return {
+        threadId: conversation.thread.id,
+        frameId: frameForThread(state, conversation.thread.id),
+        placement,
+        overlap: overlapRatio(movedRect, conversationRect(conversation.thread.id, placement, state)),
+      };
+    })
+    .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry && entry.overlap >= 0.4))
+    .sort((left, right) => right.overlap - left.overlap || left.threadId.localeCompare(right.threadId));
+
+  const target = qualifying[0];
+  if (!target) return { type: 'none' };
+  if (target.frameId) return { type: 'join', threadId: movedNodeId, frameId: target.frameId };
+  return {
+    type: 'create',
+    threadId: movedNodeId,
+    targetThreadId: target.threadId,
+    position: frameDropPoint(movedRect, target.placement.position),
+  };
 }

@@ -15,6 +15,7 @@ export function createEmptyBenchSession(): BenchSessionSnapshot {
     frames: [],
     scrollTopByThreadId: {},
     focusedThreadId: null,
+    pendingDraft: null,
   };
 }
 
@@ -41,8 +42,95 @@ export function createInitialBenchState(
         conversationIds: [...frame.conversationIds],
       })),
       scrollTopByThreadId: { ...session.scrollTopByThreadId },
+      pendingDraft: session.pendingDraft ? { ...session.pendingDraft } : null,
     },
     zoomTier: 'mid',
+  };
+}
+
+function setFrameMembership(
+  session: BenchSessionSnapshot,
+  threadId: string,
+  frameId: string | null,
+): BenchSessionSnapshot {
+  return {
+    ...session,
+    frames: session.frames.map((frame) => {
+      const withoutThread = frame.conversationIds.filter((id) => id !== threadId);
+      return frame.id === frameId
+        ? { ...frame, conversationIds: [...withoutThread, threadId] }
+        : { ...frame, conversationIds: withoutThread };
+    }),
+  };
+}
+
+function createFrame(
+  session: BenchSessionSnapshot,
+  frame: BenchSessionSnapshot['frames'][number],
+): BenchSessionSnapshot {
+  if (session.frames.some((candidate) => candidate.id === frame.id)) return session;
+  const members = new Set(frame.conversationIds);
+  return {
+    ...session,
+    frames: [
+      ...session.frames.map((candidate) => ({
+        ...candidate,
+        conversationIds: candidate.conversationIds.filter((id) => !members.has(id)),
+      })),
+      { ...frame, conversationIds: [...frame.conversationIds] },
+    ],
+  };
+}
+
+function pruneConversation(
+  session: BenchSessionSnapshot,
+  threadId: string,
+): BenchSessionSnapshot {
+  const { [threadId]: _removedScroll, ...remainingScroll } = session.scrollTopByThreadId;
+  return {
+    ...session,
+    openThreadIds: session.openThreadIds.filter((id) => id !== threadId),
+    trails: session.trails.filter((trail) => trail.threadId !== threadId),
+    frames: session.frames.map((frame) => ({
+      ...frame,
+      conversationIds: frame.conversationIds.filter((id) => id !== threadId),
+    })),
+    scrollTopByThreadId: remainingScroll,
+    focusedThreadId: session.focusedThreadId === threadId ? null : session.focusedThreadId,
+  };
+}
+
+function reconcileSession(
+  session: BenchSessionSnapshot,
+  action: Extract<BenchAction, { type: 'reconcile-session' }>,
+): BenchSessionSnapshot {
+  const threadIds = new Set(action.threadIds);
+  const messageIds = new Set(action.messageIds);
+  const recordIds = new Set(action.recordIds);
+  const scrollTopByThreadId = Object.fromEntries(Object.entries(session.scrollTopByThreadId)
+    .filter(([threadId]) => threadIds.has(threadId)));
+  return {
+    ...session,
+    openThreadIds: session.openThreadIds.filter((id) => threadIds.has(id)),
+    trails: session.trails
+      .filter((trail) => threadIds.has(trail.threadId) && messageIds.has(trail.rootMessageId))
+      .map((trail) => ({
+        ...trail,
+        steps: trail.steps.filter((step) => (
+          step.kind === 'relations'
+            ? step.recordId !== null && messageIds.has(step.recordId)
+            : step.recordId !== null && recordIds.has(step.recordId)
+        )),
+      }))
+      .filter((trail) => trail.steps.length > 0),
+    frames: session.frames.map((frame) => ({
+      ...frame,
+      conversationIds: frame.conversationIds.filter((id) => threadIds.has(id)),
+    })),
+    scrollTopByThreadId,
+    focusedThreadId: session.focusedThreadId && threadIds.has(session.focusedThreadId)
+      ? session.focusedThreadId
+      : null,
   };
 }
 
@@ -169,10 +257,50 @@ export function reduceBenchState(state: BenchState, action: BenchAction): BenchS
       return { ...state, session: { ...session, focusedThreadId: action.threadId } };
     case 'clear-focus':
       return { ...state, session: { ...session, focusedThreadId: null } };
+    case 'create-draft':
+      return session.pendingDraft
+        ? state
+        : { ...state, session: { ...session, pendingDraft: { id: action.draftId } } };
+    case 'cancel-draft':
+      return { ...state, session: { ...session, pendingDraft: null } };
+    case 'accept-draft':
+      return {
+        ...state,
+        session: {
+          ...session,
+          pendingDraft: null,
+          openThreadIds: session.openThreadIds.includes(action.threadId)
+            ? session.openThreadIds
+            : [...session.openThreadIds, action.threadId],
+          focusedThreadId: action.threadId,
+        },
+      };
+    case 'create-frame':
+      return { ...state, session: createFrame(session, action.frame) };
+    case 'rename-frame':
+      return {
+        ...state,
+        session: {
+          ...session,
+          frames: session.frames.map((frame) => (
+            frame.id === action.frameId ? { ...frame, name: action.name } : frame
+          )),
+        },
+      };
+    case 'set-frame-membership':
+      return { ...state, session: setFrameMembership(session, action.threadId, action.frameId) };
     case 'remove-frame':
       return {
         ...state,
         session: { ...session, frames: session.frames.filter((frame) => frame.id !== action.frameId) },
       };
+    case 'clear-trails':
+      return { ...state, session: { ...session, trails: [] } };
+    case 'prune-conversation':
+      return { ...state, session: pruneConversation(session, action.threadId) };
+    case 'reconcile-session':
+      return { ...state, session: reconcileSession(session, action) };
+    case 'restore-session':
+      return { ...state, session: createInitialBenchState(action.session).session };
   }
 }

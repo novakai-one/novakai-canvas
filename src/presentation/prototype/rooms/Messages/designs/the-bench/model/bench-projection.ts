@@ -6,6 +6,7 @@ import type { WorldPoint } from '../../../../../components/canvas/WorldCanvas';
 import type { MessagesDesignData } from '../../../messages-design';
 import {
   BENCH_CARD_SIZE,
+  BENCH_FRAME_SIZE,
   BENCH_INSPECTOR_SIZE,
   BENCH_THREAD_SIZE,
   conversationPoint,
@@ -28,9 +29,11 @@ import type {
   InspectionWireData,
   MessageInspectorNodeData,
   RelatedObjectNodeData,
+  ConversationFrameNodeData,
+  DraftConversationNodeData,
 } from './bench-model';
 
-const RECENT_CONVERSATION_LIMIT = 8;
+const RECENT_CONVERSATION_LIMIT = 10;
 const MISSION_TONES: readonly BenchMissionTone[] = ['slate', 'oxide', 'moss', 'violet'];
 
 /** Typed React Flow node union produced only at the projection seam. */
@@ -42,11 +45,19 @@ export type BenchMessageInspectorCanvasNode = Node<MessageInspectorNodeData, 'be
 /** Typed related-object node at the projection seam. */
 export type BenchRelatedObjectCanvasNode = Node<RelatedObjectNodeData, 'bench-related-object'>;
 
+/** Typed semantic frame node at the projection seam. */
+export type BenchConversationFrameCanvasNode = Node<ConversationFrameNodeData, 'bench-conversation-frame'>;
+
+/** Typed pending-draft node at the projection seam. */
+export type BenchDraftConversationCanvasNode = Node<DraftConversationNodeData, 'bench-draft-conversation'>;
+
 /** Union of every node The Bench supplies to the shared canvas. */
 export type BenchCanvasNode =
   | BenchConversationCanvasNode
   | BenchMessageInspectorCanvasNode
-  | BenchRelatedObjectCanvasNode;
+  | BenchRelatedObjectCanvasNode
+  | BenchConversationFrameCanvasNode
+  | BenchDraftConversationCanvasNode;
 
 /** Typed React Flow edge produced only at the projection seam. */
 export type BenchCanvasEdge = Edge<InspectionWireData, 'bench-inspection'>;
@@ -165,7 +176,9 @@ function recentConversations(
 /** Builds the immutable Bench model from the host's normalized relational graph. */
 export function buildBenchModel(data: MessagesDesignData): BenchModel {
   const conversations = recentConversations(
-    data.threads.map((thread) => conversationFor(data, thread)),
+    data.threads
+      .filter((thread) => thread.fields.archived !== true)
+      .map((thread) => conversationFor(data, thread)),
     data.initialThreadId,
   );
   return {
@@ -175,7 +188,37 @@ export function buildBenchModel(data: MessagesDesignData): BenchModel {
       conversation.messages.map((message) => [message.record.id, message] as const)
     ))),
     recordsById: new Map(data.graph.all.map((record) => [record.id, record])),
+    missions: data.graph.byKind('mission'),
+    liveAgents: data.liveAgents,
   };
+}
+
+function frameForConversation(state: BenchState, threadId: string): string | undefined {
+  return state.session.frames.find((frame) => frame.conversationIds.includes(threadId))?.id;
+}
+
+function frameNodes(
+  state: BenchState,
+  placements: readonly BenchPlacement[],
+  frameSeedPoints: ReadonlyMap<string, WorldPoint>,
+  actions: BenchNodeActions,
+): BenchConversationFrameCanvasNode[] {
+  const placementMap = placementMapOf(placements);
+  return state.session.frames.map((frame, index) => ({
+    id: frame.id,
+    type: 'bench-conversation-frame',
+    position: placementMap.get(frame.id)?.position
+      ?? frameSeedPoints.get(frame.id)
+      ?? { x: 48 + index * 96, y: 48 + index * 72 },
+    data: {
+      kind: 'conversation-frame',
+      selectionId: frame.id,
+      frame,
+      actions,
+    },
+    style: { width: BENCH_FRAME_SIZE.width, height: BENCH_FRAME_SIZE.height },
+    zIndex: 1,
+  }));
 }
 
 function conversationNodes(
@@ -188,10 +231,12 @@ function conversationNodes(
   return model.conversations.map((conversation, index) => {
     const isOpen = state.session.openThreadIds.includes(conversation.thread.id);
     const size = isOpen ? BENCH_THREAD_SIZE : BENCH_CARD_SIZE;
+    const parentId = frameForConversation(state, conversation.thread.id);
     return {
       id: conversation.thread.id,
       type: 'bench-conversation',
       position: conversationPoint(conversation.thread.id, index, placementMap),
+      ...(parentId ? { parentId } : {}),
       data: {
         kind: 'conversation',
         selectionId: conversation.thread.id,
@@ -200,12 +245,41 @@ function conversationNodes(
         isFocused: state.session.focusedThreadId === conversation.thread.id,
         tier: state.zoomTier,
         savedScrollTop: state.session.scrollTopByThreadId[conversation.thread.id] ?? 0,
+        missions: model.missions,
         actions,
       },
       style: { width: size.width, height: size.height },
       zIndex: isOpen ? 20 : 10,
     };
   });
+}
+
+function draftNodes(
+  model: BenchModel,
+  state: BenchState,
+  placements: readonly BenchPlacement[],
+  draftPoint: WorldPoint | null,
+  acceptDraft: (agent: ObjectRecord) => void,
+  cancelDraft: () => void,
+): BenchDraftConversationCanvasNode[] {
+  const draft = state.session.pendingDraft;
+  if (!draft) return [];
+  const placement = placementMapOf(placements).get(draft.id);
+  return [{
+    id: draft.id,
+    type: 'bench-draft-conversation',
+    position: placement?.position ?? draftPoint ?? { x: 160, y: 160 },
+    data: {
+      kind: 'draft-conversation',
+      selectionId: draft.id,
+      draft,
+      agents: model.liveAgents,
+      accept: acceptDraft,
+      cancel: cancelDraft,
+    },
+    style: { width: BENCH_CARD_SIZE.width, minHeight: 248 },
+    zIndex: 80,
+  }];
 }
 
 type TrailStepProjectionInput = {
@@ -317,10 +391,26 @@ export function projectBenchCanvas(
   state: BenchState,
   placements: readonly BenchPlacement[] | null,
   actions: BenchNodeActions,
+  options: {
+    readonly draftPoint: WorldPoint | null;
+    readonly frameSeedPoints: ReadonlyMap<string, WorldPoint>;
+    readonly acceptDraft: (agent: ObjectRecord) => void;
+    readonly cancelDraft: () => void;
+  },
 ): BenchCanvasProjection {
-  const conversations = conversationNodes(model, state, placements ?? [], actions);
+  const activePlacements = placements ?? [];
+  const frames = frameNodes(state, activePlacements, options.frameSeedPoints, actions);
+  const conversations = conversationNodes(model, state, activePlacements, actions);
+  const drafts = draftNodes(
+    model,
+    state,
+    activePlacements,
+    options.draftPoint,
+    options.acceptDraft,
+    options.cancelDraft,
+  );
   const trails = placements === null
     ? { nodes: [], edges: [] }
     : trailProjection(model, state, placements, actions);
-  return { nodes: [...conversations, ...trails.nodes], edges: trails.edges };
+  return { nodes: [...frames, ...conversations, ...drafts, ...trails.nodes], edges: trails.edges };
 }

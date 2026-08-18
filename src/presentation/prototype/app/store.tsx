@@ -16,7 +16,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import type { ObjectId, ObjectKind, ObjectRecord } from '../object-graph/contract';
+import type { ObjectId, ObjectKind, ObjectRecord, Ref } from '../object-graph/contract';
 import { buildGraph, type ObjectGraph } from '../object-graph/graph';
 import { loadFixtures } from '../object-graph/load';
 import { buildFeed, electAttention, type AttentionItem } from '../attention/feed';
@@ -109,6 +109,7 @@ export type Store = {
   toggleRail(): void;
 
   patch(id: ObjectId, fields: Record<string, unknown>): void;
+  replaceRefs(id: ObjectId, refs: readonly Ref[]): void;
   addRecord(record: ObjectRecord): void;
 };
 
@@ -208,6 +209,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, records: [...s.records, record] }));
   }, []);
 
+  const replaceRefs = useCallback((id: ObjectId, refs: readonly Ref[]) => {
+    const nextRefs = refs.map((ref) => ({ ...ref }));
+    setState((s) => ({
+      ...s,
+      records: s.records.map((record) => (
+        record.id === id
+          ? {
+              ...record,
+              refs: nextRefs,
+              fields: { ...record.fields, refs: nextRefs },
+            }
+          : record
+      )),
+    }));
+  }, []);
+
   const value: Store = {
     graph,
     feed,
@@ -229,6 +246,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     toggleReveal,
     toggleRail,
     patch,
+    replaceRefs,
     addRecord,
   };
 

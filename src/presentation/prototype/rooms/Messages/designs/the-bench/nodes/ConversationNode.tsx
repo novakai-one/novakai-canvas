@@ -22,6 +22,7 @@ export function ConversationNode({ data, selected }: NodeProps<BenchConversation
       {data.isOpen ? (
         <ConversationThread
           conversation={data.conversation}
+          missions={data.missions}
           savedScrollTop={data.savedScrollTop}
           actions={data.actions}
         />
