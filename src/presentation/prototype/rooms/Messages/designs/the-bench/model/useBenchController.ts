@@ -207,6 +207,21 @@ export function useBenchController({ data, commands }: MessagesDesignProps): Ben
   const placements = placementChange?.placements ?? null;
   const { viewportRef, onViewportChange, onZoomChange } = useBenchViewportPolicy(dispatch);
 
+  const exitZen = useCallback(() => {
+    if (!zenThreadId) return;
+    setZenThreadId(null);
+    const viewport = preZenViewportRef.current;
+    if (viewport) {
+      setCameraCommand({
+        type: 'set-viewport',
+        key: `bench:leave-zen:${Date.now()}`,
+        viewport: { ...viewport },
+        duration: 0,
+      });
+    }
+    preZenViewportRef.current = null;
+  }, [zenThreadId]);
+
   const issuePlacementCommand = useCallback((
     mutations: CanvasPlacementCommand['mutations'],
     rollback: PlacementRollback,
@@ -273,12 +288,16 @@ export function useBenchController({ data, commands }: MessagesDesignProps): Ben
       commandsRef.current.attachThreadToMission(threadId, missionId)
     ),
     archiveConversation: (threadId) => {
+      if (zenThreadId === threadId) {
+        exitZen();
+        commandsRef.current.select(null);
+      }
       commandsRef.current.archiveThread(threadId);
       dispatch({ type: 'prune-conversation', threadId });
     },
     renameFrame: (frameId, name) => dispatch({ type: 'rename-frame', frameId, name }),
     removeFrame,
-  }), [removeFrame]);
+  }), [exitZen, removeFrame, zenThreadId]);
 
   const acceptDraft = useCallback((agent: ObjectRecord) => {
     const draft = stateRef.current.session.pendingDraft;
@@ -455,21 +474,6 @@ export function useBenchController({ data, commands }: MessagesDesignProps): Ben
     dispatch({ type: 'create-draft', draftId });
   }, [requestedDraftPoint]);
 
-  const exitZen = useCallback(() => {
-    if (!zenThreadId) return;
-    setZenThreadId(null);
-    const viewport = preZenViewportRef.current;
-    if (viewport) {
-      setCameraCommand({
-        type: 'set-viewport',
-        key: `bench:leave-zen:${Date.now()}`,
-        viewport: { ...viewport },
-        duration: 0,
-      });
-    }
-    preZenViewportRef.current = null;
-  }, [zenThreadId]);
-
   const onKeyInput = useCallback((input: Omit<BenchKeyInput, 'currentZoom'>) => {
     if ((input.metaKey || input.ctrlKey) && input.key.toLocaleLowerCase() === 'k') {
       setSearchOpen(true);
@@ -484,7 +488,7 @@ export function useBenchController({ data, commands }: MessagesDesignProps): Ben
       return;
     }
     if (input.key.toLocaleLowerCase() === 'f') {
-      if (!input.activeThreadId) return;
+      if (!input.activeThreadId || !modelRef.current.conversationsById.has(input.activeThreadId)) return;
       preZenViewportRef.current = { ...viewportRef.current };
       dispatch({ type: 'focus-conversation', threadId: input.activeThreadId });
       setZenThreadId(input.activeThreadId);
