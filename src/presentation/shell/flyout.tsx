@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useCanvasPortalTarget } from './canvas-portal-context';
 
 /** One choice a flyout offers. */
 export interface FlyoutItem {
@@ -35,6 +36,7 @@ export function Flyout({ children, current, items, label, onPick }: FlyoutProps)
   const [at, setAt] = useState({ top: 0, right: 0 });
   const root = useRef<HTMLDivElement | null>(null);
   const menu = useRef<HTMLDivElement | null>(null);
+  const portalTarget = useCanvasPortalTarget();
 
   useEffect(() => {
     if (!open) return;
@@ -78,7 +80,7 @@ export function Flyout({ children, current, items, label, onPick }: FlyoutProps)
         {children}
         <span aria-hidden className="flyout-mark">›</span>
       </button>
-      {open && createPortal(
+      {open && portalTarget && createPortal(
         <div className="flyout-menu" ref={menu} role="menu" style={{ top: at.top, right: at.right }}>
           <span className="flyout-menu-title">{label}</span>
           {items.map((item) => (
@@ -94,7 +96,7 @@ export function Flyout({ children, current, items, label, onPick }: FlyoutProps)
             </button>
           ))}
         </div>,
-        document.body,
+        portalTarget,
       )}
     </div>
   );

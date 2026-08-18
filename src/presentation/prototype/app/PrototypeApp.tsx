@@ -14,6 +14,7 @@ import { Home } from '../rooms/Home/Home';
 import { CommandCenter } from '../rooms/CommandCenter/CommandCenter';
 import { Missions } from '../rooms/Missions/Missions';
 import { Projects } from '../rooms/Projects/Projects';
+import { CanvasRoom } from '../rooms/Canvas/CanvasRoom';
 import { Messages } from '../rooms/Messages/Messages';
 import { AgentRoles } from '../rooms/AgentRoles/AgentRoles';
 import { MissionRoom } from '../rooms/MissionRoom/MissionRoom';
@@ -86,6 +87,8 @@ function ActiveRoom() {
           return <Missions />;
         case 'projects':
           return <Projects />;
+        case 'canvas':
+          return <CanvasRoom />;
         case 'messages':
           return <Messages />;
         case 'agent-roles':
@@ -96,30 +99,33 @@ function ActiveRoom() {
 
 function Shell() {
   const { room, graph, projection, select, loadWarnings } = useStore();
+  const canvasOwnsWorkspaceChrome = room.kind === 'area' && room.area === 'canvas';
 
   return (
     <div
-      className="app-shell"
+      className="prototype-shell"
       onKeyDown={(event) => {
         // Esc closes the inspector first. It never navigates on its own.
-        if (event.key === 'Escape') select(null);
+        if (!canvasOwnsWorkspaceChrome && event.key === 'Escape') select(null);
       }}
     >
       <NavigationRail />
-      <div className="app-shell__main">
-        <ContextHeader />
-        {loadWarnings.length > 0 && (
-          <p className="app-shell__warning" role="status">
+      <div className="prototype-shell__main">
+        {!canvasOwnsWorkspaceChrome && <ContextHeader />}
+        {!canvasOwnsWorkspaceChrome && loadWarnings.length > 0 && (
+          <p className="prototype-shell__warning" role="status">
             {loadWarnings.length} fixture {loadWarnings.length === 1 ? 'line' : 'lines'} could not be
             read: {loadWarnings[0]}
           </p>
         )}
         {/* Keyed on the Room so a Room change is a real remount, not a partial redraw. */}
-        <main className="app-shell__workspace" key={roomKey(room)}>
+        <main className="prototype-shell__workspace" key={roomKey(room)}>
           <ActiveRoom />
         </main>
       </div>
-      <InspectorPanel hidden={activeDesignOwnsInspector(room, graph, projection)} />
+      {!canvasOwnsWorkspaceChrome && (
+        <InspectorPanel hidden={activeDesignOwnsInspector(room, graph, projection)} />
+      )}
     </div>
   );
 }

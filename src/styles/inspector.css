@@ -34,6 +34,6 @@
 }
 
 /* A field that will not be accepted says so while you are still typing in it. */
-.field-row input[data-invalid] {
+.app-shell .field-row input[data-invalid] {
   border-color: color-mix(in srgb, var(--danger, #b4544a) 70%, transparent);
 }

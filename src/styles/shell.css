@@ -428,7 +428,7 @@ button.panel-section-head:focus-visible {
 
 /* ---- Fields ------------------------------------------------------------ */
 
-.field-row { display: flex; flex-direction: column; gap: var(--space-2); }
+.app-shell .field-row { display: flex; flex-direction: column; gap: var(--space-2); }
 
 /* Label and its current value share one line, so a slider costs two rows, never three. */
 .field-line {
@@ -935,7 +935,7 @@ button.panel-section-head:focus-visible {
  * menu is open, so nothing under the pointer moves.
  */
 /*
- * Portalled to the body and positioned against the trigger's rect.
+ * Portalled to Canvas's own unclipped layer and positioned against the trigger's rect.
  *
  * Any menu drawn inside `.panel-shell` is clipped by it, whichever direction it opens; the only
  * honest answer is to draw it outside and put it back where it belongs.
@@ -1002,6 +1002,18 @@ button.panel-section-head:focus-visible {
   background: var(--surface-2);
   box-shadow: 0 16px 40px rgb(0 0 0 / 45%);
 }
+
+/* Portals escape clipping panels without escaping the Canvas theme and token root. */
+.canvas-portal-root {
+  position: fixed;
+  z-index: 2000;
+  inset: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.canvas-portal-root > * { pointer-events: auto; }
 
 .library-search { flex: none; padding: var(--space-3); border-bottom: 1px solid var(--edge-soft); }
 

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { DiagramSummary } from '../../application/canvas-library';
-import { PanelSection, oneLine } from '../shell';
+import { PanelSection, oneLine, useCanvasPortalTarget } from '../shell';
 import { findObjects, groupDiagrams } from './rail-filter';
 
 /** What the overlay needs to answer "which diagram, or which object in which diagram". */
@@ -35,8 +35,11 @@ export function LibraryOverlay(props: LibraryOverlayProps) {
   const [showArchived, setShowArchived] = useState(false);
   const root = useRef<HTMLDivElement | null>(null);
   const field = useRef<HTMLInputElement | null>(null);
+  const portalTarget = useCanvasPortalTarget();
 
-  useEffect(() => { field.current?.focus(); }, []);
+  useEffect(() => {
+    if (portalTarget) field.current?.focus();
+  }, [portalTarget]);
 
   useEffect(() => {
     const onPointerDown = (event: PointerEvent): void => {
@@ -59,6 +62,7 @@ export function LibraryOverlay(props: LibraryOverlayProps) {
 
   const groups = groupDiagrams(props.diagrams, query, props.activeDiagramId);
   const objects = findObjects(props.diagrams, query);
+  if (!portalTarget) return null;
 
   /*
    * Drawn outside the rail.
@@ -176,6 +180,6 @@ export function LibraryOverlay(props: LibraryOverlayProps) {
         )}
       </div>
     </div>,
-    document.body,
+    portalTarget,
   );
 }

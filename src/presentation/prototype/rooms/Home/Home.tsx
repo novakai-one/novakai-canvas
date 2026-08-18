@@ -15,6 +15,7 @@ const DESTINATION_LINE: Record<AreaKey, string> = {
   'command-center': 'Decisions, blocked work and agents that stopped.',
   missions: 'Every mission, planned through completed.',
   projects: 'The containers missions belong to.',
+  canvas: 'Map systems, dependencies and decisions.',
   messages: 'Conversations attached to their work.',
   'agent-roles': 'Blueprints a seat can request.',
 };

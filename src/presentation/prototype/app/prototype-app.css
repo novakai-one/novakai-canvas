@@ -1,12 +1,12 @@
 /** The app frame. It owns the rail | workspace | inspector grid and nothing else. */
-.app-shell {
+.prototype-shell {
   display: flex;
   height: 100vh;
   overflow: hidden;
   background: var(--surface-page);
 }
 
-.app-shell__main {
+.prototype-shell__main {
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -14,7 +14,7 @@
   min-height: 0;
 }
 
-.app-shell__workspace {
+.prototype-shell__workspace {
   flex: 1;
   min-height: 0;
   min-width: 0;
@@ -22,7 +22,7 @@
 }
 
 /* A load failure replaces information about the surface, never the shell itself. */
-.app-shell__warning {
+.prototype-shell__warning {
   margin: 0;
   padding: var(--space-2) var(--space-6);
   font-size: var(--text-sm);

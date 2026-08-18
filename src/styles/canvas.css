@@ -5,10 +5,10 @@
   background: var(--bg);
 }
 
-.react-flow { background: var(--bg); }
-.react-flow__pane { cursor: default; }
-.react-flow__node { transition: opacity 160ms ease; }
-.react-flow__node:focus { outline: none; }
+.canvas-surface .react-flow { background: var(--bg); }
+.canvas-surface .react-flow__pane { cursor: default; }
+.canvas-surface .react-flow__node { transition: opacity 160ms ease; }
+.canvas-surface .react-flow__node:focus { outline: none; }
 
 .architecture-node {
   position: relative;
@@ -21,7 +21,7 @@
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
 }
 
-.react-flow__node.selected .architecture-node {
+.canvas-surface .react-flow__node.selected .architecture-node {
   border-color: var(--accent);
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent), 0 12px 28px rgba(0, 0, 0, 0.24);
 }
@@ -136,7 +136,7 @@
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
 }
 
-.react-flow__node.selected .tree-node {
+.canvas-surface .react-flow__node.selected .tree-node {
   border-color: var(--accent);
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent), 0 12px 28px rgba(0, 0, 0, 0.24);
 }
@@ -225,7 +225,7 @@
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
 }
 
-.react-flow__node.selected .comment-node { border-color: var(--accent-dim); }
+.canvas-surface .react-flow__node.selected .comment-node { border-color: var(--accent-dim); }
 
 /*
  * A group is a frame, not a surface.
@@ -277,7 +277,9 @@
 
 /* Resize affordances: quiet until selected, gold while active. */
 .scope-node .react-flow__resize-control { pointer-events: all; }
-.react-flow__resize-control.line { border-color: color-mix(in srgb, var(--accent-strong) 45%, transparent); }
+.canvas-surface .react-flow__resize-control.line {
+  border-color: color-mix(in srgb, var(--accent-strong) 45%, transparent);
+}
 /*
  * Resize handles are sized in plain screen pixels.
  *
@@ -336,10 +338,10 @@
 
 .architecture-node:hover .react-flow__handle,
 .architecture-node.ports-always .react-flow__handle,
-.react-flow__node.selected .react-flow__handle { opacity: 1; }
+.canvas-surface .react-flow__node.selected .react-flow__handle { opacity: 1; }
 
 /* The default wire is legible; --wire is the floor its kind colour is lifted above. */
-.react-flow__edge-path {
+.canvas-surface .react-flow__edge-path {
   stroke: var(--wire-stroke, var(--wire));
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -347,11 +349,11 @@
 }
 
 /* Gold marks the one wire you are working on, and only while you are working on it. */
-.react-flow__edge.selected .react-flow__edge-path { stroke: var(--gold); }
+.canvas-surface .react-flow__edge.selected .react-flow__edge-path { stroke: var(--gold); }
 /* Faint is the DIMMED state and nothing else. */
-.react-flow__edge.is-dimmed .react-flow__edge-path { stroke: var(--wire-dim); }
-.react-flow__edge.is-dimmed { opacity: 0.55; }
-.react-flow__edge.is-dimmed .wire-label { opacity: 0.35; }
+.canvas-surface .react-flow__edge.is-dimmed .react-flow__edge-path { stroke: var(--wire-dim); }
+.canvas-surface .react-flow__edge.is-dimmed { opacity: 0.55; }
+.canvas-surface .react-flow__edge.is-dimmed .wire-label { opacity: 0.35; }
 
 /*
  * A wire label rides on its own wire and cuts a hole in it.
@@ -603,12 +605,12 @@
   box-shadow: none;
 }
 
-.is-present .react-flow__handle {
+.canvas-surface.is-present .react-flow__handle {
   opacity: 0 !important;
   pointer-events: none;
 }
 
-.is-present .react-flow__edge-path { stroke: var(--wire-stroke, var(--wire)); }
+.canvas-surface.is-present .react-flow__edge-path { stroke: var(--wire-stroke, var(--wire)); }
 
 .is-present .wire-label {
   color: var(--muted-read);
@@ -619,14 +621,14 @@
     0 1px 1px var(--bg-read), 0 -1px 1px var(--bg-read);
 }
 
-.react-flow__controls {
+.canvas-surface .react-flow__controls {
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 5px;
   box-shadow: none;
 }
 
-.react-flow__controls-button {
+.canvas-surface .react-flow__controls-button {
   width: 28px;
   height: 28px;
   border-bottom-color: var(--border);
@@ -634,8 +636,8 @@
   background: var(--card-3);
 }
 
-.react-flow__controls-button:hover { background: var(--hover); }
-.react-flow__controls-button svg { fill: currentColor; }
+.canvas-surface .react-flow__controls-button:hover { background: var(--hover); }
+.canvas-surface .react-flow__controls-button svg { fill: currentColor; }
 
 /* Renaming happens where the node is; the affordance stays quiet until you are on it. */
 .node-label.is-renamable { cursor: text; }
@@ -656,7 +658,7 @@
 
 /* Labels are drawn outside the scaled viewport, so the routing search needs the zoom to convert
    a measured pixel size back into diagram units. */
-.react-flow__edgelabel-renderer { --nvk-label-zoom: var(--nvk-zoom, 1); }
+.canvas-surface .react-flow__edgelabel-renderer { --nvk-label-zoom: var(--nvk-zoom, 1); }
 
 /*
  * The region that answers the pointer around a wire's end or its corridor handle.
