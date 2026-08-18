@@ -6,7 +6,7 @@
 
 import type { DiagramComponent } from '../component.ts';
 
-export const groupComponent: DiagramComponent = {
+export const groupComponent: DiagramComponent<'group'> = {
   kind: 'group',
   dslKeyword: 'zone',
   layoutRole: 'container',

@@ -7,7 +7,7 @@
 
 import type { DiagramComponent } from '../component.ts';
 
-export const commentComponent: DiagramComponent = {
+export const commentComponent: DiagramComponent<'comment'> = {
   kind: 'comment',
   dslKeyword: 'note',
   layoutRole: 'leaf',

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { kindList } from '../components/registry.ts';
 import type { DiagramRecord, LibraryIndex } from './records.ts';
 
 const position = z.object({ x: z.number(), y: z.number() });
@@ -24,7 +25,7 @@ const sourceReference = canvasReference.extend({ label: z.string().optional() })
 
 const canvasNode = z.object({
   id: z.string().min(1),
-  kind: z.enum(['group', 'module', 'object', 'runtime', 'resource', 'comment', 'tree']),
+  kind: z.enum(kindList()),
   label: z.string(),
   description: z.string().optional(),
   parentId: z.string().min(1).optional(),
@@ -69,7 +70,7 @@ const canvasView = z.object({
   layoutId: z.string().min(1),
   viewport: z.object({ x: z.number(), y: z.number(), zoom: z.number() }),
   collapsedNodeIds: z.array(z.string().min(1)),
-  hiddenKinds: z.array(z.enum(['group', 'module', 'object', 'runtime', 'resource', 'comment', 'tree'])),
+  hiddenKinds: z.array(z.enum(kindList())),
 });
 
 const interfaceObjects = z.record(z.string(), z.object({

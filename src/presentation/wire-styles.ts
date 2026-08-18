@@ -1,6 +1,6 @@
 /** The one kind→style mapping shared by edges, the legend, and SVG snapshots. */
 
-import type { CanvasPreferences, CanvasTheme, WireKind } from '../domain/model';
+import type { CanvasPreferences, CanvasTheme, WireKind } from '../domain/model.ts';
 import { WIRE_LABEL_SIZE_LIMITS } from '../domain/wire-label-size.ts';
 
 type WireDash = 'solid' | 'dashed' | 'dotted' | 'dashdot';

@@ -22,7 +22,7 @@ function esc(text: string): string {
     .replaceAll('"', '&quot;');
 }
 
-export const treeComponent: DiagramComponent = {
+export const treeComponent: DiagramComponent<'tree'> = {
   kind: 'tree',
   dslKeyword: 'tree',
   layoutRole: 'leaf',

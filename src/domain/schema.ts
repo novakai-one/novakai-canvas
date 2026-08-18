@@ -1,6 +1,10 @@
 import { z } from 'zod';
+import { kindList } from '../components/registry.ts';
 import type { ArchitectureDocument, CanvasChangeSet } from './model.ts';
 import { WIRE_LABEL_SIZE_LIMITS } from './wire-label-size.ts';
+
+/** Legacy document kind vocabulary: `scope` where the current record model uses `group`. */
+const legacyKindList = () => ['scope', ...kindList().filter((k) => k !== 'group')] as [string, ...string[]];
 
 const position = z.object({ x: z.number(), y: z.number() });
 const size = z.object({ width: z.number().positive(), height: z.number().positive() });
@@ -19,7 +23,7 @@ const treeRows = z.array(z.object({
 
 const semanticNode = z.object({
     id: z.string().min(1),
-    kind: z.enum(['scope', 'module', 'object', 'runtime', 'resource', 'comment', 'tree']),
+    kind: z.enum(legacyKindList()),
     label: z.string(),
     description: z.string().optional(),
     parentId: z.string().optional(),
@@ -231,7 +235,7 @@ const canvasCommand = z.discriminatedUnion('kind', [
     kind: z.literal('node.update'), id: z.string().min(1),
     patch: z.object({
       label: z.string().optional(), description: z.string().optional(),
-      kind: z.enum(['scope', 'module', 'object', 'runtime', 'resource', 'comment', 'tree']).optional(),
+      kind: z.enum(legacyKindList()).optional(),
     }),
   }),
   z.object({

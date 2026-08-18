@@ -7,7 +7,7 @@
 import { estimateNodeSize } from './measure.ts';
 import type { DiagramComponent } from '../component.ts';
 
-export function cardComponent(kind: 'module' | 'object' | 'runtime' | 'resource'): DiagramComponent {
+export function cardComponent<K extends 'module' | 'object' | 'runtime' | 'resource'>(kind: K): DiagramComponent<K> {
   return {
     kind,
     dslKeyword: kind,

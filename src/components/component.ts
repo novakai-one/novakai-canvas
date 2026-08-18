@@ -21,9 +21,9 @@ export interface DslChildStatement {
   print(node: RecordNode): string[];     // lines under the node statement, 2-space indented
 }
 
-export interface DiagramComponent {
+export interface DiagramComponent<K extends string = string> {
   /** Durable id stored in records. Never renamed once shipped. */
-  kind: string;
+  kind: K;
   /** DSL statement keyword that declares this node (usually === kind). */
   dslKeyword: string;
   /** Extra zod fields this kind stores beyond the base node (id/kind/label/description/parentId). */
