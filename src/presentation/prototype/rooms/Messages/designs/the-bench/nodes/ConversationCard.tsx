@@ -16,7 +16,7 @@ export function ConversationCard({
   return (
     <button
       type="button"
-      className="bench-card nodrag"
+      className="bench-card"
       onClick={() => actions.openConversation(conversation.thread.id)}
       aria-label={`Open conversation with ${agentName}`}
     >
@@ -35,9 +35,9 @@ export function ConversationCard({
       {tier !== 'far' && (
         <span className="bench-card__detail">
           <strong className="bench-card__agent">{agentName}</strong>
-          <span className="bench-card__context">
-            {conversation.mission ? conversation.mission.record.title : 'Independent conversation'}
-          </span>
+          {conversation.mission && (
+            <span className="bench-card__context">{conversation.mission.record.title}</span>
+          )}
           <span className="bench-card__preview">
             {conversation.previewLines.length > 0
               ? conversation.previewLines.map((line, index) => <span key={`${index}:${line}`}>{line}</span>)

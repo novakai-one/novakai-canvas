@@ -315,10 +315,12 @@ function trailProjection(
 export function projectBenchCanvas(
   model: BenchModel,
   state: BenchState,
-  placements: readonly BenchPlacement[],
+  placements: readonly BenchPlacement[] | null,
   actions: BenchNodeActions,
 ): BenchCanvasProjection {
-  const conversations = conversationNodes(model, state, placements, actions);
-  const trails = trailProjection(model, state, placements, actions);
+  const conversations = conversationNodes(model, state, placements ?? [], actions);
+  const trails = placements === null
+    ? { nodes: [], edges: [] }
+    : trailProjection(model, state, placements, actions);
   return { nodes: [...conversations, ...trails.nodes], edges: trails.edges };
 }

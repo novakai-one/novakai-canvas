@@ -22,9 +22,9 @@ export function ConversationThread({
           {participant?.initials ?? '—'}
         </span>
         <span className="bench-thread__identity">
-          <span className="bench-thread__eyebrow">
-            {conversation.mission ? conversation.mission.record.title : 'Independent conversation'}
-          </span>
+          {conversation.mission && (
+            <span className="bench-thread__eyebrow">{conversation.mission.record.title}</span>
+          )}
           <strong>{agentName}</strong>
         </span>
         <button

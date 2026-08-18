@@ -36,7 +36,7 @@ export function MessageComposer({
         rows={2}
       />
       <button type="submit" disabled={!canSend} aria-label="Send message">
-        Send <span aria-hidden="true">↗</span>
+        Send
       </button>
     </form>
   );

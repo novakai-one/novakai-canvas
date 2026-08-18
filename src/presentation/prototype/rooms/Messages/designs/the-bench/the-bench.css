@@ -3,6 +3,9 @@
   --bench-canvas-deep: #0c1012;
   --bench-canvas-steel: #111719;
   --bench-canvas-rule: rgba(202, 210, 208, 0.035);
+  --bench-canvas-glow: rgba(59, 71, 73, 0.22);
+  --bench-field-vignette: rgba(0, 0, 0, 0.2);
+  --bench-field-grain: rgba(255, 255, 255, 0.008);
   --bench-surface-rest: #1a2022;
   --bench-surface-open: #1e2527;
   --bench-surface-inset: #111618;
@@ -58,7 +61,7 @@
   background-image:
     linear-gradient(var(--bench-canvas-rule) 1px, transparent 1px),
     linear-gradient(90deg, var(--bench-canvas-rule) 1px, transparent 1px),
-    radial-gradient(circle at 48% 38%, rgba(59, 71, 73, 0.22), transparent 56%);
+    radial-gradient(circle at 48% 38%, var(--bench-canvas-glow), transparent 56%);
   background-size: 32px 32px, 32px 32px, 100% 100%;
 }
 
@@ -141,8 +144,8 @@
   height: 5600px;
   pointer-events: none;
   background:
-    radial-gradient(circle at 50% 50%, transparent 0 74%, rgba(0, 0, 0, 0.2) 100%),
-    repeating-linear-gradient(112deg, transparent 0 19px, rgba(255, 255, 255, 0.008) 20px);
+    radial-gradient(circle at 50% 50%, transparent 0 74%, var(--bench-field-vignette) 100%),
+    repeating-linear-gradient(112deg, transparent 0 19px, var(--bench-field-grain) 20px);
 }
 
 .the-bench__scale {

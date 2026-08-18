@@ -48,10 +48,10 @@ function placementSignature(placements: readonly CanvasNodePlacement[]): string 
 }
 
 function useBenchPlacements(): {
-  readonly placements: readonly CanvasNodePlacement[];
+  readonly placements: readonly CanvasNodePlacement[] | null;
   readonly onPlacementChange: (change: CanvasPlacementChange) => void;
 } {
-  const [placements, setPlacements] = useState<readonly CanvasNodePlacement[]>([]);
+  const [placements, setPlacements] = useState<readonly CanvasNodePlacement[] | null>(null);
   const placementSignatureRef = useRef('');
   const onPlacementChange = useCallback((change: CanvasPlacementChange) => {
     const signature = placementSignature(change.placements);

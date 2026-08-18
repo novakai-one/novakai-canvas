@@ -30,13 +30,16 @@
   box-shadow: var(--bench-shadow-card);
   font: inherit;
   text-align: left;
-  cursor: pointer;
+  cursor: grab;
   transition:
     border-color var(--bench-motion-feedback) var(--bench-ease),
     transform var(--bench-motion-feedback) var(--bench-ease),
     background var(--bench-motion-feedback) var(--bench-ease);
 }
 
+.bench-card:active {
+  cursor: grabbing;
+}
 .bench-card:hover {
   border-color: var(--bench-rule-strong);
   background: var(--bench-surface-lifted);

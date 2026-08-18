@@ -16,7 +16,9 @@ export function ConversationNode({ data, selected }: NodeProps<BenchConversation
       data-blocked={data.conversation.isBlocked}
       data-mission-tone={data.conversation.mission?.tone ?? 'none'}
     >
-      <div className="bench-conversation__mission-pool" aria-hidden="true" />
+      {data.conversation.mission && (
+        <div className="bench-conversation__mission-pool" aria-hidden="true" />
+      )}
       {data.isOpen ? (
         <ConversationThread
           conversation={data.conversation}
