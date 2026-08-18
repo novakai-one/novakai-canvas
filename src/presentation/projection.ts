@@ -345,15 +345,12 @@ export function scopeDepth(nodes: Record<string, NestedNode>, node: NestedNode):
 /**
  * Which renderer draws one node kind.
  *
- * `group` maps to the `scope` renderer: the record model renamed the kind, the container drawing
- * it needs is the same one, and re-labelling the React Flow node type would only rename a CSS
- * contract for no gain.
+ * React Flow node types are now the record kinds themselves — `webRenderers`
+ * (`src/components/web-registry.tsx`) is the map from kind to renderer, card kinds included, so
+ * this function no longer renames anything.
  */
-export function flowNodeType(kind: NodeKind): 'architecture' | 'comment' | 'scope' | 'tree' {
-  if (kind === 'comment') return 'comment';
-  if (kind === 'group') return 'scope';
-  if (kind === 'tree') return 'tree';
-  return 'architecture';
+export function flowNodeType(kind: NodeKind): NodeKind {
+  return kind;
 }
 
 /** Projects the visible nodes of one diagram into React Flow nodes, in the order given. */

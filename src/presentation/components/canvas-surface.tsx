@@ -23,17 +23,14 @@ import { RailToggle, StudioToggle } from '../shell';
 import { projectEdges, projectNodes } from '../projection';
 import { applyFrame, clearInFlight, mergeInFlight, takeInFlight, type InFlight } from '../in-flight';
 import type { CanvasMode } from '../view-mode';
-import { ArchitectureNode } from '../nodes/architecture-node';
-import { CommentNode } from '../nodes/comment-node';
-import { ScopeNode } from '../nodes/scope-node';
-import { TreeNode } from '../nodes/tree-node';
+import { webRenderers } from '../../components/web-registry.tsx';
 import { ElbowEdge } from '../edges/elbow-edge';
 import { Legend } from './legend';
 import { CanvasToolbar } from './canvas-toolbar';
 import { wireLabelSizing } from '../wire-styles';
 import { useCanvasActivity } from '../shell/canvas-activity-context';
 
-const nodeTypes = { architecture: ArchitectureNode, comment: CommentNode, scope: ScopeNode, tree: TreeNode };
+const nodeTypes = webRenderers;
 const edgeTypes = { elbow: ElbowEdge };
 
 /** Everything the canvas and its toolbar need from the open diagram and from the library. */
