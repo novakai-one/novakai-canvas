@@ -109,6 +109,9 @@ scope "Every Keyword" "one of each"
   tree "A tree"
     row proj1 project active label "Project One"
     row task1 task in-progress parent=proj1 badges=team,outcome
+  timeline "A timeline"
+    step "turn 1"
+    step "turn 3" fork="session-xyz789"
   zone "A zone" "holding one node"
     module "zoned module"
   end
@@ -118,13 +121,14 @@ scope "Every Keyword" "one of each"
   it('parses, prints, and re-parses to the same record content', () => {
     const record = buildRecord(EVERY_KEYWORD_DSL);
     expect(Object.values(record.nodes).map((node) => node.kind).sort()).toEqual(
-      ['comment', 'group', 'group', 'module', 'module', 'object', 'resource', 'runtime', 'tree'],
+      ['comment', 'group', 'group', 'module', 'module', 'object', 'resource', 'runtime', 'timeline', 'tree'],
     );
     const printed = printRecord(record);
     for (const statement of ['module "A module"', 'object "An object"', 'runtime "A runtime"',
       'resource "a-resource.json"', 'note "A free-text note."', 'tree "A tree"',
       'zone "A zone"', 'row proj1 project active label "Project One"',
-      'row task1 task in-progress parent=proj1 badges=team,outcome']) {
+      'row task1 task in-progress parent=proj1 badges=team,outcome',
+      'timeline "A timeline"', 'step "turn 1"', 'step "turn 3" fork="session-xyz789"']) {
       expect(printed).toContain(statement);
     }
     const reapplied = buildRecord(printed, { [record.id]: record });

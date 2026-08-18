@@ -4,6 +4,7 @@
  * size (`measure`), and its `./canvas snapshot` SVG body (`renderSvg`).
  */
 
+import { z } from 'zod';
 import { orderedTreeRows, treeRowDepth, treeRowText } from './content.ts';
 import { TREE_TONE_COLORS } from '../../presentation/wire-styles.ts';
 import type { TreeRow } from '../../domain/model.ts';
@@ -26,8 +27,19 @@ export const treeComponent: DiagramComponent<'tree'> = {
   kind: 'tree',
   dslKeyword: 'tree',
   layoutRole: 'leaf',
+  contentFields: {
+    rows: z.array(z.object({
+      id: z.string().min(1),
+      kind: z.enum(['project', 'mission', 'task', 'bucket']),
+      status: z.string().optional(),
+      parentRowId: z.string().optional(),
+      badges: z.array(z.string()),
+      label: z.string().optional(),
+    })).optional(),
+  },
   dslChildren: [{
     keyword: 'row',
+    contentKey: 'rows',
     parse(tokens) {
       if (tokens.length < 3) {
         return {

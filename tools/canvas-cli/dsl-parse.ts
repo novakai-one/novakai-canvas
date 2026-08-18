@@ -14,21 +14,14 @@ import { allComponents } from '../../src/components/registry.ts';
 export interface ParseError { line: number; message: string; hint: string }
 export interface InterfaceAst { name: string; accepts: string[]; returns: string[] }
 export interface TypeAst { name: string; fields: string[] }
-export interface TreeRowAst {
-  id: string;
-  kind: 'project' | 'mission' | 'task' | 'bucket';
-  status?: string;
-  parentRowId?: string;
-  badges: string[];
-  label?: string;
-}
 export interface NodeAst {
   kind: 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree';
   label: string;
   description?: string;
   interfaces: InterfaceAst[];
   types: TypeAst[];
-  rows: TreeRowAst[];
+  /** Child-statement content, keyed by each statement's `contentKey` ('rows', 'steps', ...). */
+  children: Record<string, unknown[]>;
 }
 export interface WireAst {
   source: string;
@@ -200,9 +193,7 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         fail(parsed.error, parsed.hint);
         continue;
       }
-      // `rows` is the AST's only child-content bucket today; the second child-owning kind is
-      // what earns a generic one.
-      node.rows.push(parsed.content as TreeRowAst);
+      (node.children[child.statement.contentKey] ??= []).push(parsed.content);
       continue;
     }
 
@@ -293,7 +284,7 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         fail('note needs text', 'note "Why this shape is load-bearing."');
         continue;
       }
-      nodeSink().push({ kind: kind as NodeAst['kind'], label: tokens[1], interfaces: [], types: [], rows: [] });
+      nodeSink().push({ kind: kind as NodeAst['kind'], label: tokens[1], interfaces: [], types: [], children: {} });
       node = null;
       continue;
     }
@@ -313,7 +304,7 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         description: tokens[2],
         interfaces: [],
         types: [],
-        rows: [],
+        children: {},
       };
       nodeSink().push(node);
       continue;

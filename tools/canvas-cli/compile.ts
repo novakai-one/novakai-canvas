@@ -6,6 +6,9 @@ import type { RecordNode, RecordWire, RecordWireKind } from './record-graph.ts';
 import { asId, descendantIds, rootGroupId } from './record-graph.ts';
 import { slugify } from './slug.ts';
 
+/** Tree row shape, derived from the record node rather than named — `TreeRow` isn't on the public path. */
+type TreeRow = NonNullable<RecordNode['rows']>[number];
+
 /** A refusal to compile, always paired with the fix that would make it compile. */
 export interface CompileError { message: string; hint: string }
 
@@ -194,12 +197,16 @@ export function compile(
           typeIds.push(typeId);
         }
 
-        const rowIds = new Set(nodeAst.rows.map((row) => row.id));
-        for (const row of nodeAst.rows) {
+        const rows = (nodeAst.children.rows ?? []) as TreeRow[];
+        const rowIds = new Set(rows.map((row) => row.id));
+        for (const row of rows) {
           if (row.parentRowId && !rowIds.has(row.parentRowId)) {
             warnings.push(`row "${row.id}" names missing parent "${row.parentRowId}" — rendered top-level`);
           }
         }
+        const childContent = Object.fromEntries(
+          Object.entries(nodeAst.children).filter(([, content]) => content.length > 0),
+        );
         nodes[nodeId] = {
           id: asId(nodeId),
           kind: nodeAst.kind,
@@ -208,7 +215,7 @@ export function compile(
           parentId: asId(parentId),
           interfaceIds: interfaceIds.map((each) => asId(each)),
           typeIds: typeIds.map((each) => asId(each)),
-          ...(nodeAst.rows.length > 0 ? { rows: nodeAst.rows } : {}),
+          ...childContent,
         };
       }
     };

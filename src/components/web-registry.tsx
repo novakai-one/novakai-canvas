@@ -4,6 +4,7 @@ import { ArchitectureNode } from '../presentation/nodes/architecture-node.tsx';
 import { CommentNode } from '../presentation/nodes/comment-node.tsx';
 import { ScopeNode } from '../presentation/nodes/scope-node.tsx';
 import { TreeNode } from '../presentation/nodes/tree-node.tsx';
+import { TimelineNode } from './timeline/web.tsx';
 import type { CanvasNode } from '../domain/records.ts';
 
 /**
@@ -30,4 +31,5 @@ export const webRenderers = {
   resource: ArchitectureNode,
   comment: CommentNode,
   tree: TreeNode,
+  timeline: TimelineNode,
 } satisfies Record<CanvasNode['kind'], ComponentType<NodeProps<never>>>;

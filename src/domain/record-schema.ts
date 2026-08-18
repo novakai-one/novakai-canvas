@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { kindList } from '../components/registry.ts';
+import { contentFieldSchemas, kindList } from '../components/registry.ts';
 import type { DiagramRecord, LibraryIndex } from './records.ts';
 
 const position = z.object({ x: z.number(), y: z.number() });
@@ -10,15 +10,6 @@ const endpoint = z.object({
   nodeId: z.string().min(1),
   anchor: z.object({ side: portSide, ordinal: z.number().int().nonnegative() }).optional(),
 });
-
-const treeRows = z.array(z.object({
-  id: z.string().min(1),
-  kind: z.enum(['project', 'mission', 'task', 'bucket']),
-  status: z.string().optional(),
-  parentRowId: z.string().optional(),
-  badges: z.array(z.string()),
-  label: z.string().optional(),
-})).optional();
 
 const canvasReference = z.object({ namespace: z.string().min(1), id: z.string().min(1) });
 const sourceReference = canvasReference.extend({ label: z.string().optional() });
@@ -31,7 +22,8 @@ const canvasNode = z.object({
   parentId: z.string().min(1).optional(),
   interfaceIds: z.array(z.string().min(1)),
   typeIds: z.array(z.string().min(1)),
-  rows: treeRows,
+  // Per-kind content (tree's `rows`, timeline's `steps`, ...) comes from each component.
+  ...contentFieldSchemas(),
   subjectRef: canvasReference.optional(),
   expandsToDiagramId: z.string().min(1).optional(),
 });

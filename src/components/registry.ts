@@ -11,6 +11,7 @@ import { cardComponent } from './card/component.ts';
 import { commentComponent } from './comment/component.ts';
 import { groupComponent } from './group/component.ts';
 import { treeComponent } from './tree/component.ts';
+import { timelineComponent } from './timeline/component.ts';
 import type { CanvasNode } from '../domain/records.ts';
 
 // `satisfies`, not a `: DiagramComponent[]` annotation, so each entry keeps its own literal
@@ -20,6 +21,7 @@ const components = [
   cardComponent('module'), cardComponent('object'), cardComponent('runtime'), cardComponent('resource'),
   commentComponent,
   treeComponent,
+  timelineComponent,
 ] satisfies DiagramComponent[];
 
 export function allComponents(): readonly DiagramComponent[] { return components; }
@@ -30,6 +32,11 @@ export function componentFor(kind: string): DiagramComponent {
 }
 export function kindList(): [string, ...string[]] {
   return components.map((c) => c.kind) as [string, ...string[]];
+}
+
+/** Every component's extra node fields merged, for the record schema to spread in. */
+export function contentFieldSchemas(): Record<string, import('zod').ZodTypeAny> {
+  return Object.assign({}, ...components.map((c) => c.contentFields ?? {}));
 }
 
 /**

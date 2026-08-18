@@ -17,6 +17,8 @@ export interface Size { width: number; height: number }
 /** Statement lines a component's node may own in the DSL (e.g. tree's `row`, timeline's `step`). */
 export interface DslChildStatement {
   keyword: string;                       // 'row', 'step'
+  /** The node field the parsed content collects into ('rows', 'steps') — must match a key in `contentFields`. */
+  contentKey: string;
   parse(tokens: string[], line: number): { content: unknown } | { error: string; hint: string };
   print(node: RecordNode): string[];     // lines under the node statement, 2-space indented
 }
