@@ -59,7 +59,7 @@ import type {
   WorldCameraOutcome,
   WorldViewport,
 } from './world-camera';
-import { cameraRequestToCommand } from './world-camera';
+import { cameraRequestToCommand, worldCameraCommandSignature } from './world-camera';
 
 export type {
   CanvasDragGrid,
@@ -156,6 +156,15 @@ function scheduleCameraCommand(
   };
 }
 
+type ActiveCameraLifecycle = {
+  readonly signature: string;
+  readonly generation: number;
+  status: 'pending' | 'scheduled' | 'executing' | 'retryable' | 'complete';
+  retryReason: 'node-missing' | 'not-ready' | null;
+  attemptedNodeSignature: string;
+  attemptedReadinessRevision: number;
+};
+
 function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
   canvasElementRef,
   viewportKey,
@@ -198,6 +207,12 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
     initialNodesRef.current = restoreNodePlacements(viewportKey, incomingNodes);
   }
   const [nodes, setNodes, applyNodeChanges] = useNodesState<NodeType>(initialNodesRef.current);
+  const activeCameraLifecycleRef = useRef<ActiveCameraLifecycle | null>(null);
+  const cameraGenerationRef = useRef(0);
+  const cameraCommandRef = useRef<WorldCameraCommand | null>(null);
+  const canvasSizeRef = useRef({ width: 0, height: 0 });
+  const [canvasReadinessRevision, setCanvasReadinessRevision] = useState(0);
+  const [cameraLifecycleRevision, setCameraLifecycleRevision] = useState(0);
   const emittedRestoreRef = useRef(false);
   const emittedInitialViewportRef = useRef(false);
   const executedPlacementCommandKeysRef = useRef(new Set<string>());
@@ -219,6 +234,37 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
     ),
     [reactFlowAdapter],
   );
+
+  const activeCameraCommand = cameraCommand ?? cameraRequestToCommand(cameraRequest);
+  const activeCameraSignature = activeCameraCommand
+    ? worldCameraCommandSignature(activeCameraCommand)
+    : null;
+  cameraCommandRef.current = activeCameraCommand;
+  const nodeIdentitySignature = useMemo(
+    () => JSON.stringify(nodes.map((node) => node.id).sort()),
+    [nodes],
+  );
+
+  const markCanvasInitialized = useCallback(() => {
+    setCanvasReadinessRevision((revision) => revision + 1);
+  }, []);
+
+  useEffect(() => {
+    const canvasElement = canvasElementRef.current;
+    if (!canvasElement || typeof ResizeObserver === 'undefined') return;
+
+    const observer = new ResizeObserver(([entry]) => {
+      if (!entry) return;
+      const { width, height } = entry.contentRect;
+      const previous = canvasSizeRef.current;
+      canvasSizeRef.current = { width, height };
+      if (width > 0 && height > 0 && (width !== previous.width || height !== previous.height)) {
+        setCanvasReadinessRevision((revision) => revision + 1);
+      }
+    });
+    observer.observe(canvasElement);
+    return () => observer.disconnect();
+  }, [canvasElementRef]);
 
   const runtime: CanvasRuntime = {
     viewport,
@@ -281,10 +327,81 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
   }, [onViewportChange, onZoomChange, viewport]);
 
   useEffect(() => {
-    const command = cameraCommand ?? cameraRequestToCommand(cameraRequest);
-    if (!command) return;
-    return scheduleCameraCommand(command, executeCameraCommand);
-  }, [cameraCommand, cameraRequest, executeCameraCommand, nodes.length]);
+    const command = cameraCommandRef.current;
+    if (!command || !activeCameraSignature) {
+      activeCameraLifecycleRef.current = null;
+      return;
+    }
+
+    let lifecycle = activeCameraLifecycleRef.current;
+    if (!lifecycle || lifecycle.signature !== activeCameraSignature) {
+      lifecycle = {
+        signature: activeCameraSignature,
+        generation: ++cameraGenerationRef.current,
+        status: 'pending',
+        retryReason: null,
+        attemptedNodeSignature: '',
+        attemptedReadinessRevision: -1,
+      };
+      activeCameraLifecycleRef.current = lifecycle;
+    }
+
+    if (lifecycle.status === 'complete'
+      || lifecycle.status === 'scheduled'
+      || lifecycle.status === 'executing') return;
+    if (lifecycle.status === 'retryable'
+      && lifecycle.retryReason === 'node-missing'
+      && lifecycle.attemptedNodeSignature === nodeIdentitySignature) return;
+    if (lifecycle.status === 'retryable'
+      && lifecycle.retryReason === 'not-ready'
+      && lifecycle.attemptedReadinessRevision === canvasReadinessRevision) return;
+
+    lifecycle.status = 'scheduled';
+    lifecycle.retryReason = null;
+    lifecycle.attemptedNodeSignature = nodeIdentitySignature;
+    lifecycle.attemptedReadinessRevision = canvasReadinessRevision;
+    const { generation, signature } = lifecycle;
+    let started = false;
+    const cancel = scheduleCameraCommand(command, async (scheduledCommand) => {
+      started = true;
+      const scheduledLifecycle = activeCameraLifecycleRef.current;
+      if (!scheduledLifecycle
+        || scheduledLifecycle.generation !== generation
+        || scheduledLifecycle.signature !== signature) return 'not-ready';
+
+      scheduledLifecycle.status = 'executing';
+      const outcome = await executeCameraCommand(scheduledCommand);
+      const currentLifecycle = activeCameraLifecycleRef.current;
+      if (!currentLifecycle
+        || currentLifecycle.generation !== generation
+        || currentLifecycle.signature !== signature) return outcome;
+
+      if (outcome === 'node-missing' || outcome === 'not-ready') {
+        currentLifecycle.status = 'retryable';
+        currentLifecycle.retryReason = outcome;
+        setCameraLifecycleRevision((revision) => revision + 1);
+      } else {
+        currentLifecycle.status = 'complete';
+        currentLifecycle.retryReason = null;
+      }
+      return outcome;
+    });
+
+    return () => {
+      cancel();
+      const currentLifecycle = activeCameraLifecycleRef.current;
+      if (!started
+        && currentLifecycle?.generation === generation
+        && currentLifecycle.signature === signature
+        && currentLifecycle.status === 'scheduled') currentLifecycle.status = 'pending';
+    };
+  }, [
+    activeCameraSignature,
+    cameraLifecycleRevision,
+    canvasReadinessRevision,
+    executeCameraCommand,
+    nodeIdentitySignature,
+  ]);
 
   const handleNodeChanges = useCallback((changes: NodeChange<NodeType>[]) => {
     const constrainedChanges = constrainNodeMovement(
@@ -365,6 +482,7 @@ function WorldCanvasSurface<NodeType extends Node, EdgeType extends Edge>({
         onPaneClick={() => onSelect(null)}
         onMove={handleMove}
         onMoveEnd={handleMoveEnd}
+        onInit={markCanvasInitialized}
         defaultViewport={rememberedViewport ?? initialViewport}
         fitView={fitViewOnMount ?? (!rememberedViewport && !initialViewport)}
         fitViewOptions={{ padding: 0.15, minZoom: 0.42, maxZoom: 0.9 }}

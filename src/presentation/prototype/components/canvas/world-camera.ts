@@ -83,6 +83,27 @@ export type WorldCameraCommand =
       duration?: number;
     };
 
+function canonicalCameraValue(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(canonicalCameraValue);
+  if (!value || typeof value !== 'object') return value;
+
+  return Object.fromEntries(Object.entries(value as Record<string, unknown>)
+    .filter(([, child]) => child !== undefined)
+    .sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))
+    .map(([key, child]) => [key, canonicalCameraValue(child)]));
+}
+
+/**
+ * Identifies one active camera intent by its semantic key and complete payload.
+ * Keys may recur after another command; an unchanged signature must not replay.
+ */
+export function worldCameraCommandSignature(command: WorldCameraCommand): string {
+  const semanticCommand = command.type === 'frame-nodes'
+    ? { ...command, nodeIds: [...new Set(command.nodeIds)].sort() }
+    : command;
+  return JSON.stringify(canonicalCameraValue(semanticCommand));
+}
+
 /** Translates the legacy request shape at the shared-canvas boundary. */
 export function cameraRequestToCommand(
   request: CanvasCameraRequest | null | undefined,
