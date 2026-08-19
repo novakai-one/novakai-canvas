@@ -1,6 +1,6 @@
 # The Bench CSS modularisation plan
 
-> **Status:** Updated after architecture audit; not yet implemented.
+> **Status:** Implemented on `codex/the-bench-css-modularisation`.
 > **Scope:** Restructure the original Bench CSS only. Preserve camera behaviour and all non-Bench work.
 
 ## Outcome
@@ -11,11 +11,11 @@ The 300-line ceiling is a navigability guard, not the architectural objective. T
 
 ## State diff
 
-| Concern | Current state | Target state |
+| Concern | Before | Implemented state |
 |---|---|---|
-| CSS shape | 4 files, 1,583 lines; `conversation.css` is 759 lines | Cohesive files, each ≤300 lines; total lower than 1,583 |
+| CSS shape | 4 files, 1,583 lines; `conversation.css` is 759 lines | 25 cohesive files, 1,444 lines; largest file is 148 lines |
 | Ownership | Conversation, inspection, and overlay catch-alls own many unrelated rendered modules | Every selector has one named owner; shared rules have an explicit shared module |
-| Imports | `ConversationNode` silently loads descendant styles; `MessageInspectorNode` silently loads related-object and wire styles | Rendering modules import their owned CSS directly |
+| Imports | `ConversationNode` silently loads descendant styles; `MessageInspectorNode` silently loads related-object and wire styles | Rendering modules import their owned CSS directly; all catch-all manifests are deleted |
 | Cascade | Effective compiled order is conversation → inspection → overlays → Bench state | Extraction first preserves that order; final owner styles do not override peer internals, and Bench orchestration remains explicitly last |
 | Reuse | Shared control rules are broad selector lists; decision-form rules cross callers | Shared modules expose explicit classes; callers own layout wrappers while reusable modules own internals |
 | Message inspection | `MessageRecord` renders a source handle styled from `inspection.css` | `MessageRecord` owns the record and handle presentation |
@@ -23,8 +23,8 @@ The 300-line ceiling is a navigability guard, not the architectural objective. T
 | Stacking | React Flow node layers and local CSS layers use overlapping, undocumented numbers | Global canvas/node layers and local stacking contexts are inventoried and kept semantically separate |
 | Accessibility | Root and React Flow focus outlines are suppressed | Deliberate `:focus-visible` treatment is present and verified |
 | Debt | 5 `!important`s, unused selectors/attributes, 7 unused tokens, repeated declaration blocks | Zero `!important`; zero known dead CSS/attributes/tokens; repeated facts have one owner |
-| Verification | Manual camera check; no Bench-specific test files | Focused camera-command tests plus repeat-reveal browser coverage and visual state matrix |
-| Drift protection | No CSS architecture gate | Automated ≤300-line and `!important` checks run through the project test command |
+| Verification | Manual camera check; no Bench-specific test files | 7 focused tests pass; dock, search, offscreen reveal, and replay prevention pass in-browser |
+| Drift protection | No CSS architecture gate | Two automated cases enforce the ≤300-line and `!important` constraints |
 
 ## Plan revision diff
 
@@ -207,12 +207,23 @@ Implementation precedes these tests, per the repository's default test workflow.
 - Total CSS is lower than the current 1,583 lines; 1,350–1,450 is the stretch target.
 - `npm run check` introduces no new failure relative to the recorded baseline.
 
+## Implementation evidence — 2026-08-19
+
+- CSS reduced from 1,583 to 1,444 physical lines: 139 lines removed (8.8%).
+- All 25 stylesheets are below the 300-line ceiling; the largest is `ObjectNodeBody.css` at 148 lines.
+- All catch-all manifests and hidden style-loading dependencies were removed.
+- Seven unused tokens, unused state attributes, the known dead selector, and all five `!important` declarations were removed.
+- The resting, open-thread, menu, and inspection screenshots are byte-identical to their baselines. Search and Zen differ only by the intentional restored focus indicator.
+- Far, mid, and near zoom states were verified at 0.40, 0.88, and 1.12 respectively. Blocked Zen and its expanded decision form were also verified.
+- Re-revealing the same dock target after changing the viewport returned it to 0.88. Clearing trails then left the changed 0.76 viewport untouched, proving no stale camera replay. Search and offscreen-marker reveal paths also centered their targets at 0.88.
+- The production fixture exposed unread and populated transcript states but no empty or composing instance. Their mechanically extracted selectors were preserved; synthetic application state was not introduced for the browser check.
+- The seven approved Bench tests, lint, tools type-check, and production Vite build pass. `npm run check` still reaches the same unrelated baseline failure in `tools/report-session/agent-work-brief.test.ts` and then hangs during Vitest shutdown. App type-check still reports the two pre-existing Command Center and Missions errors.
+
 ## Commit boundaries
 
 1. `test(messages): freeze Bench camera and visual contracts`
 2. `refactor(messages): split Bench CSS behind stable cascade order`
-3. `refactor(messages): move Bench styles to explicit owners`
-4. `refactor(messages): remove Bench CSS debt and restore focus`
-5. `test(messages): guard Bench CSS architecture`
+3. `refactor(messages): isolate and clean Bench styles`
+4. `test(messages): guard Bench CSS architecture`
 
-Each commit must preserve a reviewable single reason to change. Extraction and import-graph migration must never share a commit.
+The owner migration and debt removal are one implementation commit because explicit shared classes simultaneously establish ownership and eliminate the old cross-owner specificity. Mechanical extraction remains separate from that import-graph change.
