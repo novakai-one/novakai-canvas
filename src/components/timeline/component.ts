@@ -8,7 +8,7 @@
 
 import { z } from 'zod';
 import type { TimelineStep } from '../../domain/model.ts';
-import type { DiagramComponent } from '../component.ts';
+import type { ComponentItem, DiagramComponent } from '../component.ts';
 
 const STEP_SHAPE = 'step "turn 1" [fork="session-id"]';
 const DOT = '#0F6E56';
@@ -28,6 +28,20 @@ function stepId(label: string): string {
   return label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'step';
 }
 
+function timelineItems(steps: TimelineStep[]): ComponentItem[] {
+  return steps.map((step) => ({
+    collection: 'steps',
+    id: step.id,
+    kind: 'timeline step',
+    label: step.label,
+    fields: [
+      { label: 'ID', value: step.id },
+      { label: 'Label', value: step.label },
+      { label: 'Fork', value: step.fork ?? '—' },
+    ],
+  }));
+}
+
 export const timelineComponent: DiagramComponent<'timeline'> = {
   kind: 'timeline',
   dslKeyword: 'timeline',
@@ -39,6 +53,9 @@ export const timelineComponent: DiagramComponent<'timeline'> = {
     steps: z.array(z.object({
       id: z.string(), label: z.string(), fork: z.string().optional(),
     })).optional(),
+  },
+  items(node) {
+    return timelineItems(node.steps ?? []);
   },
   dslChildren: [{
     keyword: 'step',

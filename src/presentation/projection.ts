@@ -3,6 +3,7 @@ import type { RecordCommand } from '../application/canvas-workspace';
 import type { CanvasPreferences, InterfaceObject, Selection, TypeObject } from '../domain/model';
 import type { PositionedNode, ProjectedView } from '../domain/project-view';
 import type { DiagramRecord, NodeKind, PortSide, WireKind } from '../domain/records';
+import { componentFor } from '../components/registry';
 import { ARCHITECTURE_FLOW } from '../domain/flow';
 import { wireKindColor } from './wire-styles';
 import { routeWire, type Rect, type RouteObstacle, type RouteSide } from './edges/wire-routing';
@@ -290,8 +291,12 @@ interface NestedNode { id: string; parentId?: string }
 function selectedOwner(record: DiagramRecord, selection: Selection): string | null {
   if (!selection) return null;
   if (selection.kind === 'node') return selection.id;
-  if (selection.kind === 'tree-row') return selection.nodeId;
-  if (selection.kind === 'timeline-step') return selection.nodeId;
+  if (selection.kind === 'component-item') {
+    const node = record.nodes[selection.nodeId];
+    return node && componentFor(node.kind).items?.(node).some(
+      (item) => item.collection === selection.collection && item.id === selection.itemId,
+    ) ? selection.nodeId : null;
+  }
   if (selection.kind === 'interface') return record.interfaces[selection.id]?.ownerId ?? null;
   if (selection.kind === 'type') {
     return Object.values(record.nodes)

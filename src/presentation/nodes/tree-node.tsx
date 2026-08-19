@@ -29,8 +29,8 @@ export function TreeNode({ data, selected }: NodeProps<TreeFlowNode>) {
       <div className="tree-rows">
         {rows.map((row) => {
           const depth = treeRowDepth(node.rows ?? [], row);
-          const isSelected = selection?.kind === 'tree-row'
-            && selection.nodeId === node.id && selection.rowId === row.id;
+          const isSelected = selection?.kind === 'component-item'
+            && selection.nodeId === node.id && selection.collection === 'rows' && selection.itemId === row.id;
           return (
             <button
               className={`tree-row ${rowTone(row)}${isSelected ? ' is-selected' : ''}${depth > 0 ? ' is-child' : ''}`}
@@ -38,7 +38,7 @@ export function TreeNode({ data, selected }: NodeProps<TreeFlowNode>) {
               onPointerDown={(event) => event.stopPropagation()}
               onClick={(event) => {
                 event.stopPropagation();
-                select({ kind: 'tree-row', nodeId: node.id, rowId: row.id });
+                select({ kind: 'component-item', nodeId: node.id, collection: 'rows', itemId: row.id });
               }}
               style={{ paddingLeft: 10 + depth * 20 }}
               type="button"

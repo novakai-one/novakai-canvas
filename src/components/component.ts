@@ -23,6 +23,20 @@ export interface DslChildStatement {
   print(node: RecordNode): string[];     // lines under the node statement, 2-space indented
 }
 
+/** One selectable child owned by a component node, with fields the inspector only displays. */
+export interface ComponentItem {
+  /** The component-owned node field that contains this item (for example, `rows` or `steps`). */
+  collection: string;
+  /** Stable identity within the collection. */
+  id: string;
+  /** Human-readable item category shown by the inspector. */
+  kind: string;
+  /** Human-readable item name shown by the inspector and its trail. */
+  label: string;
+  /** Read-only details the shared inspector presents for this item. */
+  fields: readonly { label: string; value: string }[];
+}
+
 export interface DiagramComponent<K extends string = string> {
   /** Durable id stored in records. Never renamed once shipped. */
   kind: K;
@@ -31,6 +45,8 @@ export interface DiagramComponent<K extends string = string> {
   /** Extra zod fields this kind stores beyond the base node (id/kind/label/description/parentId). */
   contentFields?: Record<string, import('zod').ZodTypeAny>;
   dslChildren?: DslChildStatement[];
+  /** Selectable children owned by this component node. */
+  items?(node: RecordNode): readonly ComponentItem[];
   /** Component-owned grammar lines included in `./canvas help`. */
   helpLines?: readonly string[];
   layoutRole: 'leaf' | 'container';

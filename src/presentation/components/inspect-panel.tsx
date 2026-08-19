@@ -6,6 +6,7 @@ import type { ProjectedView } from '../../domain/project-view';
 import type { CanvasLayout, DiagramRecord, NodePlacement } from '../../domain/records';
 import { useState } from 'react';
 import { isSignatureName } from '../../application/canvas-workspace';
+import { componentFor } from '../../components/registry';
 import { rootGroupId } from '../canvas-actions';
 import { FieldRow, ObjectRow, PanelSection, SwitchRow } from '../shell';
 
@@ -526,50 +527,31 @@ function wireInspection(props: InspectPanelProps, id: string): Inspection {
   };
 }
 
-function treeRowInspection(props: InspectPanelProps, nodeId: string, rowId: string): Inspection {
+function componentItemInspection(
+  props: InspectPanelProps,
+  nodeId: string,
+  collection: string,
+  itemId: string,
+): Inspection {
   const node = props.record.nodes[nodeId];
-  const row = node?.rows?.find((item) => item.id === rowId);
-  if (!node || !row) return diagramInspection(props);
-  const parent = row.parentRowId ? node.rows?.find((item) => item.id === row.parentRowId) : undefined;
+  const item = node && componentFor(node.kind).items?.(node).find(
+    (candidate) => candidate.collection === collection && candidate.id === itemId,
+  );
+  if (!node || !item) return diagramInspection(props);
   return {
-    kind: row.kind,
-    title: row.label ?? row.id,
+    kind: item.kind,
+    title: item.label,
     meta: '',
-    sections: ['row'],
+    sections: ['details'],
     trail: [
       ...nodeTrail(props, nodeId),
-      { label: row.label ?? row.id, select: { kind: 'tree-row', nodeId, rowId } },
+      { label: item.label, select: { kind: 'component-item', nodeId, collection, itemId } },
     ],
     body: (
-      <PanelSection {...sectionProps(props, 'row')} title="Row">
-        <FieldRow label="Status"><output>{row.status ?? '—'}</output></FieldRow>
-        <FieldRow label="Parent"><output>{parent ? parent.id : 'top level'}</output></FieldRow>
-        {row.badges.length > 0 && (
-          <div className="token-row">{row.badges.map((badge) => <span key={badge}>{badge}</span>)}</div>
-        )}
-      </PanelSection>
-    ),
-  };
-}
-
-function timelineStepInspection(props: InspectPanelProps, nodeId: string, stepId: string): Inspection {
-  const node = props.record.nodes[nodeId];
-  const step = node?.steps?.find((item) => item.id === stepId);
-  if (!node || !step) return diagramInspection(props);
-  return {
-    kind: 'timeline step',
-    title: step.label,
-    meta: '',
-    sections: ['step'],
-    trail: [
-      ...nodeTrail(props, nodeId),
-      { label: step.label, select: { kind: 'timeline-step', nodeId, stepId } },
-    ],
-    body: (
-      <PanelSection {...sectionProps(props, 'step')} title="Step">
-        <FieldRow label="ID"><output>{step.id}</output></FieldRow>
-        <FieldRow label="Label"><output>{step.label}</output></FieldRow>
-        <FieldRow label="Fork"><output>{step.fork ?? '—'}</output></FieldRow>
+      <PanelSection {...sectionProps(props, 'details')} title="Details">
+        {item.fields.map((field) => (
+          <FieldRow key={field.label} label={field.label}><output>{field.value}</output></FieldRow>
+        ))}
       </PanelSection>
     ),
   };
@@ -582,9 +564,8 @@ export function describeSelection(props: InspectPanelProps): Inspection {
   if (selection.kind === 'node') return nodeInspection(props, selection.id);
   if (selection.kind === 'interface') return interfaceInspection(props, selection.id);
   if (selection.kind === 'type') return typeInspection(props, selection.id);
-  if (selection.kind === 'tree-row') return treeRowInspection(props, selection.nodeId, selection.rowId);
-  if (selection.kind === 'timeline-step') {
-    return timelineStepInspection(props, selection.nodeId, selection.stepId);
+  if (selection.kind === 'component-item') {
+    return componentItemInspection(props, selection.nodeId, selection.collection, selection.itemId);
   }
   return wireInspection(props, selection.id);
 }

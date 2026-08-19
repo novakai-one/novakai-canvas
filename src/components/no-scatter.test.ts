@@ -1,11 +1,8 @@
 /**
  * The architecture guard: a kind's name may appear only where the seam allows.
  *
- * `timeline` was added after the registry existed, so it is the honest test of whether the seam
- * holds. Its name is allowed in its own folder, in the two registration files, and in
- * `records.ts` — the compile-time kind union, which TypeScript cannot derive from a runtime
- * list. Anywhere else means a builder hardcoded a kind again and the seam has rotted, which
- * nothing else catches: the compiler, the renders, and the browser all stay green.
+ * Component-owned children follow the same boundary. A selection names their shared shape; the
+ * component registry decides whether any specific collection and item id exist.
  */
 
 import { readFileSync, readdirSync, statSync } from 'node:fs';
@@ -32,6 +29,23 @@ describe('timeline is a pure addition', () => {
     for (const file of [...walk('src'), ...walk('tools/canvas-cli')]) {
       if (ALLOWED.some((allowed) => file.includes(allowed))) continue;
       expect(readFileSync(file, 'utf8').includes("'timeline'"), file).toBe(false);
+    }
+  });
+});
+
+describe('component items stay generic', () => {
+  it('uses no child-specific selection variants', () => {
+    for (const file of [
+      'src/domain/model.ts',
+      'src/presentation/canvas-actions.ts',
+      'src/presentation/projection.ts',
+      'src/presentation/components/inspect-panel.tsx',
+      'src/components/timeline/web.tsx',
+      'src/presentation/nodes/tree-node.tsx',
+    ]) {
+      const source = readFileSync(file, 'utf8');
+      expect(source.includes("'tree-row'"), file).toBe(false);
+      expect(source.includes("'timeline-step'"), file).toBe(false);
     }
   });
 });

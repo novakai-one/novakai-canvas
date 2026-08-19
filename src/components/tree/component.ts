@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { orderedTreeRows, treeRowDepth, treeRowText } from './content.ts';
 import { TREE_TONE_COLORS } from '../../presentation/wire-styles.ts';
 import type { TreeRow } from '../../domain/model.ts';
-import type { DiagramComponent } from '../component.ts';
+import type { ComponentItem, DiagramComponent } from '../component.ts';
 
 const COLORS = { card: '#252529', ink: '#ececee', border: '#2f2f34' };
 const FONT = 'Inter, sans-serif';
@@ -21,6 +21,23 @@ function esc(text: string): string {
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;');
+}
+
+function treeItems(rows: TreeRow[]): ComponentItem[] {
+  return rows.map((row) => {
+    const parent = row.parentRowId ? rows.find((item) => item.id === row.parentRowId) : undefined;
+    return {
+      collection: 'rows',
+      id: row.id,
+      kind: row.kind,
+      label: row.label ?? row.id,
+      fields: [
+        { label: 'Status', value: row.status ?? '—' },
+        { label: 'Parent', value: parent ? parent.id : 'top level' },
+        { label: 'Badges', value: row.badges.join(', ') || '—' },
+      ],
+    };
+  });
 }
 
 export const treeComponent: DiagramComponent<'tree'> = {
@@ -40,6 +57,9 @@ export const treeComponent: DiagramComponent<'tree'> = {
       badges: z.array(z.string()),
       label: z.string().optional(),
     })).optional(),
+  },
+  items(node) {
+    return treeItems(node.rows ?? []);
   },
   dslChildren: [{
     keyword: 'row',

@@ -3,6 +3,7 @@ import type { NodeId } from '../domain/ids';
 import type { Selection } from '../domain/model';
 import type { ProjectedView } from '../domain/project-view';
 import type { CanvasNode, DiagramRecord } from '../domain/records';
+import { componentFor } from '../components/registry';
 
 /** Node kinds the toolbar can create. Trees are authored by the CLI, so they are not offered. */
 export type CreatableNodeKind = 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'group';
@@ -227,12 +228,12 @@ export function selectionResolves(record: DiagramRecord, selection: Selection): 
   if (!selection) return true;
   switch (selection.kind) {
     case 'node': return Boolean(record.nodes[selection.id]);
-    case 'tree-row': return Boolean(
-      record.nodes[selection.nodeId]?.rows?.some((row) => row.id === selection.rowId),
-    );
-    case 'timeline-step': return Boolean(
-      record.nodes[selection.nodeId]?.steps?.some((step) => step.id === selection.stepId),
-    );
+    case 'component-item': {
+      const node = record.nodes[selection.nodeId];
+      return Boolean(node && componentFor(node.kind).items?.(node).some(
+        (item) => item.collection === selection.collection && item.id === selection.itemId,
+      ));
+    }
     case 'wire': return Boolean(record.wires[selection.id]);
     case 'interface': return Boolean(record.interfaces[selection.id]);
     case 'type': return Boolean(record.types[selection.id]);

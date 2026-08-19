@@ -19,8 +19,8 @@ export function TimelineNode({ data, selected }: NodeProps<TimelineFlowNode>) {
         </header>
         <div className="tree-rows">
           {steps.map((step, index) => {
-            const isSelected = selection?.kind === 'timeline-step'
-              && selection.nodeId === node.id && selection.stepId === step.id;
+            const isSelected = selection?.kind === 'component-item'
+              && selection.nodeId === node.id && selection.collection === 'steps' && selection.itemId === step.id;
             return (
               <button
                 className={`tree-row tone-project timeline-step${isSelected ? ' is-selected' : ''}`}
@@ -28,7 +28,7 @@ export function TimelineNode({ data, selected }: NodeProps<TimelineFlowNode>) {
                 onPointerDown={(event) => event.stopPropagation()}
                 onClick={(event) => {
                   event.stopPropagation();
-                  select({ kind: 'timeline-step', nodeId: node.id, stepId: step.id });
+                  select({ kind: 'component-item', nodeId: node.id, collection: 'steps', itemId: step.id });
                 }}
                 type="button"
               >

@@ -178,18 +178,16 @@ describe('escapeStep', () => {
 });
 
 describe('selectionResolves', () => {
-  it('accepts an empty selection and one that names a live node', () => {
+  it('Component item resolves and expires', () => {
     expect(selectionResolves(nested, null)).toBe(true);
     expect(selectionResolves(nested, { kind: 'node', id: 'leaf' })).toBe(true);
-    expect(selectionResolves(nested, { kind: 'tree-row', nodeId: 'tree', rowId: 'row' })).toBe(true);
-    expect(selectionResolves(nested, { kind: 'timeline-step', nodeId: 'timeline', stepId: 'step' })).toBe(true);
-  });
-
-  it('rejects a selection left pointing at something undo removed', () => {
+    expect(selectionResolves(nested, { kind: 'component-item', nodeId: 'tree', collection: 'rows', itemId: 'row' })).toBe(true);
+    expect(selectionResolves(nested, { kind: 'component-item', nodeId: 'timeline', collection: 'steps', itemId: 'step' })).toBe(true);
     expect(selectionResolves(nested, { kind: 'node', id: 'gone' })).toBe(false);
     expect(selectionResolves(nested, { kind: 'wire', id: 'gone' })).toBe(false);
-    expect(selectionResolves(nested, { kind: 'tree-row', nodeId: 'gone', rowId: 'row' })).toBe(false);
-    expect(selectionResolves(nested, { kind: 'tree-row', nodeId: 'tree', rowId: 'gone' })).toBe(false);
-    expect(selectionResolves(nested, { kind: 'timeline-step', nodeId: 'timeline', stepId: 'gone' })).toBe(false);
+    expect(selectionResolves(nested, { kind: 'component-item', nodeId: 'gone', collection: 'rows', itemId: 'row' })).toBe(false);
+    expect(selectionResolves(nested, { kind: 'component-item', nodeId: 'tree', collection: 'rows', itemId: 'gone' })).toBe(false);
+    expect(selectionResolves(nested, { kind: 'component-item', nodeId: 'timeline', collection: 'steps', itemId: 'gone' })).toBe(false);
+    expect(selectionResolves(nested, { kind: 'component-item', nodeId: 'tree', collection: 'steps', itemId: 'row' })).toBe(false);
   });
 });

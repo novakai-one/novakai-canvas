@@ -113,13 +113,13 @@ describe('inspection shape', () => {
     ]]);
   });
 
-  it('describes a selected timeline step as its own inspectable object', () => {
+  it('Component item inspection', () => {
     const inspection = describeSelection(props({
-      selection: { kind: 'timeline-step', nodeId: 'timeline', stepId: 'turn-1' },
+      selection: { kind: 'component-item', nodeId: 'timeline', collection: 'steps', itemId: 'turn-1' },
     }));
     expect(inspection.kind).toBe('timeline step');
     expect(inspection.title).toBe('Forked turn');
-    expect(inspection.sections).toEqual(['step']);
+    expect(inspection.sections).toEqual(['details']);
     expect(inspection.trail.map((item) => item.label)).toEqual([
       'A diagram', 'Session history', 'Forked turn',
     ]);

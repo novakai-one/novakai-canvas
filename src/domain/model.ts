@@ -266,8 +266,7 @@ export type Selection =
   | { kind: 'interface'; id: string }
   | { kind: 'type'; id: string }
   | { kind: 'wire'; id: string }
-  | { kind: 'tree-row'; nodeId: string; rowId: string }
-  | { kind: 'timeline-step'; nodeId: string; stepId: string }
+  | { kind: 'component-item'; nodeId: string; collection: string; itemId: string }
   | null;
 
 /** Complete set of supported domain intentions. */
