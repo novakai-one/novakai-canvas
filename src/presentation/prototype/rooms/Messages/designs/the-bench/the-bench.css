@@ -57,6 +57,65 @@
   --bench-layer-zen: 80;
 }
 
+.the-bench[data-bench-theme='cyanotype-evidence'] {
+  /* Cyanotype evidence table: darkroom field, contact-print paper, copper registration. */
+  --bench-canvas-deep: #071923;
+  --bench-canvas-steel: #0b2532;
+  --bench-canvas-rule: rgba(181, 210, 211, 0.055);
+  --bench-canvas-glow: rgba(58, 112, 128, 0.22);
+  --bench-field-vignette: rgba(1, 9, 13, 0.58);
+  --bench-field-grain: rgba(213, 216, 207, 0.018);
+  --bench-overlay-surface: rgba(7, 25, 35, 0.94);
+  --bench-overlay-surface-solid: #0a202b;
+  --bench-modal-scrim: rgba(3, 14, 20, 0.86);
+  --bench-frame-fill: rgba(118, 158, 166, 0.07);
+  --bench-frame-rule: rgba(166, 111, 82, 0.48);
+  --bench-surface-rest: #102d3a;
+  --bench-surface-open: #d2dcda;
+  --bench-surface-inset: #0a202b;
+  --bench-surface-lifted: #173b49;
+  --bench-ink-primary: #d5d8cf;
+  --bench-ink-secondary: #9bb0b1;
+  --bench-ink-faint: #6f858a;
+  --bench-rule-soft: rgba(181, 210, 211, 0.16);
+  --bench-rule-strong: rgba(181, 210, 211, 0.34);
+  --bench-scribe: #a66f52;
+  --bench-scribe-bright: #c18b6d;
+  --bench-scribe-wash: rgba(166, 111, 82, 0.14);
+  --bench-danger: #a86452;
+  --bench-mission-slate: rgba(167, 202, 203, 0.08);
+  --bench-mission-oxide: rgba(167, 202, 203, 0.07);
+  --bench-mission-moss: rgba(167, 202, 203, 0.06);
+  --bench-mission-violet: rgba(167, 202, 203, 0.05);
+  --bench-card-width: 320px;
+  --bench-card-height: 128px;
+  --bench-thread-width: 420px;
+  --bench-thread-height: 640px;
+  --bench-radius-card: 2px;
+  --bench-radius-control: 2px;
+  --bench-radius-dock: 3px;
+  --bench-radius-frame: 2px;
+  --bench-radius-pill: 2px;
+  --bench-border-card: 1px solid rgba(213, 216, 207, 0.44);
+  --bench-shadow-card: 0 18px 34px rgba(0, 8, 12, 0.36), 0 0 0 1px rgba(4, 26, 36, 0.12) inset;
+  --bench-shadow-open: 0 26px 70px rgba(0, 7, 11, 0.48), 0 0 0 3px rgba(9, 43, 57, 0.12) inset;
+  --bench-shadow-overlay: 0 24px 62px rgba(0, 7, 11, 0.56);
+  --bench-shadow-frame: 0 0 0 4px rgba(166, 111, 82, 0.06) inset;
+  --bench-font-display: var(--font-display);
+  --bench-font-body: var(--font-ui);
+  --bench-font-record: var(--font-mono);
+  --bench-motion-feedback: var(--motion-feedback);
+  --bench-motion-open: var(--motion-disclose);
+  --bench-ease: var(--ease-out);
+  --bench-layer-field: 0;
+  --bench-layer-node: 10;
+  --bench-layer-open: 20;
+  --bench-layer-screen: 30;
+  --bench-layer-overlay: 50;
+  --bench-layer-modal: 70;
+  --bench-layer-zen: 80;
+}
+
 .the-bench {
   position: relative;
   width: 100%;
@@ -223,4 +282,115 @@
     --bench-motion-feedback: 0ms;
     --bench-motion-open: 0ms;
   }
+}
+
+/* Cyanotype field: exposure blooms and two drafting scales, never a tiled blue skin. */
+.the-bench[data-bench-theme='cyanotype-evidence'] .the-bench__canvas {
+  background-color: var(--bench-canvas-deep);
+  background-image:
+    radial-gradient(ellipse at 61% 42%, rgba(87, 143, 154, 0.13), transparent 42%),
+    radial-gradient(circle at 18% 74%, rgba(213, 216, 207, 0.035), transparent 28%),
+    linear-gradient(var(--bench-canvas-rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bench-canvas-rule) 1px, transparent 1px),
+    linear-gradient(rgba(181, 210, 211, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(181, 210, 211, 0.025) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 24px 24px, 24px 24px, 96px 96px, 96px 96px;
+}
+
+.the-bench[data-bench-theme='cyanotype-evidence'] .the-bench__field {
+  background:
+    radial-gradient(ellipse at 50% 46%, transparent 0 58%, var(--bench-field-vignette) 100%),
+    repeating-linear-gradient(104deg, transparent 0 31px, var(--bench-field-grain) 32px 33px),
+    linear-gradient(90deg, rgba(213, 216, 207, 0.012), transparent 22% 78%, rgba(0, 0, 0, 0.08));
+}
+
+.the-bench[data-bench-theme='cyanotype-evidence'] .bench-conversation__mission-pool {
+  inset: 12% -10% -16%;
+  border: 1px solid rgba(181, 210, 211, 0.12);
+  border-radius: 45% 55% 48% 52%;
+  filter: blur(10px);
+  box-shadow: 0 0 46px rgba(86, 135, 145, 0.08) inset;
+}
+
+.the-bench[data-bench-theme='cyanotype-evidence'] .the-bench__scale {
+  border-color: rgba(166, 111, 82, 0.52);
+  border-radius: 1px;
+  background: rgba(5, 22, 30, 0.92);
+  box-shadow: 3px 3px 0 rgba(166, 111, 82, 0.08);
+}
+
+.the-bench[data-bench-theme='cyanotype-evidence'] .bench-thread__collapse,
+.the-bench[data-bench-theme='cyanotype-evidence'] .bench-conversation-menu__trigger,
+.the-bench[data-bench-theme='cyanotype-evidence'] .bench-inspector-node__close,
+.the-bench[data-bench-theme='cyanotype-evidence'] .bench-related-node__header button {
+  border-color: rgba(9, 42, 55, 0.24);
+  color: #123041;
+  background: rgba(213, 216, 207, 0.56);
+}
+
+.the-bench[data-bench-theme='cyanotype-evidence'][data-zen-thread]:not([data-zen-thread='none']) {
+  background: #031018;
+}
+
+/* Round 2+: capture-ready material tokens and a quieter developed field. */
+.the-bench[data-bench-theme='cyanotype-evidence']:is(
+  [data-bench-build='screenshot-ready'],
+  [data-bench-build='upper-polished']
+) {
+  --bench-canvas-rule: rgba(181, 210, 211, 0.034);
+  --bench-canvas-glow: rgba(58, 112, 128, 0.16);
+  --bench-field-grain: rgba(213, 216, 207, 0.011);
+  --bench-rule-soft: rgba(181, 210, 211, 0.13);
+  --bench-rule-strong: rgba(181, 210, 211, 0.29);
+  --bench-evidence-paper: #c3d2cf;
+  --bench-evidence-paper-raised: #d0dbd7;
+  --bench-evidence-paper-muted: #b7c9c7;
+  --bench-evidence-ink: #092735;
+  --bench-evidence-ink-soft: #3b5b63;
+  --bench-evidence-rule: rgba(9, 39, 53, 0.18);
+  --bench-evidence-header: #0a2a38;
+  --bench-shadow-card: 0 14px 28px rgba(0, 8, 12, 0.31), 0 0 0 1px rgba(4, 26, 36, 0.1) inset;
+  --bench-shadow-open: 0 24px 64px rgba(0, 7, 11, 0.44), 0 0 0 3px rgba(9, 43, 57, 0.11) inset;
+}
+
+.the-bench[data-bench-theme='cyanotype-evidence']:is(
+  [data-bench-build='screenshot-ready'],
+  [data-bench-build='upper-polished']
+) .the-bench__canvas {
+  background-image:
+    radial-gradient(ellipse at 58% 40%, rgba(87, 143, 154, 0.095), transparent 48%),
+    radial-gradient(circle at 20% 76%, rgba(213, 216, 207, 0.022), transparent 32%),
+    linear-gradient(var(--bench-canvas-rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bench-canvas-rule) 1px, transparent 1px),
+    linear-gradient(rgba(181, 210, 211, 0.016) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(181, 210, 211, 0.016) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 24px 24px, 24px 24px, 96px 96px, 96px 96px;
+}
+
+.the-bench[data-bench-theme='cyanotype-evidence']:is(
+  [data-bench-build='screenshot-ready'],
+  [data-bench-build='upper-polished']
+) .the-bench__field {
+  background:
+    radial-gradient(ellipse at 52% 46%, transparent 0 61%, rgba(1, 9, 13, 0.52) 100%),
+    repeating-linear-gradient(104deg, transparent 0 47px, var(--bench-field-grain) 48px 49px),
+    linear-gradient(90deg, rgba(213, 216, 207, 0.008), transparent 26% 76%, rgba(0, 0, 0, 0.07));
+}
+
+.the-bench[data-bench-theme='cyanotype-evidence']:is(
+  [data-bench-build='screenshot-ready'],
+  [data-bench-build='upper-polished']
+) .bench-conversation__mission-pool {
+  border-color: rgba(181, 210, 211, 0.08);
+  filter: blur(14px);
+  box-shadow: 0 0 52px rgba(86, 135, 145, 0.055) inset;
+}
+
+.the-bench[data-bench-theme='cyanotype-evidence']:is(
+  [data-bench-build='screenshot-ready'],
+  [data-bench-build='upper-polished']
+) .the-bench__scale {
+  padding: 6px 9px;
+  border-color: rgba(166, 111, 82, 0.42);
+  box-shadow: 2px 2px 0 rgba(166, 111, 82, 0.055);
 }
