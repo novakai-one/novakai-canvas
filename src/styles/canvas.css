@@ -136,6 +136,13 @@
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
 }
 
+.timeline-node-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
 .canvas-surface .react-flow__node.selected .tree-node {
   border-color: var(--accent);
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent), 0 12px 28px rgba(0, 0, 0, 0.24);
@@ -338,6 +345,8 @@
 
 .architecture-node:hover .react-flow__handle,
 .architecture-node.ports-always .react-flow__handle,
+.timeline-node-shell:hover .react-flow__handle,
+.timeline-node-shell.ports-always .react-flow__handle,
 .canvas-surface .react-flow__node.selected .react-flow__handle { opacity: 1; }
 
 /* The default wire is legible; --wire is the floor its kind colour is lifted above. */

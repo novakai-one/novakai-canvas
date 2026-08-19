@@ -34,9 +34,9 @@ export function kindList(): [string, ...string[]] {
   return components.map((c) => c.kind) as [string, ...string[]];
 }
 
-/** Every component's extra node fields merged, for the record schema to spread in. */
-export function contentFieldSchemas(): Record<string, import('zod').ZodTypeAny> {
-  return Object.assign({}, ...components.map((c) => c.contentFields ?? {}));
+/** Extra stored fields owned by one node kind. */
+export function contentFieldsFor(kind: string): Record<string, import('zod').ZodTypeAny> {
+  return componentFor(kind).contentFields ?? {};
 }
 
 /**

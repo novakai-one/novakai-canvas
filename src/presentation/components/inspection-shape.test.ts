@@ -21,6 +21,15 @@ const NODES = {
     interfaceIds: [],
     typeIds: [],
   },
+  timeline: {
+    id: asId<NodeId>('timeline'),
+    kind: 'timeline' as const,
+    label: 'Session history',
+    parentId: asId<NodeId>('root'),
+    interfaceIds: [],
+    typeIds: [],
+    steps: [{ id: 'turn-1', label: 'Forked turn', fork: 'session-child' }],
+  },
 };
 
 const record = {
@@ -102,5 +111,17 @@ describe('inspection shape', () => {
       { kind: 'diagram.rename', name: 'Agent Messaging' },
       { kind: 'node.update', id: 'root', patch: { label: 'Agent Messaging' } },
     ]]);
+  });
+
+  it('describes a selected timeline step as its own inspectable object', () => {
+    const inspection = describeSelection(props({
+      selection: { kind: 'timeline-step', nodeId: 'timeline', stepId: 'turn-1' },
+    }));
+    expect(inspection.kind).toBe('timeline step');
+    expect(inspection.title).toBe('Forked turn');
+    expect(inspection.sections).toEqual(['step']);
+    expect(inspection.trail.map((item) => item.label)).toEqual([
+      'A diagram', 'Session history', 'Forked turn',
+    ]);
   });
 });

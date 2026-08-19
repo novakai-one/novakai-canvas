@@ -552,6 +552,29 @@ function treeRowInspection(props: InspectPanelProps, nodeId: string, rowId: stri
   };
 }
 
+function timelineStepInspection(props: InspectPanelProps, nodeId: string, stepId: string): Inspection {
+  const node = props.record.nodes[nodeId];
+  const step = node?.steps?.find((item) => item.id === stepId);
+  if (!node || !step) return diagramInspection(props);
+  return {
+    kind: 'timeline step',
+    title: step.label,
+    meta: '',
+    sections: ['step'],
+    trail: [
+      ...nodeTrail(props, nodeId),
+      { label: step.label, select: { kind: 'timeline-step', nodeId, stepId } },
+    ],
+    body: (
+      <PanelSection {...sectionProps(props, 'step')} title="Step">
+        <FieldRow label="ID"><output>{step.id}</output></FieldRow>
+        <FieldRow label="Label"><output>{step.label}</output></FieldRow>
+        <FieldRow label="Fork"><output>{step.fork ?? '—'}</output></FieldRow>
+      </PanelSection>
+    ),
+  };
+}
+
 /** Describes the current selection: what it is, what it is called, and what to show about it. */
 export function describeSelection(props: InspectPanelProps): Inspection {
   const selection = props.selection;
@@ -560,5 +583,8 @@ export function describeSelection(props: InspectPanelProps): Inspection {
   if (selection.kind === 'interface') return interfaceInspection(props, selection.id);
   if (selection.kind === 'type') return typeInspection(props, selection.id);
   if (selection.kind === 'tree-row') return treeRowInspection(props, selection.nodeId, selection.rowId);
+  if (selection.kind === 'timeline-step') {
+    return timelineStepInspection(props, selection.nodeId, selection.stepId);
+  }
   return wireInspection(props, selection.id);
 }

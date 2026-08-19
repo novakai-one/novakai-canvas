@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { contentFieldSchemas, kindList } from '../components/registry.ts';
+import { allComponents, contentFieldsFor, kindList } from '../components/registry.ts';
 import type { DiagramRecord, LibraryIndex } from './records.ts';
 
 const position = z.object({ x: z.number(), y: z.number() });
@@ -14,19 +14,27 @@ const endpoint = z.object({
 const canvasReference = z.object({ namespace: z.string().min(1), id: z.string().min(1) });
 const sourceReference = canvasReference.extend({ label: z.string().optional() });
 
-const canvasNode = z.object({
+const canvasNodeBase = {
   id: z.string().min(1),
-  kind: z.enum(kindList()),
   label: z.string(),
   description: z.string().optional(),
   parentId: z.string().min(1).optional(),
   interfaceIds: z.array(z.string().min(1)),
   typeIds: z.array(z.string().min(1)),
-  // Per-kind content (tree's `rows`, timeline's `steps`, ...) comes from each component.
-  ...contentFieldSchemas(),
   subjectRef: canvasReference.optional(),
   expandsToDiagramId: z.string().min(1).optional(),
-});
+};
+
+const canvasNodeOptions = allComponents().map((component) => z.object({
+  ...canvasNodeBase,
+  kind: z.literal(component.kind),
+  ...contentFieldsFor(component.kind),
+}).strict());
+
+const canvasNode = z.discriminatedUnion('kind', canvasNodeOptions as [
+  (typeof canvasNodeOptions)[number],
+  ...(typeof canvasNodeOptions)[number][],
+]);
 
 const canvasWire = z.object({
   id: z.string().min(1),

@@ -291,6 +291,7 @@ function selectedOwner(record: DiagramRecord, selection: Selection): string | nu
   if (!selection) return null;
   if (selection.kind === 'node') return selection.id;
   if (selection.kind === 'tree-row') return selection.nodeId;
+  if (selection.kind === 'timeline-step') return selection.nodeId;
   if (selection.kind === 'interface') return record.interfaces[selection.id]?.ownerId ?? null;
   if (selection.kind === 'type') {
     return Object.values(record.nodes)

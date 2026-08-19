@@ -56,6 +56,13 @@ beforeEach(async () => {
 });
 
 describe('canvas CLI', () => {
+  it('includes registered timeline syntax in help', async () => {
+    const { code, stdout } = await runCli(['help']);
+    expect(code).toBe(0);
+    expect(stdout).toContain('timeline');
+    expect(stdout).toContain('step "label" [fork="session-id"]');
+  });
+
   it('maps lists the three real scopes', async () => {
     const { code, stdout } = await runCli(['maps', '--file', dataDir]);
     expect(code).toBe(0);

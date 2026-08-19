@@ -2,10 +2,8 @@ import type {
   DiagramId, InterfaceId, LayoutId, LinkId, NodeId, TypeId, ViewId, WireId,
 } from './ids.ts';
 import type {
-  CanvasReference, InterfaceObject, Position, Size, SourceReference, TreeRow, TypeObject,
+  CanvasReference, InterfaceObject, Position, Size, SourceReference, TimelineStep, TreeRow, TypeObject,
 } from './model.ts';
-// Type-only, so it is erased at runtime and cannot make a load-order cycle with the registry.
-import type { TimelineStep } from '../components/timeline/component.ts';
 
 /**
  * The v3 record model.

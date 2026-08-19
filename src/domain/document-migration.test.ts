@@ -18,6 +18,16 @@ describe('architecture document migration', () => {
           interfaceIds: [],
           typeIds: [],
         },
+        timeline: {
+          id: 'timeline',
+          kind: 'timeline',
+          label: 'Session history',
+          steps: [{ id: 'turn-1', label: 'Turn 1', fork: 'session-child' }],
+          position: { x: 480, y: 240 },
+          size: { width: 320, height: 180 },
+          interfaceIds: [],
+          typeIds: [],
+        },
       },
       interfaces: {},
       types: {},
@@ -57,5 +67,11 @@ describe('architecture document migration', () => {
     });
     expect(migrated.nodes.module).not.toHaveProperty('position');
     expect(migrated.nodes.module).not.toHaveProperty('size');
+    expect(migrated.nodes.timeline).toMatchObject({
+      kind: 'timeline',
+      steps: [{ id: 'turn-1', label: 'Turn 1', fork: 'session-child' }],
+    });
+    expect(migrated.nodes.timeline).not.toHaveProperty('position');
+    expect(migrated.nodes.timeline).not.toHaveProperty('size');
   });
 });

@@ -31,6 +31,8 @@ export interface DiagramComponent<K extends string = string> {
   /** Extra zod fields this kind stores beyond the base node (id/kind/label/description/parentId). */
   contentFields?: Record<string, import('zod').ZodTypeAny>;
   dslChildren?: DslChildStatement[];
+  /** Component-owned grammar lines included in `./canvas help`. */
+  helpLines?: readonly string[];
   layoutRole: 'leaf' | 'container';
   /** Content-driven size for auto-layout. ctx gives interface/type lines already resolved. */
   measure(node: RecordNode, ctx: { interfaceLines: string[]; typeLines: string[] }): Size;

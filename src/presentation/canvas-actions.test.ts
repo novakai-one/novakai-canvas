@@ -141,6 +141,14 @@ const nested: DiagramRecord = {
     leaf: {
       id: asId<NodeId>('leaf'), kind: 'module', label: 'Leaf', parentId: asId<NodeId>('inner'), interfaceIds: [], typeIds: [],
     },
+    tree: {
+      id: asId<NodeId>('tree'), kind: 'tree', label: 'Tree', parentId: asId<NodeId>('inner'),
+      interfaceIds: [], typeIds: [], rows: [{ id: 'row', kind: 'task', badges: [] }],
+    },
+    timeline: {
+      id: asId<NodeId>('timeline'), kind: 'timeline', label: 'Timeline', parentId: asId<NodeId>('inner'),
+      interfaceIds: [], typeIds: [], steps: [{ id: 'step', label: 'Step' }],
+    },
   },
 };
 
@@ -173,11 +181,15 @@ describe('selectionResolves', () => {
   it('accepts an empty selection and one that names a live node', () => {
     expect(selectionResolves(nested, null)).toBe(true);
     expect(selectionResolves(nested, { kind: 'node', id: 'leaf' })).toBe(true);
+    expect(selectionResolves(nested, { kind: 'tree-row', nodeId: 'tree', rowId: 'row' })).toBe(true);
+    expect(selectionResolves(nested, { kind: 'timeline-step', nodeId: 'timeline', stepId: 'step' })).toBe(true);
   });
 
   it('rejects a selection left pointing at something undo removed', () => {
     expect(selectionResolves(nested, { kind: 'node', id: 'gone' })).toBe(false);
     expect(selectionResolves(nested, { kind: 'wire', id: 'gone' })).toBe(false);
     expect(selectionResolves(nested, { kind: 'tree-row', nodeId: 'gone', rowId: 'row' })).toBe(false);
+    expect(selectionResolves(nested, { kind: 'tree-row', nodeId: 'tree', rowId: 'gone' })).toBe(false);
+    expect(selectionResolves(nested, { kind: 'timeline-step', nodeId: 'timeline', stepId: 'gone' })).toBe(false);
   });
 });

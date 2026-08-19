@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import type {
   CanvasLibrary, CrossDiagramLink, DiagramRecord, RecordCommand,
 } from '../../src/canvas.ts';
-import { kindList } from '../../src/components/registry.ts';
+import { allComponents, kindList } from '../../src/components/registry.ts';
 import { parseDsl } from './dsl-parse.ts';
 import { compile, type CrossDiagramWire } from './compile.ts';
 import { listMaps, printLibrary, printRecord, type CrossDiagramContext } from './dsl-print.ts';
@@ -17,6 +17,14 @@ import { renderRecordSvg } from './snapshot.ts';
 import { slugify } from './slug.ts';
 
 const DEFAULT_DATA_DIR = fileURLToPath(new URL('../../public/data', import.meta.url));
+
+const componentHelp = [
+  `  node kinds    ${allComponents()
+    .filter((component) => component.layoutRole === 'leaf')
+    .map((component) => component.dslKeyword)
+    .join(' | ')}`,
+  ...allComponents().flatMap((component) => component.helpLines ?? []).map((line) => `  ${line}`),
+].join('\n');
 
 const HELP = `canvas — draw architecture maps from your terminal
 
@@ -46,13 +54,9 @@ Layout is automatic: never write coordinates, never edit the JSON by hand.
     resource "sessions.json"
     wire "browse CLI" -> "Session broker" : acquire(AgentId) -> SessionHandle [queries]
 
-  node kinds    module | object | runtime | resource | tree   (note = free-text comment)
-  zones         zone "Stores" ... end                nested containers; zones nest
-                inside scopes and inside each other; labels unique per map
+${componentHelp}
   methods       name(TypeA, TypeB) -> TypeC            under a node; bare type names
   types         type Name { fieldA, fieldB }           under a node
-  rows          row <id> <kind> [status] [parent=<id>] [badges=a,b] [label "text"]
-                under a tree node; kind: project|mission|task|bucket
   wires         wire A -> B : <the actual call> [kind]
                 kind: owns|references|assigns|queries|executes|mentions|missing
                 an endpoint naming a node in another map becomes a cross-map link

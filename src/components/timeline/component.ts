@@ -7,9 +7,8 @@
  */
 
 import { z } from 'zod';
+import type { TimelineStep } from '../../domain/model.ts';
 import type { DiagramComponent } from '../component.ts';
-
-export interface TimelineStep { id: string; label: string; fork?: string }
 
 const STEP_SHAPE = 'step "turn 1" [fork="session-id"]';
 const DOT = '#0F6E56';
@@ -32,6 +31,9 @@ function stepId(label: string): string {
 export const timelineComponent: DiagramComponent<'timeline'> = {
   kind: 'timeline',
   dslKeyword: 'timeline',
+  helpLines: [
+    'steps         step "label" [fork="session-id"]      under a timeline node',
+  ],
   layoutRole: 'leaf',
   contentFields: {
     steps: z.array(z.object({

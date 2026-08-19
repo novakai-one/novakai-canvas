@@ -26,6 +26,10 @@ function esc(text: string): string {
 export const treeComponent: DiagramComponent<'tree'> = {
   kind: 'tree',
   dslKeyword: 'tree',
+  helpLines: [
+    'rows          row <id> <kind> [status] [parent=<id>] [badges=a,b] [label "text"]',
+    '              under a tree node; kind: project|mission|task|bucket',
+  ],
   layoutRole: 'leaf',
   contentFields: {
     rows: z.array(z.object({

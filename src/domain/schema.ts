@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { kindList } from '../components/registry.ts';
+import { allComponents, contentFieldsFor, kindList } from '../components/registry.ts';
 import type { ArchitectureDocument, CanvasChangeSet } from './model.ts';
 import { WIRE_LABEL_SIZE_LIMITS } from './wire-label-size.ts';
 
@@ -12,27 +12,32 @@ const nodePlacement = z.object({
   nodeId: z.string().min(1), position, size, pinned: z.boolean(),
 });
 
-const treeRows = z.array(z.object({
+const semanticNodeBase = {
   id: z.string().min(1),
-  kind: z.enum(['project', 'mission', 'task', 'bucket']),
-  status: z.string().optional(),
-  parentRowId: z.string().optional(),
-  badges: z.array(z.string()),
-  label: z.string().optional(),
-})).optional();
+  label: z.string(),
+  description: z.string().optional(),
+  parentId: z.string().optional(),
+  interfaceIds: z.array(z.string()),
+  typeIds: z.array(z.string()),
+  subjectRef: z.object({ namespace: z.string().min(1), id: z.string().min(1) }).optional(),
+  expandsToDiagramId: z.string().min(1).optional(),
+};
 
-const semanticNode = z.object({
-    id: z.string().min(1),
-    kind: z.enum(legacyKindList()),
-    label: z.string(),
-    description: z.string().optional(),
-    parentId: z.string().optional(),
-    interfaceIds: z.array(z.string()),
-    typeIds: z.array(z.string()),
-    rows: treeRows,
-    subjectRef: z.object({ namespace: z.string().min(1), id: z.string().min(1) }).optional(),
-    expandsToDiagramId: z.string().min(1).optional(),
-});
+function semanticNodeSchema<ExtraFields extends Record<string, z.ZodTypeAny>>(extraFields: ExtraFields) {
+  const options = allComponents().map((component) => z.object({
+    ...semanticNodeBase,
+    kind: z.literal(component.kind === 'group' ? 'scope' : component.kind),
+    ...contentFieldsFor(component.kind),
+    ...extraFields,
+  }).strict());
+  return z.discriminatedUnion('kind', options as [
+    (typeof options)[number],
+    ...(typeof options)[number][],
+  ]);
+}
+
+const semanticNode = semanticNodeSchema({});
+const legacySemanticNode = semanticNodeSchema({ position, size });
 
 const interfaceObjects = z.record(z.string(), z.object({
   id: z.string().min(1), ownerId: z.string().min(1), name: z.string(),
@@ -133,7 +138,7 @@ const legacyArchitectureDocument = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   revision: z.number().int().nonnegative(),
-  nodes: z.record(z.string(), semanticNode.extend({ position, size })),
+  nodes: z.record(z.string(), legacySemanticNode),
   interfaces: interfaceObjects,
   types: typeObjects,
   wires,

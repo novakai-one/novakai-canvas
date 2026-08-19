@@ -9,6 +9,10 @@ import type { DiagramComponent } from '../component.ts';
 export const groupComponent: DiagramComponent<'group'> = {
   kind: 'group',
   dslKeyword: 'zone',
+  helpLines: [
+    'zones         zone "Stores" ... end                nested containers; zones nest',
+    '              inside scopes and inside each other; labels unique per map',
+  ],
   layoutRole: 'container',
   measure: () => ({ width: 320, height: 160 }),
 };

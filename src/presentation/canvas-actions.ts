@@ -227,7 +227,12 @@ export function selectionResolves(record: DiagramRecord, selection: Selection): 
   if (!selection) return true;
   switch (selection.kind) {
     case 'node': return Boolean(record.nodes[selection.id]);
-    case 'tree-row': return Boolean(record.nodes[selection.nodeId]);
+    case 'tree-row': return Boolean(
+      record.nodes[selection.nodeId]?.rows?.some((row) => row.id === selection.rowId),
+    );
+    case 'timeline-step': return Boolean(
+      record.nodes[selection.nodeId]?.steps?.some((step) => step.id === selection.stepId),
+    );
     case 'wire': return Boolean(record.wires[selection.id]);
     case 'interface': return Boolean(record.interfaces[selection.id]);
     case 'type': return Boolean(record.types[selection.id]);

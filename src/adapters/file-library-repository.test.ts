@@ -328,4 +328,14 @@ describe('migrated record round-trip', () => {
     const roundTripped = diagramRecordSchema.parse(JSON.parse(JSON.stringify(record)));
     expect(roundTripped).toEqual(record);
   });
+
+  it('rejects component content stored on the wrong node kind', () => {
+    const record = sampleRecord();
+    const invalid = JSON.parse(JSON.stringify(record));
+    invalid.nodes.module = {
+      id: 'module', kind: 'module', label: 'Module', interfaceIds: [], typeIds: [],
+      steps: [{ id: 'turn-1', label: 'Turn 1' }],
+    };
+    expect(() => diagramRecordSchema.parse(invalid)).toThrow();
+  });
 });

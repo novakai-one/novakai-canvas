@@ -1,6 +1,6 @@
 /** Stable, serialisable vocabulary shared across every module. */
 
-export type NodeKind = 'scope' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree';
+export type NodeKind = 'scope' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline';
 
 /** Relationship vocabulary carried by wires; renderers style each kind distinctly. */
 export type WireKind =
@@ -30,6 +30,13 @@ export interface TreeRow {
   label?: string;
 }
 
+/** One semantic turn inside a timeline node. */
+export interface TimelineStep {
+  id: string;
+  label: string;
+  fork?: string;
+}
+
 /** One semantic, selectable architecture object. Geometry belongs to a layout. */
 export interface CanvasNode {
   id: string;
@@ -41,6 +48,8 @@ export interface CanvasNode {
   typeIds: string[];
   /** Semantic hierarchy rows; present only on kind "tree". */
   rows?: TreeRow[];
+  /** Ordered semantic turns; present only on kind "timeline". */
+  steps?: TimelineStep[];
   /** Optional identity of the real thing this drawing occurrence represents. */
   subjectRef?: CanvasReference;
   /** Optional deeper explanation opened from this overview occurrence. */
@@ -258,6 +267,7 @@ export type Selection =
   | { kind: 'type'; id: string }
   | { kind: 'wire'; id: string }
   | { kind: 'tree-row'; nodeId: string; rowId: string }
+  | { kind: 'timeline-step'; nodeId: string; stepId: string }
   | null;
 
 /** Complete set of supported domain intentions. */
