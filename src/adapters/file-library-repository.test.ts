@@ -345,12 +345,18 @@ describe('migrated record round-trip', () => {
 
   it('rejects component content stored on the wrong node kind', () => {
     const record = sampleRecord();
-    const invalid = JSON.parse(JSON.stringify(record));
-    invalid.nodes.module = {
+    const timelineInvalid = JSON.parse(JSON.stringify(record));
+    timelineInvalid.nodes.module = {
       id: 'module', kind: 'module', label: 'Module', interfaceIds: [], typeIds: [],
       steps: [{ id: 'turn-1', label: 'Turn 1' }],
+    };
+    expect(() => diagramRecordSchema.parse(timelineInvalid)).toThrow();
+
+    const metricInvalid = JSON.parse(JSON.stringify(record));
+    metricInvalid.nodes.module = {
+      id: 'module', kind: 'module', label: 'Module', interfaceIds: [], typeIds: [],
       value: '92%', detail: '12 of 13 runs', status: 'success',
     };
-    expect(() => diagramRecordSchema.parse(invalid)).toThrow();
+    expect(() => diagramRecordSchema.parse(metricInvalid)).toThrow();
   });
 });
