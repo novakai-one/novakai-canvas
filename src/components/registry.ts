@@ -13,6 +13,7 @@ import { groupComponent } from './group/component.ts';
 import { treeComponent } from './tree/component.ts';
 import { timelineComponent } from './timeline/component.ts';
 import { metricComponent } from './metric/component.ts';
+import { iconCardComponent } from './icon-card/component.ts';
 import type { CanvasNode } from '../domain/records.ts';
 
 // `satisfies`, not a `: DiagramComponent[]` annotation, so each entry keeps its own literal
@@ -24,6 +25,7 @@ const components = [
   treeComponent,
   timelineComponent,
   metricComponent,
+  iconCardComponent,
 ] satisfies DiagramComponent[];
 
 export function allComponents(): readonly DiagramComponent[] { return components; }

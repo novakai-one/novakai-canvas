@@ -3,7 +3,7 @@
   "id": "agent-visual-authoring-poc",
   "name": "Agent Visual Authoring POC",
   "status": "active",
-  "revision": 1,
+  "revision": 2,
   "nodes": {
     "agent-visual-authoring-poc": {
       "id": "agent-visual-authoring-poc",
@@ -22,6 +22,16 @@
       "value": "92%",
       "detail": "12 of 13 runs",
       "status": "success"
+    },
+    "agent-visual-authoring-poc--automated-checks": {
+      "id": "agent-visual-authoring-poc--automated-checks",
+      "label": "Automated checks",
+      "description": "Every change is verified.",
+      "parentId": "agent-visual-authoring-poc",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "icon-card",
+      "icon": "check"
     }
   },
   "wires": {},
@@ -40,7 +50,7 @@
             "y": 80
           },
           "size": {
-            "width": 320,
+            "width": 584,
             "height": 244
           },
           "pinned": false
@@ -48,12 +58,24 @@
         "agent-visual-authoring-poc--success-rate": {
           "nodeId": "agent-visual-authoring-poc--success-rate",
           "position": {
-            "x": 40,
+            "x": 344,
             "y": 56
           },
           "size": {
             "width": 200,
             "height": 148
+          },
+          "pinned": false
+        },
+        "agent-visual-authoring-poc--automated-checks": {
+          "nodeId": "agent-visual-authoring-poc--automated-checks",
+          "position": {
+            "x": 40,
+            "y": 70
+          },
+          "size": {
+            "width": 264,
+            "height": 120
           },
           "pinned": false
         }
@@ -93,6 +115,24 @@
       "commandKinds": [
         "node.add",
         "node.add"
+      ]
+    },
+    "cli-apply-97e6d66e-48dc-4ae2-a546-3093b6d43309": {
+      "operationId": "cli-apply-97e6d66e-48dc-4ae2-a546-3093b6d43309",
+      "revision": 2,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-19T12:46:21.538Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "stdin"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.resize",
+        "node.move"
       ]
     }
   }

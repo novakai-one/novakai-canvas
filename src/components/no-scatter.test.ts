@@ -8,7 +8,7 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-const SHAPES = ['timeline', 'metric'] as const;
+const SHAPES = ['timeline', 'metric', 'icon-card'] as const;
 const COMMON_SEAMS = [
   'src/components/registry.ts', 'src/components/web-registry.tsx',
   'src/domain/model.ts', 'src/domain/records.ts',

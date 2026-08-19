@@ -252,6 +252,14 @@ describe('canvas CLI', () => {
           },
           children: [],
         },
+        {
+          kind: 'icon-card', keyword: 'icon-card',
+          declaration: {
+            syntax: 'icon-card "title" icon=check|clock|people|shield|target|trend description="text"',
+            example: 'icon-card "Automated checks" icon=check description="Every change is verified."',
+          },
+          children: [],
+        },
       ],
     });
   });
@@ -280,6 +288,36 @@ describe('canvas CLI', () => {
       }],
     });
     expect(await dataHashes()).toEqual(before);
+  });
+
+  it('check reports missing and unknown icon-card content with usable corrections', async () => {
+    const missing = await runCli(['check', '--file', dataDir], `
+scope "Icon Diagnostics"
+  icon-card "Automated checks" icon=check
+`);
+    expect(missing.code, missing.stderr).toBe(1);
+    expect(JSON.parse(missing.stdout)).toEqual({
+      status: 'invalid',
+      errors: [{
+        line: 3,
+        reason: 'icon-card needs description="text"',
+        correction: 'icon-card "title" icon=check|clock|people|shield|target|trend description="text"',
+      }],
+    });
+
+    const unknown = await runCli(['check', '--file', dataDir], `
+scope "Icon Diagnostics"
+  icon-card "Automated checks" icon=rocket description="Every change is verified."
+`);
+    expect(unknown.code, unknown.stderr).toBe(1);
+    expect(JSON.parse(unknown.stdout)).toEqual({
+      status: 'invalid',
+      errors: [{
+        line: 3,
+        reason: 'unknown icon "rocket"; use one of: check|clock|people|shield|target|trend',
+        correction: 'icon-card "title" icon=check|clock|people|shield|target|trend description="text"',
+      }],
+    });
   });
 
   it('applies an idempotent agent batch once and persists its authorship', async () => {

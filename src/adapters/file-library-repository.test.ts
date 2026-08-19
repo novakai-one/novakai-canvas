@@ -226,6 +226,15 @@ function fullyPopulatedRecord(): DiagramRecord {
     detail: '12 of 13 runs',
     status: 'success',
   };
+  const iconCardNode: CanvasNode = {
+    id: 'icon-card' as never,
+    kind: 'icon-card',
+    label: 'Automated checks',
+    description: 'Every change is verified.',
+    interfaceIds: [],
+    typeIds: [],
+    icon: 'check',
+  };
   const wireOne: CanvasWire = {
     id: 'wire-1' as never,
     kind: 'owns',
@@ -255,6 +264,9 @@ function fullyPopulatedRecord(): DiagramRecord {
     },
     [metricNode.id]: {
       nodeId: metricNode.id, position: { x: 800, y: 0 }, size: { width: 200, height: 126 }, pinned: false,
+    },
+    [iconCardNode.id]: {
+      nodeId: iconCardNode.id, position: { x: 1040, y: 0 }, size: { width: 280, height: 120 }, pinned: false,
     },
   };
   const wireRouteHint: WireRouteHint = {
@@ -297,6 +309,7 @@ function fullyPopulatedRecord(): DiagramRecord {
       [expanderNode.id]: expanderNode,
       [treeNode.id]: treeNode,
       [metricNode.id]: metricNode,
+      [iconCardNode.id]: iconCardNode,
     },
     wires: { [wireOne.id]: wireOne, [wireTwo.id]: wireTwo },
     interfaces: {
@@ -358,5 +371,12 @@ describe('migrated record round-trip', () => {
       value: '92%', detail: '12 of 13 runs', status: 'success',
     };
     expect(() => diagramRecordSchema.parse(metricInvalid)).toThrow();
+
+    const iconCardInvalid = JSON.parse(JSON.stringify(record));
+    iconCardInvalid.nodes.module = {
+      id: 'module', kind: 'module', label: 'Module', description: 'Allowed base field',
+      interfaceIds: [], typeIds: [], icon: 'check',
+    };
+    expect(() => diagramRecordSchema.parse(iconCardInvalid)).toThrow();
   });
 });

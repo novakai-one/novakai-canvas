@@ -1,14 +1,15 @@
 {
   "schemaVersion": 3,
-  "revision": 90,
+  "revision": 92,
   "entries": {
     "agent-visual-authoring-poc": {
       "id": "agent-visual-authoring-poc",
       "name": "Agent Visual Authoring POC",
       "status": "active",
-      "revision": 1,
+      "revision": 2,
       "nodeLabels": [
         "Agent Visual Authoring POC",
+        "Automated checks",
         "Success rate"
       ]
     },

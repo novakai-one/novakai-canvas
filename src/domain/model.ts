@@ -1,6 +1,6 @@
 /** Stable, serialisable vocabulary shared across every module. */
 
-export type NodeKind = 'scope' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline' | 'metric';
+export type NodeKind = 'scope' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline' | 'metric' | 'icon-card';
 
 /** Relationship vocabulary carried by wires; renderers style each kind distinctly. */
 export type WireKind =
@@ -40,6 +40,9 @@ export interface TimelineStep {
 /** Semantic metric state; renderers decide its colour and typography. */
 export type MetricStatus = 'neutral' | 'success' | 'warning' | 'critical';
 
+/** Fixed icon vocabulary carried as meaning, never as artwork. */
+export type IconCardIcon = 'check' | 'clock' | 'people' | 'shield' | 'target' | 'trend';
+
 /** One semantic, selectable architecture object. Geometry belongs to a layout. */
 export interface CanvasNode {
   id: string;
@@ -57,6 +60,8 @@ export interface CanvasNode {
   value?: string;
   detail?: string;
   status?: MetricStatus;
+  /** Fixed semantic symbol; present only on kind "icon-card". */
+  icon?: IconCardIcon;
   /** Optional identity of the real thing this drawing occurrence represents. */
   subjectRef?: CanvasReference;
   /** Optional deeper explanation opened from this overview occurrence. */

@@ -114,6 +114,7 @@ scope "Every Keyword" "one of each"
     step "turn 1"
     step "turn 3" fork="session-xyz789"
   metric "Success rate" value="92%" detail="12 of 13 runs" status=success
+  icon-card "Automated checks" icon=check description="Every change is verified."
   zone "A zone" "holding one node"
     module "zoned module"
   end
@@ -123,7 +124,7 @@ scope "Every Keyword" "one of each"
   it('parses, prints, and re-parses to the same record content', () => {
     const record = buildRecord(EVERY_KEYWORD_DSL);
     expect(Object.values(record.nodes).map((node) => node.kind).sort()).toEqual(
-      ['comment', 'group', 'group', 'metric', 'module', 'module', 'object', 'resource', 'runtime', 'timeline', 'tree'],
+      ['comment', 'group', 'group', 'icon-card', 'metric', 'module', 'module', 'object', 'resource', 'runtime', 'timeline', 'tree'],
     );
     const printed = printRecord(record);
     for (const node of Object.values(record.nodes).filter((candidate) => candidate.parentId)) {
@@ -134,11 +135,15 @@ scope "Every Keyword" "one of each"
       'zone "A zone"', 'row proj1 project active label "Project One"',
       'row task1 task in-progress parent=proj1 badges=team,outcome',
       'timeline "A timeline"', 'step "turn 1"', 'step "turn 3" fork="session-xyz789"',
-      'metric "Success rate" value="92%" detail="12 of 13 runs" status=success']) {
+      'metric "Success rate" value="92%" detail="12 of 13 runs" status=success',
+      'icon-card "Automated checks" icon=check description="Every change is verified."']) {
       expect(printed).toContain(statement);
     }
     expect(Object.values(record.nodes).find((node) => node.kind === 'metric')).toMatchObject({
       label: 'Success rate', value: '92%', detail: '12 of 13 runs', status: 'success',
+    });
+    expect(Object.values(record.nodes).find((node) => node.kind === 'icon-card')).toMatchObject({
+      label: 'Automated checks', icon: 'check', description: 'Every change is verified.',
     });
     const reapplied = buildRecord(printed, { [record.id]: record });
     expect(content(reapplied)).toEqual(content(record));
