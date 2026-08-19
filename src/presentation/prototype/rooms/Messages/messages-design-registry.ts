@@ -15,6 +15,7 @@ import { gravityWellDesign } from './designs/gravity-well';
 import {
   cyanotypeEvidenceFirstPassDesign,
   cyanotypeEvidenceScreenshotReadyDesign,
+  cyanotypeEvidenceUpperPolishedDesign,
   theBenchMessagesDesign,
 } from './designs/the-bench';
 
@@ -37,6 +38,7 @@ const designs: readonly MessagesDesign[] = [
   theBenchMessagesDesign,
   cyanotypeEvidenceFirstPassDesign,
   cyanotypeEvidenceScreenshotReadyDesign,
+  cyanotypeEvidenceUpperPolishedDesign,
 ];
 
 const messagesDesignRegistry = createDesignRegistry(

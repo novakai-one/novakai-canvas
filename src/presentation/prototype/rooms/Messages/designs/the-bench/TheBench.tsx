@@ -169,3 +169,8 @@ export function CyanotypeEvidenceBench(props: MessagesDesignProps) {
 export function CyanotypeScreenshotReadyBench(props: MessagesDesignProps) {
   return <TheBench {...props} presentationTheme="cyanotype-evidence" cyanotypeBuild="screenshot-ready" />;
 }
+
+/** Adds the final instrument-grade finish without changing the Cyanotype capability. */
+export function CyanotypeUpperPolishedBench(props: MessagesDesignProps) {
+  return <TheBench {...props} presentationTheme="cyanotype-evidence" cyanotypeBuild="upper-polished" />;
+}

@@ -2,6 +2,7 @@ import type { MessagesDesign } from '../../messages-design';
 import {
   CyanotypeEvidenceBench,
   CyanotypeScreenshotReadyBench,
+  CyanotypeUpperPolishedBench,
   TheBench,
 } from './TheBench';
 
@@ -27,4 +28,12 @@ export const cyanotypeEvidenceScreenshotReadyDesign: MessagesDesign = {
   label: 'Cyanotype — Screenshot-Ready',
   ownsInspector: true,
   View: CyanotypeScreenshotReadyBench,
+};
+
+/** Instrument-grade Cyanotype finish over the unchanged Bench capability. */
+export const cyanotypeEvidenceUpperPolishedDesign: MessagesDesign = {
+  id: 'cyanotype-evidence-upper-polished',
+  label: 'Cyanotype — Upper-End Polished',
+  ownsInspector: true,
+  View: CyanotypeUpperPolishedBench,
 };

@@ -58,6 +58,7 @@ const ALTERNATIVE_PLACEMENTS: Readonly<
     alternativeDesignIds: [
       'cyanotype-evidence-first-pass',
       'cyanotype-evidence-screenshot-ready',
+      'cyanotype-evidence-upper-polished',
     ],
   }],
 };
