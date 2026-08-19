@@ -115,6 +115,9 @@ scope "Every Keyword" "one of each"
     step "turn 3" fork="session-xyz789"
   metric "Success rate" value="92%" detail="12 of 13 runs" status=success
   icon-card "Automated checks" icon=check description="Every change is verified."
+  callout-stack "Release decision"
+    callout "Evidence is complete" id=evidence kind=info
+    callout "Ship the release" id=decision kind=decision
   zone "A zone" "holding one node"
     module "zoned module"
   end
@@ -124,7 +127,7 @@ scope "Every Keyword" "one of each"
   it('parses, prints, and re-parses to the same record content', () => {
     const record = buildRecord(EVERY_KEYWORD_DSL);
     expect(Object.values(record.nodes).map((node) => node.kind).sort()).toEqual(
-      ['comment', 'group', 'group', 'icon-card', 'metric', 'module', 'module', 'object', 'resource', 'runtime', 'timeline', 'tree'],
+      ['callout-stack', 'comment', 'group', 'group', 'icon-card', 'metric', 'module', 'module', 'object', 'resource', 'runtime', 'timeline', 'tree'],
     );
     const printed = printRecord(record);
     for (const node of Object.values(record.nodes).filter((candidate) => candidate.parentId)) {
@@ -136,7 +139,10 @@ scope "Every Keyword" "one of each"
       'row task1 task in-progress parent=proj1 badges=team,outcome',
       'timeline "A timeline"', 'step "turn 1"', 'step "turn 3" fork="session-xyz789"',
       'metric "Success rate" value="92%" detail="12 of 13 runs" status=success',
-      'icon-card "Automated checks" icon=check description="Every change is verified."']) {
+      'icon-card "Automated checks" icon=check description="Every change is verified."',
+      'callout-stack "Release decision"',
+      'callout "Evidence is complete" id=evidence kind=info',
+      'callout "Ship the release" id=decision kind=decision']) {
       expect(printed).toContain(statement);
     }
     expect(Object.values(record.nodes).find((node) => node.kind === 'metric')).toMatchObject({
@@ -145,9 +151,26 @@ scope "Every Keyword" "one of each"
     expect(Object.values(record.nodes).find((node) => node.kind === 'icon-card')).toMatchObject({
       label: 'Automated checks', icon: 'check', description: 'Every change is verified.',
     });
+    const calloutStack = Object.values(record.nodes).find((node) => node.kind === 'callout-stack');
+    expect(calloutStack?.callouts).toEqual([
+      { id: 'evidence', kind: 'info', text: 'Evidence is complete' },
+      { id: 'decision', kind: 'decision', text: 'Ship the release' },
+    ]);
     const reapplied = buildRecord(printed, { [record.id]: record });
     expect(content(reapplied)).toEqual(content(record));
     expect(printRecord(reapplied)).toBe(printed);
+
+    const edited = buildRecord(EVERY_KEYWORD_DSL
+      .replace('callout "Evidence is complete" id=evidence kind=info',
+        'callout "Evidence was independently verified" id=evidence kind=info')
+      .replace('    callout "Ship the release" id=decision kind=decision\n', '')
+      .replace('    callout "Evidence was independently verified" id=evidence kind=info',
+        '    callout "Ship the release" id=decision kind=decision\n    callout "Evidence was independently verified" id=evidence kind=info'),
+    { [record.id]: record });
+    const editedCallouts = Object.values(edited.nodes)
+      .find((node) => node.kind === 'callout-stack')?.callouts ?? [];
+    expect(editedCallouts.map((callout) => callout.id)).toEqual(['decision', 'evidence']);
+    expect(editedCallouts[1].text).toBe('Evidence was independently verified');
   });
 });
 

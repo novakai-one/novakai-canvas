@@ -2,7 +2,7 @@ import type {
   DiagramId, InterfaceId, LayoutId, LinkId, NodeId, TypeId, ViewId, WireId,
 } from './ids.ts';
 import type {
-  CanvasReference, IconCardIcon, InterfaceObject, MetricStatus, Position, Size, SourceReference, TimelineStep, TreeRow, TypeObject,
+  CalloutItem, CanvasReference, IconCardIcon, InterfaceObject, MetricStatus, Position, Size, SourceReference, TimelineStep, TreeRow, TypeObject,
 } from './model.ts';
 
 /**
@@ -21,7 +21,7 @@ import type {
  * despite zero current instances: it has a domain module, a renderer, and DSL support.
  */
 export type NodeKind =
-  | 'group' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline' | 'metric' | 'icon-card';
+  | 'group' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline' | 'metric' | 'icon-card' | 'callout-stack';
 
 /** Relationship vocabulary carried by wires; renderers style each kind distinctly. */
 export type WireKind =
@@ -66,6 +66,8 @@ export interface CanvasNode {
   status?: MetricStatus;
   /** Fixed semantic symbol; present only on kind `icon-card`. */
   icon?: IconCardIcon;
+  /** Ordered highlights; present only on kind `callout-stack`. */
+  callouts?: CalloutItem[];
   /** The real thing this occurrence depicts. Canvas references it and never owns it. */
   subjectRef?: CanvasReference;
   /** Deeper explanation opened from this occurrence; integrity is owned by the library. */

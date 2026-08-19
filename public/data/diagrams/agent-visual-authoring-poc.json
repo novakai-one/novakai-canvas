@@ -3,7 +3,7 @@
   "id": "agent-visual-authoring-poc",
   "name": "Agent Visual Authoring POC",
   "status": "active",
-  "revision": 2,
+  "revision": 5,
   "nodes": {
     "agent-visual-authoring-poc": {
       "id": "agent-visual-authoring-poc",
@@ -32,6 +32,26 @@
       "typeIds": [],
       "kind": "icon-card",
       "icon": "check"
+    },
+    "agent-visual-authoring-poc--release-decision": {
+      "id": "agent-visual-authoring-poc--release-decision",
+      "label": "Release decision",
+      "parentId": "agent-visual-authoring-poc",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "evidence",
+          "kind": "info",
+          "text": "Evidence is complete"
+        },
+        {
+          "id": "decision",
+          "kind": "decision",
+          "text": "Ship the release"
+        }
+      ]
     }
   },
   "wires": {},
@@ -50,16 +70,16 @@
             "y": 80
           },
           "size": {
-            "width": 584,
-            "height": 244
+            "width": 884,
+            "height": 252
           },
           "pinned": false
         },
         "agent-visual-authoring-poc--success-rate": {
           "nodeId": "agent-visual-authoring-poc--success-rate",
           "position": {
-            "x": 344,
-            "y": 56
+            "x": 644,
+            "y": 60
           },
           "size": {
             "width": 200,
@@ -71,11 +91,23 @@
           "nodeId": "agent-visual-authoring-poc--automated-checks",
           "position": {
             "x": 40,
-            "y": 70
+            "y": 74
           },
           "size": {
             "width": 264,
             "height": 120
+          },
+          "pinned": false
+        },
+        "agent-visual-authoring-poc--release-decision": {
+          "nodeId": "agent-visual-authoring-poc--release-decision",
+          "position": {
+            "x": 344,
+            "y": 56
+          },
+          "size": {
+            "width": 260,
+            "height": 156
           },
           "pinned": false
         }
@@ -132,6 +164,65 @@
       "commandKinds": [
         "node.add",
         "node.resize",
+        "node.move"
+      ]
+    },
+    "cli-apply-db662ae9-5cce-4bd5-b4a7-7df1009e3dc8": {
+      "operationId": "cli-apply-db662ae9-5cce-4bd5-b4a7-7df1009e3dc8",
+      "revision": 3,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-19T13:01:35.101Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "stdin"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.resize",
+        "node.move",
+        "node.move"
+      ]
+    },
+    "cli-apply-deb49cd5-6c76-41b4-8d42-2c34c02215c7": {
+      "operationId": "cli-apply-deb49cd5-6c76-41b4-8d42-2c34c02215c7",
+      "revision": 4,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-19T13:02:47.813Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "stdin"
+      },
+      "commandKinds": [
+        "node.remove",
+        "node.add",
+        "node.resize",
+        "node.move",
+        "node.move"
+      ]
+    },
+    "cli-apply-55f8c630-bb85-4222-8080-cdb4b211f4bd": {
+      "operationId": "cli-apply-55f8c630-bb85-4222-8080-cdb4b211f4bd",
+      "revision": 5,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-19T13:03:17.228Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "stdin"
+      },
+      "commandKinds": [
+        "node.remove",
+        "node.add",
+        "node.resize",
+        "node.move",
         "node.move"
       ]
     }

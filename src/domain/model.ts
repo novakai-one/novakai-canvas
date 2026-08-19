@@ -43,6 +43,12 @@ export type MetricStatus = 'neutral' | 'success' | 'warning' | 'critical';
 /** Fixed icon vocabulary carried as meaning, never as artwork. */
 export type IconCardIcon = 'check' | 'clock' | 'people' | 'shield' | 'target' | 'trend';
 
+/** Semantic emphasis of one callout; presentation derives from this value. */
+export type CalloutKind = 'info' | 'warning' | 'decision' | 'success';
+
+/** One stable, selectable highlight in a callout stack. */
+export interface CalloutItem { id: string; kind: CalloutKind; text: string }
+
 /** One semantic, selectable architecture object. Geometry belongs to a layout. */
 export interface CanvasNode {
   id: string;
@@ -62,6 +68,8 @@ export interface CanvasNode {
   status?: MetricStatus;
   /** Fixed semantic symbol; present only on kind "icon-card". */
   icon?: IconCardIcon;
+  /** Ordered highlights; present only on kind "callout-stack". */
+  callouts?: CalloutItem[];
   /** Optional identity of the real thing this drawing occurrence represents. */
   subjectRef?: CanvasReference;
   /** Optional deeper explanation opened from this overview occurrence. */

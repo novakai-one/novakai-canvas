@@ -218,6 +218,53 @@
 }
 .icon-card-glyph svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
 
+.callout-stack-node-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.callout-stack-node {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--node-radius);
+  background: var(--card);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+}
+
+.canvas-surface .react-flow__node.selected .callout-stack-node {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent), 0 12px 28px rgba(0, 0, 0, 0.24);
+}
+
+.callout-list { display: flex; padding: 8px; gap: 6px; flex-direction: column; }
+.callout-row {
+  display: grid;
+  min-height: 34px;
+  align-items: center;
+  padding: 5px 9px;
+  gap: 2px;
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--callout-tone);
+  border-radius: 4px;
+  color: var(--ink-soft);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.callout-row:hover { background: var(--hover); }
+.callout-row.is-selected { background: var(--hover); box-shadow: inset 2px 0 var(--accent); }
+.callout-kind { color: var(--callout-tone); font-size: 8px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; }
+.callout-text { overflow: hidden; font-size: 10.5px; text-overflow: ellipsis; white-space: nowrap; }
+.callout-row.kind-info { --callout-tone: var(--muted); }
+.callout-row.kind-warning { --callout-tone: var(--accent-strong); }
+.callout-row.kind-decision { --callout-tone: var(--accent-bright); }
+.callout-row.kind-success { --callout-tone: var(--sage); }
+
 .canvas-surface .react-flow__node.selected .tree-node {
   border-color: var(--accent);
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent), 0 12px 28px rgba(0, 0, 0, 0.24);
@@ -426,6 +473,8 @@
 .metric-node-shell.ports-always .react-flow__handle,
 .icon-card-node-shell:hover .react-flow__handle,
 .icon-card-node-shell.ports-always .react-flow__handle,
+.callout-stack-node-shell:hover .react-flow__handle,
+.callout-stack-node-shell.ports-always .react-flow__handle,
 .canvas-surface .react-flow__node.selected .react-flow__handle { opacity: 1; }
 
 /* The default wire is legible; --wire is the floor its kind colour is lifted above. */

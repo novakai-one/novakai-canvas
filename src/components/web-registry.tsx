@@ -7,6 +7,7 @@ import { TreeNode } from '../presentation/nodes/tree-node.tsx';
 import { TimelineNode } from './timeline/web.tsx';
 import { MetricNode } from './metric/web.tsx';
 import { IconCardNode } from './icon-card/web.tsx';
+import { CalloutStackNode } from './callout-stack/web.tsx';
 import type { CanvasNode } from '../domain/records.ts';
 
 /**
@@ -36,4 +37,5 @@ export const webRenderers = {
   timeline: TimelineNode,
   metric: MetricNode,
   'icon-card': IconCardNode,
+  'callout-stack': CalloutStackNode,
 } satisfies Record<CanvasNode['kind'], ComponentType<NodeProps<never>>>;

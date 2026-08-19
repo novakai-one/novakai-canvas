@@ -41,6 +41,11 @@ export interface DslChildStatement {
   /** The node field the parsed content collects into ('rows', 'steps') — must match a key in `contentFields`. */
   contentKey: string;
   parse(tokens: string[], line: number): { content: unknown } | { error: string; hint: string };
+  /** Optional stateless collection rule, evaluated against earlier siblings before insertion. */
+  validate?(
+    content: unknown,
+    existingSiblings: readonly unknown[],
+  ): { error: string; hint: string } | undefined;
   print(node: RecordNode): string[];     // lines under the node statement, 2-space indented
 }
 

@@ -189,6 +189,12 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         fail(parsed.error, parsed.hint);
         continue;
       }
+      const existing = node.children[child.statement.contentKey] ?? [];
+      const validation = child.statement.validate?.(parsed.content, existing);
+      if (validation) {
+        fail(validation.error, validation.hint);
+        continue;
+      }
       (node.children[child.statement.contentKey] ??= []).push(parsed.content);
       continue;
     }

@@ -235,6 +235,17 @@ function fullyPopulatedRecord(): DiagramRecord {
     typeIds: [],
     icon: 'check',
   };
+  const calloutStackNode: CanvasNode = {
+    id: 'callout-stack' as never,
+    kind: 'callout-stack',
+    label: 'Release decision',
+    interfaceIds: [],
+    typeIds: [],
+    callouts: [
+      { id: 'evidence', kind: 'info', text: 'Evidence is complete' },
+      { id: 'decision', kind: 'decision', text: 'Ship the release' },
+    ],
+  };
   const wireOne: CanvasWire = {
     id: 'wire-1' as never,
     kind: 'owns',
@@ -267,6 +278,9 @@ function fullyPopulatedRecord(): DiagramRecord {
     },
     [iconCardNode.id]: {
       nodeId: iconCardNode.id, position: { x: 1040, y: 0 }, size: { width: 280, height: 120 }, pinned: false,
+    },
+    [calloutStackNode.id]: {
+      nodeId: calloutStackNode.id, position: { x: 1360, y: 0 }, size: { width: 280, height: 156 }, pinned: false,
     },
   };
   const wireRouteHint: WireRouteHint = {
@@ -310,6 +324,7 @@ function fullyPopulatedRecord(): DiagramRecord {
       [treeNode.id]: treeNode,
       [metricNode.id]: metricNode,
       [iconCardNode.id]: iconCardNode,
+      [calloutStackNode.id]: calloutStackNode,
     },
     wires: { [wireOne.id]: wireOne, [wireTwo.id]: wireTwo },
     interfaces: {
@@ -378,5 +393,22 @@ describe('migrated record round-trip', () => {
       interfaceIds: [], typeIds: [], icon: 'check',
     };
     expect(() => diagramRecordSchema.parse(iconCardInvalid)).toThrow();
+
+    const calloutInvalid = JSON.parse(JSON.stringify(record));
+    calloutInvalid.nodes.module = {
+      id: 'module', kind: 'module', label: 'Module', interfaceIds: [], typeIds: [],
+      callouts: [{ id: 'evidence', kind: 'info', text: 'Evidence is complete' }],
+    };
+    expect(() => diagramRecordSchema.parse(calloutInvalid)).toThrow();
+
+    const duplicateCallouts = JSON.parse(JSON.stringify(record));
+    duplicateCallouts.nodes.stack = {
+      id: 'stack', kind: 'callout-stack', label: 'Stack', interfaceIds: [], typeIds: [],
+      callouts: [
+        { id: 'same', kind: 'info', text: 'First' },
+        { id: 'same', kind: 'warning', text: 'Second' },
+      ],
+    };
+    expect(() => diagramRecordSchema.parse(duplicateCallouts)).toThrow();
   });
 });

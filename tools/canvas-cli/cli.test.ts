@@ -260,6 +260,18 @@ describe('canvas CLI', () => {
           },
           children: [],
         },
+        {
+          kind: 'callout-stack', keyword: 'callout-stack',
+          declaration: {
+            syntax: 'callout-stack "name" ["optional description"]',
+            example: 'callout-stack "Release decision"',
+          },
+          children: [{
+            keyword: 'callout',
+            syntax: 'callout "text" id=<stable-id> kind=info|warning|decision|success',
+            example: 'callout "Evidence is complete" id=evidence kind=info',
+          }],
+        },
       ],
     });
   });
@@ -316,6 +328,60 @@ scope "Icon Diagnostics"
         line: 3,
         reason: 'unknown icon "rocket"; use one of: check|clock|people|shield|target|trend',
         correction: 'icon-card "title" icon=check|clock|people|shield|target|trend description="text"',
+      }],
+    });
+  });
+
+  it('check reports exact callout lines and corrections for every invalid item shape', async () => {
+    const syntax = 'callout "text" id=<stable-id> kind=info|warning|decision|success';
+    const cases = [
+      {
+        child: 'callout id=evidence kind=info',
+        reason: 'callout needs text',
+        line: 4,
+      },
+      {
+        child: 'callout "Evidence is complete" kind=info',
+        reason: 'callout needs id=<stable-id>',
+        line: 4,
+      },
+      {
+        child: 'callout "Evidence is complete" id=evidence',
+        reason: 'callout needs kind=info|warning|decision|success',
+        line: 4,
+      },
+      {
+        child: 'callout "Evidence is complete" id=evidence kind=urgent',
+        reason: 'unknown callout kind "urgent"; use one of: info|warning|decision|success',
+        line: 4,
+      },
+    ];
+    for (const invalid of cases) {
+      const result = await runCli(['check', '--file', dataDir], `
+scope "Callout Diagnostics"
+  callout-stack "Release decision"
+    ${invalid.child}
+`);
+      expect(result.code, result.stderr).toBe(1);
+      expect(JSON.parse(result.stdout)).toEqual({
+        status: 'invalid',
+        errors: [{ line: invalid.line, reason: invalid.reason, correction: syntax }],
+      });
+    }
+
+    const duplicate = await runCli(['check', '--file', dataDir], `
+scope "Callout Diagnostics"
+  callout-stack "Release decision"
+    callout "First" id=evidence kind=info
+    callout "Second" id=evidence kind=warning
+`);
+    expect(duplicate.code, duplicate.stderr).toBe(1);
+    expect(JSON.parse(duplicate.stdout)).toEqual({
+      status: 'invalid',
+      errors: [{
+        line: 5,
+        reason: 'duplicate callout id "evidence"',
+        correction: syntax,
       }],
     });
   });
