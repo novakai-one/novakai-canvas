@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "revision": 96,
+  "revision": 98,
   "entries": {
     "agent-visual-authoring-poc": {
       "id": "agent-visual-authoring-poc",
@@ -170,6 +170,30 @@
         "New group",
         "New module",
         "Untitled diagram"
+      ]
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram",
+      "name": "How agents turn intent into a Canvas diagram",
+      "status": "active",
+      "revision": 1,
+      "nodeLabels": [
+        "Agent authoring sequence",
+        "Central behavior edits",
+        "Current authoring pipeline",
+        "How agents turn intent into a Canvas diagram",
+        "Legend: role prefixes classify nodes; wires point from caller to dependency and name the synchronous contract.",
+        "One authoring run",
+        "POC verdict",
+        "Safe authoring",
+        "What this proves",
+        "«actor» Authoring agent",
+        "«adapter» Canvas web app",
+        "«data store» Diagram records",
+        "«module» Canvas CLI",
+        "«module» Compiler + auto-layout",
+        "«module» Component registry",
+        "«module» DSL parser"
       ]
     },
     "messaging-scope": {
