@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 3,
+  "id": "agent-visual-authoring-poc",
+  "name": "Agent Visual Authoring POC",
+  "status": "active",
+  "revision": 1,
+  "nodes": {
+    "agent-visual-authoring-poc": {
+      "id": "agent-visual-authoring-poc",
+      "label": "Agent Visual Authoring POC",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "agent-visual-authoring-poc--success-rate": {
+      "id": "agent-visual-authoring-poc--success-rate",
+      "label": "Success rate",
+      "parentId": "agent-visual-authoring-poc",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "metric",
+      "value": "92%",
+      "detail": "12 of 13 runs",
+      "status": "success"
+    }
+  },
+  "wires": {},
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "agent-visual-authoring-poc": {
+          "nodeId": "agent-visual-authoring-poc",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 320,
+            "height": 244
+          },
+          "pinned": false
+        },
+        "agent-visual-authoring-poc--success-rate": {
+          "nodeId": "agent-visual-authoring-poc--success-rate",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 200,
+            "height": 148
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-d336d723-dca0-4eae-a79a-0972e51f6e38": {
+      "operationId": "cli-apply-d336d723-dca0-4eae-a79a-0972e51f6e38",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-19T12:25:08.019Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "stdin"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.add"
+      ]
+    }
+  }
+}

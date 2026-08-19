@@ -244,6 +244,14 @@ describe('canvas CLI', () => {
             example: 'step "turn 3" fork="session-xyz789"',
           }],
         },
+        {
+          kind: 'metric', keyword: 'metric',
+          declaration: {
+            syntax: 'metric "label" value="text" [detail="text"] [status=neutral|success|warning|critical]',
+            example: 'metric "Success rate" value="92%" detail="12 of 13 runs" status=success',
+          },
+          children: [],
+        },
       ],
     });
   });

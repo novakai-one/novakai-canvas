@@ -1,7 +1,17 @@
 {
   "schemaVersion": 3,
-  "revision": 85,
+  "revision": 90,
   "entries": {
+    "agent-visual-authoring-poc": {
+      "id": "agent-visual-authoring-poc",
+      "name": "Agent Visual Authoring POC",
+      "status": "active",
+      "revision": 1,
+      "nodeLabels": [
+        "Agent Visual Authoring POC",
+        "Success rate"
+      ]
+    },
     "browser-scope": {
       "id": "browser-scope",
       "name": "Agent Browser Sessions",

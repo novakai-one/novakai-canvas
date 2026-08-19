@@ -2,7 +2,7 @@ import type {
   DiagramId, InterfaceId, LayoutId, LinkId, NodeId, TypeId, ViewId, WireId,
 } from './ids.ts';
 import type {
-  CanvasReference, InterfaceObject, Position, Size, SourceReference, TimelineStep, TreeRow, TypeObject,
+  CanvasReference, InterfaceObject, MetricStatus, Position, Size, SourceReference, TimelineStep, TreeRow, TypeObject,
 } from './model.ts';
 
 /**
@@ -21,7 +21,7 @@ import type {
  * despite zero current instances: it has a domain module, a renderer, and DSL support.
  */
 export type NodeKind =
-  | 'group' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline';
+  | 'group' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline' | 'metric';
 
 /** Relationship vocabulary carried by wires; renderers style each kind distinctly. */
 export type WireKind =
@@ -60,6 +60,10 @@ export interface CanvasNode {
   rows?: TreeRow[];
   /** Ordered steps; present only on kind `timeline`. */
   steps?: TimelineStep[];
+  /** Required value and optional context; present only on kind `metric`. */
+  value?: string;
+  detail?: string;
+  status?: MetricStatus;
   /** The real thing this occurrence depicts. Canvas references it and never owns it. */
   subjectRef?: CanvasReference;
   /** Deeper explanation opened from this occurrence; integrity is owned by the library. */

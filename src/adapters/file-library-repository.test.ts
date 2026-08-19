@@ -216,6 +216,16 @@ function fullyPopulatedRecord(): DiagramRecord {
   const treeNode: CanvasNode = {
     id: 'tree' as never, kind: 'tree', label: 'Tree', interfaceIds: [], typeIds: [], rows: treeRows,
   };
+  const metricNode: CanvasNode = {
+    id: 'metric' as never,
+    kind: 'metric',
+    label: 'Success rate',
+    interfaceIds: [],
+    typeIds: [],
+    value: '92%',
+    detail: '12 of 13 runs',
+    status: 'success',
+  };
   const wireOne: CanvasWire = {
     id: 'wire-1' as never,
     kind: 'owns',
@@ -242,6 +252,9 @@ function fullyPopulatedRecord(): DiagramRecord {
     },
     [treeNode.id]: {
       nodeId: treeNode.id, position: { x: 600, y: 0 }, size: { width: 120, height: 80 }, pinned: false,
+    },
+    [metricNode.id]: {
+      nodeId: metricNode.id, position: { x: 800, y: 0 }, size: { width: 200, height: 126 }, pinned: false,
     },
   };
   const wireRouteHint: WireRouteHint = {
@@ -283,6 +296,7 @@ function fullyPopulatedRecord(): DiagramRecord {
       [childNode.id]: childNode,
       [expanderNode.id]: expanderNode,
       [treeNode.id]: treeNode,
+      [metricNode.id]: metricNode,
     },
     wires: { [wireOne.id]: wireOne, [wireTwo.id]: wireTwo },
     interfaces: {
@@ -335,6 +349,7 @@ describe('migrated record round-trip', () => {
     invalid.nodes.module = {
       id: 'module', kind: 'module', label: 'Module', interfaceIds: [], typeIds: [],
       steps: [{ id: 'turn-1', label: 'Turn 1' }],
+      value: '92%', detail: '12 of 13 runs', status: 'success',
     };
     expect(() => diagramRecordSchema.parse(invalid)).toThrow();
   });

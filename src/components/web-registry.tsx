@@ -5,6 +5,7 @@ import { CommentNode } from '../presentation/nodes/comment-node.tsx';
 import { ScopeNode } from '../presentation/nodes/scope-node.tsx';
 import { TreeNode } from '../presentation/nodes/tree-node.tsx';
 import { TimelineNode } from './timeline/web.tsx';
+import { MetricNode } from './metric/web.tsx';
 import type { CanvasNode } from '../domain/records.ts';
 
 /**
@@ -32,4 +33,5 @@ export const webRenderers = {
   comment: CommentNode,
   tree: TreeNode,
   timeline: TimelineNode,
+  metric: MetricNode,
 } satisfies Record<CanvasNode['kind'], ComponentType<NodeProps<never>>>;

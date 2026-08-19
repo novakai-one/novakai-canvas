@@ -8,12 +8,10 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-const ALLOWED = [
-  'src/components/timeline/',
-  'src/components/registry.ts',
-  'src/components/web-registry.tsx',
-  'src/domain/model.ts',
-  'src/domain/records.ts',
+const SHAPES = ['timeline', 'metric'] as const;
+const COMMON_SEAMS = [
+  'src/components/registry.ts', 'src/components/web-registry.tsx',
+  'src/domain/model.ts', 'src/domain/records.ts',
 ];
 
 function walk(dir: string): string[] {
@@ -25,11 +23,14 @@ function walk(dir: string): string[] {
   });
 }
 
-describe('timeline is a pure addition', () => {
-  it('no source file outside its folder names it', () => {
-    for (const file of [...walk('src'), ...walk('tools/canvas-cli')]) {
-      if (ALLOWED.some((allowed) => file.includes(allowed))) continue;
-      expect(readFileSync(file, 'utf8').includes("'timeline'"), file).toBe(false);
+describe('registered shapes are pure additions', () => {
+  it('no source file outside each shape folder and its registration seams names it', () => {
+    for (const kind of SHAPES) {
+      const allowed = [`src/components/${kind}/`, ...COMMON_SEAMS];
+      for (const file of [...walk('src'), ...walk('tools/canvas-cli')]) {
+        if (allowed.some((path) => file.includes(path))) continue;
+        expect(readFileSync(file, 'utf8').includes(`'${kind}'`), `${kind}: ${file}`).toBe(false);
+      }
     }
   });
 });

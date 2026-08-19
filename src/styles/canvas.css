@@ -143,6 +143,43 @@
   overflow: visible;
 }
 
+.metric-node-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.metric-node {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--node-radius);
+  background: var(--card);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+}
+
+.canvas-surface .react-flow__node.selected .metric-node {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent), 0 12px 28px rgba(0, 0, 0, 0.24);
+}
+
+.metric-content {
+  display: grid;
+  padding: 13px 16px 16px;
+  gap: 5px;
+}
+
+.metric-value { color: var(--metric-tone); font-size: 30px; line-height: 1; letter-spacing: -0.035em; }
+.metric-detail { overflow: hidden; color: var(--muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.metric-status { color: var(--metric-tone); font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+.metric-node.status-neutral { --metric-tone: var(--muted); }
+.metric-node.status-success { --metric-tone: var(--sage); }
+.metric-node.status-warning { --metric-tone: var(--accent-strong); }
+.metric-node.status-critical { --metric-tone: var(--danger-strong); }
+
 .canvas-surface .react-flow__node.selected .tree-node {
   border-color: var(--accent);
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent), 0 12px 28px rgba(0, 0, 0, 0.24);
@@ -347,6 +384,8 @@
 .architecture-node.ports-always .react-flow__handle,
 .timeline-node-shell:hover .react-flow__handle,
 .timeline-node-shell.ports-always .react-flow__handle,
+.metric-node-shell:hover .react-flow__handle,
+.metric-node-shell.ports-always .react-flow__handle,
 .canvas-surface .react-flow__node.selected .react-flow__handle { opacity: 1; }
 
 /* The default wire is legible; --wire is the floor its kind colour is lifted above. */

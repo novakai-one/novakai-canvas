@@ -1,6 +1,6 @@
 /** Stable, serialisable vocabulary shared across every module. */
 
-export type NodeKind = 'scope' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline';
+export type NodeKind = 'scope' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline' | 'metric';
 
 /** Relationship vocabulary carried by wires; renderers style each kind distinctly. */
 export type WireKind =
@@ -37,6 +37,9 @@ export interface TimelineStep {
   fork?: string;
 }
 
+/** Semantic metric state; renderers decide its colour and typography. */
+export type MetricStatus = 'neutral' | 'success' | 'warning' | 'critical';
+
 /** One semantic, selectable architecture object. Geometry belongs to a layout. */
 export interface CanvasNode {
   id: string;
@@ -50,6 +53,10 @@ export interface CanvasNode {
   rows?: TreeRow[];
   /** Ordered semantic turns; present only on kind "timeline". */
   steps?: TimelineStep[];
+  /** Required value and optional context; present only on kind "metric". */
+  value?: string;
+  detail?: string;
+  status?: MetricStatus;
   /** Optional identity of the real thing this drawing occurrence represents. */
   subjectRef?: CanvasReference;
   /** Optional deeper explanation opened from this overview occurrence. */
