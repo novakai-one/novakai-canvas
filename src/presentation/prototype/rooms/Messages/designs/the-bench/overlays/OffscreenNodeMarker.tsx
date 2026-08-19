@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useCanvasRuntime } from '../../../../../components/canvas/canvas-runtime-context';
 import type { BenchOffscreenCandidate } from '../model/bench-model';
+import './OffscreenNodeMarker.css';
 
 /** Explicit reveal affordance for newly opened content outside the visible canvas. */
 export function OffscreenNodeMarker({

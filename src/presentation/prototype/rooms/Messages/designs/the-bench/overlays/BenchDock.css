@@ -24,11 +24,11 @@
   cursor: pointer;
 }
 
-.bench-dock__utility {
+.bench-dock button.bench-dock__utility {
   width: 34px;
   height: 34px;
   border-radius: var(--bench-radius-control);
-  font-size: var(--text-lg) !important;
+  font-size: var(--text-lg);
 }
 
 .bench-dock__conversations {
@@ -87,3 +87,7 @@
   white-space: nowrap;
 }
 
+@media (max-width: 760px) {
+  .bench-dock { max-width: calc(100vw - 20px); }
+  .bench-dock__clear { display: none; }
+}

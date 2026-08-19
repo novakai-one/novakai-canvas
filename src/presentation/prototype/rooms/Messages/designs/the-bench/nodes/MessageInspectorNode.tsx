@@ -1,21 +1,22 @@
 import { Handle, Position, type NodeProps } from '@xyflow/react';
 import type { BenchMessageInspectorCanvasNode } from '../model/bench-projection';
 import { ObjectRelationRows } from './ObjectNodeBody';
-import './inspection.css';
+import './InspectionNodeShell.css';
+import './MessageInspectorNode.css';
 
 /** Thin first trail node listing the exact message's typed relationships. */
 export function MessageInspectorNode({ data, selected }: NodeProps<BenchMessageInspectorCanvasNode>) {
   return (
-    <aside className="bench-inspector-node" data-selected={selected}>
+    <aside className="bench-scribe-selection bench-inspection-node-shell bench-inspector-node" data-selected={selected}>
       <Handle id="trail-target" className="bench-trail-handle" type="target" position={Position.Left} />
-      <header className="bench-inspector-node__header">
-        <span>
-          <small>Relations from</small>
+      <header className="bench-inspection-node-shell__header bench-inspector-node__header">
+        <span className="bench-stack-compact">
+          <small className="bench-detail-label">Relations from</small>
           <strong>{data.message.record.id}</strong>
         </span>
         <button
           type="button"
-          className="bench-inspector-node__close nodrag"
+          className="bench-icon-control bench-inspector-node__close nodrag"
           onClick={() => data.actions.closeTrailStep(data.trail.id, data.step.id)}
           aria-label="Close message inspection"
         >

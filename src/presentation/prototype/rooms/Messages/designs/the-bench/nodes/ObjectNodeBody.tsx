@@ -10,6 +10,7 @@ import type {
   BenchObjectRelation,
 } from '../model/bench-model';
 import { InlineDecisionForm } from './InlineDecisionForm';
+import './ObjectNodeBody.css';
 
 /** Shared relationship rows and exact expansion handles for every inspectable record. */
 export function ObjectRelationRows({
@@ -26,7 +27,7 @@ export function ObjectRelationRows({
         <div className="bench-relation-row" key={`${relation.relation}:${relation.record.id}`}>
           <button
             type="button"
-            className="nodrag"
+            className="bench-hover-wash nodrag"
             onClick={(event) => {
               event.stopPropagation();
               onExpand(relation);
@@ -59,13 +60,15 @@ function DecisionRequestAnswer({
   return (
     <section className="bench-object-body__decision" onClick={(event) => event.stopPropagation()}>
       <span>Decision needed · {request.agentName}</span>
-      <p>{request.question}</p>
+      <p className="bench-compact-copy">{request.question}</p>
       {isAnswering ? (
-        <InlineDecisionForm
-          requestId={`object:${request.record.id}`}
-          onSubmit={(ruling) => actions.answerDecisionRequest(request.context, ruling)}
-          onCancel={() => setAnswering(false)}
-        />
+        <div className="bench-object-body__decision-form">
+          <InlineDecisionForm
+            requestId={`object:${request.record.id}`}
+            onSubmit={(ruling) => actions.answerDecisionRequest(request.context, ruling)}
+            onCancel={() => setAnswering(false)}
+          />
+        </div>
       ) : (
         <button type="button" className="nodrag" onClick={() => setAnswering(true)}>Answer</button>
       )}
@@ -93,7 +96,7 @@ export function ObjectNodeBody({
 
   return (
     <div className="bench-object-body" onClick={() => actions.selectRecord(record.id)}>
-      <span className="bench-object-body__kind">{KIND_LABEL[record.kind]}</span>
+      <span className="bench-detail-label">{KIND_LABEL[record.kind]}</span>
       <strong>{record.title}</strong>
       <code>{record.id}</code>
       {summary && <p>{summary}</p>}

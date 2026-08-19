@@ -1,7 +1,6 @@
 .the-bench[data-bench-theme='night-instrument'] {
   /* Replace this block to trial another direction; components consume semantics only. */
   --bench-canvas-deep: #0c1012;
-  --bench-canvas-steel: #111719;
   --bench-canvas-rule: rgba(202, 210, 208, 0.035);
   --bench-canvas-glow: rgba(59, 71, 73, 0.22);
   --bench-field-vignette: rgba(0, 0, 0, 0.2);
@@ -28,10 +27,6 @@
   --bench-mission-oxide: rgba(130, 92, 75, 0.23);
   --bench-mission-moss: rgba(91, 112, 90, 0.23);
   --bench-mission-violet: rgba(105, 96, 124, 0.22);
-  --bench-card-width: 320px;
-  --bench-card-height: 128px;
-  --bench-thread-width: 420px;
-  --bench-thread-height: 640px;
   --bench-radius-card: 10px;
   --bench-radius-control: 5px;
   --bench-radius-dock: 22px;
@@ -49,11 +44,8 @@
   --bench-motion-open: var(--motion-disclose);
   --bench-ease: var(--ease-out);
   --bench-layer-field: 0;
-  --bench-layer-node: 10;
-  --bench-layer-open: 20;
   --bench-layer-screen: 30;
   --bench-layer-overlay: 50;
   --bench-layer-modal: 70;
   --bench-layer-zen: 80;
 }
-

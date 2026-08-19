@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { BenchDecisionRequest, BenchNodeActions } from '../model/bench-model';
 import { InlineDecisionForm } from './InlineDecisionForm';
+import './DecisionRequestCallout.css';
 
 /** Restrained normal-mode lift-out for the first pending Decision Request. */
 export function DecisionRequestCallout({
@@ -25,22 +26,24 @@ export function DecisionRequestCallout({
 
   return (
     <aside className="bench-decision-callout nodrag" aria-label="Pending Decision Request">
-      <header>
-        <span>Decision needed</span>
-        {requestCount > 1 && <small>{requestCount} pending</small>}
+      <header className="bench-action-row">
+        <span className="bench-danger-eyebrow">Decision needed</span>
+        {requestCount > 1 && <small className="bench-danger-eyebrow bench-muted-eyebrow">{requestCount} pending</small>}
       </header>
-      <strong>{request.agentName}</strong>
-      <p>{request.question}</p>
+      <strong className="bench-danger-eyebrow">{request.agentName}</strong>
+      <p className="bench-compact-copy">{request.question}</p>
       {isAnswering ? (
-        <InlineDecisionForm
-          requestId={request.record.id}
-          onSubmit={(ruling) => actions.answerDecisionRequest(request.context, ruling)}
-          onCancel={() => setAnswering(false)}
-        />
+        <div className="bench-decision-callout__form">
+          <InlineDecisionForm
+            requestId={request.record.id}
+            onSubmit={(ruling) => actions.answerDecisionRequest(request.context, ruling)}
+            onCancel={() => setAnswering(false)}
+          />
+        </div>
       ) : (
-        <footer>
-          <button type="button" onClick={() => setAnswering(true)}>Answer</button>
-          <button type="button" onClick={inspect}>Inspect</button>
+        <footer className="bench-action-row">
+          <button type="button" className="bench-control-button bench-danger-action" onClick={() => setAnswering(true)}>Answer</button>
+          <button type="button" className="bench-control-button" onClick={inspect}>Inspect</button>
         </footer>
       )}
     </aside>

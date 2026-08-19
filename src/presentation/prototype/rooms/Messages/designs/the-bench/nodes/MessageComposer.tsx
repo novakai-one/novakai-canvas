@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import type { BenchNodeActions } from '../model/bench-model';
+import './MessageComposer.css';
 
 /** Local composer that submits only meaningful text through the host command port. */
 export function MessageComposer({

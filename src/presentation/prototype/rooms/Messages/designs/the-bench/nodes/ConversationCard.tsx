@@ -1,4 +1,5 @@
 import type { BenchConversation, BenchNodeActions, BenchZoomTier } from '../model/bench-model';
+import './ConversationCard.css';
 
 /** Resting conversation card, including the complete far-zoom spine. */
 export function ConversationCard({
@@ -21,7 +22,7 @@ export function ConversationCard({
       aria-label={`Open conversation with ${agentName}`}
     >
       <span className="bench-card__spine">
-        <span className="bench-card__avatar" data-status={participant?.status ?? 'unknown'}>
+        <span className="bench-avatar bench-card__avatar" data-status={participant?.status ?? 'unknown'}>
           {participant?.initials ?? '—'}
         </span>
         <span className="bench-card__identity">

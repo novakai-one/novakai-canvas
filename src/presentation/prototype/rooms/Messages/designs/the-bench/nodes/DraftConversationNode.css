@@ -28,14 +28,6 @@
   gap: 3px;
 }
 
-.bench-draft__header small {
-  color: var(--bench-scribe-bright);
-  font-family: var(--bench-font-record);
-  font-size: var(--text-eyebrow);
-  letter-spacing: .06em;
-  text-transform: uppercase;
-}
-
 .bench-draft__header strong {
   font-family: var(--bench-font-display);
   font-size: var(--text-lg);
@@ -60,11 +52,6 @@
   background: transparent;
   text-align: left;
   cursor: pointer;
-}
-
-.bench-draft__agents > button:hover,
-.bench-draft__agents > button:focus-visible {
-  background: var(--bench-scribe-wash);
 }
 
 .bench-draft__agents > button > span {
@@ -95,4 +82,3 @@
   font-size: var(--text-sm);
   text-align: center;
 }
-

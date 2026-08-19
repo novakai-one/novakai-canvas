@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from 'react';
 import type { BenchMessage, BenchNodeActions } from '../model/bench-model';
 import { MessageRecord } from './MessageRecord';
+import './MessageTranscript.css';
 
 /** Scrollable transcript shared by the canvas thread and later Zen presentation. */
 export function MessageTranscript({

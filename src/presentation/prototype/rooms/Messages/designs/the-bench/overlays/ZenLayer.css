@@ -28,3 +28,7 @@
   cursor: pointer;
 }
 
+@media (max-width: 760px) {
+  .bench-zen { padding: var(--space-2); }
+  .bench-zen__thread { width: calc(100vw - 16px); height: calc(100vh - 64px); }
+}

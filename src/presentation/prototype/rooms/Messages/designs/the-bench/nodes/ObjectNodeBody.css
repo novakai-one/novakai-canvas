@@ -16,10 +16,6 @@
   cursor: pointer;
 }
 
-.bench-relation-row > button:hover {
-  background: var(--bench-scribe-wash);
-}
-
 .bench-relation-row span,
 .bench-relation-row small {
   color: var(--bench-ink-faint);
@@ -38,6 +34,10 @@
 
 .bench-relation-row__source {
   right: -13px;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--bench-scribe-bright);
+  background: var(--bench-surface-rest);
   opacity: 0;
 }
 
@@ -52,12 +52,12 @@
   cursor: pointer;
 }
 
-.bench-related-node .bench-object-body {
-  max-height: 420px;
+.bench-object-body__relations {
+  display: grid;
+  max-height: 300px;
   overflow-y: auto;
-  overscroll-behavior: contain;
+  padding: var(--space-2);
 }
-
 .bench-object-body > strong {
   font-family: var(--bench-font-display);
   font-size: var(--text-lg);
@@ -136,13 +136,6 @@
   text-transform: uppercase;
 }
 
-.bench-object-body__decision > p {
-  margin: 0;
-  color: var(--bench-ink-secondary);
-  font-size: var(--text-xs);
-  line-height: var(--leading-relaxed);
-}
-
 .bench-object-body__decision > button {
   justify-self: start;
   padding: 6px 9px;
@@ -153,4 +146,3 @@
   font: var(--text-xs) var(--bench-font-record);
   cursor: pointer;
 }
-

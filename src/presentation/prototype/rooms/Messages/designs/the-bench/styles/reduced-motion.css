@@ -1,6 +1,0 @@
-@media (prefers-reduced-motion: reduce) {
-  .the-bench {
-    --bench-motion-feedback: 0ms;
-    --bench-motion-open: 0ms;
-  }
-}

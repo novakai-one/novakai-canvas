@@ -1,5 +1,4 @@
-.bench-inspector-node,
-.bench-related-node {
+.bench-inspection-node-shell {
   position: relative;
   width: 100%;
   overflow: visible;
@@ -10,8 +9,21 @@
   box-shadow: var(--bench-shadow-card);
 }
 
-.bench-inspector-node[data-selected='true'],
-.bench-related-node[data-selected='true'] {
-  border-color: var(--bench-scribe);
+.bench-trail-handle {
+  left: -5px;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--bench-scribe-bright);
+  background: var(--bench-surface-rest);
 }
 
+.bench-inspection-node-shell__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 52px;
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--bench-rule-soft);
+  cursor: grab;
+}

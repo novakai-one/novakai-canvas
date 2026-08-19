@@ -1,6 +1,7 @@
 import { Handle, Position } from '@xyflow/react';
 import { KIND_LABEL } from '../../../../../object-graph/contract';
 import type { BenchMessage, BenchNodeActions } from '../model/bench-model';
+import './MessageRecord.css';
 
 function readableTime(value: string): string {
   const date = new Date(value);

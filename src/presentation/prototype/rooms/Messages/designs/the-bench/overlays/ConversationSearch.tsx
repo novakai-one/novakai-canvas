@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { BenchController } from '../model/useBenchController';
+import './ConversationSearch.css';
 
 /** Keyboard-first conversation finder over the shared Bench relational model. */
 export function ConversationSearch({ controller }: { controller: BenchController }) {
@@ -10,7 +11,7 @@ export function ConversationSearch({ controller }: { controller: BenchController
     <div className="bench-search" role="dialog" aria-modal="true" aria-label="Find a conversation">
       <div className="bench-search__panel">
         <label>
-          <span>Find a conversation</span>
+          <span className="bench-eyebrow">Find a conversation</span>
           <input
             ref={inputRef}
             value={controller.searchQuery}
@@ -28,6 +29,7 @@ export function ConversationSearch({ controller }: { controller: BenchController
           {controller.searchResults.map((result) => (
             <button
               type="button"
+              className="bench-hover-wash"
               key={result.conversation.thread.id}
               onClick={() => controller.revealConversation(result.conversation.thread.id)}
             >

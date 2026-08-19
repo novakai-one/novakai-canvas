@@ -3,9 +3,9 @@
 }
 
 .bench-conversation-menu__trigger {
-  width: auto !important;
+  --bench-icon-control-width: auto;
+  --bench-icon-control-font-size: var(--text-xs);
   min-width: 34px;
-  font-size: var(--text-xs) !important;
   letter-spacing: 1px;
 }
 
@@ -59,9 +59,8 @@
   font: var(--text-xs) var(--bench-font-body);
 }
 
-.bench-conversation-menu__danger {
+.bench-conversation-menu__popover .bench-conversation-menu__danger {
   margin-top: 4px;
-  border-top: 1px solid var(--bench-rule-soft) !important;
-  color: var(--bench-danger) !important;
+  border-top: 1px solid var(--bench-rule-soft);
+  color: var(--bench-danger);
 }
-

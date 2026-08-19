@@ -2,6 +2,7 @@ import type { ObjectRecord } from '../../../../../object-graph/contract';
 import type { BenchConversation, BenchNodeActions } from '../model/bench-model';
 import { ConversationThread } from '../nodes/ConversationThread';
 import { BlockedAgentBanner } from './BlockedAgentBanner';
+import './ZenLayer.css';
 
 /** Focused presentation of the existing conversation implementation. */
 export function ZenLayer({
@@ -43,6 +44,7 @@ export function ZenLayer({
           missions={missions}
           savedScrollTop={savedScrollTop}
           actions={actions}
+          showCollapse={false}
         />
       </div>
     </section>
