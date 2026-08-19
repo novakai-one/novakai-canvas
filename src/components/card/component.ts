@@ -5,12 +5,13 @@
  */
 
 import { estimateNodeSize } from './measure.ts';
-import type { DiagramComponent } from '../component.ts';
+import { namedNodeDeclaration, type DiagramComponent } from '../component.ts';
 
 export function cardComponent<K extends 'module' | 'object' | 'runtime' | 'resource'>(kind: K): DiagramComponent<K> {
   return {
     kind,
     dslKeyword: kind,
+    declaration: namedNodeDeclaration(kind, 'Session broker', 'Owns leases and allocation'),
     layoutRole: 'leaf',
     measure: (node, ctx) => estimateNodeSize(node.label, node.description, ctx.interfaceLines, ctx.typeLines),
   };

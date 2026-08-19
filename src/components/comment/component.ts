@@ -5,11 +5,12 @@
  * keeping its own copy of this formula.
  */
 
-import type { DiagramComponent } from '../component.ts';
+import { textNodeDeclaration, type DiagramComponent } from '../component.ts';
 
 export const commentComponent: DiagramComponent<'comment'> = {
   kind: 'comment',
   dslKeyword: 'note',
+  declaration: textNodeDeclaration('note', 'Why this shape is load-bearing.'),
   layoutRole: 'leaf',
   measure: (node) => ({ width: 280, height: 48 + 21 * Math.ceil(node.label.length / 34) }),
 };

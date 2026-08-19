@@ -4,15 +4,18 @@
  * supplies the floor a newly created, still-empty group starts from.
  */
 
-import type { DiagramComponent } from '../component.ts';
+import { namedNodeDeclaration, type DiagramComponent } from '../component.ts';
+
+const zoneDeclaration = namedNodeDeclaration('zone', 'Stores', 'Persistent data');
 
 export const groupComponent: DiagramComponent<'group'> = {
   kind: 'group',
   dslKeyword: 'zone',
-  helpLines: [
-    'zones         zone "Stores" ... end                nested containers; zones nest',
-    '              inside scopes and inside each other; labels unique per map',
-  ],
+  declaration: {
+    ...zoneDeclaration,
+    syntax: `${zoneDeclaration.syntax} ... end`,
+    example: 'zone "Stores" "Persistent data"\n  resource "missions.json"\nend',
+  },
   layoutRole: 'container',
   measure: () => ({ width: 320, height: 160 }),
 };

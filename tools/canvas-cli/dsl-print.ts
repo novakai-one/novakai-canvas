@@ -70,8 +70,7 @@ export function printRecord(record: DiagramRecord, context?: CrossDiagramContext
   const emitContainer = (containerId: string | undefined, indent: string): void => {
     for (const node of childrenOf(nodes, containerId)) {
       const component = componentFor(node.kind);
-      const declaration = `${indent}${component.dslKeyword} ${quote(node.label)}`
-        + `${node.description ? ` ${quote(node.description)}` : ''}`;
+      const declaration = `${indent}${component.declaration.print(node)}`;
       if (component.layoutRole === 'container') {
         lines.push(declaration);
         emitContainer(node.id as string, `${indent}  `);

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { CrossDiagramLink, DiagramRecord } from '../../src/canvas.ts';
+import { componentFor } from '../../src/components/registry.ts';
 import { buildRecord, buildRecords } from './dsl-fixture.ts';
 import { listMaps, printLibrary, printRecord } from './dsl-print.ts';
 
@@ -124,6 +125,9 @@ scope "Every Keyword" "one of each"
       ['comment', 'group', 'group', 'module', 'module', 'object', 'resource', 'runtime', 'timeline', 'tree'],
     );
     const printed = printRecord(record);
+    for (const node of Object.values(record.nodes).filter((candidate) => candidate.parentId)) {
+      expect(printed).toContain(componentFor(node.kind).declaration.print(node));
+    }
     for (const statement of ['module "A module"', 'object "An object"', 'runtime "A runtime"',
       'resource "a-resource.json"', 'note "A free-text note."', 'tree "A tree"',
       'zone "A zone"', 'row proj1 project active label "Project One"',

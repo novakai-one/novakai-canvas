@@ -14,9 +14,30 @@ import type { CanvasNode as RecordNode } from '../domain/records.ts';
 
 export interface Size { width: number; height: number }
 
+/** Semantic fields produced by one component-owned parent declaration. */
+export interface DslNodeContent {
+  label: string;
+  description?: string;
+  content?: Record<string, unknown>;
+}
+
+/** A component parent declaration either parses fully or explains the exact correction. */
+export type DslNodeParseResult = DslNodeContent | { error: string; hint: string };
+
+/** Machine-readable parent declaration used by parse, print, help, and capability discovery. */
+export interface DslNodeDeclaration {
+  syntax: string;
+  example: string;
+  allowsBody: boolean;
+  parse(tokens: string[]): DslNodeParseResult;
+  print(node: RecordNode): string;
+}
+
 /** Statement lines a component's node may own in the DSL (e.g. tree's `row`, timeline's `step`). */
 export interface DslChildStatement {
   keyword: string;                       // 'row', 'step'
+  syntax: string;
+  example: string;
   /** The node field the parsed content collects into ('rows', 'steps') — must match a key in `contentFields`. */
   contentKey: string;
   parse(tokens: string[], line: number): { content: unknown } | { error: string; hint: string };
@@ -42,16 +63,64 @@ export interface DiagramComponent<K extends string = string> {
   kind: K;
   /** DSL statement keyword that declares this node (usually === kind). */
   dslKeyword: string;
+  /** The sole owner of this component's parent-statement grammar. */
+  declaration: DslNodeDeclaration;
   /** Extra zod fields this kind stores beyond the base node (id/kind/label/description/parentId). */
   contentFields?: Record<string, import('zod').ZodTypeAny>;
   dslChildren?: DslChildStatement[];
   /** Selectable children owned by this component node. */
   items?(node: RecordNode): readonly ComponentItem[];
-  /** Component-owned grammar lines included in `./canvas help`. */
-  helpLines?: readonly string[];
   layoutRole: 'leaf' | 'container';
   /** Content-driven size for auto-layout. ctx gives interface/type lines already resolved. */
   measure(node: RecordNode, ctx: { interfaceLines: string[]; typeLines: string[] }): Size;
   /** SVG body for `./canvas snapshot`. Return undefined to use the shared card renderer. */
   renderSvg?(node: RecordNode, box: { x: number; y: number; width: number; height: number }): string;
+}
+
+function quote(value: string): string {
+  return `"${value}"`;
+}
+
+/** Creates the existing `keyword name [description]` declaration without duplicating grammar. */
+export function namedNodeDeclaration(
+  keyword: string,
+  exampleLabel: string,
+  exampleDescription?: string,
+): DslNodeDeclaration {
+  const syntax = `${keyword} "name" ["optional description"]`;
+  const example = `${keyword} ${quote(exampleLabel)}`
+    + `${exampleDescription ? ` ${quote(exampleDescription)}` : ''}`;
+  return {
+    syntax,
+    example,
+    allowsBody: true,
+    parse(tokens) {
+      if (tokens.length < 2) return { error: `${keyword} needs a name`, hint: example };
+      return { label: tokens[1], ...(tokens[2] === undefined ? {} : { description: tokens[2] }) };
+    },
+    print(node) {
+      return `${keyword} ${quote(node.label)}${node.description ? ` ${quote(node.description)}` : ''}`;
+    },
+  };
+}
+
+/** Creates a text-only declaration such as `note`; it cannot own nested DSL lines. */
+export function textNodeDeclaration(
+  keyword: string,
+  exampleText: string,
+): DslNodeDeclaration {
+  const syntax = `${keyword} "text"`;
+  const example = `${keyword} ${quote(exampleText)}`;
+  return {
+    syntax,
+    example,
+    allowsBody: false,
+    parse(tokens) {
+      if (tokens.length < 2) return { error: `${keyword} needs text`, hint: example };
+      return { label: tokens[1] };
+    },
+    print(node) {
+      return `${keyword} ${quote(node.label)}`;
+    },
+  };
 }

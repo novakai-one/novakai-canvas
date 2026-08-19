@@ -4,20 +4,22 @@
  * The shape vocabulary — which keyword declares which node kind, and which child lines a node
  * may own — comes from the component registry, so a new shape is a registration, not an edit
  * here. Only grammar words are written down in this file: `scope`, `end`, `wire`, `type`, and
- * method lines, plus the two statements whose shape is not "keyword name [description]"
- * (`zone`, which opens a block, and `note`, which takes text only).
+ * method lines. Each registered component parses its own parent and child statements.
  */
 
-import type { DslChildStatement } from '../../src/components/component.ts';
+import type { DiagramComponent, DslChildStatement } from '../../src/components/component.ts';
 import { allComponents } from '../../src/components/registry.ts';
+import type { CanvasNode as RecordNode } from '../../src/domain/records.ts';
 
 export interface ParseError { line: number; message: string; hint: string }
 export interface InterfaceAst { name: string; accepts: string[]; returns: string[] }
 export interface TypeAst { name: string; fields: string[] }
 export interface NodeAst {
-  kind: 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree';
+  kind: RecordNode['kind'];
   label: string;
   description?: string;
+  /** Parent-declaration content owned by the registered component. */
+  content: Record<string, unknown>;
   interfaces: InterfaceAst[];
   types: TypeAst[];
   /** Child-statement content, keyed by each statement's `contentKey` ('rows', 'steps', ...). */
@@ -40,15 +42,9 @@ export interface ZoneAst {
 }
 export interface ScopeAst { label: string; description?: string; nodes: NodeAst[]; wires: WireAst[]; zones: ZoneAst[] }
 
-/** Keywords that open a nested container block, closed by `end`. */
-const CONTAINER_KEYWORDS = new Set(
-  allComponents().filter((component) => component.layoutRole === 'container')
-    .map((component) => component.dslKeyword),
-);
-/** Keyword -> node kind for every non-container shape in the registry. */
-const NODE_KINDS = new Map(
-  allComponents().filter((component) => component.layoutRole !== 'container')
-    .map((component) => [component.dslKeyword, component.kind]),
+/** Parent statement keyword -> the component that parses it. */
+const COMPONENTS = new Map<string, DiagramComponent>(
+  allComponents().map((component) => [component.dslKeyword, component]),
 );
 /** Child lines a node owns (tree's `row`), by keyword, with the kind allowed to hold them. */
 const CHILD_STATEMENTS = new Map<string, { kind: string; owner: string; statement: DslChildStatement }>(
@@ -241,20 +237,42 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
       continue;
     }
 
-    if (CONTAINER_KEYWORDS.has(keyword)) {
+    const component = COMPONENTS.get(keyword);
+    if (component) {
       if (!scope) {
         fail(`${keyword} outside a scope`, 'declare a scope first: scope "My System"');
         continue;
       }
-      if (tokens.length < 2) {
-        fail(`${keyword} needs a name`, `${keyword} "Stores" "optional description"`);
+      const parsed = component.declaration.parse(tokens);
+      if ('error' in parsed) {
+        fail(parsed.error, parsed.hint);
         continue;
       }
-      const zone: ZoneAst = { label: tokens[1], description: tokens[2], nodes: [], zones: [], line: lineNumber };
-      if (zoneStack.length > 0) zoneStack[zoneStack.length - 1].zones.push(zone);
-      else scope.zones.push(zone);
-      zoneStack.push(zone);
-      node = null;
+      if (component.layoutRole === 'container') {
+        const zone: ZoneAst = {
+          label: parsed.label,
+          ...(parsed.description === undefined ? {} : { description: parsed.description }),
+          nodes: [],
+          zones: [],
+          line: lineNumber,
+        };
+        if (zoneStack.length > 0) zoneStack[zoneStack.length - 1].zones.push(zone);
+        else scope.zones.push(zone);
+        zoneStack.push(zone);
+        node = null;
+        continue;
+      }
+      node = {
+        kind: component.kind as NodeAst['kind'],
+        label: parsed.label,
+        ...(parsed.description === undefined ? {} : { description: parsed.description }),
+        content: parsed.content ?? {},
+        interfaces: [],
+        types: [],
+        children: {},
+      };
+      nodeSink().push(node);
+      if (!component.declaration.allowsBody) node = null;
       continue;
     }
 
@@ -269,44 +287,6 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
       }
       zoneStack.pop();
       node = null;
-      continue;
-    }
-
-    const kind = NODE_KINDS.get(keyword);
-
-    // `note` is the one shape whose statement is text only: no description, no member lines.
-    if (keyword === 'note' && kind !== undefined) {
-      if (!scope) {
-        fail('note outside a scope', 'declare a scope first: scope "My System"');
-        continue;
-      }
-      if (tokens.length < 2) {
-        fail('note needs text', 'note "Why this shape is load-bearing."');
-        continue;
-      }
-      nodeSink().push({ kind: kind as NodeAst['kind'], label: tokens[1], interfaces: [], types: [], children: {} });
-      node = null;
-      continue;
-    }
-
-    if (kind !== undefined) {
-      if (!scope) {
-        fail(`${keyword} outside a scope`, 'declare a scope first: scope "My System"');
-        continue;
-      }
-      if (tokens.length < 2) {
-        fail(`${keyword} needs a name`, `${keyword} "Session broker" "optional description"`);
-        continue;
-      }
-      node = {
-        kind: kind as NodeAst['kind'],
-        label: tokens[1],
-        description: tokens[2],
-        interfaces: [],
-        types: [],
-        children: {},
-      };
-      nodeSink().push(node);
       continue;
     }
 

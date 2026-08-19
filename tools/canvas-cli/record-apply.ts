@@ -4,6 +4,7 @@ import type {
   CanvasLibrary, CanvasLibraryRepository, DiagramRecord, RecordCommand,
 } from '../../src/canvas.ts';
 import type { CompiledDiagram } from './compile.ts';
+import { contentFieldsFor } from '../../src/components/registry.ts';
 import {
   asId, layoutRecord, placementsOf, type PlacedNode, type RecordNode, type RecordPlacement,
 } from './record-graph.ts';
@@ -42,11 +43,15 @@ function depthOf(nodes: Record<string, RecordNode>, id: string): number {
 
 /** Whether two nodes are the same in every way a `node.update` command cannot express. */
 function structurallyEqual(left: RecordNode, right: RecordNode): boolean {
+  const componentContentMatches = left.kind === right.kind
+    && Object.keys(contentFieldsFor(left.kind)).every((field) =>
+      JSON.stringify((left as unknown as Record<string, unknown>)[field] ?? null)
+      === JSON.stringify((right as unknown as Record<string, unknown>)[field] ?? null));
   return left.kind === right.kind
     && left.parentId === right.parentId
     && JSON.stringify(left.interfaceIds) === JSON.stringify(right.interfaceIds)
     && JSON.stringify(left.typeIds) === JSON.stringify(right.typeIds)
-    && JSON.stringify(left.rows ?? null) === JSON.stringify(right.rows ?? null)
+    && componentContentMatches
     && JSON.stringify(left.subjectRef ?? null) === JSON.stringify(right.subjectRef ?? null)
     && left.expandsToDiagramId === right.expandsToDiagramId;
 }

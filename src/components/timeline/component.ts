@@ -8,9 +8,10 @@
 
 import { z } from 'zod';
 import type { TimelineStep } from '../../domain/model.ts';
-import type { ComponentItem, DiagramComponent } from '../component.ts';
+import { namedNodeDeclaration, type ComponentItem, type DiagramComponent } from '../component.ts';
 
-const STEP_SHAPE = 'step "turn 1" [fork="session-id"]';
+const STEP_SYNTAX = 'step "label" [fork="session-id"]';
+const STEP_EXAMPLE = 'step "turn 3" fork="session-xyz789"';
 const DOT = '#0F6E56';
 const COLORS = { card: '#252529', ink: '#ececee', border: '#2f2f34', muted: '#9a9aa2' };
 const FONT = 'Inter, sans-serif';
@@ -45,9 +46,7 @@ function timelineItems(steps: TimelineStep[]): ComponentItem[] {
 export const timelineComponent: DiagramComponent<'timeline'> = {
   kind: 'timeline',
   dslKeyword: 'timeline',
-  helpLines: [
-    'steps         step "label" [fork="session-id"]      under a timeline node',
-  ],
+  declaration: namedNodeDeclaration('timeline', 'Session history'),
   layoutRole: 'leaf',
   contentFields: {
     steps: z.array(z.object({
@@ -59,11 +58,13 @@ export const timelineComponent: DiagramComponent<'timeline'> = {
   },
   dslChildren: [{
     keyword: 'step',
+    syntax: STEP_SYNTAX,
+    example: STEP_EXAMPLE,
     contentKey: 'steps',
     parse(tokens) {
       const label = tokens[1];
       if (label === undefined || label.length === 0 || label.includes('=')) {
-        return { error: 'step needs a label', hint: STEP_SHAPE };
+        return { error: 'step needs a label', hint: STEP_EXAMPLE };
       }
       let fork: string | undefined;
       for (let index = 2; index < tokens.length; index += 1) {
@@ -71,7 +72,7 @@ export const timelineComponent: DiagramComponent<'timeline'> = {
         // `fork="x"` tokenizes as `fork=` plus the quoted value; `fork=x` arrives whole.
         if (token === 'fork=' && tokens[index + 1] !== undefined) fork = tokens[(index += 1)];
         else if (token.startsWith('fork=') && token.length > 'fork='.length) fork = token.slice('fork='.length);
-        else return { error: `unexpected "${token}" in step`, hint: STEP_SHAPE };
+        else return { error: `unexpected "${token}" in step`, hint: STEP_SYNTAX };
       }
       const step: TimelineStep = { id: stepId(label), label, ...(fork ? { fork } : {}) };
       return { content: step };

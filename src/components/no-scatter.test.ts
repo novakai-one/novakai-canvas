@@ -12,6 +12,7 @@ const ALLOWED = [
   'src/components/timeline/',
   'src/components/registry.ts',
   'src/components/web-registry.tsx',
+  'src/domain/model.ts',
   'src/domain/records.ts',
 ];
 

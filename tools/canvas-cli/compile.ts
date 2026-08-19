@@ -215,6 +215,7 @@ export function compile(
           parentId: asId(parentId),
           interfaceIds: interfaceIds.map((each) => asId(each)),
           typeIds: typeIds.map((each) => asId(each)),
+          ...nodeAst.content,
           ...childContent,
         };
       }

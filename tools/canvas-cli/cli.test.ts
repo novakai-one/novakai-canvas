@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
-import { cp, mkdtemp, readFile } from 'node:fs/promises';
+import { cp, mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import type { DiagramRecord, LibraryIndex } from '../../src/canvas.ts';
@@ -32,6 +33,8 @@ scope "CLI Demo"
     acquire(AgentId) -> DemoHandle
     type DemoHandle { id, endpoint }
   module "Demo client"
+  timeline "Demo history"
+    step "turn 1"
   wire "Demo client" -> "Demo broker" : acquire(AgentId) -> DemoHandle [queries]
 `;
 
@@ -49,9 +52,22 @@ function placementsOf(record: DiagramRecord) {
   return record.layouts[record.views[record.activeViewId].layoutId].placements;
 }
 
+async function dataHashes(): Promise<Record<string, string>> {
+  const files = [
+    'library.json',
+    'canvas-preferences.json',
+    ...(await readdir(join(dataDir, 'diagrams'))).sort().map((name) => `diagrams/${name}`),
+  ];
+  return Object.fromEntries(await Promise.all(files.map(async (file) => [
+    file,
+    createHash('sha256').update(await readFile(join(dataDir, file))).digest('hex'),
+  ])));
+}
+
 beforeEach(async () => {
   dataDir = await mkdtemp(join(tmpdir(), 'canvas-cli-'));
   await cp(join(REAL_DATA, 'library.json'), join(dataDir, 'library.json'));
+  await cp(join(REAL_DATA, 'canvas-preferences.json'), join(dataDir, 'canvas-preferences.json'));
   await cp(join(REAL_DATA, 'diagrams'), join(dataDir, 'diagrams'), { recursive: true });
 });
 
@@ -97,6 +113,13 @@ describe('canvas CLI', () => {
     const replay = await runCli(['apply', '--file', dataDir, '--operation-id', 'dsl-import-1'], DEMO);
     expect(replay.code, replay.stderr).toBe(0);
     expect((await readRecord('cli-demo')).revision).toBe(record.revision);
+
+    const changed = DEMO.replace('step "turn 1"', 'step "turn 2" fork="session-demo"');
+    const changedApply = await runCli(['apply', '--file', dataDir], changed);
+    expect(changedApply.code, changedApply.stderr).toBe(0);
+    expect((await readRecord('cli-demo')).nodes['cli-demo--demo-history'].steps).toEqual([
+      { id: 'turn-2', label: 'turn 2', fork: 'session-demo' },
+    ]);
   });
 
   it('read prints the applied scope back as DSL', async () => {
@@ -181,6 +204,74 @@ describe('canvas CLI', () => {
       nodeAliases: { group: 'scope' },
     });
     expect(description.commandKinds).toContain('node.add');
+    expect(description.dsl).toEqual({
+      components: [
+        {
+          kind: 'group', keyword: 'zone',
+          declaration: {
+            syntax: 'zone "name" ["optional description"] ... end',
+            example: 'zone "Stores" "Persistent data"\n  resource "missions.json"\nend',
+          },
+          children: [],
+        },
+        ...['module', 'object', 'runtime', 'resource'].map((kind) => ({
+          kind, keyword: kind,
+          declaration: {
+            syntax: `${kind} "name" ["optional description"]`,
+            example: `${kind} "Session broker" "Owns leases and allocation"`,
+          },
+          children: [],
+        })),
+        {
+          kind: 'comment', keyword: 'note',
+          declaration: { syntax: 'note "text"', example: 'note "Why this shape is load-bearing."' },
+          children: [],
+        },
+        {
+          kind: 'tree', keyword: 'tree',
+          declaration: { syntax: 'tree "name" ["optional description"]', example: 'tree "Delivery hierarchy"' },
+          children: [{
+            keyword: 'row',
+            syntax: 'row <id> <project|mission|task|bucket> [status] [parent=<id>] [badges=a,b] [label "text"]',
+            example: 'row project-1 project active label "Project One"',
+          }],
+        },
+        {
+          kind: 'timeline', keyword: 'timeline',
+          declaration: { syntax: 'timeline "name" ["optional description"]', example: 'timeline "Session history"' },
+          children: [{
+            keyword: 'step', syntax: 'step "label" [fork="session-id"]',
+            example: 'step "turn 3" fork="session-xyz789"',
+          }],
+        },
+      ],
+    });
+  });
+
+  it('check validates and lays out file or stdin DSL without changing stored data', async () => {
+    const candidate = join(dataDir, 'candidate.canvas');
+    await writeFile(candidate, DEMO, 'utf8');
+    const before = await dataHashes();
+
+    const valid = await runCli(['check', candidate, '--file', dataDir]);
+    expect(valid.code, valid.stderr).toBe(0);
+    expect(JSON.parse(valid.stdout)).toEqual({
+      status: 'valid',
+      diagrams: [{ id: 'cli-demo', name: 'CLI Demo', nodes: 4, wires: 1 }],
+      warnings: [],
+    });
+
+    const invalid = await runCli(['check', '--file', dataDir], 'scope Demo\n  banana "Split"\n');
+    expect(invalid.code, invalid.stderr).toBe(1);
+    expect(JSON.parse(invalid.stdout)).toEqual({
+      status: 'invalid',
+      errors: [{
+        line: 2,
+        reason: 'unknown statement "banana"',
+        correction: expect.stringContaining('valid statements:'),
+      }],
+    });
+    expect(await dataHashes()).toEqual(before);
   });
 
   it('applies an idempotent agent batch once and persists its authorship', async () => {
@@ -319,7 +410,7 @@ scope "Zoned Demo"
   it('help teaches the grammar and every verb', async () => {
     const { code, stdout } = await runCli(['help']);
     expect(code).toBe(0);
-    for (const verb of ['maps', 'read', 'describe', 'batch', 'apply', 'rm', 'snapshot']) expect(stdout).toContain(verb);
+    for (const verb of ['maps', 'read', 'describe', 'batch', 'apply', 'check', 'rm', 'snapshot']) expect(stdout).toContain(verb);
     expect(stdout).toContain('scope "');
     expect(stdout).toContain('wire');
     expect(stdout).toContain('->');

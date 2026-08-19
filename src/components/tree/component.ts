@@ -8,12 +8,12 @@ import { z } from 'zod';
 import { orderedTreeRows, treeRowDepth, treeRowText } from './content.ts';
 import { TREE_TONE_COLORS } from '../../presentation/wire-styles.ts';
 import type { TreeRow } from '../../domain/model.ts';
-import type { ComponentItem, DiagramComponent } from '../component.ts';
+import { namedNodeDeclaration, type ComponentItem, type DiagramComponent } from '../component.ts';
 
 const COLORS = { card: '#252529', ink: '#ececee', border: '#2f2f34' };
 const FONT = 'Inter, sans-serif';
 const ROW_KINDS = new Set(['project', 'mission', 'task', 'bucket']);
-const ROW_SHAPE = 'row <id> <kind> [status] [parent=<id>] [badges=a,b] [label "text"]';
+const ROW_SHAPE = 'row <id> <project|mission|task|bucket> [status] [parent=<id>] [badges=a,b] [label "text"]';
 
 function esc(text: string): string {
   return text
@@ -43,10 +43,7 @@ function treeItems(rows: TreeRow[]): ComponentItem[] {
 export const treeComponent: DiagramComponent<'tree'> = {
   kind: 'tree',
   dslKeyword: 'tree',
-  helpLines: [
-    'rows          row <id> <kind> [status] [parent=<id>] [badges=a,b] [label "text"]',
-    '              under a tree node; kind: project|mission|task|bucket',
-  ],
+  declaration: namedNodeDeclaration('tree', 'Delivery hierarchy'),
   layoutRole: 'leaf',
   contentFields: {
     rows: z.array(z.object({
@@ -63,6 +60,8 @@ export const treeComponent: DiagramComponent<'tree'> = {
   },
   dslChildren: [{
     keyword: 'row',
+    syntax: ROW_SHAPE,
+    example: 'row project-1 project active label "Project One"',
     contentKey: 'rows',
     parse(tokens) {
       if (tokens.length < 3) {

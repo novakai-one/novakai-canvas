@@ -3,15 +3,24 @@
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import type {
-  CanvasLibrary, CrossDiagramLink, DiagramRecord, RecordCommand,
+import {
+  createCanvasLibrary,
+  diagramRecordSchema,
+  type CanvasLibrary,
+  type CrossDiagramLink,
+  type DiagramRecord,
+  type RecordCommand,
 } from '../../src/canvas.ts';
 import { allComponents, kindList } from '../../src/components/registry.ts';
 import { parseDsl } from './dsl-parse.ts';
 import { compile, type CrossDiagramWire } from './compile.ts';
 import { listMaps, printLibrary, printRecord, type CrossDiagramContext } from './dsl-print.ts';
-import { dataDirectoryOf, openLibrary, readAllRecords, type OpenedLibrary } from './library-io.ts';
-import { applyCompiledDiagram, removalCommandsFor } from './record-apply.ts';
+import {
+  createDirectoryLibraryRepository, dataDirectoryOf, openLibrary, readAllRecords, type OpenedLibrary,
+} from './library-io.ts';
+import {
+  applyCompiledDiagram, blankRecord, recordForCompiled, removalCommandsFor,
+} from './record-apply.ts';
 import { asId, layoutRecord } from './record-graph.ts';
 import { renderRecordSvg } from './snapshot.ts';
 import { slugify } from './slug.ts';
@@ -23,7 +32,10 @@ const componentHelp = [
     .filter((component) => component.layoutRole === 'leaf')
     .map((component) => component.dslKeyword)
     .join(' | ')}`,
-  ...allComponents().flatMap((component) => component.helpLines ?? []).map((line) => `  ${line}`),
+  ...allComponents().flatMap((component) => [
+    `  ${component.kind.padEnd(12)} ${component.declaration.syntax}`,
+    ...(component.dslChildren ?? []).map((child) => `  ${child.contentKey.padEnd(12)} ${child.syntax}`),
+  ]),
 ].join('\n');
 
 const HELP = `canvas — draw architecture maps from your terminal
@@ -34,6 +46,7 @@ Usage
   ./canvas describe                 print the machine-readable command vocabulary
   ./canvas batch <map> [json-file]  atomically apply one typed change set (file or stdin)
   ./canvas apply [dsl-file]         create/replace maps from DSL (file or stdin)
+  ./canvas check [dsl-file]         validate and lay out DSL without writing (file or stdin)
   ./canvas rm <map> [node|zone]   remove a node or zone (zones cascade), or a whole map
   ./canvas snapshot <map> [-o out]  render a map to SVG
   ./canvas help                     this text
@@ -231,6 +244,76 @@ async function runApply(opened: OpenedLibrary, args: Args): Promise<void> {
   process.stdout.write(`${lines.join('\n')}\n`);
 }
 
+interface CheckError { line: number | null; reason: string; correction: string }
+
+function writeInvalidCheck(errors: CheckError[]): void {
+  process.stdout.write(`${JSON.stringify({ status: 'invalid', errors }, null, 2)}\n`);
+  process.exitCode = 1;
+}
+
+/** Validates through production parse, compile, schema, and layout without opening a writable library. */
+async function runCheck(args: Args): Promise<void> {
+  const source = readStdinOr(args.positional[0], 'check needs DSL: pass a file, or pipe it in. See ./canvas help');
+  const parsed = parseDsl(source);
+  const repository = createDirectoryLibraryRepository(args.dataDir);
+
+  let records: Record<string, DiagramRecord>;
+  let links: CrossDiagramLink[];
+  try {
+    const index = await repository.readIndex();
+    const library = createCanvasLibrary(repository, index, {
+      actor: { id: 'canvas-cli', kind: 'system' },
+      provenance: { source: 'cli', sourceRef: args.positional[0] ?? 'stdin-check' },
+    });
+    records = await readAllRecords(repository, library);
+    links = Object.values(index.links);
+  } catch (error) {
+    writeInvalidCheck([{
+      line: null,
+      reason: error instanceof Error ? error.message : String(error),
+      correction: 'pass --file with a readable diagram-record data directory',
+    }]);
+    return;
+  }
+
+  const compiled = compile(parsed.scopes, records, links);
+  const errors: CheckError[] = [
+    ...parsed.errors.map((error) => ({
+      line: error.line, reason: error.message, correction: error.hint,
+    })),
+    ...compiled.errors.map((error) => ({
+      line: null, reason: error.message, correction: error.hint,
+    })),
+  ];
+  if (parsed.scopes.length === 0 && parsed.errors.length === 0) {
+    errors.push({ line: null, reason: 'no scopes found in the DSL', correction: 'declare scope "My System"' });
+  }
+  if (errors.length > 0) {
+    writeInvalidCheck(errors);
+    return;
+  }
+
+  try {
+    const diagrams = compiled.diagrams.map((diagram) => {
+      const before = records[diagram.id] ?? blankRecord(diagram.id, diagram.name);
+      const laidOut = diagramRecordSchema.parse(recordForCompiled(before, diagram));
+      return {
+        id: diagram.id,
+        name: diagram.name,
+        nodes: Object.keys(laidOut.nodes).filter((nodeId) => nodeId !== diagram.rootNodeId).length,
+        wires: Object.keys(laidOut.wires).length + diagram.crossDiagramWires.length,
+      };
+    });
+    process.stdout.write(`${JSON.stringify({ status: 'valid', diagrams, warnings: compiled.warnings }, null, 2)}\n`);
+  } catch (error) {
+    writeInvalidCheck([{
+      line: null,
+      reason: error instanceof Error ? error.message : String(error),
+      correction: 'compare the DSL with ./canvas describe and correct the invalid component content',
+    }]);
+  }
+}
+
 async function runRemove(opened: OpenedLibrary, args: Args): Promise<void> {
   const diagramId = diagramIdOrFail(opened.library, args.positional[0]);
 
@@ -320,6 +403,21 @@ function describeCapability(): unknown {
       commands: 'RecordCommand[] — applied in order, all or nothing',
     },
     outcomes: ['applied', 'duplicate', 'conflict', 'rejected'],
+    dsl: {
+      components: allComponents().map((component) => ({
+        kind: component.kind,
+        keyword: component.dslKeyword,
+        declaration: {
+          syntax: component.declaration.syntax,
+          example: component.declaration.example,
+        },
+        children: (component.dslChildren ?? []).map((child) => ({
+          keyword: child.keyword,
+          syntax: child.syntax,
+          example: child.example,
+        })),
+      })),
+    },
   };
 }
 
@@ -334,6 +432,7 @@ async function main(): Promise<void> {
     process.stdout.write(`${JSON.stringify(describeCapability(), null, 2)}\n`);
     return;
   }
+  if (args.verb === 'check') return runCheck(args);
   if (!['maps', 'read', 'apply', 'rm', 'snapshot', 'batch'].includes(args.verb)) {
     process.stdout.write(HELP);
     fail(`unknown verb "${args.verb}"`);
