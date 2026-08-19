@@ -1,0 +1,9 @@
+@media (max-width: 760px) {
+  .bench-dock { max-width: calc(100vw - 20px); }
+  .bench-dock__clear { display: none; }
+  .bench-zen { padding: var(--space-2); }
+  .bench-zen__thread { width: calc(100vw - 16px); height: calc(100vh - 64px); }
+  .bench-blocked-banner { top: var(--space-2); width: calc(100vw - 88px); }
+  .bench-blocked-banner > div strong { white-space: normal; }
+  .bench-blocked-banner .bench-decision-form { width: 100%; }
+}

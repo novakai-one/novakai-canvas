@@ -1,0 +1,18 @@
+.bench-thread__collapse,
+.bench-conversation-menu__trigger,
+.bench-inspector-node__close,
+.bench-related-node__header button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--bench-rule-soft);
+  border-radius: var(--bench-radius-control);
+  color: var(--bench-ink-secondary);
+  background: var(--bench-surface-inset);
+  font: inherit;
+  font-size: var(--text-xl);
+  cursor: pointer;
+}
+

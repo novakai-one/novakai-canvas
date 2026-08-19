@@ -1,0 +1,34 @@
+.bench-conversation {
+  transition: opacity var(--bench-motion-open) var(--bench-ease), filter var(--bench-motion-open) var(--bench-ease);
+}
+
+.bench-conversation[data-mission-tone='slate'] .bench-conversation__mission-pool {
+  background: var(--bench-mission-slate);
+  opacity: 1;
+}
+
+.bench-conversation[data-mission-tone='oxide'] .bench-conversation__mission-pool {
+  background: var(--bench-mission-oxide);
+  opacity: 1;
+}
+
+.bench-conversation[data-mission-tone='moss'] .bench-conversation__mission-pool {
+  background: var(--bench-mission-moss);
+  opacity: 1;
+}
+
+.bench-conversation[data-mission-tone='violet'] .bench-conversation__mission-pool {
+  background: var(--bench-mission-violet);
+  opacity: 1;
+}
+
+.bench-conversation[data-tier='far'] .bench-card {
+  grid-template-columns: 64px;
+  width: 64px;
+  border-color: var(--bench-rule-soft);
+}
+
+.bench-conversation[data-tier='far'] .bench-card__spine {
+  border-right-color: transparent;
+}
+
