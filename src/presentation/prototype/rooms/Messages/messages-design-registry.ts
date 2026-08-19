@@ -12,12 +12,7 @@ import { switchboardDesign } from './designs/switchboard';
 import { rackFocusDesign } from './designs/rack-focus';
 import { turnLineDesign } from './designs/turn-line';
 import { gravityWellDesign } from './designs/gravity-well';
-import {
-  cyanotypeEvidenceFirstPassDesign,
-  cyanotypeEvidenceScreenshotReadyDesign,
-  cyanotypeEvidenceUpperPolishedDesign,
-  theBenchMessagesDesign,
-} from './designs/the-bench';
+import { theBenchMessagesDesign } from './designs/the-bench';
 
 /** The design selected whenever the URL requests no known Messages design. */
 const DEFAULT_MESSAGES_DESIGN_ID = currentMessagesDesign.id;
@@ -36,9 +31,6 @@ const designs: readonly MessagesDesign[] = [
   turnLineDesign,
   gravityWellDesign,
   theBenchMessagesDesign,
-  cyanotypeEvidenceFirstPassDesign,
-  cyanotypeEvidenceScreenshotReadyDesign,
-  cyanotypeEvidenceUpperPolishedDesign,
 ];
 
 const messagesDesignRegistry = createDesignRegistry(

@@ -52,16 +52,7 @@ const ALTERNATIVE_COLUMN_COUNT = 3;
 // A future variant is registered normally, then placed beside its base design here.
 const ALTERNATIVE_PLACEMENTS: Readonly<
   Partial<Record<string, readonly AlternativePlacement[]>>
-> = {
-  messagesDesign: [{
-    baseDesignId: 'the-bench',
-    alternativeDesignIds: [
-      'cyanotype-evidence-first-pass',
-      'cyanotype-evidence-screenshot-ready',
-      'cyanotype-evidence-upper-polished',
-    ],
-  }],
-};
+> = {};
 const matrixStyle = {
   '--alternative-column-count': ALTERNATIVE_COLUMN_COUNT,
 } as CSSProperties;

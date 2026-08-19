@@ -52,17 +52,8 @@ function isTextInput(target: EventTarget | null): boolean {
   return target.matches('input, textarea, select, [contenteditable="true"]');
 }
 
-type TheBenchProps = MessagesDesignProps & {
-  readonly presentationTheme?: 'night-instrument' | 'cyanotype-evidence';
-  readonly cyanotypeBuild?: 'striking' | 'screenshot-ready' | 'upper-polished';
-};
-
 /** Composes the Bench controller with shared canvas contracts and no private mechanics. */
-export function TheBench({
-  presentationTheme = 'night-instrument',
-  cyanotypeBuild,
-  ...props
-}: TheBenchProps) {
+export function TheBench(props: MessagesDesignProps) {
   const controller = useBenchController(props);
   const activeThreadId = props.data.selected?.kind === 'thread'
     ? props.data.selected.id
@@ -86,8 +77,7 @@ export function TheBench({
   return (
     <div
       className="the-bench"
-      data-bench-theme={presentationTheme}
-      data-bench-build={cyanotypeBuild}
+      data-bench-theme="night-instrument"
       data-zoom-tier={controller.state.zoomTier}
       data-zen-thread={controller.zenThreadId ?? 'none'}
       tabIndex={0}
@@ -158,19 +148,4 @@ export function TheBench({
       />
     </div>
   );
-}
-
-/** Reuses every Bench behavior with the Cyanotype evidence-table presentation. */
-export function CyanotypeEvidenceBench(props: MessagesDesignProps) {
-  return <TheBench {...props} presentationTheme="cyanotype-evidence" cyanotypeBuild="striking" />;
-}
-
-/** Adds screenshot-ready finish without changing the Cyanotype capability. */
-export function CyanotypeScreenshotReadyBench(props: MessagesDesignProps) {
-  return <TheBench {...props} presentationTheme="cyanotype-evidence" cyanotypeBuild="screenshot-ready" />;
-}
-
-/** Adds the final instrument-grade finish without changing the Cyanotype capability. */
-export function CyanotypeUpperPolishedBench(props: MessagesDesignProps) {
-  return <TheBench {...props} presentationTheme="cyanotype-evidence" cyanotypeBuild="upper-polished" />;
 }
