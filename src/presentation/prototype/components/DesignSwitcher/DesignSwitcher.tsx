@@ -6,7 +6,7 @@
  * panel's own position and open-flag persist (sessionStorage) — design choices live in
  * the URL and nowhere else. Delete this folder and revert the rail chip to remove.
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import './design-switcher.css';
 import { listHomeDesigns } from '../../rooms/Home/home-design-registry';
 import { listCommandCenterDesigns } from '../../rooms/CommandCenter/command-center-design-registry';
@@ -20,11 +20,20 @@ import { listAgentRolesDesigns } from '../../rooms/AgentRoles/agent-roles-design
 
 const POSITION_KEY = 'novakai-design-switcher-position';
 const DEFAULT_DESIGN_ID = 'current';
+const PANEL_MAX_WIDTH = 640;
+const PANEL_GUTTER = 12;
 
 type SwitchableRoom = {
   readonly label: string;
   readonly param: string;
-  readonly designs: readonly { id: string; label: string }[];
+  readonly designs: readonly SwitchableDesign[];
+};
+
+type SwitchableDesign = { readonly id: string; readonly label: string };
+
+type AlternativePlacement = {
+  readonly baseDesignId: string;
+  readonly alternativeDesignIds: readonly string[];
 };
 
 const SWITCHABLE_ROOMS: readonly SwitchableRoom[] = [
@@ -38,6 +47,37 @@ const SWITCHABLE_ROOMS: readonly SwitchableRoom[] = [
   { label: 'Messages', param: 'messagesDesign', designs: listMessagesDesigns() },
   { label: 'Agent Roles', param: 'agentRolesDesign', designs: listAgentRolesDesigns() },
 ];
+
+const ALTERNATIVE_COLUMN_COUNT = 3;
+// A future variant is registered normally, then placed beside its base design here.
+const ALTERNATIVE_PLACEMENTS: Readonly<
+  Partial<Record<string, readonly AlternativePlacement[]>>
+> = {};
+const matrixStyle = {
+  '--alternative-column-count': ALTERNATIVE_COLUMN_COUNT,
+} as CSSProperties;
+
+function designRowsFor(room: SwitchableRoom) {
+  const placements = ALTERNATIVE_PLACEMENTS[room.param] ?? [];
+  const alternativeIds = new Set(
+    placements.flatMap((placement) => placement.alternativeDesignIds),
+  );
+
+  return room.designs
+    .filter((design) => !alternativeIds.has(design.id))
+    .map((baseDesign) => {
+      const placement = placements.find((entry) => entry.baseDesignId === baseDesign.id);
+      return {
+        baseDesign,
+        alternatives: Array.from(
+          { length: ALTERNATIVE_COLUMN_COUNT },
+          (_, index) => room.designs.find(
+            (design) => design.id === placement?.alternativeDesignIds[index],
+          ) ?? null,
+        ),
+      };
+    });
+}
 
 function activeDesignId(room: SwitchableRoom): string {
   const requested = new URLSearchParams(window.location.search).get(room.param);
@@ -63,8 +103,17 @@ function resetAllDesigns(): void {
 type Position = { x: number; y: number };
 
 function clampToViewport(position: Position): Position {
+  const panelWidth = Math.min(
+    PANEL_MAX_WIDTH,
+    Math.max(0, window.innerWidth - PANEL_GUTTER * 2),
+  );
+  const maximumX = Math.max(
+    PANEL_GUTTER,
+    window.innerWidth - panelWidth - PANEL_GUTTER,
+  );
+
   return {
-    x: Math.min(Math.max(position.x, 0), window.innerWidth - 260),
+    x: Math.min(Math.max(position.x, PANEL_GUTTER), maximumX),
     y: Math.min(Math.max(position.y, 0), window.innerHeight - 48),
   };
 }
@@ -132,21 +181,51 @@ export function DesignSwitcher({ onClose }: { onClose: () => void }) {
       </header>
 
       <div className="design-switcher__rooms">
+        <div
+          className="design-switcher__column-headings"
+          style={matrixStyle}
+          aria-hidden="true"
+        >
+          <span>Room</span>
+          {Array.from({ length: ALTERNATIVE_COLUMN_COUNT }, (_, index) => (
+            <span key={index}>Alternative {index + 1}</span>
+          ))}
+        </div>
         {SWITCHABLE_ROOMS.map((room) => {
           const activeId = activeDesignId(room);
           return (
             <section className="design-switcher__room" key={room.param}>
               <h3 className="design-switcher__room-label">{room.label}</h3>
-              {room.designs.map((design) => (
-                <button
-                  type="button"
-                  key={design.id}
-                  className="design-switcher__design"
-                  data-active={design.id === activeId}
-                  onClick={() => switchDesign(room.param, design.id)}
-                >
-                  {design.label}
-                </button>
+              {designRowsFor(room).map(({ baseDesign, alternatives }) => (
+                <div className="design-switcher__design-row" style={matrixStyle} key={baseDesign.id}>
+                  <button
+                    type="button"
+                    className="design-switcher__design design-switcher__design--base"
+                    data-active={baseDesign.id === activeId}
+                    onClick={() => switchDesign(room.param, baseDesign.id)}
+                  >
+                    {baseDesign.label}
+                  </button>
+                  {alternatives.map((alternative, index) => (
+                    alternative ? (
+                      <button
+                        type="button"
+                        key={alternative.id}
+                        className="design-switcher__design design-switcher__alternative-slot"
+                        data-active={alternative.id === activeId}
+                        onClick={() => switchDesign(room.param, alternative.id)}
+                      >
+                        {alternative.label}
+                      </button>
+                    ) : (
+                      <span
+                        className="design-switcher__alternative-slot"
+                        key={`${baseDesign.id}-alternative-${index + 1}`}
+                        aria-hidden="true"
+                      />
+                    )
+                  ))}
+                </div>
               ))}
             </section>
           );
