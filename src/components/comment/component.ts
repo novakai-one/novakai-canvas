@@ -1,7 +1,7 @@
 /**
  * `comment` nodes are free-text notes (DSL keyword `note`), sized purely from label length.
  *
- * `src/domain/layout.ts`'s `contentSize()` dispatches here through the registry instead of
+ * The layout state's `measureNode()` dispatches here through the registry instead of
  * keeping its own copy of this formula.
  */
 

@@ -2,10 +2,8 @@
  * The canonical card sizing rule: a generous stored size that prevents presentation adapters
  * clipping content.
  *
- * Lives here (not in `src/domain/layout.ts`) so the card component can depend on it without
- * `src/domain/layout.ts` importing the registry and the registry importing card/component.ts
- * back into layout.ts — `layout.ts` re-exports this function for its existing callers
- * (`tools/canvas-cli/layout.ts`, `tools/canvas-cli/layout.test.ts`).
+ * Lives here (not in `src/domain/layout.ts`) so component measurement remains independent of
+ * whole-document layout. The CLI's stable layout adapter re-exports it directly.
  */
 
 import type { Size } from '../component.ts';
