@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "revision": 110,
+  "revision": 112,
   "entries": {
     "agent-visual-authoring-poc": {
       "id": "agent-visual-authoring-poc",
@@ -12,6 +12,39 @@
         "Automated checks",
         "Release decision",
         "Success rate"
+      ]
+    },
+    "ai-evaluation-connected-operating-models": {
+      "id": "ai-evaluation-connected-operating-models",
+      "name": "AI evaluation — connected operating models",
+      "status": "active",
+      "revision": 1,
+      "nodeLabels": [
+        "AI evaluation — connected operating models",
+        "Agent loop",
+        "Coding agent",
+        "Coding agent",
+        "Coordinate work",
+        "Generate response",
+        "Grounded answers",
+        "Issue",
+        "Judge response",
+        "LLM",
+        "Language model",
+        "Multi-agent",
+        "Multi-agent system",
+        "Prompt",
+        "Question",
+        "RAG",
+        "Report outcome",
+        "Report quality",
+        "Report quality",
+        "Report success",
+        "Retrieve + answer",
+        "Review outcome",
+        "Task",
+        "Verify grounding",
+        "Verify patch"
       ]
     },
     "ai-evaluation-four-operating-models": {
