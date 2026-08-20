@@ -11,7 +11,7 @@ import type { DiagramComponent, DslChildStatement } from '../../src/components/c
 import { allComponents } from '../../src/components/registry.ts';
 import type { CanvasNode as RecordNode } from '../../src/domain/records.ts';
 import {
-  CONTAINER_ALIGNS, SPACINGS, appearanceEntry, appearanceSpecification,
+  CONTAINER_ALIGNS, GRID_COLUMNS, SPACINGS, appearanceEntry, appearanceSpecification,
   canonicalNodeAppearance, isAppearanceKey, isArrangementKey, isPresentationAttributeKey,
   type AuthoredArrangement, type ParsedPresentation,
 } from '../../src/domain/canvas-presentation.ts';
@@ -132,8 +132,10 @@ function splitPresentation(
   const appearanceKeys = component.appearanceKeys ?? [];
   const arrangementModes = component.arrangementModes ?? [];
   const owner = tokens[0];
+  const layoutValues = arrangementModes.join('|');
+  const columnsHint = arrangementModes.includes('grid') ? ' [columns=1|2|3|4|5|6]' : '';
   const hint = owner === 'scope'
-    ? 'scope "name" ["optional description"] [layout=stack|row] [gap=0|4|8|12|16|24|32] [align=stretch|start|center|end]'
+    ? `scope "name" ["optional description"] [layout=${layoutValues}]${columnsHint} [gap=0|4|8|12|16|24|32] [align=stretch|start|center|end]`
     : component.declaration.syntax;
   const firstAttribute = tokens.findIndex((token, index) => {
     if (index < 2) return false;
@@ -158,7 +160,12 @@ function splitPresentation(
     if (isArrangementKey(key) && arrangementModes.length > 0) {
       hasArrangementAttribute = true;
       if (key === 'columns') {
-        return { error: 'attribute "columns" requires layout=grid; grid activates in Slice 3', hint };
+        const columns = GRID_COLUMNS.find((candidate) => String(candidate) === raw);
+        if (columns === undefined) {
+          return { error: `invalid columns "${raw}"; use one of: ${GRID_COLUMNS.join(', ')}`, hint };
+        }
+        arrangement.columns = columns;
+        continue;
       }
       if (key === 'layout') {
         const mode = arrangementModes.find((candidate) => candidate === raw);
@@ -210,9 +217,16 @@ function splitPresentation(
 
   if (hasArrangementAttribute && arrangement.layout === undefined) {
     return {
-      error: 'container gap and align require layout=stack or layout=row',
+      error: `container columns, gap and align require layout=${layoutValues.replaceAll('|', ' or layout=')}`,
       hint,
     };
+  }
+  if (arrangement.layout === 'grid' && arrangement.columns === undefined) {
+    return { error: 'layout=grid requires columns=1|2|3|4|5|6', hint };
+  }
+  if (arrangement.layout !== undefined
+    && arrangement.layout !== 'grid' && arrangement.columns !== undefined) {
+    return { error: 'columns is only valid with layout=grid', hint };
   }
   const parsed: ParsedPresentation = {};
   if (Object.keys(appearance).length > 0) parsed.appearance = canonicalNodeAppearance(appearance);
@@ -221,6 +235,7 @@ function splitPresentation(
       layout: arrangement.layout,
       gap: arrangement.gap ?? 16,
       align: arrangement.align ?? 'stretch',
+      ...(arrangement.columns === undefined ? {} : { columns: arrangement.columns }),
     };
   }
   return {

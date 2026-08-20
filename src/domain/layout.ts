@@ -217,8 +217,71 @@ function sizeExplicitChildren(
   }
 }
 
+/** Equal-width, row-major grid. Pinned boxes stay fixed and occupied cells advance past them. */
+function layoutExplicitGrid(
+  document: PositionedDocument,
+  childIds: string[],
+  arrangement: ContainerArrangement,
+  groupPadding: number,
+): Size {
+  const columns = arrangement.columns ?? 1;
+  const paddingTop = groupPadding + 16;
+  const cellWidth = Math.max(1, ...childIds.map((id) => document.nodes[id].size.width));
+  const pinnedObstacles = childIds.filter((id) => isPinned(document, id)).map((id) => ({
+    x: document.nodes[id].position.x,
+    y: document.nodes[id].position.y,
+    width: document.nodes[id].size.width,
+    height: document.nodes[id].size.height,
+  }));
+  let cell = 0;
+  let rowTop = paddingTop;
+  let rowHeight = 0;
+  let rowHasChild = false;
+
+  for (const id of childIds) {
+    if (isPinned(document, id)) continue;
+    const child = document.nodes[id];
+    const size = arrangement.align === 'stretch'
+      ? { ...child.size, width: cellWidth }
+      : child.size;
+    while (true) {
+      const column = cell % columns;
+      if (cell > 0 && column === 0) {
+        rowTop += (rowHasChild ? rowHeight : Math.max(1, size.height)) + arrangement.gap;
+        rowHeight = 0;
+        rowHasChild = false;
+      }
+      const cellLeft = groupPadding + column * (cellWidth + arrangement.gap);
+      const x = arrangement.align === 'end'
+        ? cellLeft + cellWidth - size.width
+        : arrangement.align === 'center'
+          ? cellLeft + Math.round((cellWidth - size.width) / 2)
+          : cellLeft;
+      const candidate = { x, y: rowTop, width: size.width, height: size.height };
+      cell += 1;
+      if (pinnedObstacles.some((obstacle) => overlaps(candidate, obstacle))) continue;
+      document.nodes[id] = { ...child, position: { x, y: rowTop }, size };
+      rowHeight = Math.max(rowHeight, size.height);
+      rowHasChild = true;
+      break;
+    }
+  }
+
+  let maxRight = groupPadding + columns * cellWidth + (columns - 1) * arrangement.gap;
+  let maxBottom = paddingTop;
+  for (const id of childIds) {
+    const child = document.nodes[id];
+    maxRight = Math.max(maxRight, child.position.x + child.size.width);
+    maxBottom = Math.max(maxBottom, child.position.y + child.size.height);
+  }
+  return {
+    width: Math.max(320, maxRight + groupPadding),
+    height: Math.max(160, maxBottom + groupPadding),
+  };
+}
+
 /**
- * The one deterministic stack/row algorithm. It mutates only the supplied working copy; callers
+ * The one deterministic explicit-arrangement path. It mutates only the supplied working copy; callers
  * decide which resulting placements become authoritative.
  */
 function layoutExplicitContainerWithPadding(
@@ -230,6 +293,9 @@ function layoutExplicitContainerWithPadding(
   const childIds = arrangement.childIds.filter((id) =>
     document.nodes[id]?.parentId === containerId);
   sizeExplicitChildren(document, childIds, groupPadding);
+  if (arrangement.layout === 'grid') {
+    return layoutExplicitGrid(document, childIds, arrangement, groupPadding);
+  }
 
   const paddingTop = groupPadding + 16;
   const stack = arrangement.layout === 'stack';
