@@ -51,6 +51,35 @@ describe('printRecord', () => {
       .toEqual(record.layouts[record.views[record.activeViewId].layoutId].placements);
   });
 
+  it('canonically round-trips multiline block appearance and container arrangements', () => {
+    const record = buildRecord(`
+scope "Styled Round Trip" layout=grid columns=2 gap=24
+  zone "Left" layout=stack gap=8 align=center
+    block "Tasks:" padding=12 radius=8 border=1 border-color=green background=surface text=green align=center weight=600 size=20
+      line "• Safety"
+      line "• Code"
+  end
+  zone "Right"
+    module "Prompt" badge=hide
+  end
+`);
+    const printed = printRecord(record);
+    expect(printed).toContain('scope "Styled Round Trip" layout=grid columns=2 gap=24');
+    expect(printed).toContain('zone "Left" layout=stack gap=8 align=center');
+    expect(printed).toContain('block "Tasks:" size=20 weight=600 align=center text=green background=surface border-color=green border=1 radius=8 padding=12');
+    expect(printed).toContain('line "• Safety"\n      line "• Code"');
+    expect(printed).toContain('module "Prompt" badge=hide');
+
+    const reapplied = buildRecord(printed, { [record.id]: record });
+    const layoutOf = (candidate: DiagramRecord) =>
+      candidate.layouts[candidate.views[candidate.activeViewId].layoutId];
+    expect(layoutOf(reapplied).appearanceByNodeId).toEqual(layoutOf(record).appearanceByNodeId);
+    expect(layoutOf(reapplied).arrangementByContainerId).toEqual(layoutOf(record).arrangementByContainerId);
+    expect(reapplied.nodes['styled-round-trip--left--block-tasks'].lines)
+      .toEqual(['• Safety', '• Code']);
+    expect(printRecord(reapplied)).toBe(printed);
+  });
+
   it('prints a cross-diagram link as an ordinary wire, so read stays lossless', () => {
     const { records } = buildRecords(`
 scope "Novakai IDE"
