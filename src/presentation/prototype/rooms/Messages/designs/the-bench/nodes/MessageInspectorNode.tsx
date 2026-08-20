@@ -11,8 +11,10 @@ export function MessageInspectorNode({ data, selected }: NodeProps<BenchMessageI
       <Handle id="trail-target" className="bench-trail-handle" type="target" position={Position.Left} />
       <header className="bench-inspection-node-shell__header bench-inspector-node__header">
         <span className="bench-stack-compact">
-          <small className="bench-detail-label">Relations from</small>
-          <strong>{data.message.record.id}</strong>
+          <small className="bench-detail-label">Message links</small>
+          <strong>
+            {data.message.relations.length} related {data.message.relations.length === 1 ? 'record' : 'records'}
+          </strong>
         </span>
         <button
           type="button"

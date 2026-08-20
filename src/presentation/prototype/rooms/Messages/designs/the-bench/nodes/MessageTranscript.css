@@ -2,7 +2,7 @@
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: var(--space-3) var(--space-4) var(--space-5);
+  padding: var(--space-2) 0 var(--space-6);
   scrollbar-color: var(--bench-rule-strong) transparent;
 }
 

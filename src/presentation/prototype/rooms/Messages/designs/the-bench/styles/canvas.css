@@ -15,12 +15,7 @@
 }
 
 .the-bench__canvas {
-  background-color: var(--bench-canvas-deep);
-  background-image:
-    linear-gradient(var(--bench-canvas-rule) 1px, transparent 1px),
-    linear-gradient(90deg, var(--bench-canvas-rule) 1px, transparent 1px),
-    radial-gradient(circle at 48% 38%, var(--bench-canvas-glow), transparent 56%);
-  background-size: 32px 32px, 32px 32px, 100% 100%;
+  background: var(--bench-canvas-deep);
 }
 
 .the-bench__canvas .react-flow__pane { cursor: grab; }
@@ -46,9 +41,6 @@
   width: 7200px;
   height: 5600px;
   pointer-events: none;
-  background:
-    radial-gradient(circle at 50% 50%, transparent 0 74%, var(--bench-field-vignette) 100%),
-    repeating-linear-gradient(112deg, transparent 0 19px, var(--bench-field-grain) 20px);
 }
 
 .the-bench__scale {

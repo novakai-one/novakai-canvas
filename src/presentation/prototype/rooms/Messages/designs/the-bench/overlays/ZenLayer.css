@@ -1,4 +1,5 @@
 .bench-zen {
+  --bench-message-max-width: 82%;
   position: absolute;
   z-index: var(--bench-layer-zen);
   inset: 0;

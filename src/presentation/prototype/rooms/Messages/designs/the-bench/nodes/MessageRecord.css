@@ -1,102 +1,92 @@
 .bench-message {
   position: relative;
-  padding: var(--space-4) 0;
-  border-bottom: 1px solid var(--bench-rule-soft);
+  display: flex;
+  padding: 3px var(--space-5);
+}
+
+.bench-message[data-group-start='true'] {
+  padding-top: var(--space-5);
+}
+
+.bench-message:first-child {
+  padding-top: var(--space-4);
 }
 
 .bench-message[data-mine='true'] {
-  padding-left: var(--space-5);
+  justify-content: flex-end;
 }
 
-.bench-message[data-mine='true']::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: var(--space-4);
-  bottom: var(--space-4);
-  width: 2px;
-  background: var(--bench-scribe);
+.bench-message__trigger {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: var(--space-3);
+  width: 100%;
+  max-width: var(--bench-message-max-width, 90%);
+  padding: 0;
+  border: 0;
+  border-radius: var(--bench-radius-control);
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.bench-message__trigger:hover,
+.bench-message__trigger:focus-visible {
+  background: color-mix(in srgb, var(--bench-surface-lifted) 32%, transparent);
+}
+
+.bench-message__avatar {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  visibility: hidden;
+  border: 1px solid var(--bench-rule-strong);
+  border-radius: 50%;
+  color: var(--bench-ink-secondary);
+  background: var(--bench-surface-inset);
+  font-family: var(--bench-font-record);
+  font-size: var(--text-eyebrow);
+  font-weight: var(--weight-semibold);
+}
+
+.bench-message[data-group-start='true'] .bench-message__avatar {
+  visibility: visible;
+}
+
+.bench-message[data-mine='true'] .bench-message__avatar {
+  border-color: var(--bench-scribe);
+  color: var(--bench-scribe-bright);
+}
+
+.bench-message__content {
+  min-width: 0;
 }
 
 .bench-message__meta {
   display: flex;
   align-items: baseline;
-  gap: var(--space-2);
-  min-width: 0;
+  min-height: 16px;
 }
 
-.bench-message__meta strong {
+.bench-message__meta time {
+  color: var(--bench-ink-faint);
+  font-family: var(--bench-font-record);
+  font-size: var(--text-eyebrow);
+}
+
+.bench-message__body {
+  display: block;
   color: var(--bench-ink-primary);
-  font-size: var(--text-sm);
-}
-
-.bench-message__meta time,
-.bench-message__meta code {
-  color: var(--bench-ink-faint);
-  font-family: var(--bench-font-record);
-  font-size: var(--text-eyebrow);
-}
-
-.bench-message__meta code {
-  margin-left: auto;
-  overflow: hidden;
-  max-width: 116px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.bench-message > p {
-  margin: var(--space-2) 0 0;
-  color: var(--bench-ink-secondary);
-  font-size: var(--text-base);
+  font-size: var(--text-lg);
   line-height: var(--leading-relaxed);
+  overflow-wrap: anywhere;
 }
 
-.bench-message__relations {
-  display: flex;
-  align-items: flex-end;
-  gap: var(--space-2);
-  margin-top: var(--space-3);
-}
-
-.bench-message__chips {
-  display: flex;
-  min-width: 0;
-  flex: 1;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.bench-message__chips button {
-  max-width: 158px;
-  padding: 3px 6px;
-  overflow: hidden;
-  border: 1px solid var(--bench-rule-soft);
-  border-radius: 3px;
-  color: var(--bench-ink-faint);
-  background: transparent;
-  font-family: var(--bench-font-record);
-  font-size: 8px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-.bench-message__chips button:hover {
-  border-color: var(--bench-scribe);
-  color: var(--bench-scribe-bright);
-  background: var(--bench-scribe-wash);
-}
-
-.bench-message__inspect {
-  padding: 4px 7px;
-  border: 1px solid var(--bench-rule-strong);
-  border-radius: var(--bench-radius-control);
-  color: var(--bench-scribe-bright);
-  background: var(--bench-scribe-wash);
-  font-family: var(--bench-font-record);
-  font-size: var(--text-eyebrow);
-  cursor: pointer;
+.bench-message[data-group-start='true'] .bench-message__body {
+  margin-top: 5px;
 }
 
 .bench-message__source {
@@ -108,6 +98,7 @@
   opacity: 0;
 }
 
-.bench-message:has(.bench-message__inspect:hover) .bench-message__source {
+.bench-message:hover .bench-message__source,
+.bench-message:focus-within .bench-message__source {
   opacity: 1;
 }

@@ -1,5 +1,4 @@
 import { Handle, Position } from '@xyflow/react';
-import { KIND_LABEL } from '../../../../../object-graph/contract';
 import type { BenchMessage, BenchNodeActions } from '../model/bench-model';
 import './MessageRecord.css';
 
@@ -14,64 +13,54 @@ function readableTime(value: string): string {
   }).format(date);
 }
 
-/** One selectable message record with relation chips and an exact inspection handle. */
+function initialsFor(name: string): string {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('') || '?';
+}
+
+/** One message whose full surface opens its relationship inspector. */
 export function MessageRecord({
   threadId,
   message,
+  startsGroup,
   actions,
 }: {
   threadId: string;
   message: BenchMessage;
+  startsGroup: boolean;
   actions: BenchNodeActions;
 }) {
+  const senderName = message.isMine ? 'Chris' : message.senderName;
+  const timestamp = readableTime(message.createdAt);
+
   return (
     <article
       className="bench-message"
       data-mine={message.isMine}
-      onClick={() => actions.selectRecord(message.record.id)}
+      data-group-start={startsGroup}
     >
-      <header className="bench-message__meta">
-        <strong>{message.isMine ? 'Chris' : message.senderName}</strong>
-        <time dateTime={message.createdAt}>{readableTime(message.createdAt)}</time>
-        <code>{message.record.id}</code>
-      </header>
-      <p>{message.body}</p>
-
-      {message.relations.length > 0 && (
-        <footer className="bench-message__relations">
-          <span className="bench-message__chips">
-            {message.relations.slice(0, 3).map((relation) => (
-              <button
-                type="button"
-                className="nodrag"
-                key={`${relation.relation}:${relation.record.id}`}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  actions.expandMessageRelation(
-                    threadId,
-                    message.record.id,
-                    relation.relation,
-                    relation.record.id,
-                  );
-                }}
-                aria-label={`Inspect ${relation.record.title}`}
-              >
-                {KIND_LABEL[relation.record.kind]} · {relation.record.title}
-              </button>
-            ))}
-          </span>
-          <button
-            type="button"
-            className="bench-message__inspect nodrag"
-            onClick={(event) => {
-              event.stopPropagation();
-              actions.inspectMessage(threadId, message.record.id);
-            }}
-          >
-            Inspect
-          </button>
-        </footer>
-      )}
+      <button
+        type="button"
+        className="bench-message__trigger nodrag"
+        onClick={() => actions.inspectMessage(threadId, message.record.id)}
+        aria-label={`Inspect message from ${senderName}, ${timestamp}: ${message.body}`}
+      >
+        <span className="bench-message__avatar" aria-hidden="true" title={senderName}>
+          {initialsFor(senderName)}
+        </span>
+        <span className="bench-message__content">
+          {startsGroup && (
+            <span className="bench-message__meta">
+              <time dateTime={message.createdAt}>{timestamp}</time>
+            </span>
+          )}
+          <span className="bench-message__body">{message.body}</span>
+        </span>
+      </button>
 
       <Handle
         id={`message:${message.record.id}:inspect`}

@@ -8,7 +8,11 @@ import './RelatedObjectNode.css';
 /** One related object placed to the right of its parent trail step. */
 export function RelatedObjectNode({ data, selected }: NodeProps<BenchRelatedObjectCanvasNode>) {
   return (
-    <aside className="bench-scribe-selection bench-inspection-node-shell bench-related-node" data-selected={selected}>
+    <aside
+      className="bench-scribe-selection bench-inspection-node-shell bench-related-node"
+      data-record-kind={data.record.kind}
+      data-selected={selected}
+    >
       <Handle id="trail-target" className="bench-trail-handle" type="target" position={Position.Left} />
       <header className="bench-inspection-node-shell__header bench-related-node__header">
         <span className="bench-detail-label">{data.step.relation ? RELATION_LABEL[data.step.relation] ?? data.step.relation : 'Related'}</span>
