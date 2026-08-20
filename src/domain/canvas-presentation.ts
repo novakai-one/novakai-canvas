@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { NodeKind } from './records.ts';
+import { ICON_NAMES, type IconName } from './model.ts';
 
 export const FONT_FAMILIES = ['sans', 'serif', 'mono'] as const;
 export const FONT_SIZES = [12, 14, 16, 20, 24, 32, 40] as const;
@@ -30,10 +31,12 @@ export type LayoutMode = (typeof LAYOUT_MODES)[number];
 export type ContainerAlign = (typeof CONTAINER_ALIGNS)[number];
 export type GridColumns = (typeof GRID_COLUMNS)[number];
 export type Badge = (typeof BADGES)[number];
+export type BlockIcon = IconName;
 export type Theme = 'dark' | 'light';
 
 /** Closed authored values stored on a layout, never on a semantic node. */
 export interface NodeAppearance {
+  icon?: BlockIcon;
   font?: FontFamily;
   size?: FontSize;
   weight?: FontWeight;
@@ -69,6 +72,7 @@ export interface PresentationContext { theme: Theme; showKinds: boolean }
 
 /** Concrete values consumed verbatim by measurement and both render hosts. */
 export interface ResolvedNodeAppearance {
+  icon?: BlockIcon;
   font: FontFamily;
   fontFamily: string;
   fontSize: FontSize;
@@ -85,7 +89,7 @@ export interface ResolvedNodeAppearance {
 }
 
 export type AppearanceKey =
-  | 'font' | 'size' | 'weight' | 'align' | 'text' | 'background'
+  | 'icon' | 'font' | 'size' | 'weight' | 'align' | 'text' | 'background'
   | 'border-color' | 'border' | 'radius' | 'padding' | 'badge';
 export type ArrangementKey = 'layout' | 'columns' | 'gap' | 'align';
 
@@ -98,6 +102,7 @@ export interface AppearanceSpecification {
 
 /** Canonical order for help, discovery, parsing, storage, and printing. */
 export const APPEARANCE_SPECIFICATIONS: readonly AppearanceSpecification[] = [
+  { key: 'icon', values: ICON_NAMES, default: 'none', jsonKey: 'icon' },
   { key: 'font', values: FONT_FAMILIES, default: 'sans', jsonKey: 'font' },
   { key: 'size', values: FONT_SIZES, default: 14, jsonKey: 'size' },
   { key: 'weight', values: FONT_WEIGHTS, default: 400, jsonKey: 'weight' },
@@ -171,6 +176,7 @@ const columns = z.union(GRID_COLUMNS.map((value) => z.literal(value)) as [z.ZodL
 
 /** Strict runtime boundary for stored per-node presentation. */
 export const nodeAppearanceSchema = z.object({
+  icon: z.enum(ICON_NAMES).optional(),
   font: fontFamily.optional(),
   size: fontSize.optional(),
   weight: fontWeight.optional(),
@@ -242,6 +248,7 @@ export function resolveNodeAppearance(
   const radius = authored.radius ?? 0;
   const badge = authored.badge ?? 'default';
   return {
+    ...(authored.icon === undefined ? {} : { icon: authored.icon }),
     font,
     fontFamily: FONT_STACKS[font],
     fontSize: authored.size ?? 14,

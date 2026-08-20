@@ -43,7 +43,9 @@ export interface TimelineStep {
 export type MetricStatus = 'neutral' | 'success' | 'warning' | 'critical';
 
 /** Fixed icon vocabulary carried as meaning, never as artwork. */
-export type IconCardIcon = 'check' | 'clock' | 'people' | 'shield' | 'target' | 'trend';
+export const ICON_NAMES = ['check', 'clock', 'people', 'shield', 'target', 'trend'] as const;
+export type IconName = (typeof ICON_NAMES)[number];
+export type IconCardIcon = IconName;
 
 /** Semantic emphasis of one callout; presentation derives from this value. */
 export type CalloutKind = 'info' | 'warning' | 'decision' | 'success';

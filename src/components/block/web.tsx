@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import type { Node, NodeProps } from '@xyflow/react';
 import type { ArchitectureNodeData } from '../../presentation/projection.ts';
+import { GLYPHS } from '../glyphs.ts';
 import { layoutBlockText } from './component.ts';
 
 type BlockFlowNode = Node<ArchitectureNodeData, 'block'>;
@@ -22,9 +23,38 @@ export function BlockNode({ data }: NodeProps<BlockFlowNode>) {
     padding: appearance.padding,
     textAlign: appearance.textAlign,
   } satisfies CSSProperties;
+  const justifyContent = appearance.textAlign === 'left' ? 'flex-start'
+    : appearance.textAlign === 'right' ? 'flex-end' : 'center';
   return (
     <article className="block-node" style={style}>
-      {layout.lines.map((line, index) => (
+      {appearance.icon ? (
+        <>
+          <span
+            className="block-line"
+            style={{ alignItems: 'center', display: 'flex', gap: layout.iconGap, justifyContent, minHeight: layout.firstRowHeight }}
+          >
+            <svg
+              aria-label={`${appearance.icon} icon`}
+              fill="none"
+              height={layout.iconSize}
+              role="img"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="1.8"
+              style={{ flex: '0 0 auto' }}
+              viewBox="0 0 24 24"
+              width={layout.iconSize}
+            >
+              <path d={GLYPHS[appearance.icon]} />
+            </svg>
+            <span>{layout.lines[0]}</span>
+          </span>
+          {layout.lines.slice(1).map((line, index) => (
+            <span className="block-line" key={`${index + 1}-${line}`}>{line}</span>
+          ))}
+        </>
+      ) : layout.lines.map((line, index) => (
         <span className="block-line" key={`${index}-${line}`}>{line}</span>
       ))}
     </article>

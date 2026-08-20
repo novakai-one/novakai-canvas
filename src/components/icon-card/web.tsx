@@ -1,7 +1,7 @@
 import { NodeResizer, type Node, type NodeProps } from '@xyflow/react';
 import { NodePorts } from '../../presentation/nodes/node-ports.tsx';
 import type { ArchitectureNodeData } from '../../presentation/projection.ts';
-import { ICON_CARD_PATHS } from './component.ts';
+import { GLYPHS } from '../glyphs.ts';
 
 type IconCardFlowNode = Node<ArchitectureNodeData, 'icon-card'>;
 
@@ -26,7 +26,7 @@ export function IconCardNode({ data, selected }: NodeProps<IconCardFlowNode>) {
         <div className="icon-card-body">
           <span aria-label={`${icon} icon`} className="icon-card-glyph" role="img">
             <svg aria-hidden viewBox="0 0 24 24">
-              <path d={ICON_CARD_PATHS[icon]} />
+              <path d={GLYPHS[icon]} />
             </svg>
           </span>
           <p>{node.description}</p>

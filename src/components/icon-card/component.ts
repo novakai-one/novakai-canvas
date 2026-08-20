@@ -7,21 +7,15 @@ import { z } from 'zod';
 import type { IconCardIcon } from '../../domain/model.ts';
 import type { CanvasNode } from '../../domain/records.ts';
 import type { DslNodeDeclaration, DiagramComponent } from '../component.ts';
+import { GLYPHS, GLYPH_NAMES } from '../glyphs.ts';
 
-export const ICON_CARD_ICONS = ['check', 'clock', 'people', 'shield', 'target', 'trend'] as const;
+export const ICON_CARD_ICONS = GLYPH_NAMES;
 const ICON_LIST = ICON_CARD_ICONS.join('|');
 const SYNTAX = `icon-card "title" icon=${ICON_LIST} description="text"`;
 const EXAMPLE = 'icon-card "Automated checks" icon=check description="Every change is verified."';
 
-/** One 24×24 outline path per semantic icon, shared by browser and SVG renderers. */
-export const ICON_CARD_PATHS = {
-  check: 'M5 12l4 4L19 6',
-  clock: 'M12 3a9 9 0 1 0 0 18a9 9 0 0 0 0-18M12 7v5l3 2',
-  people: 'M8 11a3 3 0 1 0 0-6a3 3 0 0 0 0 6M3 20c0-4 2-6 5-6s5 2 5 6M16 11a3 3 0 1 0 0-6M15 14c4 0 6 2 6 6',
-  shield: 'M12 3l7 3v5c0 5-3 8-7 10c-4-2-7-5-7-10V6z',
-  target: 'M12 3a9 9 0 1 0 0 18a9 9 0 0 0 0-18M12 7a5 5 0 1 0 0 10a5 5 0 0 0 0-10M12 11v2',
-  trend: 'M4 17l5-5 4 4 7-8M15 8h5v5',
-} satisfies Record<IconCardIcon, string>;
+/** Compatibility exports; the shared glyph module owns the values. */
+export const ICON_CARD_PATHS = GLYPHS;
 
 const COLORS = { card: '#252529', ink: '#ececee', border: '#2f2f34', muted: '#9a9aa2', accent: '#d0a14b' };
 const FONT = 'Inter, sans-serif';
