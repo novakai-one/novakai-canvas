@@ -138,9 +138,7 @@ function splitPresentation(
   const firstAttribute = tokens.findIndex((token, index) => {
     if (index < 2) return false;
     const key = attributeKey(token);
-    return key !== undefined && (
-      appearanceKeys.length > 0 || arrangementModes.length > 0 || isPresentationAttributeKey(key)
-    );
+    return key !== undefined && isPresentationAttributeKey(key);
   });
   if (firstAttribute === -1) return { semanticTokens: tokens };
 

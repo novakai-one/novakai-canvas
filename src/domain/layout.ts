@@ -333,42 +333,6 @@ function layoutContainer(document: PositionedDocument, containerId: string, grou
   return layoutGrid(document, childIds, groupPadding);
 }
 
-function hasAncestorArrangement(
-  document: PositionedDocument,
-  containerId: string,
-  arrangements: Record<string, ContainerArrangement>,
-): boolean {
-  let cursor = document.nodes[containerId]?.parentId;
-  while (cursor) {
-    if (arrangements[cursor]) return true;
-    cursor = document.nodes[cursor]?.parentId;
-  }
-  return false;
-}
-
-/** Grows only containment boundaries; positions and every non-container box remain untouched. */
-function growAncestors(
-  document: PositionedDocument,
-  childId: string,
-  groupPadding: number,
-): void {
-  let currentId = childId;
-  let parentId = document.nodes[currentId]?.parentId;
-  while (parentId) {
-    const child = document.nodes[currentId];
-    const parent = document.nodes[parentId];
-    document.nodes[parentId] = {
-      ...parent,
-      size: {
-        width: Math.max(parent.size.width, child.position.x + child.size.width + groupPadding),
-        height: Math.max(parent.size.height, child.position.y + child.size.height + groupPadding),
-      },
-    };
-    currentId = parentId;
-    parentId = document.nodes[currentId]?.parentId;
-  }
-}
-
 /** Re-layouts named scopes in one saved layout without changing semantic nodes. */
 export function layoutScopes(
   input: ArchitectureDocument,
@@ -382,8 +346,6 @@ export function layoutScopes(
     ...input,
     nodes: positionedNodes(input, layout.id),
   };
-  const arrangements = layout.arrangementByContainerId ?? {};
-  const hasExplicitArrangement = Object.keys(arrangements).length > 0;
   const sortedScopeIds = [...scopeIds].sort();
   const newScopeIds: string[] = [];
 
@@ -392,33 +354,11 @@ export function layoutScopes(
     if (!scope || scope.kind !== 'scope') continue;
     const isNew = scope.size.width === 1 && scope.size.height === 1;
     if (isNew) newScopeIds.push(scopeId);
-    const scopeArrangement = arrangements[scopeId];
-    if (!hasExplicitArrangement) {
-      const size = layoutContainer(document, scopeId, groupPadding);
-      document.nodes[scopeId] = { ...document.nodes[scopeId], size };
-      continue;
-    }
-    if (scopeArrangement) {
-      const size = layoutExplicitContainerWithPadding(
-        document, scopeId, scopeArrangement, groupPadding,
-      );
-      document.nodes[scopeId] = { ...document.nodes[scopeId], size };
-      continue;
-    }
-    const explicitDescendants = Object.keys(arrangements)
-      .filter((containerId) => {
-        let cursor = document.nodes[containerId]?.parentId;
-        while (cursor && cursor !== scopeId) cursor = document.nodes[cursor]?.parentId;
-        return cursor === scopeId;
-      })
-      .filter((containerId) => !hasAncestorArrangement(document, containerId, arrangements));
-    for (const containerId of explicitDescendants) {
-      const size = layoutExplicitContainerWithPadding(
-        document, containerId, arrangements[containerId], groupPadding,
-      );
-      document.nodes[containerId] = { ...document.nodes[containerId], size };
-      growAncestors(document, containerId, groupPadding);
-    }
+    const arrangement = activeArrangement(document, scopeId);
+    const size = arrangement
+      ? layoutExplicitContainerWithPadding(document, scopeId, arrangement, groupPadding)
+      : layoutContainer(document, scopeId, groupPadding);
+    document.nodes[scopeId] = { ...document.nodes[scopeId], size };
   }
 
   for (const scopeId of newScopeIds) {
