@@ -1,7 +1,7 @@
 /** Compiles parsed scope ASTs into diagram-record content, one record per scope block. */
 
 import type { CrossDiagramLink, DiagramRecord } from '../../src/canvas.ts';
-import type { NodeAst, ScopeAst, ZoneAst } from './dsl-parse.ts';
+import type { NodeAst, ScopeAst, ZoneAst } from './dsl-ast.ts';
 import type { RecordNode, RecordWire, RecordWireKind } from './record-graph.ts';
 import { asId, descendantIds, rootGroupId } from './record-graph.ts';
 import { slugify } from './slug.ts';
