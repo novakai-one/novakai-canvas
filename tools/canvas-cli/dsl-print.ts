@@ -70,11 +70,12 @@ function childrenOf(
   return [...authored, ...children.filter((node) => !emitted.has(node.id as string))];
 }
 
-/** Canonical Slice 2 order is layout, gap, align; default stretch stays implicit. */
+/** Canonical arrangement order is layout, columns, gap, align; default stretch stays implicit. */
 function arrangementAttributes(arrangement: ContainerArrangement | undefined): string[] {
-  if (!arrangement || arrangement.layout === 'grid') return [];
+  if (!arrangement) return [];
   return [
     `layout=${arrangement.layout}`,
+    ...(arrangement.columns === undefined ? [] : [`columns=${arrangement.columns}`]),
     `gap=${arrangement.gap}`,
     ...(arrangement.align === 'stretch' ? [] : [`align=${arrangement.align}`]),
   ];

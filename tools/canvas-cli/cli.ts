@@ -25,7 +25,7 @@ import { asId, layoutRecord } from './record-graph.ts';
 import { renderRecordSvg } from './snapshot.ts';
 import { slugify } from './slug.ts';
 import {
-  CONTAINER_ALIGNS, SPACINGS, appearanceSpecification,
+  CONTAINER_ALIGNS, GRID_COLUMNS, SPACINGS, appearanceSpecification,
 } from '../../src/domain/canvas-presentation.ts';
 
 const DEFAULT_DATA_DIR = fileURLToPath(new URL('../../public/data', import.meta.url));
@@ -44,6 +44,9 @@ const componentHelp = [
     }),
     ...((component.arrangementModes?.length ?? 0) > 0 ? [
       `  ${(component.dslKeyword + '.layout').padEnd(12)} ${component.arrangementModes?.join('|')}`,
+      ...(component.arrangementModes?.includes('grid') ? [
+        `  ${(component.dslKeyword + '.columns').padEnd(12)} ${GRID_COLUMNS.join('|')} (required for grid)`,
+      ] : []),
       `  ${(component.dslKeyword + '.gap').padEnd(12)} ${SPACINGS.join('|')} (default 16)`,
       `  ${(component.dslKeyword + '.align').padEnd(12)} ${CONTAINER_ALIGNS.join('|')} (default stretch)`,
     ] : []),
@@ -441,6 +444,9 @@ function describeCapability(): unknown {
         ...(component.arrangementModes ? {
           arrangement: {
             layout: { values: [...component.arrangementModes] },
+            ...(component.arrangementModes.includes('grid') ? {
+              columns: { values: [...GRID_COLUMNS], requiredFor: 'grid' },
+            } : {}),
             gap: { values: [...SPACINGS], default: 16 },
             align: { values: [...CONTAINER_ALIGNS], default: 'stretch' },
           },
