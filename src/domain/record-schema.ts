@@ -1,9 +1,10 @@
 import { z } from 'zod';
-import { allComponents, componentFor, contentFieldsFor, kindList } from '../components/registry.ts';
+import { allComponents, contentFieldsFor, kindList } from '../components/registry.ts';
 import type { DiagramRecord, LibraryIndex } from './records.ts';
 import {
-  appearanceKeyForJsonKey, containerArrangementSchema, nodeAppearanceSchema,
+  containerArrangementSchema, nodeAppearanceSchema,
 } from './canvas-presentation.ts';
+import { validateRecordIntegrity } from './record-integrity.ts';
 
 const position = z.object({ x: z.number(), y: z.number() });
 const size = z.object({ width: z.number().positive(), height: z.number().positive() });
@@ -122,67 +123,7 @@ const diagramRecord = z.object({
   subjectRef: canvasReference.optional(),
   sourceRefs: z.array(sourceReference),
   appliedOperations: z.record(z.string(), appliedOperation),
-}).superRefine((record, context) => {
-  if (!record.views[record.activeViewId]) {
-    context.addIssue({
-      code: 'custom',
-      message: `active view "${record.activeViewId}" does not exist`,
-      path: ['activeViewId'],
-    });
-  }
-  for (const [layoutId, layout] of Object.entries(record.layouts)) {
-    for (const [nodeId, appearance] of Object.entries(layout.appearanceByNodeId)) {
-      const node = record.nodes[nodeId];
-      if (!node) {
-        context.addIssue({
-          code: 'custom', message: `appearance names missing node "${nodeId}"`,
-          path: ['layouts', layoutId, 'appearanceByNodeId', nodeId],
-        });
-        continue;
-      }
-      const allowed = componentFor(node.kind).appearanceKeys ?? [];
-      for (const jsonKey of Object.keys(appearance)) {
-        const key = appearanceKeyForJsonKey(jsonKey);
-        if (!key || !allowed.includes(key)) {
-          context.addIssue({
-            code: 'custom', message: `${node.kind} does not support appearance "${jsonKey}"`,
-            path: ['layouts', layoutId, 'appearanceByNodeId', nodeId, jsonKey],
-          });
-        }
-      }
-    }
-    for (const [containerId, arrangement] of Object.entries(layout.arrangementByContainerId)) {
-      const container = record.nodes[containerId];
-      if (!container || componentFor(container.kind).layoutRole !== 'container') {
-        context.addIssue({
-          code: 'custom', message: `arrangement target "${containerId}" is not a container`,
-          path: ['layouts', layoutId, 'arrangementByContainerId', containerId],
-        });
-        continue;
-      }
-      const directChildIds = Object.values(record.nodes)
-        .filter((node) => node.parentId === containerId)
-        .map((node) => node.id as string);
-      const arrangedChildIds = new Set(arrangement.childIds);
-      if (arrangement.childIds.length !== directChildIds.length
-        || arrangedChildIds.size !== directChildIds.length
-        || directChildIds.some((childId) => !arrangedChildIds.has(childId))) {
-        context.addIssue({
-          code: 'custom', message: `arrangement for "${containerId}" must name every direct child exactly once`,
-          path: ['layouts', layoutId, 'arrangementByContainerId', containerId, 'childIds'],
-        });
-      }
-      arrangement.childIds.forEach((childId, index) => {
-        if (record.nodes[childId]?.parentId !== containerId) {
-          context.addIssue({
-            code: 'custom', message: `arranged child "${childId}" is not directly inside "${containerId}"`,
-            path: ['layouts', layoutId, 'arrangementByContainerId', containerId, 'childIds', index],
-          });
-        }
-      });
-    }
-  }
-});
+}).superRefine((record, context) => validateRecordIntegrity(record as DiagramRecord, context));
 
 /** Runtime validator for one independently stored diagram record. */
 export const diagramRecordSchema = {

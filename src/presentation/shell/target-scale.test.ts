@@ -5,8 +5,13 @@ import { describe, expect, it } from 'vitest';
 import { TARGET_SIZES, targetScale } from './target-scale';
 
 function canvasCss(): string {
-  const path = fileURLToPath(new URL('../../styles/canvas.css', import.meta.url));
-  const text = readFileSync(path, 'utf8');
+  const text = [
+    '../../styles/canvas-groups.css',
+    '../../styles/canvas-wires.css',
+  ].map((relativePath) => readFileSync(
+    fileURLToPath(new URL(relativePath, import.meta.url)),
+    'utf8',
+  )).join('\n');
   if (text.length === 0) throw new Error('canvas.css read as empty');
   return text.replace(/\/\*[\s\S]*?\*\//g, '');
 }

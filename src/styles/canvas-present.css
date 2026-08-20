@@ -1,0 +1,88 @@
+/* Presentation is a single-map reading surface, not a disabled editor. */
+.canvas-surface.is-present,
+.canvas-surface.is-present .react-flow { background: var(--bg-read); }
+
+.is-present .scope-node {
+  border-color: var(--border-read);
+  background: var(--panel-read);
+}
+
+.is-present .scope-node__title {
+  color: var(--accent-strong);
+  font-size: 15px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.is-present .architecture-node {
+  border-color: var(--border-read);
+  background: var(--card-read);
+  box-shadow: none;
+}
+
+.is-present .node-header {
+  min-height: 38px;
+  padding: 4px 14px 0;
+  border-bottom: 0;
+}
+
+.is-present .node-label { color: var(--ink-read); }
+.is-present .node-kind { color: var(--muted-read); }
+
+.is-present .node-description {
+  padding: 2px 14px 8px;
+  border-bottom: 0;
+  color: var(--muted-read);
+  font-size: 11px;
+}
+
+.is-present .interface-list { padding: 0 7px 3px; }
+
+.is-present .interface-list button {
+  color: var(--ink-read);
+  font-size: 11px;
+}
+
+.is-present .interface-list button span:last-child { color: var(--ink-read); }
+
+.is-present .type-list {
+  display: block;
+  padding: 0 14px 10px;
+}
+
+.is-present .type-list button {
+  display: block;
+  width: 100%;
+  padding: 3px 0;
+  border: 0;
+  color: var(--faint-read);
+  background: transparent;
+  font-family: inherit;
+  font-size: 11px;
+  text-align: left;
+}
+
+.is-present .comment-node {
+  border-color: var(--border-read);
+  border-style: dashed;
+  color: var(--muted-read);
+  background: transparent;
+  box-shadow: none;
+}
+
+.canvas-surface.is-present .react-flow__handle {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.canvas-surface.is-present .react-flow__edge-path { stroke: var(--wire-stroke, var(--wire)); }
+
+.is-present .wire-label {
+  color: var(--muted-read);
+  background: var(--bg-read);
+  text-shadow:
+    0 0 3px var(--bg-read), 0 0 3px var(--bg-read), 0 0 3px var(--bg-read),
+    1px 0 1px var(--bg-read), -1px 0 1px var(--bg-read),
+    0 1px 1px var(--bg-read), 0 -1px 1px var(--bg-read);
+}
+

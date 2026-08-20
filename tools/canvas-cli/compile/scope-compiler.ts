@@ -1,20 +1,15 @@
-import { componentFor } from '../../../src/components/registry.ts';
 import type { ContainerArrangement, ParsedPresentation } from '../../../src/domain/canvas-presentation.ts';
 import type { DiagramRecord } from '../../../src/domain/records.ts';
 import type { NodeAst, ZoneAst } from '../dsl-ast.ts';
 import type { RecordNode } from '../record-graph.ts';
-import { asId, descendantIds } from '../record-graph.ts';
+import { asId } from '../record-graph.ts';
 import { slugify } from '../slug.ts';
 import type {
   CompileMessages, CompiledDiagram, CompiledScope, DeclaredScope,
 } from './contract.ts';
+import { NodeIdentityIndex } from './node-identity.ts';
 
 type TreeRow = NonNullable<RecordNode['rows']>[number];
-
-interface AllocatedNode {
-  nodeId: string;
-  labelSlug: string;
-}
 
 class ScopeCompiler {
   private readonly declared: DeclaredScope;
@@ -24,20 +19,15 @@ class ScopeCompiler {
   private readonly types: DiagramRecord['types'] = {};
   private readonly appearanceByNodeId: CompiledDiagram['appearanceByNodeId'] = {};
   private readonly arrangementByContainerId: CompiledDiagram['arrangementByContainerId'] = {};
-  private readonly oldIdBySlug = new Map<string, string>();
-  private readonly oldIdByParentIdentity = new Map<string, string>();
-  private readonly endpointByLabelSlug = new Map<string, string>();
-  private readonly localLabels = new Map<string, string>();
-  private readonly parentIdentityKeys = new Set<string>();
-  private commentCount = 0;
+  private readonly identity: NodeIdentityIndex;
 
   constructor(declared: DeclaredScope, messages: CompileMessages) {
     this.declared = declared;
     this.messages = messages;
+    this.identity = new NodeIdentityIndex(declared, messages);
   }
 
   compile(): CompiledScope {
-    this.indexExistingIdentities();
     const { scopeAst, rootNodeId, id } = this.declared;
     this.nodes[rootNodeId] = {
       id: asId(rootNodeId),
@@ -51,8 +41,8 @@ class ScopeCompiler {
     this.storeArrangement(rootNodeId, scopeAst.presentation, rootChildIds);
     return {
       declared: this.declared,
-      endpointByLabelSlug: this.endpointByLabelSlug,
-      localLabels: this.localLabels,
+      endpointByLabelSlug: this.identity.endpointByLabelSlug,
+      localLabels: this.identity.localLabels,
       diagram: {
         id,
         name: scopeAst.label,
@@ -68,21 +58,6 @@ class ScopeCompiler {
     };
   }
 
-  private indexExistingIdentities(): void {
-    const { record, rootNodeId } = this.declared;
-    if (!record) return;
-    for (const nodeId of descendantIds(record, rootNodeId)) {
-      const node = record.nodes[nodeId];
-      const identity = componentFor(node.kind).identity;
-      if (identity?.scope === 'parent' && node.parentId) {
-        this.oldIdByParentIdentity.set(
-          `${identity.namespace}\u0000${node.parentId}\u0000${slugify(node.label)}`,
-          nodeId,
-        );
-      } else this.oldIdBySlug.set(slugify(node.label), nodeId);
-    }
-  }
-
   private compileDeclarations(declarations: (NodeAst | ZoneAst)[], parentId: string): string[] {
     const compiledIds: string[] = [];
     for (const declaration of declarations) {
@@ -94,38 +69,8 @@ class ScopeCompiler {
     return compiledIds;
   }
 
-  private allocateNode(node: NodeAst, parentId: string): AllocatedNode | undefined {
-    const component = componentFor(node.kind);
-    const identity = component.identity;
-    const isComment = node.kind === 'comment';
-    const labelSlug = isComment
-      ? `note-${(this.commentCount += 1)}-${slugify(node.label).slice(0, 24)}`
-      : slugify(node.label);
-    const parentKey = identity?.scope === 'parent'
-      ? `${identity.namespace}\u0000${parentId}\u0000${slugify(node.label)}` : undefined;
-    if (parentKey && this.parentIdentityKeys.has(parentKey)) {
-      this.messages.errors.push({
-        message: `duplicate sibling ${component.dslKeyword} label "${node.label}" in map "${this.declared.scopeAst.label}"`,
-        hint: `${component.dslKeyword} labels must be unique within one parent`,
-      });
-      return undefined;
-    }
-    if (!identity && !isComment && this.localLabels.has(labelSlug)) {
-      this.duplicateLabel(node.label);
-      return undefined;
-    }
-    if (parentKey) this.parentIdentityKeys.add(parentKey);
-    if (!identity && !isComment) this.localLabels.set(labelSlug, node.label);
-    const nodeId = parentKey
-      ? this.oldIdByParentIdentity.get(parentKey)
-        ?? `${parentId}--${identity!.namespace}-${slugify(node.label)}`
-      : this.oldIdBySlug.get(labelSlug) ?? `${parentId}--${labelSlug}`;
-    if (identity?.wireEndpoint !== false) this.endpointByLabelSlug.set(labelSlug, nodeId);
-    return { nodeId, labelSlug };
-  }
-
   private compileNode(nodeAst: NodeAst, parentId: string): string | undefined {
-    const allocated = this.allocateNode(nodeAst, parentId);
+    const allocated = this.identity.allocateNode(nodeAst, parentId);
     if (!allocated) return undefined;
     const { nodeId } = allocated;
     const interfaceIds = this.compileInterfaces(nodeAst, nodeId);
@@ -189,14 +134,8 @@ class ScopeCompiler {
   }
 
   private compileZone(zone: ZoneAst, parentId: string): string | undefined {
-    const labelSlug = slugify(zone.label);
-    if (this.localLabels.has(labelSlug)) {
-      this.duplicateLabel(zone.label);
-      return undefined;
-    }
-    this.localLabels.set(labelSlug, zone.label);
-    const zoneId = this.oldIdBySlug.get(labelSlug) ?? `${parentId}--${labelSlug}`;
-    this.endpointByLabelSlug.set(labelSlug, zoneId);
+    const zoneId = this.identity.allocateZone(zone.label, parentId);
+    if (!zoneId) return undefined;
     this.nodes[zoneId] = {
       id: asId(zoneId),
       kind: 'group',
@@ -228,12 +167,6 @@ class ScopeCompiler {
     this.arrangementByContainerId[containerId] = arrangement;
   }
 
-  private duplicateLabel(label: string): void {
-    this.messages.errors.push({
-      message: `duplicate label "${label}" in map "${this.declared.scopeAst.label}"`,
-      hint: 'labels must be unique within a map — wires resolve endpoints by label',
-    });
-  }
 }
 
 /** Compiles one scope's nodes, members, identities and presentation without resolving wires. */

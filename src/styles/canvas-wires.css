@@ -1,0 +1,187 @@
+/*
+ * Ports keep a constant SCREEN size, not a constant diagram size.
+ *
+ * Drawn inside React Flow's scaled viewport, a fixed 7px port renders at 7 × zoom physical
+ * pixels — about two of them at the framing this app opens diagrams on. Dividing by the live
+ * zoom (published by useCamera) makes the dot the same size to the hand at every zoom, which
+ * is the only size that matters. Sizing by width/height rather than a scale transform keeps
+ * React Flow's own translate(-50%, -50%) centring exact, because the percentages resolve
+ * against the corrected box.
+ *
+ * Scoped to the surface so this outranks React Flow's own `.react-flow__handle` base rule,
+ * which loads after ours and otherwise pins the port back to a fixed 6px.
+ */
+.canvas-surface .react-flow__handle {
+  z-index: 5;
+  width: calc(10px / var(--nvk-zoom, 1));
+  height: calc(10px / var(--nvk-zoom, 1));
+  border: calc(1px / var(--nvk-zoom, 1)) solid var(--bg);
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 120ms ease, background 120ms ease;
+}
+
+/*
+ * Ports straddle their edge, evenly, on all four sides.
+ *
+ * They were tucked inward to survive the node body's rounded-corner clip, which left right and
+ * bottom a full diameter deeper than top and left, and moved the anchor React Flow derives from
+ * a handle so wires began inside the box. Rendering the ports outside the clipped body (see
+ * architecture-node.tsx) removes the reason to tuck them, so React Flow's own centring stands.
+ */
+
+/* The port under the pointer states which one will take the wire. */
+.canvas-surface .react-flow__handle:hover,
+.canvas-surface .react-flow__handle.connectingfrom,
+.canvas-surface .react-flow__handle.connectingto { background: var(--accent-strong); }
+
+.architecture-node:hover .react-flow__handle,
+.architecture-node.ports-always .react-flow__handle,
+.timeline-node-shell:hover .react-flow__handle,
+.timeline-node-shell.ports-always .react-flow__handle,
+.metric-node-shell:hover .react-flow__handle,
+.metric-node-shell.ports-always .react-flow__handle,
+.icon-card-node-shell:hover .react-flow__handle,
+.icon-card-node-shell.ports-always .react-flow__handle,
+.callout-stack-node-shell:hover .react-flow__handle,
+.callout-stack-node-shell.ports-always .react-flow__handle,
+.canvas-surface .react-flow__node.selected .react-flow__handle { opacity: 1; }
+
+/* The default wire is legible; --wire is the floor its kind colour is lifted above. */
+.canvas-surface .react-flow__edge-path {
+  stroke: var(--wire-stroke, var(--wire));
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: opacity 160ms ease, stroke 120ms ease;
+}
+
+/* Gold marks the one wire you are working on, and only while you are working on it. */
+.canvas-surface .react-flow__edge.selected .react-flow__edge-path { stroke: var(--gold); }
+/* Faint is the DIMMED state and nothing else. */
+.canvas-surface .react-flow__edge.is-dimmed .react-flow__edge-path { stroke: var(--wire-dim); }
+.canvas-surface .react-flow__edge.is-dimmed { opacity: 0.55; }
+.canvas-surface .react-flow__edge.is-dimmed .wire-label { opacity: 0.35; }
+
+/*
+ * A wire label rides on its own wire and cuts a hole in it.
+ *
+ * No box, no border: at working density a hundred bordered chips read as noise. The halo is
+ * painted in the canvas background so the label separates from whatever it crosses — that is
+ * what stops neighbouring labels from smearing into one grey band.
+ */
+.wire-label {
+  position: absolute;
+  padding: 0 var(--space-1);
+  border: 0;
+  color: var(--wire-label);
+  /* Painted in the canvas colour, so it reads as a gap in the wire rather than as a chip. A
+     halo alone left the wire showing through the spaces between words. */
+  background: var(--bg);
+  font-family: var(--font-ui);
+  /*
+   * A label is read at a distance, over a moving background, inside a scaled viewport. At
+   * --text-xs in diagram units it rendered at about six physical pixels at working zoom, which
+   * is not small type, it is unreadable type. Constant on screen, and sized by its own token so
+   * making wire labels legible cannot enlarge every count and kind tag in the panels.
+   */
+  font-size: min(
+    calc(var(--wire-label-base-size, 12px) / var(--nvk-label-zoom, 1)),
+    var(--wire-label-max-size, 13px)
+  );
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  /* The label renderer is click-through and the wire's own 18px interaction band is painted
+     over it; without these two a label is a picture, not a control — which is why labels
+     could not be selected or moved at all. React Flow elevates each edge's own svg to 2, so a
+     label has to sit above that to be reachable at all. */
+  z-index: 3;
+  pointer-events: all;
+  cursor: pointer;
+  text-shadow:
+    0 0 3px var(--bg), 0 0 3px var(--bg), 0 0 3px var(--bg),
+    1px 0 1px var(--bg), -1px 0 1px var(--bg),
+    0 1px 1px var(--bg), 0 -1px 1px var(--bg);
+}
+
+.wire-label:hover { color: var(--ink); }
+.wire-label.is-movable { cursor: grab; }
+.wire-label.is-movable:active { cursor: grabbing; }
+
+/* Below the chosen semantic-zoom boundary, labels become clutter rather than explanation. */
+.canvas-surface[data-wire-labels-hidden] .wire-label {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/*
+ * The ends of a selected wire.
+ *
+ * Drawn only while the wire is selected — an always-on dot at every endpoint would be the badge
+ * on every row Chris rejected. The drag target itself is React Flow's own reconnect anchor,
+ * which is larger than the dot on purpose.
+ */
+.wire-endpoint {
+  r: calc(var(--target-md) / 2 / var(--nvk-zoom, 1));
+  fill: var(--gold);
+  stroke: var(--bg);
+  stroke-width: calc(2px / var(--nvk-zoom, 1));
+  pointer-events: none;
+}
+
+/*
+ * A selected wire's ends have to win the pointer against the node ports underneath them, which
+ * is why the selected edge's layer is lifted above the nodes below — otherwise a port takes the
+ * mousedown and starts a new wire instead of moving this one's end. The grabbing itself belongs
+ * to `.wire-grab`, which is the invisible circle drawn over each dot.
+ */
+
+.canvas-surface .react-flow__edge.selected { z-index: 1001 !important; }
+
+/* The corridor handle: drag to push the wire's path aside, double-click to let go of it. */
+.wire-waypoint {
+  r: calc(var(--target-md) / 2 / var(--nvk-zoom, 1));
+  fill: var(--surface-3);
+  stroke: var(--gold);
+  stroke-width: calc(1.5px / var(--nvk-zoom, 1));
+  pointer-events: none;
+}
+
+/*
+ * React Flow's own reconnect anchors take no pointer input.
+ *
+ * This edge moves its ends itself (`moveEnd`), because React Flow reconnects by listening
+ * within a radius of an invisible anchor that a node's port sits on top of and swallows. Both
+ * mechanisms being live meant the unreliable one painted over the reliable one: probing the
+ * grab circle found `react-flow__edgeupdater` at its centre and for the first eight pixels out,
+ * so the generous target existed and could not be reached.
+ */
+.canvas-surface .react-flow__edgeupdater { pointer-events: none; }
+
+/* A selected wire's contract must stay readable above everything else. */
+.wire-label.is-selected {
+  color: var(--gold-bright);
+  font-weight: 500;
+}
+
+/* Labels are drawn outside the scaled viewport, so the routing search needs the zoom to convert
+   a measured pixel size back into diagram units. */
+.canvas-surface .react-flow__edgelabel-renderer { --nvk-label-zoom: var(--nvk-zoom, 1); }
+
+/*
+ * The region that answers the pointer around a wire's end or its corridor handle.
+ *
+ * Invisible and much larger than the dot it surrounds. Chris: "if I let go too soon, the wire
+ * snaps back" — the mark was eight physical pixels across at working zoom, so the release had
+ * to land inside it. The visible dot stays small, which is what keeps the canvas calm; the
+ * thing you grab is nearly three times wider.
+ */
+.wire-grab {
+  r: calc(var(--target-grab) / 2 / var(--nvk-zoom, 1));
+  fill: transparent;
+  stroke: none;
+  pointer-events: all;
+  cursor: grab;
+}
+
+.wire-grab:active { cursor: grabbing; }

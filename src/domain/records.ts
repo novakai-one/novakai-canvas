@@ -1,10 +1,14 @@
 import type {
-  DiagramId, InterfaceId, LayoutId, LinkId, NodeId, TypeId, ViewId, WireId,
+  DiagramId, InterfaceId, LinkId, NodeId, TypeId, ViewId, WireId,
 } from './ids.ts';
 import type {
-  CalloutItem, CanvasReference, IconCardIcon, InterfaceObject, MetricStatus, Position, Size, SourceReference, TimelineStep, TreeRow, TypeObject,
+  CalloutItem, CanvasReference, IconCardIcon, InterfaceObject, MetricStatus, SourceReference, TimelineStep, TreeRow, TypeObject,
 } from './model.ts';
-import type { ContainerArrangement, NodeAppearance } from './canvas-presentation.ts';
+import type { CanvasLayout, CanvasViewBase, PortSide } from './layout-record.ts';
+
+export type {
+  CanvasLayout, LayoutStrategyName, NodePlacement, PortSide, WireRouteHint,
+} from './layout-record.ts';
 
 /**
  * The v3 record model.
@@ -27,12 +31,6 @@ export type NodeKind =
 /** Relationship vocabulary carried by wires; renderers style each kind distinctly. */
 export type WireKind =
   | 'owns' | 'references' | 'assigns' | 'queries' | 'executes' | 'mentions' | 'missing';
-
-/** Which edge of a node an endpoint attaches to. */
-export type PortSide = 'top' | 'right' | 'bottom' | 'left';
-
-/** Named arrangement algorithms. `manual` is the identity strategy: it moves nothing. */
-export type LayoutStrategyName = 'manual' | 'hierarchy' | 'flow';
 
 /**
  * A stable attachment point on a node's edge.
@@ -86,42 +84,6 @@ export interface CanvasWire {
   target: Endpoint;
 }
 
-/** One node's geometry inside one saved layout. */
-export interface NodePlacement {
-  nodeId: NodeId;
-  position: Position;
-  size: Size;
-  /** A pinned node is an anchor: layout works around it and never moves it. */
-  pinned: boolean;
-}
-
-/** Durable routing preference. Never a renderer path string, so the renderer stays replaceable. */
-export interface WireRouteHint {
-  wireId: WireId;
-  preferredSourceSide?: PortSide;
-  preferredTargetSide?: PortSide;
-  waypoints: Position[];
-  /**
-   * Where the label sits along the wire, 0 at the source and 1 at the target.
-   *
-   * A fraction rather than a coordinate: the label has to keep its place on the wire when the
-   * nodes move, and a stored point would drift off the path the moment either end was dragged.
-   */
-  labelPosition?: number;
-}
-
-/** One named arrangement of one diagram's nodes. */
-export interface CanvasLayout {
-  id: LayoutId;
-  name: string;
-  strategy: LayoutStrategyName;
-  placements: Record<string, NodePlacement>;
-  wireRouteHints: Record<string, WireRouteHint>;
-  /** Authored presentation belongs to this arrangement, never to semantic nodes. */
-  appearanceByNodeId?: Record<string, NodeAppearance>;
-  arrangementByContainerId?: Record<string, ContainerArrangement>;
-}
-
 /**
  * One saved reading view.
  *
@@ -129,12 +91,7 @@ export interface CanvasLayout {
  * be two writers for one fact. Edit and Present are host chrome: neither appears in this model,
  * so the two modes cannot disagree about an arrangement.
  */
-export interface CanvasView {
-  id: ViewId;
-  name: string;
-  layoutId: LayoutId;
-  viewport: { x: number; y: number; zoom: number };
-  collapsedNodeIds: NodeId[];
+export interface CanvasView extends CanvasViewBase {
   hiddenKinds: NodeKind[];
 }
 

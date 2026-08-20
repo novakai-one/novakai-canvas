@@ -1,0 +1,35 @@
+.canvas-surface .react-flow__controls {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  box-shadow: none;
+}
+
+.canvas-surface .react-flow__controls-button {
+  width: 28px;
+  height: 28px;
+  border-bottom-color: var(--border);
+  color: var(--muted);
+  background: var(--card-3);
+}
+
+.canvas-surface .react-flow__controls-button:hover { background: var(--hover); }
+.canvas-surface .react-flow__controls-button svg { fill: currentColor; }
+
+/* Renaming happens where the node is; the affordance stays quiet until you are on it. */
+.node-label.is-renamable { cursor: text; }
+
+.node-label-input {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--accent);
+  color: var(--ink-strong);
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  outline: none;
+}
+

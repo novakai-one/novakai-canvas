@@ -1,13 +1,11 @@
 /** Registry-owned multiline text block with deterministic measurement and SVG output. */
 
 import { z } from 'zod';
-import type { ResolvedNodeAppearance } from '../../domain/canvas-presentation.ts';
 import type { CanvasNode } from '../../domain/records.ts';
-import type { DiagramComponent, DslNodeDeclaration, Size } from '../component.ts';
+import type { DiagramComponent, DslNodeDeclaration } from '../component.ts';
 import { GLYPHS } from '../glyphs.ts';
+import { layoutBlockText, measureBlockTextWidth } from './text-layout.ts';
 
-const MAX_CONTENT_WIDTH = 320;
-const ICON_GAP = 8;
 const SYNTAX = 'block "label" [icon=check|clock|people|shield|target|trend font=… size=… weight=… align=… text=… background=… border-color=… border=… radius=… padding=…]';
 const EXAMPLE = 'block "Refusal rate" icon=target size=14 weight=600 align=center text=green border-color=green border=1 radius=8 padding=12';
 
@@ -17,98 +15,6 @@ function escapeXml(text: string): string {
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;');
-}
-
-/** Conservative cross-host text width; renderers consume its lines instead of wrapping again. */
-function textWidth(text: string, appearance: ResolvedNodeAppearance): number {
-  const familyFactor = appearance.font === 'mono' ? 0.64 : appearance.font === 'serif' ? 0.62 : 0.61;
-  const weightFactor = appearance.fontWeight >= 600 ? 1.035 : 1;
-  let units = 0;
-  for (const character of text) {
-    if (/\s/.test(character)) units += 0.38;
-    else if (/[ilI.,:;'|!]/.test(character)) units += 0.36;
-    else if (/[MW@#%&]/.test(character)) units += 0.92;
-    else if (character.codePointAt(0)! > 0x7f) units += 0.78;
-    else units += familyFactor;
-  }
-  return units * appearance.fontSize * weightFactor;
-}
-
-function breakToken(token: string, width: number, appearance: ResolvedNodeAppearance): string[] {
-  const parts: string[] = [];
-  let current = '';
-  for (const character of token) {
-    if (current && textWidth(`${current}${character}`, appearance) > width) {
-      parts.push(current);
-      current = character;
-    } else {
-      current += character;
-    }
-  }
-  if (current) parts.push(current);
-  return parts;
-}
-
-function wrapText(text: string, width: number, appearance: ResolvedNodeAppearance): string[] {
-  if (textWidth(text, appearance) <= width) return [text];
-  const words = text.trim().split(/\s+/).filter(Boolean);
-  const lines: string[] = [];
-  let current = '';
-  for (const word of words) {
-    const pieces = textWidth(word, appearance) > width ? breakToken(word, width, appearance) : [word];
-    for (const piece of pieces) {
-      const candidate = current ? `${current} ${piece}` : piece;
-      if (current && textWidth(candidate, appearance) > width) {
-        lines.push(current);
-        current = piece;
-      } else {
-        current = candidate;
-      }
-    }
-  }
-  if (current) lines.push(current);
-  return lines;
-}
-
-/** The one wrap and size authority shared by automatic layout, React, and SVG. */
-export function layoutBlockText(
-  label: string,
-  authoredLines: readonly string[],
-  appearance: ResolvedNodeAppearance,
-): {
-  size: Size;
-  lines: readonly string[];
-  iconSize: number;
-  iconGap: number;
-  firstRowHeight: number;
-} {
-  const sourceLines = [label, ...authoredLines];
-  const iconSize = appearance.icon ? Math.round(appearance.fontSize * 1.3) : 0;
-  const iconWidth = iconSize === 0 ? 0 : iconSize + ICON_GAP;
-  const contentWidth = Math.max(1, Math.min(
-    MAX_CONTENT_WIDTH,
-    Math.ceil(Math.max(
-      textWidth(label, appearance) + iconWidth,
-      ...authoredLines.map((line) => textWidth(line, appearance)),
-    )),
-  ));
-  const lines = [
-    ...wrapText(label, Math.max(1, contentWidth - iconWidth), appearance),
-    ...sourceLines.slice(1).flatMap((line) => wrapText(line, contentWidth, appearance)),
-  ];
-  const lineHeight = appearance.fontSize * 1.4;
-  const firstRowHeight = Math.max(lineHeight, iconSize);
-  const inset = appearance.padding + appearance.borderWidth;
-  return {
-    size: {
-      width: Math.ceil(contentWidth + inset * 2),
-      height: Math.ceil(firstRowHeight + Math.max(0, lines.length - 1) * lineHeight + inset * 2),
-    },
-    lines,
-    iconSize,
-    iconGap: iconSize === 0 ? 0 : ICON_GAP,
-    firstRowHeight,
-  };
 }
 
 const declaration: DslNodeDeclaration = {
@@ -172,7 +78,7 @@ export const blockComponent: DiagramComponent<'block'> = {
     ];
     let firstTextX = x;
     if (appearance.icon) {
-      const firstLineWidth = textWidth(layout.lines[0] ?? '', appearance);
+      const firstLineWidth = measureBlockTextWidth(layout.lines[0] ?? '', appearance);
       const firstRowWidth = layout.iconSize + layout.iconGap + firstLineWidth;
       const rowX = appearance.textAlign === 'left' ? box.x + inset
         : appearance.textAlign === 'right' ? box.x + box.width - inset - firstRowWidth
@@ -194,3 +100,5 @@ export const blockComponent: DiagramComponent<'block'> = {
     return parts.join('\n');
   },
 };
+
+export { layoutBlockText } from './text-layout.ts';
