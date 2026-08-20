@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "revision": 98,
+  "revision": 100,
   "entries": {
     "agent-visual-authoring-poc": {
       "id": "agent-visual-authoring-poc",
@@ -194,6 +194,49 @@
         "«module» Compiler + auto-layout",
         "«module» Component registry",
         "«module» DSL parser"
+      ]
+    },
+    "how-should-four-ai-systems-be-evaluated": {
+      "id": "how-should-four-ai-systems-be-evaluated",
+      "name": "How should four AI systems be evaluated?",
+      "status": "active",
+      "revision": 1,
+      "nodeLabels": [
+        "1 · LLM",
+        "2 · RAG",
+        "3 · Coding agents",
+        "4 · Multi-agent systems",
+        "Agent loop",
+        "Agent measures",
+        "Agent roles",
+        "Agent team",
+        "Agent verification",
+        "Aggregate result",
+        "Bug report",
+        "Coding agent",
+        "Coding-agent tasks",
+        "Delegated task",
+        "Generate response",
+        "Grounded answer",
+        "How should four AI systems be evaluated?",
+        "LLM evaluation",
+        "LLM measures",
+        "LLM tasks",
+        "Language model",
+        "Multi-agent tasks",
+        "Orchestrate roles",
+        "Patch",
+        "Prompt",
+        "Question",
+        "RAG evaluation",
+        "RAG measures",
+        "RAG tasks",
+        "Retrieval system",
+        "Retrieve context",
+        "Retrieved evidence",
+        "Team evaluation",
+        "Team measures",
+        "Text output"
       ]
     },
     "messaging-scope": {
