@@ -11,6 +11,7 @@
  */
 
 import type { CanvasNode as RecordNode } from '../domain/records.ts';
+import type { AppearanceKey, ResolvedNodeAppearance } from '../domain/canvas-presentation.ts';
 
 export interface Size { width: number; height: number }
 
@@ -73,13 +74,32 @@ export interface DiagramComponent<K extends string = string> {
   /** Extra zod fields this kind stores beyond the base node (id/kind/label/description/parentId). */
   contentFields?: Record<string, import('zod').ZodTypeAny>;
   dslChildren?: DslChildStatement[];
+  /** Shared presentation keys this kind accepts from agent-authored DSL. */
+  appearanceKeys?: readonly AppearanceKey[];
+  /** Optional identity policy; absent means the existing map-wide, wire-addressable namespace. */
+  identity?: {
+    scope: 'parent';
+    namespace: string;
+    wireEndpoint: boolean;
+    preserveDeclarationOrder?: boolean;
+  };
+  /** False when this node's body accepts only its component-owned child statements. */
+  allowsMembers?: boolean;
   /** Selectable children owned by this component node. */
   items?(node: RecordNode): readonly ComponentItem[];
   layoutRole: 'leaf' | 'container';
   /** Content-driven size for auto-layout. ctx gives interface/type lines already resolved. */
-  measure(node: RecordNode, ctx: { interfaceLines: string[]; typeLines: string[] }): Size;
+  measure(node: RecordNode, ctx: {
+    interfaceLines: string[];
+    typeLines: string[];
+    appearance: ResolvedNodeAppearance;
+  }): Size;
   /** SVG body for `./canvas snapshot`. Return undefined to use the shared card renderer. */
-  renderSvg?(node: RecordNode, box: { x: number; y: number; width: number; height: number }): string;
+  renderSvg?(
+    node: RecordNode,
+    box: { x: number; y: number; width: number; height: number },
+    appearance: ResolvedNodeAppearance,
+  ): string;
 }
 
 function quote(value: string): string {

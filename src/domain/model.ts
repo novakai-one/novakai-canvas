@@ -1,6 +1,8 @@
 /** Stable, serialisable vocabulary shared across every module. */
 
-export type NodeKind = 'scope' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline' | 'metric' | 'icon-card';
+import type { ContainerArrangement, NodeAppearance } from './canvas-presentation.ts';
+
+export type NodeKind = 'scope' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline' | 'metric' | 'icon-card' | 'block';
 
 /** Relationship vocabulary carried by wires; renderers style each kind distinctly. */
 export type WireKind =
@@ -70,6 +72,8 @@ export interface CanvasNode {
   icon?: IconCardIcon;
   /** Ordered highlights; present only on kind "callout-stack". */
   callouts?: CalloutItem[];
+  /** Ordered semantic text; present only on kind "block". */
+  lines?: string[];
   /** Optional identity of the real thing this drawing occurrence represents. */
   subjectRef?: CanvasReference;
   /** Optional deeper explanation opened from this overview occurrence. */
@@ -134,6 +138,8 @@ export interface CanvasLayout {
   placements: Record<string, NodePlacement>;
   wireRouteHints: Record<string, WireRouteHint>;
   collapsedNodeIds: string[];
+  appearanceByNodeId?: Record<string, NodeAppearance>;
+  arrangementByContainerId?: Record<string, ContainerArrangement>;
 }
 
 /** Library identity and lifecycle; diagram title remains owned by its root scope node. */

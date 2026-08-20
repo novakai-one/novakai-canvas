@@ -3,6 +3,7 @@
 import type { CrossDiagramLink, DiagramRecord } from '../../src/canvas.ts';
 import { componentFor } from '../../src/components/registry.ts';
 import { placedNodes, rootGroupId, type PlacedNode } from './record-graph.ts';
+import { appearanceSpecification } from '../../src/domain/canvas-presentation.ts';
 
 /**
  * What a printer needs to render a relationship whose far end is in another diagram.
@@ -66,11 +67,18 @@ export function printRecord(record: DiagramRecord, context?: CrossDiagramContext
   const lines: string[] = [];
   const title = root?.label ?? record.name;
   lines.push(`scope ${quote(title)}${root?.description ? ` ${quote(root.description)}` : ''}`);
+  const activeLayout = record.layouts[record.views[record.activeViewId]?.layoutId];
 
   const emitContainer = (containerId: string | undefined, indent: string): void => {
     for (const node of childrenOf(nodes, containerId)) {
       const component = componentFor(node.kind);
-      const declaration = `${indent}${component.declaration.print(node)}`;
+      const authored = activeLayout?.appearanceByNodeId?.[node.id];
+      const attributes = (component.appearanceKeys ?? []).flatMap((key) => {
+        const specification = appearanceSpecification(key);
+        const value = authored?.[specification.jsonKey];
+        return value === undefined ? [] : [`${key}=${String(value)}`];
+      });
+      const declaration = `${indent}${component.declaration.print(node)}${attributes.length ? ` ${attributes.join(' ')}` : ''}`;
       if (component.layoutRole === 'container') {
         lines.push(declaration);
         emitContainer(node.id as string, `${indent}  `);

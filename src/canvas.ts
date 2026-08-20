@@ -19,6 +19,10 @@ export type { CanvasCensus } from './domain/migrate/census.ts';
 export type {
   CrossDiagramLink, DiagramRecord, LibraryEntry, LibraryIndex, MigratedLibrary, MigrationReport,
 } from './domain/records.ts';
+export { resolveNodeAppearance } from './domain/canvas-presentation.ts';
+export type {
+  AppearanceKey, ContainerArrangement, NodeAppearance, PresentationContext, ResolvedNodeAppearance,
+} from './domain/canvas-presentation.ts';
 export type {
   DiagramId, LayoutId, LinkId, NodeId, TypeId, ViewId, WireId,
 } from './domain/ids.ts';

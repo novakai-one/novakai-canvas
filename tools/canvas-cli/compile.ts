@@ -5,6 +5,8 @@ import type { NodeAst, ScopeAst, ZoneAst } from './dsl-parse.ts';
 import type { RecordNode, RecordWire, RecordWireKind } from './record-graph.ts';
 import { asId, descendantIds, rootGroupId } from './record-graph.ts';
 import { slugify } from './slug.ts';
+import { componentFor } from '../../src/components/registry.ts';
+import type { ContainerArrangement, NodeAppearance } from '../../src/domain/canvas-presentation.ts';
 
 /** Tree row shape, derived from the record node rather than named — `TreeRow` isn't on the public path. */
 type TreeRow = NonNullable<RecordNode['rows']>[number];
@@ -33,6 +35,8 @@ export interface CompiledDiagram {
   wires: Record<string, RecordWire>;
   interfaces: DiagramRecord['interfaces'];
   types: DiagramRecord['types'];
+  appearanceByNodeId: Record<string, NodeAppearance>;
+  arrangementByContainerId: Record<string, ContainerArrangement>;
   /** Wires the record cannot hold, because a wire belongs to exactly one diagram. */
   crossDiagramWires: CrossDiagramWire[];
 }
@@ -84,6 +88,7 @@ function foreignNodesByLabel(
   for (const record of Object.values(existing)) {
     if (selfIds.has(record.id as string)) continue;
     for (const node of Object.values(record.nodes)) {
+      if (componentFor(node.kind).identity?.wireEndpoint === false) continue;
       const slug = slugify(node.label);
       labels.set(slug, node.label);
       ends.set(slug, [...(ends.get(slug) ?? []), {
@@ -133,12 +138,24 @@ export function compile(
     const interfaces: DiagramRecord['interfaces'] = {};
     const types: DiagramRecord['types'] = {};
     const crossDiagramWires: CrossDiagramWire[] = [];
+    const appearanceByNodeId: Record<string, NodeAppearance> = {};
+    const arrangementByContainerId: Record<string, ContainerArrangement> = {};
 
     // Ids of the nodes this scope had before, by label slug, so re-applied nodes keep them.
     const oldIdBySlug = new Map<string, string>();
+    const oldIdByParentIdentity = new Map<string, string>();
     if (record) {
       for (const nodeId of descendantIds(record, rootNodeId)) {
-        oldIdBySlug.set(slugify(record.nodes[nodeId].label), nodeId);
+        const oldNode = record.nodes[nodeId];
+        const identity = componentFor(oldNode.kind).identity;
+        if (identity?.scope === 'parent' && oldNode.parentId) {
+          oldIdByParentIdentity.set(
+            `${identity.namespace}\u0000${oldNode.parentId}\u0000${slugify(oldNode.label)}`,
+            nodeId,
+          );
+        } else {
+          oldIdBySlug.set(slugify(oldNode.label), nodeId);
+        }
       }
     }
 
@@ -154,24 +171,40 @@ export function compile(
     // Labels are unique per map so wires can resolve endpoints by label alone (ruling R7).
     const idByLabelSlug = new Map<string, string>();
     const mapLabelSlugs = new Map<string, string>();
+    const parentIdentityKeys = new Set<string>();
     let commentCount = 0;
 
     const compileNodes = (nodeAsts: NodeAst[], parentId: string): void => {
       for (const nodeAst of nodeAsts) {
+        const component = componentFor(nodeAst.kind);
+        const identity = component.identity;
         const isComment = nodeAst.kind === 'comment';
         const labelSlug = isComment
           ? `note-${(commentCount += 1)}-${slugify(nodeAst.label).slice(0, 24)}`
           : slugify(nodeAst.label);
-        if (!isComment && mapLabelSlugs.has(labelSlug)) {
+        const parentIdentityKey = identity?.scope === 'parent'
+          ? `${identity.namespace}\u0000${parentId}\u0000${slugify(nodeAst.label)}` : undefined;
+        if (parentIdentityKey && parentIdentityKeys.has(parentIdentityKey)) {
+          errors.push({
+            message: `duplicate sibling ${component.dslKeyword} label "${nodeAst.label}" in map "${scopeAst.label}"`,
+            hint: `${component.dslKeyword} labels must be unique within one parent`,
+          });
+          continue;
+        }
+        if (!identity && !isComment && mapLabelSlugs.has(labelSlug)) {
           errors.push({
             message: `duplicate label "${nodeAst.label}" in map "${scopeAst.label}"`,
             hint: 'labels must be unique within a map — wires resolve endpoints by label',
           });
           continue;
         }
-        if (!isComment) mapLabelSlugs.set(labelSlug, nodeAst.label);
-        const nodeId = oldIdBySlug.get(labelSlug) ?? `${parentId}--${labelSlug}`;
-        idByLabelSlug.set(labelSlug, nodeId);
+        if (parentIdentityKey) parentIdentityKeys.add(parentIdentityKey);
+        if (!identity && !isComment) mapLabelSlugs.set(labelSlug, nodeAst.label);
+        const nodeId = parentIdentityKey
+          ? oldIdByParentIdentity.get(parentIdentityKey)
+            ?? `${parentId}--${identity!.namespace}-${slugify(nodeAst.label)}`
+          : oldIdBySlug.get(labelSlug) ?? `${parentId}--${labelSlug}`;
+        if (identity?.wireEndpoint !== false) idByLabelSlug.set(labelSlug, nodeId);
 
         const interfaceIds: string[] = [];
         for (const interfaceAst of nodeAst.interfaces) {
@@ -218,6 +251,9 @@ export function compile(
           ...nodeAst.content,
           ...childContent,
         };
+        if (nodeAst.appearance && Object.keys(nodeAst.appearance).length > 0) {
+          appearanceByNodeId[nodeId] = nodeAst.appearance;
+        }
       }
     };
 
@@ -319,6 +355,8 @@ export function compile(
       wires,
       interfaces,
       types,
+      appearanceByNodeId,
+      arrangementByContainerId,
       crossDiagramWires,
     });
   }

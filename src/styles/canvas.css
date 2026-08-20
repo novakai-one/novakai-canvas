@@ -10,6 +10,23 @@
 .canvas-surface .react-flow__node { transition: opacity 160ms ease; }
 .canvas-surface .react-flow__node:focus { outline: none; }
 
+.block-node {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-style: solid;
+}
+
+.block-line {
+  display: block;
+  white-space: pre;
+}
+
+.canvas-surface .react-flow__node.selected .block-node {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
 .architecture-node {
   position: relative;
   width: 100%;

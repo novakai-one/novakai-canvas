@@ -6,6 +6,7 @@ import type { ArchitectureDocument, PositionedCanvasNode } from './model.ts';
 import type { CanvasNode as RecordNode } from './records.ts';
 import { positionedNodes, resolveLayout } from './layouts.ts';
 import { componentFor } from '../components/registry.ts';
+import { resolveNodeAppearance } from './canvas-presentation.ts';
 
 /** Re-exported for existing callers (`tools/canvas-cli/layout.ts` re-exports this on the public path). */
 export { estimateNodeSize } from '../components/card/measure.ts';
@@ -43,13 +44,21 @@ function contentSize(document: PositionedDocument, nodeId: string): Size {
     const item = document.types[id];
     return `${item.name} { ${item.fields.join(', ')} }`;
   });
-  return componentFor(node.kind).measure(node as unknown as RecordNode, { interfaceLines, typeLines });
+  const authored = document.layouts[document.activeLayoutId]?.appearanceByNodeId?.[node.id];
+  return componentFor(node.kind).measure(node as unknown as RecordNode, {
+    interfaceLines,
+    typeLines,
+    appearance: resolveNodeAppearance(node.kind as RecordNode['kind'], authored),
+  });
 }
 
 function directChildren(document: PositionedDocument, containerId: string): string[] {
-  return Object.keys(document.nodes)
-    .filter((id) => document.nodes[id].parentId === containerId)
-    .sort();
+  const childIds = Object.keys(document.nodes)
+    .filter((id) => document.nodes[id].parentId === containerId);
+  return childIds.every((id) => componentFor(
+    document.nodes[id].kind === 'scope' ? 'group' : document.nodes[id].kind,
+  ).identity?.preserveDeclarationOrder)
+    ? childIds : childIds.sort();
 }
 
 /** Flat container: dagre over children with every child-internal wire as a rank edge. */

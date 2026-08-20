@@ -1,5 +1,10 @@
 import type { DiagramRecord, PortSide, WireRouteHint } from '../domain/records.ts';
 import type { CanvasActor, CanvasProvenance } from '../domain/model.ts';
+import { componentFor } from '../components/registry.ts';
+import {
+  appearanceKeyForJsonKey, layoutPresentationSchema,
+  type ContainerArrangement, type NodeAppearance,
+} from '../domain/canvas-presentation.ts';
 
 /** Who is acting and through which surface. Supplied by the host, never by a caller payload. */
 export interface ActorContext {
@@ -43,6 +48,11 @@ export type RecordCommand =
   | { kind: 'interface.remove'; id: string }
   | { kind: 'view.setCollapsed'; id: string; collapsed: boolean }
   | { kind: 'view.setViewport'; viewport: { x: number; y: number; zoom: number } }
+  | {
+    kind: 'layout.presentation.replace';
+    appearanceByNodeId: Record<string, NodeAppearance>;
+    arrangementByContainerId: Record<string, ContainerArrangement>;
+  }
   | { kind: 'diagram.rename'; name: string };
 
 interface PlacementInput {
@@ -103,6 +113,13 @@ function requireNode(record: DiagramRecord, id: string): void {
   if (!record.nodes[id]) throw new Error(`node-not-found:${id}`);
 }
 
+function requireWireEndpoint(record: DiagramRecord, id: string): void {
+  requireNode(record, id);
+  if (componentFor(record.nodes[id].kind).identity?.wireEndpoint === false) {
+    throw new Error(`node-not-a-wire-endpoint:${id}`);
+  }
+}
+
 /**
  * What a name in a signature is allowed to be.
  *
@@ -146,11 +163,22 @@ function validate(record: DiagramRecord, command: RecordCommand): void {
         }
       }
       return;
-    case 'node.move': case 'node.resize': case 'node.pin': case 'node.update': case 'node.remove':
+    case 'node.move': case 'node.resize': case 'node.pin': case 'node.remove':
       requireNode(record, command.id);
+      return;
+    case 'node.update':
+      requireNode(record, command.id);
+      if (command.patch.label !== undefined && command.patch.label !== record.nodes[command.id].label
+        && componentFor(record.nodes[command.id].kind).identity?.scope === 'parent') {
+        throw new Error(`parent-scoped-identity-requires-recreate:${command.id}`);
+      }
       return;
     case 'node.reparent': {
       requireNode(record, command.id);
+      if (command.parentId !== record.nodes[command.id].parentId
+        && componentFor(record.nodes[command.id].kind).identity?.scope === 'parent') {
+        throw new Error(`parent-scoped-identity-requires-recreate:${command.id}`);
+      }
       if (!command.parentId) return;
       requireNode(record, command.parentId);
       if (record.nodes[command.parentId].kind !== 'group') {
@@ -165,13 +193,13 @@ function validate(record: DiagramRecord, command: RecordCommand): void {
     }
     case 'wire.add':
       if (record.wires[command.wire.id]) throw new Error(`wire-already-exists:${command.wire.id}`);
-      requireNode(record, command.wire.source.nodeId);
-      requireNode(record, command.wire.target.nodeId);
+      requireWireEndpoint(record, command.wire.source.nodeId);
+      requireWireEndpoint(record, command.wire.target.nodeId);
       return;
     case 'wire.reconnect':
       if (!record.wires[command.id]) throw new Error(`wire-not-found:${command.id}`);
-      if (command.source) requireNode(record, command.source);
-      if (command.target) requireNode(record, command.target);
+      if (command.source) requireWireEndpoint(record, command.source);
+      if (command.target) requireWireEndpoint(record, command.target);
       return;
     case 'wire.setRoute': {
       if (!record.wires[command.id]) throw new Error(`wire-not-found:${command.id}`);
@@ -190,6 +218,9 @@ function validate(record: DiagramRecord, command: RecordCommand): void {
       return;
     case 'interface.add':
       requireNode(record, command.ownerId);
+      if (componentFor(record.nodes[command.ownerId].kind).allowsMembers === false) {
+        throw new Error(`node-does-not-accept-interfaces:${command.ownerId}`);
+      }
       if (record.interfaces[command.iface.id]) {
         throw new Error(`interface-already-exists:${command.iface.id}`);
       }
@@ -208,6 +239,26 @@ function validate(record: DiagramRecord, command: RecordCommand): void {
       return;
     case 'view.setViewport':
       return;
+    case 'layout.presentation.replace': {
+      layoutPresentationSchema.parse({
+        appearanceByNodeId: command.appearanceByNodeId,
+        arrangementByContainerId: command.arrangementByContainerId,
+      });
+      if (Object.keys(command.arrangementByContainerId).length > 0) {
+        throw new Error('container-arrangements-not-active');
+      }
+      for (const [nodeId, appearance] of Object.entries(command.appearanceByNodeId)) {
+        requireNode(record, nodeId);
+        const allowed = componentFor(record.nodes[nodeId].kind).appearanceKeys ?? [];
+        for (const jsonKey of Object.keys(appearance)) {
+          const key = appearanceKeyForJsonKey(jsonKey);
+          if (!key || !allowed.includes(key)) {
+            throw new Error(`appearance-not-supported:${nodeId}:${jsonKey}`);
+          }
+        }
+      }
+      return;
+    }
     case 'diagram.rename':
       if (command.name.trim().length === 0) throw new Error('diagram-name-empty');
   }
@@ -257,6 +308,10 @@ function apply(record: DiagramRecord, command: RecordCommand): DiagramRecord {
         ([, wire]) => wire.source.nodeId !== command.id && wire.target.nodeId !== command.id,
       ));
       for (const each of Object.values(next.layouts)) delete each.placements[command.id];
+      for (const each of Object.values(next.layouts)) {
+        if (each.appearanceByNodeId) delete each.appearanceByNodeId[command.id];
+        if (each.arrangementByContainerId) delete each.arrangementByContainerId[command.id];
+      }
       view.collapsedNodeIds = view.collapsedNodeIds.filter((id) => id !== command.id);
       break;
     }
@@ -320,6 +375,10 @@ function apply(record: DiagramRecord, command: RecordCommand): DiagramRecord {
     }
     case 'view.setViewport':
       view.viewport = command.viewport;
+      break;
+    case 'layout.presentation.replace':
+      layout.appearanceByNodeId = structuredClone(command.appearanceByNodeId);
+      layout.arrangementByContainerId = structuredClone(command.arrangementByContainerId);
       break;
     case 'diagram.rename':
       next.name = command.name;

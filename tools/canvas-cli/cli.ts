@@ -24,6 +24,7 @@ import {
 import { asId, layoutRecord } from './record-graph.ts';
 import { renderRecordSvg } from './snapshot.ts';
 import { slugify } from './slug.ts';
+import { appearanceSpecification } from '../../src/domain/canvas-presentation.ts';
 
 const DEFAULT_DATA_DIR = fileURLToPath(new URL('../../public/data', import.meta.url));
 
@@ -35,6 +36,10 @@ const componentHelp = [
   ...allComponents().flatMap((component) => [
     `  ${component.kind.padEnd(12)} ${component.declaration.syntax}`,
     ...(component.dslChildren ?? []).map((child) => `  ${child.contentKey.padEnd(12)} ${child.syntax}`),
+    ...(component.appearanceKeys ?? []).map((key) => {
+      const specification = appearanceSpecification(key);
+      return `  ${(component.dslKeyword + '.' + key).padEnd(12)} ${specification.values.join('|')} (default ${specification.default})`;
+    }),
   ]),
 ].join('\n');
 
@@ -81,6 +86,7 @@ const COMMAND_KINDS = [
   'node.add', 'node.move', 'node.resize', 'node.pin', 'node.update', 'node.reparent',
   'node.remove', 'wire.add', 'wire.reconnect', 'wire.remove', 'view.setCollapsed',
   'view.setViewport', 'diagram.rename',
+  'layout.presentation.replace',
 ] as const;
 
 interface Args { verb: string; positional: string[]; dataDir: string; out?: string; operationId?: string }
@@ -333,7 +339,11 @@ async function runRemove(opened: OpenedLibrary, args: Args): Promise<void> {
   if (!('snapshot' in workspace)) fail(`could not open "${diagramId}": ${workspace.status}`);
   const record = workspace.snapshot();
   const nameSlug = slugify(args.positional[1]);
-  const target = Object.values(record.nodes).find((node) => slugify(node.label) === nameSlug);
+  const matches = Object.values(record.nodes).filter((node) => slugify(node.label) === nameSlug);
+  if (matches.length > 1) {
+    fail(`node "${args.positional[1]}" is ambiguous in ${diagramId}; use a unique label before removing it`);
+  }
+  const target = matches[0];
   if (!target) fail(`no node "${args.positional[1]}" in ${diagramId}`);
 
   const outcome = workspace.submit({
@@ -416,6 +426,10 @@ function describeCapability(): unknown {
           syntax: child.syntax,
           example: child.example,
         })),
+        appearance: (component.appearanceKeys ?? []).map((key) => {
+          const specification = appearanceSpecification(key);
+          return { key, values: [...specification.values], default: specification.default };
+        }),
       })),
     },
   };

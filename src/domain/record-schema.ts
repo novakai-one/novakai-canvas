@@ -1,6 +1,9 @@
 import { z } from 'zod';
-import { allComponents, contentFieldsFor, kindList } from '../components/registry.ts';
+import { allComponents, componentFor, contentFieldsFor, kindList } from '../components/registry.ts';
 import type { DiagramRecord, LibraryIndex } from './records.ts';
+import {
+  appearanceKeyForJsonKey, containerArrangementSchema, nodeAppearanceSchema,
+} from './canvas-presentation.ts';
 
 const position = z.object({ x: z.number(), y: z.number() });
 const size = z.object({ width: z.number().positive(), height: z.number().positive() });
@@ -62,6 +65,8 @@ const canvasLayout = z.object({
   strategy: z.enum(['manual', 'hierarchy', 'flow']),
   placements: z.record(z.string(), nodePlacement),
   wireRouteHints: z.record(z.string(), wireRouteHint),
+  appearanceByNodeId: z.record(z.string(), nodeAppearanceSchema).default({}),
+  arrangementByContainerId: z.record(z.string(), containerArrangementSchema).default({}),
 });
 
 const canvasView = z.object({
@@ -124,6 +129,46 @@ const diagramRecord = z.object({
       message: `active view "${record.activeViewId}" does not exist`,
       path: ['activeViewId'],
     });
+  }
+  for (const [layoutId, layout] of Object.entries(record.layouts)) {
+    for (const [nodeId, appearance] of Object.entries(layout.appearanceByNodeId)) {
+      const node = record.nodes[nodeId];
+      if (!node) {
+        context.addIssue({
+          code: 'custom', message: `appearance names missing node "${nodeId}"`,
+          path: ['layouts', layoutId, 'appearanceByNodeId', nodeId],
+        });
+        continue;
+      }
+      const allowed = componentFor(node.kind).appearanceKeys ?? [];
+      for (const jsonKey of Object.keys(appearance)) {
+        const key = appearanceKeyForJsonKey(jsonKey);
+        if (!key || !allowed.includes(key)) {
+          context.addIssue({
+            code: 'custom', message: `${node.kind} does not support appearance "${jsonKey}"`,
+            path: ['layouts', layoutId, 'appearanceByNodeId', nodeId, jsonKey],
+          });
+        }
+      }
+    }
+    for (const [containerId, arrangement] of Object.entries(layout.arrangementByContainerId)) {
+      const container = record.nodes[containerId];
+      if (!container || componentFor(container.kind).layoutRole !== 'container') {
+        context.addIssue({
+          code: 'custom', message: `arrangement target "${containerId}" is not a container`,
+          path: ['layouts', layoutId, 'arrangementByContainerId', containerId],
+        });
+        continue;
+      }
+      arrangement.childIds.forEach((childId, index) => {
+        if (record.nodes[childId]?.parentId !== containerId) {
+          context.addIssue({
+            code: 'custom', message: `arranged child "${childId}" is not directly inside "${containerId}"`,
+            path: ['layouts', layoutId, 'arrangementByContainerId', containerId, 'childIds', index],
+          });
+        }
+      });
+    }
   }
 });
 

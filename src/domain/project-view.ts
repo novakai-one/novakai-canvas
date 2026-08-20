@@ -2,6 +2,7 @@ import type { NodeId, ViewId } from './ids.ts';
 import type {
   CanvasNode, CanvasWire, DiagramRecord, NodeKind, NodePlacement,
 } from './records.ts';
+import type { NodeAppearance } from './canvas-presentation.ts';
 
 /**
  * The frozen contract between the domain lane and the rendering lane.
@@ -16,6 +17,8 @@ export interface PositionedNode extends CanvasNode {
   position: NodePlacement['position'];
   size: NodePlacement['size'];
   pinned: boolean;
+  /** Authored values from the projected layout; semantic node storage remains untouched. */
+  appearance?: NodeAppearance;
 }
 
 /**
@@ -124,6 +127,7 @@ export function projectView(record: DiagramRecord, viewId?: ViewId): ProjectedVi
           position: { x: position.x + promoted.offset.x, y: position.y + promoted.offset.y },
           size: placement?.size ?? { width: 1, height: 1 },
           pinned: placement?.pinned ?? false,
+          appearance: layout.appearanceByNodeId?.[node.id],
         },
         depth: promoted.depth,
       };

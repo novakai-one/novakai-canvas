@@ -119,6 +119,8 @@ function documentFor(record: DiagramRecord): ArchitectureDocument {
         placements: structuredClone(placements) as ArchitectureDocument['layouts'][string]['placements'],
         wireRouteHints: {},
         collapsedNodeIds: [],
+        appearanceByNodeId: structuredClone(record.layouts[layoutId].appearanceByNodeId ?? {}),
+        arrangementByContainerId: structuredClone(record.layouts[layoutId].arrangementByContainerId ?? {}),
       },
     },
     diagrams: {},

@@ -7,6 +7,7 @@ import { componentFor } from '../components/registry';
 import { ARCHITECTURE_FLOW } from '../domain/flow';
 import { wireKindColor } from './wire-styles';
 import { routeWire, type Rect, type RouteObstacle, type RouteSide } from './edges/wire-routing';
+import { resolveNodeAppearance, type ResolvedNodeAppearance } from '../domain/canvas-presentation';
 
 /** Presentation data required by architecture nodes. */
 export interface ArchitectureNodeData extends Record<string, unknown> {
@@ -21,6 +22,7 @@ export interface ArchitectureNodeData extends Record<string, unknown> {
   selection: Selection;
   editable: boolean;
   select: (selection: Selection) => void;
+  appearance: ResolvedNodeAppearance;
 }
 
 /** How one wire is shaped by hand, read from the active layout's route hint. */
@@ -420,6 +422,10 @@ export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>
         selection,
         editable,
         select,
+        appearance: resolveNodeAppearance(node.kind, node.appearance, {
+          theme: preferences.appearance.theme,
+          showKinds: preferences.nodes.showKinds,
+        }),
       },
     };
   });

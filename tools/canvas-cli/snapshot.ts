@@ -5,6 +5,7 @@ import { placedNodes, rootGroupId, type PlacedNode } from './record-graph.ts';
 import { ARCHITECTURE_FLOW } from '../../src/domain/flow.ts';
 import { componentFor } from '../../src/components/registry.ts';
 import { wireKindColor, wireKindDashArray } from '../../src/presentation/wire-styles.ts';
+import { resolveNodeAppearance } from '../../src/domain/canvas-presentation.ts';
 
 const COLORS = {
   page: '#0d0d0f',
@@ -52,6 +53,7 @@ export function renderRecordSvg(record: DiagramRecord): string {
   const scopeId = rootGroupId(record);
   if (!scopeId) throw new Error(`"${record.id}" has no single root group to render`);
   const scope = nodes[scopeId];
+  const activeLayout = record.layouts[record.views[record.activeViewId].layoutId];
 
   // Depth-first preorder: every descendant, parents always before children.
   const descendants: PlacedNode[] = [];
@@ -137,7 +139,12 @@ export function renderRecordSvg(record: DiagramRecord): string {
       });
       continue;
     }
-    const componentSvg = componentFor(node.kind).renderSvg?.(node, { x, y, width, height });
+    const appearance = resolveNodeAppearance(
+      node.kind,
+      activeLayout.appearanceByNodeId?.[node.id],
+      { theme: 'dark', showKinds: true },
+    );
+    const componentSvg = componentFor(node.kind).renderSvg?.(node, { x, y, width, height }, appearance);
     if (componentSvg !== undefined) {
       parts.push(componentSvg);
       continue;

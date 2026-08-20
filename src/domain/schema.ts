@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { allComponents, contentFieldsFor, kindList } from '../components/registry.ts';
 import type { ArchitectureDocument, CanvasChangeSet } from './model.ts';
 import { WIRE_LABEL_SIZE_LIMITS } from './wire-label-size.ts';
+import { containerArrangementSchema, nodeAppearanceSchema } from './canvas-presentation.ts';
 
 /** Legacy document kind vocabulary: `scope` where the current record model uses `group`. */
 const legacyKindList = () => ['scope', ...kindList().filter((k) => k !== 'group')] as [string, ...string[]];
@@ -102,6 +103,8 @@ const architectureDocumentV2 = z.object({
       waypoints: z.array(position),
     })),
     collapsedNodeIds: z.array(z.string().min(1)).default([]),
+    appearanceByNodeId: z.record(z.string(), nodeAppearanceSchema).default({}),
+    arrangementByContainerId: z.record(z.string(), containerArrangementSchema).default({}),
   })),
   diagrams: z.record(z.string(), z.object({
     id: z.string().min(1),
@@ -186,6 +189,8 @@ export function parseArchitectureDocument(input: unknown): ArchitectureDocument 
         }])),
         wireRouteHints: {},
         collapsedNodeIds: [],
+        appearanceByNodeId: {},
+        arrangementByContainerId: {},
       },
     },
     diagrams: Object.fromEntries(Object.values(legacy.nodes)

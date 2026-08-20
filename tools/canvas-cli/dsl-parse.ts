@@ -10,6 +10,10 @@
 import type { DiagramComponent, DslChildStatement } from '../../src/components/component.ts';
 import { allComponents } from '../../src/components/registry.ts';
 import type { CanvasNode as RecordNode } from '../../src/domain/records.ts';
+import {
+  appearanceEntry, appearanceSpecification, canonicalNodeAppearance, isAppearanceKey,
+  isPresentationAttributeKey, type NodeAppearance,
+} from '../../src/domain/canvas-presentation.ts';
 
 export interface ParseError { line: number; message: string; hint: string }
 export interface InterfaceAst { name: string; accepts: string[]; returns: string[] }
@@ -24,6 +28,8 @@ export interface NodeAst {
   types: TypeAst[];
   /** Child-statement content, keyed by each statement's `contentKey` ('rows', 'steps', ...). */
   children: Record<string, unknown[]>;
+  /** Authored presentation is compiled into the active layout, never into node content. */
+  appearance?: NodeAppearance;
 }
 export interface WireAst {
   source: string;
@@ -45,6 +51,9 @@ export interface ScopeAst { label: string; description?: string; nodes: NodeAst[
 /** Parent statement keyword -> the component that parses it. */
 const COMPONENTS = new Map<string, DiagramComponent>(
   allComponents().map((component) => [component.dslKeyword, component]),
+);
+const COMPONENTS_BY_KIND = new Map<string, DiagramComponent>(
+  allComponents().map((component) => [component.kind, component]),
 );
 /** Child lines a node owns (tree's `row`), by keyword, with the kind allowed to hold them. */
 const CHILD_STATEMENTS = new Map<string, { kind: string; owner: string; statement: DslChildStatement }>(
@@ -94,6 +103,55 @@ function parseTypeLine(line: string): TypeAst | null {
   return {
     name: match[1],
     fields: match[2].split(',').map((part) => part.trim()).filter((part) => part.length > 0),
+  };
+}
+
+function attributeKey(token: string): string | undefined {
+  const equals = token.indexOf('=');
+  return equals < 1 ? undefined : token.slice(0, equals);
+}
+
+/** Strips and validates shared appearance tokens before component-owned semantic parsing. */
+function splitAppearance(
+  component: DiagramComponent,
+  tokens: string[],
+): { semanticTokens: string[]; appearance?: NodeAppearance } | { error: string; hint: string } {
+  const allowed = component.appearanceKeys ?? [];
+  const firstAttribute = tokens.findIndex((token, index) => {
+    if (index < 2) return false;
+    const key = attributeKey(token);
+    return key !== undefined && (allowed.length > 0 || isPresentationAttributeKey(key));
+  });
+  if (firstAttribute === -1) return { semanticTokens: tokens };
+
+  const authored: NodeAppearance = {};
+  const seen = new Set<string>();
+  for (const token of tokens.slice(firstAttribute)) {
+    const equals = token.indexOf('=');
+    const key = equals < 1 ? token : token.slice(0, equals);
+    const raw = equals < 1 ? '' : token.slice(equals + 1);
+    if (!isAppearanceKey(key) || !allowed.includes(key)) {
+      return {
+        error: `unknown attribute "${key}" for ${component.dslKeyword}`,
+        hint: component.declaration.syntax,
+      };
+    }
+    if (seen.has(key)) {
+      return { error: `duplicate attribute "${key}"`, hint: component.declaration.syntax };
+    }
+    seen.add(key);
+    const entry = appearanceEntry(key, raw);
+    if (!entry) {
+      return {
+        error: `invalid ${key} "${raw}"; use one of: ${appearanceSpecification(key).values.join(', ')}`,
+        hint: component.declaration.syntax,
+      };
+    }
+    (authored as Record<string, unknown>)[entry.jsonKey] = entry.value;
+  }
+  return {
+    semanticTokens: tokens.slice(0, firstAttribute),
+    appearance: canonicalNodeAppearance(authored),
   };
 }
 
@@ -204,6 +262,10 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         fail('type outside a node', 'declare a module/object first, then indent its types under it');
         continue;
       }
+      if (COMPONENTS_BY_KIND.get(node.kind)?.allowsMembers === false) {
+        fail(`${COMPONENTS_BY_KIND.get(node.kind)?.dslKeyword} does not accept methods or types`, 'use its published child statements instead');
+        continue;
+      }
       node.types.push(parseTypeLine(line) as TypeAst);
       continue;
     }
@@ -212,6 +274,10 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
     if (asInterface) {
       if (!node) {
         fail('interface line outside a node', 'declare a module/object first, then indent methods under it');
+        continue;
+      }
+      if (COMPONENTS_BY_KIND.get(node.kind)?.allowsMembers === false) {
+        fail(`${COMPONENTS_BY_KIND.get(node.kind)?.dslKeyword} does not accept methods or types`, 'use its published child statements instead');
         continue;
       }
       node.interfaces.push(asInterface);
@@ -228,6 +294,13 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
     if (keyword === 'scope') {
       if (tokens.length < 2) {
         fail('scope needs a name', 'scope "My System"');
+        continue;
+      }
+      const inactiveAttribute = tokens.slice(2).map(attributeKey).find(
+        (key): key is string => key !== undefined && isPresentationAttributeKey(key),
+      );
+      if (inactiveAttribute) {
+        fail(`unknown attribute "${inactiveAttribute}" for scope`, 'container attributes activate in Slice 2');
         continue;
       }
       if (zoneStack.length > 0 && scope) {
@@ -249,7 +322,12 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         fail(`${keyword} outside a scope`, 'declare a scope first: scope "My System"');
         continue;
       }
-      const parsed = component.declaration.parse(tokens);
+      const split = splitAppearance(component, tokens);
+      if ('error' in split) {
+        fail(split.error, split.hint);
+        continue;
+      }
+      const parsed = component.declaration.parse(split.semanticTokens);
       if ('error' in parsed) {
         fail(parsed.error, parsed.hint);
         continue;
@@ -276,6 +354,8 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         interfaces: [],
         types: [],
         children: {},
+        ...(split.appearance && Object.keys(split.appearance).length > 0
+          ? { appearance: split.appearance } : {}),
       };
       nodeSink().push(node);
       if (!component.declaration.allowsBody) node = null;

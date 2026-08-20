@@ -4,6 +4,7 @@ import type {
 import type {
   CalloutItem, CanvasReference, IconCardIcon, InterfaceObject, MetricStatus, Position, Size, SourceReference, TimelineStep, TreeRow, TypeObject,
 } from './model.ts';
+import type { ContainerArrangement, NodeAppearance } from './canvas-presentation.ts';
 
 /**
  * The v3 record model.
@@ -21,7 +22,7 @@ import type {
  * despite zero current instances: it has a domain module, a renderer, and DSL support.
  */
 export type NodeKind =
-  | 'group' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline' | 'metric' | 'icon-card' | 'callout-stack';
+  | 'group' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline' | 'metric' | 'icon-card' | 'callout-stack' | 'block';
 
 /** Relationship vocabulary carried by wires; renderers style each kind distinctly. */
 export type WireKind =
@@ -68,6 +69,8 @@ export interface CanvasNode {
   icon?: IconCardIcon;
   /** Ordered highlights; present only on kind `callout-stack`. */
   callouts?: CalloutItem[];
+  /** Ordered semantic text; present only on kind `block`. */
+  lines?: string[];
   /** The real thing this occurrence depicts. Canvas references it and never owns it. */
   subjectRef?: CanvasReference;
   /** Deeper explanation opened from this occurrence; integrity is owned by the library. */
@@ -114,6 +117,9 @@ export interface CanvasLayout {
   strategy: LayoutStrategyName;
   placements: Record<string, NodePlacement>;
   wireRouteHints: Record<string, WireRouteHint>;
+  /** Authored presentation belongs to this arrangement, never to semantic nodes. */
+  appearanceByNodeId?: Record<string, NodeAppearance>;
+  arrangementByContainerId?: Record<string, ContainerArrangement>;
 }
 
 /**

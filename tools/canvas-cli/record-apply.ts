@@ -82,6 +82,7 @@ export function blankRecord(id: string, name: string): DiagramRecord {
     layouts: {
       [layoutId]: {
         id: asId(layoutId), name: 'Default', strategy: 'manual', placements: {}, wireRouteHints: {},
+        appearanceByNodeId: {}, arrangementByContainerId: {},
       },
     },
     views: {
@@ -133,6 +134,8 @@ export function recordForCompiled(before: DiagramRecord, compiled: CompiledDiagr
         placements,
         wireRouteHints: Object.fromEntries(Object.entries(before.layouts[layoutId].wireRouteHints)
           .filter(([wireId]) => compiled.wires[wireId])),
+        appearanceByNodeId: structuredClone(compiled.appearanceByNodeId),
+        arrangementByContainerId: structuredClone(compiled.arrangementByContainerId),
       },
     },
   });
@@ -203,6 +206,19 @@ function commandsFor(before: DiagramRecord, target: DiagramRecord): RecordComman
   if (rebuildWires) {
     for (const wire of Object.values(target.wires)) commands.push({ kind: 'wire.add', wire });
   }
+  const beforeLayout = before.layouts[before.views[before.activeViewId].layoutId];
+  const targetLayout = target.layouts[target.views[target.activeViewId].layoutId];
+  const beforePresentation = {
+    appearanceByNodeId: beforeLayout.appearanceByNodeId ?? {},
+    arrangementByContainerId: beforeLayout.arrangementByContainerId ?? {},
+  };
+  const targetPresentation = {
+    appearanceByNodeId: targetLayout.appearanceByNodeId ?? {},
+    arrangementByContainerId: targetLayout.arrangementByContainerId ?? {},
+  };
+  if (JSON.stringify(beforePresentation) !== JSON.stringify(targetPresentation)) {
+    commands.push({ kind: 'layout.presentation.replace', ...targetPresentation });
+  }
   return commands;
 }
 
@@ -218,9 +234,9 @@ export interface ApplyContext {
  * Applies one compiled scope block to its record as a single change set.
  *
  * The workspace remains the authority for revision, authorship and idempotency; the write that
- * follows carries its snapshot verbatim, plus the two dictionaries the frozen `RecordCommand`
- * vocabulary has no command for — a node's methods and types travel with `node.add` only as
- * IDs, and the objects themselves have nowhere else to go. Reported to the lead as a gap.
+ * follows carries its snapshot verbatim, plus methods and types: those objects remain the only
+ * dictionaries outside the command vocabulary. Layout presentation travels exclusively through
+ * `layout.presentation.replace` and therefore participates in the same atomic revision.
  */
 export async function applyCompiledDiagram(
   context: ApplyContext,
