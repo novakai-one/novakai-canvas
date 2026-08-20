@@ -356,6 +356,23 @@ function fullyPopulatedRecord(): DiagramRecord {
 describe('migrated record round-trip', () => {
   const migrated = migrateDocumentToLibrary(parseArchitectureDocument(working as unknown));
 
+  it('defaults missing presentation maps and rejects invalid stored presentation', () => {
+    const withoutMaps = sampleRecord();
+    const parsed = diagramRecordSchema.parse(JSON.parse(JSON.stringify(withoutMaps)));
+    expect(parsed.layouts['layout-default'].appearanceByNodeId).toEqual({});
+    expect(parsed.layouts['layout-default'].arrangementByContainerId).toEqual({});
+
+    const invalidAppearance = JSON.parse(JSON.stringify(parsed));
+    invalidAppearance.layouts['layout-default'].appearanceByNodeId.root = { text: 'neon' };
+    expect(() => diagramRecordSchema.parse(invalidAppearance)).toThrow();
+
+    const invalidArrangement = JSON.parse(JSON.stringify(parsed));
+    invalidArrangement.layouts['layout-default'].arrangementByContainerId.root = {
+      layout: 'grid', columns: 7, gap: 16, align: 'stretch', childIds: [],
+    };
+    expect(() => diagramRecordSchema.parse(invalidArrangement)).toThrow();
+  });
+
   it('survives JSON round-trip and schema parse unchanged, for every migrated record', () => {
     const records = Object.values(migrated.records);
     expect(records.length).toBeGreaterThan(0);

@@ -109,6 +109,24 @@ describe('renderRecordSvg', () => {
     const record = blankRecord('loose', 'Loose');
     expect(() => renderRecordSvg(record)).toThrow('no single root group');
   });
+
+  it('renders dark resolved block styles, multiline text, and a hidden card badge', () => {
+    const svg = renderRecordSvg(buildRecord(`
+scope "Styled Snapshot" layout=stack gap=16
+  block "Tasks:" weight=600
+    line "• Safety"
+    line "• Code"
+  block "Refusal rate" size=14 weight=600 align=center text=green border-color=green border=1 radius=8 padding=12
+  module "Prompt" badge=hide
+`));
+    expect(svg).toContain('fill="transparent" stroke="#78a886" stroke-width="1" rx="8"');
+    expect(svg).toContain('fill="#78a886" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" text-anchor="middle"');
+    expect(svg).toContain('>Tasks:</text>');
+    expect(svg).toContain('>• Safety</text>');
+    expect(svg).toContain('>• Code</text>');
+    expect(svg).toContain('>Prompt</text>');
+    expect(svg).not.toContain('>MODULE</text>');
+  });
 });
 
 describe('renderRecordSvg with a tree node', () => {

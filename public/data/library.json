@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "revision": 100,
+  "revision": 102,
   "entries": {
     "agent-visual-authoring-poc": {
       "id": "agent-visual-authoring-poc",
@@ -237,6 +237,31 @@
         "Team evaluation",
         "Team measures",
         "Text output"
+      ]
+    },
+    "llm-vs-rag-vs-agent-evals": {
+      "id": "llm-vs-rag-vs-agent-evals",
+      "name": "LLM vs. RAG vs. Agent Evals",
+      "status": "active",
+      "revision": 1,
+      "nodeLabels": [
+        "Agent loop",
+        "Coding Agents",
+        "Faithfulness",
+        "LLM",
+        "LLM vs. RAG vs. Agent Evals",
+        "Multi-agent Systems",
+        "Orchestrator",
+        "Prompt",
+        "RAG",
+        "Refusal rate",
+        "Resolve rate",
+        "Retriever",
+        "Task success",
+        "Tasks:",
+        "Tasks:",
+        "Tasks:",
+        "Tasks:"
       ]
     },
     "messaging-scope": {
