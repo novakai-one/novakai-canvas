@@ -12,16 +12,11 @@
   padding-top: var(--space-4);
 }
 
-.bench-message[data-mine='true'] {
-  justify-content: flex-end;
-}
-
 .bench-message__trigger {
   display: grid;
   grid-template-columns: 30px minmax(0, 1fr);
   gap: var(--space-3);
   width: 100%;
-  max-width: var(--bench-message-max-width, 90%);
   padding: 0;
   border: 0;
   border-radius: var(--bench-radius-control);
@@ -62,7 +57,13 @@
 }
 
 .bench-message__content {
+  width: 100%;
+  max-width: var(--bench-message-max-width, 90%);
   min-width: 0;
+}
+
+.bench-message[data-mine='true'] .bench-message__content {
+  justify-self: end;
 }
 
 .bench-message__meta {
