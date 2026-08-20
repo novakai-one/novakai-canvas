@@ -120,7 +120,7 @@ function splitAppearance(
   const firstAttribute = tokens.findIndex((token, index) => {
     if (index < 2) return false;
     const key = attributeKey(token);
-    return key !== undefined && (allowed.length > 0 || isPresentationAttributeKey(key));
+    return key !== undefined && isPresentationAttributeKey(key);
   });
   if (firstAttribute === -1) return { semanticTokens: tokens };
 
