@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "revision": 102,
+  "revision": 105,
   "entries": {
     "agent-visual-authoring-poc": {
       "id": "agent-visual-authoring-poc",
@@ -12,6 +12,39 @@
         "Automated checks",
         "Release decision",
         "Success rate"
+      ]
+    },
+    "ai-evaluation-four-operating-models": {
+      "id": "ai-evaluation-four-operating-models",
+      "name": "AI evaluation — four operating models",
+      "status": "active",
+      "revision": 2,
+      "nodeLabels": [
+        "AI evaluation — four operating models",
+        "Coding agent",
+        "Coding agent",
+        "Grounded answers",
+        "Judge with",
+        "Judge with",
+        "Judge with",
+        "Judge with",
+        "LLM",
+        "Language model",
+        "Multi-agent",
+        "Multi-agent system",
+        "Operating loop",
+        "Operating loop",
+        "Operating loop",
+        "Operating loop",
+        "RAG",
+        "Report",
+        "Report",
+        "Report",
+        "Report",
+        "What to test",
+        "What to test",
+        "What to test",
+        "What to test"
       ]
     },
     "browser-scope": {

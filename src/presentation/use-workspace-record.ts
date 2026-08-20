@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 import type { CanvasWorkspace } from '../application/canvas-workspace';
 import type { DiagramRecord } from '../domain/records';
 
@@ -9,5 +9,7 @@ import type { DiagramRecord } from '../domain/records';
  * which is exactly the identity contract `useSyncExternalStore` needs, so no copy is made here.
  */
 export function useWorkspaceRecord(workspace: CanvasWorkspace): DiagramRecord {
-  return useSyncExternalStore(workspace.subscribe, workspace.snapshot, workspace.snapshot);
+  const subscribe = useCallback((listener: () => void) => workspace.subscribe(listener), [workspace]);
+  const snapshot = useCallback(() => workspace.snapshot(), [workspace]);
+  return useSyncExternalStore(subscribe, snapshot, snapshot);
 }
