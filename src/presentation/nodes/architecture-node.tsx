@@ -56,7 +56,7 @@ function NodeLabel({
 
 /** Selectable architecture node with interface and type children. */
 export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowNode>) {
-  const { node, interfaces, types, preferences, selection, editable, select } = data;
+  const { node, interfaces, types, preferences, selection, editable, select, appearance } = data;
   const showInterfaces = !editable || preferences.nodes.showInterfaces === 'always'
     || (preferences.nodes.showInterfaces === 'selected' && selected);
   const portsClass = preferences.nodes.showPorts === 'always' ? 'ports-always' : '';
@@ -81,7 +81,7 @@ export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowN
           label={node.label}
           rename={(next) => data.rename?.(node.id as string, next)}
         />
-        {(!editable || preferences.nodes.showKinds) && <span className="node-kind">{node.kind}</span>}
+        {appearance.showKindBadge && <span className="node-kind">{node.kind}</span>}
       </header>
       {(!editable || preferences.nodes.showDescriptions) && node.description && (
         <p className="node-description">{node.description}</p>
