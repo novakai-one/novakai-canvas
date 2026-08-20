@@ -3,7 +3,9 @@
 import type { CrossDiagramLink, DiagramRecord } from '../../src/canvas.ts';
 import { componentFor } from '../../src/components/registry.ts';
 import { placedNodes, rootGroupId, type PlacedNode } from './record-graph.ts';
-import { appearanceSpecification } from '../../src/domain/canvas-presentation.ts';
+import {
+  appearanceSpecification, type ContainerArrangement,
+} from '../../src/domain/canvas-presentation.ts';
 
 /**
  * What a printer needs to render a relationship whose far end is in another diagram.
@@ -47,11 +49,35 @@ function byWireOrder(left: string, right: string): number {
   return leftIndex - rightIndex;
 }
 
-function childrenOf(nodes: Record<string, PlacedNode>, containerId: string | undefined): PlacedNode[] {
-  return Object.values(nodes)
+function childrenOf(
+  nodes: Record<string, PlacedNode>,
+  containerId: string | undefined,
+  arrangement?: ContainerArrangement,
+): PlacedNode[] {
+  const children = Object.values(nodes)
     .filter((node) => (node.parentId as string | undefined) === containerId)
     .sort((a, b) => a.position.y - b.position.y || a.position.x - b.position.x
       || (a.id as string).localeCompare(b.id as string));
+  if (!arrangement) return children;
+  const byId = new Map(children.map((node) => [node.id as string, node]));
+  const emitted = new Set<string>();
+  const authored = arrangement.childIds.flatMap((id) => {
+    const child = byId.get(id);
+    if (!child || emitted.has(id)) return [];
+    emitted.add(id);
+    return [child];
+  });
+  return [...authored, ...children.filter((node) => !emitted.has(node.id as string))];
+}
+
+/** Canonical Slice 2 order is layout, gap, align; default stretch stays implicit. */
+function arrangementAttributes(arrangement: ContainerArrangement | undefined): string[] {
+  if (!arrangement || arrangement.layout === 'grid') return [];
+  return [
+    `layout=${arrangement.layout}`,
+    `gap=${arrangement.gap}`,
+    ...(arrangement.align === 'stretch' ? [] : [`align=${arrangement.align}`]),
+  ];
 }
 
 /**
@@ -66,11 +92,17 @@ export function printRecord(record: DiagramRecord, context?: CrossDiagramContext
   const root = rootId ? nodes[rootId] : undefined;
   const lines: string[] = [];
   const title = root?.label ?? record.name;
-  lines.push(`scope ${quote(title)}${root?.description ? ` ${quote(root.description)}` : ''}`);
   const activeLayout = record.layouts[record.views[record.activeViewId]?.layoutId];
+  const rootAttributes = arrangementAttributes(
+    rootId ? activeLayout?.arrangementByContainerId?.[rootId] : undefined,
+  );
+  lines.push(`scope ${quote(title)}${root?.description ? ` ${quote(root.description)}` : ''}`
+    + `${rootAttributes.length ? ` ${rootAttributes.join(' ')}` : ''}`);
 
   const emitContainer = (containerId: string | undefined, indent: string): void => {
-    for (const node of childrenOf(nodes, containerId)) {
+    const containerArrangement = containerId
+      ? activeLayout?.arrangementByContainerId?.[containerId] : undefined;
+    for (const node of childrenOf(nodes, containerId, containerArrangement)) {
       const component = componentFor(node.kind);
       const authored = activeLayout?.appearanceByNodeId?.[node.id];
       const attributes = (component.appearanceKeys ?? []).flatMap((key) => {
@@ -78,7 +110,11 @@ export function printRecord(record: DiagramRecord, context?: CrossDiagramContext
         const value = authored?.[specification.jsonKey];
         return value === undefined ? [] : [`${key}=${String(value)}`];
       });
-      const declaration = `${indent}${component.declaration.print(node)}${attributes.length ? ` ${attributes.join(' ')}` : ''}`;
+      const containerAttributes = component.layoutRole === 'container'
+        ? arrangementAttributes(activeLayout?.arrangementByContainerId?.[node.id]) : [];
+      const allAttributes = [...attributes, ...containerAttributes];
+      const declaration = `${indent}${component.declaration.print(node)}`
+        + `${allAttributes.length ? ` ${allAttributes.join(' ')}` : ''}`;
       if (component.layoutRole === 'container') {
         lines.push(declaration);
         emitContainer(node.id as string, `${indent}  `);

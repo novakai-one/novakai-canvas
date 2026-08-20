@@ -6,7 +6,9 @@ import type { RecordNode, RecordWire, RecordWireKind } from './record-graph.ts';
 import { asId, descendantIds, rootGroupId } from './record-graph.ts';
 import { slugify } from './slug.ts';
 import { componentFor } from '../../src/components/registry.ts';
-import type { ContainerArrangement, NodeAppearance } from '../../src/domain/canvas-presentation.ts';
+import type {
+  ContainerArrangement, NodeAppearance, ParsedPresentation,
+} from '../../src/domain/canvas-presentation.ts';
 
 /** Tree row shape, derived from the record node rather than named — `TreeRow` isn't on the public path. */
 type TreeRow = NonNullable<RecordNode['rows']>[number];
@@ -174,7 +176,8 @@ export function compile(
     const parentIdentityKeys = new Set<string>();
     let commentCount = 0;
 
-    const compileNodes = (nodeAsts: NodeAst[], parentId: string): void => {
+    const compileNodes = (nodeAsts: NodeAst[], parentId: string): string[] => {
+      const compiledIds: string[] = [];
       for (const nodeAst of nodeAsts) {
         const component = componentFor(nodeAst.kind);
         const identity = component.identity;
@@ -251,13 +254,42 @@ export function compile(
           ...nodeAst.content,
           ...childContent,
         };
-        if (nodeAst.appearance && Object.keys(nodeAst.appearance).length > 0) {
-          appearanceByNodeId[nodeId] = nodeAst.appearance;
+        if (nodeAst.presentation?.appearance
+          && Object.keys(nodeAst.presentation.appearance).length > 0) {
+          appearanceByNodeId[nodeId] = nodeAst.presentation.appearance;
         }
+        compiledIds.push(nodeId);
       }
+      return compiledIds;
     };
 
-    const compileZones = (zoneAsts: ZoneAst[], parentId: string): void => {
+    const storeArrangement = (
+      containerId: string,
+      presentation: ParsedPresentation | undefined,
+      childIds: string[],
+    ): void => {
+      if (!presentation?.arrangement) return;
+      arrangementByContainerId[containerId] = {
+        layout: presentation.arrangement.layout,
+        childIds,
+        gap: presentation.arrangement.gap,
+        align: presentation.arrangement.align,
+        ...(presentation.arrangement.columns === undefined
+          ? {} : { columns: presentation.arrangement.columns }),
+      };
+    };
+
+    function compileDeclarations(
+      declarations: (NodeAst | ZoneAst)[],
+      parentId: string,
+    ): string[] {
+      return declarations.flatMap((declaration) => 'kind' in declaration
+        ? compileNodes([declaration], parentId)
+        : compileZones([declaration], parentId));
+    }
+
+    function compileZones(zoneAsts: ZoneAst[], parentId: string): string[] {
+      const compiledIds: string[] = [];
       for (const zoneAst of zoneAsts) {
         const labelSlug = slugify(zoneAst.label);
         if (mapLabelSlugs.has(labelSlug)) {
@@ -279,13 +311,15 @@ export function compile(
           interfaceIds: [],
           typeIds: [],
         };
-        compileNodes(zoneAst.nodes, zoneId);
-        compileZones(zoneAst.zones, zoneId);
+        const childIds = compileDeclarations(zoneAst.declarations, zoneId);
+        storeArrangement(zoneId, zoneAst.presentation, childIds);
+        compiledIds.push(zoneId);
       }
-    };
+      return compiledIds;
+    }
 
-    compileNodes(scopeAst.nodes, rootNodeId);
-    compileZones(scopeAst.zones, rootNodeId);
+    const rootChildIds = compileDeclarations(scopeAst.declarations, rootNodeId);
+    storeArrangement(rootNodeId, scopeAst.presentation, rootChildIds);
 
     // Endpoints resolve inside this diagram first. Only a name this diagram does not hold is
     // looked for elsewhere, so a label reused in two maps always means the local one.

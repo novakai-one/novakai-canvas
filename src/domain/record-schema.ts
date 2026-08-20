@@ -160,6 +160,18 @@ const diagramRecord = z.object({
         });
         continue;
       }
+      const directChildIds = Object.values(record.nodes)
+        .filter((node) => node.parentId === containerId)
+        .map((node) => node.id as string);
+      const arrangedChildIds = new Set(arrangement.childIds);
+      if (arrangement.childIds.length !== directChildIds.length
+        || arrangedChildIds.size !== directChildIds.length
+        || directChildIds.some((childId) => !arrangedChildIds.has(childId))) {
+        context.addIssue({
+          code: 'custom', message: `arrangement for "${containerId}" must name every direct child exactly once`,
+          path: ['layouts', layoutId, 'arrangementByContainerId', containerId, 'childIds'],
+        });
+      }
       arrangement.childIds.forEach((childId, index) => {
         if (record.nodes[childId]?.parentId !== containerId) {
           context.addIssue({

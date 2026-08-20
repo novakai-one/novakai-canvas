@@ -113,6 +113,47 @@ function requireNode(record: DiagramRecord, id: string): void {
   if (!record.nodes[id]) throw new Error(`node-not-found:${id}`);
 }
 
+/** Keeps authored order for survivors and appends newly direct children in record order. */
+function reconcileArrangementChildren(record: DiagramRecord, containerId: string): void {
+  const directChildIds = Object.values(record.nodes)
+    .filter((node) => node.parentId === containerId)
+    .map((node) => node.id as string);
+  const directChildren = new Set(directChildIds);
+  for (const layout of Object.values(record.layouts)) {
+    const arrangement = layout.arrangementByContainerId?.[containerId];
+    if (!arrangement) continue;
+    const seen = new Set<string>();
+    const retained = arrangement.childIds.filter((childId) => {
+      if (!directChildren.has(childId) || seen.has(childId)) return false;
+      seen.add(childId);
+      return true;
+    });
+    arrangement.childIds = [
+      ...retained,
+      ...directChildIds.filter((childId) => !seen.has(childId)),
+    ];
+  }
+}
+
+/** Relationship mutators must leave every arrangement as a complete direct-child permutation. */
+function requireArrangementCoverage(record: DiagramRecord): void {
+  for (const layout of Object.values(record.layouts)) {
+    for (const [containerId, arrangement] of Object.entries(
+      layout.arrangementByContainerId ?? {},
+    )) {
+      const directChildIds = Object.values(record.nodes)
+        .filter((node) => node.parentId === containerId)
+        .map((node) => node.id as string);
+      const arranged = new Set(arrangement.childIds);
+      if (arrangement.childIds.length !== directChildIds.length
+        || arranged.size !== directChildIds.length
+        || directChildIds.some((childId) => !arranged.has(childId))) {
+        throw new Error(`arrangement-must-name-every-direct-child:${containerId}`);
+      }
+    }
+  }
+}
+
 function requireWireEndpoint(record: DiagramRecord, id: string): void {
   requireNode(record, id);
   if (componentFor(record.nodes[id].kind).identity?.wireEndpoint === false) {
@@ -244,9 +285,6 @@ function validate(record: DiagramRecord, command: RecordCommand): void {
         appearanceByNodeId: command.appearanceByNodeId,
         arrangementByContainerId: command.arrangementByContainerId,
       });
-      if (Object.keys(command.arrangementByContainerId).length > 0) {
-        throw new Error('container-arrangements-not-active');
-      }
       for (const [nodeId, appearance] of Object.entries(command.appearanceByNodeId)) {
         requireNode(record, nodeId);
         const allowed = componentFor(record.nodes[nodeId].kind).appearanceKeys ?? [];
@@ -255,6 +293,30 @@ function validate(record: DiagramRecord, command: RecordCommand): void {
           if (!key || !allowed.includes(key)) {
             throw new Error(`appearance-not-supported:${nodeId}:${jsonKey}`);
           }
+        }
+      }
+      for (const [containerId, arrangement] of Object.entries(
+        command.arrangementByContainerId,
+      )) {
+        requireNode(record, containerId);
+        const component = componentFor(record.nodes[containerId].kind);
+        if (component.layoutRole !== 'container') {
+          throw new Error(`arrangement-target-not-container:${containerId}`);
+        }
+        if (!component.arrangementModes?.includes(arrangement.layout)) {
+          throw new Error(`arrangement-mode-not-supported:${containerId}:${arrangement.layout}`);
+        }
+        const directChildIds = Object.values(record.nodes)
+          .filter((node) => node.parentId === containerId)
+          .map((node) => node.id as string);
+        const directChildren = new Set(directChildIds);
+        for (const childId of arrangement.childIds) {
+          if (!directChildren.has(childId)) {
+            throw new Error(`arrangement-child-not-direct:${containerId}:${childId}`);
+          }
+        }
+        if (arrangement.childIds.length !== directChildIds.length) {
+          throw new Error(`arrangement-must-name-every-direct-child:${containerId}`);
         }
       }
       return;
@@ -278,6 +340,10 @@ function apply(record: DiagramRecord, command: RecordCommand): DiagramRecord {
         size: command.placement.size,
         pinned: false,
       };
+      if (command.node.parentId) {
+        reconcileArrangementChildren(next, command.node.parentId as string);
+      }
+      requireArrangementCoverage(next);
       break;
     case 'node.move':
       layout.placements[command.id] = { ...layout.placements[command.id], position: command.position };
@@ -291,10 +357,15 @@ function apply(record: DiagramRecord, command: RecordCommand): DiagramRecord {
     case 'node.update':
       Object.assign(next.nodes[command.id], command.patch);
       break;
-    case 'node.reparent':
+    case 'node.reparent': {
+      const previousParentId = next.nodes[command.id].parentId as string | undefined;
       if (command.parentId) next.nodes[command.id].parentId = command.parentId as never;
       else delete next.nodes[command.id].parentId;
+      if (previousParentId) reconcileArrangementChildren(next, previousParentId);
+      if (command.parentId) reconcileArrangementChildren(next, command.parentId);
+      requireArrangementCoverage(next);
       break;
+    }
     case 'node.remove': {
       // A removed node takes what only existed because of it: its wires, its geometry, and the
       // interfaces it owns. Types are deliberately left alone — they carry no owner and real
@@ -302,6 +373,7 @@ function apply(record: DiagramRecord, command: RecordCommand): DiagramRecord {
       // `resources` and `storyboard`), so deleting them with a node would dangle live
       // references on the very data this is meant to protect.
       const owned = next.nodes[command.id];
+      const previousParentId = owned.parentId as string | undefined;
       for (const interfaceId of owned.interfaceIds) delete next.interfaces[interfaceId];
       delete next.nodes[command.id];
       next.wires = Object.fromEntries(Object.entries(next.wires).filter(
@@ -310,8 +382,15 @@ function apply(record: DiagramRecord, command: RecordCommand): DiagramRecord {
       for (const each of Object.values(next.layouts)) delete each.placements[command.id];
       for (const each of Object.values(next.layouts)) {
         if (each.appearanceByNodeId) delete each.appearanceByNodeId[command.id];
-        if (each.arrangementByContainerId) delete each.arrangementByContainerId[command.id];
+        if (each.arrangementByContainerId) {
+          delete each.arrangementByContainerId[command.id];
+          for (const arrangement of Object.values(each.arrangementByContainerId)) {
+            arrangement.childIds = arrangement.childIds.filter((childId) => childId !== command.id);
+          }
+        }
       }
+      if (previousParentId) reconcileArrangementChildren(next, previousParentId);
+      requireArrangementCoverage(next);
       view.collapsedNodeIds = view.collapsedNodeIds.filter((id) => id !== command.id);
       break;
     }

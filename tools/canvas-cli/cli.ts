@@ -24,7 +24,9 @@ import {
 import { asId, layoutRecord } from './record-graph.ts';
 import { renderRecordSvg } from './snapshot.ts';
 import { slugify } from './slug.ts';
-import { appearanceSpecification } from '../../src/domain/canvas-presentation.ts';
+import {
+  CONTAINER_ALIGNS, SPACINGS, appearanceSpecification,
+} from '../../src/domain/canvas-presentation.ts';
 
 const DEFAULT_DATA_DIR = fileURLToPath(new URL('../../public/data', import.meta.url));
 
@@ -40,6 +42,11 @@ const componentHelp = [
       const specification = appearanceSpecification(key);
       return `  ${(component.dslKeyword + '.' + key).padEnd(12)} ${specification.values.join('|')} (default ${specification.default})`;
     }),
+    ...((component.arrangementModes?.length ?? 0) > 0 ? [
+      `  ${(component.dslKeyword + '.layout').padEnd(12)} ${component.arrangementModes?.join('|')}`,
+      `  ${(component.dslKeyword + '.gap').padEnd(12)} ${SPACINGS.join('|')} (default 16)`,
+      `  ${(component.dslKeyword + '.align').padEnd(12)} ${CONTAINER_ALIGNS.join('|')} (default stretch)`,
+    ] : []),
   ]),
 ].join('\n');
 
@@ -61,6 +68,7 @@ Usage
 
 DSL — one statement per line; a scope block fully declares that map.
 Layout is automatic: never write coordinates, never edit the JSON by hand.
+Scope and zone containers share the zone.layout, zone.gap and zone.align vocabulary.
 
   scope "Agent Browser Sessions"
     note "One session per instance; renders off-screen."
@@ -430,6 +438,13 @@ function describeCapability(): unknown {
           const specification = appearanceSpecification(key);
           return { key, values: [...specification.values], default: specification.default };
         }),
+        ...(component.arrangementModes ? {
+          arrangement: {
+            layout: { values: [...component.arrangementModes] },
+            gap: { values: [...SPACINGS], default: 16 },
+            align: { values: [...CONTAINER_ALIGNS], default: 'stretch' },
+          },
+        } : {}),
       })),
     },
   };

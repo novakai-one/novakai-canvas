@@ -16,6 +16,7 @@ export const groupComponent: DiagramComponent<'group'> = {
     syntax: `${zoneDeclaration.syntax} ... end`,
     example: 'zone "Stores" "Persistent data"\n  resource "missions.json"\nend',
   },
+  arrangementModes: ['stack', 'row'],
   layoutRole: 'container',
   measure: () => ({ width: 320, height: 160 }),
 };
