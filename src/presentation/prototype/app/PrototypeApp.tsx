@@ -4,7 +4,6 @@
  * The shell persists across every Room. Only the workspace swaps, so a load failure or
  * a Room change never costs you your location.
  */
-import { useEffect, useState } from 'react';
 import './prototype-app.css';
 import { roomKey, StoreProvider, useStore, type Projection, type Room } from './store';
 import { childStages, type ObjectGraph } from '../object-graph/graph';
@@ -89,8 +88,7 @@ function ActiveRoom() {
         case 'projects':
           return <Projects />;
         case 'canvas':
-          // Canvas is the persistent sibling owned by Shell, never a keyed Room child.
-          return null;
+          return <CanvasRoom />;
         case 'messages':
           return <Messages />;
         case 'agent-roles':
@@ -102,11 +100,6 @@ function ActiveRoom() {
 function Shell() {
   const { room, graph, projection, select, loadWarnings } = useStore();
   const canvasActive = room.kind === 'area' && room.area === 'canvas';
-  const [canvasWasOpened, setCanvasWasOpened] = useState(canvasActive);
-
-  useEffect(() => {
-    if (canvasActive) setCanvasWasOpened(true);
-  }, [canvasActive]);
 
   return (
     <div
@@ -126,9 +119,7 @@ function Shell() {
           </p>
         )}
         <main className="prototype-shell__workspace">
-          {(canvasActive || canvasWasOpened) && <CanvasRoom active={canvasActive} />}
-          {/* Ordinary Rooms remount on navigation; Canvas retains its in-memory session. */}
-          {!canvasActive && <ActiveRoom key={roomKey(room)} />}
+          <ActiveRoom key={roomKey(room)} />
         </main>
       </div>
       {!canvasActive && (

@@ -27,6 +27,8 @@ export interface AppProps {
   initialWorkspace: CanvasWorkspace;
   initialPreferences: CanvasPreferences;
   preferencesRepository: JsonRepository<CanvasPreferences>;
+  /** Lets an embedding host remember navigation without retaining the Canvas render tree. */
+  onActiveDiagramChange?: (diagramId: string) => void;
 }
 
 /** How much air each density setting puts between things, as a multiplier on the 4px grid. */
@@ -50,7 +52,10 @@ const SAVE_STATUS = {
 
 /** Composes the diagram library and one open workspace with replaceable presentation. */
 export default function App(props: AppProps) {
-  const { initialDiagramId, initialPreferences, initialWorkspace, library, preferencesRepository } = props;
+  const {
+    initialDiagramId, initialPreferences, initialWorkspace, library,
+    onActiveDiagramChange, preferencesRepository,
+  } = props;
   const [open, setOpen] = useState<OpenDiagram>(
     () => ({ id: initialDiagramId, workspace: initialWorkspace }),
   );
@@ -70,6 +75,10 @@ export default function App(props: AppProps) {
   // The revision each open diagram was last written at. A save that fails leaves its entry
   // behind, so the next edit tries again rather than pretending the work is on disk.
   const persisted = useRef(new Map<string, number>([[initialDiagramId, record.revision]]));
+
+  useEffect(() => {
+    onActiveDiagramChange?.(open.id);
+  }, [onActiveDiagramChange, open.id]);
 
   const refreshDiagrams = useCallback(
     () => setDiagrams(library.list({ includeArchived: true })),

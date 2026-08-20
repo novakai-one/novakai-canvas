@@ -30,6 +30,8 @@ type HostState =
  * so leaving and re-entering the Room reads persisted preferences and records again.
  */
 const inFlightSessions = new Map<string, Promise<CanvasStudioSession>>();
+/** Session navigation survives route-owned render trees; diagram data remains repository-owned. */
+const lastDiagramByActor = new Map<string, string>();
 
 function actorKey(context: ActorContext): string {
   return [
@@ -57,7 +59,9 @@ async function createSession(actor: ActorContext): Promise<CanvasStudioSession> 
   const library = createCanvasLibrary(repository, index, actor);
 
   // The first-run case is the sole load path that writes, and it cannot overwrite a record.
-  const first = library.list().at(0)
+  const summaries = library.list();
+  const remembered = lastDiagramByActor.get(actorKey(actor));
+  const first = summaries.find((summary) => summary.id === remembered) ?? summaries.at(0)
     ?? await library.create('Untitled diagram', `diagram-${crypto.randomUUID().slice(0, 8)}`);
   if (!('nodeLabels' in first)) throw new Error(`library-unusable:${first.status}`);
   const workspace = await library.open(first.id);
@@ -153,7 +157,13 @@ export function CanvasStudioHost({ active = true, actor }: CanvasStudioHostProps
           <main className="canvas-host__state" role="status">Loading Canvas…</main>
         )}
         {state.status === 'failed' && <LoadFailure detail={state.detail} />}
-        {state.status === 'ready' && <App key={state.generation} {...state.session} />}
+        {state.status === 'ready' && (
+          <App
+            key={state.generation}
+            {...state.session}
+            onActiveDiagramChange={(diagramId) => lastDiagramByActor.set(actorKey(stableActor), diagramId)}
+          />
+        )}
       </section>
     </CanvasActivityProvider>
   );
