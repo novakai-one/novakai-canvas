@@ -152,8 +152,10 @@ export function renderRecordSvg(record: DiagramRecord): string {
     parts.push(
       `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="${COLORS.card}" stroke="${COLORS.border}" rx="6"/>`,
       `<text x="${x + 14}" y="${y + 24}" fill="${COLORS.ink}" font-family="${FONT}" font-size="13" font-weight="600">${esc(node.label)}</text>`,
-      `<text x="${x + width - 14}" y="${y + 24}" fill="${COLORS.muted}" font-family="${FONT}" font-size="9" text-anchor="end" letter-spacing="1">${esc(node.kind.toUpperCase())}</text>`,
     );
+    if (appearance.showKindBadge) {
+      parts.push(`<text x="${x + width - 14}" y="${y + 24}" fill="${COLORS.muted}" font-family="${FONT}" font-size="9" text-anchor="end" letter-spacing="1">${esc(node.kind.toUpperCase())}</text>`);
+    }
     let cursor = y + 44;
     if (node.description) {
       const charsPerLine = Math.max(30, Math.floor((width - 28) / 6.4));

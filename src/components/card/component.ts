@@ -13,6 +13,7 @@ export function cardComponent<K extends 'module' | 'object' | 'runtime' | 'resou
     dslKeyword: kind,
     declaration: namedNodeDeclaration(kind, 'Session broker', 'Owns leases and allocation'),
     layoutRole: 'leaf',
+    appearanceKeys: ['badge'],
     measure: (node, ctx) => estimateNodeSize(node.label, node.description, ctx.interfaceLines, ctx.typeLines),
   };
 }
