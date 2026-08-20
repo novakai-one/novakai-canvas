@@ -62,10 +62,6 @@
   min-width: 0;
 }
 
-.bench-message[data-mine='true'] .bench-message__content {
-  justify-self: end;
-}
-
 .bench-message__meta {
   display: flex;
   align-items: baseline;
