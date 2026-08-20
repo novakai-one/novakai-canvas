@@ -1,7 +1,12 @@
 .bench-message {
+  --bench-message-body-offset: 0px;
   position: relative;
   display: flex;
   padding: 3px var(--space-5);
+}
+
+.bench-message[data-mine='true'] {
+  --bench-message-body-offset: var(--space-6);
 }
 
 .bench-message[data-group-start='true'] {
@@ -76,6 +81,8 @@
 
 .bench-message__body {
   display: block;
+  width: calc(100% - var(--bench-message-body-offset));
+  margin-left: var(--bench-message-body-offset);
   color: var(--bench-ink-primary);
   font-size: var(--text-lg);
   line-height: var(--leading-relaxed);
