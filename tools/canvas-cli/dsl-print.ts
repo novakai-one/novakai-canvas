@@ -60,7 +60,14 @@ function childrenOf(
       || (a.id as string).localeCompare(b.id as string));
   if (!arrangement) return children;
   const byId = new Map(children.map((node) => [node.id as string, node]));
-  return arrangement.childIds.flatMap((id) => byId.get(id) ?? []);
+  const emitted = new Set<string>();
+  const authored = arrangement.childIds.flatMap((id) => {
+    const child = byId.get(id);
+    if (!child || emitted.has(id)) return [];
+    emitted.add(id);
+    return [child];
+  });
+  return [...authored, ...children.filter((node) => !emitted.has(node.id as string))];
 }
 
 /** Canonical Slice 2 order is layout, gap, align; default stretch stays implicit. */
