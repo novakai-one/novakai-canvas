@@ -5,22 +5,46 @@ import { placedNodes, rootGroupId } from './record-graph.ts';
 import type { CrossDiagramContext, MapSummary } from './dsl-print/contract.ts';
 import { printDeclarations } from './dsl-print/declarations.ts';
 import { arrangementAttributes, byWireOrder, quote } from './dsl-print/ordering.ts';
+import type { WireAppearance } from '../../src/domain/wire-appearance.ts';
+import { printWireReference, wireReferenceFor } from './wire-reference.ts';
 
 export type { CrossDiagramContext, MapSummary } from './dsl-print/contract.ts';
 
-function wireLine(source: string, target: string, label: string, kind: string): string {
-  return `  wire ${quote(source)} -> ${quote(target)} : ${label}`
+function wireLine(
+  source: string,
+  target: string,
+  label: string,
+  kind: string,
+  appearance?: WireAppearance,
+): string {
+  const attributes = [
+    ...(appearance?.width ? [`width=${appearance.width}`] : []),
+    ...(appearance?.pattern ? [`pattern=${appearance.pattern}`] : []),
+    ...(appearance?.color ? [`color=${appearance.color}`] : []),
+  ];
+  return `  wire ${printWireReference(source)} -> ${printWireReference(target)}`
+    + `${attributes.length ? ` ${attributes.join(' ')}` : ''} : ${label}`
     + `${kind === 'references' ? '' : ` [${kind}]`}`;
 }
 
 function printWires(record: DiagramRecord, context?: CrossDiagramContext): string[] {
   const lines: string[] = [];
+  const layout = record.layouts[record.views[record.activeViewId]?.layoutId];
   for (const wire of Object.values(record.wires)
     .sort((a, b) => byWireOrder(a.id as string, b.id as string))) {
     const source = record.nodes[wire.source.nodeId];
     const target = record.nodes[wire.target.nodeId];
     if (!source || !target) continue;
-    lines.push(wireLine(source.label, target.label, wire.label, wire.kind));
+    const sourceReference = wireReferenceFor(source);
+    const targetReference = wireReferenceFor(target);
+    if (!sourceReference || !targetReference) continue;
+    lines.push(wireLine(
+      sourceReference,
+      targetReference,
+      wire.label,
+      wire.kind,
+      layout?.appearanceByWireId?.[wire.id],
+    ));
   }
   for (const link of (context?.links ?? [])
     .filter((link) => link.source.diagramId === record.id)

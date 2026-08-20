@@ -4,6 +4,7 @@ import { allComponents, kindList } from '../../src/components/registry.ts';
 import {
   CONTAINER_ALIGNS, GRID_COLUMNS, SPACINGS, appearanceSpecification,
 } from '../../src/domain/canvas-presentation.ts';
+import { WIRE_APPEARANCE_SPECIFICATIONS } from '../../src/domain/wire-appearance.ts';
 
 const componentHelp = [
   `  node kinds    ${allComponents().filter((component) => component.layoutRole === 'leaf')
@@ -59,7 +60,7 @@ Scope and zone containers share the zone.layout, zone.gap and zone.align vocabul
 ${componentHelp}
   methods       name(TypeA, TypeB) -> TypeC            under a node; bare type names
   types         type Name { fieldA, fieldB }           under a node
-  wires         wire A -> B : <the actual call> [kind]
+  wires         wire A|@ref|#node-id -> B|@ref|#node-id [width=thin|medium|thick] [pattern=solid|dashed|dotted|dashdot] [color=neutral|green|blue|violet|rose|amber] : <the actual call> [kind]
                 kind: owns|references|assigns|queries|executes|mentions|missing
                 an endpoint naming a node in another map becomes a cross-map link
   names         quote multi-word names: "browse CLI"; single tokens can go bare
@@ -88,6 +89,13 @@ export function describeCapability(): unknown {
     },
     outcomes: ['applied', 'duplicate', 'conflict', 'rejected'],
     dsl: {
+      wire: {
+        syntax: 'wire <label|@ref|#node-id> -> <label|@ref|#node-id> [width] [pattern] [color] : <contract> [kind]',
+        endpoints: ['label', '@ref', '#node-id'],
+        appearance: WIRE_APPEARANCE_SPECIFICATIONS.map((entry) => ({
+          key: entry.key, values: [...entry.values], omitted: entry.omitted,
+        })),
+      },
       components: allComponents().map((component) => ({
         kind: component.kind,
         keyword: component.dslKeyword,

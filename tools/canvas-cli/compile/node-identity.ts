@@ -14,6 +14,8 @@ export interface AllocatedNode {
 /** Owns every identity namespace used while compiling one scope. */
 export class NodeIdentityIndex {
   readonly endpointByLabelSlug = new Map<string, string>();
+  readonly endpointByRef = new Map<string, string>();
+  readonly endpointById = new Map<string, string>();
   readonly localLabels = new Map<string, string>();
   private readonly oldIdBySlug = new Map<string, string>();
   private readonly oldIdByParentIdentity = new Map<string, string>();
@@ -30,9 +32,11 @@ export class NodeIdentityIndex {
     for (const nodeId of descendantIds(record, rootNodeId)) {
       const node = record.nodes[nodeId];
       const identity = componentFor(node.kind).identity;
+      const keyValue = identity?.keyField && typeof node[identity.keyField] === 'string'
+        ? node[identity.keyField] as string : node.label;
       if (identity?.scope === 'parent' && node.parentId) {
         this.oldIdByParentIdentity.set(
-          `${identity.namespace}\u0000${node.parentId}\u0000${slugify(node.label)}`,
+          `${identity.namespace}\u0000${node.parentId}\u0000${slugify(keyValue)}`,
           nodeId,
         );
       } else this.oldIdBySlug.set(slugify(node.label), nodeId);
@@ -47,8 +51,19 @@ export class NodeIdentityIndex {
     const labelSlug = isComment
       ? `note-${(this.commentCount += 1)}-${slugify(node.label).slice(0, 24)}`
       : slugify(node.label);
+    const keyValue = identity?.keyField && typeof node.content[identity.keyField] === 'string'
+      ? node.content[identity.keyField] as string : node.label;
+    const address = identity?.wireAddress;
+    const reference = typeof address === 'object' ? node.content[address.field] : undefined;
+    if (typeof reference === 'string' && reference.length > 0 && this.endpointByRef.has(reference)) {
+      this.messages.errors.push({
+        message: `duplicate ref "${reference}" in map "${this.declared.scopeAst.label}"`,
+        hint: `${component.dslKeyword} refs must be unique within one map; use ref=another-name`,
+      });
+      return undefined;
+    }
     const parentKey = identity?.scope === 'parent'
-      ? `${identity.namespace}\u0000${parentId}\u0000${slugify(node.label)}` : undefined;
+      ? `${identity.namespace}\u0000${parentId}\u0000${slugify(keyValue)}` : undefined;
     if (parentKey && this.parentIdentityKeys.has(parentKey)) {
       this.messages.errors.push({
         message: `duplicate sibling ${component.dslKeyword} label "${node.label}" in map "${this.declared.scopeAst.label}"`,
@@ -64,9 +79,14 @@ export class NodeIdentityIndex {
     if (!identity && !isComment) this.localLabels.set(labelSlug, node.label);
     const nodeId = parentKey
       ? this.oldIdByParentIdentity.get(parentKey)
-        ?? `${parentId}--${identity!.namespace}-${slugify(node.label)}`
+        ?? `${parentId}--${identity!.namespace}-${slugify(keyValue)}`
       : this.oldIdBySlug.get(labelSlug) ?? `${parentId}--${labelSlug}`;
-    if (identity?.wireEndpoint !== false) this.endpointByLabelSlug.set(labelSlug, nodeId);
+    if (address !== false) this.endpointById.set(nodeId, nodeId);
+    if (address && address !== 'label') {
+      if (typeof reference === 'string' && reference.length > 0) {
+        this.endpointByRef.set(reference, nodeId);
+      }
+    } else if (address !== false) this.endpointByLabelSlug.set(labelSlug, nodeId);
     return { nodeId, labelSlug };
   }
 
@@ -80,6 +100,7 @@ export class NodeIdentityIndex {
     this.localLabels.set(labelSlug, label);
     const zoneId = this.oldIdBySlug.get(labelSlug) ?? `${parentId}--${labelSlug}`;
     this.endpointByLabelSlug.set(labelSlug, zoneId);
+    this.endpointById.set(zoneId, zoneId);
     return zoneId;
   }
 

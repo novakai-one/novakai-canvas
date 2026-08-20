@@ -94,10 +94,12 @@ export function commandsFor(before: DiagramRecord, target: DiagramRecord): Recor
   const targetLayout = target.layouts[target.views[target.activeViewId].layoutId];
   const beforePresentation = {
     appearanceByNodeId: beforeLayout.appearanceByNodeId ?? {},
+    appearanceByWireId: beforeLayout.appearanceByWireId ?? {},
     arrangementByContainerId: beforeLayout.arrangementByContainerId ?? {},
   };
   const targetPresentation = {
     appearanceByNodeId: targetLayout.appearanceByNodeId ?? {},
+    appearanceByWireId: targetLayout.appearanceByWireId ?? {},
     arrangementByContainerId: targetLayout.arrangementByContainerId ?? {},
   };
   if (JSON.stringify(beforePresentation) !== JSON.stringify(targetPresentation)) {

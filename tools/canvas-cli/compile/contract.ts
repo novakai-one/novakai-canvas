@@ -1,5 +1,6 @@
 import type { CrossDiagramLink, DiagramRecord } from '../../../src/canvas.ts';
 import type { ContainerArrangement, NodeAppearance } from '../../../src/domain/canvas-presentation.ts';
+import type { WireAppearance } from '../../../src/domain/wire-appearance.ts';
 import type { ScopeAst } from '../dsl-ast.ts';
 import type { RecordNode, RecordWire, RecordWireKind } from '../record-graph.ts';
 
@@ -28,6 +29,7 @@ export interface CompiledDiagram {
   interfaces: DiagramRecord['interfaces'];
   types: DiagramRecord['types'];
   appearanceByNodeId: Record<string, NodeAppearance>;
+  appearanceByWireId: Record<string, WireAppearance>;
   arrangementByContainerId: Record<string, ContainerArrangement>;
   /** Wires the record cannot hold because a wire belongs to exactly one diagram. */
   crossDiagramWires: CrossDiagramWire[];
@@ -67,6 +69,8 @@ export interface CompiledScope {
   declared: DeclaredScope;
   diagram: CompiledDiagram;
   endpointByLabelSlug: Map<string, string>;
+  endpointByRef: Map<string, string>;
+  endpointById: Map<string, string>;
   localLabels: Map<string, string>;
 }
 

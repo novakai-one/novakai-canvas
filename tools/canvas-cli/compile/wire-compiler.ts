@@ -1,6 +1,7 @@
 import type { WireAst } from '../dsl-ast.ts';
 import { asId } from '../record-graph.ts';
 import { slugify } from '../slug.ts';
+import { wireReferenceKey } from '../wire-reference.ts';
 import type {
   CompiledScope, LinkEnd, WireCompileContext,
 } from './contract.ts';
@@ -55,6 +56,13 @@ class WireCompiler {
     const target = this.resolveEnd(wire.target, localTarget, localSource, wire.line);
     if (!source || !target) return;
     if (!source.local || !target.local) {
+      if (wire.appearance) {
+        this.context.messages.errors.push({
+          message: `cross-map wire on line ${wire.line} cannot carry appearance`,
+          hint: 'wire appearance is local to one diagram layout; remove width, pattern and color',
+        });
+        return;
+      }
       this.scope.diagram.crossDiagramWires.push({
         kind: wire.kind,
         label: wire.contract,
@@ -72,10 +80,14 @@ class WireCompiler {
       source: { nodeId: asId(source.local) },
       target: { nodeId: asId(target.local) },
     };
+    if (wire.appearance) this.scope.diagram.appearanceByWireId[wireId] = wire.appearance;
   }
 
   private resolveLocal(name: string): string | undefined {
-    return this.scope.endpointByLabelSlug.get(slugify(name));
+    const [namespace, value] = wireReferenceKey(name).split(':', 2);
+    if (namespace === 'ref') return this.scope.endpointByRef.get(value);
+    if (namespace === 'id') return this.scope.endpointById.get(value);
+    return this.scope.endpointByLabelSlug.get(value);
   }
 
   private resolveEnd(
@@ -88,11 +100,14 @@ class WireCompiler {
       local,
       end: { diagramId: this.scope.diagram.id, nodeId: local },
     };
-    const far = this.resolveForeign(name, nearNodeId);
+    const far = wireReferenceKey(name).startsWith('label:')
+      ? this.resolveForeign(name, nearNodeId) : undefined;
     if (far) return { local: undefined, end: far };
     this.context.messages.errors.push({
       message: `wire endpoint "${name}" (line ${line}) does not match any node`,
-      hint: `closest labels: ${closestCandidates(this.allLabels, name).join(', ')}`,
+      hint: name.startsWith('@') || name.startsWith('#')
+        ? 'use @ref for a referenced block or #node-id for an unreferenced local block'
+        : `closest labels: ${closestCandidates(this.allLabels, name).join(', ')}`,
     });
     return undefined;
   }

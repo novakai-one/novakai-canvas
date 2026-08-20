@@ -5,6 +5,7 @@ import {
   containerArrangementSchema, nodeAppearanceSchema,
 } from './canvas-presentation.ts';
 import { validateRecordIntegrity } from './record-integrity.ts';
+import { wireAppearanceSchema } from './wire-appearance.ts';
 
 const position = z.object({ x: z.number(), y: z.number() });
 const size = z.object({ width: z.number().positive(), height: z.number().positive() });
@@ -67,6 +68,7 @@ const canvasLayout = z.object({
   placements: z.record(z.string(), nodePlacement),
   wireRouteHints: z.record(z.string(), wireRouteHint),
   appearanceByNodeId: z.record(z.string(), nodeAppearanceSchema).default({}),
+  appearanceByWireId: z.record(z.string(), wireAppearanceSchema).default({}),
   arrangementByContainerId: z.record(z.string(), containerArrangementSchema).default({}),
 });
 

@@ -54,12 +54,19 @@ function removeNode(record: DiagramRecord, view: View, nodeId: string): void {
   const previousParentId = owned.parentId as string | undefined;
   for (const interfaceId of owned.interfaceIds) delete record.interfaces[interfaceId];
   delete record.nodes[nodeId];
+  const removedWireIds = Object.values(record.wires)
+    .filter((wire) => wire.source.nodeId === nodeId || wire.target.nodeId === nodeId)
+    .map((wire) => wire.id as string);
   record.wires = Object.fromEntries(Object.entries(record.wires).filter(
-    ([, wire]) => wire.source.nodeId !== nodeId && wire.target.nodeId !== nodeId,
+    ([wireId]) => !removedWireIds.includes(wireId),
   ));
   for (const layout of Object.values(record.layouts)) {
     delete layout.placements[nodeId];
     if (layout.appearanceByNodeId) delete layout.appearanceByNodeId[nodeId];
+    for (const wireId of removedWireIds) {
+      delete layout.wireRouteHints[wireId];
+      if (layout.appearanceByWireId) delete layout.appearanceByWireId[wireId];
+    }
     if (!layout.arrangementByContainerId) continue;
     delete layout.arrangementByContainerId[nodeId];
     for (const arrangement of Object.values(layout.arrangementByContainerId)) {
@@ -118,7 +125,10 @@ function applyWire(record: DiagramRecord, layout: Layout, command: WireCommand):
     case 'wire.update': Object.assign(record.wires[command.id], command.patch); return;
     case 'wire.remove':
       delete record.wires[command.id];
-      for (const each of Object.values(record.layouts)) delete each.wireRouteHints[command.id];
+      for (const each of Object.values(record.layouts)) {
+        delete each.wireRouteHints[command.id];
+        if (each.appearanceByWireId) delete each.appearanceByWireId[command.id];
+      }
   }
 }
 
@@ -165,6 +175,7 @@ export function applyRecordCommand(record: DiagramRecord, command: RecordCommand
   } else if (command.kind.startsWith('view.')) applyView(view, command as ViewCommand);
   else if (command.kind === 'layout.presentation.replace') {
     layout.appearanceByNodeId = structuredClone(command.appearanceByNodeId);
+    layout.appearanceByWireId = structuredClone(command.appearanceByWireId);
     layout.arrangementByContainerId = structuredClone(command.arrangementByContainerId);
   } else if (command.kind === 'diagram.rename') next.name = command.name;
   return next;

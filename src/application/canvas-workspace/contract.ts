@@ -1,5 +1,6 @@
 import type { CanvasActor, CanvasProvenance } from '../../domain/model.ts';
 import type { ContainerArrangement, NodeAppearance } from '../../domain/canvas-presentation.ts';
+import type { WireAppearance } from '../../domain/wire-appearance.ts';
 import type { DiagramRecord, PortSide } from '../../domain/records.ts';
 
 /** Who is acting and through which surface. Supplied by the host, never by a caller payload. */
@@ -52,6 +53,7 @@ export type RecordCommand =
   | {
     kind: 'layout.presentation.replace';
     appearanceByNodeId: Record<string, NodeAppearance>;
+    appearanceByWireId: Record<string, WireAppearance>;
     arrangementByContainerId: Record<string, ContainerArrangement>;
   }
   | { kind: 'diagram.rename'; name: string };

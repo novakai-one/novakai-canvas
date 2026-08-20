@@ -30,7 +30,7 @@ export function blankRecord(id: string, name: string): DiagramRecord {
     layouts: {
       [layoutId]: {
         id: asId(layoutId), name: 'Default', strategy: 'manual', placements: {}, wireRouteHints: {},
-        appearanceByNodeId: {}, arrangementByContainerId: {},
+        appearanceByNodeId: {}, appearanceByWireId: {}, arrangementByContainerId: {},
       },
     },
     views: {
@@ -77,6 +77,7 @@ export function recordForCompiled(before: DiagramRecord, compiled: CompiledDiagr
         wireRouteHints: Object.fromEntries(Object.entries(before.layouts[layoutId].wireRouteHints)
           .filter(([wireId]) => compiled.wires[wireId])),
         appearanceByNodeId: structuredClone(compiled.appearanceByNodeId),
+        appearanceByWireId: structuredClone(compiled.appearanceByWireId),
         arrangementByContainerId: structuredClone(compiled.arrangementByContainerId),
       },
     },

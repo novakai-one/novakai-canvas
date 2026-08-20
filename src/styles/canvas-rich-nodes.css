@@ -9,6 +9,13 @@
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
 }
 
+.block-node-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
 .timeline-node-shell {
   position: relative;
   width: 100%;
@@ -182,4 +189,3 @@
 .tone-muted { color: var(--tree-muted); }
 .tone-bucket { color: var(--tree-muted); font-weight: 600; }
 .tone-tombstone { color: var(--tree-tombstone); }
-

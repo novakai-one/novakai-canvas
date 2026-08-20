@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import type { Node, NodeProps } from '@xyflow/react';
 import type { ArchitectureNodeData } from '../../presentation/projection.ts';
+import { NodePorts } from '../../presentation/nodes/node-ports.tsx';
 import { GLYPHS } from '../glyphs.ts';
 import { layoutBlockText } from './component.ts';
 
@@ -8,7 +9,7 @@ type BlockFlowNode = Node<ArchitectureNodeData, 'block'>;
 
 /** Selectable styled text whose geometry and line breaks come from the pure block component. */
 export function BlockNode({ data }: NodeProps<BlockFlowNode>) {
-  const { node, appearance } = data;
+  const { node, appearance, editable, preferences } = data;
   const layout = layoutBlockText(node.label, node.lines ?? [], appearance);
   const style = {
     background: appearance.backgroundColor,
@@ -26,6 +27,7 @@ export function BlockNode({ data }: NodeProps<BlockFlowNode>) {
   const justifyContent = appearance.textAlign === 'left' ? 'flex-start'
     : appearance.textAlign === 'right' ? 'flex-end' : 'center';
   return (
+    <div className={`block-node-shell${preferences.nodes.showPorts === 'always' ? ' ports-always' : ''}`}>
     <article className="block-node" style={style}>
       {appearance.icon ? (
         <>
@@ -58,5 +60,7 @@ export function BlockNode({ data }: NodeProps<BlockFlowNode>) {
         <span className="block-line" key={`${index}-${line}`}>{line}</span>
       ))}
     </article>
+    <NodePorts connectable={editable} />
+    </div>
   );
 }

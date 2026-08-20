@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "revision": 105,
+  "revision": 110,
   "entries": {
     "agent-visual-authoring-poc": {
       "id": "agent-visual-authoring-poc",
@@ -43,6 +43,21 @@
         "Report",
         "What to test",
         "What to test",
+        "What to test",
+        "What to test"
+      ]
+    },
+    "block-wire-proof": {
+      "id": "block-wire-proof",
+      "name": "Block wire proof",
+      "status": "active",
+      "revision": 5,
+      "nodeLabels": [
+        "Automated checks",
+        "Block wire proof",
+        "Human review",
+        "Review",
+        "Sources",
         "What to test",
         "What to test"
       ]

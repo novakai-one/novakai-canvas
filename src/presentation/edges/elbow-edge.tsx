@@ -6,7 +6,6 @@ import {
   type CSSProperties, type PointerEvent as ReactPointerEvent,
 } from 'react';
 import type { ArchitectureEdgeData } from '../projection';
-import { wireKindColorVariable, wireKindDashArray, wireStrokeWidth } from '../wire-styles';
 import {
   nearestPositionAlong, pointAlong, routeWire, type RouteSide,
 } from './wire-routing';
@@ -168,12 +167,12 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
   const visibility = props.data?.preferences.wires.showLabels;
   const showLabel = !props.data?.editable || visibility === 'always'
     || (visibility === 'selected' && props.selected);
-  const kind = props.data?.kind ?? 'references';
-  // Colour flows through a custom property so the selected-state CSS still wins.
+  const appearance = props.data?.appearance;
+  // Colour flows through a custom property so selected and dimmed state CSS still wins.
   const style: CSSProperties = {
-    strokeWidth: wireStrokeWidth(props.data?.preferences.wires.width),
-    strokeDasharray: wireKindDashArray(kind) || undefined,
-    '--wire-stroke': wireKindColorVariable(kind),
+    strokeWidth: appearance?.strokeWidth,
+    strokeDasharray: appearance?.dashArray || undefined,
+    '--wire-stroke': appearance?.strokeColorCss,
   } as CSSProperties;
   /*
    * Moving an end is this wire's job, not React Flow's.

@@ -84,7 +84,10 @@ export interface DiagramComponent<K extends string = string> {
   identity?: {
     scope: 'parent';
     namespace: string;
-    wireEndpoint: boolean;
+    /** Node field that replaces label inside this identity namespace when non-empty. */
+    keyField?: keyof RecordNode;
+    /** Absent means label-addressed; false means no wires; a field creates @value addresses. */
+    wireAddress?: false | 'label' | { field: keyof RecordNode };
     preserveDeclarationOrder?: boolean;
   };
   /** False when this node's body accepts only its component-owned child statements. */

@@ -45,6 +45,8 @@
 .icon-card-node-shell.ports-always .react-flow__handle,
 .callout-stack-node-shell:hover .react-flow__handle,
 .callout-stack-node-shell.ports-always .react-flow__handle,
+.block-node-shell:hover .react-flow__handle,
+.block-node-shell.ports-always .react-flow__handle,
 .canvas-surface .react-flow__node.selected .react-flow__handle { opacity: 1; }
 
 /* The default wire is legible; --wire is the floor its kind colour is lifted above. */

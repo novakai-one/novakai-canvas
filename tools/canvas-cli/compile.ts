@@ -50,7 +50,8 @@ function foreignCatalog(
   for (const record of Object.values(existing)) {
     if (selfIds.has(record.id as string)) continue;
     for (const node of Object.values(record.nodes)) {
-      if (componentFor(node.kind).identity?.wireEndpoint === false) continue;
+      const address = componentFor(node.kind).identity?.wireAddress;
+      if (address === false || (address && address !== 'label')) continue;
       const slug = slugify(node.label);
       labels.set(slug, node.label);
       ends.set(slug, [...(ends.get(slug) ?? []), {

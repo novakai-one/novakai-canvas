@@ -1,6 +1,7 @@
 /** Stable, serialisable vocabulary shared across every module. */
 
 import type { ContainerArrangement, NodeAppearance } from './canvas-presentation.ts';
+import type { WireAppearance } from './wire-appearance.ts';
 
 export type NodeKind = 'scope' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline' | 'metric' | 'icon-card' | 'block';
 
@@ -76,6 +77,8 @@ export interface CanvasNode {
   callouts?: CalloutItem[];
   /** Ordered semantic text; present only on kind "block". */
   lines?: string[];
+  /** Stable agent-facing address for a block. */
+  wireRef?: string;
   /** Optional identity of the real thing this drawing occurrence represents. */
   subjectRef?: CanvasReference;
   /** Optional deeper explanation opened from this overview occurrence. */
@@ -141,6 +144,7 @@ export interface CanvasLayout {
   wireRouteHints: Record<string, WireRouteHint>;
   collapsedNodeIds: string[];
   appearanceByNodeId?: Record<string, NodeAppearance>;
+  appearanceByWireId?: Record<string, WireAppearance>;
   arrangementByContainerId?: Record<string, ContainerArrangement>;
 }
 

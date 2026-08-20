@@ -6,8 +6,9 @@ import type { DiagramComponent, DslNodeDeclaration } from '../component.ts';
 import { GLYPHS } from '../glyphs.ts';
 import { layoutBlockText, measureBlockTextWidth } from './text-layout.ts';
 
-const SYNTAX = 'block "label" [icon=check|clock|people|shield|target|trend font=… size=… weight=… align=… text=… background=… border-color=… border=… radius=… padding=…]';
-const EXAMPLE = 'block "Refusal rate" icon=target size=14 weight=600 align=center text=green border-color=green border=1 radius=8 padding=12';
+const SYNTAX = 'block "label" [ref=kebab-case] [icon=check|clock|people|shield|target|trend font=… size=… weight=… align=… text=… background=… border-color=… border=… radius=… padding=…]';
+const EXAMPLE = 'block "Refusal rate" ref=refusal-rate icon=target size=14 weight=600 align=center text=green border-color=green border=1 radius=8 padding=12';
+const WIRE_REF = /^[a-z][a-z0-9-]{0,63}$/;
 
 function escapeXml(text: string): string {
   return text
@@ -22,11 +23,17 @@ const declaration: DslNodeDeclaration = {
   example: EXAMPLE,
   allowsBody: true,
   parse(tokens) {
-    if (!tokens[1] || tokens.length !== 2) return { error: 'block needs one non-empty label', hint: EXAMPLE };
-    return { label: tokens[1] };
+    if (!tokens[1] || tokens.length > 3) return { error: 'block needs one non-empty label and optional ref=name', hint: EXAMPLE };
+    if (!tokens[2]) return { label: tokens[1] };
+    if (!tokens[2].startsWith('ref=')) return { error: `unknown block attribute "${tokens[2].split('=')[0]}"`, hint: EXAMPLE };
+    const wireRef = tokens[2].slice(4);
+    if (!WIRE_REF.test(wireRef)) {
+      return { error: `invalid block ref "${wireRef}"`, hint: 'use ref=name in lowercase kebab-case, 1–64 characters' };
+    }
+    return { label: tokens[1], content: { wireRef } };
   },
   print(node) {
-    return `block "${node.label}"`;
+    return `block "${node.label}"${node.wireRef ? ` ref=${node.wireRef}` : ''}`;
   },
 };
 
@@ -39,14 +46,18 @@ export const blockComponent: DiagramComponent<'block'> = {
   identity: {
     scope: 'parent',
     namespace: 'block',
-    wireEndpoint: false,
+    keyField: 'wireRef',
+    wireAddress: { field: 'wireRef' },
     preserveDeclarationOrder: true,
   },
   appearanceKeys: [
     'icon', 'font', 'size', 'weight', 'align', 'text', 'background',
     'border-color', 'border', 'radius', 'padding',
   ],
-  contentFields: { lines: z.array(z.string().min(1)).optional() },
+  contentFields: {
+    lines: z.array(z.string().min(1)).optional(),
+    wireRef: z.string().regex(WIRE_REF).optional(),
+  },
   dslChildren: [{
     keyword: 'line',
     syntax: 'line "non-empty text"',

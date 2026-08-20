@@ -1,6 +1,7 @@
 import type { LayoutId, NodeId, ViewId, WireId } from './ids.ts';
 import type { Position, Size } from './model.ts';
 import type { ContainerArrangement, NodeAppearance } from './canvas-presentation.ts';
+import type { WireAppearance } from './wire-appearance.ts';
 
 /** Which edge of a node an endpoint attaches to. */
 export type PortSide = 'top' | 'right' | 'bottom' | 'left';
@@ -36,6 +37,7 @@ export interface CanvasLayout {
   wireRouteHints: Record<string, WireRouteHint>;
   /** Authored presentation belongs to this arrangement, never to semantic nodes. */
   appearanceByNodeId?: Record<string, NodeAppearance>;
+  appearanceByWireId?: Record<string, WireAppearance>;
   arrangementByContainerId?: Record<string, ContainerArrangement>;
 }
 

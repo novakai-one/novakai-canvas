@@ -120,6 +120,7 @@ function documentFor(record: DiagramRecord): ArchitectureDocument {
         wireRouteHints: {},
         collapsedNodeIds: [],
         appearanceByNodeId: structuredClone(record.layouts[layoutId].appearanceByNodeId ?? {}),
+        appearanceByWireId: structuredClone(record.layouts[layoutId].appearanceByWireId ?? {}),
         arrangementByContainerId: structuredClone(record.layouts[layoutId].arrangementByContainerId ?? {}),
       },
     },

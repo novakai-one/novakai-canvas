@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { wireAppearanceSchema } from './wire-appearance.ts';
 import type { NodeKind } from './records.ts';
 import { ICON_NAMES, type IconName } from './model.ts';
 
@@ -211,6 +212,7 @@ export const containerArrangementSchema = z.object({
 
 export const layoutPresentationSchema = z.object({
   appearanceByNodeId: z.record(z.string(), nodeAppearanceSchema),
+  appearanceByWireId: z.record(z.string(), wireAppearanceSchema),
   arrangementByContainerId: z.record(z.string(), containerArrangementSchema),
 }).strict();
 

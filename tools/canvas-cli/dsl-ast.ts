@@ -1,5 +1,6 @@
 import type { CanvasNode as RecordNode } from '../../src/domain/records.ts';
 import type { ParsedPresentation } from '../../src/domain/canvas-presentation.ts';
+import type { WireAppearance } from '../../src/domain/wire-appearance.ts';
 
 /** One source error with a line and actionable correction. */
 export interface ParseError { line: number; message: string; hint: string }
@@ -27,6 +28,7 @@ export interface WireAst {
   target: string;
   contract: string;
   kind: 'owns' | 'references' | 'assigns' | 'queries' | 'executes' | 'mentions' | 'missing';
+  appearance?: WireAppearance;
   line: number;
 }
 /** A nested container inside a scope; compiles to a group node with parentId set. */

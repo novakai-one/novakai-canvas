@@ -3,6 +3,7 @@ import { allComponents, contentFieldsFor, kindList } from '../components/registr
 import type { ArchitectureDocument, CanvasChangeSet } from './model.ts';
 import { WIRE_LABEL_SIZE_LIMITS } from './wire-label-size.ts';
 import { containerArrangementSchema, nodeAppearanceSchema } from './canvas-presentation.ts';
+import { wireAppearanceSchema } from './wire-appearance.ts';
 
 /** Legacy document kind vocabulary: `scope` where the current record model uses `group`. */
 const legacyKindList = () => ['scope', ...kindList().filter((k) => k !== 'group')] as [string, ...string[]];
@@ -104,6 +105,7 @@ const architectureDocumentV2 = z.object({
     })),
     collapsedNodeIds: z.array(z.string().min(1)).default([]),
     appearanceByNodeId: z.record(z.string(), nodeAppearanceSchema).default({}),
+    appearanceByWireId: z.record(z.string(), wireAppearanceSchema).default({}),
     arrangementByContainerId: z.record(z.string(), containerArrangementSchema).default({}),
   })),
   diagrams: z.record(z.string(), z.object({
@@ -190,6 +192,7 @@ export function parseArchitectureDocument(input: unknown): ArchitectureDocument 
         wireRouteHints: {},
         collapsedNodeIds: [],
         appearanceByNodeId: {},
+        appearanceByWireId: {},
         arrangementByContainerId: {},
       },
     },

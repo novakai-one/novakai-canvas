@@ -69,6 +69,8 @@ export interface CanvasNode {
   callouts?: CalloutItem[];
   /** Ordered semantic text; present only on kind `block`. */
   lines?: string[];
+  /** Stable agent-facing address for a block; never used as the stored wire join. */
+  wireRef?: string;
   /** The real thing this occurrence depicts. Canvas references it and never owns it. */
   subjectRef?: CanvasReference;
   /** Deeper explanation opened from this occurrence; integrity is owned by the library. */

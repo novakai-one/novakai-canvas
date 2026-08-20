@@ -6,7 +6,7 @@ import type { PortSide, WireKind } from '../../domain/records';
 import { ARCHITECTURE_FLOW } from '../../domain/flow';
 import type { RouteObstacle } from './wire-routing';
 import { chooseSides, laneOffsets, nodeRects, wireObstacles } from './wire-geometry';
-import { wireKindColor } from '../wire-styles';
+import { resolveWireAppearance, wireStrokeWidth, type ResolvedWireAppearance } from '../wire-styles';
 import type { ProjectionInput } from '../projection-contract';
 import { connectedIds } from '../projection-selection';
 
@@ -28,6 +28,7 @@ export interface ArchitectureEdgeData extends Record<string, unknown> {
   setRoute?: (route: Partial<EdgeRoute>) => void;
   moveEnd?: (end: 'source' | 'target', nodeId: string, side?: string) => void;
   lane: number;
+  appearance: ResolvedWireAppearance;
 }
 
 /** Projects the visible wires of one diagram into React Flow edges. */
@@ -36,6 +37,8 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
   const connected = connectedIds(input);
   const lanes = laneOffsets(view.wires);
   const hints = record.layouts[record.views[record.activeViewId]?.layoutId]?.wireRouteHints ?? {};
+  const authoredAppearance = record.layouts[record.views[record.activeViewId]?.layoutId]
+    ?.appearanceByWireId ?? {};
   const rects = nodeRects(view);
   const sidesOf = new Map<string, { sourceSide: PortSide; targetSide: PortSide }>();
   const facing = (wire: typeof view.wires[number]) => {
@@ -52,7 +55,12 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
     sidesOf.set(wire.id as string, resolved);
     return resolved;
   };
-  return view.wires.map((wire) => ({
+  return view.wires.map((wire) => {
+    const appearance = resolveWireAppearance(wire.kind, authoredAppearance[wire.id], {
+      theme: preferences.appearance.theme,
+      fallbackWidth: wireStrokeWidth(preferences.wires.width),
+    });
+    return ({
     id: wire.id,
     source: wire.source.nodeId,
     target: wire.target.nodeId,
@@ -63,7 +71,7 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
     zIndex: selection?.kind === 'wire' && selection.id === wire.id ? 1000 : 0,
     markerEnd: {
       type: MarkerType.ArrowClosed,
-      color: wireKindColor(wire.kind, preferences.appearance.theme),
+      color: appearance.strokeColor,
       width: 14,
       height: 14,
     },
@@ -76,6 +84,7 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
       editable,
       select: () => select({ kind: 'wire', id: wire.id }),
       lane: lanes.get(wire.id) ?? 0,
+      appearance,
       route: {
         waypoints: hints[wire.id]?.waypoints ?? [],
         labelPosition: hints[wire.id]?.labelPosition,
@@ -105,5 +114,6 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
         }
         : undefined,
     },
-  }));
+    });
+  });
 }

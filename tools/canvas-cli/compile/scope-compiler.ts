@@ -18,6 +18,7 @@ class ScopeCompiler {
   private readonly interfaces: DiagramRecord['interfaces'] = {};
   private readonly types: DiagramRecord['types'] = {};
   private readonly appearanceByNodeId: CompiledDiagram['appearanceByNodeId'] = {};
+  private readonly appearanceByWireId: CompiledDiagram['appearanceByWireId'] = {};
   private readonly arrangementByContainerId: CompiledDiagram['arrangementByContainerId'] = {};
   private readonly identity: NodeIdentityIndex;
 
@@ -42,6 +43,8 @@ class ScopeCompiler {
     return {
       declared: this.declared,
       endpointByLabelSlug: this.identity.endpointByLabelSlug,
+      endpointByRef: this.identity.endpointByRef,
+      endpointById: this.identity.endpointById,
       localLabels: this.identity.localLabels,
       diagram: {
         id,
@@ -52,6 +55,7 @@ class ScopeCompiler {
         interfaces: this.interfaces,
         types: this.types,
         appearanceByNodeId: this.appearanceByNodeId,
+        appearanceByWireId: this.appearanceByWireId,
         arrangementByContainerId: this.arrangementByContainerId,
         crossDiagramWires: [],
       },

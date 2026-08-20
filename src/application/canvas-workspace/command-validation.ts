@@ -1,11 +1,8 @@
 import { componentFor } from '../../components/registry.ts';
-import {
-  appearanceKeyForJsonKey, layoutPresentationSchema,
-} from '../../domain/canvas-presentation.ts';
 import { signatureFailure } from '../../domain/interface-signature.ts';
-import type { DiagramRecord } from '../../domain/records.ts';
-import { directChildIds } from './arrangement.ts';
+import type { CanvasNode, DiagramRecord } from '../../domain/records.ts';
 import type { RecordCommand } from './contract.ts';
+import { validatePresentation } from './presentation-validation.ts';
 
 type ValidationResult = { valid: true } | { valid: false; reason: string };
 type NodeCommand = Extract<RecordCommand, { kind: `node.${string}` }>;
@@ -19,7 +16,7 @@ function requireNode(record: DiagramRecord, id: string): void {
 
 function requireWireEndpoint(record: DiagramRecord, id: string): void {
   requireNode(record, id);
-  if (componentFor(record.nodes[id].kind).identity?.wireEndpoint === false) {
+  if (componentFor(record.nodes[id].kind).identity?.wireAddress === false) {
     throw new Error(`node-not-a-wire-endpoint:${id}`);
   }
 }
@@ -40,17 +37,36 @@ function validateParent(record: DiagramRecord, nodeId: string, parentId: string)
   }
 }
 
+function wireAddressOf(node: CanvasNode): string | undefined {
+  const address = componentFor(node.kind).identity?.wireAddress;
+  if (typeof address !== 'object') return undefined;
+  const value = node[address.field];
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
+}
+
+function requireUniqueWireAddress(record: DiagramRecord, node: CanvasNode): void {
+  const address = wireAddressOf(node);
+  if (!address) return;
+  if (Object.values(record.nodes).some((candidate) => wireAddressOf(candidate) === address)) {
+    throw new Error(`wire-address-already-exists:${address}`);
+  }
+}
+
 function validateNode(record: DiagramRecord, command: NodeCommand): void {
   if (command.kind === 'node.add') {
     if (record.nodes[command.node.id]) throw new Error(`node-already-exists:${command.node.id}`);
     if (command.node.parentId) validateParent(record, command.node.id, command.node.parentId);
+    requireUniqueWireAddress(record, command.node);
     return;
   }
   requireNode(record, command.id);
   if (command.kind === 'node.update') {
     const node = record.nodes[command.id];
+    const identity = componentFor(node.kind).identity;
+    const authoredKey = identity?.keyField ? node[identity.keyField] : undefined;
     if (command.patch.label !== undefined && command.patch.label !== node.label
-      && componentFor(node.kind).identity?.scope === 'parent') {
+      && identity?.scope === 'parent'
+      && (typeof authoredKey !== 'string' || authoredKey.length === 0)) {
       throw new Error(`parent-scoped-identity-requires-recreate:${command.id}`);
     }
   }
@@ -109,57 +125,6 @@ function validateView(record: DiagramRecord, command: ViewCommand): void {
   if (command.kind !== 'view.setCollapsed') return;
   requireNode(record, command.id);
   if (record.nodes[command.id].kind !== 'group') throw new Error(`not-a-group:${command.id}`);
-}
-
-function validateAppearance(record: DiagramRecord, appearanceByNodeId: Record<string, object>): void {
-  for (const [nodeId, appearance] of Object.entries(appearanceByNodeId)) {
-    requireNode(record, nodeId);
-    const allowed = componentFor(record.nodes[nodeId].kind).appearanceKeys ?? [];
-    for (const jsonKey of Object.keys(appearance)) {
-      const key = appearanceKeyForJsonKey(jsonKey);
-      if (!key || !allowed.includes(key)) {
-        throw new Error(`appearance-not-supported:${nodeId}:${jsonKey}`);
-      }
-    }
-  }
-}
-
-function validateArrangements(
-  record: DiagramRecord,
-  arrangements: Extract<RecordCommand, { kind: 'layout.presentation.replace' }>['arrangementByContainerId'],
-): void {
-  for (const [containerId, arrangement] of Object.entries(arrangements)) {
-    requireNode(record, containerId);
-    const component = componentFor(record.nodes[containerId].kind);
-    if (component.layoutRole !== 'container') {
-      throw new Error(`arrangement-target-not-container:${containerId}`);
-    }
-    if (!component.arrangementModes?.includes(arrangement.layout)) {
-      throw new Error(`arrangement-mode-not-supported:${containerId}:${arrangement.layout}`);
-    }
-    const childIds = directChildIds(record, containerId);
-    const directChildren = new Set(childIds);
-    for (const childId of arrangement.childIds) {
-      if (!directChildren.has(childId)) {
-        throw new Error(`arrangement-child-not-direct:${containerId}:${childId}`);
-      }
-    }
-    if (arrangement.childIds.length !== childIds.length) {
-      throw new Error(`arrangement-must-name-every-direct-child:${containerId}`);
-    }
-  }
-}
-
-function validatePresentation(
-  record: DiagramRecord,
-  command: Extract<RecordCommand, { kind: 'layout.presentation.replace' }>,
-): void {
-  layoutPresentationSchema.parse({
-    appearanceByNodeId: command.appearanceByNodeId,
-    arrangementByContainerId: command.arrangementByContainerId,
-  });
-  validateAppearance(record, command.appearanceByNodeId);
-  validateArrangements(record, command.arrangementByContainerId);
 }
 
 function validateOrThrow(record: DiagramRecord, command: RecordCommand): void {
