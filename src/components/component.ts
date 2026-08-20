@@ -11,7 +11,9 @@
  */
 
 import type { CanvasNode as RecordNode } from '../domain/records.ts';
-import type { AppearanceKey, ResolvedNodeAppearance } from '../domain/canvas-presentation.ts';
+import type {
+  AppearanceKey, LayoutMode, ResolvedNodeAppearance,
+} from '../domain/canvas-presentation.ts';
 
 export interface Size { width: number; height: number }
 
@@ -76,6 +78,8 @@ export interface DiagramComponent<K extends string = string> {
   dslChildren?: DslChildStatement[];
   /** Shared presentation keys this kind accepts from agent-authored DSL. */
   appearanceKeys?: readonly AppearanceKey[];
+  /** Ordered-container modes this kind accepts from agent-authored DSL. */
+  arrangementModes?: readonly LayoutMode[];
   /** Optional identity policy; absent means the existing map-wide, wire-addressable namespace. */
   identity?: {
     scope: 'parent';

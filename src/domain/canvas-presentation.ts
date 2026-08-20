@@ -56,6 +56,15 @@ export interface ContainerArrangement {
   columns?: GridColumns;
 }
 
+/** Container values as authored, before compilation supplies direct-child identities. */
+export type AuthoredArrangement = Omit<ContainerArrangement, 'childIds'>;
+
+/** One parsed declaration's presentation, interpreted against its owning component metadata. */
+export type ParsedPresentation = {
+  appearance?: NodeAppearance;
+  arrangement?: AuthoredArrangement;
+};
+
 export interface PresentationContext { theme: Theme; showKinds: boolean }
 
 /** Concrete values consumed verbatim by measurement and both render hosts. */
@@ -78,6 +87,7 @@ export interface ResolvedNodeAppearance {
 export type AppearanceKey =
   | 'font' | 'size' | 'weight' | 'align' | 'text' | 'background'
   | 'border-color' | 'border' | 'radius' | 'padding' | 'badge';
+export type ArrangementKey = 'layout' | 'columns' | 'gap' | 'align';
 
 export interface AppearanceSpecification {
   key: AppearanceKey;
@@ -120,6 +130,10 @@ export function appearanceKeyForJsonKey(value: string): AppearanceKey | undefine
 /** Reserved now so pre-activation container attributes fail instead of becoming descriptions. */
 export function isPresentationAttributeKey(value: string): boolean {
   return isAppearanceKey(value) || ['layout', 'columns', 'gap'].includes(value);
+}
+
+export function isArrangementKey(value: string): value is ArrangementKey {
+  return ['layout', 'columns', 'gap', 'align'].includes(value);
 }
 
 /** Parses one closed CLI token to the exact JSON field/value it represents. */

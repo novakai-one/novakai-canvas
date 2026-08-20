@@ -11,8 +11,9 @@ import type { DiagramComponent, DslChildStatement } from '../../src/components/c
 import { allComponents } from '../../src/components/registry.ts';
 import type { CanvasNode as RecordNode } from '../../src/domain/records.ts';
 import {
-  appearanceEntry, appearanceSpecification, canonicalNodeAppearance, isAppearanceKey,
-  isPresentationAttributeKey, type NodeAppearance,
+  CONTAINER_ALIGNS, SPACINGS, appearanceEntry, appearanceSpecification,
+  canonicalNodeAppearance, isAppearanceKey, isArrangementKey, isPresentationAttributeKey,
+  type AuthoredArrangement, type ParsedPresentation,
 } from '../../src/domain/canvas-presentation.ts';
 
 export interface ParseError { line: number; message: string; hint: string }
@@ -29,7 +30,7 @@ export interface NodeAst {
   /** Child-statement content, keyed by each statement's `contentKey` ('rows', 'steps', ...). */
   children: Record<string, unknown[]>;
   /** Authored presentation is compiled into the active layout, never into node content. */
-  appearance?: NodeAppearance;
+  presentation?: ParsedPresentation;
 }
 export interface WireAst {
   source: string;
@@ -44,9 +45,21 @@ export interface ZoneAst {
   description?: string;
   nodes: NodeAst[];
   zones: ZoneAst[];
+  /** The authoritative mixed order of direct node and zone declarations. */
+  declarations: (NodeAst | ZoneAst)[];
+  presentation?: ParsedPresentation;
   line: number;
 }
-export interface ScopeAst { label: string; description?: string; nodes: NodeAst[]; wires: WireAst[]; zones: ZoneAst[] }
+export interface ScopeAst {
+  label: string;
+  description?: string;
+  nodes: NodeAst[];
+  wires: WireAst[];
+  zones: ZoneAst[];
+  /** The authoritative mixed order of direct node and zone declarations. */
+  declarations: (NodeAst | ZoneAst)[];
+  presentation?: ParsedPresentation;
+}
 
 /** Parent statement keyword -> the component that parses it. */
 const COMPONENTS = new Map<string, DiagramComponent>(
@@ -111,47 +124,110 @@ function attributeKey(token: string): string | undefined {
   return equals < 1 ? undefined : token.slice(0, equals);
 }
 
-/** Strips and validates shared appearance tokens before component-owned semantic parsing. */
-function splitAppearance(
+/** Strips and validates shared presentation tokens against their owning component metadata. */
+function splitPresentation(
   component: DiagramComponent,
   tokens: string[],
-): { semanticTokens: string[]; appearance?: NodeAppearance } | { error: string; hint: string } {
-  const allowed = component.appearanceKeys ?? [];
+): { semanticTokens: string[]; presentation?: ParsedPresentation } | { error: string; hint: string } {
+  const appearanceKeys = component.appearanceKeys ?? [];
+  const arrangementModes = component.arrangementModes ?? [];
+  const owner = tokens[0];
+  const hint = owner === 'scope'
+    ? 'scope "name" ["optional description"] [layout=stack|row] [gap=0|4|8|12|16|24|32] [align=stretch|start|center|end]'
+    : component.declaration.syntax;
   const firstAttribute = tokens.findIndex((token, index) => {
     if (index < 2) return false;
     const key = attributeKey(token);
-    return key !== undefined && (allowed.length > 0 || isPresentationAttributeKey(key));
+    return key !== undefined && (
+      appearanceKeys.length > 0 || arrangementModes.length > 0 || isPresentationAttributeKey(key)
+    );
   });
   if (firstAttribute === -1) return { semanticTokens: tokens };
 
-  const authored: NodeAppearance = {};
+  const appearance: NonNullable<ParsedPresentation['appearance']> = {};
+  const arrangement: Partial<AuthoredArrangement> = {};
+  let hasArrangementAttribute = false;
   const seen = new Set<string>();
   for (const token of tokens.slice(firstAttribute)) {
     const equals = token.indexOf('=');
     const key = equals < 1 ? token : token.slice(0, equals);
     const raw = equals < 1 ? '' : token.slice(equals + 1);
-    if (!isAppearanceKey(key) || !allowed.includes(key)) {
-      return {
-        error: `unknown attribute "${key}" for ${component.dslKeyword}`,
-        hint: component.declaration.syntax,
-      };
-    }
     if (seen.has(key)) {
-      return { error: `duplicate attribute "${key}"`, hint: component.declaration.syntax };
+      return { error: `duplicate attribute "${key}"`, hint };
     }
     seen.add(key);
-    const entry = appearanceEntry(key, raw);
-    if (!entry) {
-      return {
-        error: `invalid ${key} "${raw}"; use one of: ${appearanceSpecification(key).values.join(', ')}`,
-        hint: component.declaration.syntax,
-      };
+
+    if (isArrangementKey(key) && arrangementModes.length > 0) {
+      hasArrangementAttribute = true;
+      if (key === 'columns') {
+        return { error: 'attribute "columns" requires layout=grid; grid activates in Slice 3', hint };
+      }
+      if (key === 'layout') {
+        const mode = arrangementModes.find((candidate) => candidate === raw);
+        if (!mode) {
+          return {
+            error: `invalid layout "${raw}"; use one of: ${arrangementModes.join(', ')}`,
+            hint,
+          };
+        }
+        arrangement.layout = mode;
+        continue;
+      }
+      if (key === 'gap') {
+        const gap = SPACINGS.find((candidate) => String(candidate) === raw);
+        if (gap === undefined) {
+          return { error: `invalid gap "${raw}"; use one of: ${SPACINGS.join(', ')}`, hint };
+        }
+        arrangement.gap = gap;
+        continue;
+      }
+      const align = CONTAINER_ALIGNS.find((candidate) => candidate === raw);
+      if (!align) {
+        return {
+          error: `invalid align "${raw}"; use one of: ${CONTAINER_ALIGNS.join(', ')}`,
+          hint,
+        };
+      }
+      arrangement.align = align;
+      continue;
     }
-    (authored as Record<string, unknown>)[entry.jsonKey] = entry.value;
+
+    if (isAppearanceKey(key) && appearanceKeys.includes(key)) {
+      const entry = appearanceEntry(key, raw);
+      if (!entry) {
+        return {
+          error: `invalid ${key} "${raw}"; use one of: ${appearanceSpecification(key).values.join(', ')}`,
+          hint,
+        };
+      }
+      (appearance as Record<string, unknown>)[entry.jsonKey] = entry.value;
+      continue;
+    }
+
+    return {
+      error: `unknown attribute "${key}" for ${owner}`,
+      hint,
+    };
+  }
+
+  if (hasArrangementAttribute && arrangement.layout === undefined) {
+    return {
+      error: 'container gap and align require layout=stack or layout=row',
+      hint,
+    };
+  }
+  const parsed: ParsedPresentation = {};
+  if (Object.keys(appearance).length > 0) parsed.appearance = canonicalNodeAppearance(appearance);
+  if (arrangement.layout !== undefined) {
+    parsed.arrangement = {
+      layout: arrangement.layout,
+      gap: arrangement.gap ?? 16,
+      align: arrangement.align ?? 'stretch',
+    };
   }
   return {
     semanticTokens: tokens.slice(0, firstAttribute),
-    appearance: canonicalNodeAppearance(authored),
+    ...(Object.keys(parsed).length > 0 ? { presentation: parsed } : {}),
   };
 }
 
@@ -163,9 +239,9 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
   let node: NodeAst | null = null;
   let zoneStack: ZoneAst[] = [];
 
-  /** Nodes attach to the innermost open zone, or the scope itself. */
-  const nodeSink = (): NodeAst[] =>
-    zoneStack.length > 0 ? zoneStack[zoneStack.length - 1].nodes : (scope as ScopeAst).nodes;
+  /** Declarations attach to the innermost open zone, or the scope itself. */
+  const declarationContainer = (): ScopeAst | ZoneAst =>
+    zoneStack.length > 0 ? zoneStack[zoneStack.length - 1] : (scope as ScopeAst);
 
   const lines = source.split('\n');
   for (let lineNumber = 1; lineNumber <= lines.length; lineNumber += 1) {
@@ -296,11 +372,10 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         fail('scope needs a name', 'scope "My System"');
         continue;
       }
-      const inactiveAttribute = tokens.slice(2).map(attributeKey).find(
-        (key): key is string => key !== undefined && isPresentationAttributeKey(key),
-      );
-      if (inactiveAttribute) {
-        fail(`unknown attribute "${inactiveAttribute}" for scope`, 'container attributes activate in Slice 2');
+      const group = COMPONENTS_BY_KIND.get('group') as DiagramComponent;
+      const split = splitPresentation(group, tokens);
+      if ('error' in split) {
+        fail(split.error, split.hint);
         continue;
       }
       if (zoneStack.length > 0 && scope) {
@@ -309,7 +384,12 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
           'close every zone with end before starting a new scope',
         );
       }
-      scope = { label: tokens[1], description: tokens[2], nodes: [], wires: [], zones: [] };
+      scope = {
+        label: split.semanticTokens[1],
+        ...(split.semanticTokens[2] === undefined ? {} : { description: split.semanticTokens[2] }),
+        nodes: [], wires: [], zones: [], declarations: [],
+        ...(split.presentation ? { presentation: split.presentation } : {}),
+      };
       node = null;
       zoneStack = [];
       scopes.push(scope);
@@ -322,7 +402,7 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         fail(`${keyword} outside a scope`, 'declare a scope first: scope "My System"');
         continue;
       }
-      const split = splitAppearance(component, tokens);
+      const split = splitPresentation(component, tokens);
       if ('error' in split) {
         fail(split.error, split.hint);
         continue;
@@ -338,10 +418,13 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
           ...(parsed.description === undefined ? {} : { description: parsed.description }),
           nodes: [],
           zones: [],
+          declarations: [],
+          ...(split.presentation ? { presentation: split.presentation } : {}),
           line: lineNumber,
         };
-        if (zoneStack.length > 0) zoneStack[zoneStack.length - 1].zones.push(zone);
-        else scope.zones.push(zone);
+        const container = declarationContainer();
+        container.zones.push(zone);
+        container.declarations.push(zone);
         zoneStack.push(zone);
         node = null;
         continue;
@@ -354,10 +437,11 @@ export function parseDsl(source: string): { scopes: ScopeAst[]; errors: ParseErr
         interfaces: [],
         types: [],
         children: {},
-        ...(split.appearance && Object.keys(split.appearance).length > 0
-          ? { appearance: split.appearance } : {}),
+        ...(split.presentation ? { presentation: split.presentation } : {}),
       };
-      nodeSink().push(node);
+      const container = declarationContainer();
+      container.nodes.push(node);
+      container.declarations.push(node);
       if (!component.declaration.allowsBody) node = null;
       continue;
     }

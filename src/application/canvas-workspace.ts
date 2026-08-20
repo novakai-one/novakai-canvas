@@ -244,9 +244,6 @@ function validate(record: DiagramRecord, command: RecordCommand): void {
         appearanceByNodeId: command.appearanceByNodeId,
         arrangementByContainerId: command.arrangementByContainerId,
       });
-      if (Object.keys(command.arrangementByContainerId).length > 0) {
-        throw new Error('container-arrangements-not-active');
-      }
       for (const [nodeId, appearance] of Object.entries(command.appearanceByNodeId)) {
         requireNode(record, nodeId);
         const allowed = componentFor(record.nodes[nodeId].kind).appearanceKeys ?? [];
@@ -255,6 +252,30 @@ function validate(record: DiagramRecord, command: RecordCommand): void {
           if (!key || !allowed.includes(key)) {
             throw new Error(`appearance-not-supported:${nodeId}:${jsonKey}`);
           }
+        }
+      }
+      for (const [containerId, arrangement] of Object.entries(
+        command.arrangementByContainerId,
+      )) {
+        requireNode(record, containerId);
+        const component = componentFor(record.nodes[containerId].kind);
+        if (component.layoutRole !== 'container') {
+          throw new Error(`arrangement-target-not-container:${containerId}`);
+        }
+        if (!component.arrangementModes?.includes(arrangement.layout)) {
+          throw new Error(`arrangement-mode-not-supported:${containerId}:${arrangement.layout}`);
+        }
+        const directChildIds = Object.values(record.nodes)
+          .filter((node) => node.parentId === containerId)
+          .map((node) => node.id as string);
+        const directChildren = new Set(directChildIds);
+        for (const childId of arrangement.childIds) {
+          if (!directChildren.has(childId)) {
+            throw new Error(`arrangement-child-not-direct:${containerId}:${childId}`);
+          }
+        }
+        if (arrangement.childIds.length !== directChildIds.length) {
+          throw new Error(`arrangement-must-name-every-direct-child:${containerId}`);
         }
       }
       return;
@@ -310,7 +331,12 @@ function apply(record: DiagramRecord, command: RecordCommand): DiagramRecord {
       for (const each of Object.values(next.layouts)) delete each.placements[command.id];
       for (const each of Object.values(next.layouts)) {
         if (each.appearanceByNodeId) delete each.appearanceByNodeId[command.id];
-        if (each.arrangementByContainerId) delete each.arrangementByContainerId[command.id];
+        if (each.arrangementByContainerId) {
+          delete each.arrangementByContainerId[command.id];
+          for (const arrangement of Object.values(each.arrangementByContainerId)) {
+            arrangement.childIds = arrangement.childIds.filter((childId) => childId !== command.id);
+          }
+        }
       }
       view.collapsedNodeIds = view.collapsedNodeIds.filter((id) => id !== command.id);
       break;
