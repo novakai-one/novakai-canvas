@@ -41,6 +41,11 @@ export const blockComponent: DiagramComponent<'block'> = {
   kind: 'block',
   dslKeyword: 'block',
   declaration,
+  creation: {
+    category: 'text', label: 'Text block', hint: 'Styled multiline content',
+    defaultLabel: 'New block', initialSize: { width: 200, height: 110 },
+    stableIdField: 'wireRef',
+  },
   layoutRole: 'leaf',
   allowsMembers: false,
   identity: {

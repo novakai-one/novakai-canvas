@@ -2,6 +2,9 @@ import type { WireRouteHint } from '../../domain/records.ts';
 import type { DiagramRecord } from '../../domain/records.ts';
 import { arrangementCoverageFailure, reconcileArrangementChildren } from './arrangement.ts';
 import type { RecordCommand } from './contract.ts';
+import {
+  applyTargetedPresentation, isTargetedPresentation, reflowAfterCommand,
+} from './presentation-commands.ts';
 
 type Layout = DiagramRecord['layouts'][string];
 type View = DiagramRecord['views'][string];
@@ -177,6 +180,8 @@ export function applyRecordCommand(record: DiagramRecord, command: RecordCommand
     layout.appearanceByNodeId = structuredClone(command.appearanceByNodeId);
     layout.appearanceByWireId = structuredClone(command.appearanceByWireId);
     layout.arrangementByContainerId = structuredClone(command.arrangementByContainerId);
+  } else if (isTargetedPresentation(command)) {
+    applyTargetedPresentation(next, command);
   } else if (command.kind === 'diagram.rename') next.name = command.name;
-  return next;
+  return reflowAfterCommand(record, next, command);
 }

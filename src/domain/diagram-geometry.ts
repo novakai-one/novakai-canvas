@@ -1,6 +1,9 @@
 /** Public, framework-free authority for Canvas placement and wire geometry. */
 
 export { layoutScopes } from './diagram-geometry/placement.ts';
+export {
+  reflowPresentation, type PresentationReflowRequest,
+} from './diagram-geometry/presentation-reflow.ts';
 export { planWireRoutes } from './diagram-geometry/wire-plan.ts';
 export { routeWire } from './diagram-geometry/wire-router.ts';
 export {

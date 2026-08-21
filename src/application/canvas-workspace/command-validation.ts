@@ -2,7 +2,9 @@ import { componentFor } from '../../components/registry.ts';
 import { signatureFailure } from '../../domain/interface-signature.ts';
 import type { CanvasNode, DiagramRecord } from '../../domain/records.ts';
 import type { RecordCommand } from './contract.ts';
-import { validatePresentation } from './presentation-validation.ts';
+import {
+  validatePresentation, validateTargetedPresentation,
+} from './presentation-validation.ts';
 
 type ValidationResult = { valid: true } | { valid: false; reason: string };
 type NodeCommand = Extract<RecordCommand, { kind: `node.${string}` }>;
@@ -72,8 +74,11 @@ function validateNode(record: DiagramRecord, command: NodeCommand): void {
   }
   if (command.kind !== 'node.reparent') return;
   const node = record.nodes[command.id];
+  const identity = componentFor(node.kind).identity;
+  const authoredKey = identity?.keyField ? node[identity.keyField] : undefined;
   if (command.parentId !== node.parentId
-    && componentFor(node.kind).identity?.scope === 'parent') {
+    && identity?.scope === 'parent'
+    && (typeof authoredKey !== 'string' || authoredKey.length === 0)) {
     throw new Error(`parent-scoped-identity-requires-recreate:${command.id}`);
   }
   if (command.parentId) validateParent(record, command.id, command.parentId);
@@ -135,6 +140,11 @@ function validateOrThrow(record: DiagramRecord, command: RecordCommand): void {
   }
   if (command.kind.startsWith('view.')) return validateView(record, command as ViewCommand);
   if (command.kind === 'layout.presentation.replace') return validatePresentation(record, command);
+  if (command.kind === 'layout.nodeAppearance.set'
+    || command.kind === 'layout.wireAppearance.set'
+    || command.kind === 'layout.arrangement.set') {
+    return validateTargetedPresentation(record, command);
+  }
   if (command.kind === 'diagram.rename' && command.name.trim().length === 0) {
     throw new Error('diagram-name-empty');
   }

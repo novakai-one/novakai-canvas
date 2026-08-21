@@ -84,8 +84,10 @@ describe('inspection shape', () => {
     expect(inspection.trail.map((step) => step.label)).toEqual(['A diagram', 'Session broker']);
   });
 
-  it('offers exactly three sections for a node', () => {
-    expect(describeSelection(props()).sections).toEqual(['description', 'interfaces', 'placement']);
+  it('offers the registered presentation section alongside the existing node sections', () => {
+    expect(describeSelection(props()).sections).toEqual([
+      'description', 'box', 'interfaces', 'placement',
+    ]);
   });
 
   it('keeps deleting out of the body and out of a read-only session', () => {

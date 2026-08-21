@@ -73,6 +73,16 @@ export interface DiagramComponent<K extends string = string> {
   dslKeyword: string;
   /** The sole owner of this component's parent-statement grammar. */
   declaration: DslNodeDeclaration;
+  /** Optional curated UI placement entry; absence means CLI-only creation. */
+  creation?: {
+    category: 'shape' | 'text' | 'container' | 'annotation';
+    label: string;
+    hint: string;
+    defaultLabel: string;
+    initialSize: Size;
+    /** Copies the UI-minted node id into this stable identity field. */
+    stableIdField?: keyof RecordNode;
+  };
   /** Extra zod fields this kind stores beyond the base node (id/kind/label/description/parentId). */
   contentFields?: Record<string, import('zod').ZodTypeAny>;
   dslChildren?: DslChildStatement[];

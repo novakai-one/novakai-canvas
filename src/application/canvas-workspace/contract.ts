@@ -1,5 +1,7 @@
 import type { CanvasActor, CanvasProvenance } from '../../domain/model.ts';
-import type { ContainerArrangement, NodeAppearance } from '../../domain/canvas-presentation.ts';
+import type {
+  AuthoredArrangement, ContainerArrangement, NodeAppearance,
+} from '../../domain/canvas-presentation.ts';
 import type { WireAppearance } from '../../domain/wire-appearance.ts';
 import type { DiagramRecord, PortSide } from '../../domain/records.ts';
 
@@ -56,6 +58,9 @@ export type RecordCommand =
     appearanceByWireId: Record<string, WireAppearance>;
     arrangementByContainerId: Record<string, ContainerArrangement>;
   }
+  | { kind: 'layout.nodeAppearance.set'; id: string; appearance: NodeAppearance }
+  | { kind: 'layout.wireAppearance.set'; id: string; appearance: WireAppearance }
+  | { kind: 'layout.arrangement.set'; id: string; arrangement?: AuthoredArrangement }
   | { kind: 'diagram.rename'; name: string };
 
 /** A batch of intentions applied as one revision, or not at all. */
