@@ -91,4 +91,4 @@ export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>
 export type { ProjectionInput } from './projection-contract';
 export { projectEdges } from './edges/wire-projection';
 export type { ArchitectureEdgeData, EdgeRoute } from './edges/wire-projection';
-export { chooseSides, facingSides, nodeRects, wireObstacles } from './edges/wire-geometry';
+export { chooseSides, facingSides, nodeRects, wireObstacles } from '../domain/diagram-geometry';

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { routeCollisions, routeWire, type Point } from './wire-routing';
+import { routeCollisions, routeWire, type Point } from '../../domain/diagram-geometry';
 import { WIRE_SHAPES, asWireShape, wirePath } from './wire-shape';
 
 /** A route that has to go around a box sitting between its two ends. */

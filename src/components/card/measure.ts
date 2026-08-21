@@ -2,7 +2,7 @@
  * The canonical card sizing rule: a generous stored size that prevents presentation adapters
  * clipping content.
  *
- * Lives here (not in `src/domain/layout.ts`) so component measurement remains independent of
+ * Lives here (not in diagram geometry) so component measurement remains independent of
  * whole-document layout. The CLI's stable layout adapter re-exports it directly.
  */
 

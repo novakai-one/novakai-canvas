@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   nearestPositionAlong, pointAlong, polylineLength, routePath, routeWire, segmentIntersectsRect,
-} from './wire-routing';
+} from '../../domain/diagram-geometry';
 
 /** Every routed wire must be orthogonal: each segment moves in exactly one axis. */
 function isOrthogonal(points: { x: number; y: number }[]): boolean {

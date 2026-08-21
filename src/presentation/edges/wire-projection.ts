@@ -1,11 +1,12 @@
 /** Projects semantic wires into React Flow edges. */
 
 import { MarkerType, type Edge } from '@xyflow/react';
+import {
+  planWireRoutes, type Point, type RouteObstacle,
+} from '../../domain/diagram-geometry';
 import type { CanvasPreferences } from '../../domain/model';
-import type { PortSide, WireKind } from '../../domain/records';
+import type { WireKind } from '../../domain/records';
 import { ARCHITECTURE_FLOW } from '../../domain/flow';
-import type { RouteObstacle } from './wire-routing';
-import { chooseSides, laneOffsets, nodeRects, wireObstacles } from './wire-geometry';
 import { resolveWireAppearance, wireStrokeWidth, type ResolvedWireAppearance } from '../wire-styles';
 import type { ProjectionInput } from '../projection-contract';
 import { connectedIds } from '../projection-selection';
@@ -14,6 +15,7 @@ import { connectedIds } from '../projection-selection';
 export interface EdgeRoute {
   waypoints: { x: number; y: number }[];
   labelPosition?: number;
+  points: Point[];
 }
 
 /** Presentation data required by elbow wires. */
@@ -35,27 +37,14 @@ export interface ArchitectureEdgeData extends Record<string, unknown> {
 export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>[] {
   const { editable, execute, preferences, record, select, selection, view } = input;
   const connected = connectedIds(input);
-  const lanes = laneOffsets(view.wires);
   const hints = record.layouts[record.views[record.activeViewId]?.layoutId]?.wireRouteHints ?? {};
+  const plans = planWireRoutes(view, hints, {
+    avoidObstacles: preferences.wires.avoidNodes ?? true,
+  });
   const authoredAppearance = record.layouts[record.views[record.activeViewId]?.layoutId]
     ?.appearanceByWireId ?? {};
-  const rects = nodeRects(view);
-  const sidesOf = new Map<string, { sourceSide: PortSide; targetSide: PortSide }>();
-  const facing = (wire: typeof view.wires[number]) => {
-    const cached = sidesOf.get(wire.id as string);
-    if (cached) return cached;
-    const source = rects.get(wire.source.nodeId as string);
-    const target = rects.get(wire.target.nodeId as string);
-    const resolved = source && target
-      ? chooseSides(source, target, wireObstacles(view, rects, wire))
-      : {
-        sourceSide: ARCHITECTURE_FLOW.sourcePort as PortSide,
-        targetSide: ARCHITECTURE_FLOW.targetPort as PortSide,
-      };
-    sidesOf.set(wire.id as string, resolved);
-    return resolved;
-  };
   return view.wires.map((wire) => {
+    const plan = plans[wire.id];
     const appearance = resolveWireAppearance(wire.kind, authoredAppearance[wire.id], {
       theme: preferences.appearance.theme,
       fallbackWidth: wireStrokeWidth(preferences.wires.width),
@@ -64,8 +53,8 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
     id: wire.id,
     source: wire.source.nodeId,
     target: wire.target.nodeId,
-    sourceHandle: hints[wire.id]?.preferredSourceSide ?? facing(wire).sourceSide,
-    targetHandle: hints[wire.id]?.preferredTargetSide ?? facing(wire).targetSide,
+    sourceHandle: plan?.sourceSide ?? ARCHITECTURE_FLOW.sourcePort,
+    targetHandle: plan?.targetSide ?? ARCHITECTURE_FLOW.targetPort,
     type: 'elbow',
     selected: selection?.kind === 'wire' && selection.id === wire.id,
     zIndex: selection?.kind === 'wire' && selection.id === wire.id ? 1000 : 0,
@@ -83,13 +72,14 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
       preferences,
       editable,
       select: () => select({ kind: 'wire', id: wire.id }),
-      lane: lanes.get(wire.id) ?? 0,
+      lane: plan?.lane ?? 0,
       appearance,
       route: {
         waypoints: hints[wire.id]?.waypoints ?? [],
         labelPosition: hints[wire.id]?.labelPosition,
+        points: plan?.points ?? [],
       },
-      obstacles: (preferences.wires.avoidNodes ?? true) ? wireObstacles(view, rects, wire) : [],
+      obstacles: plan?.obstacles ?? [],
       setRoute: execute && editable
         ? (route: Partial<EdgeRoute>) => execute({ kind: 'wire.setRoute', id: wire.id, route })
         : undefined,

@@ -1,19 +1,18 @@
 import { componentFor } from '../../components/registry.ts';
-import type { CanvasNode as RecordNode } from '../records.ts';
 import { resolveNodeAppearance, type ContainerArrangement } from '../canvas-presentation.ts';
+import { positionedNodes, resolveLayout } from '../layouts.ts';
 import type {
   ArchitectureDocument, CanvasLayout, PositionedCanvasNode, Size,
 } from '../model.ts';
-import { positionedNodes, resolveLayout } from '../layouts.ts';
+import type { CanvasNode as RecordNode } from '../records.ts';
 
 type PositionedDocument = Omit<ArchitectureDocument, 'nodes'> & {
   nodes: Record<string, PositionedCanvasNode>;
 };
 
-/** Recursive container call supplied by the dispatcher to both layout policies. */
 export type LayoutNestedContainer = (containerId: string) => Size;
 
-/** Concrete mutable state owned only by one in-progress layout calculation. */
+/** Mutable working state private to one deterministic geometry calculation. */
 export class LayoutState {
   readonly document: PositionedDocument;
   readonly layout: CanvasLayout;
@@ -29,7 +28,6 @@ export class LayoutState {
     this.groupPadding = groupPadding;
   }
 
-  /** Creates an isolated positioned working copy for exactly one selected layout. */
   static create(
     input: ArchitectureDocument,
     layoutId: string | undefined,
@@ -43,7 +41,6 @@ export class LayoutState {
     );
   }
 
-  /** Measures one leaf through its registered component and selected-layout appearance. */
   measureNode(nodeId: string): Size {
     const node = this.document.nodes[nodeId];
     const interfaceLines = node.interfaceIds.map((id) => {
@@ -62,7 +59,6 @@ export class LayoutState {
     });
   }
 
-  /** Returns direct children in the ordering declared by their registered identity policy. */
   orderedDirectChildIds(containerId: string): string[] {
     const childIds = Object.keys(this.document.nodes)
       .filter((id) => this.document.nodes[id].parentId === containerId);
@@ -72,13 +68,18 @@ export class LayoutState {
       ? childIds : childIds.sort();
   }
 
-  /** Reads authored arrangement from the selected layout only. */
   arrangementFor(containerId: string): ContainerArrangement | undefined {
     return this.layout.arrangementByContainerId?.[containerId];
   }
 
-  /** Reads the selected layout's pin, defaulting absent placements to unpinned. */
   isPinned(nodeId: string): boolean {
     return this.layout.placements[nodeId]?.pinned ?? false;
+  }
+
+  /** Whether any semantic wire connects two direct children in this candidate set. */
+  hasInternalWire(childIds: readonly string[]): boolean {
+    const children = new Set(childIds);
+    return Object.values(this.document.wires).some((wire) =>
+      children.has(wire.source) && children.has(wire.target));
   }
 }

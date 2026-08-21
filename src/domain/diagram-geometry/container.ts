@@ -3,7 +3,6 @@ import { layoutAutomaticContainer } from './automatic-container.ts';
 import { layoutExplicitContainer } from './explicit-container.ts';
 import type { LayoutState } from './state.ts';
 
-/** Recursively dispatches one container to its selected automatic or explicit policy. */
 export function layoutContainer(state: LayoutState, containerId: string): Size {
   const arrangement = state.arrangementFor(containerId);
   const layoutNested = (nestedId: string): Size => layoutContainer(state, nestedId);

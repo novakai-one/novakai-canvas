@@ -8,7 +8,7 @@ import {
 import type { ArchitectureEdgeData } from '../projection';
 import {
   nearestPositionAlong, pointAlong, routeWire, type RouteSide,
-} from './wire-routing';
+} from '../../domain/diagram-geometry';
 import { asWireShape, wirePath } from './wire-shape';
 
 type ElbowFlowEdge = Edge<ArchitectureEdgeData, 'elbow'>;
@@ -32,33 +32,29 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
   const { screenToFlowPosition } = useReactFlow();
   const lane = props.data?.lane ?? 0;
   const waypoints = props.data?.route.waypoints;
-  /*
-   * The obstacles reach the router.
-   *
-   * `projectEdges` has always computed what each wire must route around and handed it over in
-   * edge data — and this call dropped it, so the drawn route was the one the router picks when
-   * it believes the canvas is empty. The routing gate calls `routeWire` *with* obstacles, which
-   * is why it stayed green while wires visibly cut through nodes on screen: it was proving a
-   * code path the application never executed.
-   */
   const obstacles = props.data?.obstacles;
-  const route = useMemo(() => routeWire({
-    source: { x: props.sourceX, y: props.sourceY },
-    sourceSide: SIDE_OF_POSITION[props.sourcePosition],
-    target: { x: props.targetX, y: props.targetY },
-    targetSide: SIDE_OF_POSITION[props.targetPosition],
-    obstacles,
-    waypoints,
-    lane,
-  }), [lane, obstacles, props.sourcePosition, props.sourceX, props.sourceY,
+  const planned = props.data?.route.points;
+  // The committed plan wins. During a live drag React Flow owns temporary endpoints, so the same
+  // domain router previews those coordinates until the committed geometry catches up.
+  const route = useMemo(() => {
+    const first = planned?.[0];
+    const last = planned?.at(-1);
+    if (planned && first?.x === props.sourceX && first.y === props.sourceY
+      && last?.x === props.targetX && last.y === props.targetY) {
+      return { points: planned, collisions: 0, softCollisions: 0 };
+    }
+    return routeWire({
+      source: { x: props.sourceX, y: props.sourceY },
+      sourceSide: SIDE_OF_POSITION[props.sourcePosition],
+      target: { x: props.targetX, y: props.targetY },
+      targetSide: SIDE_OF_POSITION[props.targetPosition],
+      obstacles,
+      waypoints,
+      lane,
+    });
+  }, [lane, obstacles, planned, props.sourcePosition, props.sourceX, props.sourceY,
     props.targetPosition, props.targetX, props.targetY, waypoints]);
-  /*
-   * Shape is a look, not a route.
-   *
-   * Every shape draws the SAME points the router chose, so choosing curves cannot make a wire
-   * start cutting through a node — obstacle avoidance happens before this line and is not
-   * something a preference can switch off.
-   */
+  // Shape changes only how the domain-planned points are painted.
   const shape = asWireShape(props.data?.preferences.wires.shape);
   const path = useMemo(() => wirePath(route.points, shape), [route, shape]);
 

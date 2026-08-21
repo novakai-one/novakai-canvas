@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { DiagramRecord } from '../../src/canvas.ts';
+import { planWireRoutes, projectView, type DiagramRecord } from '../../src/canvas.ts';
 import { buildRecord } from './dsl-fixture.ts';
 import { blankRecord } from './record-apply.ts';
 import { asId, type RecordNode, type RecordPlacement, type RecordWire } from './record-graph.ts';
@@ -167,7 +167,8 @@ describe('renderRecordSvg with nested zones', () => {
   });
 
   it('draws every internal wire with kind styling and label', () => {
-    const svg = renderRecordSvg(buildNested());
+    const record = buildNested();
+    const svg = renderRecordSvg(record);
     const polylines = svg.match(/<polyline /g) ?? [];
     expect(polylines).toHaveLength(3);
     expect(svg).toContain('node to node');
@@ -176,6 +177,11 @@ describe('renderRecordSvg with nested zones', () => {
     // assigns is dashed, queries is dashdot (wire-styles.ts)
     expect(svg).toContain('stroke-dasharray="7 5"');
     expect(svg).toContain('stroke-dasharray="9 4 2 4"');
+    const layout = record.layouts[record.views[record.activeViewId].layoutId];
+    const plans = planWireRoutes(projectView(record), layout.wireRouteHints);
+    expect(Object.values(plans).every((plan) => plan.collisions === 0)).toBe(true);
+    const points = plans['w-node-node'].points.map((point) => `${point.x + 24},${point.y + 24}`).join(' ');
+    expect(svg).toContain(`<polyline points="${points}"`);
   });
 
   it('keeps zone containers behind their children', () => {

@@ -2,9 +2,8 @@ import dagre from '@dagrejs/dagre';
 import { ARCHITECTURE_FLOW } from '../flow.ts';
 import type { Size } from '../model.ts';
 import { enclosingSize, type Rect } from './geometry.ts';
-import {
-  type LayoutNestedContainer, type LayoutState,
-} from './state.ts';
+import { minimumConnectionSeparation } from './policy.ts';
+import type { LayoutNestedContainer, LayoutState } from './state.ts';
 
 const GRID_COL_GAP = 40;
 const GRID_ROW_GAP = 70;
@@ -19,7 +18,9 @@ function childRect(state: LayoutState, nodeId: string): Rect {
 function layoutDagreChildren(state: LayoutState, childIds: readonly string[]): Size {
   const paddingTop = state.groupPadding + 16;
   const graph = new dagre.graphlib.Graph();
-  graph.setGraph({ rankdir: ARCHITECTURE_FLOW.rankDirection, nodesep: 40, ranksep: 70 });
+  const ranksep = state.hasInternalWire(childIds)
+    ? Math.max(GRID_ROW_GAP, minimumConnectionSeparation()) : GRID_ROW_GAP;
+  graph.setGraph({ rankdir: ARCHITECTURE_FLOW.rankDirection, nodesep: GRID_COL_GAP, ranksep });
   graph.setDefaultEdgeLabel(() => ({}));
   for (const id of childIds) graph.setNode(id, state.measureNode(id));
   const childSet = new Set(childIds);
@@ -50,7 +51,6 @@ function layoutDagreChildren(state: LayoutState, childIds: readonly string[]): S
   );
 }
 
-/** Topological ownership rank; cycles receive one deterministic terminal rank. */
 function ownershipEdges(
   state: LayoutState,
   childIds: readonly string[],
@@ -67,7 +67,6 @@ function ownershipEdges(
   return { targetsBySource, indegree };
 }
 
-/** Topological ownership rank; cycles receive one deterministic terminal rank. */
 function rankChildrenByOwnership(
   state: LayoutState,
   childIds: readonly string[],
@@ -109,7 +108,12 @@ function rowsForRank(state: LayoutState, childIds: readonly string[]): string[][
   return rows;
 }
 
-function placeRows(state: LayoutState, rows: readonly string[][], startY: number): number {
+function placeRows(
+  state: LayoutState,
+  rows: readonly string[][],
+  startY: number,
+  rowGap: number,
+): number {
   let y = startY;
   for (const row of rows) {
     let x = state.groupPadding;
@@ -120,7 +124,7 @@ function placeRows(state: LayoutState, rows: readonly string[][], startY: number
       x += child.size.width + GRID_COL_GAP;
       rowHeight = Math.max(rowHeight, child.size.height);
     }
-    y += rowHeight + GRID_ROW_GAP;
+    y += rowHeight + rowGap;
   }
   return y;
 }
@@ -138,9 +142,11 @@ function layoutRankedChildren(state: LayoutState, childIds: readonly string[]): 
     byRank.set(rank, [...(byRank.get(rank) ?? []), id]);
   }
 
+  const rowGap = state.hasInternalWire(childIds)
+    ? Math.max(GRID_ROW_GAP, minimumConnectionSeparation()) : GRID_ROW_GAP;
   let y = state.groupPadding + 16;
   for (const rank of [...byRank.keys()].sort((left, right) => left - right)) {
-    y = placeRows(state, rowsForRank(state, byRank.get(rank) as string[]), y);
+    y = placeRows(state, rowsForRank(state, byRank.get(rank) as string[]), y, rowGap);
   }
   return enclosingSize(
     childIds.map((id) => childRect(state, id)),
@@ -149,7 +155,6 @@ function layoutRankedChildren(state: LayoutState, childIds: readonly string[]): 
   );
 }
 
-/** Selects the existing automatic policy and recursively sizes nested zones first. */
 export function layoutAutomaticContainer(
   state: LayoutState,
   containerId: string,

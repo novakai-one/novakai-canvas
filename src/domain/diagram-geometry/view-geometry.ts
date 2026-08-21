@@ -1,12 +1,11 @@
-/** Pure geometry used to project architecture wires. */
-
-import type { ProjectedView, PositionedNode } from '../../domain/project-view';
-import type { PortSide } from '../../domain/records';
-import { routeWire, type Rect, type RouteObstacle, type RouteSide } from './wire-routing';
+import type { ProjectedView, PositionedNode } from '../project-view.ts';
+import type { PortSide } from '../records.ts';
+import type { Point, Rect, RouteObstacle } from './contract.ts';
+import { routeWire } from './wire-router.ts';
 
 const LANE_GAP = 22;
 
-/** Which sides two nodes naturally face across. */
+/** Which sides two rectangles naturally face across. */
 export function facingSides(
   source: Rect,
   target: Rect,
@@ -30,15 +29,15 @@ export function facingSides(
     : { sourceSide: 'left', targetSide: 'right' };
 }
 
-/** Where a wire meets a rectangle on a given side. */
-function attachmentPoint(rect: Rect, side: PortSide): { x: number; y: number } {
+/** Point where a wire meets the centre of one rectangle side. */
+export function attachmentPoint(rect: Rect, side: PortSide): Point {
   if (side === 'top') return { x: rect.x + rect.width / 2, y: rect.y };
   if (side === 'bottom') return { x: rect.x + rect.width / 2, y: rect.y + rect.height };
   if (side === 'left') return { x: rect.x, y: rect.y + rect.height / 2 };
   return { x: rect.x + rect.width, y: rect.y + rect.height / 2 };
 }
 
-/** Chooses the natural side pair unless an alternative avoids every obstacle. */
+/** Chooses the natural side pair unless another pair is the first collision-free route. */
 export function chooseSides(
   source: Rect,
   target: Rect,
@@ -55,9 +54,9 @@ export function chooseSides(
   for (const pair of alternatives) {
     const route = routeWire({
       source: attachmentPoint(source, pair.sourceSide),
-      sourceSide: pair.sourceSide as RouteSide,
+      sourceSide: pair.sourceSide,
       target: attachmentPoint(target, pair.targetSide),
-      targetSide: pair.targetSide as RouteSide,
+      targetSide: pair.targetSide,
       obstacles,
     });
     if (route.collisions === 0) return pair;
@@ -96,7 +95,7 @@ function ancestryOf(byId: Map<string, PositionedNode>, id: string): Set<string> 
   return chain;
 }
 
-/** Rectangles one wire must not cross. */
+/** Rectangles one visible wire must not cross. */
 export function wireObstacles(
   view: ProjectedView,
   rects: Map<string, Rect>,
@@ -124,7 +123,7 @@ export function wireObstacles(
   return [...others, ...ownRects];
 }
 
-/** Assigns parallel wires distinct corridor offsets. */
+/** Deterministic offsets for parallel wires sharing the same two endpoints. */
 export function laneOffsets(wires: ProjectedView['wires']): Map<string, number> {
   const groups = new Map<string, string[]>();
   for (const wire of wires) {

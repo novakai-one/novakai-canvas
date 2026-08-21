@@ -1,6 +1,6 @@
 /**
  * `group` nodes are containers (DSL keyword `zone`); their real size comes from laying out their
- * children (`src/domain/layout/container.ts` recursion), unchanged by this registry seam. `measure` only
+ * children (`src/domain/diagram-geometry/container.ts` recursion), unchanged by this registry seam. `measure` only
  * supplies the floor a newly created, still-empty group starts from.
  */
 

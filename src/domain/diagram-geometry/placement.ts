@@ -1,16 +1,13 @@
-/** Deterministic, content-driven layout shared by every canvas adapter. */
-
 import type {
   ArchitectureDocument, NodePlacement, Size,
-} from './model.ts';
-import { layoutContainer } from './layout/container.ts';
-import { LayoutState } from './layout/state.ts';
+} from '../model.ts';
+import { layoutContainer } from './container.ts';
+import { LayoutState } from './state.ts';
 
 const DEFAULT_GROUP_PADDING = 40;
 const SCOPE_GAP = 80;
 const NEW_SCOPE_X = 40;
 
-/** Returns arranged descendants whose ancestors below the requested scope are not arranged. */
 function explicitDescendantRoots(state: LayoutState, scopeId: string): string[] {
   const arrangements = state.layout.arrangementByContainerId ?? {};
   return Object.keys(arrangements)
@@ -29,7 +26,6 @@ function explicitDescendantRoots(state: LayoutState, scopeId: string): string[] 
     });
 }
 
-/** Enlarges containment ancestors without moving or shrinking established geometry. */
 function growAncestorBounds(state: LayoutState, childId: string): void {
   let currentId = childId;
   let parentId = state.document.nodes[currentId]?.parentId;
@@ -39,14 +35,8 @@ function growAncestorBounds(state: LayoutState, childId: string): void {
     state.document.nodes[parentId] = {
       ...parent,
       size: {
-        width: Math.max(
-          parent.size.width,
-          child.position.x + child.size.width + state.groupPadding,
-        ),
-        height: Math.max(
-          parent.size.height,
-          child.position.y + child.size.height + state.groupPadding,
-        ),
+        width: Math.max(parent.size.width, child.position.x + child.size.width + state.groupPadding),
+        height: Math.max(parent.size.height, child.position.y + child.size.height + state.groupPadding),
       },
     };
     currentId = parentId;
@@ -54,7 +44,6 @@ function growAncestorBounds(state: LayoutState, childId: string): void {
   }
 }
 
-/** Places new top-level scopes below all established top-level geometry. */
 function placeNewScopes(state: LayoutState, scopeIds: readonly string[]): void {
   for (const scopeId of scopeIds) {
     let bottom = 0;

@@ -1,4 +1,6 @@
 import type { DiagramRecord } from '../../../src/domain/records.ts';
+import { planWireRoutes } from '../../../src/domain/diagram-geometry.ts';
+import { projectView } from '../../../src/domain/project-view.ts';
 import { placedNodes, rootGroupId, type PlacedNode } from '../record-graph.ts';
 import type { SnapshotScene } from './contract.ts';
 import { SNAPSHOT_STYLE } from './svg.ts';
@@ -45,6 +47,7 @@ export function buildSnapshotScene(record: DiagramRecord): SnapshotScene {
   if (!scopeId) throw new Error(`"${record.id}" has no single root group to render`);
   const scope = nodes[scopeId];
   const layout = record.layouts[record.views[record.activeViewId].layoutId];
+  const view = projectView(record);
   const descendants = descendantsOf(nodes, scopeId);
   const descendantIds = new Set(descendants.map((node) => node.id as string));
   const wires = Object.values(record.wires)
@@ -54,8 +57,10 @@ export function buildSnapshotScene(record: DiagramRecord): SnapshotScene {
   const margin = SNAPSHOT_STYLE.margin;
   const panel = { x: margin, y: margin, width: scope.size.width, height: scope.size.height };
   const total = { width: panel.width + 2 * margin, height: panel.height + 2 * margin };
+  const routes = planWireRoutes(view, layout.wireRouteHints, { avoidObstacles: true });
+  const routeOffset = { x: panel.x - scope.position.x, y: panel.y - scope.position.y };
   return {
-    nodes, scopeId, scope, layout, descendants, wires, panel, total,
+    nodes, scopeId, scope, layout, descendants, wires, panel, total, routes, routeOffset,
     positionOf: positionResolver(nodes, scopeId, panel),
   };
 }

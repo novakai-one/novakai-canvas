@@ -1,15 +1,14 @@
 import type { ContainerAlign } from '../canvas-presentation.ts';
 import type { Size } from '../model.ts';
+import type { Rect } from './contract.ts';
 
-export interface Rect { x: number; y: number; width: number; height: number }
+export type { Rect } from './contract.ts';
 
-/** True only when two rectangles have positive overlapping area. */
 export function rectanglesOverlap(left: Rect, right: Rect): boolean {
   return left.x < right.x + right.width && right.x < left.x + left.width
     && left.y < right.y + right.height && right.y < left.y + left.height;
 }
 
-/** Positions one item within a cross-axis span; stretch sizing is handled by the caller. */
 export function alignedOffset(
   start: number,
   span: number,
@@ -21,7 +20,6 @@ export function alignedOffset(
   return start;
 }
 
-/** Returns the padded bounds of positioned rectangles without falling below a minimum size. */
 export function enclosingSize(
   rectangles: readonly Rect[],
   padding: number,

@@ -1,4 +1,4 @@
-import { routePath, type Point } from './wire-routing';
+import { routePath, type Point } from '../../domain/diagram-geometry';
 
 /**
  * How a wire is drawn along the route it was given.

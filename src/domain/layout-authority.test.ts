@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { applyCanvasCommand } from './commands';
+import { layoutScopes } from './diagram-geometry';
 import { parseArchitectureDocument } from './schema';
 
 function legacyDocument() {
@@ -19,7 +20,64 @@ function legacyDocument() {
   });
 }
 
+function arrangedStack(connected: boolean) {
+  return parseArchitectureDocument({
+    schemaVersion: 2,
+    id: 'stack',
+    name: 'Stack',
+    revision: 0,
+    nodes: {
+      stack: { id: 'stack', kind: 'scope', label: 'Stack', interfaceIds: [], typeIds: [] },
+      one: { id: 'one', kind: 'module', label: 'One', parentId: 'stack', interfaceIds: [], typeIds: [] },
+      two: { id: 'two', kind: 'module', label: 'Two', parentId: 'stack', interfaceIds: [], typeIds: [] },
+    },
+    interfaces: {},
+    types: {},
+    wires: connected ? {
+      flow: { id: 'flow', source: 'one', target: 'two', label: 'flows', kind: 'executes', routing: 'elbow' },
+    } : {},
+    activeLayoutId: 'layout-default',
+    layouts: {
+      'layout-default': {
+        id: 'layout-default',
+        name: 'Default',
+        strategy: 'hierarchy',
+        placements: Object.fromEntries(['stack', 'one', 'two'].map((nodeId) => [nodeId, {
+          nodeId, position: { x: 0, y: 0 }, size: { width: 1, height: 1 }, pinned: false,
+        }])),
+        wireRouteHints: {},
+        collapsedNodeIds: [],
+        arrangementByContainerId: {
+          stack: { layout: 'stack', gap: 8, align: 'stretch', childIds: ['one', 'two'] },
+        },
+      },
+    },
+    diagrams: {},
+    appliedOperations: {},
+  });
+}
+
+function verticalGap(document: ReturnType<typeof arrangedStack>): number {
+  const placements = document.layouts['layout-default'].placements;
+  return placements.two.position.y - placements.one.position.y - placements.one.size.height;
+}
+
 describe('layout authority', () => {
+  it('uses authored gap exactly until a wire requires more room, without moving a pin', () => {
+    const unconnected = layoutScopes(arrangedStack(false), ['stack']);
+    const connected = layoutScopes(arrangedStack(true), ['stack']);
+    expect(verticalGap(unconnected)).toBe(8);
+    expect(verticalGap(connected)).toBe(72);
+
+    connected.layouts['layout-default'].placements.two = {
+      ...connected.layouts['layout-default'].placements.two,
+      position: { x: 400, y: 300 },
+      pinned: true,
+    };
+    const pinned = layoutScopes(connected, ['stack']);
+    expect(pinned.layouts['layout-default'].placements.two.position).toEqual({ x: 400, y: 300 });
+  });
+
   it('moves geometry in the active layout without mutating semantic node meaning', () => {
     const document = legacyDocument();
     const next = applyCanvasCommand(document, {
