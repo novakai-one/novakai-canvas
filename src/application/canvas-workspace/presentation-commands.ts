@@ -68,6 +68,7 @@ export function reflowAfterCommand(
   command: RecordCommand,
 ): DiagramRecord {
   let resizedNodeIds: string[] = [];
+  let autoSizedNodeIds: string[] = [];
   let arrangementAffectedIds: string[] = [];
   switch (command.kind) {
     case 'layout.nodeAppearance.set':
@@ -83,6 +84,11 @@ export function reflowAfterCommand(
       break;
     case 'node.update':
       resizedNodeIds = [command.id];
+      arrangementAffectedIds = [command.id];
+      break;
+    case 'node.autoSize':
+      resizedNodeIds = [command.id];
+      autoSizedNodeIds = [command.id];
       arrangementAffectedIds = [command.id];
       break;
     case 'node.reparent': {
@@ -120,7 +126,7 @@ export function reflowAfterCommand(
     }
   }
   return resizedNodeIds.length || arrangementAffectedIds.length
-    ? reflowPresentation(next, { resizedNodeIds, arrangementAffectedIds }) : next;
+    ? reflowPresentation(next, { resizedNodeIds, autoSizedNodeIds, arrangementAffectedIds }) : next;
 }
 
 export function isTargetedPresentation(command: RecordCommand): command is Targeted {

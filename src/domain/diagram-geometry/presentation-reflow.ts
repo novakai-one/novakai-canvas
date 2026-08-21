@@ -8,6 +8,8 @@ const GROUP_PADDING = 40;
 export interface PresentationReflowRequest {
   /** Nodes whose component measurement may have changed. */
   resizedNodeIds?: readonly string[];
+  /** Containers explicitly returned to content-owned sizing. */
+  autoSizedNodeIds?: readonly string[];
   /** Nodes or containers whose nearest authored arrangement must run again. */
   arrangementAffectedIds?: readonly string[];
 }
@@ -89,6 +91,9 @@ function placements(state: LayoutState): Record<string, NodePlacement> {
     nodeId: id,
     position: node.position,
     size: node.size,
+    ...(state.layout.placements[id]?.sizeMode
+      ? { sizeMode: state.layout.placements[id].sizeMode }
+      : {}),
     pinned: state.layout.placements[id]?.pinned ?? false,
   }]));
 }
@@ -101,9 +106,12 @@ export function reflowPresentation(
   const { layout } = active(record);
   const state = LayoutState.create(geometryDocument(record), layout.id, GROUP_PADDING);
   const resized = [...new Set(request.resizedNodeIds ?? [])].filter((id) => state.document.nodes[id]);
+  const autoSized = new Set(request.autoSizedNodeIds ?? []);
   for (const id of resized) {
     const node = state.document.nodes[id];
-    if (node.kind !== 'scope') state.document.nodes[id] = { ...node, size: state.measureNode(id) };
+    if (node.kind === 'scope' && autoSized.has(id)) {
+      state.document.nodes[id] = { ...node, size: layoutContainer(state, id) };
+    } else if (node.kind !== 'scope') state.document.nodes[id] = { ...node, size: state.measureNode(id) };
   }
 
   const affected = [...resized, ...(request.arrangementAffectedIds ?? [])];

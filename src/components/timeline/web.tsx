@@ -1,18 +1,17 @@
-import { NodeResizer, type Node, type NodeProps } from '@xyflow/react';
+import { type Node, type NodeProps } from '@xyflow/react';
 import { NodePorts } from '../../presentation/nodes/node-ports';
 import type { ArchitectureNodeData } from '../../presentation/projection.ts';
 
 type TimelineFlowNode = Node<ArchitectureNodeData, 'timeline'>;
 
 /** Ordered steps as dots on a line; a forked turn carries the session it produced. */
-export function TimelineNode({ data, selected }: NodeProps<TimelineFlowNode>) {
+export function TimelineNode({ data }: NodeProps<TimelineFlowNode>) {
   const { node, selection, preferences, editable, select } = data;
   const steps = node.steps ?? [];
   const portsClass = preferences.nodes.showPorts === 'always' ? ' ports-always' : '';
   return (
     <div className={`timeline-node-shell${portsClass}`}>
       <article className="tree-node timeline-node">
-        <NodeResizer isVisible={editable && selected} minHeight={80} minWidth={220} onResizeEnd={() => data.resizeEnd?.(node.id as string)} />
         <header className="node-header">
           <span className="node-label">{node.label}</span>
           <span className="node-kind">timeline</span>

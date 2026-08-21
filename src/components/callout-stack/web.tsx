@@ -1,23 +1,17 @@
-import { NodeResizer, type Node, type NodeProps } from '@xyflow/react';
+import { type Node, type NodeProps } from '@xyflow/react';
 import { NodePorts } from '../../presentation/nodes/node-ports.tsx';
 import type { ArchitectureNodeData } from '../../presentation/projection.ts';
 
 type CalloutStackFlowNode = Node<ArchitectureNodeData, 'callout-stack'>;
 
 /** Ordered highlights whose explicit item IDs feed the generic component-item selection path. */
-export function CalloutStackNode({ data, selected }: NodeProps<CalloutStackFlowNode>) {
+export function CalloutStackNode({ data }: NodeProps<CalloutStackFlowNode>) {
   const { node, selection, preferences, editable, select } = data;
   const callouts = node.callouts ?? [];
   const portsClass = preferences.nodes.showPorts === 'always' ? ' ports-always' : '';
   return (
     <div className={`callout-stack-node-shell${portsClass}`}>
       <article className="callout-stack-node">
-        <NodeResizer
-          isVisible={editable && selected}
-          minHeight={100}
-          minWidth={260}
-          onResizeEnd={() => data.resizeEnd?.(node.id as string)}
-        />
         <header className="node-header">
           <span className="node-label">{node.label}</span>
           {(!editable || preferences.nodes.showKinds) && <span className="node-kind">callout stack</span>}

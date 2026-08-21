@@ -23,6 +23,7 @@ export function cardComponent<K extends 'module' | 'object' | 'runtime' | 'resou
       category: 'shape', label: LABELS[kind][0], hint: LABELS[kind][1],
       defaultLabel: `New ${kind}`, initialSize: { width: 200, height: 110 },
     },
+    resize: { minSize: { width: 160, height: 80 } },
     layoutRole: 'leaf',
     appearanceKeys: ['badge'],
     measure: (node, ctx) => estimateNodeSize(node.label, node.description, ctx.interfaceLines, ctx.typeLines),

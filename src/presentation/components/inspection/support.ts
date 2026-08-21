@@ -29,9 +29,13 @@ function activeLayout(record: DiagramRecord): CanvasLayout | undefined {
 function placementOf(
   record: DiagramRecord,
   nodeId: string,
-): Pick<NodePlacement, 'position' | 'pinned'> {
+): Pick<NodePlacement, 'position' | 'pinned' | 'sizeMode'> {
   const placement = activeLayout(record)?.placements[nodeId];
-  return { position: placement?.position ?? { x: 0, y: 0 }, pinned: placement?.pinned ?? false };
+  return {
+    position: placement?.position ?? { x: 0, y: 0 },
+    pinned: placement?.pinned ?? false,
+    sizeMode: placement?.sizeMode ?? 'auto',
+  };
 }
 
 function sectionProps(props: InspectPanelProps, sectionId: string) {

@@ -14,6 +14,8 @@ export interface NodePlacement {
   nodeId: NodeId;
   position: Position;
   size: Size;
+  /** Absent/auto follows component measurement; manual preserves the user's dragged size. */
+  sizeMode?: 'auto' | 'manual';
   /** A pinned node is an anchor: layout works around it and never moves it. */
   pinned: boolean;
 }

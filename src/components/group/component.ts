@@ -20,6 +20,7 @@ export const groupComponent: DiagramComponent<'group'> = {
     category: 'container', label: 'Group', hint: 'Contains shapes',
     defaultLabel: 'New group', initialSize: { width: 480, height: 300 },
   },
+  resize: { minSize: { width: 320, height: 160 } },
   arrangementModes: ['stack', 'row', 'grid'],
   layoutRole: 'container',
   measure: () => ({ width: 320, height: 160 }),

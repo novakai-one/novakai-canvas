@@ -46,6 +46,7 @@ export const blockComponent: DiagramComponent<'block'> = {
     defaultLabel: 'New block', initialSize: { width: 200, height: 110 },
     stableIdField: 'wireRef',
   },
+  resize: { minSize: { width: 80, height: 40 } },
   layoutRole: 'leaf',
   allowsMembers: false,
   identity: {

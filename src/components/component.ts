@@ -83,6 +83,8 @@ export interface DiagramComponent<K extends string = string> {
     /** Copies the UI-minted node id into this stable identity field. */
     stableIdField?: keyof RecordNode;
   };
+  /** Shared resize policy consumed by the web host; renderers never add their own controls. */
+  resize?: { minSize: Size };
   /** Extra zod fields this kind stores beyond the base node (id/kind/label/description/parentId). */
   contentFields?: Record<string, import('zod').ZodTypeAny>;
   dslChildren?: DslChildStatement[];

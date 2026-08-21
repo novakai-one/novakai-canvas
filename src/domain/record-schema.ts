@@ -50,7 +50,8 @@ const canvasWire = z.object({
 });
 
 const nodePlacement = z.object({
-  nodeId: z.string().min(1), position, size, pinned: z.boolean(),
+  nodeId: z.string().min(1), position, size,
+  sizeMode: z.enum(['auto', 'manual']).optional(), pinned: z.boolean(),
 });
 
 const wireRouteHint = z.object({

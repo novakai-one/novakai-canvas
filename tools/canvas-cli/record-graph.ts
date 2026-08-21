@@ -146,6 +146,7 @@ export function layoutRecord(record: DiagramRecord, groupPadding?: number): Diag
         nodeId,
         position: placement?.position ?? { ...UNPLACED.position },
         size: placement?.size ?? { ...UNPLACED.size },
+        ...(previous[nodeId]?.sizeMode ? { sizeMode: previous[nodeId].sizeMode } : {}),
         pinned: previous[nodeId]?.pinned ?? false,
       }];
     }),

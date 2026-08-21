@@ -47,6 +47,7 @@ export const timelineComponent: DiagramComponent<'timeline'> = {
   kind: 'timeline',
   dslKeyword: 'timeline',
   declaration: namedNodeDeclaration('timeline', 'Session history'),
+  resize: { minSize: { width: 220, height: 80 } },
   layoutRole: 'leaf',
   contentFields: {
     steps: z.array(z.object({

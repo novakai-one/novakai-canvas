@@ -3,20 +3,15 @@ import {
 } from 'react';
 import {
   Background, BackgroundVariant, ConnectionMode, Controls, ReactFlow,
-  type Connection, type NodeChange, type Viewport,
+  type NodeChange, type Viewport,
 } from '@xyflow/react';
 import type { DiagramSummary } from '../../application/canvas-library';
 import type { RecordCommand } from '../../application/canvas-workspace';
-import { asId } from '../../domain/id-cast';
-import { NODE_PORTS } from '../../domain/flow';
-import type { NodeId, WireId } from '../../domain/ids';
-import type { PortSide } from '../../domain/records';
 import type { CanvasPreferences, Selection } from '../../domain/model';
 import type { ProjectedView } from '../../domain/project-view';
 import type { DiagramRecord } from '../../domain/records';
 import {
-  createCanvasNode, escapeStep, resolveDrop, selectionResolves,
-  type CreatableNodeKind, type PlacedNode, type WorldPoint,
+  escapeStep, placedNodes, resolveDrop, selectionResolves, type WorldPoint,
 } from '../canvas-actions';
 import { canvasCamera, publishCanvasCamera } from '../canvas-camera';
 import { RailToggle, StudioToggle } from '../shell';
@@ -29,6 +24,11 @@ import { Legend } from './legend';
 import { CanvasToolbar } from './canvas-toolbar';
 import { wireLabelSizing } from '../wire-styles';
 import { useCanvasActivity } from '../shell/canvas-activity-context';
+import {
+  connectedNode, connectedWire, pickerPosition, sideOfHandle, wireRouteCommand,
+  type ConnectionOrigin, type PendingConnection,
+} from './connection-creation.ts';
+import { ConnectionCreationPicker } from './connection-creation-picker.tsx';
 
 const nodeTypes = webRenderers;
 const edgeTypes = { elbow: ElbowEdge };
@@ -78,17 +78,6 @@ function applyNodeChanges(
   });
 }
 
-/** The drawn diagram as pure geometry, which is all the placement rules need. */
-function placedNodes(view: ProjectedView): PlacedNode[] {
-  return view.nodes.map((node) => ({
-    id: node.id as string,
-    kind: node.kind,
-    parentId: node.parentId as string | undefined,
-    position: node.position,
-    size: node.size,
-  }));
-}
-
 /**
  * Re-homes a node by where it was dropped.
  *
@@ -109,62 +98,6 @@ function applyDrop(
       : []),
     { kind: 'node.move', id: moved.id, position: landed.position },
   ]);
-}
-
-/**
- * Reads the side a drag actually landed on, if it named one.
- *
- * Port ids are the side names, so a handle id is already the stored value. Anything else — a
- * node kind that has not adopted the shared ports, or a drop React Flow resolved without a
- * handle — returns undefined and leaves the router on its default rather than storing a side
- * that does not exist.
- */
-function sideOfHandle(handleId: string | null | undefined): PortSide | undefined {
-  return NODE_PORTS.includes(handleId as PortSide) ? (handleId as PortSide) : undefined;
-}
-
-/** Records which ports a wire's ends were dropped on, so the next render honours them. */
-function rememberSides(
-  execute: (command: RecordCommand) => void,
-  id: string,
-  connection: { sourceHandle?: string | null; targetHandle?: string | null },
-): void {
-  const preferredSourceSide = sideOfHandle(connection.sourceHandle);
-  const preferredTargetSide = sideOfHandle(connection.targetHandle);
-  if (!preferredSourceSide && !preferredTargetSide) return;
-  execute({ kind: 'wire.setRoute', id, route: { preferredSourceSide, preferredTargetSide } });
-}
-
-/**
- * A wire dragged onto empty canvas makes the thing it was reaching for.
- *
- * React Flow reports a connection that landed on nothing by calling `onConnectEnd` with no
- * connection — which used to mean the gesture was simply discarded, so "drag out to add the
- * next box" did nothing at all. It is one undoable act: the node appears where the pointer let
- * go, the wire joins it, and the new node is selected and ready to be named.
- *
- * The side the drag started from decides which side the wire arrives on, so a wire pulled to
- * the right enters the new node from its left rather than from wherever the default says.
- */
-const OPPOSITE_SIDE: Record<PortSide, PortSide> = {
-  top: 'bottom', bottom: 'top', left: 'right', right: 'left',
-};
-
-function connect(execute: (command: RecordCommand) => void, connection: Connection): string | null {
-  if (!connection.source || !connection.target) return null;
-  const id = `wire-${crypto.randomUUID().slice(0, 8)}`;
-  execute({
-    kind: 'wire.add',
-    wire: {
-      id: asId<WireId>(id),
-      kind: 'references',
-      label: 'connects',
-      source: { nodeId: asId<NodeId>(connection.source) },
-      target: { nodeId: asId<NodeId>(connection.target) },
-    },
-  });
-  rememberSides(execute, id, connection);
-  return id;
 }
 
 /** True while the keystroke belongs to a field the user is typing in, not to the canvas. */
@@ -386,13 +319,14 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   const active = useCanvasActivity();
   const editable = mode === 'edit';
   const labelSizing = wireLabelSizing(preferences);
-  useEscapeStepsOutward(active, record, selection, setSelection);
+  const [pendingConnection, setPendingConnection] = useState<PendingConnection | null>(null);
+  useEscapeStepsOutward(active && pendingConnection === null, record, selection, setSelection);
   useUndoShortcut(active, editable && props.canUndo, props.undo);
   useSelectionReleasesWithItsObject(record, selection, setSelection);
   const camera = useCamera(activeDiagramId, labelSizing.minimumZoom);
   useRefitWhenPanelsMove(preferences.panel);
   /** The port a drag began on, remembered until it lands somewhere or on nothing. */
-  const dragFrom = useRef<{ nodeId: string; side?: PortSide } | null>(null);
+  const dragFrom = useRef<ConnectionOrigin | null>(null);
   const [inFlight, setInFlight] = useState<InFlight>({});
   /*
    * d3-drag invokes gesture-end handlers with the listeners from the render where the gesture
@@ -406,38 +340,19 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
     inFlightRef.current = next;
     setInFlight(next);
   }, []);
-  // A leftover frame from another diagram would drag a ghost across the switch.
-  useEffect(() => updateInFlight(() => ({})), [activeDiagramId, updateInFlight]);
-
-  const growFromPort = (at: WorldPoint): void => {
-    const from = dragFrom.current;
+  // A leftover gesture from another diagram or from Present mode must not cross that boundary.
+  useEffect(() => {
+    updateInFlight(() => ({}));
     dragFrom.current = null;
-    if (!editable || !from) return;
-    const kind: CreatableNodeKind = 'module';
-    const id = `${kind}-${crypto.randomUUID().slice(0, 8)}`;
-    const created = createCanvasNode(placedNodes(view), kind, id, at);
-    const wireId = `wire-${crypto.randomUUID().slice(0, 8)}`;
-    props.executeAll([
-      { kind: 'node.add', ...created },
-      {
-        kind: 'wire.add',
-        wire: {
-          id: asId<WireId>(wireId),
-          kind: 'references',
-          label: 'connects',
-          source: { nodeId: asId<NodeId>(from.nodeId) },
-          target: { nodeId: created.node.id },
-        },
-      },
-      ...(from.side
-        ? [{
-          kind: 'wire.setRoute' as const,
-          id: wireId,
-          route: { preferredSourceSide: from.side, preferredTargetSide: OPPOSITE_SIDE[from.side] },
-        }]
-        : []),
-    ]);
-    setSelection({ kind: 'node', id: created.node.id as string });
+    setPendingConnection(null);
+  }, [activeDiagramId, editable, updateInFlight]);
+
+  const createFromPending = (kind: Parameters<typeof connectedNode>[2]): void => {
+    if (!pendingConnection || !editable) return;
+    const created = connectedNode(placedNodes(view), pendingConnection, kind);
+    executeAll(created.commands);
+    setSelection({ kind: 'node', id: created.nodeId });
+    setPendingConnection(null);
   };
 
   /*
@@ -461,7 +376,9 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
           if (!frame) return;
           executeAll([
             ...(frame.position ? [{ kind: 'node.move' as const, id, position: frame.position }] : []),
-            ...(frame.size ? [{ kind: 'node.resize' as const, id, size: frame.size }] : []),
+            ...(frame.size ? [{
+              kind: 'node.resize' as const, id, size: frame.size, sizeMode: 'manual' as const,
+            }] : []),
           ]);
           updateInFlight(() => rest);
         }
@@ -499,7 +416,14 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         colorMode={preferences.appearance.theme} connectionMode={ConnectionMode.Loose} deleteKeyCode={active && editable ? ['Backspace', 'Delete'] : null} edgeTypes={edgeTypes} edges={edges}
         edgesReconnectable={editable} elementsSelectable fitView={camera.fitOnOpen} fitViewOptions={{ padding: editable ? 0.12 : 0.05, maxZoom: 1, minZoom: 0.05 }} minZoom={0.05}
         nodeTypes={nodeTypes} nodes={nodes} nodesConnectable={editable} nodesDraggable={editable}
-        onConnect={(connection) => { if (!editable) return; const id = connect(execute, connection); if (id) setSelection({ kind: 'wire', id }); }}
+        onConnect={(connection) => {
+          if (!editable) return;
+          const connected = connectedWire(connection);
+          if (!connected) return;
+          executeAll(connected.commands);
+          setPendingConnection(null);
+          setSelection({ kind: 'wire', id: connected.id });
+        }}
         onConnectStart={(_event, params) => {
           dragFrom.current = params.nodeId
             ? { nodeId: params.nodeId, side: sideOfHandle(params.handleId) }
@@ -508,10 +432,19 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         onConnectEnd={(event, state) => {
           // A drag that found a port is `onConnect`'s business; only a drop on nothing is ours.
           if (state.isValid) { dragFrom.current = null; return; }
+          const from = dragFrom.current;
+          dragFrom.current = null;
+          if (!editable || !from) return;
           const point = 'changedTouches' in event
             ? { x: event.changedTouches[0].clientX, y: event.changedTouches[0].clientY }
             : { x: event.clientX, y: event.clientY };
-          growFromPort(camera.toWorld(point));
+          const surface = camera.surface.current?.getBoundingClientRect();
+          if (!surface) return;
+          setPendingConnection({
+            from,
+            world: camera.toWorld(point),
+            picker: pickerPosition(point, surface),
+          });
         }}
         onEdgeClick={(_event, edge) => setSelection({ kind: 'wire', id: edge.id })}
         onInit={(instance) => { camera.attach(instance); camera.publishZoom(instance.getViewport().zoom); }}
@@ -525,19 +458,19 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         }}
         onReconnect={(edge, connection) => {
           if (!editable || !connection.source || !connection.target) return;
-          execute({
+          const route = wireRouteCommand(edge.id, connection);
+          executeAll([{
             kind: 'wire.reconnect', id: edge.id, source: connection.source, target: connection.target,
-          });
+          }, ...(route ? [route] : [])]);
           // Moving an end to a different port of the same node is a real edit, and the only
           // thing that changed is the side — so the side has to be written, or the next render
           // puts the wire back where the default says it goes.
-          rememberSides(execute, edge.id, connection);
           setSelection({ kind: 'wire', id: edge.id });
         }}
         onNodeClick={(_event, node) => setSelection({ kind: 'node', id: node.id })}
         onNodesChange={(changes) => {
           if (editable) applyNodeChanges(execute, (change) => updateInFlight((current) => applyFrame(current, change)), changes);
-        }} onPaneClick={() => setSelection(null)}
+        }} onPaneClick={() => { setPendingConnection(null); setSelection(null); }}
         /*
          * Scroll moves the diagram; pinch and ⌘-scroll change how close you are.
          *
@@ -566,6 +499,11 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
           * whatever the zoom buttons are set to. */}
         <Controls position="bottom-left" showFitView showInteractive={false} showZoom={preferences.canvas.showControls} />
       </ReactFlow>
+      {pendingConnection && <ConnectionCreationPicker
+        at={pendingConnection.picker}
+        cancel={() => setPendingConnection(null)}
+        pick={createFromPending}
+      />}
       <Legend preferences={preferences} view={view} />
       <CanvasToolbar props={props} />
       {/* Anchored to the canvas's own edges, which are exactly the seams the panels open on. */}

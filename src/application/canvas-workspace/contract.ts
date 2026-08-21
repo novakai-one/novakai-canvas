@@ -29,7 +29,12 @@ interface RouteInput {
 export type RecordCommand =
   | { kind: 'node.add'; node: DiagramRecord['nodes'][string]; placement: PlacementInput }
   | { kind: 'node.move'; id: string; position: { x: number; y: number } }
-  | { kind: 'node.resize'; id: string; size: { width: number; height: number } }
+  | {
+    kind: 'node.resize'; id: string; size: { width: number; height: number };
+    /** UI drags say manual; automatic layout omits this and preserves current authority. */
+    sizeMode?: 'auto' | 'manual';
+  }
+  | { kind: 'node.autoSize'; id: string }
   | { kind: 'node.pin'; id: string; pinned: boolean }
   | { kind: 'node.update'; id: string; patch: { label?: string; description?: string } }
   | { kind: 'node.reparent'; id: string; parentId?: string }

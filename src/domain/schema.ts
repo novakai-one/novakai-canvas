@@ -11,7 +11,8 @@ const legacyKindList = () => ['scope', ...kindList().filter((k) => k !== 'group'
 const position = z.object({ x: z.number(), y: z.number() });
 const size = z.object({ width: z.number().positive(), height: z.number().positive() });
 const nodePlacement = z.object({
-  nodeId: z.string().min(1), position, size, pinned: z.boolean(),
+  nodeId: z.string().min(1), position, size,
+  sizeMode: z.enum(['auto', 'manual']).optional(), pinned: z.boolean(),
 });
 
 const semanticNodeBase = {

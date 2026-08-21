@@ -81,6 +81,13 @@ export function nodeInspection(props: InspectPanelProps, id: string): Inspection
         <ArrangementControls nodeId={id} props={props} />
       </PanelSection>}
       <PanelSection {...sectionProps(props, 'placement')} title="Placement">
+        <FieldRow label="Size"><output>
+          {placement.sizeMode === 'manual' ? 'Manual' : 'Automatic'}
+        </output></FieldRow>
+        {placement.sizeMode === 'manual' && <button className="panel-button"
+          disabled={!props.editable}
+          onClick={() => props.execute({ kind: 'node.autoSize', id })}
+          type="button">Use automatic size</button>}
         <SwitchRow checked={placement.pinned} disabled={!props.editable} label="Lock position"
           onChange={(pinned) => props.execute({ kind: 'node.pin', id, pinned })} />
         {node.kind === 'group' && <SwitchRow

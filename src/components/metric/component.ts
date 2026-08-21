@@ -75,6 +75,7 @@ export const metricComponent: DiagramComponent<'metric'> = {
   kind: 'metric',
   dslKeyword: 'metric',
   declaration,
+  resize: { minSize: { width: 200, height: 110 } },
   layoutRole: 'leaf',
   contentFields: {
     value: z.string().min(1),

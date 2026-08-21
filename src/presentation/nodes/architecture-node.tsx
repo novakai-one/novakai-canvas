@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NodeResizer, type NodeProps, type Node } from '@xyflow/react';
+import { type NodeProps, type Node } from '@xyflow/react';
 import { NodePorts } from './node-ports';
 import type { ArchitectureNodeData } from '../projection';
 
@@ -74,7 +74,6 @@ export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowN
       */
     <>
       <article className={`architecture-node kind-${node.kind} ${portsClass}`}>
-        <NodeResizer isVisible={editable && selected} minHeight={80} minWidth={160} onResizeEnd={() => data.resizeEnd?.(node.id as string)} />
         <header className="node-header">
         <NodeLabel
           editable={editable}

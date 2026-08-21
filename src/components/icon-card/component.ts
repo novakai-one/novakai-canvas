@@ -78,6 +78,7 @@ export const iconCardComponent: DiagramComponent<'icon-card'> = {
   kind: 'icon-card',
   dslKeyword: 'icon-card',
   declaration,
+  resize: { minSize: { width: 240, height: 104 } },
   layoutRole: 'leaf',
   contentFields: {
     icon: z.enum(ICON_CARD_ICONS),

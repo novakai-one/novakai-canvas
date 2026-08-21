@@ -68,6 +68,9 @@ function placementsFromState(state: LayoutState): Record<string, NodePlacement> 
     nodeId,
     position: node.position,
     size: node.size,
+    ...(state.layout.placements[nodeId]?.sizeMode
+      ? { sizeMode: state.layout.placements[nodeId].sizeMode }
+      : {}),
     pinned: state.layout.placements[nodeId]?.pinned ?? false,
   }]));
 }

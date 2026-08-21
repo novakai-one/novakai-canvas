@@ -1,4 +1,4 @@
-import { NodeResizer, type Node, type NodeProps } from '@xyflow/react';
+import { type Node, type NodeProps } from '@xyflow/react';
 import type { TreeRow } from '../../domain/model';
 import { orderedTreeRows, treeRowDepth } from '../../components/tree/content.ts';
 import type { ArchitectureNodeData } from '../projection';
@@ -16,12 +16,11 @@ function rowTone(row: TreeRow): string {
 }
 
 /** Hierarchy renderer: every row is a selectable domain block. */
-export function TreeNode({ data, selected }: NodeProps<TreeFlowNode>) {
-  const { node, selection, editable, select } = data;
+export function TreeNode({ data }: NodeProps<TreeFlowNode>) {
+  const { node, selection, select } = data;
   const rows = orderedTreeRows(node.rows ?? []);
   return (
     <article className="tree-node">
-      <NodeResizer isVisible={editable && selected} minHeight={80} minWidth={240} onResizeEnd={() => data.resizeEnd?.(node.id as string)} />
       <header className="node-header">
         <span className="node-label">{node.label}</span>
         <span className="node-kind">tree</span>

@@ -15,6 +15,7 @@ export const commentComponent: DiagramComponent<'comment'> = {
     category: 'annotation', label: 'Note', hint: 'Not part of the model',
     defaultLabel: 'Add context here', initialSize: { width: 240, height: 100 },
   },
+  resize: { minSize: { width: 160, height: 60 } },
   layoutRole: 'leaf',
   measure: (node) => ({ width: 280, height: 48 + 21 * Math.ceil(node.label.length / 34) }),
 };

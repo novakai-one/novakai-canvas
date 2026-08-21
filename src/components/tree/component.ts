@@ -44,6 +44,7 @@ export const treeComponent: DiagramComponent<'tree'> = {
   kind: 'tree',
   dslKeyword: 'tree',
   declaration: namedNodeDeclaration('tree', 'Delivery hierarchy'),
+  resize: { minSize: { width: 240, height: 80 } },
   layoutRole: 'leaf',
   contentFields: {
     rows: z.array(z.object({

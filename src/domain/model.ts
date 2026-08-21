@@ -124,6 +124,7 @@ export interface NodePlacement {
   nodeId: string;
   position: Position;
   size: Size;
+  sizeMode?: 'auto' | 'manual';
   pinned: boolean;
 }
 

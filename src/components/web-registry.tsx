@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import type { NodeProps } from '@xyflow/react';
+import { NodeResizer, type Node, type NodeProps } from '@xyflow/react';
 import { ArchitectureNode } from '../presentation/nodes/architecture-node.tsx';
 import { CommentNode } from '../presentation/nodes/comment-node.tsx';
 import { ScopeNode } from '../presentation/nodes/scope-node.tsx';
@@ -10,6 +10,27 @@ import { IconCardNode } from './icon-card/web.tsx';
 import { CalloutStackNode } from './callout-stack/web.tsx';
 import { BlockNode } from './block/web.tsx';
 import type { CanvasNode } from '../domain/records.ts';
+import type { ArchitectureNodeData } from '../presentation/projection.ts';
+import { componentFor } from './registry.ts';
+
+function registeredRenderer<T extends Node<ArchitectureNodeData>>(
+  kind: CanvasNode['kind'],
+  Renderer: ComponentType<NodeProps<T>>,
+) {
+  const policy = componentFor(kind).resize;
+  /** Registry-owned interaction chrome around a component-owned visual body. */
+  return function registryOwnedRenderer(props: NodeProps<T>) {
+    return <>
+      {policy && <NodeResizer
+        isVisible={props.data.editable && props.selected}
+        minHeight={policy.minSize.height}
+        minWidth={policy.minSize.width}
+        onResizeEnd={() => props.data.resizeEnd?.(props.data.node.id as string)}
+      />}
+      <Renderer {...props} />
+    </>;
+  };
+}
 
 /**
  * kind -> React Flow node component. Card kinds share `ArchitectureNode`; everything else gets
@@ -28,16 +49,16 @@ import type { CanvasNode } from '../domain/records.ts';
  * completeness pin either way: drop a kind, or misspell one, and this line fails to typecheck.
  */
 export const webRenderers = {
-  group: ScopeNode,
-  module: ArchitectureNode,
-  object: ArchitectureNode,
-  runtime: ArchitectureNode,
-  resource: ArchitectureNode,
-  comment: CommentNode,
-  tree: TreeNode,
-  timeline: TimelineNode,
-  metric: MetricNode,
-  'icon-card': IconCardNode,
-  'callout-stack': CalloutStackNode,
-  block: BlockNode,
+  group: registeredRenderer('group', ScopeNode),
+  module: registeredRenderer('module', ArchitectureNode),
+  object: registeredRenderer('object', ArchitectureNode),
+  runtime: registeredRenderer('runtime', ArchitectureNode),
+  resource: registeredRenderer('resource', ArchitectureNode),
+  comment: registeredRenderer('comment', CommentNode),
+  tree: registeredRenderer('tree', TreeNode),
+  timeline: registeredRenderer('timeline', TimelineNode),
+  metric: registeredRenderer('metric', MetricNode),
+  'icon-card': registeredRenderer('icon-card', IconCardNode),
+  'callout-stack': registeredRenderer('callout-stack', CalloutStackNode),
+  block: registeredRenderer('block', BlockNode),
 } satisfies Record<CanvasNode['kind'], ComponentType<NodeProps<never>>>;

@@ -73,6 +73,7 @@ export const calloutStackComponent: DiagramComponent<'callout-stack'> = {
   kind: 'callout-stack',
   dslKeyword: 'callout-stack',
   declaration: namedNodeDeclaration('callout-stack', 'Release decision'),
+  resize: { minSize: { width: 260, height: 100 } },
   layoutRole: 'leaf',
   contentFields: { callouts: calloutsSchema.optional() },
   items(node) {

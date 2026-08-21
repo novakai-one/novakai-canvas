@@ -67,7 +67,7 @@ ${componentHelp}
 `;
 
 export const COMMAND_KINDS = [
-  'node.add', 'node.move', 'node.resize', 'node.pin', 'node.update', 'node.reparent',
+  'node.add', 'node.move', 'node.resize', 'node.autoSize', 'node.pin', 'node.update', 'node.reparent',
   'node.remove', 'wire.add', 'wire.reconnect', 'wire.remove', 'view.setCollapsed',
   'view.setViewport', 'diagram.rename', 'layout.presentation.replace',
 ] as const;

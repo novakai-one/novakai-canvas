@@ -88,7 +88,13 @@ function applyNode(record: DiagramRecord, layout: Layout, view: View, command: N
       layout.placements[command.id] = { ...layout.placements[command.id], position: command.position };
       return;
     case 'node.resize':
-      layout.placements[command.id] = { ...layout.placements[command.id], size: command.size };
+      layout.placements[command.id] = {
+        ...layout.placements[command.id], size: command.size,
+        ...(command.sizeMode ? { sizeMode: command.sizeMode } : {}),
+      };
+      return;
+    case 'node.autoSize':
+      layout.placements[command.id] = { ...layout.placements[command.id], sizeMode: 'auto' };
       return;
     case 'node.pin':
       layout.placements[command.id] = { ...layout.placements[command.id], pinned: command.pinned };

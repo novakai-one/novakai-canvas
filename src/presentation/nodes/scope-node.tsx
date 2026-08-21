@@ -1,4 +1,4 @@
-import { NodeResizer, type Node, type NodeProps } from '@xyflow/react';
+import { type Node, type NodeProps } from '@xyflow/react';
 import { NodePorts } from './node-ports';
 import type { ArchitectureNodeData } from '../projection';
 
@@ -17,7 +17,6 @@ export function ScopeNode({ data, selected }: NodeProps<ScopeFlowNode>) {
   const standalone = data.node.label.startsWith('Standalone');
   return (
     <section className={`scope-node${standalone ? ' scope-node--standalone' : ''}${selected ? ' is-selected' : ''}`}>
-      <NodeResizer isVisible={data.editable && selected} minHeight={160} minWidth={320} onResizeEnd={() => data.resizeEnd?.(data.node.id as string)} />
       <NodePorts connectable={data.editable} />
       <span
         className="scope-node__title"

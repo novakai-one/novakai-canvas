@@ -43,6 +43,8 @@ export class LayoutState {
 
   measureNode(nodeId: string): Size {
     const node = this.document.nodes[nodeId];
+    const placement = this.layout.placements[nodeId];
+    if (placement?.sizeMode === 'manual') return placement.size;
     const interfaceLines = node.interfaceIds.map((id) => {
       const item = this.document.interfaces[id];
       return `${item.name}(${item.accepts.join(', ')}) -> ${item.returns.join(', ')}`;
