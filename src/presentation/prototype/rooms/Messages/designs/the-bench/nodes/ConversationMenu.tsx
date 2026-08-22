@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ObjectRecord } from '../../../../../object-graph/contract';
 import type { BenchConversation, BenchNodeActions } from '../model/bench-model';
+import './ConversationMenu.css';
 
 /** Thread-local action menu; every record mutation crosses the host command seam. */
 export function ConversationMenu({
@@ -34,7 +35,7 @@ export function ConversationMenu({
     >
       <button
         type="button"
-        className="bench-conversation-menu__trigger"
+        className="bench-icon-control bench-conversation-menu__trigger"
         aria-label="Conversation actions"
         aria-expanded={isOpen}
         onClick={() => setOpen((open) => !open)}

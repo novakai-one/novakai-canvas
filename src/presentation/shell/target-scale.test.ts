@@ -5,8 +5,13 @@ import { describe, expect, it } from 'vitest';
 import { TARGET_SIZES, targetScale } from './target-scale';
 
 function canvasCss(): string {
-  const path = fileURLToPath(new URL('../../styles/canvas.css', import.meta.url));
-  const text = readFileSync(path, 'utf8');
+  const text = [
+    '../../styles/canvas-groups.css',
+    '../../styles/canvas-wires.css',
+  ].map((relativePath) => readFileSync(
+    fileURLToPath(new URL(relativePath, import.meta.url)),
+    'utf8',
+  )).join('\n');
   if (text.length === 0) throw new Error('canvas.css read as empty');
   return text.replace(/\/\*[\s\S]*?\*\//g, '');
 }
@@ -54,7 +59,7 @@ describe('target scale', () => {
 describe('canvas controls hold their size on screen', () => {
   it('divides every control drawn inside the viewport by the live zoom', () => {
     // Labels read the edge-label renderer's own copy of the zoom; the shapes read the surface's.
-    for (const selector of ['.wire-endpoint', '.wire-waypoint', '.wire-grab', '.wire-label']) {
+    for (const selector of ['.wire-endpoint', '.wire-segment-handle', '.wire-grab', '.wire-label']) {
       expect(rule(selector), selector).toMatch(/var\(--nvk-(label-)?zoom, 1\)/);
     }
   });
@@ -65,7 +70,14 @@ describe('canvas controls hold their size on screen', () => {
     expect(handle).not.toContain('--nvk-zoom');
   });
 
-  it('keeps React Flow\'s own reconnect anchors out of the way of the grab region', () => {
-    expect(rule('.canvas-surface .react-flow__edgeupdater')).toContain('pointer-events: none');
+  it('gives native reconnect anchors the shared zoom-stable grab target', () => {
+    const updater = rule('.canvas-surface .react-flow__edgeupdater');
+    expect(updater).toContain('pointer-events: all');
+    expect(updater).toContain('var(--target-grab)');
+    expect(updater).toContain('var(--nvk-zoom, 1)');
+  });
+
+  it('never lets semantic zoom override explicit wire-label visibility', () => {
+    expect(canvasCss()).not.toContain('[data-wire-labels-hidden]');
   });
 });

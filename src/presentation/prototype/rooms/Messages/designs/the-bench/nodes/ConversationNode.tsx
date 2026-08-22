@@ -3,19 +3,15 @@ import type { BenchConversationCanvasNode } from '../model/bench-projection';
 import { ConversationCard } from './ConversationCard';
 import { DecisionRequestCallout } from './DecisionRequestCallout';
 import { ConversationThread } from './ConversationThread';
-import './conversation.css';
+import './ConversationNode.css';
 
 /** Keeps one canvas node identity while switching between card and open-thread views. */
-export function ConversationNode({ data, selected }: NodeProps<BenchConversationCanvasNode>) {
+export function ConversationNode({ data }: NodeProps<BenchConversationCanvasNode>) {
   const pendingRequest = data.conversation.pendingDecisionRequests[0];
   return (
     <article
       className="bench-conversation"
-      data-open={data.isOpen}
-      data-focused={data.isFocused}
       data-tier={data.tier}
-      data-selected={selected}
-      data-blocked={data.conversation.isBlocked}
       data-mission-tone={data.conversation.mission?.tone ?? 'none'}
     >
       {data.conversation.mission && (

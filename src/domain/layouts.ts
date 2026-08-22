@@ -1,6 +1,6 @@
 import type {
   ArchitectureDocument, CanvasLayout, CanvasNode, NodePlacement, PositionedCanvasNode,
-} from './model';
+} from './legacy-document.ts';
 
 const FALLBACK_PLACEMENT: Omit<NodePlacement, 'nodeId'> = {
   position: { x: 0, y: 0 },

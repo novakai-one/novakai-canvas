@@ -6,6 +6,8 @@
  */
 export { FieldRow, SwitchRow } from './field-row';
 export { Flyout, type FlyoutItem, type FlyoutProps } from './flyout';
+export { CanvasPortalProvider } from './canvas-portal';
+export { useCanvasPortalTarget } from './canvas-portal-context';
 export { ObjectRow } from './object-row';
 export { head, oneLine, tail } from './rail-label';
 export { PanelBand, PanelFooter } from './panel-band';

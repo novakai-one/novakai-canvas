@@ -34,6 +34,39 @@
 }
 
 /* A field that will not be accepted says so while you are still typing in it. */
-.field-row input[data-invalid] {
+.app-shell :is(.field-row, .component-content-editor) input[data-invalid] {
   border-color: color-mix(in srgb, var(--danger, #b4544a) 70%, transparent);
 }
+
+.component-content-editor,
+.content-editor-row,
+.content-editor-row label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.component-content-editor { gap: var(--space-4); }
+
+.content-editor-row-actions,
+.content-editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.content-editor-row-actions button {
+  min-height: 28px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--edge-soft);
+  border-radius: var(--radius);
+  background: var(--surface-1);
+  color: var(--ink-muted);
+}
+
+.content-editor-row-actions button:focus-visible {
+  outline: 2px solid var(--focus, currentColor);
+  outline-offset: 2px;
+}
+
+.content-editor-row-actions button:disabled { opacity: 0.4; }

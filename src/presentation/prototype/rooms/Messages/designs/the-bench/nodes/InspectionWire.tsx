@@ -1,5 +1,6 @@
 import { BaseEdge, EdgeLabelRenderer, getBezierPath, type EdgeProps } from '@xyflow/react';
 import type { BenchCanvasEdge } from '../model/bench-projection';
+import './InspectionWire.css';
 
 /** Restrained amber bezier used only while an inspection trail exists. */
 export function InspectionWire({

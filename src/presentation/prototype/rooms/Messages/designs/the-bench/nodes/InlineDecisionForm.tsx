@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import './InlineDecisionForm.css';
 
 /** Local-only ruling draft shared by normal and Zen Decision Request surfaces. */
 export function InlineDecisionForm({
@@ -33,9 +34,9 @@ export function InlineDecisionForm({
         rows={3}
         disabled={isSubmitted}
       />
-      <span>
-        <button type="button" onClick={onCancel} disabled={isSubmitted}>Cancel</button>
-        <button type="submit" disabled={!trimmedRuling || isSubmitted}>
+      <span className="bench-action-row">
+        <button type="button" className="bench-control-button" onClick={onCancel} disabled={isSubmitted}>Cancel</button>
+        <button type="submit" className="bench-control-button bench-danger-action" disabled={!trimmedRuling || isSubmitted}>
           {isSubmitted ? 'Recorded' : 'Record decision'}
         </button>
       </span>

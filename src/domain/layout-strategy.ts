@@ -1,6 +1,6 @@
 import dagre from '@dagrejs/dagre';
 import type { LayoutId, NodeId } from './ids.ts';
-import type { Position } from './model.ts';
+import type { Position } from './spatial.ts';
 import type {
   CanvasNode, CanvasWire, DiagramRecord, LayoutStrategyName, NodePlacement,
 } from './records.ts';

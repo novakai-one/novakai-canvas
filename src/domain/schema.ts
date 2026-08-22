@@ -1,34 +1,47 @@
 import { z } from 'zod';
-import type { ArchitectureDocument, CanvasChangeSet } from './model.ts';
+import { allComponents, contentFieldsFor, kindList } from '../components/registry.ts';
+import type { CanvasChangeSet } from './legacy-commands.ts';
+import type { ArchitectureDocument } from './legacy-document.ts';
 import { WIRE_LABEL_SIZE_LIMITS } from './wire-label-size.ts';
+import { containerArrangementSchema, nodeAppearanceSchema } from './canvas-presentation.ts';
+import { wireAppearanceSchema, wireShapeSchema } from './wire-appearance.ts';
+
+/** Legacy document kind vocabulary: `scope` where the current record model uses `group`. */
+const legacyKindList = () => ['scope', ...kindList().filter((k) => k !== 'group')] as [string, ...string[]];
 
 const position = z.object({ x: z.number(), y: z.number() });
 const size = z.object({ width: z.number().positive(), height: z.number().positive() });
 const nodePlacement = z.object({
-  nodeId: z.string().min(1), position, size, pinned: z.boolean(),
+  nodeId: z.string().min(1), position, size,
+  sizeMode: z.enum(['auto', 'manual']).optional(), pinned: z.boolean(),
 });
 
-const treeRows = z.array(z.object({
+const semanticNodeBase = {
   id: z.string().min(1),
-  kind: z.enum(['project', 'mission', 'task', 'bucket']),
-  status: z.string().optional(),
-  parentRowId: z.string().optional(),
-  badges: z.array(z.string()),
-  label: z.string().optional(),
-})).optional();
+  label: z.string(),
+  description: z.string().optional(),
+  parentId: z.string().optional(),
+  interfaceIds: z.array(z.string()),
+  typeIds: z.array(z.string()),
+  subjectRef: z.object({ namespace: z.string().min(1), id: z.string().min(1) }).optional(),
+  expandsToDiagramId: z.string().min(1).optional(),
+};
 
-const semanticNode = z.object({
-    id: z.string().min(1),
-    kind: z.enum(['scope', 'module', 'object', 'runtime', 'resource', 'comment', 'tree']),
-    label: z.string(),
-    description: z.string().optional(),
-    parentId: z.string().optional(),
-    interfaceIds: z.array(z.string()),
-    typeIds: z.array(z.string()),
-    rows: treeRows,
-    subjectRef: z.object({ namespace: z.string().min(1), id: z.string().min(1) }).optional(),
-    expandsToDiagramId: z.string().min(1).optional(),
-});
+function semanticNodeSchema<ExtraFields extends Record<string, z.ZodTypeAny>>(extraFields: ExtraFields) {
+  const options = allComponents().map((component) => z.object({
+    ...semanticNodeBase,
+    kind: z.literal(component.kind === 'group' ? 'scope' : component.kind),
+    ...contentFieldsFor(component.kind),
+    ...extraFields,
+  }).strict());
+  return z.discriminatedUnion('kind', options as [
+    (typeof options)[number],
+    ...(typeof options)[number][],
+  ]);
+}
+
+const semanticNode = semanticNodeSchema({});
+const legacySemanticNode = semanticNodeSchema({ position, size });
 
 const interfaceObjects = z.record(z.string(), z.object({
   id: z.string().min(1), ownerId: z.string().min(1), name: z.string(),
@@ -93,6 +106,9 @@ const architectureDocumentV2 = z.object({
       waypoints: z.array(position),
     })),
     collapsedNodeIds: z.array(z.string().min(1)).default([]),
+    appearanceByNodeId: z.record(z.string(), nodeAppearanceSchema).default({}),
+    appearanceByWireId: z.record(z.string(), wireAppearanceSchema).default({}),
+    arrangementByContainerId: z.record(z.string(), containerArrangementSchema).default({}),
   })),
   diagrams: z.record(z.string(), z.object({
     id: z.string().min(1),
@@ -129,7 +145,7 @@ const legacyArchitectureDocument = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   revision: z.number().int().nonnegative(),
-  nodes: z.record(z.string(), semanticNode.extend({ position, size })),
+  nodes: z.record(z.string(), legacySemanticNode),
   interfaces: interfaceObjects,
   types: typeObjects,
   wires,
@@ -177,6 +193,9 @@ export function parseArchitectureDocument(input: unknown): ArchitectureDocument 
         }])),
         wireRouteHints: {},
         collapsedNodeIds: [],
+        appearanceByNodeId: {},
+        appearanceByWireId: {},
+        arrangementByContainerId: {},
       },
     },
     diagrams: Object.fromEntries(Object.values(legacy.nodes)
@@ -231,7 +250,7 @@ const canvasCommand = z.discriminatedUnion('kind', [
     kind: z.literal('node.update'), id: z.string().min(1),
     patch: z.object({
       label: z.string().optional(), description: z.string().optional(),
-      kind: z.enum(['scope', 'module', 'object', 'runtime', 'resource', 'comment', 'tree']).optional(),
+      kind: z.enum(legacyKindList()).optional(),
     }),
   }),
   z.object({
@@ -303,7 +322,7 @@ export const canvasPreferencesSchema = z.object({
   wires: z.object({
     showLabels: z.enum(['always', 'selected', 'never']), width: z.number().min(1).max(4), dimUnrelated: z.boolean(),
     // All optional: a preferences file written before these existed opens at the old behaviour.
-    shape: z.enum(['elbow', 'straight', 'curved', 'stepped']).optional(),
+    shape: wireShapeSchema.optional(),
     labelScale: z.number().min(0.85).max(1.5).optional(),
     maxLabelSize: z.number()
       .min(WIRE_LABEL_SIZE_LIMITS.minimum)

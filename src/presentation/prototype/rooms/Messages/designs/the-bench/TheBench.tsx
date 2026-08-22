@@ -1,5 +1,8 @@
 import { type EdgeTypes, type NodeTypes } from '@xyflow/react';
 import type { KeyboardEvent } from 'react';
+import './styles/tokens.css';
+import './styles/canvas.css';
+import './styles/primitives.css';
 import { WorldCanvas } from '../../../../components/canvas/WorldCanvas';
 import type { WorldCanvasInteraction } from '../../../../components/canvas/canvas-interaction';
 import type { MessagesDesignProps } from '../../messages-design';
@@ -15,8 +18,7 @@ import { BenchDock } from './overlays/BenchDock';
 import { ConversationSearch } from './overlays/ConversationSearch';
 import { OffscreenNodeMarker } from './overlays/OffscreenNodeMarker';
 import { ZenLayer } from './overlays/ZenLayer';
-import './overlays/overlays.css';
-import './the-bench.css';
+import './styles/bench-state.css';
 
 const benchNodeTypes = {
   'bench-conversation': ConversationNode,
@@ -78,7 +80,6 @@ export function TheBench(props: MessagesDesignProps) {
     <div
       className="the-bench"
       data-bench-theme="night-instrument"
-      data-zoom-tier={controller.state.zoomTier}
       data-zen-thread={controller.zenThreadId ?? 'none'}
       tabIndex={0}
       onKeyDown={handleKeyDown}

@@ -1,4 +1,5 @@
 import type { BenchConversation } from '../model/bench-model';
+import './BenchDock.css';
 
 /** Compact recency navigator; pills reveal cards without changing canvas order. */
 export function BenchDock({

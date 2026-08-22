@@ -21,12 +21,13 @@ import { buildGraph, type ObjectGraph } from '../object-graph/graph';
 import { loadFixtures } from '../object-graph/load';
 import { buildFeed, electAttention, type AttentionItem } from '../attention/feed';
 
-/** The six product areas on the rail. */
+/** The seven product areas on the rail. */
 export type AreaKey =
   | 'home'
   | 'command-center'
   | 'missions'
   | 'projects'
+  | 'canvas'
   | 'messages'
   | 'agent-roles';
 
@@ -37,6 +38,7 @@ export const AREAS: readonly { key: AreaKey; label: string }[] = [
   { key: 'projects', label: 'Projects' },
   { key: 'messages', label: 'Messages' },
   { key: 'agent-roles', label: 'Agent Roles' },
+  { key: 'canvas', label: 'Canvas' },
 ];
 
 /** A Room identifies the object that owns the current context. */
@@ -76,6 +78,7 @@ const initialState: State = {
     'command-center': [{ kind: 'area', area: 'command-center' }],
     missions: [{ kind: 'area', area: 'missions' }],
     projects: [{ kind: 'area', area: 'projects' }],
+    canvas: [{ kind: 'area', area: 'canvas' }],
     messages: [{ kind: 'area', area: 'messages' }],
     'agent-roles': [{ kind: 'area', area: 'agent-roles' }],
   },

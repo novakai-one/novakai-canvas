@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { diagramRecordSchema, projectView } from '../../canvas';
 import type { DiagramRecord } from '../../canvas';
 import { chooseSides, nodeRects, wireObstacles } from '../projection';
-import { routeCollisions, routeWire, type Rect, type RouteSide } from './wire-routing';
+import {
+  routeCollisions, routeWire, type Rect, type RouteSide,
+} from '../../domain/diagram-geometry';
 
 /**
  * The routing gate.

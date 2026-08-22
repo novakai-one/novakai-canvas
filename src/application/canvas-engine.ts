@@ -4,6 +4,10 @@ import type {
   NodeKind, WireKind,
 } from '../domain/model';
 import type { JsonRepository } from './json-repository';
+import { kindList } from '../components/registry.ts';
+
+/** The legacy document calls the container kind `scope`; records (and the registry) call it `group`. */
+const LEGACY_KIND_NAMES: Record<string, NodeKind> = { group: 'scope' };
 
 /** Small interface hiding canvas state lifecycle. */
 export interface CanvasEngine {
@@ -36,7 +40,7 @@ export function createCanvasEngine(
   const describe = (): CanvasCapabilityDescription => ({
     schemaVersion: document.schemaVersion,
     revision: document.revision,
-    nodeKinds: ['scope', 'module', 'object', 'runtime', 'resource', 'comment', 'tree'] satisfies NodeKind[],
+    nodeKinds: kindList().map((kind) => LEGACY_KIND_NAMES[kind] ?? (kind as NodeKind)),
     nodeAliases: { group: 'scope' },
     wireKinds: ['owns', 'references', 'assigns', 'queries', 'executes', 'mentions', 'missing'] satisfies WireKind[],
     layoutTargets: ['diagram', 'group', 'nodes'],

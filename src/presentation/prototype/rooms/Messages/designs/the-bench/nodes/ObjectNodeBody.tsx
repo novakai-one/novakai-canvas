@@ -10,6 +10,11 @@ import type {
   BenchObjectRelation,
 } from '../model/bench-model';
 import { InlineDecisionForm } from './InlineDecisionForm';
+import './ObjectNodeBody.css';
+
+function displayTitle(record: ObjectRecord): string {
+  return record.title === record.id ? KIND_LABEL[record.kind] : record.title;
+}
 
 /** Shared relationship rows and exact expansion handles for every inspectable record. */
 export function ObjectRelationRows({
@@ -32,9 +37,10 @@ export function ObjectRelationRows({
               onExpand(relation);
             }}
           >
-            <span>{relation.label}</span>
-            <strong>{relation.record.title}</strong>
-            <small>{KIND_LABEL[relation.record.kind]}</small>
+            <strong title={relation.record.title === relation.record.id ? undefined : relation.record.title}>
+              {displayTitle(relation.record)}
+            </strong>
+            <span>{KIND_LABEL[relation.record.kind]} · {relation.label}</span>
           </button>
           <Handle
             id={`relation:${relation.relation}:${relation.record.id}`}
@@ -59,13 +65,15 @@ function DecisionRequestAnswer({
   return (
     <section className="bench-object-body__decision" onClick={(event) => event.stopPropagation()}>
       <span>Decision needed · {request.agentName}</span>
-      <p>{request.question}</p>
+      <p className="bench-compact-copy">{request.question}</p>
       {isAnswering ? (
-        <InlineDecisionForm
-          requestId={`object:${request.record.id}`}
-          onSubmit={(ruling) => actions.answerDecisionRequest(request.context, ruling)}
-          onCancel={() => setAnswering(false)}
-        />
+        <div className="bench-object-body__decision-form">
+          <InlineDecisionForm
+            requestId={`object:${request.record.id}`}
+            onSubmit={(ruling) => actions.answerDecisionRequest(request.context, ruling)}
+            onCancel={() => setAnswering(false)}
+          />
+        </div>
       ) : (
         <button type="button" className="nodrag" onClick={() => setAnswering(true)}>Answer</button>
       )}
@@ -90,12 +98,15 @@ export function ObjectNodeBody({
   const summary = summaryFor(record) || field(record, 'body') || field(record, 'result');
   const facts = factsFor(record);
   const canTravel = actions.canTravel(record.id);
+  const title = displayTitle(record);
+  const showsDistinctKind = title !== KIND_LABEL[record.kind];
 
   return (
-    <div className="bench-object-body" onClick={() => actions.selectRecord(record.id)}>
-      <span className="bench-object-body__kind">{KIND_LABEL[record.kind]}</span>
-      <strong>{record.title}</strong>
-      <code>{record.id}</code>
+    <div className="bench-object-body" data-kind={record.kind} onClick={() => actions.selectRecord(record.id)}>
+      <header className="bench-object-body__identity">
+        {showsDistinctKind && <span className="bench-object-body__kind">{KIND_LABEL[record.kind]}</span>}
+        <strong title={record.title === record.id ? undefined : record.title}>{title}</strong>
+      </header>
       {summary && <p>{summary}</p>}
       {facts.length > 0 && (
         <dl>
@@ -117,7 +128,7 @@ export function ObjectNodeBody({
             event.stopPropagation();
             actions.travel(record.id);
           }}
-          aria-label={`Open ${record.title}`}
+          aria-label={`Open ${title}`}
         >
           Open <span aria-hidden="true">↗</span>
         </button>

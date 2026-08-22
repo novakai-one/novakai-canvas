@@ -1,6 +1,6 @@
-import { NodeResizer, type Node, type NodeProps } from '@xyflow/react';
+import { type Node, type NodeProps } from '@xyflow/react';
 import type { TreeRow } from '../../domain/model';
-import { orderedTreeRows, treeRowDepth } from '../../domain/tree';
+import { orderedTreeRows, treeRowDepth } from '../../components/tree/content.ts';
 import type { ArchitectureNodeData } from '../projection';
 
 type TreeFlowNode = Node<ArchitectureNodeData, 'tree'>;
@@ -16,12 +16,11 @@ function rowTone(row: TreeRow): string {
 }
 
 /** Hierarchy renderer: every row is a selectable domain block. */
-export function TreeNode({ data, selected }: NodeProps<TreeFlowNode>) {
-  const { node, selection, editable, select } = data;
+export function TreeNode({ data }: NodeProps<TreeFlowNode>) {
+  const { node, selection, select } = data;
   const rows = orderedTreeRows(node.rows ?? []);
   return (
     <article className="tree-node">
-      <NodeResizer isVisible={editable && selected} minHeight={80} minWidth={240} onResizeEnd={() => data.resizeEnd?.(node.id as string)} />
       <header className="node-header">
         <span className="node-label">{node.label}</span>
         <span className="node-kind">tree</span>
@@ -29,8 +28,8 @@ export function TreeNode({ data, selected }: NodeProps<TreeFlowNode>) {
       <div className="tree-rows">
         {rows.map((row) => {
           const depth = treeRowDepth(node.rows ?? [], row);
-          const isSelected = selection?.kind === 'tree-row'
-            && selection.nodeId === node.id && selection.rowId === row.id;
+          const isSelected = selection?.kind === 'component-item'
+            && selection.nodeId === node.id && selection.collection === 'rows' && selection.itemId === row.id;
           return (
             <button
               className={`tree-row ${rowTone(row)}${isSelected ? ' is-selected' : ''}${depth > 0 ? ' is-child' : ''}`}
@@ -38,7 +37,7 @@ export function TreeNode({ data, selected }: NodeProps<TreeFlowNode>) {
               onPointerDown={(event) => event.stopPropagation()}
               onClick={(event) => {
                 event.stopPropagation();
-                select({ kind: 'tree-row', nodeId: node.id, rowId: row.id });
+                select({ kind: 'component-item', nodeId: node.id, collection: 'rows', itemId: row.id });
               }}
               style={{ paddingLeft: 10 + depth * 20 }}
               type="button"

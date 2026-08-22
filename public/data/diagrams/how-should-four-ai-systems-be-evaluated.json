@@ -1,0 +1,1315 @@
+{
+  "schemaVersion": 3,
+  "id": "how-should-four-ai-systems-be-evaluated",
+  "name": "How should four AI systems be evaluated?",
+  "status": "active",
+  "revision": 1,
+  "nodes": {
+    "how-should-four-ai-systems-be-evaluated": {
+      "id": "how-should-four-ai-systems-be-evaluated",
+      "label": "How should four AI systems be evaluated?",
+      "description": "Current-CLI capability trial based on the supplied comparison reference.",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "how-should-four-ai-systems-be-evaluated--1-llm": {
+      "id": "how-should-four-ai-systems-be-evaluated--1-llm",
+      "label": "1 · LLM",
+      "parentId": "how-should-four-ai-systems-be-evaluated",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "how-should-four-ai-systems-be-evaluated--2-rag": {
+      "id": "how-should-four-ai-systems-be-evaluated--2-rag",
+      "label": "2 · RAG",
+      "parentId": "how-should-four-ai-systems-be-evaluated",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "how-should-four-ai-systems-be-evaluated--3-coding-agents": {
+      "id": "how-should-four-ai-systems-be-evaluated--3-coding-agents",
+      "label": "3 · Coding agents",
+      "parentId": "how-should-four-ai-systems-be-evaluated",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems": {
+      "id": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems",
+      "label": "4 · Multi-agent systems",
+      "parentId": "how-should-four-ai-systems-be-evaluated",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "how-should-four-ai-systems-be-evaluated--1-llm--language-model": {
+      "id": "how-should-four-ai-systems-be-evaluated--1-llm--language-model",
+      "label": "Language model",
+      "description": "One response to one prompt.",
+      "parentId": "how-should-four-ai-systems-be-evaluated--1-llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "icon-card",
+      "icon": "target"
+    },
+    "how-should-four-ai-systems-be-evaluated--1-llm--llm-tasks": {
+      "id": "how-should-four-ai-systems-be-evaluated--1-llm--llm-tasks",
+      "label": "LLM tasks",
+      "parentId": "how-should-four-ai-systems-be-evaluated--1-llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "safety",
+          "kind": "info",
+          "text": "Safety"
+        },
+        {
+          "id": "code",
+          "kind": "info",
+          "text": "Code"
+        },
+        {
+          "id": "instructions",
+          "kind": "info",
+          "text": "Instruction following"
+        }
+      ]
+    },
+    "how-should-four-ai-systems-be-evaluated--1-llm--prompt": {
+      "id": "how-should-four-ai-systems-be-evaluated--1-llm--prompt",
+      "label": "Prompt",
+      "parentId": "how-should-four-ai-systems-be-evaluated--1-llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "object"
+    },
+    "how-should-four-ai-systems-be-evaluated--1-llm--generate-response": {
+      "id": "how-should-four-ai-systems-be-evaluated--1-llm--generate-response",
+      "label": "Generate response",
+      "parentId": "how-should-four-ai-systems-be-evaluated--1-llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "how-should-four-ai-systems-be-evaluated--1-llm--text-output": {
+      "id": "how-should-four-ai-systems-be-evaluated--1-llm--text-output",
+      "label": "Text output",
+      "parentId": "how-should-four-ai-systems-be-evaluated--1-llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "how-should-four-ai-systems-be-evaluated--1-llm--llm-evaluation": {
+      "id": "how-should-four-ai-systems-be-evaluated--1-llm--llm-evaluation",
+      "label": "LLM evaluation",
+      "parentId": "how-should-four-ai-systems-be-evaluated--1-llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "judge",
+          "kind": "decision",
+          "text": "LLM-as-judge"
+        },
+        {
+          "id": "tests",
+          "kind": "info",
+          "text": "Code-based tests"
+        }
+      ]
+    },
+    "how-should-four-ai-systems-be-evaluated--1-llm--llm-measures": {
+      "id": "how-should-four-ai-systems-be-evaluated--1-llm--llm-measures",
+      "label": "LLM measures",
+      "parentId": "how-should-four-ai-systems-be-evaluated--1-llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "refusal",
+          "kind": "info",
+          "text": "Refusal rate"
+        },
+        {
+          "id": "pass",
+          "kind": "info",
+          "text": "Pass@k"
+        },
+        {
+          "id": "accuracy",
+          "kind": "success",
+          "text": "Accuracy"
+        }
+      ]
+    },
+    "how-should-four-ai-systems-be-evaluated--2-rag--retrieval-system": {
+      "id": "how-should-four-ai-systems-be-evaluated--2-rag--retrieval-system",
+      "label": "Retrieval system",
+      "description": "An answer grounded in retrieved evidence.",
+      "parentId": "how-should-four-ai-systems-be-evaluated--2-rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "icon-card",
+      "icon": "trend"
+    },
+    "how-should-four-ai-systems-be-evaluated--2-rag--rag-tasks": {
+      "id": "how-should-four-ai-systems-be-evaluated--2-rag--rag-tasks",
+      "label": "RAG tasks",
+      "parentId": "how-should-four-ai-systems-be-evaluated--2-rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "grounding",
+          "kind": "info",
+          "text": "Grounding"
+        },
+        {
+          "id": "citation",
+          "kind": "info",
+          "text": "Citation"
+        },
+        {
+          "id": "multihop",
+          "kind": "info",
+          "text": "Multi-hop questions"
+        }
+      ]
+    },
+    "how-should-four-ai-systems-be-evaluated--2-rag--question": {
+      "id": "how-should-four-ai-systems-be-evaluated--2-rag--question",
+      "label": "Question",
+      "parentId": "how-should-four-ai-systems-be-evaluated--2-rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "object"
+    },
+    "how-should-four-ai-systems-be-evaluated--2-rag--retrieve-context": {
+      "id": "how-should-four-ai-systems-be-evaluated--2-rag--retrieve-context",
+      "label": "Retrieve context",
+      "parentId": "how-should-four-ai-systems-be-evaluated--2-rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "how-should-four-ai-systems-be-evaluated--2-rag--retrieved-evidence": {
+      "id": "how-should-four-ai-systems-be-evaluated--2-rag--retrieved-evidence",
+      "label": "Retrieved evidence",
+      "parentId": "how-should-four-ai-systems-be-evaluated--2-rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "how-should-four-ai-systems-be-evaluated--2-rag--grounded-answer": {
+      "id": "how-should-four-ai-systems-be-evaluated--2-rag--grounded-answer",
+      "label": "Grounded answer",
+      "parentId": "how-should-four-ai-systems-be-evaluated--2-rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "how-should-four-ai-systems-be-evaluated--2-rag--rag-evaluation": {
+      "id": "how-should-four-ai-systems-be-evaluated--2-rag--rag-evaluation",
+      "label": "RAG evaluation",
+      "parentId": "how-should-four-ai-systems-be-evaluated--2-rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "judge",
+          "kind": "decision",
+          "text": "LLM-as-judge"
+        },
+        {
+          "id": "tests",
+          "kind": "info",
+          "text": "Code-based tests"
+        }
+      ]
+    },
+    "how-should-four-ai-systems-be-evaluated--2-rag--rag-measures": {
+      "id": "how-should-four-ai-systems-be-evaluated--2-rag--rag-measures",
+      "label": "RAG measures",
+      "parentId": "how-should-four-ai-systems-be-evaluated--2-rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "faithfulness",
+          "kind": "success",
+          "text": "Faithfulness"
+        },
+        {
+          "id": "recall",
+          "kind": "info",
+          "text": "Recall@k"
+        }
+      ]
+    },
+    "how-should-four-ai-systems-be-evaluated--3-coding-agents--coding-agent": {
+      "id": "how-should-four-ai-systems-be-evaluated--3-coding-agents--coding-agent",
+      "label": "Coding agent",
+      "description": "A tool-using loop that produces a patch.",
+      "parentId": "how-should-four-ai-systems-be-evaluated--3-coding-agents",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "icon-card",
+      "icon": "check"
+    },
+    "how-should-four-ai-systems-be-evaluated--3-coding-agents--coding-agent-tasks": {
+      "id": "how-should-four-ai-systems-be-evaluated--3-coding-agents--coding-agent-tasks",
+      "label": "Coding-agent tasks",
+      "parentId": "how-should-four-ai-systems-be-evaluated--3-coding-agents",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "tools",
+          "kind": "info",
+          "text": "Tool calling"
+        },
+        {
+          "id": "bugs",
+          "kind": "info",
+          "text": "Bug fixing"
+        },
+        {
+          "id": "planning",
+          "kind": "info",
+          "text": "Long-horizon planning"
+        }
+      ]
+    },
+    "how-should-four-ai-systems-be-evaluated--3-coding-agents--bug-report": {
+      "id": "how-should-four-ai-systems-be-evaluated--3-coding-agents--bug-report",
+      "label": "Bug report",
+      "parentId": "how-should-four-ai-systems-be-evaluated--3-coding-agents",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "object"
+    },
+    "how-should-four-ai-systems-be-evaluated--3-coding-agents--agent-loop": {
+      "id": "how-should-four-ai-systems-be-evaluated--3-coding-agents--agent-loop",
+      "label": "Agent loop",
+      "parentId": "how-should-four-ai-systems-be-evaluated--3-coding-agents",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "timeline",
+      "steps": [
+        {
+          "id": "read",
+          "label": "Read"
+        },
+        {
+          "id": "edit",
+          "label": "Edit"
+        },
+        {
+          "id": "run",
+          "label": "Run"
+        },
+        {
+          "id": "retry",
+          "label": "Retry"
+        }
+      ]
+    },
+    "how-should-four-ai-systems-be-evaluated--3-coding-agents--patch": {
+      "id": "how-should-four-ai-systems-be-evaluated--3-coding-agents--patch",
+      "label": "Patch",
+      "parentId": "how-should-four-ai-systems-be-evaluated--3-coding-agents",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "how-should-four-ai-systems-be-evaluated--3-coding-agents--agent-verification": {
+      "id": "how-should-four-ai-systems-be-evaluated--3-coding-agents--agent-verification",
+      "label": "Agent verification",
+      "parentId": "how-should-four-ai-systems-be-evaluated--3-coding-agents",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "tests",
+          "kind": "success",
+          "text": "Code-based tests"
+        }
+      ]
+    },
+    "how-should-four-ai-systems-be-evaluated--3-coding-agents--agent-measures": {
+      "id": "how-should-four-ai-systems-be-evaluated--3-coding-agents--agent-measures",
+      "label": "Agent measures",
+      "parentId": "how-should-four-ai-systems-be-evaluated--3-coding-agents",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "resolve",
+          "kind": "success",
+          "text": "Resolve rate"
+        },
+        {
+          "id": "steps",
+          "kind": "info",
+          "text": "Steps to solve"
+        },
+        {
+          "id": "tool-accuracy",
+          "kind": "info",
+          "text": "Tool accuracy"
+        }
+      ]
+    },
+    "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--agent-team": {
+      "id": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--agent-team",
+      "label": "Agent team",
+      "description": "Specialists coordinated around one task.",
+      "parentId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "icon-card",
+      "icon": "people"
+    },
+    "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--multi-agent-tasks": {
+      "id": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--multi-agent-tasks",
+      "label": "Multi-agent tasks",
+      "parentId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "coordination",
+          "kind": "info",
+          "text": "Coordination"
+        },
+        {
+          "id": "roles",
+          "kind": "info",
+          "text": "Role adherence"
+        }
+      ]
+    },
+    "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--delegated-task": {
+      "id": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--delegated-task",
+      "label": "Delegated task",
+      "parentId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "object"
+    },
+    "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--orchestrate-roles": {
+      "id": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--orchestrate-roles",
+      "label": "Orchestrate roles",
+      "parentId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--agent-roles": {
+      "id": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--agent-roles",
+      "label": "Agent roles",
+      "parentId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "researcher",
+          "kind": "info",
+          "text": "Researcher"
+        },
+        {
+          "id": "coder",
+          "kind": "info",
+          "text": "Coder"
+        },
+        {
+          "id": "reviewer",
+          "kind": "info",
+          "text": "Reviewer"
+        }
+      ]
+    },
+    "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--aggregate-result": {
+      "id": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--aggregate-result",
+      "label": "Aggregate result",
+      "parentId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--team-evaluation": {
+      "id": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--team-evaluation",
+      "label": "Team evaluation",
+      "parentId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "tests",
+          "kind": "info",
+          "text": "Code-based tests"
+        },
+        {
+          "id": "judge",
+          "kind": "decision",
+          "text": "LLM-as-judge"
+        },
+        {
+          "id": "human",
+          "kind": "warning",
+          "text": "Human review"
+        }
+      ]
+    },
+    "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--team-measures": {
+      "id": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--team-measures",
+      "label": "Team measures",
+      "parentId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "success",
+          "kind": "success",
+          "text": "Task success"
+        },
+        {
+          "id": "handoff",
+          "kind": "info",
+          "text": "Hand-off accuracy"
+        }
+      ]
+    }
+  },
+  "wires": {
+    "how-should-four-ai-systems-be-evaluated--wire-1": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-1",
+      "kind": "references",
+      "label": "define(Model) -> TaskSet",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--language-model"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--llm-tasks"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-2": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-2",
+      "kind": "references",
+      "label": "exercise(TaskSet) -> Prompt",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--llm-tasks"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--prompt"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-3": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-3",
+      "kind": "executes",
+      "label": "complete(Prompt) -> Response",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--prompt"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--generate-response"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-4": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-4",
+      "kind": "executes",
+      "label": "emit(Response) -> Text",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--generate-response"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--text-output"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-5": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-5",
+      "kind": "queries",
+      "label": "score(Text) -> Evaluation",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--text-output"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--llm-evaluation"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-6": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-6",
+      "kind": "references",
+      "label": "report(Evaluation) -> Measures",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--llm-evaluation"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--llm-measures"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-7": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-7",
+      "kind": "references",
+      "label": "define(System) -> TaskSet",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--retrieval-system"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--rag-tasks"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-8": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-8",
+      "kind": "references",
+      "label": "exercise(TaskSet) -> Question",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--rag-tasks"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--question"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-9": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-9",
+      "kind": "queries",
+      "label": "retrieve(Question) -> Evidence",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--question"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--retrieve-context"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-10": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-10",
+      "kind": "executes",
+      "label": "return(Query) -> Evidence",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--retrieve-context"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--retrieved-evidence"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-11": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-11",
+      "kind": "executes",
+      "label": "ground(Evidence) -> Answer",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--retrieved-evidence"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--grounded-answer"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-12": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-12",
+      "kind": "queries",
+      "label": "score(Answer) -> Evaluation",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--grounded-answer"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--rag-evaluation"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-13": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-13",
+      "kind": "references",
+      "label": "report(Evaluation) -> Measures",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--rag-evaluation"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--rag-measures"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-14": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-14",
+      "kind": "references",
+      "label": "define(Agent) -> TaskSet",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--coding-agent"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--coding-agent-tasks"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-15": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-15",
+      "kind": "references",
+      "label": "exercise(TaskSet) -> Bug",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--coding-agent-tasks"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--bug-report"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-16": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-16",
+      "kind": "executes",
+      "label": "solve(Bug) -> Attempt",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--bug-report"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--agent-loop"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-17": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-17",
+      "kind": "executes",
+      "label": "produce(Attempt) -> Patch",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--agent-loop"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--patch"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-18": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-18",
+      "kind": "queries",
+      "label": "verify(Patch) -> Result",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--patch"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--agent-verification"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-19": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-19",
+      "kind": "references",
+      "label": "report(Result) -> Measures",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--agent-verification"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--agent-measures"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-20": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-20",
+      "kind": "references",
+      "label": "define(Team) -> TaskSet",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--agent-team"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--multi-agent-tasks"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-21": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-21",
+      "kind": "references",
+      "label": "exercise(TaskSet) -> Task",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--multi-agent-tasks"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--delegated-task"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-22": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-22",
+      "kind": "assigns",
+      "label": "delegate(Task) -> Assignments",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--delegated-task"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--orchestrate-roles"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-23": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-23",
+      "kind": "executes",
+      "label": "coordinate(Assignments) -> Contributions",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--orchestrate-roles"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--agent-roles"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-24": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-24",
+      "kind": "executes",
+      "label": "combine(Contributions) -> Result",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--agent-roles"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--aggregate-result"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-25": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-25",
+      "kind": "queries",
+      "label": "score(Result) -> Evaluation",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--aggregate-result"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--team-evaluation"
+      }
+    },
+    "how-should-four-ai-systems-be-evaluated--wire-26": {
+      "id": "how-should-four-ai-systems-be-evaluated--wire-26",
+      "kind": "references",
+      "label": "report(Evaluation) -> Measures",
+      "source": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--team-evaluation"
+      },
+      "target": {
+        "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--team-measures"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "how-should-four-ai-systems-be-evaluated": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 1883,
+            "height": 1702
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--1-llm": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 357,
+            "height": 1380
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--2-rag": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag",
+          "position": {
+            "x": 437,
+            "y": 56
+          },
+          "size": {
+            "width": 446,
+            "height": 1472
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--3-coding-agents": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents",
+          "position": {
+            "x": 923,
+            "y": 56
+          },
+          "size": {
+            "width": 440,
+            "height": 1458
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems",
+          "position": {
+            "x": 1403,
+            "y": 56
+          },
+          "size": {
+            "width": 440,
+            "height": 1606
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--1-llm--language-model": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--language-model",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 277,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--1-llm--llm-tasks": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--llm-tasks",
+          "position": {
+            "x": 49,
+            "y": 246
+          },
+          "size": {
+            "width": 260,
+            "height": 198
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--1-llm--prompt": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--prompt",
+          "position": {
+            "x": 79,
+            "y": 514
+          },
+          "size": {
+            "width": 200,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--1-llm--generate-response": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--generate-response",
+          "position": {
+            "x": 79,
+            "y": 648
+          },
+          "size": {
+            "width": 200,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--1-llm--text-output": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--text-output",
+          "position": {
+            "x": 79,
+            "y": 782
+          },
+          "size": {
+            "width": 200,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--1-llm--llm-evaluation": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--llm-evaluation",
+          "position": {
+            "x": 49,
+            "y": 916
+          },
+          "size": {
+            "width": 260,
+            "height": 156
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--1-llm--llm-measures": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--1-llm--llm-measures",
+          "position": {
+            "x": 49,
+            "y": 1142
+          },
+          "size": {
+            "width": 260,
+            "height": 198
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--2-rag--retrieval-system": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--retrieval-system",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 366,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--2-rag--rag-tasks": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--rag-tasks",
+          "position": {
+            "x": 93,
+            "y": 246
+          },
+          "size": {
+            "width": 260,
+            "height": 198
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--2-rag--question": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--question",
+          "position": {
+            "x": 123,
+            "y": 514
+          },
+          "size": {
+            "width": 200,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--2-rag--retrieve-context": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--retrieve-context",
+          "position": {
+            "x": 123,
+            "y": 648
+          },
+          "size": {
+            "width": 200,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--2-rag--retrieved-evidence": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--retrieved-evidence",
+          "position": {
+            "x": 123,
+            "y": 782
+          },
+          "size": {
+            "width": 200,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--2-rag--grounded-answer": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--grounded-answer",
+          "position": {
+            "x": 123,
+            "y": 916
+          },
+          "size": {
+            "width": 200,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--2-rag--rag-evaluation": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--rag-evaluation",
+          "position": {
+            "x": 93,
+            "y": 1050
+          },
+          "size": {
+            "width": 260,
+            "height": 156
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--2-rag--rag-measures": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--2-rag--rag-measures",
+          "position": {
+            "x": 93,
+            "y": 1276
+          },
+          "size": {
+            "width": 260,
+            "height": 156
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--3-coding-agents--coding-agent": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--coding-agent",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 360,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--3-coding-agents--coding-agent-tasks": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--coding-agent-tasks",
+          "position": {
+            "x": 90,
+            "y": 246
+          },
+          "size": {
+            "width": 260,
+            "height": 198
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--3-coding-agents--bug-report": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--bug-report",
+          "position": {
+            "x": 120,
+            "y": 514
+          },
+          "size": {
+            "width": 200,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--3-coding-agents--agent-loop": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--agent-loop",
+          "position": {
+            "x": 110,
+            "y": 648
+          },
+          "size": {
+            "width": 220,
+            "height": 184
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--3-coding-agents--patch": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--patch",
+          "position": {
+            "x": 120,
+            "y": 902
+          },
+          "size": {
+            "width": 200,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--3-coding-agents--agent-verification": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--agent-verification",
+          "position": {
+            "x": 90,
+            "y": 1036
+          },
+          "size": {
+            "width": 260,
+            "height": 114
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--3-coding-agents--agent-measures": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--3-coding-agents--agent-measures",
+          "position": {
+            "x": 90,
+            "y": 1220
+          },
+          "size": {
+            "width": 260,
+            "height": 198
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--agent-team": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--agent-team",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 360,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--multi-agent-tasks": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--multi-agent-tasks",
+          "position": {
+            "x": 90,
+            "y": 246
+          },
+          "size": {
+            "width": 260,
+            "height": 156
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--delegated-task": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--delegated-task",
+          "position": {
+            "x": 120,
+            "y": 472
+          },
+          "size": {
+            "width": 200,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--orchestrate-roles": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--orchestrate-roles",
+          "position": {
+            "x": 120,
+            "y": 606
+          },
+          "size": {
+            "width": 200,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--agent-roles": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--agent-roles",
+          "position": {
+            "x": 90,
+            "y": 740
+          },
+          "size": {
+            "width": 260,
+            "height": 198
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--aggregate-result": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--aggregate-result",
+          "position": {
+            "x": 120,
+            "y": 1008
+          },
+          "size": {
+            "width": 200,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--team-evaluation": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--team-evaluation",
+          "position": {
+            "x": 90,
+            "y": 1142
+          },
+          "size": {
+            "width": 260,
+            "height": 198
+          },
+          "pinned": false
+        },
+        "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--team-measures": {
+          "nodeId": "how-should-four-ai-systems-be-evaluated--4-multi-agent-systems--team-measures",
+          "position": {
+            "x": 90,
+            "y": 1410
+          },
+          "size": {
+            "width": 260,
+            "height": 156
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-96400a73-4968-4b15-a546-401398153198": {
+      "operationId": "cli-apply-96400a73-4968-4b15-a546-401398153198",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-20T01:09:12.327Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/tmp/evaluation-comparison.dsl"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add"
+      ]
+    }
+  }
+}

@@ -2,6 +2,7 @@ import type { ObjectRecord } from '../../../../../object-graph/contract';
 import type { BenchConversation, BenchNodeActions } from '../model/bench-model';
 import { ConversationThread } from '../nodes/ConversationThread';
 import { BlockedAgentBanner } from './BlockedAgentBanner';
+import './ZenLayer.css';
 
 /** Focused presentation of the existing conversation implementation. */
 export function ZenLayer({
@@ -18,6 +19,14 @@ export function ZenLayer({
   onExit(): void;
 }) {
   const pendingRequest = conversation.pendingDecisionRequests[0];
+  const focusedActions: BenchNodeActions = {
+    ...actions,
+    inspectMessage: (threadId, messageId) => {
+      actions.inspectMessage(threadId, messageId);
+      onExit();
+    },
+  };
+
   return (
     <section className="bench-zen" aria-label={`Focused conversation with ${conversation.primaryParticipant?.record.title ?? 'agent'}`}>
       <button type="button" className="bench-zen__exit" onClick={onExit}>Exit focus <kbd>Esc</kbd></button>
@@ -42,7 +51,8 @@ export function ZenLayer({
           conversation={conversation}
           missions={missions}
           savedScrollTop={savedScrollTop}
-          actions={actions}
+          actions={focusedActions}
+          showCollapse={false}
         />
       </div>
     </section>

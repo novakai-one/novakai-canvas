@@ -19,11 +19,22 @@ export type { CanvasCensus } from './domain/migrate/census.ts';
 export type {
   CrossDiagramLink, DiagramRecord, LibraryEntry, LibraryIndex, MigratedLibrary, MigrationReport,
 } from './domain/records.ts';
+export { resolveNodeAppearance } from './domain/canvas-presentation.ts';
+export type {
+  AppearanceKey, ContainerArrangement, NodeAppearance, PresentationContext, ResolvedNodeAppearance,
+} from './domain/canvas-presentation.ts';
 export type {
   DiagramId, LayoutId, LinkId, NodeId, TypeId, ViewId, WireId,
 } from './domain/ids.ts';
 export { projectView } from './domain/project-view.ts';
 export type { PositionedNode, ProjectedView } from './domain/project-view.ts';
+export {
+  layoutScopes, planWireRoutes, routeWire,
+} from './domain/diagram-geometry.ts';
+export type {
+  PlannedWireRoute, Point as GeometryPoint, Rect as GeometryRect, RouteObstacle, RouteSide,
+  WireRoute, WireRouteRequest,
+} from './domain/diagram-geometry.ts';
 export {
   defaultLayoutOptions, graphOfDiagram, layoutStrategyFor, planSliceLayout,
 } from './domain/layout-strategy.ts';

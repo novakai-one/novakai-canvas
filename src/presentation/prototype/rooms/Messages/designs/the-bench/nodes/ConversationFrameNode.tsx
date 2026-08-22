@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { NodeProps } from '@xyflow/react';
 import type { BenchConversationFrameCanvasNode } from '../model/bench-projection';
+import './ConversationFrameNode.css';
 
 /** A named semantic grouping whose canvas parent mechanics stay in WorldCanvas. */
 export function ConversationFrameNode({ data, selected }: NodeProps<BenchConversationFrameCanvasNode>) {
@@ -14,11 +15,11 @@ export function ConversationFrameNode({ data, selected }: NodeProps<BenchConvers
   };
 
   return (
-    <section className="bench-frame" data-selected={selected}>
+    <section className="bench-scribe-selection bench-frame" data-selected={selected}>
       <header className="bench-frame__header">
-        <span aria-hidden="true">Frame</span>
+        <span className="bench-eyebrow" aria-hidden="true">Frame</span>
         <input
-          className="nodrag"
+          className="bench-panel-control nodrag"
           value={name}
           onChange={(event) => setName(event.target.value)}
           onBlur={commitName}
@@ -27,7 +28,7 @@ export function ConversationFrameNode({ data, selected }: NodeProps<BenchConvers
           }}
           aria-label="Frame name"
         />
-        <small>{data.frame.conversationIds.length} conversations</small>
+        <small className="bench-eyebrow">{data.frame.conversationIds.length} conversations</small>
         <button
           type="button"
           className="nodrag"

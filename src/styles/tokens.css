@@ -3,7 +3,8 @@
  * motion, and accent. Every presentation stylesheet reads these; none redefines them.
  * Dark is the canonical brand; the light theme overrides only the surface/ink groups.
  */
-:root {
+.canvas-host,
+.canvas-host .app-shell {
   /*
    * Two multipliers the user owns.
    *
@@ -96,7 +97,7 @@
   --header-height: 48px;
 }
 
-[data-theme='light'] {
+.canvas-host [data-theme='light'] {
   --surface-page: #f7f5ef;
   --surface-1: #f2efe7;
   --surface-2: #faf8f2;

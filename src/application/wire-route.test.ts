@@ -77,10 +77,17 @@ describe('wire.setRoute', () => {
     const workspace = createCanvasWorkspace(openMessagingScope(), human);
     const wireId = anyWireId(workspace.snapshot());
 
-    workspace.execute(setRoute(wireId, { waypoints: [{ x: 10, y: 20 }] }));
-    workspace.execute(setRoute(wireId, { waypoints: [] }));
+    workspace.execute(setRoute(wireId, {
+      waypoints: [{ x: 10, y: 20 }],
+      preferredSourceSide: 'right', preferredTargetSide: 'left',
+    }));
+    workspace.execute(setRoute(wireId, {
+      waypoints: [], preferredSourceSide: null, preferredTargetSide: null,
+    }));
 
     expect(activeHints(workspace.snapshot())[wireId].waypoints).toEqual([]);
+    expect(activeHints(workspace.snapshot())[wireId]).not.toHaveProperty('preferredSourceSide');
+    expect(activeHints(workspace.snapshot())[wireId]).not.toHaveProperty('preferredTargetSide');
   });
 
   it('rejects a route for a wire that does not exist', () => {

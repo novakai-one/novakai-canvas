@@ -1,9 +1,21 @@
 import type {
-  DiagramId, InterfaceId, LayoutId, LinkId, NodeId, TypeId, ViewId, WireId,
+  DiagramId, InterfaceId, LinkId, NodeId, TypeId, ViewId, WireId,
 } from './ids.ts';
 import type {
-  CanvasReference, InterfaceObject, Position, Size, SourceReference, TreeRow, TypeObject,
-} from './model.ts';
+  CalloutItem, IconCardIcon, MetricStatus, TimelineStep, TreeRow,
+} from './component-content.ts';
+import type {
+  CanvasReference, InterfaceObject, SourceReference, TypeObject,
+} from './architecture-values.ts';
+import type { CanvasLayout, CanvasViewBase, PortSide } from './layout-record.ts';
+import type { NodeKind } from './node-kind.ts';
+import type { OouxRow } from './ooux-object.ts';
+import type { WireCardinality } from './wire-cardinality.ts';
+
+export type {
+  CanvasLayout, LayoutStrategyName, NodePlacement, PortSide, WireRouteHint,
+} from './layout-record.ts';
+export type { NodeKind } from './node-kind.ts';
 
 /**
  * The v3 record model.
@@ -20,18 +32,9 @@ import type {
  * one" — one word for two concepts is why diagram titles used to live on a node. `tree` is kept
  * despite zero current instances: it has a domain module, a renderer, and DSL support.
  */
-export type NodeKind =
-  | 'group' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree';
-
 /** Relationship vocabulary carried by wires; renderers style each kind distinctly. */
 export type WireKind =
   | 'owns' | 'references' | 'assigns' | 'queries' | 'executes' | 'mentions' | 'missing';
-
-/** Which edge of a node an endpoint attaches to. */
-export type PortSide = 'top' | 'right' | 'bottom' | 'left';
-
-/** Named arrangement algorithms. `manual` is the identity strategy: it moves nothing. */
-export type LayoutStrategyName = 'manual' | 'hierarchy' | 'flow';
 
 /**
  * A stable attachment point on a node's edge.
@@ -44,7 +47,7 @@ export type LayoutStrategyName = 'manual' | 'hierarchy' | 'flow';
 export interface PortAnchor { side: PortSide; ordinal: number }
 
 /** One end of a wire. Absent anchor means "attach to the node, renderer picks the side". */
-export interface Endpoint { nodeId: NodeId; anchor?: PortAnchor }
+export interface Endpoint { nodeId: NodeId; anchor?: PortAnchor; cardinality?: WireCardinality }
 
 /** One semantic, selectable object. Geometry lives in a layout, never here. */
 export interface CanvasNode {
@@ -58,6 +61,23 @@ export interface CanvasNode {
   typeIds: TypeId[];
   /** Semantic hierarchy rows; present only on kind `tree`. */
   rows?: TreeRow[];
+  /** Ordered steps; present only on kind `timeline`. */
+  steps?: TimelineStep[];
+  /** Required value and optional context; present only on kind `metric`. */
+  value?: string;
+  detail?: string;
+  status?: MetricStatus;
+  /** Fixed semantic symbol; present only on kind `icon-card`. */
+  icon?: IconCardIcon;
+  /** Ordered highlights; present only on kind `callout-stack`. */
+  callouts?: CalloutItem[];
+  /** Ordered semantic text; present only on kind `block`. */
+  lines?: string[];
+  /** Stable agent-facing address for a block; never used as the stored wire join. */
+  wireRef?: string;
+  /** Stable CLI identity and ordered compartments; present only on `ooux-object`. */
+  objectRef?: string;
+  oouxRows?: OouxRow[];
   /** The real thing this occurrence depicts. Canvas references it and never owns it. */
   subjectRef?: CanvasReference;
   /** Deeper explanation opened from this occurrence; integrity is owned by the library. */
@@ -73,39 +93,6 @@ export interface CanvasWire {
   target: Endpoint;
 }
 
-/** One node's geometry inside one saved layout. */
-export interface NodePlacement {
-  nodeId: NodeId;
-  position: Position;
-  size: Size;
-  /** A pinned node is an anchor: layout works around it and never moves it. */
-  pinned: boolean;
-}
-
-/** Durable routing preference. Never a renderer path string, so the renderer stays replaceable. */
-export interface WireRouteHint {
-  wireId: WireId;
-  preferredSourceSide?: PortSide;
-  preferredTargetSide?: PortSide;
-  waypoints: Position[];
-  /**
-   * Where the label sits along the wire, 0 at the source and 1 at the target.
-   *
-   * A fraction rather than a coordinate: the label has to keep its place on the wire when the
-   * nodes move, and a stored point would drift off the path the moment either end was dragged.
-   */
-  labelPosition?: number;
-}
-
-/** One named arrangement of one diagram's nodes. */
-export interface CanvasLayout {
-  id: LayoutId;
-  name: string;
-  strategy: LayoutStrategyName;
-  placements: Record<string, NodePlacement>;
-  wireRouteHints: Record<string, WireRouteHint>;
-}
-
 /**
  * One saved reading view.
  *
@@ -113,12 +100,7 @@ export interface CanvasLayout {
  * be two writers for one fact. Edit and Present are host chrome: neither appears in this model,
  * so the two modes cannot disagree about an arrangement.
  */
-export interface CanvasView {
-  id: ViewId;
-  name: string;
-  layoutId: LayoutId;
-  viewport: { x: number; y: number; zoom: number };
-  collapsedNodeIds: NodeId[];
+export interface CanvasView extends CanvasViewBase {
   hiddenKinds: NodeKind[];
 }
 
@@ -162,8 +144,8 @@ export interface CrossDiagramLink {
   id: LinkId;
   kind: WireKind;
   label: string;
-  source: { diagramId: DiagramId; nodeId: NodeId };
-  target: { diagramId: DiagramId; nodeId: NodeId };
+  source: { diagramId: DiagramId; nodeId: NodeId; cardinality?: WireCardinality };
+  target: { diagramId: DiagramId; nodeId: NodeId; cardinality?: WireCardinality };
 }
 
 /** One library entry: enough to list and search without opening the record. */

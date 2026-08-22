@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { validateRecordCommand } from '../../application/canvas-workspace/command-validation';
 import type { RecordCommand } from '../../application/canvas-workspace';
+import { componentFor } from '../../components/registry';
 import { asId } from '../../domain/id-cast';
 import type { NodeId } from '../../domain/ids';
 import type { ProjectedView } from '../../domain/project-view';
@@ -20,6 +22,19 @@ const NODES = {
     parentId: asId<NodeId>('root'),
     interfaceIds: [],
     typeIds: [],
+  },
+  timeline: {
+    id: asId<NodeId>('timeline'),
+    kind: 'timeline' as const,
+    label: 'Session history',
+    parentId: asId<NodeId>('root'),
+    interfaceIds: [],
+    typeIds: [],
+    steps: [{ id: 'turn-1', label: 'Forked turn', fork: 'session-child' }],
+  },
+  block: {
+    id: asId<NodeId>('block'), kind: 'block' as const, label: 'Required output',
+    parentId: asId<NodeId>('root'), interfaceIds: [], typeIds: [], lines: ['Exactly one'],
   },
 };
 
@@ -75,8 +90,25 @@ describe('inspection shape', () => {
     expect(inspection.trail.map((step) => step.label)).toEqual(['A diagram', 'Session broker']);
   });
 
-  it('offers exactly three sections for a node', () => {
-    expect(describeSelection(props()).sections).toEqual(['description', 'interfaces', 'placement']);
+  it('offers the registered presentation section alongside the existing node sections', () => {
+    expect(describeSelection(props()).sections).toEqual([
+      'description', 'box', 'interfaces', 'placement',
+    ]);
+    expect(describeSelection(props({
+      selection: { kind: 'node', id: 'block' },
+    })).sections).toEqual(['description', 'content', 'text', 'box', 'placement']);
+    expect(componentFor('block').contentEditors).toEqual([
+      { field: 'lines', kind: 'string-list', label: 'Content', itemLabel: 'Line' },
+    ]);
+    expect(validateRecordCommand(record, {
+      kind: 'node.content.set', id: 'block', field: 'lines', value: ['First', 'Second'],
+    })).toEqual({ valid: true });
+    expect(validateRecordCommand(record, {
+      kind: 'node.content.set', id: 'block', field: 'lines', value: [''],
+    })).toEqual({ valid: false, reason: 'invalid-node-content:block:lines' });
+    expect(validateRecordCommand(record, {
+      kind: 'node.content.set', id: 'block', field: 'wireRef', value: 'other-ref',
+    })).toEqual({ valid: false, reason: 'node-content-not-editable:block:wireRef' });
   });
 
   it('keeps deleting out of the body and out of a read-only session', () => {
@@ -102,5 +134,17 @@ describe('inspection shape', () => {
       { kind: 'diagram.rename', name: 'Agent Messaging' },
       { kind: 'node.update', id: 'root', patch: { label: 'Agent Messaging' } },
     ]]);
+  });
+
+  it('Component item inspection', () => {
+    const inspection = describeSelection(props({
+      selection: { kind: 'component-item', nodeId: 'timeline', collection: 'steps', itemId: 'turn-1' },
+    }));
+    expect(inspection.kind).toBe('timeline step');
+    expect(inspection.title).toBe('Forked turn');
+    expect(inspection.sections).toEqual(['details']);
+    expect(inspection.trail.map((item) => item.label)).toEqual([
+      'A diagram', 'Session history', 'Forked turn',
+    ]);
   });
 });
