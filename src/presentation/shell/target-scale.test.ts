@@ -70,8 +70,11 @@ describe('canvas controls hold their size on screen', () => {
     expect(handle).not.toContain('--nvk-zoom');
   });
 
-  it('keeps React Flow\'s own reconnect anchors out of the way of the grab region', () => {
-    expect(rule('.canvas-surface .react-flow__edgeupdater')).toContain('pointer-events: none');
+  it('gives native reconnect anchors the shared zoom-stable grab target', () => {
+    const updater = rule('.canvas-surface .react-flow__edgeupdater');
+    expect(updater).toContain('pointer-events: all');
+    expect(updater).toContain('var(--target-grab)');
+    expect(updater).toContain('var(--nvk-zoom, 1)');
   });
 
   it('never lets semantic zoom override explicit wire-label visibility', () => {

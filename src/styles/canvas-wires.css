@@ -47,6 +47,7 @@
 .callout-stack-node-shell.ports-always .react-flow__handle,
 .block-node-shell:hover .react-flow__handle,
 .block-node-shell.ports-always .react-flow__handle,
+.canvas-surface[data-connection-gesture='reconnecting'] .react-flow__handle.connectionindicator,
 .canvas-surface .react-flow__node.selected .react-flow__handle { opacity: 1; }
 
 /* The default wire is legible; --wire is the floor its kind colour is lifted above. */
@@ -128,8 +129,8 @@
 /*
  * A selected wire's ends have to win the pointer against the node ports underneath them, which
  * is why the selected edge's layer is lifted above the nodes below — otherwise a port takes the
- * mousedown and starts a new wire instead of moving this one's end. The grabbing itself belongs
- * to `.wire-grab`, which is the invisible circle drawn over each dot.
+ * mousedown and starts a new wire instead of moving this one's end. React Flow's updater owns
+ * that endpoint gesture; the custom grab regions below only reshape internal route segments.
  */
 
 .canvas-surface .react-flow__edge.selected { z-index: 1001 !important; }
@@ -154,15 +155,21 @@
 }
 
 /*
- * React Flow's own reconnect anchors take no pointer input.
+ * React Flow's own reconnect anchors are the only endpoint drag authority.
  *
- * This edge moves its ends itself (`moveEnd`), because React Flow reconnects by listening
- * within a radius of an invisible anchor that a node's port sits on top of and swallows. Both
- * mechanisms being live meant the unreliable one painted over the reliable one: probing the
- * grab circle found `react-flow__edgeupdater` at its centre and for the first eight pixels out,
- * so the generous target existed and could not be reached.
+ * The radius uses the same target token as the rest of Canvas and divides by live zoom because
+ * the updater sits inside the scaled viewport. During reconnect all eligible ports are visible;
+ * React Flow still decides validity and performs the native snap/highlight interaction.
  */
-.canvas-surface .react-flow__edgeupdater { pointer-events: none; }
+.canvas-surface .react-flow__edgeupdater {
+  r: calc(var(--target-grab) / 2 / var(--nvk-zoom, 1));
+  fill: transparent;
+  stroke: none;
+  pointer-events: all;
+  cursor: grab;
+}
+
+.canvas-surface .react-flow__edgeupdater:active { cursor: grabbing; }
 
 /* A selected wire's contract must stay readable above everything else. */
 .wire-label.is-selected {
@@ -175,7 +182,7 @@
 .canvas-surface .react-flow__edgelabel-renderer { --nvk-label-zoom: var(--nvk-zoom, 1); }
 
 /*
- * The region that answers the pointer around a wire's end or its corridor handle.
+ * The region that answers the pointer around a wire's corridor handle.
  *
  * Invisible and much larger than the dot it surrounds. Chris: "if I let go too soon, the wire
  * snaps back" — the mark was eight physical pixels across at working zoom, so the release had

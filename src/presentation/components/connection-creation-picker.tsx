@@ -1,6 +1,12 @@
 import { useEffect, useRef } from 'react';
+import { allComponents } from '../../components/registry.ts';
 import type { CreatableNodeKind } from '../canvas-actions.ts';
-import { connectionCreationEntries } from './connection-creation.ts';
+
+const connectionCreationEntries = allComponents().flatMap((component) => {
+  const creation = component.creation;
+  if (!creation || !['shape', 'text'].includes(creation.category)) return [];
+  return [{ id: component.kind as CreatableNodeKind, ...creation }];
+});
 
 /** Choice shown only after a wire end lands on empty canvas. */
 export function ConnectionCreationPicker(props: {

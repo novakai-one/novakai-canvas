@@ -1,41 +1,40 @@
-import type { Connection, Rect } from '@xyflow/react';
+/** Pure command plans for creating and reconnecting Canvas wires. */
+
 import type { RecordCommand } from '../../application/canvas-workspace.ts';
-import { allComponents } from '../../components/registry.ts';
+import { NODE_PORTS } from '../../domain/flow.ts';
 import { asId } from '../../domain/id-cast.ts';
 import type { NodeId, WireId } from '../../domain/ids.ts';
 import type { PortSide } from '../../domain/records.ts';
 import {
   createCanvasNode, type CreatableNodeKind, type PlacedNode, type WorldPoint,
 } from '../canvas-actions.ts';
-import { NODE_PORTS } from '../../domain/flow.ts';
 
-export interface ConnectionOrigin { nodeId: string; side?: PortSide }
-
-export interface PendingConnection {
-  from: ConnectionOrigin;
-  world: WorldPoint;
-  picker: { x: number; y: number };
+/** Framework-independent connection values accepted by the command planners. */
+interface ConnectionEnds {
+  source?: string | null;
+  target?: string | null;
+  sourceHandle?: string | null;
+  targetHandle?: string | null;
 }
 
+/** Existing projected edge values needed to calculate the smallest reconnect change. */
+interface ExistingConnection extends ConnectionEnds { id: string; source: string; target: string }
+/** One node port remembered while a create gesture is active. */
+export interface ConnectionOrigin { nodeId: string; side?: PortSide }
+/** Empty-canvas drop awaiting the kind of node the user wants to create. */
+export interface PendingConnection { from: ConnectionOrigin; world: WorldPoint; picker: WorldPoint }
 const OPPOSITE_SIDE: Record<PortSide, PortSide> = {
   top: 'bottom', bottom: 'top', left: 'right', right: 'left',
 };
-
-export const connectionCreationEntries = allComponents().flatMap((component) => {
-  const creation = component.creation;
-  if (!creation || !['shape', 'text'].includes(creation.category)) return [];
-  return [{ id: component.kind as CreatableNodeKind, ...creation }];
-});
 
 /** Reads a shared port id as the durable routing side it names. */
 export function sideOfHandle(handleId: string | null | undefined): PortSide | undefined {
   return NODE_PORTS.includes(handleId as PortSide) ? (handleId as PortSide) : undefined;
 }
-
-/** Durable side preference carried by a connect or reconnect gesture, when one was explicit. */
-export function wireRouteCommand(
+/** Durable side preference carried by a connect gesture, when one was explicit. */
+function wireRouteCommand(
   id: string,
-  connection: { sourceHandle?: string | null; targetHandle?: string | null },
+  connection: Pick<ConnectionEnds, 'sourceHandle' | 'targetHandle'>,
 ): RecordCommand | undefined {
   const preferredSourceSide = sideOfHandle(connection.sourceHandle);
   const preferredTargetSide = sideOfHandle(connection.targetHandle);
@@ -43,12 +42,10 @@ export function wireRouteCommand(
     kind: 'wire.setRoute', id, route: { preferredSourceSide, preferredTargetSide },
   } : undefined;
 }
-
 /** One ordinary port-to-port gesture, including its route, as one undoable change set. */
-export function connectedWire(connection: Connection): {
-  id: string;
-  commands: RecordCommand[];
-} | null {
+export function connectedWire(
+  connection: ConnectionEnds,
+): { id: string; commands: RecordCommand[] } | null {
   if (!connection.source || !connection.target) return null;
   const id = `wire-${crypto.randomUUID().slice(0, 8)}`;
   const route = wireRouteCommand(id, connection);
@@ -67,7 +64,39 @@ export function connectedWire(connection: Connection): {
     ],
   };
 }
-
+/** Minimal atomic commands for one native endpoint reconnect; exact no-op returns none. */
+export function reconnectedWire(
+  edge: ExistingConnection,
+  connection: ConnectionEnds,
+): RecordCommand[] {
+  if (!connection.source || !connection.target) return [];
+  const sourceChanged = edge.source !== connection.source;
+  const targetChanged = edge.target !== connection.target;
+  const previousSourceSide = sideOfHandle(edge.sourceHandle);
+  const previousTargetSide = sideOfHandle(edge.targetHandle);
+  const nextSourceSide = sideOfHandle(connection.sourceHandle);
+  const nextTargetSide = sideOfHandle(connection.targetHandle);
+  const sourceSideChanged = previousSourceSide !== nextSourceSide;
+  const targetSideChanged = previousTargetSide !== nextTargetSide;
+  const commands: RecordCommand[] = [];
+  if (sourceChanged || targetChanged) {
+    commands.push({
+      kind: 'wire.reconnect', id: edge.id,
+      ...(sourceChanged ? { source: connection.source } : {}),
+      ...(targetChanged ? { target: connection.target } : {}),
+    });
+  }
+  if (sourceSideChanged || targetSideChanged) {
+    commands.push({
+      kind: 'wire.setRoute', id: edge.id,
+      route: {
+        ...(sourceSideChanged ? { preferredSourceSide: nextSourceSide ?? null } : {}),
+        ...(targetSideChanged ? { preferredTargetSide: nextTargetSide ?? null } : {}),
+      },
+    });
+  }
+  return commands;
+}
 /** Node + wire + route produced by one resolved empty-canvas connection gesture. */
 export function connectedNode(
   placed: PlacedNode[],
@@ -100,11 +129,10 @@ export function connectedNode(
     ],
   };
 }
-
 /** Keeps the compact picker inside the visible canvas around the point that opened it. */
 export function pickerPosition(
   point: { x: number; y: number },
-  surface: Pick<Rect, 'x' | 'y' | 'width' | 'height'>,
+  surface: { x: number; y: number; width: number; height: number },
 ): { x: number; y: number } {
   const width = 252;
   const height = 332;
