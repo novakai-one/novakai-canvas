@@ -64,6 +64,7 @@ export const blockComponent: DiagramComponent<'block'> = {
     lines: z.array(z.string().min(1)).optional(),
     wireRef: z.string().regex(WIRE_REF).optional(),
   },
+  contentEditors: [{ field: 'lines', kind: 'string-list', label: 'Content', itemLabel: 'Line' }],
   dslChildren: [{
     keyword: 'line',
     syntax: 'line "non-empty text"',

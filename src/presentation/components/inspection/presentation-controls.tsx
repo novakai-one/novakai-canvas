@@ -88,7 +88,7 @@ export function ArrangementControls({ nodeId, props }: {
           if (!event.target.value) props.execute({ kind: 'layout.arrangement.set', id: nodeId });
           else update({ layout: event.target.value as AuthoredArrangement['layout'] });
         }}>
-          <option value="">Manual</option>
+          <option value="">Freeform</option>
           {component.arrangementModes.map((mode) => <option key={mode} value={mode}>{mode}</option>)}
         </select>
       </FieldRow>

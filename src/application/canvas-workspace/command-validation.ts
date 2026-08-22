@@ -54,6 +54,23 @@ function requireUniqueWireAddress(record: DiagramRecord, node: CanvasNode): void
   }
 }
 
+function validateContent(record: DiagramRecord, command: Extract<NodeCommand, {
+  kind: 'node.content.set';
+}>): void {
+  const component = componentFor(record.nodes[command.id].kind);
+  const editor = component.contentEditors?.find((candidate) => candidate.field === command.field);
+  const schema = component.contentFields?.[command.field];
+  if (!editor || !schema) {
+    throw new Error(`node-content-not-editable:${command.id}:${command.field}`);
+  }
+  if (editor.kind === 'string-list' && !Array.isArray(command.value)) {
+    throw new Error(`invalid-node-content:${command.id}:${command.field}`);
+  }
+  if (!schema.safeParse(command.value).success) {
+    throw new Error(`invalid-node-content:${command.id}:${command.field}`);
+  }
+}
+
 function validateNode(record: DiagramRecord, command: NodeCommand): void {
   if (command.kind === 'node.add') {
     if (record.nodes[command.node.id]) throw new Error(`node-already-exists:${command.node.id}`);
@@ -62,6 +79,10 @@ function validateNode(record: DiagramRecord, command: NodeCommand): void {
     return;
   }
   requireNode(record, command.id);
+  if (command.kind === 'node.content.set') {
+    validateContent(record, command);
+    return;
+  }
   if (command.kind === 'node.update') {
     const node = record.nodes[command.id];
     const identity = componentFor(node.kind).identity;

@@ -76,6 +76,23 @@ describe('layout authority', () => {
     };
     const pinned = layoutScopes(connected, ['stack']);
     expect(pinned.layouts['layout-default'].placements.two.position).toEqual({ x: 400, y: 300 });
+
+    const manual = arrangedStack(false);
+    manual.layouts['layout-default'].placements.stack = {
+      ...manual.layouts['layout-default'].placements.stack,
+      size: { width: 1_000, height: 800 },
+      sizeMode: 'manual',
+    };
+    manual.layouts['layout-default'].placements.one = {
+      ...manual.layouts['layout-default'].placements.one,
+      size: { width: 1, height: 1 },
+      sizeMode: 'manual',
+    };
+    const manuallySized = layoutScopes(manual, ['stack']);
+    expect(manuallySized.layouts['layout-default'].placements.stack.size)
+      .toEqual({ width: 1_000, height: 800 });
+    expect(manuallySized.layouts['layout-default'].placements.one.size.width).toBeGreaterThan(1);
+    expect(manuallySized.layouts['layout-default'].placements.one.size.height).toBeGreaterThan(1);
   });
 
   it('moves geometry in the active layout without mutating semantic node meaning', () => {

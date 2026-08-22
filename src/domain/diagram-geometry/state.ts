@@ -2,7 +2,7 @@ import { componentFor } from '../../components/registry.ts';
 import { resolveNodeAppearance, type ContainerArrangement } from '../canvas-presentation.ts';
 import { positionedNodes, resolveLayout } from '../layouts.ts';
 import type {
-  ArchitectureDocument, CanvasLayout, PositionedCanvasNode, Size,
+  ArchitectureDocument, CanvasLayout, NodePlacement, PositionedCanvasNode, Size,
 } from '../model.ts';
 import type { CanvasNode as RecordNode } from '../records.ts';
 
@@ -11,6 +11,18 @@ type PositionedDocument = Omit<ArchitectureDocument, 'nodes'> & {
 };
 
 export type LayoutNestedContainer = (containerId: string) => Size;
+
+/** Resolves content requirements through the one saved auto/manual size authority. */
+export function resolveRequiredSize(
+  required: Size,
+  placement: Pick<NodePlacement, 'size' | 'sizeMode'> | undefined,
+): Size {
+  if (placement?.sizeMode !== 'manual') return required;
+  return {
+    width: Math.max(required.width, placement.size.width),
+    height: Math.max(required.height, placement.size.height),
+  };
+}
 
 /** Mutable working state private to one deterministic geometry calculation. */
 export class LayoutState {
@@ -44,7 +56,6 @@ export class LayoutState {
   measureNode(nodeId: string): Size {
     const node = this.document.nodes[nodeId];
     const placement = this.layout.placements[nodeId];
-    if (placement?.sizeMode === 'manual') return placement.size;
     const interfaceLines = node.interfaceIds.map((id) => {
       const item = this.document.interfaces[id];
       return `${item.name}(${item.accepts.join(', ')}) -> ${item.returns.join(', ')}`;
@@ -54,11 +65,12 @@ export class LayoutState {
       return `${item.name} { ${item.fields.join(', ')} }`;
     });
     const authored = this.layout.appearanceByNodeId?.[node.id];
-    return componentFor(node.kind).measure(node as unknown as RecordNode, {
+    const required = componentFor(node.kind).measure(node as unknown as RecordNode, {
       interfaceLines,
       typeLines,
       appearance: resolveNodeAppearance(node.kind as RecordNode['kind'], authored),
     });
+    return resolveRequiredSize(required, placement);
   }
 
   orderedDirectChildIds(containerId: string): string[] {

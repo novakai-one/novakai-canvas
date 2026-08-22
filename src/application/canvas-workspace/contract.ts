@@ -37,6 +37,7 @@ export type RecordCommand =
   | { kind: 'node.autoSize'; id: string }
   | { kind: 'node.pin'; id: string; pinned: boolean }
   | { kind: 'node.update'; id: string; patch: { label?: string; description?: string } }
+  | { kind: 'node.content.set'; id: string; field: string; value: unknown }
   | { kind: 'node.reparent'; id: string; parentId?: string }
   | { kind: 'node.remove'; id: string }
   | { kind: 'wire.add'; wire: DiagramRecord['wires'][string] }

@@ -86,6 +86,11 @@ export function reflowAfterCommand(
       resizedNodeIds = [command.id];
       arrangementAffectedIds = [command.id];
       break;
+    case 'node.resize':
+    case 'node.content.set':
+      resizedNodeIds = [command.id];
+      arrangementAffectedIds = [command.id];
+      break;
     case 'node.autoSize':
       resizedNodeIds = [command.id];
       autoSizedNodeIds = [command.id];

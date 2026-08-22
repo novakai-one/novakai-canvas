@@ -1,6 +1,7 @@
 import { componentFor } from '../../../components/registry';
 import { rootGroupId } from '../../canvas-actions';
 import { FieldRow, ObjectRow, PanelSection, SwitchRow } from '../../shell';
+import { ComponentContentEditor } from './component-content-editor';
 import type { InspectPanelProps, Inspection } from './contract';
 import { ArrangementControls, NodeAppearanceControls } from './presentation-controls';
 import { inspectionSupport } from './support';
@@ -23,8 +24,10 @@ export function nodeInspection(props: InspectPanelProps, id: string): Inspection
     (key) => ['background', 'border-color', 'border', 'radius', 'padding', 'badge'].includes(key),
   ) ?? false;
   const hasInterfaces = component.allowsMembers !== false;
+  const hasContent = Boolean(component.contentEditors?.length);
   const sections = [
-    'description', ...(hasText ? ['text'] : []), ...(hasBox ? ['box'] : []),
+    'description', ...(hasContent ? ['content'] : []),
+    ...(hasText ? ['text'] : []), ...(hasBox ? ['box'] : []),
     ...(hasInterfaces ? ['interfaces'] : []),
     ...(component.arrangementModes?.length ? ['layout'] : []), 'placement',
   ];
@@ -57,6 +60,10 @@ export function nodeInspection(props: InspectPanelProps, id: string): Inspection
         {detail?.status === 'active' && <button className="panel-button"
           onClick={() => props.openDiagram(detail.id)} type="button">Open detail →</button>}
       </PanelSection>
+      {hasContent && <PanelSection {...sectionProps(props, 'content')} title="Content">
+        {component.contentEditors?.map((declaration) => <ComponentContentEditor
+          declaration={declaration} key={declaration.field} node={node} props={props} />)}
+      </PanelSection>}
       {hasText && <PanelSection {...sectionProps(props, 'text')} title="Text">
         <NodeAppearanceControls nodeId={id} props={props} text />
       </PanelSection>}

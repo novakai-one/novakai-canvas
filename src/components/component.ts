@@ -66,6 +66,14 @@ export interface ComponentItem {
   fields: readonly { label: string; value: string }[];
 }
 
+/** Host-neutral declaration of one semantic content field a person may edit. */
+export interface ContentEditorDeclaration {
+  field: string;
+  kind: 'string-list';
+  label: string;
+  itemLabel: string;
+}
+
 export interface DiagramComponent<K extends string = string> {
   /** Durable id stored in records. Never renamed once shipped. */
   kind: K;
@@ -87,6 +95,8 @@ export interface DiagramComponent<K extends string = string> {
   resize?: { minSize: Size };
   /** Extra zod fields this kind stores beyond the base node (id/kind/label/description/parentId). */
   contentFields?: Record<string, import('zod').ZodTypeAny>;
+  /** Semantic fields exposed to any host; values still validate through `contentFields`. */
+  contentEditors?: readonly ContentEditorDeclaration[];
   dslChildren?: DslChildStatement[];
   /** Shared presentation keys this kind accepts from agent-authored DSL. */
   appearanceKeys?: readonly AppearanceKey[];
