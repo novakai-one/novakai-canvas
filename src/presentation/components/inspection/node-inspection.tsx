@@ -18,7 +18,7 @@ export function nodeInspection(props: InspectPanelProps, id: string): Inspection
     ? props.diagrams.find((entry) => entry.id === node.expandsToDiagramId) : undefined;
   const isRoot = id === rootGroupId(props.record);
   const hasText = component.appearanceKeys?.some(
-    (key) => ['icon', 'font', 'size', 'weight', 'align', 'text'].includes(key),
+    (key) => ['icon', 'font', 'size', 'weight', 'align', 'vertical-align', 'text'].includes(key),
   ) ?? false;
   const hasBox = component.appearanceKeys?.some(
     (key) => ['background', 'border-color', 'border', 'radius', 'padding', 'badge'].includes(key),

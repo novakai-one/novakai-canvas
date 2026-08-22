@@ -20,11 +20,15 @@ export function BlockNode({ data }: NodeProps<BlockFlowNode>) {
     fontFamily: appearance.fontFamily,
     fontSize: appearance.fontSize,
     fontWeight: appearance.fontWeight,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: appearance.verticalAlign === 'center' ? 'center'
+      : appearance.verticalAlign === 'bottom' ? 'flex-end' : 'flex-start',
     lineHeight: 1.4,
     padding: appearance.padding,
     textAlign: appearance.textAlign,
   } satisfies CSSProperties;
-  const justifyContent = appearance.textAlign === 'left' ? 'flex-start'
+  const horizontalJustify = appearance.textAlign === 'left' ? 'flex-start'
     : appearance.textAlign === 'right' ? 'flex-end' : 'center';
   return (
     <div className={`block-node-shell${preferences.nodes.showPorts === 'always' ? ' ports-always' : ''}`}>
@@ -33,7 +37,7 @@ export function BlockNode({ data }: NodeProps<BlockFlowNode>) {
         <>
           <span
             className="block-line"
-            style={{ alignItems: 'center', display: 'flex', gap: layout.iconGap, justifyContent, minHeight: layout.firstRowHeight }}
+            style={{ alignItems: 'center', display: 'flex', gap: layout.iconGap, justifyContent: horizontalJustify, minHeight: layout.firstRowHeight }}
           >
             <svg
               aria-label={`${appearance.icon} icon`}

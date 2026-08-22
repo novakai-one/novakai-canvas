@@ -105,7 +105,7 @@ describe('resolveDrop', () => {
 });
 
 describe('createCanvasNode', () => {
-  it.each(['module', 'object', 'runtime', 'resource', 'comment', 'group'] as const)('centres a new %s on the point the user chose', (kind) => {
+  it.each(['module', 'object', 'runtime', 'resource', 'comment', 'group', 'block'] as const)('centres a new %s on the point the user chose', (kind) => {
     const created = createCanvasNode(placed, kind, `${kind}-1`, { x: 200, y: 200 });
     expect(created.node.parentId).toBe('inner');
     expect(created.node.id).toBe(`${kind}-1`);
@@ -117,6 +117,10 @@ describe('createCanvasNode', () => {
       x: 100 - created.placement.size.width / 2,
       y: 100 - created.placement.size.height / 2,
     });
+    if (kind === 'block') {
+      expect(created.placement.size).toEqual({ width: 280, height: 140 });
+      expect(created.placement.sizeMode).toBe('manual');
+    }
   });
 
   it('places at the top level when the user is looking outside every group', () => {

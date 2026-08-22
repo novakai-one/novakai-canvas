@@ -6,8 +6,8 @@ import type { DiagramComponent, DslNodeDeclaration } from '../component.ts';
 import { GLYPHS } from '../glyphs.ts';
 import { layoutBlockText, measureBlockTextWidth } from './text-layout.ts';
 
-const SYNTAX = 'block "label" [ref=kebab-case] [icon=check|clock|people|shield|target|trend font=… size=… weight=… align=… text=… background=… border-color=… border=… radius=… padding=…]';
-const EXAMPLE = 'block "Refusal rate" ref=refusal-rate icon=target size=14 weight=600 align=center text=green border-color=green border=1 radius=8 padding=12';
+const SYNTAX = 'block "label" [ref=kebab-case] [icon=check|clock|people|shield|target|trend font=… size=… weight=… align=… vertical-align=… text=… background=… border-color=… border=… radius=… padding=…]';
+const EXAMPLE = 'block "Refusal rate" ref=refusal-rate icon=target size=14 weight=600 align=center vertical-align=center text=green border-color=green border=1 radius=8 padding=12';
 const WIRE_REF = /^[a-z][a-z0-9-]{0,63}$/;
 
 function escapeXml(text: string): string {
@@ -43,7 +43,8 @@ export const blockComponent: DiagramComponent<'block'> = {
   declaration,
   creation: {
     category: 'text', label: 'Text block', hint: 'Styled multiline content',
-    defaultLabel: 'New block', initialSize: { width: 200, height: 110 },
+    defaultLabel: 'New block', initialSize: { width: 280, height: 140 },
+    initialSizeMode: 'manual',
     stableIdField: 'wireRef',
   },
   resize: { minSize: { width: 80, height: 40 } },
@@ -57,7 +58,7 @@ export const blockComponent: DiagramComponent<'block'> = {
     preserveDeclarationOrder: true,
   },
   appearanceKeys: [
-    'icon', 'font', 'size', 'weight', 'align', 'text', 'background',
+    'icon', 'font', 'size', 'weight', 'align', 'vertical-align', 'text', 'background',
     'border-color', 'border', 'radius', 'padding',
   ],
   contentFields: {
@@ -91,6 +92,13 @@ export const blockComponent: DiagramComponent<'block'> = {
     const x = appearance.textAlign === 'left' ? box.x + inset
       : appearance.textAlign === 'right' ? box.x + box.width - inset : box.x + box.width / 2;
     const lineHeight = appearance.fontSize * 1.4;
+    const availableHeight = Math.max(0, box.height - inset * 2);
+    const verticalOffset = appearance.verticalAlign === 'center'
+      ? Math.max(0, (availableHeight - layout.contentHeight) / 2)
+      : appearance.verticalAlign === 'bottom'
+        ? Math.max(0, availableHeight - layout.contentHeight)
+        : 0;
+    const contentTop = box.y + inset + verticalOffset;
     const parts = [
       `<rect x="${box.x}" y="${box.y}" width="${box.width}" height="${box.height}" fill="${appearance.backgroundColor}" stroke="${appearance.borderColor}" stroke-width="${appearance.borderWidth}" rx="${appearance.borderRadius}"/>`,
     ];
@@ -101,16 +109,16 @@ export const blockComponent: DiagramComponent<'block'> = {
       const rowX = appearance.textAlign === 'left' ? box.x + inset
         : appearance.textAlign === 'right' ? box.x + box.width - inset - firstRowWidth
           : box.x + (box.width - firstRowWidth) / 2;
-      const iconY = box.y + inset + (layout.firstRowHeight - layout.iconSize) / 2;
+      const iconY = contentTop + (layout.firstRowHeight - layout.iconSize) / 2;
       firstTextX = rowX + layout.iconSize + layout.iconGap;
       parts.push(`<g data-icon="${appearance.icon}" transform="translate(${rowX} ${iconY}) scale(${layout.iconSize / 24})" fill="none" stroke="${appearance.textColor}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><title>${appearance.icon} icon</title><path d="${GLYPHS[appearance.icon]}"/></g>`);
     }
     layout.lines.forEach((line, index) => {
       const y = appearance.icon
         ? (index === 0
-            ? box.y + inset + (layout.firstRowHeight - lineHeight) / 2 + appearance.fontSize
-            : box.y + inset + layout.firstRowHeight + (index - 1) * lineHeight + appearance.fontSize)
-        : box.y + inset + appearance.fontSize + index * lineHeight;
+            ? contentTop + (layout.firstRowHeight - lineHeight) / 2 + appearance.fontSize
+            : contentTop + layout.firstRowHeight + (index - 1) * lineHeight + appearance.fontSize)
+        : contentTop + appearance.fontSize + index * lineHeight;
       const lineX = index === 0 && appearance.icon ? firstTextX : x;
       const lineAnchor = index === 0 && appearance.icon ? 'start' : anchor;
       parts.push(`<text x="${lineX}" y="${y}" fill="${appearance.textColor}" font-family="${escapeXml(appearance.fontFamily)}" font-size="${appearance.fontSize}" font-weight="${appearance.fontWeight}" text-anchor="${lineAnchor}" xml:space="preserve">${escapeXml(line)}</text>`);

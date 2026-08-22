@@ -28,6 +28,7 @@ function addNode(record: DiagramRecord, layout: Layout, command: Extract<NodeCom
     nodeId: command.node.id as never,
     position: command.placement.position,
     size: command.placement.size,
+    ...(command.placement.sizeMode ? { sizeMode: command.placement.sizeMode } : {}),
     pinned: false,
   };
   if (command.node.parentId) reconcileArrangementChildren(record, command.node.parentId as string);

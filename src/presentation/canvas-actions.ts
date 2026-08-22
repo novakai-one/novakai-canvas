@@ -17,7 +17,11 @@ export type CreatableNodeKind = CanvasNode['kind'];
 /** Semantic node and initial geometry produced for one `node.add` command. */
 export interface CreatedCanvasNode {
   node: CanvasNode;
-  placement: { position: { x: number; y: number }; size: { width: number; height: number } };
+  placement: {
+    position: { x: number; y: number };
+    size: { width: number; height: number };
+    sizeMode?: 'auto' | 'manual';
+  };
 }
 
 /**
@@ -73,7 +77,11 @@ export function createCanvasNode(
   }
   return {
     node,
-    placement: { position: placement.position, size },
+    placement: {
+      position: placement.position,
+      size,
+      ...(creation.initialSizeMode ? { sizeMode: creation.initialSizeMode } : {}),
+    },
   };
 }
 

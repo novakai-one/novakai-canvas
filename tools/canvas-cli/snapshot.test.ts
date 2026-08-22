@@ -114,14 +114,21 @@ describe('renderRecordSvg', () => {
   });
 
   it('renders dark resolved block styles, multiline text, and a hidden card badge', () => {
-    const svg = renderRecordSvg(buildRecord(`
+    const record = buildRecord(`
 scope "Styled Snapshot" layout=stack gap=16
   block "Tasks:" weight=600
     line "• Safety"
     line "• Code"
-  block "Refusal rate" size=14 weight=600 align=center text=green border-color=green border=1 radius=8 padding=12
+  block "Refusal rate" size=14 weight=600 align=center vertical-align=center text=green border-color=green border=1 radius=8 padding=12
   module "Prompt" badge=hide
-`));
+`);
+    const block = Object.values(record.nodes).find((node) => node.label === 'Refusal rate');
+    if (!block) throw new Error('snapshot fixture block missing');
+    const layout = record.layouts[record.views[record.activeViewId].layoutId];
+    const placement = layout.placements[block.id];
+    placement.size = { ...placement.size, height: 180 };
+    placement.sizeMode = 'manual';
+    const svg = renderRecordSvg(record);
     expect(svg).toContain('fill="transparent" stroke="#78a886" stroke-width="1" rx="8"');
     expect(svg).toContain('fill="#78a886" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" text-anchor="middle"');
     expect(svg).toContain('>Tasks:</text>');
@@ -129,6 +136,8 @@ scope "Styled Snapshot" layout=stack gap=16
     expect(svg).toContain('>• Code</text>');
     expect(svg).toContain('>Prompt</text>');
     expect(svg).not.toContain('>MODULE</text>');
+    const centered = /<text x="[^"]+" y="([^"]+)"[^>]*>Refusal rate<\/text>/.exec(svg);
+    expect(Number(centered?.[1])).toBeGreaterThan(placement.position.y + 40);
   });
 });
 

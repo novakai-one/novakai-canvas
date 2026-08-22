@@ -88,6 +88,8 @@ export interface DiagramComponent<K extends string = string> {
     hint: string;
     defaultLabel: string;
     initialSize: Size;
+    /** Defaults to auto; manual preserves the useful initial frame until the user resets it. */
+    initialSizeMode?: 'auto' | 'manual';
     /** Copies the UI-minted node id into this stable identity field. */
     stableIdField?: keyof RecordNode;
   };

@@ -7,6 +7,7 @@ export const FONT_FAMILIES = ['sans', 'serif', 'mono'] as const;
 export const FONT_SIZES = [12, 14, 16, 20, 24, 32, 40] as const;
 export const FONT_WEIGHTS = [400, 500, 600, 700] as const;
 export const TEXT_ALIGNS = ['left', 'center', 'right'] as const;
+export const VERTICAL_ALIGNS = ['top', 'center', 'bottom'] as const;
 export const INK_COLORS = ['ink', 'muted', 'green', 'blue', 'violet', 'rose', 'amber'] as const;
 export const BACKGROUNDS = [
   'transparent', 'surface', 'green-soft', 'blue-soft', 'violet-soft', 'rose-soft', 'amber-soft',
@@ -23,6 +24,7 @@ export type FontFamily = (typeof FONT_FAMILIES)[number];
 export type FontSize = (typeof FONT_SIZES)[number];
 export type FontWeight = (typeof FONT_WEIGHTS)[number];
 export type TextAlign = (typeof TEXT_ALIGNS)[number];
+export type VerticalAlign = (typeof VERTICAL_ALIGNS)[number];
 export type InkColor = (typeof INK_COLORS)[number];
 export type Background = (typeof BACKGROUNDS)[number];
 export type Spacing = (typeof SPACINGS)[number];
@@ -42,6 +44,7 @@ export interface NodeAppearance {
   size?: FontSize;
   weight?: FontWeight;
   align?: TextAlign;
+  verticalAlign?: VerticalAlign;
   text?: InkColor;
   background?: Background;
   borderColor?: InkColor;
@@ -79,6 +82,7 @@ export interface ResolvedNodeAppearance {
   fontSize: FontSize;
   fontWeight: FontWeight;
   textAlign: TextAlign;
+  verticalAlign: VerticalAlign;
   textColor: string;
   backgroundColor: string;
   borderColor: string;
@@ -90,7 +94,7 @@ export interface ResolvedNodeAppearance {
 }
 
 export type AppearanceKey =
-  | 'icon' | 'font' | 'size' | 'weight' | 'align' | 'text' | 'background'
+  | 'icon' | 'font' | 'size' | 'weight' | 'align' | 'vertical-align' | 'text' | 'background'
   | 'border-color' | 'border' | 'radius' | 'padding' | 'badge';
 export type ArrangementKey = 'layout' | 'columns' | 'gap' | 'align';
 
@@ -108,6 +112,7 @@ export const APPEARANCE_SPECIFICATIONS: readonly AppearanceSpecification[] = [
   { key: 'size', values: FONT_SIZES, default: 14, jsonKey: 'size' },
   { key: 'weight', values: FONT_WEIGHTS, default: 400, jsonKey: 'weight' },
   { key: 'align', values: TEXT_ALIGNS, default: 'left', jsonKey: 'align' },
+  { key: 'vertical-align', values: VERTICAL_ALIGNS, default: 'top', jsonKey: 'verticalAlign' },
   { key: 'text', values: INK_COLORS, default: 'ink', jsonKey: 'text' },
   { key: 'background', values: BACKGROUNDS, default: 'transparent', jsonKey: 'background' },
   { key: 'border-color', values: INK_COLORS, default: 'muted', jsonKey: 'borderColor' },
@@ -182,6 +187,7 @@ export const nodeAppearanceSchema = z.object({
   size: fontSize.optional(),
   weight: fontWeight.optional(),
   align: z.enum(TEXT_ALIGNS).optional(),
+  verticalAlign: z.enum(VERTICAL_ALIGNS).optional(),
   text: z.enum(INK_COLORS).optional(),
   background: z.enum(BACKGROUNDS).optional(),
   borderColor: z.enum(INK_COLORS).optional(),
@@ -256,6 +262,7 @@ export function resolveNodeAppearance(
     fontSize: authored.size ?? 14,
     fontWeight: authored.weight ?? 400,
     textAlign: authored.align ?? 'left',
+    verticalAlign: authored.verticalAlign ?? 'top',
     textColor: PALETTE[context.theme][text],
     backgroundColor: PALETTE[context.theme][background],
     borderColor: PALETTE[context.theme][borderColor],

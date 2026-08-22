@@ -14,6 +14,7 @@ export interface ActorContext {
 interface PlacementInput {
   position: { x: number; y: number };
   size: { width: number; height: number };
+  sizeMode?: 'auto' | 'manual';
 }
 
 /** A partial wire route update; omitted fields retain their stored value. */

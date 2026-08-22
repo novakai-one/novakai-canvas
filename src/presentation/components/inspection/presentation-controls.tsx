@@ -12,9 +12,10 @@ import { FieldRow } from '../../shell';
 import type { InspectPanelProps } from './contract';
 import { inspectionSupport } from './support';
 
-const TEXT_KEYS = new Set(['icon', 'font', 'size', 'weight', 'align', 'text']);
+const TEXT_KEYS = new Set(['icon', 'font', 'size', 'weight', 'align', 'vertical-align', 'text']);
 const LABELS: Record<string, string> = {
-  icon: 'Icon', font: 'Font', size: 'Font size', weight: 'Weight', align: 'Alignment',
+  icon: 'Icon', font: 'Font', size: 'Font size', weight: 'Weight',
+  align: 'Horizontal alignment', 'vertical-align': 'Vertical alignment',
   text: 'Text colour', background: 'Background', 'border-color': 'Border colour',
   border: 'Border width', radius: 'Corner radius', padding: 'Padding', badge: 'Kind badge',
   width: 'Width', pattern: 'Pattern', color: 'Colour', shape: 'Shape', gap: 'Gap', columns: 'Columns',

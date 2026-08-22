@@ -70,6 +70,7 @@ export function layoutBlockText(
   iconSize: number;
   iconGap: number;
   firstRowHeight: number;
+  contentHeight: number;
 } {
   const sourceLines = [label, ...authoredLines];
   const iconSize = appearance.icon ? Math.round(appearance.fontSize * 1.3) : 0;
@@ -87,15 +88,17 @@ export function layoutBlockText(
   ];
   const lineHeight = appearance.fontSize * 1.4;
   const firstRowHeight = Math.max(lineHeight, iconSize);
+  const contentHeight = firstRowHeight + Math.max(0, lines.length - 1) * lineHeight;
   const inset = appearance.padding + appearance.borderWidth;
   return {
     size: {
       width: Math.ceil(contentWidth + inset * 2),
-      height: Math.ceil(firstRowHeight + Math.max(0, lines.length - 1) * lineHeight + inset * 2),
+      height: Math.ceil(contentHeight + inset * 2),
     },
     lines,
     iconSize,
     iconGap: iconSize === 0 ? 0 : ICON_GAP,
     firstRowHeight,
+    contentHeight,
   };
 }
