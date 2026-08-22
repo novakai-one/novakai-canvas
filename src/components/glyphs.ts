@@ -1,6 +1,6 @@
 /** Shared outline artwork for the closed semantic icon vocabulary. */
 
-import { ICON_NAMES, type IconName } from '../domain/model.ts';
+import { ICON_NAMES, type IconName } from '../domain/component-content.ts';
 
 export const GLYPH_NAMES = ICON_NAMES;
 

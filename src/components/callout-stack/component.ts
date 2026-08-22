@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-import type { CalloutItem, CalloutKind } from '../../domain/model.ts';
+import type { CalloutItem, CalloutKind } from '../../domain/component-content.ts';
 import { namedNodeDeclaration, type ComponentItem, type DiagramComponent } from '../component.ts';
 
 const KINDS = ['info', 'warning', 'decision', 'success'] as const;

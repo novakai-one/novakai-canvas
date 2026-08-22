@@ -2,13 +2,18 @@ import type {
   DiagramId, InterfaceId, LinkId, NodeId, TypeId, ViewId, WireId,
 } from './ids.ts';
 import type {
-  CalloutItem, CanvasReference, IconCardIcon, InterfaceObject, MetricStatus, SourceReference, TimelineStep, TreeRow, TypeObject,
-} from './model.ts';
+  CalloutItem, IconCardIcon, MetricStatus, TimelineStep, TreeRow,
+} from './component-content.ts';
+import type {
+  CanvasReference, InterfaceObject, SourceReference, TypeObject,
+} from './architecture-values.ts';
 import type { CanvasLayout, CanvasViewBase, PortSide } from './layout-record.ts';
+import type { NodeKind } from './node-kind.ts';
 
 export type {
   CanvasLayout, LayoutStrategyName, NodePlacement, PortSide, WireRouteHint,
 } from './layout-record.ts';
+export type { NodeKind } from './node-kind.ts';
 
 /**
  * The v3 record model.
@@ -25,9 +30,6 @@ export type {
  * one" — one word for two concepts is why diagram titles used to live on a node. `tree` is kept
  * despite zero current instances: it has a domain module, a renderer, and DSL support.
  */
-export type NodeKind =
-  | 'group' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline' | 'metric' | 'icon-card' | 'callout-stack' | 'block';
-
 /** Relationship vocabulary carried by wires; renderers style each kind distinctly. */
 export type WireKind =
   | 'owns' | 'references' | 'assigns' | 'queries' | 'executes' | 'mentions' | 'missing';

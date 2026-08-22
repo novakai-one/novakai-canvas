@@ -6,6 +6,7 @@ import type { CrossDiagramContext, MapSummary } from './dsl-print/contract.ts';
 import { printDeclarations } from './dsl-print/declarations.ts';
 import { arrangementAttributes, byWireOrder, quote } from './dsl-print/ordering.ts';
 import type { WireAppearance } from '../../src/domain/wire-appearance.ts';
+import { printWireAttributes } from './wire-attributes.ts';
 import { printWireReference, wireReferenceFor } from './wire-reference.ts';
 
 export type { CrossDiagramContext, MapSummary } from './dsl-print/contract.ts';
@@ -17,12 +18,7 @@ function wireLine(
   kind: string,
   appearance?: WireAppearance,
 ): string {
-  const attributes = [
-    ...(appearance?.width ? [`width=${appearance.width}`] : []),
-    ...(appearance?.pattern ? [`pattern=${appearance.pattern}`] : []),
-    ...(appearance?.color ? [`color=${appearance.color}`] : []),
-    ...(appearance?.shape ? [`shape=${appearance.shape}`] : []),
-  ];
+  const attributes = printWireAttributes(appearance ? { appearance } : {});
   return `  wire ${printWireReference(source)} -> ${printWireReference(target)}`
     + `${attributes.length ? ` ${attributes.join(' ')}` : ''} : ${label}`
     + `${kind === 'references' ? '' : ` [${kind}]`}`;

@@ -2,21 +2,13 @@ import type { CrossDiagramLink, DiagramRecord } from '../../../src/canvas.ts';
 import type { ContainerArrangement, NodeAppearance } from '../../../src/domain/canvas-presentation.ts';
 import type { WireAppearance } from '../../../src/domain/wire-appearance.ts';
 import type { ScopeAst } from '../dsl-ast.ts';
-import type { RecordNode, RecordWire, RecordWireKind } from '../record-graph.ts';
+import type { RecordNode, RecordWire } from '../record-graph.ts';
+import type { CrossDiagramWire, LinkEnd } from '../wire-authoring.ts';
+
+export type { CrossDiagramWire, LinkEnd } from '../wire-authoring.ts';
 
 /** A refusal to compile, always paired with the fix that would make it compile. */
 export interface CompileError { message: string; hint: string }
-
-/** One end of a relationship, named by the diagram that owns the node and the node itself. */
-export interface LinkEnd { diagramId: string; nodeId: string }
-
-/** A relationship the DSL declared whose far end lives in a different diagram. */
-export interface CrossDiagramWire {
-  kind: RecordWireKind;
-  label: string;
-  source: LinkEnd;
-  target: LinkEnd;
-}
 
 /** One diagram's complete content, exactly as its scope block declares it. */
 export interface CompiledDiagram {

@@ -1,6 +1,5 @@
-import type {
-  NodeAst, ParseError, ParseResult, ScopeAst, WireAst, ZoneAst,
-} from '../dsl-ast.ts';
+import type { NodeAst, ParseError, ParseResult, ScopeAst, ZoneAst } from '../dsl-ast.ts';
+import type { WireAst } from '../wire-authoring.ts';
 
 /** Mutable cursor for one parse; grammar handlers mutate it through these operations only. */
 export class ParserState {

@@ -1,16 +1,10 @@
 /** Parses wire declarations before the component statement grammar. */
 
-import type { WireAst } from '../dsl-ast.ts';
-import {
-  WIRE_APPEARANCE_SPECIFICATIONS, canonicalWireAppearance,
-  type WireAppearance,
-} from '../../../src/domain/wire-appearance.ts';
+import type { WireAst } from '../wire-authoring.ts';
+import { parseWireAttributes, type AuthoredWireAttributes } from '../wire-attributes.ts';
 import { DSL_GRAMMAR } from './grammar.ts';
 import { ParserState } from './parser-state.ts';
 import { tokenize } from './tokens.ts';
-
-const wireAppearanceCorrection = WIRE_APPEARANCE_SPECIFICATIONS
-  .map((entry) => `${entry.key}=${entry.values.join('|')}`).join(' ');
 
 /** Parses one wire line into the active scope. */
 export function parseWire(state: ParserState, line: string, lineNumber: number): void {
@@ -40,50 +34,19 @@ export function parseWire(state: ParserState, line: string, lineNumber: number):
     state.fail(lineNumber, 'wire endpoints must each be one name', 'quote multi-word names: wire "browse CLI" -> Broker : ...');
     return;
   }
-  const appearance = parseWireAppearance(state, targetTokens.tokens.slice(1), lineNumber);
-  if (appearance === null) return;
+  const attributes = parseWireAttributes(targetTokens.tokens.slice(1));
+  if (!attributes.valid) {
+    state.fail(lineNumber, attributes.error, attributes.hint);
+    return;
+  }
   parseWireContract(
     state,
     sourceTokens.tokens[0],
     targetTokens.tokens[0],
     rest.slice(colon + 1).trim(),
     lineNumber,
-    appearance,
+    attributes.value,
   );
-}
-
-function parseWireAppearance(
-  state: ParserState,
-  tokens: string[],
-  lineNumber: number,
-): WireAppearance | null {
-  const appearance: WireAppearance = {};
-  const seen = new Set<string>();
-  for (const token of tokens) {
-    const equals = token.indexOf('=');
-    const key = token.slice(0, Math.max(0, equals)) as keyof WireAppearance;
-    const specification = WIRE_APPEARANCE_SPECIFICATIONS.find((entry) => entry.key === key);
-    if (equals < 1 || !specification) {
-      state.fail(
-        lineNumber,
-        `unknown wire attribute "${equals < 1 ? token : key}"`,
-        `use ${wireAppearanceCorrection}`,
-      );
-      return null;
-    }
-    if (seen.has(key)) {
-      state.fail(lineNumber, `duplicate wire attribute "${key}"`, `write ${key}= once`);
-      return null;
-    }
-    seen.add(key);
-    const raw = token.slice(equals + 1);
-    if (!specification.values.some((value) => value === raw)) {
-      state.fail(lineNumber, `invalid wire ${key} "${raw}"`, `use one of: ${specification.values.join(', ')}`);
-      return null;
-    }
-    (appearance as Record<string, unknown>)[key] = raw;
-  }
-  return canonicalWireAppearance(appearance);
 }
 
 function parseWireContract(
@@ -92,7 +55,7 @@ function parseWireContract(
   target: string,
   authoredContract: string,
   lineNumber: number,
-  appearance: WireAppearance | undefined,
+  attributes: AuthoredWireAttributes,
 ): void {
   let contract = authoredContract;
   let kind: WireAst['kind'] = 'references';
@@ -111,6 +74,6 @@ function parseWireContract(
   }
   state.appendWire({
     source, target, contract, kind, line: lineNumber,
-    ...(appearance && Object.keys(appearance).length > 0 ? { appearance } : {}),
+    ...attributes,
   });
 }

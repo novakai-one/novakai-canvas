@@ -5,6 +5,7 @@ import type { RecordCommand } from './contract.ts';
 import {
   validatePresentation, validateTargetedPresentation,
 } from './presentation-validation.ts';
+import { validateWireCommand } from './wire-command.ts';
 
 type ValidationResult = { valid: true } | { valid: false; reason: string };
 type NodeCommand = Extract<RecordCommand, { kind: `node.${string}` }>;
@@ -14,13 +15,6 @@ type ViewCommand = Extract<RecordCommand, { kind: `view.${string}` }>;
 
 function requireNode(record: DiagramRecord, id: string): void {
   if (!record.nodes[id]) throw new Error(`node-not-found:${id}`);
-}
-
-function requireWireEndpoint(record: DiagramRecord, id: string): void {
-  requireNode(record, id);
-  if (componentFor(record.nodes[id].kind).identity?.wireAddress === false) {
-    throw new Error(`node-not-a-wire-endpoint:${id}`);
-  }
 }
 
 function requireSignature(command: Extract<InterfaceCommand, { kind: 'interface.add' | 'interface.update' }>): void {
@@ -105,36 +99,6 @@ function validateNode(record: DiagramRecord, command: NodeCommand): void {
   if (command.parentId) validateParent(record, command.id, command.parentId);
 }
 
-function validateRoute(command: Extract<WireCommand, { kind: 'wire.setRoute' }>): void {
-  const { labelPosition, preferredSourceSide, preferredTargetSide, waypoints } = command.route;
-  if (labelPosition !== undefined
-    && (!Number.isFinite(labelPosition) || labelPosition < 0 || labelPosition > 1)) {
-    throw new Error(`label-position-off-wire:${labelPosition}`);
-  }
-  if (waypoints?.some((point) => !Number.isFinite(point.x) || !Number.isFinite(point.y))) {
-    throw new Error('waypoint-not-a-position');
-  }
-  const sides = ['top', 'right', 'bottom', 'left', null, undefined];
-  if (!sides.includes(preferredSourceSide) || !sides.includes(preferredTargetSide)) {
-    throw new Error('route-side-not-permitted');
-  }
-}
-
-function validateWire(record: DiagramRecord, command: WireCommand): void {
-  if (command.kind === 'wire.add') {
-    if (record.wires[command.wire.id]) throw new Error(`wire-already-exists:${command.wire.id}`);
-    requireWireEndpoint(record, command.wire.source.nodeId);
-    requireWireEndpoint(record, command.wire.target.nodeId);
-    return;
-  }
-  if (!record.wires[command.id]) throw new Error(`wire-not-found:${command.id}`);
-  if (command.kind === 'wire.reconnect') {
-    if (command.source) requireWireEndpoint(record, command.source);
-    if (command.target) requireWireEndpoint(record, command.target);
-  }
-  if (command.kind === 'wire.setRoute') validateRoute(command);
-}
-
 function validateInterface(record: DiagramRecord, command: InterfaceCommand): void {
   if (command.kind === 'interface.add') {
     requireNode(record, command.ownerId);
@@ -159,7 +123,7 @@ function validateView(record: DiagramRecord, command: ViewCommand): void {
 
 function validateOrThrow(record: DiagramRecord, command: RecordCommand): void {
   if (command.kind.startsWith('node.')) return validateNode(record, command as NodeCommand);
-  if (command.kind.startsWith('wire.')) return validateWire(record, command as WireCommand);
+  if (command.kind.startsWith('wire.')) return validateWireCommand(record, command as WireCommand);
   if (command.kind.startsWith('interface.')) {
     return validateInterface(record, command as InterfaceCommand);
   }

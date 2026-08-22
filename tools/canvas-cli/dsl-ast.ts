@@ -1,6 +1,8 @@
 import type { CanvasNode as RecordNode } from '../../src/domain/records.ts';
 import type { ParsedPresentation } from '../../src/domain/canvas-presentation.ts';
-import type { WireAppearance } from '../../src/domain/wire-appearance.ts';
+import type { WireAst } from './wire-authoring.ts';
+
+export type { WireAst } from './wire-authoring.ts';
 
 /** One source error with a line and actionable correction. */
 export interface ParseError { line: number; message: string; hint: string }
@@ -21,15 +23,6 @@ export interface NodeAst {
   children: Record<string, unknown[]>;
   /** Authored presentation compiles into the active layout, never node content. */
   presentation?: ParsedPresentation;
-}
-/** Relationship declaration including its source line for compiler failures. */
-export interface WireAst {
-  source: string;
-  target: string;
-  contract: string;
-  kind: 'owns' | 'references' | 'assigns' | 'queries' | 'executes' | 'mentions' | 'missing';
-  appearance?: WireAppearance;
-  line: number;
 }
 /** A nested container inside a scope; compiles to a group node with parentId set. */
 export interface ZoneAst {

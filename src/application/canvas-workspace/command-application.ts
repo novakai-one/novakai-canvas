@@ -1,11 +1,11 @@
-import type { DiagramRecord, WireRouteHint } from '../../domain/records.ts';
+import type { DiagramRecord } from '../../domain/records.ts';
 import type { RecordCommand } from './contract.ts';
 import { applyNodeCommand } from './node-command-application.ts';
 import {
   applyTargetedPresentation, isTargetedPresentation, reflowAfterCommand,
 } from './presentation-commands.ts';
+import { applyWireCommand } from './wire-command.ts';
 
-type Layout = DiagramRecord['layouts'][string];
 type View = DiagramRecord['views'][string];
 type WireCommand = Extract<RecordCommand, { kind: `wire.${string}` }>;
 type InterfaceCommand = Extract<RecordCommand, { kind: `interface.${string}` }>;
@@ -15,45 +15,6 @@ function activeView(record: DiagramRecord): View {
   const view = record.views[record.activeViewId];
   if (!view) throw new Error(`unknown-view:${record.activeViewId}`);
   return view;
-}
-
-function setWireRoute(
-  layout: Layout,
-  command: Extract<WireCommand, { kind: 'wire.setRoute' }>,
-): void {
-  const existing: WireRouteHint = layout.wireRouteHints[command.id]
-    ?? { wireId: command.id as never, waypoints: [] };
-  const { labelPosition, preferredSourceSide, preferredTargetSide, waypoints } = command.route;
-  const next: WireRouteHint = {
-    ...existing,
-    ...(waypoints ? { waypoints: waypoints.map((point) => ({ ...point })) } : {}),
-    ...(labelPosition === undefined ? {} : { labelPosition }),
-  };
-  if (preferredSourceSide === null) delete next.preferredSourceSide;
-  else if (preferredSourceSide !== undefined) next.preferredSourceSide = preferredSourceSide;
-  if (preferredTargetSide === null) delete next.preferredTargetSide;
-  else if (preferredTargetSide !== undefined) next.preferredTargetSide = preferredTargetSide;
-  layout.wireRouteHints[command.id] = next;
-}
-
-function applyWire(record: DiagramRecord, layout: Layout, command: WireCommand): void {
-  switch (command.kind) {
-    case 'wire.add': record.wires[command.wire.id] = command.wire; return;
-    case 'wire.reconnect': {
-      const wire = record.wires[command.id];
-      if (command.source) wire.source = { ...wire.source, nodeId: command.source as never };
-      if (command.target) wire.target = { ...wire.target, nodeId: command.target as never };
-      return;
-    }
-    case 'wire.setRoute': setWireRoute(layout, command); return;
-    case 'wire.update': Object.assign(record.wires[command.id], command.patch); return;
-    case 'wire.remove':
-      delete record.wires[command.id];
-      for (const each of Object.values(record.layouts)) {
-        delete each.wireRouteHints[command.id];
-        if (each.appearanceByWireId) delete each.appearanceByWireId[command.id];
-      }
-  }
 }
 
 function applyInterface(record: DiagramRecord, command: InterfaceCommand): void {
@@ -95,7 +56,7 @@ export function applyRecordCommand(record: DiagramRecord, command: RecordCommand
   if (command.kind.startsWith('node.')) applyNodeCommand(next, command as Extract<
     RecordCommand, { kind: `node.${string}` }
   >);
-  else if (command.kind.startsWith('wire.')) applyWire(next, layout, command as WireCommand);
+  else if (command.kind.startsWith('wire.')) applyWireCommand(next, layout, command as WireCommand);
   else if (command.kind.startsWith('interface.')) {
     applyInterface(next, command as InterfaceCommand);
   } else if (command.kind.startsWith('view.')) applyView(view, command as ViewCommand);

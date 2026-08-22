@@ -1,6 +1,6 @@
 import type { DiagramComponent, DslChildStatement } from '../../../src/components/component.ts';
 import { allComponents } from '../../../src/components/registry.ts';
-import type { WireAst } from '../dsl-ast.ts';
+import type { WireAst } from '../wire-authoring.ts';
 
 interface ChildOwner {
   kind: string;

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { allComponents, contentFieldsFor, kindList } from '../components/registry.ts';
-import type { ArchitectureDocument, CanvasChangeSet } from './model.ts';
+import type { CanvasChangeSet } from './legacy-commands.ts';
+import type { ArchitectureDocument } from './legacy-document.ts';
 import { WIRE_LABEL_SIZE_LIMITS } from './wire-label-size.ts';
 import { containerArrangementSchema, nodeAppearanceSchema } from './canvas-presentation.ts';
 import { wireAppearanceSchema, wireShapeSchema } from './wire-appearance.ts';

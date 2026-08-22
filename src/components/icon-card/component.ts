@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-import type { IconCardIcon } from '../../domain/model.ts';
+import type { IconCardIcon } from '../../domain/component-content.ts';
 import type { CanvasNode } from '../../domain/records.ts';
 import type { DslNodeDeclaration, DiagramComponent } from '../component.ts';
 import { GLYPHS, GLYPH_NAMES } from '../glyphs.ts';

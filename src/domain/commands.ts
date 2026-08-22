@@ -1,4 +1,5 @@
-import type { ArchitectureDocument, CanvasCommand } from './model';
+import type { CanvasCommand } from './legacy-commands.ts';
+import type { ArchitectureDocument } from './legacy-document.ts';
 import { layoutScopes } from './diagram-geometry.ts';
 import {
   addNodePlacement, placementFor, removeNodePlacements, replacePlacement, resolveLayout,

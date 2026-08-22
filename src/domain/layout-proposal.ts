@@ -1,7 +1,7 @@
 import dagre from '@dagrejs/dagre';
 import type {
   ArchitectureDocument, LayoutProposal, LayoutRequest, NodePlacement,
-} from './model';
+} from './legacy-document.ts';
 import { layoutScopes } from './diagram-geometry.ts';
 import { placementFor, resolveLayout } from './layouts.ts';
 

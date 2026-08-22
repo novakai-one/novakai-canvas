@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { wireAppearanceSchema } from './wire-appearance.ts';
-import type { NodeKind } from './records.ts';
-import { ICON_NAMES, type IconName } from './model.ts';
+import type { NodeKind } from './node-kind.ts';
+import { ICON_NAMES, type IconName } from './component-content.ts';
 
 export const FONT_FAMILIES = ['sans', 'serif', 'mono'] as const;
 export const FONT_SIZES = [12, 14, 16, 20, 24, 32, 40] as const;

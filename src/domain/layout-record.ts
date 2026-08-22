@@ -1,5 +1,5 @@
 import type { LayoutId, NodeId, ViewId, WireId } from './ids.ts';
-import type { Position, Size } from './model.ts';
+import type { Position, Size } from './spatial.ts';
 import type { ContainerArrangement, NodeAppearance } from './canvas-presentation.ts';
 import type { WireAppearance } from './wire-appearance.ts';
 

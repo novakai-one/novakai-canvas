@@ -5,9 +5,9 @@ import {
   CONTAINER_ALIGNS, GRID_COLUMNS, SPACINGS, appearanceSpecification,
 } from '../../src/domain/canvas-presentation.ts';
 import { WIRE_APPEARANCE_SPECIFICATIONS } from '../../src/domain/wire-appearance.ts';
+import { wireAttributeHelp } from './wire-attributes.ts';
 
-const wireAppearanceHelp = WIRE_APPEARANCE_SPECIFICATIONS
-  .map((entry) => `[${entry.key}=${entry.values.join('|')}]`).join(' ');
+const wireAppearanceHelp = wireAttributeHelp();
 
 const componentHelp = [
   `  node kinds    ${allComponents().filter((component) => component.layoutRole === 'leaf')

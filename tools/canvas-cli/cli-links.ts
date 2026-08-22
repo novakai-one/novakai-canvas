@@ -1,7 +1,7 @@
 /** Cross-diagram read context and apply-time link reconciliation. */
 
 import type { CanvasLibrary, CrossDiagramLink, DiagramRecord } from '../../src/canvas.ts';
-import type { CrossDiagramWire } from './compile.ts';
+import type { CrossDiagramWire, LinkEnd } from './wire-authoring.ts';
 import type { CrossDiagramContext } from './dsl-print.ts';
 import { asId } from './record-graph.ts';
 
@@ -16,6 +16,10 @@ function linkIdFor(existing: CrossDiagramLink[], wire: CrossDiagramWire): string
   const already = existing.find((link) =>
     link.source.nodeId === wire.source.nodeId && link.target.nodeId === wire.target.nodeId);
   return (already?.id as string | undefined) ?? `${wire.source.nodeId}--to--${wire.target.nodeId}`;
+}
+
+function storedEnd(end: LinkEnd): CrossDiagramLink['source'] {
+  return { ...end, diagramId: asId(end.diagramId), nodeId: asId(end.nodeId) };
 }
 
 /** Stores declared cross-map links and removes links made dangling by the same apply. */
@@ -35,8 +39,8 @@ export async function reconcileLinks(
       id: asId(id),
       kind: wire.kind,
       label: wire.label,
-      source: { diagramId: asId(wire.source.diagramId), nodeId: asId(wire.source.nodeId) },
-      target: { diagramId: asId(wire.target.diagramId), nodeId: asId(wire.target.nodeId) },
+      source: storedEnd(wire.source),
+      target: storedEnd(wire.target),
     });
     if ('status' in outcome) notes.push(`cross-map link ${id} not stored: ${outcome.status}`);
     else notes.push(`cross-map link: ${wire.source.nodeId} -> ${wire.target.diagramId}/${wire.target.nodeId}`);
