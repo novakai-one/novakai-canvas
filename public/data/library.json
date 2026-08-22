@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "revision": 112,
+  "revision": 135,
   "entries": {
     "agent-visual-authoring-poc": {
       "id": "agent-visual-authoring-poc",
@@ -571,6 +571,21 @@
         "Mission View",
         "Transcript Projection",
         "WRITE RULE: mission commissioning records canonical linkage explicitly. Reads never infer it from titles, agent names or the active session."
+      ]
+    },
+    "ooux-object-map": {
+      "id": "ooux-object-map",
+      "name": "OOUX Object Map",
+      "status": "active",
+      "revision": 21,
+      "nodeLabels": [
+        "API",
+        "App",
+        "Console",
+        "Interface",
+        "Marketplace Listing",
+        "OOUX Object Map",
+        "Organization"
       ]
     },
     "project-scope": {

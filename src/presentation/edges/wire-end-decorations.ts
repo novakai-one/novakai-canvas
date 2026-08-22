@@ -68,18 +68,19 @@ function glyph(
     });
   };
   const many = (): void => {
-    const joint = add(endpoint, axis, 11, normal);
+    const joint = add(endpoint, axis, 12, normal);
     lines.push(
-      { from: joint, to: add(endpoint, axis, 19, normal, -6) },
-      { from: joint, to: add(endpoint, axis, 19, normal) },
-      { from: joint, to: add(endpoint, axis, 19, normal, 6) },
+      { from: joint, to: add(endpoint, axis, 4, normal, -6) },
+      { from: joint, to: add(endpoint, axis, 4, normal) },
+      { from: joint, to: add(endpoint, axis, 4, normal, 6) },
     );
   };
   if (cardinality === 'one') { bar(4); bar(11); }
-  if (cardinality === 'zero-or-one') { circles.push({ center: add(endpoint, axis, 5, normal), radius: 3.2 }); bar(12); }
-  if (cardinality === 'one-or-many') { bar(4); many(); }
-  if (cardinality === 'zero-or-many') { circles.push({ center: add(endpoint, axis, 5, normal), radius: 3.2 }); many(); }
-  return { lines, circles, trim: cardinality.includes('many') ? 20 : 16 };
+  if (cardinality === 'zero-or-one') { bar(4); circles.push({ center: add(endpoint, axis, 12, normal), radius: 3.2 }); }
+  if (cardinality === 'one-or-many') { many(); bar(19); }
+  if (cardinality === 'zero-or-many') { many(); circles.push({ center: add(endpoint, axis, 19, normal), radius: 3.2 }); }
+  const trim = cardinality === 'zero-or-many' ? 23 : cardinality.includes('many') ? 21 : 16;
+  return { lines, circles, trim };
 }
 
 /** Plans notation and removes the underlying body from beneath every endpoint glyph. */

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { routeCollisions, routeWire, type Point } from '../../domain/diagram-geometry';
+import { planWireEndDecorations } from './wire-end-decorations';
 import { WIRE_SHAPES, asWireShape, wirePath } from './wire-shape';
 
 /** A route that has to go around a box sitting between its two ends. */
@@ -16,6 +17,31 @@ function corners(path: string): number {
 }
 
 describe('wire shapes', () => {
+  it('orders composite cardinality marks from the entity toward the wire body', () => {
+    const points: Point[] = [{ x: 0, y: 0 }, { x: 100, y: 0 }];
+    for (const atSource of [true, false]) {
+      const decorate = (cardinality: 'zero-or-one' | 'one-or-many' | 'zero-or-many') => (
+        planWireEndDecorations(points, atSource ? cardinality : undefined, atSource ? undefined : cardinality)
+      );
+      const towardBody = (value: number): number => atSource ? value : 100 - value;
+
+      const optionalOne = decorate('zero-or-one');
+      const optionalBar = optionalOne.lines[0].from.x;
+      expect(towardBody(optionalBar)).toBeLessThan(towardBody(optionalOne.circles[0].center.x));
+
+      for (const cardinality of ['one-or-many', 'zero-or-many'] as const) {
+        const plan = decorate(cardinality);
+        const crowFootTip = Math.min(...plan.lines.slice(0, 3).flatMap((line) => [
+          towardBody(line.from.x), towardBody(line.to.x),
+        ]));
+        const qualifier = cardinality === 'one-or-many'
+          ? towardBody(plan.lines[3].from.x)
+          : towardBody(plan.circles[0].center.x);
+        expect(crowFootTip, `${atSource ? 'source' : 'target'} ${cardinality}`).toBeLessThan(qualifier);
+      }
+    }
+  });
+
   it('draws every shape and preserves routed avoidance for the three routed presets', () => {
     const route = routeWire(REQUEST);
     expect(route.collisions).toBe(0);
