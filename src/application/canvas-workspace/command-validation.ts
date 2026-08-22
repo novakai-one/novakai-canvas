@@ -106,13 +106,17 @@ function validateNode(record: DiagramRecord, command: NodeCommand): void {
 }
 
 function validateRoute(command: Extract<WireCommand, { kind: 'wire.setRoute' }>): void {
-  const { labelPosition, waypoints } = command.route;
+  const { labelPosition, preferredSourceSide, preferredTargetSide, waypoints } = command.route;
   if (labelPosition !== undefined
     && (!Number.isFinite(labelPosition) || labelPosition < 0 || labelPosition > 1)) {
     throw new Error(`label-position-off-wire:${labelPosition}`);
   }
   if (waypoints?.some((point) => !Number.isFinite(point.x) || !Number.isFinite(point.y))) {
     throw new Error('waypoint-not-a-position');
+  }
+  const sides = ['top', 'right', 'bottom', 'left', null, undefined];
+  if (!sides.includes(preferredSourceSide) || !sides.includes(preferredTargetSide)) {
+    throw new Error('route-side-not-permitted');
   }
 }
 

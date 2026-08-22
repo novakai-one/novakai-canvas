@@ -9,6 +9,9 @@ import { DSL_GRAMMAR } from './grammar.ts';
 import { ParserState } from './parser-state.ts';
 import { tokenize } from './tokens.ts';
 
+const wireAppearanceCorrection = WIRE_APPEARANCE_SPECIFICATIONS
+  .map((entry) => `${entry.key}=${entry.values.join('|')}`).join(' ');
+
 /** Parses one wire line into the active scope. */
 export function parseWire(state: ParserState, line: string, lineNumber: number): void {
   if (!state.currentScope()) {
@@ -61,7 +64,11 @@ function parseWireAppearance(
     const key = token.slice(0, Math.max(0, equals)) as keyof WireAppearance;
     const specification = WIRE_APPEARANCE_SPECIFICATIONS.find((entry) => entry.key === key);
     if (equals < 1 || !specification) {
-      state.fail(lineNumber, `unknown wire attribute "${equals < 1 ? token : key}"`, 'use width=thin|medium|thick pattern=solid|dashed|dotted|dashdot color=neutral|green|blue|violet|rose|amber');
+      state.fail(
+        lineNumber,
+        `unknown wire attribute "${equals < 1 ? token : key}"`,
+        `use ${wireAppearanceCorrection}`,
+      );
       return null;
     }
     if (seen.has(key)) {

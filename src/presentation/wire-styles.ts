@@ -2,7 +2,7 @@
 
 import type { CanvasPreferences, CanvasTheme, WireKind } from '../domain/model.ts';
 import { WIRE_LABEL_SIZE_LIMITS } from '../domain/wire-label-size.ts';
-import type { WireAppearance } from '../domain/wire-appearance.ts';
+import type { WireAppearance, WireShape } from '../domain/wire-appearance.ts';
 
 type WireDash = 'solid' | 'dashed' | 'dotted' | 'dashdot';
 type WireTone = 'neutral' | 'sage' | 'steel' | 'slate' | 'violet' | 'amber' | 'rust';
@@ -64,6 +64,7 @@ export interface ResolvedWireAppearance {
   strokeColorCss: string;
   strokeWidth: number;
   dashArray: string;
+  shape: WireShape;
 }
 
 /**
@@ -104,7 +105,7 @@ export function wireKindColorVariable(kind: WireKind): string {
 export function resolveWireAppearance(
   kind: WireKind,
   authored: WireAppearance | undefined,
-  options: { theme: CanvasTheme; fallbackWidth: number },
+  options: { theme: CanvasTheme; fallbackWidth: number; fallbackShape?: WireShape },
 ): ResolvedWireAppearance {
   const tone = authored?.color ? AUTHORED_COLOR_TONES[authored.color] : WIRE_KIND_STYLES[kind].tone;
   const pattern: WirePattern = authored?.pattern ?? WIRE_KIND_STYLES[kind].dash;
@@ -113,6 +114,7 @@ export function resolveWireAppearance(
     strokeColorCss: `var(--wire-${tone})`,
     strokeWidth: authored?.width ? AUTHORED_WIDTHS[authored.width] : options.fallbackWidth,
     dashArray: WIRE_DASH_ARRAYS[pattern],
+    shape: authored?.shape ?? options.fallbackShape ?? 'elbow',
   };
 }
 

@@ -7,7 +7,10 @@ export {
 export { planWireRoutes } from './diagram-geometry/wire-plan.ts';
 export { routeWire } from './diagram-geometry/wire-router.ts';
 export {
-  nearestPositionAlong, pointAlong, polylineLength, routeCollisions, routePath,
+  editableRouteSegments, reshapeRouteSegment,
+} from './diagram-geometry/wire-route-edit.ts';
+export {
+  nearestPositionAlong, normalizeRoute, pointAlong, polylineLength, routeCollisions, routePath,
   segmentIntersectsRect, simplify,
 } from './diagram-geometry/polyline.ts';
 export {
@@ -15,5 +18,6 @@ export {
 } from './diagram-geometry/view-geometry.ts';
 export type {
   PlannedWireRoute, Point, Rect, RouteObstacle, RouteSide, WireRoute, WireRouteRequest,
-  WirePlanOptions,
+  EditableRouteSegment, RouteAxis, RouteSnapPolicy, WirePlanOptions, WireRouteEditRequest,
+  WireRouteEditResult,
 } from './diagram-geometry/contract.ts';

@@ -24,13 +24,16 @@ function setWireRoute(
   const existing: WireRouteHint = layout.wireRouteHints[command.id]
     ?? { wireId: command.id as never, waypoints: [] };
   const { labelPosition, preferredSourceSide, preferredTargetSide, waypoints } = command.route;
-  layout.wireRouteHints[command.id] = {
+  const next: WireRouteHint = {
     ...existing,
     ...(waypoints ? { waypoints: waypoints.map((point) => ({ ...point })) } : {}),
     ...(labelPosition === undefined ? {} : { labelPosition }),
-    ...(preferredSourceSide === undefined ? {} : { preferredSourceSide }),
-    ...(preferredTargetSide === undefined ? {} : { preferredTargetSide }),
   };
+  if (preferredSourceSide === null) delete next.preferredSourceSide;
+  else if (preferredSourceSide !== undefined) next.preferredSourceSide = preferredSourceSide;
+  if (preferredTargetSide === null) delete next.preferredTargetSide;
+  else if (preferredTargetSide !== undefined) next.preferredTargetSide = preferredTargetSide;
+  layout.wireRouteHints[command.id] = next;
 }
 
 function applyWire(record: DiagramRecord, layout: Layout, command: WireCommand): void {

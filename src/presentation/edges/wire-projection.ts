@@ -48,6 +48,7 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
     const appearance = resolveWireAppearance(wire.kind, authoredAppearance[wire.id], {
       theme: preferences.appearance.theme,
       fallbackWidth: wireStrokeWidth(preferences.wires.width),
+      fallbackShape: preferences.wires.shape,
     });
     return ({
     id: wire.id,

@@ -21,6 +21,7 @@ function wireLine(
     ...(appearance?.width ? [`width=${appearance.width}`] : []),
     ...(appearance?.pattern ? [`pattern=${appearance.pattern}`] : []),
     ...(appearance?.color ? [`color=${appearance.color}`] : []),
+    ...(appearance?.shape ? [`shape=${appearance.shape}`] : []),
   ];
   return `  wire ${printWireReference(source)} -> ${printWireReference(target)}`
     + `${attributes.length ? ` ${attributes.join(' ')}` : ''} : ${label}`

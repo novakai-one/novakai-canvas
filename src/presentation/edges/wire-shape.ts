@@ -1,17 +1,14 @@
-import { routePath, type Point } from '../../domain/diagram-geometry';
+import { routePath, type Point } from '../../domain/diagram-geometry.ts';
+import { WIRE_SHAPES, type WireShape } from '../../domain/wire-appearance.ts';
+
+export { WIRE_SHAPES } from '../../domain/wire-appearance.ts';
 
 /**
  * How a wire is drawn along the route it was given.
  *
- * Shape and route are deliberately separate concerns. The router decides *where* a wire goes —
- * including everything it has to go around — and this decides only what the line looks like on
- * the way. That split is what lets a diagram be drawn in curves without any of its wires
- * starting to cut through nodes: obstacle avoidance is upstream of every shape here.
+ * Elbow, curved and stepped paint the router's obstacle-aware points. Straight is the deliberate
+ * direct-line preset and joins the endpoints without those intermediate turns.
  */
-export type WireShape = 'elbow' | 'straight' | 'curved' | 'stepped';
-
-export const WIRE_SHAPES: readonly WireShape[] = ['elbow', 'straight', 'curved', 'stepped'];
-
 /** One line per shape, for the control that offers them. */
 export const WIRE_SHAPE_HINTS: Record<WireShape, string> = {
   elbow: 'Right angles with rounded corners',

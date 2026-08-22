@@ -12,7 +12,7 @@ scope "Browser Sessions" "Isolated per-agent browsing"
   module "Session broker"
     acquire(AgentId) -> SessionHandle
     type Lease { agentId, ttl }
-  wire "browse CLI" -> "Session broker" : acquire(AgentId) -> SessionHandle [queries]
+  wire "browse CLI" -> "Session broker" shape=curved : acquire(AgentId) -> SessionHandle [queries]
   wire "Session broker" -> "browse CLI" : ack(SessionHandle) -> void
 `;
 
@@ -29,7 +29,7 @@ function content(record: DiagramRecord) {
 describe('printRecord', () => {
   it('prints contract on every wire and kind only when not the default', () => {
     const output = printRecord(buildRecord(DSL));
-    expect(output).toContain('wire "browse CLI" -> "Session broker" : acquire(AgentId) -> SessionHandle [queries]');
+    expect(output).toContain('wire "browse CLI" -> "Session broker" shape=curved : acquire(AgentId) -> SessionHandle [queries]');
     expect(output).toContain('wire "Session broker" -> "browse CLI" : ack(SessionHandle) -> void');
     expect(output).not.toContain('[references]');
     expect(output).toContain('note "One session per instance."');

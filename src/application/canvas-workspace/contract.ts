@@ -21,8 +21,10 @@ interface RouteInput {
   waypoints?: { x: number; y: number }[];
   /** 0 at the source end, 1 at the target end. */
   labelPosition?: number;
-  preferredSourceSide?: PortSide;
-  preferredTargetSide?: PortSide;
+  /** `null` removes the stored preference; omission preserves it. */
+  preferredSourceSide?: PortSide | null;
+  /** `null` removes the stored preference; omission preserves it. */
+  preferredTargetSide?: PortSide | null;
 }
 
 /** Every mutation the capability accepts. Hosts compose these; they never edit records. */

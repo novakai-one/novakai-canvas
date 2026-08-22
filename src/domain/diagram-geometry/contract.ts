@@ -43,3 +43,35 @@ export interface PlannedWireRoute extends WireRoute {
 export interface WirePlanOptions {
   avoidObstacles?: boolean;
 }
+
+export type RouteAxis = 'x' | 'y';
+
+/** One movable segment of a canonical route. */
+export interface EditableRouteSegment {
+  index: number;
+  axis: RouteAxis;
+  from: Point;
+  to: Point;
+  midpoint: Point;
+}
+
+export interface RouteSnapPolicy {
+  enabled: boolean;
+  gridSize: number;
+  distance?: number;
+}
+
+export interface WireRouteEditRequest {
+  route: WireRoute;
+  routeRequest: WireRouteRequest;
+  /** Absent creates the first corridor for a route with no internal segment. */
+  segmentIndex?: number;
+  pointer: Point;
+  snap: RouteSnapPolicy;
+}
+
+export interface WireRouteEditResult {
+  route: WireRoute;
+  waypoints: Point[];
+  valid: boolean;
+}

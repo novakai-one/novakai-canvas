@@ -17,6 +17,10 @@ export function wireInspection(props: InspectPanelProps, id: string): Inspection
     kind: props.record.nodes[nodeId]?.kind ?? 'missing',
   });
   const ends = [endpoint(wire.source.nodeId), endpoint(wire.target.nodeId)];
+  const layout = inspectionSupport.activeLayout(props.record);
+  const hint = layout?.wireRouteHints[id];
+  const manual = Boolean(hint?.waypoints.length
+    || hint?.preferredSourceSide || hint?.preferredTargetSide);
   return {
     kind: 'Wire', title: wire.label || 'Unlabelled', meta: '',
     remove: props.editable ? {
@@ -54,7 +58,13 @@ export function wireInspection(props: InspectPanelProps, id: string): Inspection
         <WireAppearanceControls props={props} wireId={id} />
       </PanelSection>
       <PanelSection {...sectionProps(props, 'routing')} title="Routing">
-        <FieldRow label="Path"><output>Elbow</output></FieldRow>
+        <FieldRow label="Mode"><output>{manual ? 'Manual' : 'Automatic'}</output></FieldRow>
+        {manual && props.editable && <button className="panel-button" onClick={() => props.execute({
+          kind: 'wire.setRoute', id,
+          route: {
+            waypoints: [], preferredSourceSide: null, preferredTargetSide: null,
+          },
+        })} type="button">Use automatic route</button>}
       </PanelSection>
     </>,
   };

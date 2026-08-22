@@ -3,7 +3,7 @@ import { allComponents, contentFieldsFor, kindList } from '../components/registr
 import type { ArchitectureDocument, CanvasChangeSet } from './model.ts';
 import { WIRE_LABEL_SIZE_LIMITS } from './wire-label-size.ts';
 import { containerArrangementSchema, nodeAppearanceSchema } from './canvas-presentation.ts';
-import { wireAppearanceSchema } from './wire-appearance.ts';
+import { wireAppearanceSchema, wireShapeSchema } from './wire-appearance.ts';
 
 /** Legacy document kind vocabulary: `scope` where the current record model uses `group`. */
 const legacyKindList = () => ['scope', ...kindList().filter((k) => k !== 'group')] as [string, ...string[]];
@@ -321,7 +321,7 @@ export const canvasPreferencesSchema = z.object({
   wires: z.object({
     showLabels: z.enum(['always', 'selected', 'never']), width: z.number().min(1).max(4), dimUnrelated: z.boolean(),
     // All optional: a preferences file written before these existed opens at the old behaviour.
-    shape: z.enum(['elbow', 'straight', 'curved', 'stepped']).optional(),
+    shape: wireShapeSchema.optional(),
     labelScale: z.number().min(0.85).max(1.5).optional(),
     maxLabelSize: z.number()
       .min(WIRE_LABEL_SIZE_LIMITS.minimum)

@@ -1,4 +1,5 @@
 import type { Point, Rect, RouteObstacle, RouteSide } from './contract.ts';
+import { ROUTE_ALIGNMENT_TOLERANCE } from './policy.ts';
 
 export function clamp(value: number, low: number, high: number): number {
   return low > high ? value : Math.min(Math.max(value, low), high);
@@ -33,6 +34,37 @@ export function simplify(points: Point[]): Point[] {
     if (!collinear) result.push(kept[index]);
   }
   return result;
+}
+
+/**
+ * Canonical route form shared by planning, editing and rendering.
+ *
+ * Exact endpoints survive. Repeated/collinear points disappear, and a microscopic bridge
+ * between two parallel runs collapses to one visually straight run instead of producing two
+ * sub-pixel rounded corners.
+ */
+export function normalizeRoute(
+  points: Point[],
+  tolerance = ROUTE_ALIGNMENT_TOLERANCE,
+): Point[] {
+  const normalized = simplify(points);
+  let index = 1;
+  while (index < normalized.length - 2) {
+    const before = normalized[index - 1];
+    const first = normalized[index];
+    const second = normalized[index + 1];
+    const after = normalized[index + 2];
+    const bridge = Math.abs(second.x - first.x) + Math.abs(second.y - first.y);
+    const parallelVertical = before.x === first.x && second.x === after.x;
+    const parallelHorizontal = before.y === first.y && second.y === after.y;
+    if (bridge <= tolerance && (parallelVertical || parallelHorizontal)) {
+      normalized.splice(index, 2);
+      index = Math.max(1, index - 1);
+      continue;
+    }
+    index += 1;
+  }
+  return simplify(normalized);
 }
 
 /** Manhattan length of an orthogonal polyline. */

@@ -4,6 +4,7 @@ import { buildRecord } from './dsl-fixture.ts';
 import { blankRecord } from './record-apply.ts';
 import { asId, type RecordNode, type RecordPlacement, type RecordWire } from './record-graph.ts';
 import { renderRecordSvg } from './snapshot.ts';
+import { wirePath } from '../../src/presentation/edges/wire-shape.ts';
 
 const DSL = `
 scope "Snap & Demo"
@@ -11,7 +12,7 @@ scope "Snap & Demo"
   module "Broker <A>" "Owns leases & grants"
     acquire(AgentId) -> SessionHandle
   module Client
-  wire Client -> "Broker <A>" : acquire(AgentId) -> SessionHandle [queries]
+  wire Client -> "Broker <A>" shape=straight : acquire(AgentId) -> SessionHandle [queries]
 `;
 
 function build(): DiagramRecord {
@@ -86,6 +87,8 @@ describe('renderRecordSvg', () => {
     expect(svg).toContain('Broker &lt;A&gt;');
     expect(svg).toContain('acquire(AgentId) → SessionHandle');
     expect(svg).toContain('Escaping &lt;matters&gt; &amp; renders.');
+    expect(svg).toContain('<path d="M');
+    expect(svg).not.toContain('<polyline');
     // no raw unescaped ampersands or angle brackets from labels
     expect(svg).not.toContain('Snap & Demo');
     expect(svg).not.toContain('<A>');
@@ -169,8 +172,8 @@ describe('renderRecordSvg with nested zones', () => {
   it('draws every internal wire with kind styling and label', () => {
     const record = buildNested();
     const svg = renderRecordSvg(record);
-    const polylines = svg.match(/<polyline /g) ?? [];
-    expect(polylines).toHaveLength(3);
+    const paths = svg.match(/<path d="[^"]+" fill="none"/g) ?? [];
+    expect(paths).toHaveLength(3);
     expect(svg).toContain('node to node');
     expect(svg).toContain('zone to node');
     expect(svg).toContain('zone to zone');
@@ -180,8 +183,10 @@ describe('renderRecordSvg with nested zones', () => {
     const layout = record.layouts[record.views[record.activeViewId].layoutId];
     const plans = planWireRoutes(projectView(record), layout.wireRouteHints);
     expect(Object.values(plans).every((plan) => plan.collisions === 0)).toBe(true);
-    const points = plans['w-node-node'].points.map((point) => `${point.x + 24},${point.y + 24}`).join(' ');
-    expect(svg).toContain(`<polyline points="${points}"`);
+    const points = plans['w-node-node'].points.map((point) => ({
+      x: point.x + 24, y: point.y + 24,
+    }));
+    expect(svg).toContain(`<path d="${wirePath(points, 'elbow')}"`);
   });
 
   it('keeps zone containers behind their children', () => {

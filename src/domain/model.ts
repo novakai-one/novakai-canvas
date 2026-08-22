@@ -1,7 +1,7 @@
 /** Stable, serialisable vocabulary shared across every module. */
 
 import type { ContainerArrangement, NodeAppearance } from './canvas-presentation.ts';
-import type { WireAppearance } from './wire-appearance.ts';
+import type { WireAppearance, WireShape } from './wire-appearance.ts';
 
 export type NodeKind = 'scope' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline' | 'metric' | 'icon-card' | 'block';
 
@@ -245,11 +245,11 @@ export interface CanvasPreferences {
     /**
      * How wires are drawn along the route the router chose.
      *
-     * Shape only: every value draws the SAME points, so choosing curves can never make a wire
-     * start cutting through a node. Optional, so a preferences file written before shapes
-     * existed opens at the elbow this app has always drawn.
+     * Optional, so a preferences file written before shapes existed opens at the elbow this app
+     * has always drawn. `straight` deliberately joins endpoints directly; other values consume
+     * the router's obstacle-aware points.
      */
-    shape?: 'elbow' | 'straight' | 'curved' | 'stepped';
+    shape?: WireShape;
     /** Scales the wire-label type on its own, without touching the panels. */
     labelScale?: number;
     /** Largest label type in diagram pixels; labels disappear when zoom would exceed it. */

@@ -17,7 +17,7 @@ const LABELS: Record<string, string> = {
   icon: 'Icon', font: 'Font', size: 'Font size', weight: 'Weight', align: 'Alignment',
   text: 'Text colour', background: 'Background', 'border-color': 'Border colour',
   border: 'Border width', radius: 'Corner radius', padding: 'Padding', badge: 'Kind badge',
-  width: 'Width', pattern: 'Pattern', color: 'Colour', gap: 'Gap', columns: 'Columns',
+  width: 'Width', pattern: 'Pattern', color: 'Colour', shape: 'Shape', gap: 'Gap', columns: 'Columns',
 };
 
 function SelectValue({ disabled, label, onChange, value, values }: {

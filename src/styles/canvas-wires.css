@@ -140,13 +140,23 @@
 
 .canvas-surface .react-flow__edge.selected { z-index: 1001 !important; }
 
-/* The corridor handle: drag to push the wire's path aside, double-click to let go of it. */
-.wire-waypoint {
+/* Each internal segment owns one constrained handle; a direct route gets one corridor creator. */
+.wire-segment-handle {
   r: calc(var(--target-md) / 2 / var(--nvk-zoom, 1));
   fill: var(--surface-3);
   stroke: var(--gold);
   stroke-width: calc(1.5px / var(--nvk-zoom, 1));
   pointer-events: none;
+}
+
+.wire-segment-handle.is-invalid {
+  fill: var(--danger);
+  stroke: var(--danger-strong);
+}
+
+.canvas-surface .react-flow__edge .wire-preview-invalid,
+.canvas-surface .react-flow__edge.selected .wire-preview-invalid {
+  stroke: var(--danger-strong);
 }
 
 /*
@@ -187,3 +197,6 @@
 }
 
 .wire-grab:active { cursor: grabbing; }
+.wire-grab--x { cursor: ns-resize; }
+.wire-grab--y { cursor: ew-resize; }
+.wire-grab--free { cursor: move; }

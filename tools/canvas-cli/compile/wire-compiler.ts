@@ -59,7 +59,7 @@ class WireCompiler {
       if (wire.appearance) {
         this.context.messages.errors.push({
           message: `cross-map wire on line ${wire.line} cannot carry appearance`,
-          hint: 'wire appearance is local to one diagram layout; remove width, pattern and color',
+          hint: 'wire appearance is local to one diagram layout; remove width, pattern, color and shape',
         });
         return;
       }

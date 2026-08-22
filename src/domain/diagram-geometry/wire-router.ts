@@ -1,7 +1,7 @@
 import type { Point, WireRoute, WireRouteRequest } from './contract.ts';
 import { ENDPOINT_EGRESS } from './policy.ts';
 import {
-  advance, isVertical, polylineLength, routeCollisions, simplify,
+  advance, isVertical, normalizeRoute, polylineLength, routeCollisions,
 } from './polyline.ts';
 import { routeCandidates } from './route-candidates.ts';
 
@@ -32,12 +32,13 @@ function waypointRoute(request: WireRouteRequest): Point[] {
 export function routeWire(request: WireRouteRequest): WireRoute {
   const obstacles = request.obstacles ?? [];
   if (request.waypoints && request.waypoints.length > 0) {
-    const points = simplify(waypointRoute(request));
+    const points = normalizeRoute(waypointRoute(request));
     return { points, ...routeCollisions(points, obstacles) };
   }
 
   let best: WireRoute | null = null;
-  for (const points of routeCandidates(request)) {
+  for (const raw of routeCandidates(request)) {
+    const points = normalizeRoute(raw);
     const candidate = { points, ...routeCollisions(points, obstacles) };
     if (!best || score(candidate) < score(best)) best = candidate;
     if (best.collisions === 0 && best.softCollisions === 0) break;
