@@ -19,6 +19,6 @@
 .ooux-row.role-metadata { background: #f6cada; }
 .ooux-row.is-cta { background: #ccebc9; }
 .ooux-row:hover, .ooux-row.is-selected { outline: 2px solid rgb(52 73 94 / 30%); }
-.ooux-row-value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ooux-row-value { overflow: hidden; color: #28323c; text-overflow: ellipsis; white-space: nowrap; }
 .ooux-row-meta { flex: 0 0 auto; color: #66717c; font-size: 9px; font-style: italic; }
 .canvas-surface .react-flow__node.selected .ooux-object-node { box-shadow: 0 0 0 2px var(--accent), 4px 4px 0 rgb(52 73 94 / 13%); }
