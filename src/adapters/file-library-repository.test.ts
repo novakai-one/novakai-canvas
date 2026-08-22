@@ -216,12 +216,50 @@ function fullyPopulatedRecord(): DiagramRecord {
   const treeNode: CanvasNode = {
     id: 'tree' as never, kind: 'tree', label: 'Tree', interfaceIds: [], typeIds: [], rows: treeRows,
   };
+  const metricNode: CanvasNode = {
+    id: 'metric' as never,
+    kind: 'metric',
+    label: 'Success rate',
+    interfaceIds: [],
+    typeIds: [],
+    value: '92%',
+    detail: '12 of 13 runs',
+    status: 'success',
+  };
+  const iconCardNode: CanvasNode = {
+    id: 'icon-card' as never,
+    kind: 'icon-card',
+    label: 'Automated checks',
+    description: 'Every change is verified.',
+    interfaceIds: [],
+    typeIds: [],
+    icon: 'check',
+  };
+  const calloutStackNode: CanvasNode = {
+    id: 'callout-stack' as never,
+    kind: 'callout-stack',
+    label: 'Release decision',
+    interfaceIds: [],
+    typeIds: [],
+    callouts: [
+      { id: 'evidence', kind: 'info', text: 'Evidence is complete' },
+      { id: 'decision', kind: 'decision', text: 'Ship the release' },
+    ],
+  };
+  const oouxNode: CanvasNode = {
+    id: 'ooux-object' as never, kind: 'ooux-object', label: 'Organization',
+    interfaceIds: [], typeIds: [], objectRef: 'organization',
+    oouxRows: [
+      { kind: 'attribute', id: 'org-name', name: 'org_name', valueType: 'string', role: 'core', traits: [] },
+      { kind: 'cta', id: 'invite-member', name: 'inviteMember', role: 'admin' },
+    ],
+  };
   const wireOne: CanvasWire = {
     id: 'wire-1' as never,
     kind: 'owns',
     label: 'owns',
-    source: { nodeId: rootNode.id, anchor: { side: 'top', ordinal: 0 } },
-    target: { nodeId: childNode.id, anchor: { side: 'right', ordinal: 1 } },
+    source: { nodeId: rootNode.id, anchor: { side: 'top', ordinal: 0 }, cardinality: 'one' },
+    target: { nodeId: childNode.id, anchor: { side: 'right', ordinal: 1 }, cardinality: 'zero-or-many' },
   };
   const wireTwo: CanvasWire = {
     id: 'wire-2' as never,
@@ -242,6 +280,18 @@ function fullyPopulatedRecord(): DiagramRecord {
     },
     [treeNode.id]: {
       nodeId: treeNode.id, position: { x: 600, y: 0 }, size: { width: 120, height: 80 }, pinned: false,
+    },
+    [metricNode.id]: {
+      nodeId: metricNode.id, position: { x: 800, y: 0 }, size: { width: 200, height: 126 }, pinned: false,
+    },
+    [iconCardNode.id]: {
+      nodeId: iconCardNode.id, position: { x: 1040, y: 0 }, size: { width: 280, height: 120 }, pinned: false,
+    },
+    [calloutStackNode.id]: {
+      nodeId: calloutStackNode.id, position: { x: 1360, y: 0 }, size: { width: 280, height: 156 }, pinned: false,
+    },
+    [oouxNode.id]: {
+      nodeId: oouxNode.id, position: { x: 1680, y: 0 }, size: { width: 340, height: 220 }, pinned: false,
     },
   };
   const wireRouteHint: WireRouteHint = {
@@ -283,6 +333,10 @@ function fullyPopulatedRecord(): DiagramRecord {
       [childNode.id]: childNode,
       [expanderNode.id]: expanderNode,
       [treeNode.id]: treeNode,
+      [metricNode.id]: metricNode,
+      [iconCardNode.id]: iconCardNode,
+      [calloutStackNode.id]: calloutStackNode,
+      [oouxNode.id]: oouxNode,
     },
     wires: { [wireOne.id]: wireOne, [wireTwo.id]: wireTwo },
     interfaces: {
@@ -314,6 +368,23 @@ function fullyPopulatedRecord(): DiagramRecord {
 describe('migrated record round-trip', () => {
   const migrated = migrateDocumentToLibrary(parseArchitectureDocument(working as unknown));
 
+  it('defaults missing presentation maps and rejects invalid stored presentation', () => {
+    const withoutMaps = sampleRecord();
+    const parsed = diagramRecordSchema.parse(JSON.parse(JSON.stringify(withoutMaps)));
+    expect(parsed.layouts['layout-default'].appearanceByNodeId).toEqual({});
+    expect(parsed.layouts['layout-default'].arrangementByContainerId).toEqual({});
+
+    const invalidAppearance = JSON.parse(JSON.stringify(parsed));
+    invalidAppearance.layouts['layout-default'].appearanceByNodeId.root = { text: 'neon' };
+    expect(() => diagramRecordSchema.parse(invalidAppearance)).toThrow();
+
+    const invalidArrangement = JSON.parse(JSON.stringify(parsed));
+    invalidArrangement.layouts['layout-default'].arrangementByContainerId.root = {
+      layout: 'grid', columns: 7, gap: 16, align: 'stretch', childIds: [],
+    };
+    expect(() => diagramRecordSchema.parse(invalidArrangement)).toThrow();
+  });
+
   it('survives JSON round-trip and schema parse unchanged, for every migrated record', () => {
     const records = Object.values(migrated.records);
     expect(records.length).toBeGreaterThan(0);
@@ -327,5 +398,57 @@ describe('migrated record round-trip', () => {
     const record = fullyPopulatedRecord();
     const roundTripped = diagramRecordSchema.parse(JSON.parse(JSON.stringify(record)));
     expect(roundTripped).toEqual(record);
+  });
+
+  it('rejects component content stored on the wrong node kind', () => {
+    const record = sampleRecord();
+    const timelineInvalid = JSON.parse(JSON.stringify(record));
+    timelineInvalid.nodes.module = {
+      id: 'module', kind: 'module', label: 'Module', interfaceIds: [], typeIds: [],
+      steps: [{ id: 'turn-1', label: 'Turn 1' }],
+    };
+    expect(() => diagramRecordSchema.parse(timelineInvalid)).toThrow();
+
+    const metricInvalid = JSON.parse(JSON.stringify(record));
+    metricInvalid.nodes.module = {
+      id: 'module', kind: 'module', label: 'Module', interfaceIds: [], typeIds: [],
+      value: '92%', detail: '12 of 13 runs', status: 'success',
+    };
+    expect(() => diagramRecordSchema.parse(metricInvalid)).toThrow();
+
+    const iconCardInvalid = JSON.parse(JSON.stringify(record));
+    iconCardInvalid.nodes.module = {
+      id: 'module', kind: 'module', label: 'Module', description: 'Allowed base field',
+      interfaceIds: [], typeIds: [], icon: 'check',
+    };
+    expect(() => diagramRecordSchema.parse(iconCardInvalid)).toThrow();
+
+    const calloutInvalid = JSON.parse(JSON.stringify(record));
+    calloutInvalid.nodes.module = {
+      id: 'module', kind: 'module', label: 'Module', interfaceIds: [], typeIds: [],
+      callouts: [{ id: 'evidence', kind: 'info', text: 'Evidence is complete' }],
+    };
+    expect(() => diagramRecordSchema.parse(calloutInvalid)).toThrow();
+
+    const duplicateCallouts = JSON.parse(JSON.stringify(record));
+    duplicateCallouts.nodes.stack = {
+      id: 'stack', kind: 'callout-stack', label: 'Stack', interfaceIds: [], typeIds: [],
+      callouts: [
+        { id: 'same', kind: 'info', text: 'First' },
+        { id: 'same', kind: 'warning', text: 'Second' },
+      ],
+    };
+    expect(() => diagramRecordSchema.parse(duplicateCallouts)).toThrow();
+
+    const oouxInvalid = JSON.parse(JSON.stringify(record));
+    oouxInvalid.nodes.module = {
+      id: 'module', kind: 'module', label: 'Module', interfaceIds: [], typeIds: [],
+      objectRef: 'organization', oouxRows: [],
+    };
+    expect(() => diagramRecordSchema.parse(oouxInvalid)).toThrow();
+
+    const cardinalityInvalid = JSON.parse(JSON.stringify(fullyPopulatedRecord()));
+    cardinalityInvalid.wires[Object.keys(cardinalityInvalid.wires)[0]].source.cardinality = 'several';
+    expect(() => diagramRecordSchema.parse(cardinalityInvalid)).toThrow();
   });
 });

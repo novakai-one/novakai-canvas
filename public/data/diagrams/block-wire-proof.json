@@ -1,0 +1,437 @@
+{
+  "schemaVersion": 3,
+  "id": "block-wire-proof",
+  "name": "Block wire proof",
+  "status": "active",
+  "revision": 5,
+  "nodes": {
+    "block-wire-proof": {
+      "id": "block-wire-proof",
+      "label": "Block wire proof",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "block-wire-proof--sources": {
+      "id": "block-wire-proof--sources",
+      "label": "Sources",
+      "parentId": "block-wire-proof",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "block-wire-proof--review": {
+      "id": "block-wire-proof--review",
+      "label": "Review",
+      "parentId": "block-wire-proof",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "block-wire-proof--sources--block-safety-check": {
+      "id": "block-wire-proof--sources--block-safety-check",
+      "label": "What to test",
+      "parentId": "block-wire-proof--sources",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Safety and instruction following"
+      ],
+      "wireRef": "safety-check"
+    },
+    "block-wire-proof--sources--block-grounding-check": {
+      "id": "block-wire-proof--sources--block-grounding-check",
+      "label": "What to test",
+      "parentId": "block-wire-proof--sources",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Grounding and citation quality"
+      ],
+      "wireRef": "grounding-check"
+    },
+    "block-wire-proof--review--block-automated-checks": {
+      "id": "block-wire-proof--review--block-automated-checks",
+      "label": "Automated checks",
+      "parentId": "block-wire-proof--review",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Run deterministic assertions"
+      ],
+      "wireRef": "automated-checks"
+    },
+    "block-wire-proof--review--block-human-review": {
+      "id": "block-wire-proof--review--block-human-review",
+      "label": "Human review",
+      "parentId": "block-wire-proof--review",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Review judgement and context"
+      ],
+      "wireRef": "human-review"
+    }
+  },
+  "wires": {
+    "block-wire-proof--wire-1": {
+      "id": "block-wire-proof--wire-1",
+      "kind": "executes",
+      "label": "validates(SafetyCase) -> Result",
+      "source": {
+        "nodeId": "block-wire-proof--sources--block-safety-check"
+      },
+      "target": {
+        "nodeId": "block-wire-proof--review--block-automated-checks"
+      }
+    },
+    "block-wire-proof--wire-2": {
+      "id": "block-wire-proof--wire-2",
+      "kind": "executes",
+      "label": "validates(GroundedAnswer) -> Result",
+      "source": {
+        "nodeId": "block-wire-proof--sources--block-grounding-check"
+      },
+      "target": {
+        "nodeId": "block-wire-proof--review--block-automated-checks"
+      }
+    },
+    "block-wire-proof--wire-3": {
+      "id": "block-wire-proof--wire-3",
+      "kind": "assigns",
+      "label": "escalates(ReviewPacket) -> Decision",
+      "source": {
+        "nodeId": "block-wire-proof--review--block-automated-checks"
+      },
+      "target": {
+        "nodeId": "block-wire-proof--review--block-human-review"
+      }
+    },
+    "block-wire-proof--wire-4": {
+      "id": "block-wire-proof--wire-4",
+      "kind": "queries",
+      "label": "requests(ContextReview) -> Decision",
+      "source": {
+        "nodeId": "block-wire-proof--sources--block-grounding-check"
+      },
+      "target": {
+        "nodeId": "block-wire-proof--review--block-human-review"
+      }
+    },
+    "wire-2510ae67": {
+      "id": "wire-2510ae67",
+      "kind": "references",
+      "label": "connects",
+      "source": {
+        "nodeId": "block-wire-proof--sources--block-safety-check"
+      },
+      "target": {
+        "nodeId": "block-wire-proof--review--block-automated-checks"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "block-wire-proof": {
+          "nodeId": "block-wire-proof",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 829,
+            "height": 356
+          },
+          "pinned": false
+        },
+        "block-wire-proof--sources": {
+          "nodeId": "block-wire-proof--sources",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 369,
+            "height": 260
+          },
+          "pinned": false
+        },
+        "block-wire-proof--review": {
+          "nodeId": "block-wire-proof--review",
+          "position": {
+            "x": 441,
+            "y": 56
+          },
+          "size": {
+            "width": 348,
+            "height": 260
+          },
+          "pinned": false
+        },
+        "block-wire-proof--sources--block-safety-check": {
+          "nodeId": "block-wire-proof--sources--block-safety-check",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 289,
+            "height": 74
+          },
+          "pinned": false
+        },
+        "block-wire-proof--sources--block-grounding-check": {
+          "nodeId": "block-wire-proof--sources--block-grounding-check",
+          "position": {
+            "x": 40,
+            "y": 146
+          },
+          "size": {
+            "width": 289,
+            "height": 74
+          },
+          "pinned": false
+        },
+        "block-wire-proof--review--block-automated-checks": {
+          "nodeId": "block-wire-proof--review--block-automated-checks",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 268,
+            "height": 74
+          },
+          "pinned": false
+        },
+        "block-wire-proof--review--block-human-review": {
+          "nodeId": "block-wire-proof--review--block-human-review",
+          "position": {
+            "x": 40,
+            "y": 146
+          },
+          "size": {
+            "width": 268,
+            "height": 74
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {
+        "wire-2510ae67": {
+          "wireId": "wire-2510ae67",
+          "preferredSourceSide": "right",
+          "preferredTargetSide": "left",
+          "waypoints": []
+        }
+      },
+      "appearanceByNodeId": {
+        "block-wire-proof--sources--block-safety-check": {
+          "icon": "shield",
+          "weight": 600,
+          "text": "green",
+          "background": "green-soft",
+          "borderColor": "green",
+          "border": 1,
+          "radius": 12,
+          "padding": 16
+        },
+        "block-wire-proof--sources--block-grounding-check": {
+          "icon": "target",
+          "weight": 600,
+          "text": "blue",
+          "background": "blue-soft",
+          "borderColor": "blue",
+          "border": 1,
+          "radius": 12,
+          "padding": 16
+        },
+        "block-wire-proof--review--block-automated-checks": {
+          "icon": "check",
+          "weight": 600,
+          "text": "violet",
+          "background": "violet-soft",
+          "borderColor": "violet",
+          "border": 1,
+          "radius": 12,
+          "padding": 16
+        },
+        "block-wire-proof--review--block-human-review": {
+          "icon": "people",
+          "weight": 600,
+          "text": "amber",
+          "background": "amber-soft",
+          "borderColor": "amber",
+          "border": 1,
+          "radius": 12,
+          "padding": 16
+        }
+      },
+      "appearanceByWireId": {
+        "block-wire-proof--wire-2": {
+          "width": "thick",
+          "pattern": "dashed",
+          "color": "green"
+        },
+        "block-wire-proof--wire-3": {
+          "width": "medium",
+          "pattern": "dotted",
+          "color": "violet"
+        },
+        "block-wire-proof--wire-4": {
+          "width": "thin",
+          "pattern": "dashdot",
+          "color": "amber"
+        }
+      },
+      "arrangementByContainerId": {
+        "block-wire-proof--sources": {
+          "layout": "stack",
+          "childIds": [
+            "block-wire-proof--sources--block-safety-check",
+            "block-wire-proof--sources--block-grounding-check"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "block-wire-proof--review": {
+          "layout": "stack",
+          "childIds": [
+            "block-wire-proof--review--block-automated-checks",
+            "block-wire-proof--review--block-human-review"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "block-wire-proof": {
+          "layout": "row",
+          "childIds": [
+            "block-wire-proof--sources",
+            "block-wire-proof--review"
+          ],
+          "gap": 32,
+          "align": "start"
+        }
+      }
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-7b6bc941-26e9-4e70-b85f-50401f3c8940": {
+      "operationId": "cli-apply-7b6bc941-26e9-4e70-b85f-50401f3c8940",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-20T16:30:37.389Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "stdin"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace"
+      ]
+    },
+    "ui-92780e3c-27fc-4e73-9c42-975e8942df78": {
+      "operationId": "ui-92780e3c-27fc-4e73-9c42-975e8942df78",
+      "revision": 2,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-20T16:34:46.412Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.add"
+      ]
+    },
+    "ui-4a05c40d-559f-4a1d-8f88-411d920e416e": {
+      "operationId": "ui-4a05c40d-559f-4a1d-8f88-411d920e416e",
+      "revision": 3,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-20T16:34:46.415Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-98e17167-26b0-410a-833b-3b37da6bf6da": {
+      "operationId": "ui-98e17167-26b0-410a-833b-3b37da6bf6da",
+      "revision": 4,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-20T16:38:23.018Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.reconnect"
+      ]
+    },
+    "ui-d5f46897-ff24-48ef-959a-6f85ffbae48a": {
+      "operationId": "ui-d5f46897-ff24-48ef-959a-6f85ffbae48a",
+      "revision": 5,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-20T16:38:23.021Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    }
+  }
+}

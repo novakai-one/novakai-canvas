@@ -1,0 +1,931 @@
+{
+  "schemaVersion": 3,
+  "id": "ai-evaluation-four-operating-models",
+  "name": "AI evaluation — four operating models",
+  "status": "active",
+  "revision": 2,
+  "nodes": {
+    "ai-evaluation-four-operating-models": {
+      "id": "ai-evaluation-four-operating-models",
+      "label": "AI evaluation — four operating models",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ai-evaluation-four-operating-models--llm": {
+      "id": "ai-evaluation-four-operating-models--llm",
+      "label": "LLM",
+      "parentId": "ai-evaluation-four-operating-models",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ai-evaluation-four-operating-models--rag": {
+      "id": "ai-evaluation-four-operating-models--rag",
+      "label": "RAG",
+      "parentId": "ai-evaluation-four-operating-models",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ai-evaluation-four-operating-models--coding-agent": {
+      "id": "ai-evaluation-four-operating-models--coding-agent",
+      "label": "Coding agent",
+      "parentId": "ai-evaluation-four-operating-models",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ai-evaluation-four-operating-models--multi-agent": {
+      "id": "ai-evaluation-four-operating-models--multi-agent",
+      "label": "Multi-agent",
+      "parentId": "ai-evaluation-four-operating-models",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ai-evaluation-four-operating-models--llm--block-language-model": {
+      "id": "ai-evaluation-four-operating-models--llm--block-language-model",
+      "label": "Language model",
+      "parentId": "ai-evaluation-four-operating-models--llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block"
+    },
+    "ai-evaluation-four-operating-models--llm--block-what-to-test": {
+      "id": "ai-evaluation-four-operating-models--llm--block-what-to-test",
+      "label": "What to test",
+      "parentId": "ai-evaluation-four-operating-models--llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Safety",
+        "Instruction following",
+        "Code quality"
+      ]
+    },
+    "ai-evaluation-four-operating-models--llm--block-operating-loop": {
+      "id": "ai-evaluation-four-operating-models--llm--block-operating-loop",
+      "label": "Operating loop",
+      "parentId": "ai-evaluation-four-operating-models--llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "prompt → generate → response"
+      ]
+    },
+    "ai-evaluation-four-operating-models--llm--block-judge-with": {
+      "id": "ai-evaluation-four-operating-models--llm--block-judge-with",
+      "label": "Judge with",
+      "parentId": "ai-evaluation-four-operating-models--llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "LLM-as-judge",
+        "Code-based checks"
+      ]
+    },
+    "ai-evaluation-four-operating-models--llm--block-report": {
+      "id": "ai-evaluation-four-operating-models--llm--block-report",
+      "label": "Report",
+      "parentId": "ai-evaluation-four-operating-models--llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Refusal rate",
+        "Pass@k",
+        "Accuracy"
+      ]
+    },
+    "ai-evaluation-four-operating-models--rag--block-what-to-test": {
+      "id": "ai-evaluation-four-operating-models--rag--block-what-to-test",
+      "label": "What to test",
+      "parentId": "ai-evaluation-four-operating-models--rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Grounding",
+        "Citation",
+        "Multi-hop QA"
+      ]
+    },
+    "ai-evaluation-four-operating-models--rag--block-judge-with": {
+      "id": "ai-evaluation-four-operating-models--rag--block-judge-with",
+      "label": "Judge with",
+      "parentId": "ai-evaluation-four-operating-models--rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Faithfulness review",
+        "Retrieval checks"
+      ]
+    },
+    "ai-evaluation-four-operating-models--rag--block-report": {
+      "id": "ai-evaluation-four-operating-models--rag--block-report",
+      "label": "Report",
+      "parentId": "ai-evaluation-four-operating-models--rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Faithfulness",
+        "Recall@k",
+        "Citation precision"
+      ]
+    },
+    "ai-evaluation-four-operating-models--coding-agent--block-coding-agent": {
+      "id": "ai-evaluation-four-operating-models--coding-agent--block-coding-agent",
+      "label": "Coding agent",
+      "parentId": "ai-evaluation-four-operating-models--coding-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block"
+    },
+    "ai-evaluation-four-operating-models--coding-agent--block-what-to-test": {
+      "id": "ai-evaluation-four-operating-models--coding-agent--block-what-to-test",
+      "label": "What to test",
+      "parentId": "ai-evaluation-four-operating-models--coding-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Tool choice",
+        "Bug fixing",
+        "Long-horizon planning"
+      ]
+    },
+    "ai-evaluation-four-operating-models--coding-agent--block-operating-loop": {
+      "id": "ai-evaluation-four-operating-models--coding-agent--block-operating-loop",
+      "label": "Operating loop",
+      "parentId": "ai-evaluation-four-operating-models--coding-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "inspect → edit → run → retry"
+      ]
+    },
+    "ai-evaluation-four-operating-models--coding-agent--block-judge-with": {
+      "id": "ai-evaluation-four-operating-models--coding-agent--block-judge-with",
+      "label": "Judge with",
+      "parentId": "ai-evaluation-four-operating-models--coding-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Unit tests",
+        "Patch review"
+      ]
+    },
+    "ai-evaluation-four-operating-models--coding-agent--block-report": {
+      "id": "ai-evaluation-four-operating-models--coding-agent--block-report",
+      "label": "Report",
+      "parentId": "ai-evaluation-four-operating-models--coding-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Resolve rate",
+        "Steps to solve",
+        "Tool-call accuracy"
+      ]
+    },
+    "ai-evaluation-four-operating-models--multi-agent--block-multi-agent-system": {
+      "id": "ai-evaluation-four-operating-models--multi-agent--block-multi-agent-system",
+      "label": "Multi-agent system",
+      "parentId": "ai-evaluation-four-operating-models--multi-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block"
+    },
+    "ai-evaluation-four-operating-models--multi-agent--block-what-to-test": {
+      "id": "ai-evaluation-four-operating-models--multi-agent--block-what-to-test",
+      "label": "What to test",
+      "parentId": "ai-evaluation-four-operating-models--multi-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Coordination",
+        "Role adherence",
+        "Hand-offs"
+      ]
+    },
+    "ai-evaluation-four-operating-models--multi-agent--block-operating-loop": {
+      "id": "ai-evaluation-four-operating-models--multi-agent--block-operating-loop",
+      "label": "Operating loop",
+      "parentId": "ai-evaluation-four-operating-models--multi-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "dispatch → specialists → aggregate"
+      ]
+    },
+    "ai-evaluation-four-operating-models--multi-agent--block-judge-with": {
+      "id": "ai-evaluation-four-operating-models--multi-agent--block-judge-with",
+      "label": "Judge with",
+      "parentId": "ai-evaluation-four-operating-models--multi-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Task tests",
+        "LLM review",
+        "Human review"
+      ]
+    },
+    "ai-evaluation-four-operating-models--multi-agent--block-report": {
+      "id": "ai-evaluation-four-operating-models--multi-agent--block-report",
+      "label": "Report",
+      "parentId": "ai-evaluation-four-operating-models--multi-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Task success",
+        "Hand-off accuracy",
+        "Coordination cost"
+      ]
+    },
+    "ai-evaluation-four-operating-models--rag--block-grounded-answers": {
+      "id": "ai-evaluation-four-operating-models--rag--block-grounded-answers",
+      "label": "Grounded answers",
+      "parentId": "ai-evaluation-four-operating-models--rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block"
+    },
+    "ai-evaluation-four-operating-models--rag--block-operating-loop": {
+      "id": "ai-evaluation-four-operating-models--rag--block-operating-loop",
+      "label": "Operating loop",
+      "parentId": "ai-evaluation-four-operating-models--rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "query → retrieve → answer"
+      ]
+    }
+  },
+  "wires": {},
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "ai-evaluation-four-operating-models": {
+          "nodeId": "ai-evaluation-four-operating-models",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 1824,
+            "height": 719
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--llm": {
+          "nodeId": "ai-evaluation-four-operating-models--llm",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 418,
+            "height": 601
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--rag": {
+          "nodeId": "ai-evaluation-four-operating-models--rag",
+          "position": {
+            "x": 482,
+            "y": 56
+          },
+          "size": {
+            "width": 418,
+            "height": 601
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--coding-agent": {
+          "nodeId": "ai-evaluation-four-operating-models--coding-agent",
+          "position": {
+            "x": 924,
+            "y": 56
+          },
+          "size": {
+            "width": 418,
+            "height": 601
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--multi-agent": {
+          "nodeId": "ai-evaluation-four-operating-models--multi-agent",
+          "position": {
+            "x": 1366,
+            "y": 56
+          },
+          "size": {
+            "width": 418,
+            "height": 623
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--llm--block-language-model": {
+          "nodeId": "ai-evaluation-four-operating-models--llm--block-language-model",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 290,
+            "height": 70
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--llm--block-what-to-test": {
+          "nodeId": "ai-evaluation-four-operating-models--llm--block-what-to-test",
+          "position": {
+            "x": 40,
+            "y": 138
+          },
+          "size": {
+            "width": 290,
+            "height": 116
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--llm--block-operating-loop": {
+          "nodeId": "ai-evaluation-four-operating-models--llm--block-operating-loop",
+          "position": {
+            "x": 40,
+            "y": 266
+          },
+          "size": {
+            "width": 290,
+            "height": 61
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--llm--block-judge-with": {
+          "nodeId": "ai-evaluation-four-operating-models--llm--block-judge-with",
+          "position": {
+            "x": 40,
+            "y": 339
+          },
+          "size": {
+            "width": 290,
+            "height": 94
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--llm--block-report": {
+          "nodeId": "ai-evaluation-four-operating-models--llm--block-report",
+          "position": {
+            "x": 40,
+            "y": 445
+          },
+          "size": {
+            "width": 290,
+            "height": 116
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--rag--block-what-to-test": {
+          "nodeId": "ai-evaluation-four-operating-models--rag--block-what-to-test",
+          "position": {
+            "x": 40,
+            "y": 138
+          },
+          "size": {
+            "width": 312,
+            "height": 116
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--rag--block-judge-with": {
+          "nodeId": "ai-evaluation-four-operating-models--rag--block-judge-with",
+          "position": {
+            "x": 40,
+            "y": 339
+          },
+          "size": {
+            "width": 312,
+            "height": 94
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--rag--block-report": {
+          "nodeId": "ai-evaluation-four-operating-models--rag--block-report",
+          "position": {
+            "x": 40,
+            "y": 445
+          },
+          "size": {
+            "width": 312,
+            "height": 116
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--coding-agent--block-coding-agent": {
+          "nodeId": "ai-evaluation-four-operating-models--coding-agent--block-coding-agent",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 277,
+            "height": 70
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--coding-agent--block-what-to-test": {
+          "nodeId": "ai-evaluation-four-operating-models--coding-agent--block-what-to-test",
+          "position": {
+            "x": 40,
+            "y": 138
+          },
+          "size": {
+            "width": 277,
+            "height": 116
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--coding-agent--block-operating-loop": {
+          "nodeId": "ai-evaluation-four-operating-models--coding-agent--block-operating-loop",
+          "position": {
+            "x": 40,
+            "y": 266
+          },
+          "size": {
+            "width": 277,
+            "height": 61
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--coding-agent--block-judge-with": {
+          "nodeId": "ai-evaluation-four-operating-models--coding-agent--block-judge-with",
+          "position": {
+            "x": 40,
+            "y": 339
+          },
+          "size": {
+            "width": 277,
+            "height": 94
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--coding-agent--block-report": {
+          "nodeId": "ai-evaluation-four-operating-models--coding-agent--block-report",
+          "position": {
+            "x": 40,
+            "y": 445
+          },
+          "size": {
+            "width": 277,
+            "height": 116
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--multi-agent--block-multi-agent-system": {
+          "nodeId": "ai-evaluation-four-operating-models--multi-agent--block-multi-agent-system",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 338,
+            "height": 70
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--multi-agent--block-what-to-test": {
+          "nodeId": "ai-evaluation-four-operating-models--multi-agent--block-what-to-test",
+          "position": {
+            "x": 40,
+            "y": 138
+          },
+          "size": {
+            "width": 338,
+            "height": 116
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--multi-agent--block-operating-loop": {
+          "nodeId": "ai-evaluation-four-operating-models--multi-agent--block-operating-loop",
+          "position": {
+            "x": 40,
+            "y": 266
+          },
+          "size": {
+            "width": 338,
+            "height": 61
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--multi-agent--block-judge-with": {
+          "nodeId": "ai-evaluation-four-operating-models--multi-agent--block-judge-with",
+          "position": {
+            "x": 40,
+            "y": 339
+          },
+          "size": {
+            "width": 338,
+            "height": 116
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--multi-agent--block-report": {
+          "nodeId": "ai-evaluation-four-operating-models--multi-agent--block-report",
+          "position": {
+            "x": 40,
+            "y": 467
+          },
+          "size": {
+            "width": 338,
+            "height": 116
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--rag--block-grounded-answers": {
+          "nodeId": "ai-evaluation-four-operating-models--rag--block-grounded-answers",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 312,
+            "height": 70
+          },
+          "pinned": false
+        },
+        "ai-evaluation-four-operating-models--rag--block-operating-loop": {
+          "nodeId": "ai-evaluation-four-operating-models--rag--block-operating-loop",
+          "position": {
+            "x": 40,
+            "y": 266
+          },
+          "size": {
+            "width": 312,
+            "height": 61
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {
+        "ai-evaluation-four-operating-models--llm--block-language-model": {
+          "icon": "target",
+          "size": 24,
+          "weight": 700,
+          "background": "green-soft",
+          "borderColor": "green",
+          "border": 2,
+          "radius": 16,
+          "padding": 16
+        },
+        "ai-evaluation-four-operating-models--llm--block-what-to-test": {
+          "size": 16,
+          "weight": 500,
+          "background": "surface",
+          "borderColor": "muted",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "ai-evaluation-four-operating-models--llm--block-operating-loop": {
+          "icon": "trend",
+          "size": 16,
+          "weight": 600,
+          "text": "muted",
+          "padding": 8
+        },
+        "ai-evaluation-four-operating-models--llm--block-judge-with": {
+          "icon": "shield",
+          "size": 16,
+          "weight": 500,
+          "background": "surface",
+          "borderColor": "muted",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "ai-evaluation-four-operating-models--llm--block-report": {
+          "icon": "check",
+          "size": 16,
+          "weight": 600,
+          "background": "green-soft",
+          "borderColor": "green",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "ai-evaluation-four-operating-models--rag--block-grounded-answers": {
+          "icon": "trend",
+          "size": 24,
+          "weight": 700,
+          "background": "blue-soft",
+          "borderColor": "blue",
+          "border": 2,
+          "radius": 16,
+          "padding": 16
+        },
+        "ai-evaluation-four-operating-models--rag--block-what-to-test": {
+          "size": 16,
+          "weight": 500,
+          "background": "surface",
+          "borderColor": "muted",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "ai-evaluation-four-operating-models--rag--block-operating-loop": {
+          "icon": "target",
+          "size": 16,
+          "weight": 600,
+          "text": "muted",
+          "padding": 8
+        },
+        "ai-evaluation-four-operating-models--rag--block-judge-with": {
+          "icon": "shield",
+          "size": 16,
+          "weight": 500,
+          "background": "surface",
+          "borderColor": "muted",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "ai-evaluation-four-operating-models--rag--block-report": {
+          "icon": "check",
+          "size": 16,
+          "weight": 600,
+          "background": "blue-soft",
+          "borderColor": "blue",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "ai-evaluation-four-operating-models--coding-agent--block-coding-agent": {
+          "icon": "clock",
+          "size": 24,
+          "weight": 700,
+          "background": "violet-soft",
+          "borderColor": "violet",
+          "border": 2,
+          "radius": 16,
+          "padding": 16
+        },
+        "ai-evaluation-four-operating-models--coding-agent--block-what-to-test": {
+          "size": 16,
+          "weight": 500,
+          "background": "surface",
+          "borderColor": "muted",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "ai-evaluation-four-operating-models--coding-agent--block-operating-loop": {
+          "icon": "trend",
+          "size": 16,
+          "weight": 600,
+          "text": "muted",
+          "padding": 8
+        },
+        "ai-evaluation-four-operating-models--coding-agent--block-judge-with": {
+          "icon": "shield",
+          "size": 16,
+          "weight": 500,
+          "background": "surface",
+          "borderColor": "muted",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "ai-evaluation-four-operating-models--coding-agent--block-report": {
+          "icon": "check",
+          "size": 16,
+          "weight": 600,
+          "background": "violet-soft",
+          "borderColor": "violet",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "ai-evaluation-four-operating-models--multi-agent--block-multi-agent-system": {
+          "icon": "people",
+          "size": 24,
+          "weight": 700,
+          "background": "rose-soft",
+          "borderColor": "rose",
+          "border": 2,
+          "radius": 16,
+          "padding": 16
+        },
+        "ai-evaluation-four-operating-models--multi-agent--block-what-to-test": {
+          "size": 16,
+          "weight": 500,
+          "background": "surface",
+          "borderColor": "muted",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "ai-evaluation-four-operating-models--multi-agent--block-operating-loop": {
+          "icon": "people",
+          "size": 16,
+          "weight": 600,
+          "text": "muted",
+          "padding": 8
+        },
+        "ai-evaluation-four-operating-models--multi-agent--block-judge-with": {
+          "icon": "shield",
+          "size": 16,
+          "weight": 500,
+          "background": "surface",
+          "borderColor": "muted",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "ai-evaluation-four-operating-models--multi-agent--block-report": {
+          "icon": "check",
+          "size": 16,
+          "weight": 600,
+          "background": "rose-soft",
+          "borderColor": "rose",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        }
+      },
+      "arrangementByContainerId": {
+        "ai-evaluation-four-operating-models--llm": {
+          "layout": "stack",
+          "childIds": [
+            "ai-evaluation-four-operating-models--llm--block-language-model",
+            "ai-evaluation-four-operating-models--llm--block-what-to-test",
+            "ai-evaluation-four-operating-models--llm--block-operating-loop",
+            "ai-evaluation-four-operating-models--llm--block-judge-with",
+            "ai-evaluation-four-operating-models--llm--block-report"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "ai-evaluation-four-operating-models--rag": {
+          "layout": "stack",
+          "childIds": [
+            "ai-evaluation-four-operating-models--rag--block-grounded-answers",
+            "ai-evaluation-four-operating-models--rag--block-what-to-test",
+            "ai-evaluation-four-operating-models--rag--block-operating-loop",
+            "ai-evaluation-four-operating-models--rag--block-judge-with",
+            "ai-evaluation-four-operating-models--rag--block-report"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "ai-evaluation-four-operating-models--coding-agent": {
+          "layout": "stack",
+          "childIds": [
+            "ai-evaluation-four-operating-models--coding-agent--block-coding-agent",
+            "ai-evaluation-four-operating-models--coding-agent--block-what-to-test",
+            "ai-evaluation-four-operating-models--coding-agent--block-operating-loop",
+            "ai-evaluation-four-operating-models--coding-agent--block-judge-with",
+            "ai-evaluation-four-operating-models--coding-agent--block-report"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "ai-evaluation-four-operating-models--multi-agent": {
+          "layout": "stack",
+          "childIds": [
+            "ai-evaluation-four-operating-models--multi-agent--block-multi-agent-system",
+            "ai-evaluation-four-operating-models--multi-agent--block-what-to-test",
+            "ai-evaluation-four-operating-models--multi-agent--block-operating-loop",
+            "ai-evaluation-four-operating-models--multi-agent--block-judge-with",
+            "ai-evaluation-four-operating-models--multi-agent--block-report"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "ai-evaluation-four-operating-models": {
+          "layout": "grid",
+          "childIds": [
+            "ai-evaluation-four-operating-models--llm",
+            "ai-evaluation-four-operating-models--rag",
+            "ai-evaluation-four-operating-models--coding-agent",
+            "ai-evaluation-four-operating-models--multi-agent"
+          ],
+          "gap": 24,
+          "align": "stretch",
+          "columns": 4
+        }
+      }
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "codex-ai-evaluation-infographic-v1": {
+      "operationId": "codex-ai-evaluation-infographic-v1",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-20T15:31:24.771Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/tmp/ai-evaluation-four-operating-models.dsl"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "layout.presentation.replace"
+      ]
+    },
+    "codex-ai-evaluation-infographic-v2": {
+      "operationId": "codex-ai-evaluation-infographic-v2",
+      "revision": 2,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-20T15:36:00.146Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/tmp/ai-evaluation-four-operating-models.dsl"
+      },
+      "commandKinds": [
+        "node.remove",
+        "node.remove",
+        "node.add",
+        "node.add",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.resize",
+        "node.move",
+        "node.resize",
+        "node.move",
+        "node.resize",
+        "node.move",
+        "node.resize",
+        "node.move",
+        "node.resize",
+        "node.move",
+        "node.resize",
+        "layout.presentation.replace"
+      ]
+    }
+  }
+}

@@ -1,7 +1,8 @@
 import type { CanvasPreferences, PreferenceSection } from '../../domain/model';
 import { WIRE_LABEL_SIZE_LIMITS } from '../../domain/wire-label-size';
+import { WIRE_SHAPES } from '../../domain/wire-appearance';
 import { FieldRow, PanelSection, SwitchRow, TARGET_SIZES, targetScale } from '../shell';
-import { WIRE_SHAPES, WIRE_SHAPE_HINTS } from '../edges/wire-shape';
+import { WIRE_SHAPE_HINTS } from '../edges/wire-shape';
 
 type Patch = <K extends keyof CanvasPreferences>(key: K, value: CanvasPreferences[K]) => void;
 

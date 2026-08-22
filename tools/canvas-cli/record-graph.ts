@@ -1,11 +1,8 @@
 /** Reading one diagram record as a graph: geometry, containment, and automatic layout. */
 
-import type { DiagramRecord } from '../../src/canvas.ts';
-// `layoutScopes` is the canonical content-driven layout and still takes the legacy document
-// shape; `src/canvas.ts` does not publish it. `documentFor` below is the single place that
-// translation happens, so the day Lane A lands a record-native layout strategy, one function
-// changes and nothing else in the CLI notices. Reported to the lead as a dependency.
-import { layoutScopes } from '../../src/domain/layout.ts';
+import { layoutScopes, type DiagramRecord } from '../../src/canvas.ts';
+// `layoutScopes` still takes the legacy document shape. `documentFor` below is the single
+// translation seam, so the CLI depends on the public geometry capability rather than its core.
 import type { ArchitectureDocument } from '../../src/domain/model.ts';
 
 // `src/canvas.ts` exports `CanvasNode`, `CanvasWire` and `NodePlacement` from the LEGACY
@@ -119,6 +116,9 @@ function documentFor(record: DiagramRecord): ArchitectureDocument {
         placements: structuredClone(placements) as ArchitectureDocument['layouts'][string]['placements'],
         wireRouteHints: {},
         collapsedNodeIds: [],
+        appearanceByNodeId: structuredClone(record.layouts[layoutId].appearanceByNodeId ?? {}),
+        appearanceByWireId: structuredClone(record.layouts[layoutId].appearanceByWireId ?? {}),
+        arrangementByContainerId: structuredClone(record.layouts[layoutId].arrangementByContainerId ?? {}),
       },
     },
     diagrams: {},
@@ -146,6 +146,7 @@ export function layoutRecord(record: DiagramRecord, groupPadding?: number): Diag
         nodeId,
         position: placement?.position ?? { ...UNPLACED.position },
         size: placement?.size ?? { ...UNPLACED.size },
+        ...(previous[nodeId]?.sizeMode ? { sizeMode: previous[nodeId].sizeMode } : {}),
         pinned: previous[nodeId]?.pinned ?? false,
       }];
     }),

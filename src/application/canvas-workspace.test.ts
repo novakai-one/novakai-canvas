@@ -91,7 +91,7 @@ describe('canvas workspace', () => {
   it('undoes a move+resize batch as one gesture', () => {
     const workspace = createCanvasWorkspace(openMessagingScope(), human);
     const before = workspace.snapshot();
-    const nodeId = Object.keys(before.nodes)[0];
+    const nodeId = Object.values(before.nodes).find((node) => node.kind !== 'group')?.id as string;
     // Placements live per layout; read the one layout that holds this node.
     const placementOf = (record: DiagramRecord) => Object.values(record.layouts)
       .map((layout) => layout.placements[nodeId])
@@ -101,12 +101,23 @@ describe('canvas workspace', () => {
 
     workspace.submit(batch([
       { kind: 'node.move', id: nodeId, position: { x: 50, y: 60 } },
-      { kind: 'node.resize', id: nodeId, size: { width: 400, height: 300 } },
+      {
+        kind: 'node.resize', id: nodeId, size: { width: 400, height: 300 }, sizeMode: 'manual',
+      },
     ], before.revision, 'op-resize'));
 
     const settled = placementOf(workspace.snapshot());
     expect(settled?.position).toEqual({ x: 50, y: 60 });
     expect(settled?.size).toEqual({ width: 400, height: 300 });
+    expect(settled?.sizeMode).toBe('manual');
+
+    workspace.execute({ kind: 'node.autoSize', id: nodeId });
+    const automatic = placementOf(workspace.snapshot());
+    expect(automatic?.sizeMode).toBe('auto');
+    expect(automatic?.size).not.toEqual({ width: 400, height: 300 });
+
+    expect(workspace.undo()).toBe(true);
+    expect(placementOf(workspace.snapshot())?.sizeMode).toBe('manual');
 
     expect(workspace.undo()).toBe(true);
 
@@ -168,6 +179,34 @@ describe('canvas workspace', () => {
     expect(outcome).toMatchObject({ status: 'rejected', reason: 'parent-cycle' });
   });
 
+  it('reparents one node without rearranging its former siblings', () => {
+    const record = structuredClone(openMessagingScope());
+    const group = record.nodes['messaging-scope'];
+    const childIds = Object.values(record.nodes)
+      .filter((node) => node.parentId === group.id)
+      .map((node) => node.id as string);
+    const layout = record.layouts[record.views[record.activeViewId].layoutId];
+    layout.arrangementByContainerId ??= {};
+    layout.arrangementByContainerId[group.id] = {
+      layout: 'grid', childIds, gap: 32, align: 'stretch', columns: 3,
+    };
+    const movedId = childIds[1];
+    const siblingPositions = Object.fromEntries(childIds
+      .filter((id) => id !== movedId)
+      .map((id) => [id, structuredClone(layout.placements[id].position)]));
+    const workspace = createCanvasWorkspace(record, human);
+
+    workspace.submit(batch([
+      { kind: 'node.reparent', id: movedId },
+      { kind: 'node.move', id: movedId, position: { x: 1_200, y: 400 } },
+    ], record.revision, 'op-reparent'));
+
+    const after = workspace.snapshot().layouts[layout.id];
+    expect(after.placements[movedId].position).toEqual({ x: 1_200, y: 400 });
+    expect(Object.fromEntries(Object.keys(siblingPositions)
+      .map((id) => [id, after.placements[id].position]))).toEqual(siblingPositions);
+  });
+
   it('records who acted from host context, not from the payload', () => {
     const agent: ActorContext = {
       actor: { id: 'codex-1', kind: 'agent' },
@@ -196,16 +235,24 @@ describe('canvas workspace', () => {
     const [id, original] = Object.entries(before.wires)[0];
 
     const outcome = workspace.submit(batch(
-      [{ kind: 'wire.update', id, patch: { label: 'renamed', kind: 'queries' } }],
+      [
+        { kind: 'wire.update', id, patch: { label: 'renamed', kind: 'queries' } },
+        { kind: 'wire.setCardinality', id, source: 'one', target: 'zero-or-many' },
+      ],
       before.revision,
       'op-wire-update',
     ));
 
     expect(outcome.status).toBe('applied');
+    expect(workspace.snapshot().wires[id]).toMatchObject({
+      label: 'renamed', kind: 'queries',
+      source: { nodeId: original.source.nodeId, cardinality: 'one' },
+      target: { nodeId: original.target.nodeId, cardinality: 'zero-or-many' },
+    });
     const after = workspace.snapshot().wires[id];
     expect(after).toMatchObject({ label: 'renamed', kind: 'queries' });
-    expect(after.source).toEqual(original.source);
-    expect(after.target).toEqual(original.target);
+    expect(after.source.nodeId).toBe(original.source.nodeId);
+    expect(after.target.nodeId).toBe(original.target.nodeId);
   });
 
   it('refuses to update a wire that is not there', () => {

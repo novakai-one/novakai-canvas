@@ -1,4 +1,5 @@
-import type { ArchitectureDocument, CanvasReference } from './model';
+import type { CanvasReference } from './architecture-values.ts';
+import type { ArchitectureDocument } from './legacy-document.ts';
 
 /** Small map identity used by presentation adapters. */
 export interface ArchitectureMap {

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { CrossDiagramLink, DiagramRecord } from '../../src/canvas.ts';
+import { componentFor } from '../../src/components/registry.ts';
 import { buildRecord, buildRecords } from './dsl-fixture.ts';
 import { listMaps, printLibrary, printRecord } from './dsl-print.ts';
 
@@ -11,7 +12,7 @@ scope "Browser Sessions" "Isolated per-agent browsing"
   module "Session broker"
     acquire(AgentId) -> SessionHandle
     type Lease { agentId, ttl }
-  wire "browse CLI" -> "Session broker" : acquire(AgentId) -> SessionHandle [queries]
+  wire "browse CLI" -> "Session broker" shape=curved : acquire(AgentId) -> SessionHandle [queries]
   wire "Session broker" -> "browse CLI" : ack(SessionHandle) -> void
 `;
 
@@ -28,7 +29,7 @@ function content(record: DiagramRecord) {
 describe('printRecord', () => {
   it('prints contract on every wire and kind only when not the default', () => {
     const output = printRecord(buildRecord(DSL));
-    expect(output).toContain('wire "browse CLI" -> "Session broker" : acquire(AgentId) -> SessionHandle [queries]');
+    expect(output).toContain('wire "browse CLI" -> "Session broker" shape=curved : acquire(AgentId) -> SessionHandle [queries]');
     expect(output).toContain('wire "Session broker" -> "browse CLI" : ack(SessionHandle) -> void');
     expect(output).not.toContain('[references]');
     expect(output).toContain('note "One session per instance."');
@@ -48,6 +49,35 @@ describe('printRecord', () => {
     expect(Object.keys(reapplied.nodes).sort()).toEqual(Object.keys(record.nodes).sort());
     expect(reapplied.layouts[reapplied.views[reapplied.activeViewId].layoutId].placements)
       .toEqual(record.layouts[record.views[record.activeViewId].layoutId].placements);
+  });
+
+  it('canonically round-trips multiline block appearance and container arrangements', () => {
+    const record = buildRecord(`
+scope "Styled Round Trip" layout=grid columns=2 gap=24
+  zone "Left" layout=stack gap=8 align=center
+    block "Tasks:" padding=12 radius=8 border=1 border-color=green background=surface text=green vertical-align=center align=center weight=600 size=20
+      line "• Safety"
+      line "• Code"
+  end
+  zone "Right"
+    module "Prompt" badge=hide
+  end
+`);
+    const printed = printRecord(record);
+    expect(printed).toContain('scope "Styled Round Trip" layout=grid columns=2 gap=24');
+    expect(printed).toContain('zone "Left" layout=stack gap=8 align=center');
+    expect(printed).toContain('block "Tasks:" size=20 weight=600 align=center vertical-align=center text=green background=surface border-color=green border=1 radius=8 padding=12');
+    expect(printed).toContain('line "• Safety"\n      line "• Code"');
+    expect(printed).toContain('module "Prompt" badge=hide');
+
+    const reapplied = buildRecord(printed, { [record.id]: record });
+    const layoutOf = (candidate: DiagramRecord) =>
+      candidate.layouts[candidate.views[candidate.activeViewId].layoutId];
+    expect(layoutOf(reapplied).appearanceByNodeId).toEqual(layoutOf(record).appearanceByNodeId);
+    expect(layoutOf(reapplied).arrangementByContainerId).toEqual(layoutOf(record).arrangementByContainerId);
+    expect(reapplied.nodes['styled-round-trip--left--block-tasks'].lines)
+      .toEqual(['• Safety', '• Code']);
+    expect(printRecord(reapplied)).toBe(printed);
   });
 
   it('prints a cross-diagram link as an ordinary wire, so read stays lossless', () => {
@@ -90,6 +120,103 @@ describe('printLibrary / listMaps', () => {
       target: { diagramId: 'other', nodeId: 'other--b' },
     } as unknown as CrossDiagramLink;
     expect(listMaps([record], [link])[0].wires).toBe(1);
+  });
+});
+
+describe('every node-declaring keyword round-trips', () => {
+  // One scope using every statement a component declares: the four card keywords, tree with a
+  // row, note, and a zone holding a node. Guards the parse → print → parse path while the
+  // vocabulary moves from hardcoded lists to the component registry.
+  const EVERY_KEYWORD_DSL = `
+scope "Every Keyword" "one of each"
+  module "A module" "with a description"
+    call(In) -> Out
+    type Shape { a, b }
+  object "An object"
+  runtime "A runtime"
+  resource "a-resource.json"
+  note "A free-text note."
+  tree "A tree"
+    row proj1 project active label "Project One"
+    row task1 task in-progress parent=proj1 badges=team,outcome
+  timeline "A timeline"
+    step "turn 1"
+    step "turn 3" fork="session-xyz789"
+  metric "Success rate" value="92%" detail="12 of 13 runs" status=success
+  icon-card "Automated checks" icon=check description="Every change is verified."
+  callout-stack "Release decision"
+    callout "Evidence is complete" id=evidence kind=info
+    callout "Ship the release" id=decision kind=decision
+  ooux-object "Organization" ref=organization
+    attribute "org_name" id=org-name type=string role=core
+    cta "inviteMember" id=invite-member role=admin
+  zone "A zone" "holding one node"
+    module "zoned module"
+  end
+  wire "A module" -> "zoned module" source-cardinality=one target-cardinality=zero-or-many : call(In) -> Out [queries]
+`;
+
+  it('parses, prints, and re-parses to the same record content', () => {
+    const record = buildRecord(EVERY_KEYWORD_DSL);
+    expect(Object.values(record.nodes).map((node) => node.kind).sort()).toEqual(
+      ['callout-stack', 'comment', 'group', 'group', 'icon-card', 'metric', 'module', 'module', 'object', 'ooux-object', 'resource', 'runtime', 'timeline', 'tree'],
+    );
+    const printed = printRecord(record);
+    for (const node of Object.values(record.nodes).filter((candidate) => candidate.parentId)) {
+      expect(printed).toContain(componentFor(node.kind).declaration.print(node));
+    }
+    for (const statement of ['module "A module"', 'object "An object"', 'runtime "A runtime"',
+      'resource "a-resource.json"', 'note "A free-text note."', 'tree "A tree"',
+      'zone "A zone"', 'row proj1 project active label "Project One"',
+      'row task1 task in-progress parent=proj1 badges=team,outcome',
+      'timeline "A timeline"', 'step "turn 1"', 'step "turn 3" fork="session-xyz789"',
+      'metric "Success rate" value="92%" detail="12 of 13 runs" status=success',
+      'icon-card "Automated checks" icon=check description="Every change is verified."',
+      'callout-stack "Release decision"',
+      'callout "Evidence is complete" id=evidence kind=info',
+      'callout "Ship the release" id=decision kind=decision',
+      'ooux-object "Organization" ref=organization',
+      'attribute "org_name" id=org-name type=string role=core',
+      'cta "inviteMember" id=invite-member role=admin',
+      'source-cardinality=one target-cardinality=zero-or-many']) {
+      expect(printed).toContain(statement);
+    }
+    expect(Object.values(record.nodes).find((node) => node.kind === 'metric')).toMatchObject({
+      label: 'Success rate', value: '92%', detail: '12 of 13 runs', status: 'success',
+    });
+    expect(Object.values(record.nodes).find((node) => node.kind === 'icon-card')).toMatchObject({
+      label: 'Automated checks', icon: 'check', description: 'Every change is verified.',
+    });
+    const calloutStack = Object.values(record.nodes).find((node) => node.kind === 'callout-stack');
+    expect(calloutStack?.callouts).toEqual([
+      { id: 'evidence', kind: 'info', text: 'Evidence is complete' },
+      { id: 'decision', kind: 'decision', text: 'Ship the release' },
+    ]);
+    expect(Object.values(record.nodes).find((node) => node.kind === 'ooux-object')).toMatchObject({
+      objectRef: 'organization',
+      oouxRows: [
+        { kind: 'attribute', id: 'org-name', valueType: 'string', role: 'core', traits: [] },
+        { kind: 'cta', id: 'invite-member', role: 'admin' },
+      ],
+    });
+    expect(Object.values(record.wires)[0]).toMatchObject({
+      source: { cardinality: 'one' }, target: { cardinality: 'zero-or-many' },
+    });
+    const reapplied = buildRecord(printed, { [record.id]: record });
+    expect(content(reapplied)).toEqual(content(record));
+    expect(printRecord(reapplied)).toBe(printed);
+
+    const edited = buildRecord(EVERY_KEYWORD_DSL
+      .replace('callout "Evidence is complete" id=evidence kind=info',
+        'callout "Evidence was independently verified" id=evidence kind=info')
+      .replace('    callout "Ship the release" id=decision kind=decision\n', '')
+      .replace('    callout "Evidence was independently verified" id=evidence kind=info',
+        '    callout "Ship the release" id=decision kind=decision\n    callout "Evidence was independently verified" id=evidence kind=info'),
+    { [record.id]: record });
+    const editedCallouts = Object.values(edited.nodes)
+      .find((node) => node.kind === 'callout-stack')?.callouts ?? [];
+    expect(editedCallouts.map((callout) => callout.id)).toEqual(['decision', 'evidence']);
+    expect(editedCallouts[1].text).toBe('Evidence was independently verified');
   });
 });
 

@@ -15,7 +15,7 @@ import {
   createCanvasNode, placedNodes, type CreatableNodeKind,
 } from './presentation/canvas-actions';
 import { canvasCamera } from './presentation/canvas-camera';
-import { ShellGeometryProvider, targetScale } from './presentation/shell';
+import { CanvasPortalProvider, ShellGeometryProvider, targetScale } from './presentation/shell';
 import { useWorkspaceRecord } from './presentation/use-workspace-record';
 import { wireToneCssVariables } from './presentation/wire-styles';
 import { DEFAULT_CANVAS_MODE, type CanvasMode } from './presentation/view-mode';
@@ -27,6 +27,8 @@ export interface AppProps {
   initialWorkspace: CanvasWorkspace;
   initialPreferences: CanvasPreferences;
   preferencesRepository: JsonRepository<CanvasPreferences>;
+  /** Lets an embedding host remember navigation without retaining the Canvas render tree. */
+  onActiveDiagramChange?: (diagramId: string) => void;
 }
 
 /** How much air each density setting puts between things, as a multiplier on the 4px grid. */
@@ -50,7 +52,10 @@ const SAVE_STATUS = {
 
 /** Composes the diagram library and one open workspace with replaceable presentation. */
 export default function App(props: AppProps) {
-  const { initialDiagramId, initialPreferences, initialWorkspace, library, preferencesRepository } = props;
+  const {
+    initialDiagramId, initialPreferences, initialWorkspace, library,
+    onActiveDiagramChange, preferencesRepository,
+  } = props;
   const [open, setOpen] = useState<OpenDiagram>(
     () => ({ id: initialDiagramId, workspace: initialWorkspace }),
   );
@@ -70,6 +75,10 @@ export default function App(props: AppProps) {
   // The revision each open diagram was last written at. A save that fails leaves its entry
   // behind, so the next edit tries again rather than pretending the work is on disk.
   const persisted = useRef(new Map<string, number>([[initialDiagramId, record.revision]]));
+
+  useEffect(() => {
+    onActiveDiagramChange?.(open.id);
+  }, [onActiveDiagramChange, open.id]);
 
   const refreshDiagrams = useCallback(
     () => setDiagrams(library.list({ includeArchived: true })),
@@ -302,35 +311,10 @@ export default function App(props: AppProps) {
     }
   }, [record]);
 
-  /*
-   * Every visual judgement call, handed to the user as a number.
-   *
-   * Density and text scale drive the spacing and type tokens; target scale drives every canvas
-   * control's screen size. Wire-label sizing stays with the canvas because its maximum also
-   * decides when labels disappear. Guessing which of these Chris wants is what offering them
-   * have to spend forever trying to guess what I want".
-   *
-   * Written to the document element, not to the shell. Every derived token —
-   * `--space-3: calc(12px * var(--density))` and its kind — is declared on `:root` and is
-   * therefore computed there, with `:root`'s own multiplier; setting a different multiplier on
-   * a descendant changes nothing, because what descendants inherit is the already-resolved
-   * value. Verified in the browser: the dot stayed twelve pixels at a scale of 1.3.
-   */
-  useEffect(() => {
-    const style = document.documentElement.style;
-    const scales: Record<string, string> = {
-      '--density': String(DENSITY_SCALE[preferences.appearance.density] ?? 1),
-      '--text-scale': String(preferences.appearance.textScale ?? 1),
-      '--target-scale': String(targetScale(preferences.canvas.targetSize ?? 'medium').multiplier),
-    };
-    for (const [name, value] of Object.entries(scales)) style.setProperty(name, value);
-  }, [
-    preferences.appearance.density,
-    preferences.appearance.textScale,
-    preferences.canvas.targetSize,
-  ]);
-
   const shellStyle = {
+    '--density': String(DENSITY_SCALE[preferences.appearance.density] ?? 1),
+    '--text-scale': String(preferences.appearance.textScale ?? 1),
+    '--target-scale': String(targetScale(preferences.canvas.targetSize ?? 'medium').multiplier),
     '--node-radius': `${preferences.appearance.radius}px`,
     ...wireToneCssVariables(preferences.appearance.theme),
   } as CSSProperties;
@@ -352,6 +336,7 @@ export default function App(props: AppProps) {
         data-theme={preferences.appearance.theme}
         style={shellStyle}
       >
+      <CanvasPortalProvider>
       <Rail
         activeDiagramId={open.id}
         activeDiagramName={record.name}
@@ -428,6 +413,7 @@ export default function App(props: AppProps) {
         updatePreferences={setPreferences}
         view={view}
       />
+      </CanvasPortalProvider>
       </div>
     </ShellGeometryProvider>
   );

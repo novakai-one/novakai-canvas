@@ -1,0 +1,76 @@
+.canvas-toolbar {
+  position: absolute;
+  z-index: 10;
+  top: 16px;
+  left: 16px;
+  /* Bounded by the canvas, not the viewport. Without this the row grows past the
+     surface and its right-hand end is clipped by the inspector panel. Sized to its
+     content up to that cap, so it stays an island instead of stretching into a bar. */
+  width: max-content;
+  max-width: calc(100% - 32px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+  min-height: 42px;
+  padding: 5px 6px 5px 12px;
+  border: var(--surface-border);
+  border-radius: 7px;
+  background: var(--overlay);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(16px);
+  transition: opacity var(--motion-feedback), transform var(--motion-feedback);
+}
+
+/* The identity yields first: a truncated title costs less than a clipped control. */
+.canvas-toolbar .file-identity {
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.canvas-toolbar .file-identity span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.is-present .canvas-toolbar { opacity: 0.28; transform: translateY(-8px); }
+.is-present .canvas-toolbar:hover,
+.is-present .canvas-toolbar:focus-within { opacity: 1; transform: translateY(0); }
+
+.mode-switch {
+  display: flex;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.mode-switch button {
+  padding: 7px 10px;
+  border: 0;
+  color: var(--faint);
+  background: transparent;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.mode-switch button + button { border-left: 1px solid var(--border); }
+.mode-switch button.is-active { color: var(--ink-strong); background: var(--hover); }
+
+/* Control looks come from the group in base.css; only geometry differs here. */
+.map-picker { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.map-picker > span { color: var(--faint); font-size: var(--type-meta); }
+.map-picker input { width: 104px; }
+.map-picker select { max-width: 260px; min-width: 96px; padding-right: 28px; }
+
+.file-identity { display: flex; align-items: baseline; gap: 7px; white-space: nowrap; }
+.file-identity span { font-size: var(--type-title); font-weight: 600; }
+.file-identity small, .save-status { color: var(--faint); font-size: var(--type-meta); }
+
+/* An unsaved-work warning is the one status worth interrupting for. */
+.save-status[data-state='unsaved'] { color: var(--accent-strong); }
+
+.toolbar-actions { display: flex; flex-wrap: wrap; gap: 4px; }
+.toolbar-actions :is(button, select) { display: flex; align-items: center; gap: 5px; }
+.toolbar-actions button span { color: var(--accent); }
+

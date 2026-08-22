@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 3,
+  "id": "session-continuity-v2",
+  "name": "Session continuity v2",
+  "status": "active",
+  "revision": 1,
+  "nodes": {
+    "session-continuity-v2": {
+      "id": "session-continuity-v2",
+      "kind": "group",
+      "label": "Session continuity v2",
+      "interfaceIds": [],
+      "typeIds": []
+    },
+    "session-continuity-v2--session-abc123": {
+      "id": "session-continuity-v2--session-abc123",
+      "kind": "timeline",
+      "label": "session-abc123",
+      "parentId": "session-continuity-v2",
+      "interfaceIds": [],
+      "typeIds": [],
+      "steps": [
+        {
+          "id": "turn-1",
+          "label": "turn 1"
+        },
+        {
+          "id": "turn-2",
+          "label": "turn 2"
+        },
+        {
+          "id": "turn-3",
+          "label": "turn 3",
+          "fork": "session-xyz789"
+        }
+      ]
+    },
+    "session-continuity-v2--session-xyz789": {
+      "id": "session-continuity-v2--session-xyz789",
+      "kind": "object",
+      "label": "session-xyz789",
+      "description": "Forked session; new ID",
+      "parentId": "session-continuity-v2",
+      "interfaceIds": [],
+      "typeIds": []
+    }
+  },
+  "wires": {
+    "session-continuity-v2--wire-1": {
+      "id": "session-continuity-v2--wire-1",
+      "kind": "references",
+      "label": "claude --resume abc123 --fork-session",
+      "source": {
+        "nodeId": "session-continuity-v2--session-abc123"
+      },
+      "target": {
+        "nodeId": "session-continuity-v2--session-xyz789"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "session-continuity-v2": {
+          "nodeId": "session-continuity-v2",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 368,
+            "height": 426
+          },
+          "pinned": false
+        },
+        "session-continuity-v2--session-abc123": {
+          "nodeId": "session-continuity-v2--session-abc123",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 288,
+            "height": 156
+          },
+          "pinned": false
+        },
+        "session-continuity-v2--session-xyz789": {
+          "nodeId": "session-continuity-v2--session-xyz789",
+          "position": {
+            "x": 84,
+            "y": 282
+          },
+          "size": {
+            "width": 200,
+            "height": 104
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-0444992f-e691-4b1a-9eba-f9bb0653ace8": {
+      "operationId": "cli-apply-0444992f-e691-4b1a-9eba-f9bb0653ace8",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-18T19:36:27.481Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/tmp/session-continuity-v2.dsl"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.add",
+        "node.add",
+        "wire.add"
+      ]
+    }
+  }
+}

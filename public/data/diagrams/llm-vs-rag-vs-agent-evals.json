@@ -1,0 +1,534 @@
+{
+  "schemaVersion": 3,
+  "id": "llm-vs-rag-vs-agent-evals",
+  "name": "LLM vs. RAG vs. Agent Evals",
+  "status": "active",
+  "revision": 1,
+  "nodes": {
+    "llm-vs-rag-vs-agent-evals": {
+      "id": "llm-vs-rag-vs-agent-evals",
+      "label": "LLM vs. RAG vs. Agent Evals",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "llm-vs-rag-vs-agent-evals--llm": {
+      "id": "llm-vs-rag-vs-agent-evals--llm",
+      "label": "LLM",
+      "parentId": "llm-vs-rag-vs-agent-evals",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "llm-vs-rag-vs-agent-evals--rag": {
+      "id": "llm-vs-rag-vs-agent-evals--rag",
+      "label": "RAG",
+      "parentId": "llm-vs-rag-vs-agent-evals",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "llm-vs-rag-vs-agent-evals--coding-agents": {
+      "id": "llm-vs-rag-vs-agent-evals--coding-agents",
+      "label": "Coding Agents",
+      "parentId": "llm-vs-rag-vs-agent-evals",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "llm-vs-rag-vs-agent-evals--multi-agent-systems": {
+      "id": "llm-vs-rag-vs-agent-evals--multi-agent-systems",
+      "label": "Multi-agent Systems",
+      "parentId": "llm-vs-rag-vs-agent-evals",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "llm-vs-rag-vs-agent-evals--llm--block-tasks": {
+      "id": "llm-vs-rag-vs-agent-evals--llm--block-tasks",
+      "label": "Tasks:",
+      "parentId": "llm-vs-rag-vs-agent-evals--llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "• Safety",
+        "• Code",
+        "• Instruction following"
+      ]
+    },
+    "llm-vs-rag-vs-agent-evals--llm--prompt": {
+      "id": "llm-vs-rag-vs-agent-evals--llm--prompt",
+      "label": "Prompt",
+      "parentId": "llm-vs-rag-vs-agent-evals--llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "llm-vs-rag-vs-agent-evals--llm--block-refusal-rate": {
+      "id": "llm-vs-rag-vs-agent-evals--llm--block-refusal-rate",
+      "label": "Refusal rate",
+      "parentId": "llm-vs-rag-vs-agent-evals--llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block"
+    },
+    "llm-vs-rag-vs-agent-evals--rag--block-tasks": {
+      "id": "llm-vs-rag-vs-agent-evals--rag--block-tasks",
+      "label": "Tasks:",
+      "parentId": "llm-vs-rag-vs-agent-evals--rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "• Grounding",
+        "• Citation",
+        "• Multi-hop QA"
+      ]
+    },
+    "llm-vs-rag-vs-agent-evals--rag--retriever": {
+      "id": "llm-vs-rag-vs-agent-evals--rag--retriever",
+      "label": "Retriever",
+      "parentId": "llm-vs-rag-vs-agent-evals--rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "llm-vs-rag-vs-agent-evals--rag--block-faithfulness": {
+      "id": "llm-vs-rag-vs-agent-evals--rag--block-faithfulness",
+      "label": "Faithfulness",
+      "parentId": "llm-vs-rag-vs-agent-evals--rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block"
+    },
+    "llm-vs-rag-vs-agent-evals--coding-agents--block-tasks": {
+      "id": "llm-vs-rag-vs-agent-evals--coding-agents--block-tasks",
+      "label": "Tasks:",
+      "parentId": "llm-vs-rag-vs-agent-evals--coding-agents",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "• Tool calling",
+        "• Bug fixing",
+        "• Long-horizon planning"
+      ]
+    },
+    "llm-vs-rag-vs-agent-evals--coding-agents--agent-loop": {
+      "id": "llm-vs-rag-vs-agent-evals--coding-agents--agent-loop",
+      "label": "Agent loop",
+      "parentId": "llm-vs-rag-vs-agent-evals--coding-agents",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "llm-vs-rag-vs-agent-evals--coding-agents--block-resolve-rate": {
+      "id": "llm-vs-rag-vs-agent-evals--coding-agents--block-resolve-rate",
+      "label": "Resolve rate",
+      "parentId": "llm-vs-rag-vs-agent-evals--coding-agents",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block"
+    },
+    "llm-vs-rag-vs-agent-evals--multi-agent-systems--block-tasks": {
+      "id": "llm-vs-rag-vs-agent-evals--multi-agent-systems--block-tasks",
+      "label": "Tasks:",
+      "parentId": "llm-vs-rag-vs-agent-evals--multi-agent-systems",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "• Coordination",
+        "• Role adherence"
+      ]
+    },
+    "llm-vs-rag-vs-agent-evals--multi-agent-systems--orchestrator": {
+      "id": "llm-vs-rag-vs-agent-evals--multi-agent-systems--orchestrator",
+      "label": "Orchestrator",
+      "parentId": "llm-vs-rag-vs-agent-evals--multi-agent-systems",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "llm-vs-rag-vs-agent-evals--multi-agent-systems--block-task-success": {
+      "id": "llm-vs-rag-vs-agent-evals--multi-agent-systems--block-task-success",
+      "label": "Task success",
+      "parentId": "llm-vs-rag-vs-agent-evals--multi-agent-systems",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block"
+    }
+  },
+  "wires": {},
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "llm-vs-rag-vs-agent-evals": {
+          "nodeId": "llm-vs-rag-vs-agent-evals",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 1432,
+            "height": 413
+          },
+          "pinned": false
+        },
+        "llm-vs-rag-vs-agent-evals--llm": {
+          "nodeId": "llm-vs-rag-vs-agent-evals--llm",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 317
+          },
+          "pinned": false
+        },
+        "llm-vs-rag-vs-agent-evals--rag": {
+          "nodeId": "llm-vs-rag-vs-agent-evals--rag",
+          "position": {
+            "x": 384,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 317
+          },
+          "pinned": false
+        },
+        "llm-vs-rag-vs-agent-evals--coding-agents": {
+          "nodeId": "llm-vs-rag-vs-agent-evals--coding-agents",
+          "position": {
+            "x": 728,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 317
+          },
+          "pinned": false
+        },
+        "llm-vs-rag-vs-agent-evals--multi-agent-systems": {
+          "nodeId": "llm-vs-rag-vs-agent-evals--multi-agent-systems",
+          "position": {
+            "x": 1072,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 297
+          },
+          "pinned": false
+        },
+        "llm-vs-rag-vs-agent-evals--llm--block-tasks": {
+          "nodeId": "llm-vs-rag-vs-agent-evals--llm--block-tasks",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 240,
+            "height": 79
+          },
+          "pinned": false
+        },
+        "llm-vs-rag-vs-agent-evals--llm--prompt": {
+          "nodeId": "llm-vs-rag-vs-agent-evals--llm--prompt",
+          "position": {
+            "x": 40,
+            "y": 151
+          },
+          "size": {
+            "width": 240,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "llm-vs-rag-vs-agent-evals--llm--block-refusal-rate": {
+          "nodeId": "llm-vs-rag-vs-agent-evals--llm--block-refusal-rate",
+          "position": {
+            "x": 40,
+            "y": 231
+          },
+          "size": {
+            "width": 240,
+            "height": 46
+          },
+          "pinned": false
+        },
+        "llm-vs-rag-vs-agent-evals--rag--block-tasks": {
+          "nodeId": "llm-vs-rag-vs-agent-evals--rag--block-tasks",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 240,
+            "height": 79
+          },
+          "pinned": false
+        },
+        "llm-vs-rag-vs-agent-evals--rag--retriever": {
+          "nodeId": "llm-vs-rag-vs-agent-evals--rag--retriever",
+          "position": {
+            "x": 40,
+            "y": 151
+          },
+          "size": {
+            "width": 240,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "llm-vs-rag-vs-agent-evals--rag--block-faithfulness": {
+          "nodeId": "llm-vs-rag-vs-agent-evals--rag--block-faithfulness",
+          "position": {
+            "x": 40,
+            "y": 231
+          },
+          "size": {
+            "width": 240,
+            "height": 46
+          },
+          "pinned": false
+        },
+        "llm-vs-rag-vs-agent-evals--coding-agents--block-tasks": {
+          "nodeId": "llm-vs-rag-vs-agent-evals--coding-agents--block-tasks",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 240,
+            "height": 79
+          },
+          "pinned": false
+        },
+        "llm-vs-rag-vs-agent-evals--coding-agents--agent-loop": {
+          "nodeId": "llm-vs-rag-vs-agent-evals--coding-agents--agent-loop",
+          "position": {
+            "x": 40,
+            "y": 151
+          },
+          "size": {
+            "width": 240,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "llm-vs-rag-vs-agent-evals--coding-agents--block-resolve-rate": {
+          "nodeId": "llm-vs-rag-vs-agent-evals--coding-agents--block-resolve-rate",
+          "position": {
+            "x": 40,
+            "y": 231
+          },
+          "size": {
+            "width": 240,
+            "height": 46
+          },
+          "pinned": false
+        },
+        "llm-vs-rag-vs-agent-evals--multi-agent-systems--block-tasks": {
+          "nodeId": "llm-vs-rag-vs-agent-evals--multi-agent-systems--block-tasks",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 240,
+            "height": 59
+          },
+          "pinned": false
+        },
+        "llm-vs-rag-vs-agent-evals--multi-agent-systems--orchestrator": {
+          "nodeId": "llm-vs-rag-vs-agent-evals--multi-agent-systems--orchestrator",
+          "position": {
+            "x": 40,
+            "y": 131
+          },
+          "size": {
+            "width": 240,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "llm-vs-rag-vs-agent-evals--multi-agent-systems--block-task-success": {
+          "nodeId": "llm-vs-rag-vs-agent-evals--multi-agent-systems--block-task-success",
+          "position": {
+            "x": 40,
+            "y": 211
+          },
+          "size": {
+            "width": 240,
+            "height": 46
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {
+        "llm-vs-rag-vs-agent-evals--llm--block-tasks": {
+          "weight": 600
+        },
+        "llm-vs-rag-vs-agent-evals--llm--prompt": {
+          "badge": "hide"
+        },
+        "llm-vs-rag-vs-agent-evals--llm--block-refusal-rate": {
+          "size": 14,
+          "weight": 600,
+          "align": "center",
+          "text": "green",
+          "background": "transparent",
+          "borderColor": "green",
+          "border": 1,
+          "radius": 8,
+          "padding": 12
+        },
+        "llm-vs-rag-vs-agent-evals--rag--retriever": {
+          "badge": "hide"
+        },
+        "llm-vs-rag-vs-agent-evals--rag--block-faithfulness": {
+          "align": "center",
+          "borderColor": "blue",
+          "border": 1,
+          "radius": 8,
+          "padding": 12
+        },
+        "llm-vs-rag-vs-agent-evals--coding-agents--agent-loop": {
+          "badge": "hide"
+        },
+        "llm-vs-rag-vs-agent-evals--coding-agents--block-resolve-rate": {
+          "align": "center",
+          "borderColor": "violet",
+          "border": 1,
+          "radius": 8,
+          "padding": 12
+        },
+        "llm-vs-rag-vs-agent-evals--multi-agent-systems--orchestrator": {
+          "badge": "hide"
+        },
+        "llm-vs-rag-vs-agent-evals--multi-agent-systems--block-task-success": {
+          "align": "center",
+          "borderColor": "rose",
+          "border": 1,
+          "radius": 8,
+          "padding": 12
+        }
+      },
+      "arrangementByContainerId": {
+        "llm-vs-rag-vs-agent-evals--llm": {
+          "layout": "stack",
+          "childIds": [
+            "llm-vs-rag-vs-agent-evals--llm--block-tasks",
+            "llm-vs-rag-vs-agent-evals--llm--prompt",
+            "llm-vs-rag-vs-agent-evals--llm--block-refusal-rate"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "llm-vs-rag-vs-agent-evals--rag": {
+          "layout": "stack",
+          "childIds": [
+            "llm-vs-rag-vs-agent-evals--rag--block-tasks",
+            "llm-vs-rag-vs-agent-evals--rag--retriever",
+            "llm-vs-rag-vs-agent-evals--rag--block-faithfulness"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "llm-vs-rag-vs-agent-evals--coding-agents": {
+          "layout": "stack",
+          "childIds": [
+            "llm-vs-rag-vs-agent-evals--coding-agents--block-tasks",
+            "llm-vs-rag-vs-agent-evals--coding-agents--agent-loop",
+            "llm-vs-rag-vs-agent-evals--coding-agents--block-resolve-rate"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "llm-vs-rag-vs-agent-evals--multi-agent-systems": {
+          "layout": "stack",
+          "childIds": [
+            "llm-vs-rag-vs-agent-evals--multi-agent-systems--block-tasks",
+            "llm-vs-rag-vs-agent-evals--multi-agent-systems--orchestrator",
+            "llm-vs-rag-vs-agent-evals--multi-agent-systems--block-task-success"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "llm-vs-rag-vs-agent-evals": {
+          "layout": "grid",
+          "childIds": [
+            "llm-vs-rag-vs-agent-evals--llm",
+            "llm-vs-rag-vs-agent-evals--rag",
+            "llm-vs-rag-vs-agent-evals--coding-agents",
+            "llm-vs-rag-vs-agent-evals--multi-agent-systems"
+          ],
+          "gap": 24,
+          "align": "stretch",
+          "columns": 4
+        }
+      }
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "styled-proof-v1": {
+      "operationId": "styled-proof-v1",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-20T11:48:13.769Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/tmp/evaluation-styled.dsl"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "layout.presentation.replace"
+      ]
+    }
+  }
+}

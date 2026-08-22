@@ -1,0 +1,191 @@
+.tree-node {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--node-radius);
+  background: var(--card);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+}
+
+.block-node-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.timeline-node-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.metric-node-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.metric-node {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--node-radius);
+  background: var(--card);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+}
+
+.canvas-surface .react-flow__node.selected .metric-node {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent), 0 12px 28px rgba(0, 0, 0, 0.24);
+}
+
+.metric-content {
+  display: grid;
+  padding: 13px 16px 16px;
+  gap: 5px;
+}
+
+.metric-value { color: var(--metric-tone); font-size: 30px; line-height: 1; letter-spacing: -0.035em; }
+.metric-detail { overflow: hidden; color: var(--muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.metric-status { color: var(--metric-tone); font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+.metric-node.status-neutral { --metric-tone: var(--muted); }
+.metric-node.status-success { --metric-tone: var(--sage); }
+.metric-node.status-warning { --metric-tone: var(--accent-strong); }
+.metric-node.status-critical { --metric-tone: var(--danger-strong); }
+
+.icon-card-node-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.icon-card-node {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--node-radius);
+  background: var(--card);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+}
+
+.canvas-surface .react-flow__node.selected .icon-card-node {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent), 0 12px 28px rgba(0, 0, 0, 0.24);
+}
+
+.icon-card-body { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+.icon-card-body p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
+.icon-card-glyph {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  color: var(--accent-strong);
+  background: var(--card-3);
+}
+.icon-card-glyph svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+
+.callout-stack-node-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.callout-stack-node {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--node-radius);
+  background: var(--card);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+}
+
+.canvas-surface .react-flow__node.selected .callout-stack-node {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent), 0 12px 28px rgba(0, 0, 0, 0.24);
+}
+
+.callout-list { display: flex; padding: 8px; gap: 6px; flex-direction: column; }
+.callout-row {
+  display: grid;
+  min-height: 34px;
+  align-items: center;
+  padding: 5px 9px;
+  gap: 2px;
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--callout-tone);
+  border-radius: 4px;
+  color: var(--ink-soft);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.callout-row:hover { background: var(--hover); }
+.callout-row.is-selected { background: var(--hover); box-shadow: inset 2px 0 var(--accent); }
+.callout-kind { color: var(--callout-tone); font-size: 8px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; }
+.callout-text { overflow: hidden; font-size: 10.5px; text-overflow: ellipsis; white-space: nowrap; }
+.callout-row.kind-info { --callout-tone: var(--muted); }
+.callout-row.kind-warning { --callout-tone: var(--accent-strong); }
+.callout-row.kind-decision { --callout-tone: var(--accent-bright); }
+.callout-row.kind-success { --callout-tone: var(--sage); }
+
+.canvas-surface .react-flow__node.selected .tree-node {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent), 0 12px 28px rgba(0, 0, 0, 0.24);
+}
+
+.tree-rows { display: flex; padding: 7px 8px 11px; flex-direction: column; }
+
+.tree-row {
+  display: flex;
+  min-height: 23px;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 8px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10.5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tree-row:hover { background: var(--hover); }
+.tree-row.is-selected { background: var(--hover); box-shadow: inset 2px 0 var(--accent); }
+
+.tree-row.is-child::before {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 1px;
+  margin-right: 2px;
+  background: var(--border-soft);
+  content: "";
+}
+
+.tree-row-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tree-row-status { margin-left: 8px; opacity: 0.7; }
+.tree-row-badge { flex: 0 0 auto; color: var(--tree-badge); font-size: 9.5px; }
+
+.tone-project { color: var(--tree-project); font-weight: 700; }
+.tone-done { color: var(--tree-done); }
+.tone-active { color: var(--tree-active); }
+.tone-muted { color: var(--tree-muted); }
+.tone-bucket { color: var(--tree-muted); font-weight: 600; }
+.tone-tombstone { color: var(--tree-tombstone); }

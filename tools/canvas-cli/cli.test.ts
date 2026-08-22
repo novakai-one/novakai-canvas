@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
-import { cp, mkdtemp, readFile } from 'node:fs/promises';
+import { cp, mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import type { DiagramRecord, LibraryIndex } from '../../src/canvas.ts';
@@ -32,6 +33,8 @@ scope "CLI Demo"
     acquire(AgentId) -> DemoHandle
     type DemoHandle { id, endpoint }
   module "Demo client"
+  timeline "Demo history"
+    step "turn 1"
   wire "Demo client" -> "Demo broker" : acquire(AgentId) -> DemoHandle [queries]
 `;
 
@@ -49,13 +52,33 @@ function placementsOf(record: DiagramRecord) {
   return record.layouts[record.views[record.activeViewId].layoutId].placements;
 }
 
+async function dataHashes(): Promise<Record<string, string>> {
+  const files = [
+    'library.json',
+    'canvas-preferences.json',
+    ...(await readdir(join(dataDir, 'diagrams'))).sort().map((name) => `diagrams/${name}`),
+  ];
+  return Object.fromEntries(await Promise.all(files.map(async (file) => [
+    file,
+    createHash('sha256').update(await readFile(join(dataDir, file))).digest('hex'),
+  ])));
+}
+
 beforeEach(async () => {
   dataDir = await mkdtemp(join(tmpdir(), 'canvas-cli-'));
   await cp(join(REAL_DATA, 'library.json'), join(dataDir, 'library.json'));
+  await cp(join(REAL_DATA, 'canvas-preferences.json'), join(dataDir, 'canvas-preferences.json'));
   await cp(join(REAL_DATA, 'diagrams'), join(dataDir, 'diagrams'), { recursive: true });
 });
 
 describe('canvas CLI', () => {
+  it('includes registered timeline syntax in help', async () => {
+    const { code, stdout } = await runCli(['help']);
+    expect(code).toBe(0);
+    expect(stdout).toContain('timeline');
+    expect(stdout).toContain('step "label" [fork="session-id"]');
+  });
+
   it('maps lists the three real scopes', async () => {
     const { code, stdout } = await runCli(['maps', '--file', dataDir]);
     expect(code).toBe(0);
@@ -90,6 +113,13 @@ describe('canvas CLI', () => {
     const replay = await runCli(['apply', '--file', dataDir, '--operation-id', 'dsl-import-1'], DEMO);
     expect(replay.code, replay.stderr).toBe(0);
     expect((await readRecord('cli-demo')).revision).toBe(record.revision);
+
+    const changed = DEMO.replace('step "turn 1"', 'step "turn 2" fork="session-demo"');
+    const changedApply = await runCli(['apply', '--file', dataDir], changed);
+    expect(changedApply.code, changedApply.stderr).toBe(0);
+    expect((await readRecord('cli-demo')).nodes['cli-demo--demo-history'].steps).toEqual([
+      { id: 'turn-2', label: 'turn 2', fork: 'session-demo' },
+    ]);
   });
 
   it('read prints the applied scope back as DSL', async () => {
@@ -174,6 +204,199 @@ describe('canvas CLI', () => {
       nodeAliases: { group: 'scope' },
     });
     expect(description.commandKinds).toContain('node.add');
+    const dsl = description.dsl as {
+      components: Array<Record<string, unknown>>;
+      wire: Record<string, unknown>;
+    };
+    expect(dsl.components.map((component) => component.kind)).toEqual([
+      'group', 'module', 'object', 'runtime', 'resource', 'comment', 'tree', 'timeline',
+      'metric', 'icon-card', 'callout-stack', 'block', 'ooux-object',
+    ]);
+    expect(dsl.components.find((component) => component.kind === 'group')).toMatchObject({
+      keyword: 'zone',
+      arrangement: { layout: { values: ['stack', 'row', 'grid'] } },
+    });
+    expect(dsl.components.find((component) => component.kind === 'icon-card')).toMatchObject({
+      keyword: 'icon-card',
+      declaration: {
+        syntax: 'icon-card "title" icon=check|clock|people|shield|target|trend description="text"',
+      },
+      appearance: [],
+    });
+    const block = dsl.components.find((component) => component.kind === 'block');
+    expect(block).toMatchObject({ keyword: 'block' });
+    expect(block?.appearance).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        key: 'icon', values: ['check', 'clock', 'people', 'shield', 'target', 'trend'],
+      }),
+      expect.objectContaining({ key: 'vertical-align', values: ['top', 'center', 'bottom'] }),
+    ]));
+    expect(dsl.wire).toMatchObject({
+      endpoints: ['label', '@ref', '#node-id'],
+      cardinality: {
+        source: { key: 'source-cardinality', values: ['one', 'zero-or-one', 'one-or-many', 'zero-or-many'] },
+        target: { key: 'target-cardinality', values: ['one', 'zero-or-one', 'one-or-many', 'zero-or-many'] },
+      },
+    });
+    expect(dsl.wire.appearance).toEqual(expect.arrayContaining([
+      expect.objectContaining({ key: 'shape', values: ['elbow', 'straight', 'curved', 'stepped'] }),
+    ]));
+  });
+
+  it('check validates and lays out file or stdin DSL without changing stored data', async () => {
+    const candidate = join(dataDir, 'candidate.canvas');
+    await writeFile(candidate, DEMO, 'utf8');
+    const before = await dataHashes();
+
+    const valid = await runCli(['check', candidate, '--file', dataDir]);
+    expect(valid.code, valid.stderr).toBe(0);
+    expect(JSON.parse(valid.stdout)).toEqual({
+      status: 'valid',
+      diagrams: [{ id: 'cli-demo', name: 'CLI Demo', nodes: 4, wires: 1 }],
+      warnings: [],
+    });
+
+    const invalid = await runCli(['check', '--file', dataDir], 'scope Demo\n  banana "Split"\n');
+    expect(invalid.code, invalid.stderr).toBe(1);
+    expect(JSON.parse(invalid.stdout)).toEqual({
+      status: 'invalid',
+      errors: [{
+        line: 2,
+        reason: 'unknown statement "banana"',
+        correction: expect.stringContaining('valid statements:'),
+      }],
+    });
+    expect(await dataHashes()).toEqual(before);
+  });
+
+  it('discovers, checks, applies, and revisions presentation without a check write', async () => {
+    const dsl = `
+scope "Presentation CLI" layout=stack gap=8
+  block "Signal" size=20 weight=600 align=center text=green border-color=green border=1 radius=8 padding=12
+    line "Ready"
+  module "Worker" badge=hide
+`;
+    const described = await runCli(['describe']);
+    expect(described.code, described.stderr).toBe(0);
+    expect(described.stdout).toContain('"grid"');
+    expect(described.stdout).toContain('"columns"');
+    expect(described.stdout).toContain('"border-color"');
+    expect(described.stdout).toContain('"badge"');
+
+    const beforeCheck = await dataHashes();
+    const checked = await runCli(['check', '--file', dataDir], dsl);
+    expect(checked.code, checked.stderr).toBe(0);
+    expect(await dataHashes()).toEqual(beforeCheck);
+
+    const applied = await runCli([
+      'apply', '--file', dataDir, '--operation-id', 'presentation-green',
+    ], dsl);
+    expect(applied.code, applied.stderr).toBe(0);
+    const green = await readRecord('presentation-cli');
+    const layoutId = green.views[green.activeViewId].layoutId;
+    expect(green.layouts[layoutId].appearanceByNodeId).toMatchObject({
+      'presentation-cli--block-signal': {
+        size: 20, weight: 600, align: 'center', text: 'green',
+        borderColor: 'green', border: 1, radius: 8, padding: 12,
+      },
+      'presentation-cli--worker': { badge: 'hide' },
+    });
+    expect(green.layouts[layoutId].arrangementByContainerId['presentation-cli'])
+      .toMatchObject({ layout: 'stack', gap: 8, align: 'stretch' });
+
+    const blueApply = await runCli([
+      'apply', '--file', dataDir, '--operation-id', 'presentation-blue',
+    ], dsl.replace('text=green', 'text=blue'));
+    expect(blueApply.code, blueApply.stderr).toBe(0);
+    const blue = await readRecord('presentation-cli');
+    expect(blue.revision).toBe(green.revision + 1);
+    expect(blue.nodes).toEqual(green.nodes);
+    expect(blue.layouts[layoutId].appearanceByNodeId['presentation-cli--block-signal'].text)
+      .toBe('blue');
+  });
+
+  it('check reports missing and unknown icon-card content with usable corrections', async () => {
+    const missing = await runCli(['check', '--file', dataDir], `
+scope "Icon Diagnostics"
+  icon-card "Automated checks" icon=check
+`);
+    expect(missing.code, missing.stderr).toBe(1);
+    expect(JSON.parse(missing.stdout)).toEqual({
+      status: 'invalid',
+      errors: [{
+        line: 3,
+        reason: 'icon-card needs description="text"',
+        correction: 'icon-card "title" icon=check|clock|people|shield|target|trend description="text"',
+      }],
+    });
+
+    const unknown = await runCli(['check', '--file', dataDir], `
+scope "Icon Diagnostics"
+  icon-card "Automated checks" icon=rocket description="Every change is verified."
+`);
+    expect(unknown.code, unknown.stderr).toBe(1);
+    expect(JSON.parse(unknown.stdout)).toEqual({
+      status: 'invalid',
+      errors: [{
+        line: 3,
+        reason: 'unknown icon "rocket"; use one of: check|clock|people|shield|target|trend',
+        correction: 'icon-card "title" icon=check|clock|people|shield|target|trend description="text"',
+      }],
+    });
+  });
+
+  it('check reports exact callout lines and corrections for every invalid item shape', async () => {
+    const syntax = 'callout "text" id=<stable-id> kind=info|warning|decision|success';
+    const cases = [
+      {
+        child: 'callout id=evidence kind=info',
+        reason: 'callout needs text',
+        line: 4,
+      },
+      {
+        child: 'callout "Evidence is complete" kind=info',
+        reason: 'callout needs id=<stable-id>',
+        line: 4,
+      },
+      {
+        child: 'callout "Evidence is complete" id=evidence',
+        reason: 'callout needs kind=info|warning|decision|success',
+        line: 4,
+      },
+      {
+        child: 'callout "Evidence is complete" id=evidence kind=urgent',
+        reason: 'unknown callout kind "urgent"; use one of: info|warning|decision|success',
+        line: 4,
+      },
+    ];
+    for (const invalid of cases) {
+      const result = await runCli(['check', '--file', dataDir], `
+scope "Callout Diagnostics"
+  callout-stack "Release decision"
+    ${invalid.child}
+`);
+      expect(result.code, result.stderr).toBe(1);
+      expect(JSON.parse(result.stdout)).toEqual({
+        status: 'invalid',
+        errors: [{ line: invalid.line, reason: invalid.reason, correction: syntax }],
+      });
+    }
+
+    const duplicate = await runCli(['check', '--file', dataDir], `
+scope "Callout Diagnostics"
+  callout-stack "Release decision"
+    callout "First" id=evidence kind=info
+    callout "Second" id=evidence kind=warning
+`);
+    expect(duplicate.code, duplicate.stderr).toBe(1);
+    expect(JSON.parse(duplicate.stdout)).toEqual({
+      status: 'invalid',
+      errors: [{
+        line: 5,
+        reason: 'duplicate callout id "evidence"',
+        correction: syntax,
+      }],
+    });
   });
 
   it('applies an idempotent agent batch once and persists its authorship', async () => {
@@ -312,7 +535,7 @@ scope "Zoned Demo"
   it('help teaches the grammar and every verb', async () => {
     const { code, stdout } = await runCli(['help']);
     expect(code).toBe(0);
-    for (const verb of ['maps', 'read', 'describe', 'batch', 'apply', 'rm', 'snapshot']) expect(stdout).toContain(verb);
+    for (const verb of ['maps', 'read', 'describe', 'batch', 'apply', 'check', 'rm', 'snapshot']) expect(stdout).toContain(verb);
     expect(stdout).toContain('scope "');
     expect(stdout).toContain('wire');
     expect(stdout).toContain('->');

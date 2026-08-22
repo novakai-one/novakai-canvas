@@ -1,0 +1,1122 @@
+{
+  "schemaVersion": 3,
+  "id": "ai-evaluation-connected-operating-models",
+  "name": "AI evaluation — connected operating models",
+  "status": "active",
+  "revision": 1,
+  "nodes": {
+    "ai-evaluation-connected-operating-models": {
+      "id": "ai-evaluation-connected-operating-models",
+      "label": "AI evaluation — connected operating models",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ai-evaluation-connected-operating-models--llm": {
+      "id": "ai-evaluation-connected-operating-models--llm",
+      "label": "LLM",
+      "parentId": "ai-evaluation-connected-operating-models",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ai-evaluation-connected-operating-models--rag": {
+      "id": "ai-evaluation-connected-operating-models--rag",
+      "label": "RAG",
+      "parentId": "ai-evaluation-connected-operating-models",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ai-evaluation-connected-operating-models--coding-agent": {
+      "id": "ai-evaluation-connected-operating-models--coding-agent",
+      "label": "Coding agent",
+      "parentId": "ai-evaluation-connected-operating-models",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ai-evaluation-connected-operating-models--multi-agent": {
+      "id": "ai-evaluation-connected-operating-models--multi-agent",
+      "label": "Multi-agent",
+      "parentId": "ai-evaluation-connected-operating-models",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ai-evaluation-connected-operating-models--llm--block-language-model": {
+      "id": "ai-evaluation-connected-operating-models--llm--block-language-model",
+      "label": "Language model",
+      "parentId": "ai-evaluation-connected-operating-models--llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block"
+    },
+    "ai-evaluation-connected-operating-models--llm--block-llm-input": {
+      "id": "ai-evaluation-connected-operating-models--llm--block-llm-input",
+      "label": "Prompt",
+      "parentId": "ai-evaluation-connected-operating-models--llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "wireRef": "llm-input"
+    },
+    "ai-evaluation-connected-operating-models--llm--block-llm-process": {
+      "id": "ai-evaluation-connected-operating-models--llm--block-llm-process",
+      "label": "Generate response",
+      "parentId": "ai-evaluation-connected-operating-models--llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "LLM produces one answer"
+      ],
+      "wireRef": "llm-process"
+    },
+    "ai-evaluation-connected-operating-models--llm--block-llm-check": {
+      "id": "ai-evaluation-connected-operating-models--llm--block-llm-check",
+      "label": "Judge response",
+      "parentId": "ai-evaluation-connected-operating-models--llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Safety · instruction following",
+        "Code quality"
+      ],
+      "wireRef": "llm-check"
+    },
+    "ai-evaluation-connected-operating-models--llm--block-llm-report": {
+      "id": "ai-evaluation-connected-operating-models--llm--block-llm-report",
+      "label": "Report quality",
+      "parentId": "ai-evaluation-connected-operating-models--llm",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Refusal rate · Pass@k · Accuracy"
+      ],
+      "wireRef": "llm-report"
+    },
+    "ai-evaluation-connected-operating-models--rag--block-grounded-answers": {
+      "id": "ai-evaluation-connected-operating-models--rag--block-grounded-answers",
+      "label": "Grounded answers",
+      "parentId": "ai-evaluation-connected-operating-models--rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block"
+    },
+    "ai-evaluation-connected-operating-models--rag--block-rag-input": {
+      "id": "ai-evaluation-connected-operating-models--rag--block-rag-input",
+      "label": "Question",
+      "parentId": "ai-evaluation-connected-operating-models--rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "wireRef": "rag-input"
+    },
+    "ai-evaluation-connected-operating-models--rag--block-rag-process": {
+      "id": "ai-evaluation-connected-operating-models--rag--block-rag-process",
+      "label": "Retrieve + answer",
+      "parentId": "ai-evaluation-connected-operating-models--rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Retriever adds evidence"
+      ],
+      "wireRef": "rag-process"
+    },
+    "ai-evaluation-connected-operating-models--rag--block-rag-check": {
+      "id": "ai-evaluation-connected-operating-models--rag--block-rag-check",
+      "label": "Verify grounding",
+      "parentId": "ai-evaluation-connected-operating-models--rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Faithfulness · citations",
+        "Retrieval coverage"
+      ],
+      "wireRef": "rag-check"
+    },
+    "ai-evaluation-connected-operating-models--rag--block-rag-report": {
+      "id": "ai-evaluation-connected-operating-models--rag--block-rag-report",
+      "label": "Report quality",
+      "parentId": "ai-evaluation-connected-operating-models--rag",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Faithfulness · Recall@k",
+        "Citation precision"
+      ],
+      "wireRef": "rag-report"
+    },
+    "ai-evaluation-connected-operating-models--coding-agent--block-coding-agent": {
+      "id": "ai-evaluation-connected-operating-models--coding-agent--block-coding-agent",
+      "label": "Coding agent",
+      "parentId": "ai-evaluation-connected-operating-models--coding-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block"
+    },
+    "ai-evaluation-connected-operating-models--coding-agent--block-agent-input": {
+      "id": "ai-evaluation-connected-operating-models--coding-agent--block-agent-input",
+      "label": "Issue",
+      "parentId": "ai-evaluation-connected-operating-models--coding-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "wireRef": "agent-input"
+    },
+    "ai-evaluation-connected-operating-models--coding-agent--block-agent-process": {
+      "id": "ai-evaluation-connected-operating-models--coding-agent--block-agent-process",
+      "label": "Agent loop",
+      "parentId": "ai-evaluation-connected-operating-models--coding-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Inspect → edit → run → retry"
+      ],
+      "wireRef": "agent-process"
+    },
+    "ai-evaluation-connected-operating-models--coding-agent--block-agent-check": {
+      "id": "ai-evaluation-connected-operating-models--coding-agent--block-agent-check",
+      "label": "Verify patch",
+      "parentId": "ai-evaluation-connected-operating-models--coding-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Unit tests · patch review",
+        "Tool choice"
+      ],
+      "wireRef": "agent-check"
+    },
+    "ai-evaluation-connected-operating-models--coding-agent--block-agent-report": {
+      "id": "ai-evaluation-connected-operating-models--coding-agent--block-agent-report",
+      "label": "Report outcome",
+      "parentId": "ai-evaluation-connected-operating-models--coding-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Resolve rate · steps to solve",
+        "Tool-call accuracy"
+      ],
+      "wireRef": "agent-report"
+    },
+    "ai-evaluation-connected-operating-models--multi-agent--block-multi-agent-system": {
+      "id": "ai-evaluation-connected-operating-models--multi-agent--block-multi-agent-system",
+      "label": "Multi-agent system",
+      "parentId": "ai-evaluation-connected-operating-models--multi-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block"
+    },
+    "ai-evaluation-connected-operating-models--multi-agent--block-multi-input": {
+      "id": "ai-evaluation-connected-operating-models--multi-agent--block-multi-input",
+      "label": "Task",
+      "parentId": "ai-evaluation-connected-operating-models--multi-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "wireRef": "multi-input"
+    },
+    "ai-evaluation-connected-operating-models--multi-agent--block-multi-process": {
+      "id": "ai-evaluation-connected-operating-models--multi-agent--block-multi-process",
+      "label": "Coordinate work",
+      "parentId": "ai-evaluation-connected-operating-models--multi-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Orchestrator → specialists → aggregate"
+      ],
+      "wireRef": "multi-process"
+    },
+    "ai-evaluation-connected-operating-models--multi-agent--block-multi-check": {
+      "id": "ai-evaluation-connected-operating-models--multi-agent--block-multi-check",
+      "label": "Review outcome",
+      "parentId": "ai-evaluation-connected-operating-models--multi-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Task tests · LLM review",
+        "Human review"
+      ],
+      "wireRef": "multi-check"
+    },
+    "ai-evaluation-connected-operating-models--multi-agent--block-multi-report": {
+      "id": "ai-evaluation-connected-operating-models--multi-agent--block-multi-report",
+      "label": "Report success",
+      "parentId": "ai-evaluation-connected-operating-models--multi-agent",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Task success · hand-off accuracy",
+        "Coordination cost"
+      ],
+      "wireRef": "multi-report"
+    }
+  },
+  "wires": {
+    "ai-evaluation-connected-operating-models--wire-1": {
+      "id": "ai-evaluation-connected-operating-models--wire-1",
+      "kind": "references",
+      "label": "enters",
+      "source": {
+        "nodeId": "ai-evaluation-connected-operating-models--llm--block-llm-input"
+      },
+      "target": {
+        "nodeId": "ai-evaluation-connected-operating-models--llm--block-llm-process"
+      }
+    },
+    "ai-evaluation-connected-operating-models--wire-2": {
+      "id": "ai-evaluation-connected-operating-models--wire-2",
+      "kind": "references",
+      "label": "produces",
+      "source": {
+        "nodeId": "ai-evaluation-connected-operating-models--llm--block-llm-process"
+      },
+      "target": {
+        "nodeId": "ai-evaluation-connected-operating-models--llm--block-llm-check"
+      }
+    },
+    "ai-evaluation-connected-operating-models--wire-3": {
+      "id": "ai-evaluation-connected-operating-models--wire-3",
+      "kind": "references",
+      "label": "scores",
+      "source": {
+        "nodeId": "ai-evaluation-connected-operating-models--llm--block-llm-check"
+      },
+      "target": {
+        "nodeId": "ai-evaluation-connected-operating-models--llm--block-llm-report"
+      }
+    },
+    "ai-evaluation-connected-operating-models--wire-4": {
+      "id": "ai-evaluation-connected-operating-models--wire-4",
+      "kind": "references",
+      "label": "retrieves",
+      "source": {
+        "nodeId": "ai-evaluation-connected-operating-models--rag--block-rag-input"
+      },
+      "target": {
+        "nodeId": "ai-evaluation-connected-operating-models--rag--block-rag-process"
+      }
+    },
+    "ai-evaluation-connected-operating-models--wire-5": {
+      "id": "ai-evaluation-connected-operating-models--wire-5",
+      "kind": "references",
+      "label": "grounds",
+      "source": {
+        "nodeId": "ai-evaluation-connected-operating-models--rag--block-rag-process"
+      },
+      "target": {
+        "nodeId": "ai-evaluation-connected-operating-models--rag--block-rag-check"
+      }
+    },
+    "ai-evaluation-connected-operating-models--wire-6": {
+      "id": "ai-evaluation-connected-operating-models--wire-6",
+      "kind": "references",
+      "label": "scores",
+      "source": {
+        "nodeId": "ai-evaluation-connected-operating-models--rag--block-rag-check"
+      },
+      "target": {
+        "nodeId": "ai-evaluation-connected-operating-models--rag--block-rag-report"
+      }
+    },
+    "ai-evaluation-connected-operating-models--wire-7": {
+      "id": "ai-evaluation-connected-operating-models--wire-7",
+      "kind": "references",
+      "label": "starts",
+      "source": {
+        "nodeId": "ai-evaluation-connected-operating-models--coding-agent--block-agent-input"
+      },
+      "target": {
+        "nodeId": "ai-evaluation-connected-operating-models--coding-agent--block-agent-process"
+      }
+    },
+    "ai-evaluation-connected-operating-models--wire-8": {
+      "id": "ai-evaluation-connected-operating-models--wire-8",
+      "kind": "references",
+      "label": "patches",
+      "source": {
+        "nodeId": "ai-evaluation-connected-operating-models--coding-agent--block-agent-process"
+      },
+      "target": {
+        "nodeId": "ai-evaluation-connected-operating-models--coding-agent--block-agent-check"
+      }
+    },
+    "ai-evaluation-connected-operating-models--wire-9": {
+      "id": "ai-evaluation-connected-operating-models--wire-9",
+      "kind": "references",
+      "label": "scores",
+      "source": {
+        "nodeId": "ai-evaluation-connected-operating-models--coding-agent--block-agent-check"
+      },
+      "target": {
+        "nodeId": "ai-evaluation-connected-operating-models--coding-agent--block-agent-report"
+      }
+    },
+    "ai-evaluation-connected-operating-models--wire-10": {
+      "id": "ai-evaluation-connected-operating-models--wire-10",
+      "kind": "references",
+      "label": "dispatches",
+      "source": {
+        "nodeId": "ai-evaluation-connected-operating-models--multi-agent--block-multi-input"
+      },
+      "target": {
+        "nodeId": "ai-evaluation-connected-operating-models--multi-agent--block-multi-process"
+      }
+    },
+    "ai-evaluation-connected-operating-models--wire-11": {
+      "id": "ai-evaluation-connected-operating-models--wire-11",
+      "kind": "references",
+      "label": "combines",
+      "source": {
+        "nodeId": "ai-evaluation-connected-operating-models--multi-agent--block-multi-process"
+      },
+      "target": {
+        "nodeId": "ai-evaluation-connected-operating-models--multi-agent--block-multi-check"
+      }
+    },
+    "ai-evaluation-connected-operating-models--wire-12": {
+      "id": "ai-evaluation-connected-operating-models--wire-12",
+      "kind": "references",
+      "label": "scores",
+      "source": {
+        "nodeId": "ai-evaluation-connected-operating-models--multi-agent--block-multi-check"
+      },
+      "target": {
+        "nodeId": "ai-evaluation-connected-operating-models--multi-agent--block-multi-report"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "ai-evaluation-connected-operating-models": {
+          "nodeId": "ai-evaluation-connected-operating-models",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 1888,
+            "height": 745
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--llm": {
+          "nodeId": "ai-evaluation-connected-operating-models--llm",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 425,
+            "height": 603
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--rag": {
+          "nodeId": "ai-evaluation-connected-operating-models--rag",
+          "position": {
+            "x": 498,
+            "y": 56
+          },
+          "size": {
+            "width": 392,
+            "height": 626
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--coding-agent": {
+          "nodeId": "ai-evaluation-connected-operating-models--coding-agent",
+          "position": {
+            "x": 956,
+            "y": 56
+          },
+          "size": {
+            "width": 383,
+            "height": 626
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--multi-agent": {
+          "nodeId": "ai-evaluation-connected-operating-models--multi-agent",
+          "position": {
+            "x": 1414,
+            "y": 56
+          },
+          "size": {
+            "width": 434,
+            "height": 649
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--llm--block-language-model": {
+          "nodeId": "ai-evaluation-connected-operating-models--llm--block-language-model",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 345,
+            "height": 70
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--llm--block-llm-input": {
+          "nodeId": "ai-evaluation-connected-operating-models--llm--block-llm-input",
+          "position": {
+            "x": 40,
+            "y": 158
+          },
+          "size": {
+            "width": 345,
+            "height": 49
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--llm--block-llm-process": {
+          "nodeId": "ai-evaluation-connected-operating-models--llm--block-llm-process",
+          "position": {
+            "x": 40,
+            "y": 239
+          },
+          "size": {
+            "width": 345,
+            "height": 79
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--llm--block-llm-check": {
+          "nodeId": "ai-evaluation-connected-operating-models--llm--block-llm-check",
+          "position": {
+            "x": 40,
+            "y": 350
+          },
+          "size": {
+            "width": 345,
+            "height": 102
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--llm--block-llm-report": {
+          "nodeId": "ai-evaluation-connected-operating-models--llm--block-llm-report",
+          "position": {
+            "x": 40,
+            "y": 484
+          },
+          "size": {
+            "width": 345,
+            "height": 79
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--rag--block-grounded-answers": {
+          "nodeId": "ai-evaluation-connected-operating-models--rag--block-grounded-answers",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 312,
+            "height": 70
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--rag--block-rag-input": {
+          "nodeId": "ai-evaluation-connected-operating-models--rag--block-rag-input",
+          "position": {
+            "x": 40,
+            "y": 158
+          },
+          "size": {
+            "width": 312,
+            "height": 49
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--rag--block-rag-process": {
+          "nodeId": "ai-evaluation-connected-operating-models--rag--block-rag-process",
+          "position": {
+            "x": 40,
+            "y": 239
+          },
+          "size": {
+            "width": 312,
+            "height": 79
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--rag--block-rag-check": {
+          "nodeId": "ai-evaluation-connected-operating-models--rag--block-rag-check",
+          "position": {
+            "x": 40,
+            "y": 350
+          },
+          "size": {
+            "width": 312,
+            "height": 102
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--rag--block-rag-report": {
+          "nodeId": "ai-evaluation-connected-operating-models--rag--block-rag-report",
+          "position": {
+            "x": 40,
+            "y": 484
+          },
+          "size": {
+            "width": 312,
+            "height": 102
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--coding-agent--block-coding-agent": {
+          "nodeId": "ai-evaluation-connected-operating-models--coding-agent--block-coding-agent",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 303,
+            "height": 70
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--coding-agent--block-agent-input": {
+          "nodeId": "ai-evaluation-connected-operating-models--coding-agent--block-agent-input",
+          "position": {
+            "x": 40,
+            "y": 158
+          },
+          "size": {
+            "width": 303,
+            "height": 49
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--coding-agent--block-agent-process": {
+          "nodeId": "ai-evaluation-connected-operating-models--coding-agent--block-agent-process",
+          "position": {
+            "x": 40,
+            "y": 239
+          },
+          "size": {
+            "width": 303,
+            "height": 79
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--coding-agent--block-agent-check": {
+          "nodeId": "ai-evaluation-connected-operating-models--coding-agent--block-agent-check",
+          "position": {
+            "x": 40,
+            "y": 350
+          },
+          "size": {
+            "width": 303,
+            "height": 102
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--coding-agent--block-agent-report": {
+          "nodeId": "ai-evaluation-connected-operating-models--coding-agent--block-agent-report",
+          "position": {
+            "x": 40,
+            "y": 484
+          },
+          "size": {
+            "width": 303,
+            "height": 102
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--multi-agent--block-multi-agent-system": {
+          "nodeId": "ai-evaluation-connected-operating-models--multi-agent--block-multi-agent-system",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 354,
+            "height": 70
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--multi-agent--block-multi-input": {
+          "nodeId": "ai-evaluation-connected-operating-models--multi-agent--block-multi-input",
+          "position": {
+            "x": 40,
+            "y": 158
+          },
+          "size": {
+            "width": 354,
+            "height": 49
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--multi-agent--block-multi-process": {
+          "nodeId": "ai-evaluation-connected-operating-models--multi-agent--block-multi-process",
+          "position": {
+            "x": 40,
+            "y": 239
+          },
+          "size": {
+            "width": 354,
+            "height": 102
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--multi-agent--block-multi-check": {
+          "nodeId": "ai-evaluation-connected-operating-models--multi-agent--block-multi-check",
+          "position": {
+            "x": 40,
+            "y": 373
+          },
+          "size": {
+            "width": 354,
+            "height": 102
+          },
+          "pinned": false
+        },
+        "ai-evaluation-connected-operating-models--multi-agent--block-multi-report": {
+          "nodeId": "ai-evaluation-connected-operating-models--multi-agent--block-multi-report",
+          "position": {
+            "x": 40,
+            "y": 507
+          },
+          "size": {
+            "width": 354,
+            "height": 102
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {
+        "ai-evaluation-connected-operating-models--llm--block-language-model": {
+          "icon": "target",
+          "size": 24,
+          "weight": 700,
+          "align": "center",
+          "background": "green-soft",
+          "borderColor": "green",
+          "border": 2,
+          "radius": 16,
+          "padding": 16
+        },
+        "ai-evaluation-connected-operating-models--llm--block-llm-input": {
+          "icon": "target",
+          "size": 16,
+          "weight": 600,
+          "align": "center",
+          "background": "surface",
+          "borderColor": "green",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "ai-evaluation-connected-operating-models--llm--block-llm-process": {
+          "icon": "trend",
+          "size": 16,
+          "weight": 600,
+          "align": "center",
+          "background": "green-soft",
+          "borderColor": "green",
+          "border": 1,
+          "radius": 12,
+          "padding": 16
+        },
+        "ai-evaluation-connected-operating-models--llm--block-llm-check": {
+          "icon": "shield",
+          "size": 16,
+          "weight": 600,
+          "align": "center",
+          "background": "surface",
+          "borderColor": "muted",
+          "border": 1,
+          "radius": 12,
+          "padding": 16
+        },
+        "ai-evaluation-connected-operating-models--llm--block-llm-report": {
+          "icon": "check",
+          "size": 16,
+          "weight": 600,
+          "align": "center",
+          "background": "green-soft",
+          "borderColor": "green",
+          "border": 1,
+          "radius": 12,
+          "padding": 16
+        },
+        "ai-evaluation-connected-operating-models--rag--block-grounded-answers": {
+          "icon": "target",
+          "size": 24,
+          "weight": 700,
+          "align": "center",
+          "background": "blue-soft",
+          "borderColor": "blue",
+          "border": 2,
+          "radius": 16,
+          "padding": 16
+        },
+        "ai-evaluation-connected-operating-models--rag--block-rag-input": {
+          "icon": "target",
+          "size": 16,
+          "weight": 600,
+          "align": "center",
+          "background": "surface",
+          "borderColor": "blue",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "ai-evaluation-connected-operating-models--rag--block-rag-process": {
+          "icon": "trend",
+          "size": 16,
+          "weight": 600,
+          "align": "center",
+          "background": "blue-soft",
+          "borderColor": "blue",
+          "border": 1,
+          "radius": 12,
+          "padding": 16
+        },
+        "ai-evaluation-connected-operating-models--rag--block-rag-check": {
+          "icon": "shield",
+          "size": 16,
+          "weight": 600,
+          "align": "center",
+          "background": "surface",
+          "borderColor": "muted",
+          "border": 1,
+          "radius": 12,
+          "padding": 16
+        },
+        "ai-evaluation-connected-operating-models--rag--block-rag-report": {
+          "icon": "check",
+          "size": 16,
+          "weight": 600,
+          "align": "center",
+          "background": "blue-soft",
+          "borderColor": "blue",
+          "border": 1,
+          "radius": 12,
+          "padding": 16
+        },
+        "ai-evaluation-connected-operating-models--coding-agent--block-coding-agent": {
+          "icon": "clock",
+          "size": 24,
+          "weight": 700,
+          "align": "center",
+          "background": "violet-soft",
+          "borderColor": "violet",
+          "border": 2,
+          "radius": 16,
+          "padding": 16
+        },
+        "ai-evaluation-connected-operating-models--coding-agent--block-agent-input": {
+          "icon": "target",
+          "size": 16,
+          "weight": 600,
+          "align": "center",
+          "background": "surface",
+          "borderColor": "violet",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "ai-evaluation-connected-operating-models--coding-agent--block-agent-process": {
+          "icon": "trend",
+          "size": 16,
+          "weight": 600,
+          "align": "center",
+          "background": "violet-soft",
+          "borderColor": "violet",
+          "border": 1,
+          "radius": 12,
+          "padding": 16
+        },
+        "ai-evaluation-connected-operating-models--coding-agent--block-agent-check": {
+          "icon": "shield",
+          "size": 16,
+          "weight": 600,
+          "align": "center",
+          "background": "surface",
+          "borderColor": "muted",
+          "border": 1,
+          "radius": 12,
+          "padding": 16
+        },
+        "ai-evaluation-connected-operating-models--coding-agent--block-agent-report": {
+          "icon": "check",
+          "size": 16,
+          "weight": 600,
+          "align": "center",
+          "background": "violet-soft",
+          "borderColor": "violet",
+          "border": 1,
+          "radius": 12,
+          "padding": 16
+        },
+        "ai-evaluation-connected-operating-models--multi-agent--block-multi-agent-system": {
+          "icon": "people",
+          "size": 24,
+          "weight": 700,
+          "align": "center",
+          "background": "rose-soft",
+          "borderColor": "rose",
+          "border": 2,
+          "radius": 16,
+          "padding": 16
+        },
+        "ai-evaluation-connected-operating-models--multi-agent--block-multi-input": {
+          "icon": "target",
+          "size": 16,
+          "weight": 600,
+          "align": "center",
+          "background": "surface",
+          "borderColor": "rose",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "ai-evaluation-connected-operating-models--multi-agent--block-multi-process": {
+          "icon": "people",
+          "size": 16,
+          "weight": 600,
+          "align": "center",
+          "background": "rose-soft",
+          "borderColor": "rose",
+          "border": 1,
+          "radius": 12,
+          "padding": 16
+        },
+        "ai-evaluation-connected-operating-models--multi-agent--block-multi-check": {
+          "icon": "shield",
+          "size": 16,
+          "weight": 600,
+          "align": "center",
+          "background": "surface",
+          "borderColor": "muted",
+          "border": 1,
+          "radius": 12,
+          "padding": 16
+        },
+        "ai-evaluation-connected-operating-models--multi-agent--block-multi-report": {
+          "icon": "check",
+          "size": 16,
+          "weight": 600,
+          "align": "center",
+          "background": "rose-soft",
+          "borderColor": "rose",
+          "border": 1,
+          "radius": 12,
+          "padding": 16
+        }
+      },
+      "appearanceByWireId": {
+        "ai-evaluation-connected-operating-models--wire-1": {
+          "width": "medium",
+          "color": "green"
+        },
+        "ai-evaluation-connected-operating-models--wire-2": {
+          "width": "medium",
+          "color": "green"
+        },
+        "ai-evaluation-connected-operating-models--wire-3": {
+          "width": "thin",
+          "pattern": "dashed",
+          "color": "green"
+        },
+        "ai-evaluation-connected-operating-models--wire-4": {
+          "width": "medium",
+          "color": "blue"
+        },
+        "ai-evaluation-connected-operating-models--wire-5": {
+          "width": "medium",
+          "color": "blue"
+        },
+        "ai-evaluation-connected-operating-models--wire-6": {
+          "width": "thin",
+          "pattern": "dashed",
+          "color": "blue"
+        },
+        "ai-evaluation-connected-operating-models--wire-7": {
+          "width": "medium",
+          "color": "violet"
+        },
+        "ai-evaluation-connected-operating-models--wire-8": {
+          "width": "medium",
+          "color": "violet"
+        },
+        "ai-evaluation-connected-operating-models--wire-9": {
+          "width": "thin",
+          "pattern": "dashed",
+          "color": "violet"
+        },
+        "ai-evaluation-connected-operating-models--wire-10": {
+          "width": "medium",
+          "color": "rose"
+        },
+        "ai-evaluation-connected-operating-models--wire-11": {
+          "width": "medium",
+          "color": "rose"
+        },
+        "ai-evaluation-connected-operating-models--wire-12": {
+          "width": "thin",
+          "pattern": "dashed",
+          "color": "rose"
+        }
+      },
+      "arrangementByContainerId": {
+        "ai-evaluation-connected-operating-models--llm": {
+          "layout": "stack",
+          "childIds": [
+            "ai-evaluation-connected-operating-models--llm--block-language-model",
+            "ai-evaluation-connected-operating-models--llm--block-llm-input",
+            "ai-evaluation-connected-operating-models--llm--block-llm-process",
+            "ai-evaluation-connected-operating-models--llm--block-llm-check",
+            "ai-evaluation-connected-operating-models--llm--block-llm-report"
+          ],
+          "gap": 32,
+          "align": "stretch"
+        },
+        "ai-evaluation-connected-operating-models--rag": {
+          "layout": "stack",
+          "childIds": [
+            "ai-evaluation-connected-operating-models--rag--block-grounded-answers",
+            "ai-evaluation-connected-operating-models--rag--block-rag-input",
+            "ai-evaluation-connected-operating-models--rag--block-rag-process",
+            "ai-evaluation-connected-operating-models--rag--block-rag-check",
+            "ai-evaluation-connected-operating-models--rag--block-rag-report"
+          ],
+          "gap": 32,
+          "align": "stretch"
+        },
+        "ai-evaluation-connected-operating-models--coding-agent": {
+          "layout": "stack",
+          "childIds": [
+            "ai-evaluation-connected-operating-models--coding-agent--block-coding-agent",
+            "ai-evaluation-connected-operating-models--coding-agent--block-agent-input",
+            "ai-evaluation-connected-operating-models--coding-agent--block-agent-process",
+            "ai-evaluation-connected-operating-models--coding-agent--block-agent-check",
+            "ai-evaluation-connected-operating-models--coding-agent--block-agent-report"
+          ],
+          "gap": 32,
+          "align": "stretch"
+        },
+        "ai-evaluation-connected-operating-models--multi-agent": {
+          "layout": "stack",
+          "childIds": [
+            "ai-evaluation-connected-operating-models--multi-agent--block-multi-agent-system",
+            "ai-evaluation-connected-operating-models--multi-agent--block-multi-input",
+            "ai-evaluation-connected-operating-models--multi-agent--block-multi-process",
+            "ai-evaluation-connected-operating-models--multi-agent--block-multi-check",
+            "ai-evaluation-connected-operating-models--multi-agent--block-multi-report"
+          ],
+          "gap": 32,
+          "align": "stretch"
+        },
+        "ai-evaluation-connected-operating-models": {
+          "layout": "grid",
+          "childIds": [
+            "ai-evaluation-connected-operating-models--llm",
+            "ai-evaluation-connected-operating-models--rag",
+            "ai-evaluation-connected-operating-models--coding-agent",
+            "ai-evaluation-connected-operating-models--multi-agent"
+          ],
+          "gap": 24,
+          "align": "start",
+          "columns": 4
+        }
+      }
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-ca76d4f7-5ec8-4de4-97fc-edfb7ef340cf": {
+      "operationId": "cli-apply-ca76d4f7-5ec8-4de4-97fc-edfb7ef340cf",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-20T23:57:00.722Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/tmp/ai-evaluation-connected.dsl"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace"
+      ]
+    }
+  }
+}

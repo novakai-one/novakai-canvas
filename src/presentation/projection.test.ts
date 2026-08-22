@@ -102,11 +102,11 @@ describe('scopeDepth', () => {
 });
 
 describe('flowNodeType', () => {
-  it('draws a record group with the container renderer', () => {
-    expect(flowNodeType('group')).toBe('scope');
+  it('is the record kind itself; webRenderers resolves it to a component', () => {
+    expect(flowNodeType('group')).toBe('group');
     expect(flowNodeType('comment')).toBe('comment');
     expect(flowNodeType('tree')).toBe('tree');
-    expect(flowNodeType('module')).toBe('architecture');
+    expect(flowNodeType('module')).toBe('module');
   });
 });
 

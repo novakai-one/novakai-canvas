@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
-  nearestPositionAlong, pointAlong, polylineLength, routePath, routeWire, segmentIntersectsRect,
-} from './wire-routing';
+  editableRouteSegments, nearestPositionAlong, pointAlong, polylineLength, reshapeRouteSegment,
+  routePath, routeWire, segmentIntersectsRect,
+} from '../../domain/diagram-geometry';
 
 /** Every routed wire must be orthogonal: each segment moves in exactly one axis. */
 function isOrthogonal(points: { x: number; y: number }[]): boolean {
@@ -33,6 +34,27 @@ describe('routeWire', () => {
     });
     expect(isOrthogonal(forward.points)).toBe(true);
     expect(isOrthogonal(backward.points)).toBe(true);
+    const near = routeWire({
+      source: { x: 258.5, y: 322 }, sourceSide: 'bottom',
+      target: { x: 259, y: 372 }, targetSide: 'top',
+    });
+    expect(near.points).toEqual([{ x: 258.5, y: 322 }, { x: 259, y: 372 }]);
+    expect(routePath(near.points)).not.toContain('Q');
+
+    const segment = editableRouteSegments(forward.points)[0];
+    const reshaped = reshapeRouteSegment({
+      route: forward,
+      routeRequest: {
+        source: { x: 100, y: 100 }, sourceSide: 'bottom',
+        target: { x: 400, y: 400 }, targetSide: 'top',
+      },
+      segmentIndex: segment.index,
+      pointer: { x: segment.midpoint.x + 100, y: segment.midpoint.y + 21 },
+      snap: { enabled: true, gridSize: 8 },
+    });
+    expect(reshaped.valid).toBe(true);
+    expect(reshaped.route.points[1].x).toBe(forward.points[1].x);
+    expect(reshaped.route.points[1].y).toBe(272);
   });
 
   it('detours around when the target sits above the source', () => {
