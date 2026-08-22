@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useCanvasActivity } from '../shell/canvas-activity-context';
 import type { DiagramSummary } from '../../application/canvas-library';
-import { PanelSection, oneLine } from '../shell';
+import { PanelSection, oneLine, useCanvasPortalTarget } from '../shell';
 import { findObjects, groupDiagrams } from './rail-filter';
 
 /** What the overlay needs to answer "which diagram, or which object in which diagram". */
@@ -35,10 +36,18 @@ export function LibraryOverlay(props: LibraryOverlayProps) {
   const [showArchived, setShowArchived] = useState(false);
   const root = useRef<HTMLDivElement | null>(null);
   const field = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => { field.current?.focus(); }, []);
+  const portalTarget = useCanvasPortalTarget();
+  const active = useCanvasActivity();
 
   useEffect(() => {
+    if (active && portalTarget) field.current?.focus();
+  }, [active, portalTarget]);
+
+  useEffect(() => {
+    if (!active) {
+      props.close();
+      return;
+    }
     const onPointerDown = (event: PointerEvent): void => {
       if (!root.current?.contains(event.target as Node)) props.close();
     };
@@ -55,10 +64,11 @@ export function LibraryOverlay(props: LibraryOverlayProps) {
       window.removeEventListener('pointerdown', onPointerDown);
       window.removeEventListener('keydown', onKeyDown, true);
     };
-  }, [props]);
+  }, [active, props]);
 
   const groups = groupDiagrams(props.diagrams, query, props.activeDiagramId);
   const objects = findObjects(props.diagrams, query);
+  if (!active || !portalTarget) return null;
 
   /*
    * Drawn outside the rail.
@@ -176,6 +186,6 @@ export function LibraryOverlay(props: LibraryOverlayProps) {
         )}
       </div>
     </div>,
-    document.body,
+    portalTarget,
   );
 }

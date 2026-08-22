@@ -1,7 +1,8 @@
 /** The one kind→style mapping shared by edges, the legend, and SVG snapshots. */
 
-import type { CanvasPreferences, CanvasTheme, WireKind } from '../domain/model';
+import type { CanvasPreferences, CanvasTheme, WireKind } from '../domain/model.ts';
 import { WIRE_LABEL_SIZE_LIMITS } from '../domain/wire-label-size.ts';
+import type { WireAppearance, WireShape } from '../domain/wire-appearance.ts';
 
 type WireDash = 'solid' | 'dashed' | 'dotted' | 'dashdot';
 type WireTone = 'neutral' | 'sage' | 'steel' | 'slate' | 'violet' | 'amber' | 'rust';
@@ -48,6 +49,24 @@ const WIRE_TONE_COLORS: Record<WireTone, Record<CanvasTheme, string>> = {
   rust: { dark: '#c98376', light: '#8f4438' },
 };
 
+const AUTHORED_COLOR_TONES: Record<WireColor, WireTone> = {
+  neutral: 'neutral', green: 'sage', blue: 'steel', violet: 'violet', rose: 'rust', amber: 'amber',
+};
+
+const AUTHORED_WIDTHS: Record<WireWidth, number> = { thin: 1.7, medium: 2.4, thick: 3.2 };
+
+type WireColor = NonNullable<WireAppearance['color']>;
+type WirePattern = NonNullable<WireAppearance['pattern']>;
+type WireWidth = NonNullable<WireAppearance['width']>;
+
+export interface ResolvedWireAppearance {
+  strokeColor: string;
+  strokeColorCss: string;
+  strokeWidth: number;
+  dashArray: string;
+  shape: WireShape;
+}
+
 /**
  * Rendered stroke width.
  *
@@ -56,25 +75,20 @@ const WIRE_TONE_COLORS: Record<WireTone, Record<CanvasTheme, string>> = {
  */
 const MINIMUM_STROKE = 1.7;
 
-/** Label type and the zoom where keeping it screen-sized would exceed its chosen maximum. */
+/** Label type sizing; visibility remains solely under the explicit wire-label preference. */
 export function wireLabelSizing(preferences: CanvasPreferences): {
-  baseSize: number; maximumSize: number; minimumZoom: number;
+  baseSize: number; maximumSize: number;
 } {
   const baseSize = WIRE_LABEL_SIZE_LIMITS.base
     * (preferences.appearance.textScale ?? 1)
     * (preferences.wires.labelScale ?? 1);
   const maximumSize = preferences.wires.maxLabelSize ?? WIRE_LABEL_SIZE_LIMITS.defaultMaximum;
-  return { baseSize, maximumSize, minimumZoom: baseSize / maximumSize };
+  return { baseSize, maximumSize };
 }
 
 /** Stroke width for one wire, never thinner than the legibility floor. */
 export function wireStrokeWidth(preferred: number | undefined): number {
   return Math.max(preferred ?? MINIMUM_STROKE, MINIMUM_STROKE);
-}
-
-/** Literal colour for renderers that cannot read CSS variables (markers, SVG). */
-export function wireKindColor(kind: WireKind, theme: CanvasTheme): string {
-  return WIRE_TONE_COLORS[WIRE_KIND_STYLES[kind].tone][theme];
 }
 
 /** Stroke-dasharray for a wire kind ('' = solid). */
@@ -85,6 +99,23 @@ export function wireKindDashArray(kind: WireKind): string {
 /** CSS variable reference carrying this kind's theme-resolved colour. */
 export function wireKindColorVariable(kind: WireKind): string {
   return `var(--wire-${WIRE_KIND_STYLES[kind].tone})`;
+}
+
+/** The one appearance resolver consumed by web paths, markers and SVG snapshots. */
+export function resolveWireAppearance(
+  kind: WireKind,
+  authored: WireAppearance | undefined,
+  options: { theme: CanvasTheme; fallbackWidth: number; fallbackShape?: WireShape },
+): ResolvedWireAppearance {
+  const tone = authored?.color ? AUTHORED_COLOR_TONES[authored.color] : WIRE_KIND_STYLES[kind].tone;
+  const pattern: WirePattern = authored?.pattern ?? WIRE_KIND_STYLES[kind].dash;
+  return {
+    strokeColor: WIRE_TONE_COLORS[tone][options.theme],
+    strokeColorCss: `var(--wire-${tone})`,
+    strokeWidth: authored?.width ? AUTHORED_WIDTHS[authored.width] : options.fallbackWidth,
+    dashArray: WIRE_DASH_ARRAYS[pattern],
+    shape: authored?.shape ?? options.fallbackShape ?? 'elbow',
+  };
 }
 
 /** Tree-row tone colours, kept beside wire tones so every renderer shares one table. */

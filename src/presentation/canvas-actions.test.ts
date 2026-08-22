@@ -105,7 +105,7 @@ describe('resolveDrop', () => {
 });
 
 describe('createCanvasNode', () => {
-  it.each(['module', 'object', 'runtime', 'resource', 'comment', 'group'] as const)('centres a new %s on the point the user chose', (kind) => {
+  it.each(['module', 'object', 'runtime', 'resource', 'comment', 'group', 'block', 'ooux-object'] as const)('centres a new %s on the point the user chose', (kind) => {
     const created = createCanvasNode(placed, kind, `${kind}-1`, { x: 200, y: 200 });
     expect(created.node.parentId).toBe('inner');
     expect(created.node.id).toBe(`${kind}-1`);
@@ -117,6 +117,15 @@ describe('createCanvasNode', () => {
       x: 100 - created.placement.size.width / 2,
       y: 100 - created.placement.size.height / 2,
     });
+    if (kind === 'block') {
+      expect(created.placement.size).toEqual({ width: 280, height: 140 });
+      expect(created.placement.sizeMode).toBe('manual');
+    }
+    if (kind === 'ooux-object') {
+      expect(created.node.objectRef).toBe('ooux-object-1');
+      expect(created.placement.size).toEqual({ width: 340, height: 220 });
+      expect(created.placement.sizeMode).toBe('manual');
+    }
   });
 
   it('places at the top level when the user is looking outside every group', () => {
@@ -140,6 +149,14 @@ const nested: DiagramRecord = {
     },
     leaf: {
       id: asId<NodeId>('leaf'), kind: 'module', label: 'Leaf', parentId: asId<NodeId>('inner'), interfaceIds: [], typeIds: [],
+    },
+    tree: {
+      id: asId<NodeId>('tree'), kind: 'tree', label: 'Tree', parentId: asId<NodeId>('inner'),
+      interfaceIds: [], typeIds: [], rows: [{ id: 'row', kind: 'task', badges: [] }],
+    },
+    timeline: {
+      id: asId<NodeId>('timeline'), kind: 'timeline', label: 'Timeline', parentId: asId<NodeId>('inner'),
+      interfaceIds: [], typeIds: [], steps: [{ id: 'step', label: 'Step' }],
     },
   },
 };
@@ -170,14 +187,16 @@ describe('escapeStep', () => {
 });
 
 describe('selectionResolves', () => {
-  it('accepts an empty selection and one that names a live node', () => {
+  it('Component item resolves and expires', () => {
     expect(selectionResolves(nested, null)).toBe(true);
     expect(selectionResolves(nested, { kind: 'node', id: 'leaf' })).toBe(true);
-  });
-
-  it('rejects a selection left pointing at something undo removed', () => {
+    expect(selectionResolves(nested, { kind: 'component-item', nodeId: 'tree', collection: 'rows', itemId: 'row' })).toBe(true);
+    expect(selectionResolves(nested, { kind: 'component-item', nodeId: 'timeline', collection: 'steps', itemId: 'step' })).toBe(true);
     expect(selectionResolves(nested, { kind: 'node', id: 'gone' })).toBe(false);
     expect(selectionResolves(nested, { kind: 'wire', id: 'gone' })).toBe(false);
-    expect(selectionResolves(nested, { kind: 'tree-row', nodeId: 'gone', rowId: 'row' })).toBe(false);
+    expect(selectionResolves(nested, { kind: 'component-item', nodeId: 'gone', collection: 'rows', itemId: 'row' })).toBe(false);
+    expect(selectionResolves(nested, { kind: 'component-item', nodeId: 'tree', collection: 'rows', itemId: 'gone' })).toBe(false);
+    expect(selectionResolves(nested, { kind: 'component-item', nodeId: 'timeline', collection: 'steps', itemId: 'gone' })).toBe(false);
+    expect(selectionResolves(nested, { kind: 'component-item', nodeId: 'tree', collection: 'steps', itemId: 'row' })).toBe(false);
   });
 });

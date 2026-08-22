@@ -1,4 +1,5 @@
-import type { ArchitectureDocument, CanvasPreferences } from './model';
+import type { CanvasPreferences } from './canvas-preferences.ts';
+import type { ArchitectureDocument } from './legacy-document.ts';
 import { WIRE_LABEL_SIZE_LIMITS } from './wire-label-size';
 
 /** Safe empty document used when loading fails. */

@@ -1,5 +1,5 @@
 /**
- * The six product areas.
+ * The seven product areas.
  *
  * The rail changes product area and preserves each area's own Room stack, so leaving
  * Missions mid-Stage and coming back puts you where you were. It never represents
@@ -17,11 +17,12 @@ const ICON: Record<AreaKey, string> = {
   'command-center': 'M10 2.5 17.5 7v6L10 17.5 2.5 13V7Zm0 4.2L6.4 8.8v2.4L10 13.3l3.6-2.1V8.8Z',
   missions: 'M10 2.5A7.5 7.5 0 1 0 17.5 10M10 6.5A3.5 3.5 0 1 0 13.5 10M10 10l6-6',
   projects: 'M3 4.5h5.5v11H3Zm6.5 0H15v6.5H9.5Zm0 7.5H15v3.5H9.5Z',
+  canvas: 'M3 4h5v4H3Zm9 8h5v4h-5ZM8 6h3a2 2 0 0 1 2 2v4',
   messages: 'M3 4.5h14v9H8l-4 3.5V13.5H3Z',
   'agent-roles': 'M10 3.5a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM4 17c0-3 2.7-5 6-5s6 2 6 5',
 };
 
-const STROKE_ICONS: ReadonlySet<AreaKey> = new Set(['missions', 'agent-roles']);
+const STROKE_ICONS: ReadonlySet<AreaKey> = new Set(['missions', 'canvas', 'agent-roles']);
 
 export function NavigationRail() {
   const { area, goToArea, railCollapsed, toggleRail, feed, elected, graph } = useStore();

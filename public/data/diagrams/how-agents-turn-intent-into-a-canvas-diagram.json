@@ -1,0 +1,638 @@
+{
+  "schemaVersion": 3,
+  "id": "how-agents-turn-intent-into-a-canvas-diagram",
+  "name": "How agents turn intent into a Canvas diagram",
+  "status": "active",
+  "revision": 1,
+  "nodes": {
+    "how-agents-turn-intent-into-a-canvas-diagram": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram",
+      "label": "How agents turn intent into a Canvas diagram",
+      "description": "Current implementation at commit 3ea9147",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--note-1-legend-role-prefixes-cla": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--note-1-legend-role-prefixes-cla",
+      "label": "Legend: role prefixes classify nodes; wires point from caller to dependency and name the synchronous contract.",
+      "parentId": "how-agents-turn-intent-into-a-canvas-diagram",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline",
+      "label": "Current authoring pipeline",
+      "description": "The complete path from authored DSL to the visible canvas",
+      "parentId": "how-agents-turn-intent-into-a-canvas-diagram",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--one-authoring-run": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--one-authoring-run",
+      "label": "One authoring run",
+      "parentId": "how-agents-turn-intent-into-a-canvas-diagram",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict",
+      "label": "POC verdict",
+      "parentId": "how-agents-turn-intent-into-a-canvas-diagram",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--actor-authoring-agent": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--actor-authoring-agent",
+      "label": "«actor» Authoring agent",
+      "description": "Declares diagram meaning through the Canvas DSL",
+      "parentId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "object"
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-canvas-cli": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-canvas-cli",
+      "label": "«module» Canvas CLI",
+      "description": "Agent-facing check, apply, read and snapshot interface",
+      "parentId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline",
+      "interfaceIds": [
+        "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-canvas-cli--if-check",
+        "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-canvas-cli--if-apply"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-dsl-parser": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-dsl-parser",
+      "label": "«module» DSL parser",
+      "description": "Discovers parent and child grammar from the component registry",
+      "parentId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline",
+      "interfaceIds": [
+        "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-dsl-parser--if-parse"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry",
+      "label": "«module» Component registry",
+      "description": "Owns grammar, content schema, measurement and render hooks",
+      "parentId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline",
+      "interfaceIds": [
+        "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry--if-declaration",
+        "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry--if-measure",
+        "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry--if-renderer"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-compiler-auto-layout": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-compiler-auto-layout",
+      "label": "«module» Compiler + auto-layout",
+      "description": "Builds semantic records and derives geometry",
+      "parentId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline",
+      "interfaceIds": [
+        "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-compiler-auto-layout--if-compile"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--data-store-diagram-records": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--data-store-diagram-records",
+      "label": "«data store» Diagram records",
+      "description": "Authoritative semantic JSON plus separate layout records",
+      "parentId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--adapter-canvas-web-app": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--adapter-canvas-web-app",
+      "label": "«adapter» Canvas web app",
+      "description": "Projects stored records through registered web renderers",
+      "parentId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline",
+      "interfaceIds": [
+        "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--adapter-canvas-web-app--if-project"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--one-authoring-run--agent-authoring-sequence": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--one-authoring-run--agent-authoring-sequence",
+      "label": "Agent authoring sequence",
+      "parentId": "how-agents-turn-intent-into-a-canvas-diagram--one-authoring-run",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "timeline",
+      "steps": [
+        {
+          "id": "describe-intent",
+          "label": "Describe intent"
+        },
+        {
+          "id": "check-dsl",
+          "label": "Check DSL"
+        },
+        {
+          "id": "apply-semantic-record",
+          "label": "Apply semantic record"
+        },
+        {
+          "id": "inspect-canvas-and-svg",
+          "label": "Inspect Canvas and SVG"
+        }
+      ]
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict--safe-authoring": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict--safe-authoring",
+      "label": "Safe authoring",
+      "description": "check validates the production path without writing.",
+      "parentId": "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "icon-card",
+      "icon": "shield"
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict--central-behavior-edits": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict--central-behavior-edits",
+      "label": "Central behavior edits",
+      "parentId": "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "metric",
+      "value": "0",
+      "detail": "Parser, schemas, layout and rendering were reused for this map.",
+      "status": "success"
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict--what-this-proves": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict--what-this-proves",
+      "label": "What this proves",
+      "parentId": "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "semantic-source",
+          "kind": "info",
+          "text": "One DSL source declares semantic meaning"
+        },
+        {
+          "id": "validate-first",
+          "kind": "decision",
+          "text": "Validation happens before persistence"
+        },
+        {
+          "id": "same-record",
+          "kind": "success",
+          "text": "Canvas and SVG render the same record"
+        }
+      ]
+    }
+  },
+  "wires": {
+    "how-agents-turn-intent-into-a-canvas-diagram--wire-1": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--wire-1",
+      "kind": "executes",
+      "label": "author(DiagramIntent) -> DslSource",
+      "source": {
+        "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--actor-authoring-agent"
+      },
+      "target": {
+        "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-canvas-cli"
+      }
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--wire-2": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--wire-2",
+      "kind": "executes",
+      "label": "parse(DslSource) -> ScopeAst",
+      "source": {
+        "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-canvas-cli"
+      },
+      "target": {
+        "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-dsl-parser"
+      }
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--wire-3": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--wire-3",
+      "kind": "queries",
+      "label": "declaration(Keyword) -> Grammar",
+      "source": {
+        "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-dsl-parser"
+      },
+      "target": {
+        "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry"
+      }
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--wire-4": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--wire-4",
+      "kind": "executes",
+      "label": "compile(ScopeAst) -> DiagramRecord",
+      "source": {
+        "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-canvas-cli"
+      },
+      "target": {
+        "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-compiler-auto-layout"
+      }
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--wire-5": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--wire-5",
+      "kind": "queries",
+      "label": "measure(CanvasNode) -> Size",
+      "source": {
+        "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-compiler-auto-layout"
+      },
+      "target": {
+        "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry"
+      }
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--wire-6": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--wire-6",
+      "kind": "executes",
+      "label": "write(DiagramRecord) -> Revision",
+      "source": {
+        "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-compiler-auto-layout"
+      },
+      "target": {
+        "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--data-store-diagram-records"
+      }
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--wire-7": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--wire-7",
+      "kind": "queries",
+      "label": "read(DiagramId) -> DiagramRecord",
+      "source": {
+        "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--adapter-canvas-web-app"
+      },
+      "target": {
+        "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--data-store-diagram-records"
+      }
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--wire-8": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--wire-8",
+      "kind": "queries",
+      "label": "renderer(NodeKind) -> Renderer",
+      "source": {
+        "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--adapter-canvas-web-app"
+      },
+      "target": {
+        "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry"
+      }
+    }
+  },
+  "interfaces": {
+    "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-canvas-cli--if-check": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-canvas-cli--if-check",
+      "ownerId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-canvas-cli",
+      "name": "check",
+      "accepts": [
+        "DslSource"
+      ],
+      "returns": [
+        "ValidationReport"
+      ]
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-canvas-cli--if-apply": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-canvas-cli--if-apply",
+      "ownerId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-canvas-cli",
+      "name": "apply",
+      "accepts": [
+        "DslSource"
+      ],
+      "returns": [
+        "DiagramRecord"
+      ]
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-dsl-parser--if-parse": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-dsl-parser--if-parse",
+      "ownerId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-dsl-parser",
+      "name": "parse",
+      "accepts": [
+        "DslSource"
+      ],
+      "returns": [
+        "ScopeAst"
+      ]
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry--if-declaration": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry--if-declaration",
+      "ownerId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry",
+      "name": "declaration",
+      "accepts": [
+        "Keyword"
+      ],
+      "returns": [
+        "Grammar"
+      ]
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry--if-measure": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry--if-measure",
+      "ownerId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry",
+      "name": "measure",
+      "accepts": [
+        "CanvasNode"
+      ],
+      "returns": [
+        "Size"
+      ]
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry--if-renderer": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry--if-renderer",
+      "ownerId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry",
+      "name": "renderer",
+      "accepts": [
+        "NodeKind"
+      ],
+      "returns": [
+        "Renderer"
+      ]
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-compiler-auto-layout--if-compile": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-compiler-auto-layout--if-compile",
+      "ownerId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-compiler-auto-layout",
+      "name": "compile",
+      "accepts": [
+        "ScopeAst"
+      ],
+      "returns": [
+        "DiagramRecord"
+      ]
+    },
+    "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--adapter-canvas-web-app--if-project": {
+      "id": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--adapter-canvas-web-app--if-project",
+      "ownerId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--adapter-canvas-web-app",
+      "name": "project",
+      "accepts": [
+        "DiagramRecord"
+      ],
+      "returns": [
+        "FlowNodes"
+      ]
+    }
+  },
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "how-agents-turn-intent-into-a-canvas-diagram": {
+          "nodeId": "how-agents-turn-intent-into-a-canvas-diagram",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 1751,
+            "height": 1354
+          },
+          "pinned": false
+        },
+        "how-agents-turn-intent-into-a-canvas-diagram--note-1-legend-role-prefixes-cla": {
+          "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--note-1-legend-role-prefixes-cla",
+          "position": {
+            "x": 1431,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline": {
+          "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 1351,
+            "height": 894
+          },
+          "pinned": false
+        },
+        "how-agents-turn-intent-into-a-canvas-diagram--one-authoring-run": {
+          "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--one-authoring-run",
+          "position": {
+            "x": 40,
+            "y": 1020
+          },
+          "size": {
+            "width": 320,
+            "height": 280
+          },
+          "pinned": false
+        },
+        "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict": {
+          "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict",
+          "position": {
+            "x": 400,
+            "y": 1020
+          },
+          "size": {
+            "width": 1244,
+            "height": 294
+          },
+          "pinned": false
+        },
+        "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--actor-authoring-agent": {
+          "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--actor-authoring-agent",
+          "position": {
+            "x": 710,
+            "y": 56
+          },
+          "size": {
+            "width": 362,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-canvas-cli": {
+          "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-canvas-cli",
+          "position": {
+            "x": 684,
+            "y": 230
+          },
+          "size": {
+            "width": 413,
+            "height": 156
+          },
+          "pinned": false
+        },
+        "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-dsl-parser": {
+          "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-dsl-parser",
+          "position": {
+            "x": 891,
+            "y": 456
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry": {
+          "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-component-registry",
+          "position": {
+            "x": 861,
+            "y": 672
+          },
+          "size": {
+            "width": 420,
+            "height": 182
+          },
+          "pinned": false
+        },
+        "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-compiler-auto-layout": {
+          "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--module-compiler-auto-layout",
+          "position": {
+            "x": 510,
+            "y": 464
+          },
+          "size": {
+            "width": 341,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--data-store-diagram-records": {
+          "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--data-store-diagram-records",
+          "position": {
+            "x": 40,
+            "y": 711
+          },
+          "size": {
+            "width": 420,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--adapter-canvas-web-app": {
+          "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--current-authoring-pipeline--adapter-canvas-web-app",
+          "position": {
+            "x": 50,
+            "y": 464
+          },
+          "size": {
+            "width": 420,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "how-agents-turn-intent-into-a-canvas-diagram--one-authoring-run--agent-authoring-sequence": {
+          "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--one-authoring-run--agent-authoring-sequence",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 230,
+            "height": 184
+          },
+          "pinned": false
+        },
+        "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict--safe-authoring": {
+          "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict--safe-authoring",
+          "position": {
+            "x": 440,
+            "y": 95
+          },
+          "size": {
+            "width": 380,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict--central-behavior-edits": {
+          "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict--central-behavior-edits",
+          "position": {
+            "x": 40,
+            "y": 81
+          },
+          "size": {
+            "width": 360,
+            "height": 148
+          },
+          "pinned": false
+        },
+        "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict--what-this-proves": {
+          "nodeId": "how-agents-turn-intent-into-a-canvas-diagram--poc-verdict--what-this-proves",
+          "position": {
+            "x": 860,
+            "y": 56
+          },
+          "size": {
+            "width": 344,
+            "height": 198
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-7198fb31-a7ba-4c5d-8d43-d354365edc3e": {
+      "operationId": "cli-apply-7198fb31-a7ba-4c5d-8d43-d354365edc3e",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-19T23:56:37.223Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "stdin"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add"
+      ]
+    }
+  }
+}

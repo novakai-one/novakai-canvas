@@ -3,11 +3,10 @@ import { defaultPreferences } from '../domain/defaults';
 import { wireLabelSizing } from './wire-styles';
 
 describe('wireLabelSizing', () => {
-  it('uses node-title size as the default semantic-zoom boundary', () => {
+  it('uses the default label size and cap', () => {
     expect(wireLabelSizing(defaultPreferences)).toEqual({
       baseSize: 12,
       maximumSize: 13,
-      minimumZoom: 12 / 13,
     });
   });
 
@@ -20,7 +19,6 @@ describe('wireLabelSizing', () => {
     expect(wireLabelSizing(preferences)).toEqual({
       baseSize: 13.5,
       maximumSize: 18,
-      minimumZoom: 0.75,
     });
   });
 });

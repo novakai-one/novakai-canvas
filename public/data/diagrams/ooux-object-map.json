@@ -1,0 +1,802 @@
+{
+  "schemaVersion": 3,
+  "id": "ooux-object-map",
+  "name": "OOUX Object Map",
+  "status": "active",
+  "revision": 21,
+  "nodes": {
+    "ooux-object-map": {
+      "id": "ooux-object-map",
+      "label": "OOUX Object Map",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ooux-object-map--ooux-object-organization": {
+      "id": "ooux-object-map--ooux-object-organization",
+      "label": "Organization",
+      "parentId": "ooux-object-map",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "ooux-object",
+      "objectRef": "organization",
+      "oouxRows": [
+        {
+          "kind": "attribute",
+          "id": "org-name",
+          "name": "org_name",
+          "valueType": "string",
+          "role": "core",
+          "traits": []
+        },
+        {
+          "kind": "attribute",
+          "id": "plan-tier",
+          "name": "plan_tier",
+          "valueType": "enum",
+          "role": "metadata",
+          "traits": [
+            "filterable"
+          ]
+        },
+        {
+          "kind": "cta",
+          "id": "invite-member",
+          "name": "inviteMember",
+          "role": "admin"
+        },
+        {
+          "kind": "cta",
+          "id": "manage-billing",
+          "name": "manageBilling",
+          "role": "admin"
+        }
+      ]
+    },
+    "ooux-object-map--ooux-object-app": {
+      "id": "ooux-object-map--ooux-object-app",
+      "label": "App",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "ooux-object",
+      "objectRef": "app",
+      "oouxRows": [
+        {
+          "kind": "attribute",
+          "id": "app-name",
+          "name": "app_name",
+          "valueType": "string",
+          "role": "core",
+          "traits": []
+        },
+        {
+          "kind": "attribute",
+          "id": "build-stage",
+          "name": "build_stage",
+          "valueType": "enum",
+          "role": "metadata",
+          "traits": [
+            "filterable"
+          ]
+        },
+        {
+          "kind": "cta",
+          "id": "create-app",
+          "name": "createApp",
+          "role": "developer"
+        },
+        {
+          "kind": "cta",
+          "id": "publish",
+          "name": "publish",
+          "role": "admin"
+        }
+      ]
+    },
+    "ooux-object-map--ooux-object-api": {
+      "id": "ooux-object-map--ooux-object-api",
+      "label": "API",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "ooux-object",
+      "objectRef": "api",
+      "oouxRows": [
+        {
+          "kind": "attribute",
+          "id": "api-name",
+          "name": "api_name",
+          "valueType": "string",
+          "role": "core",
+          "traits": []
+        },
+        {
+          "kind": "attribute",
+          "id": "certified",
+          "name": "certified",
+          "valueType": "bool",
+          "role": "metadata",
+          "traits": [
+            "filterable"
+          ]
+        },
+        {
+          "kind": "cta",
+          "id": "add-api",
+          "name": "addAPI",
+          "role": "developer"
+        }
+      ]
+    },
+    "ooux-object-map--ooux-object-console": {
+      "id": "ooux-object-map--ooux-object-console",
+      "label": "Console",
+      "parentId": "ooux-object-map",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "ooux-object",
+      "objectRef": "console",
+      "oouxRows": [
+        {
+          "kind": "attribute",
+          "id": "dashboard",
+          "name": "dashboard",
+          "valueType": "view",
+          "role": "core",
+          "traits": []
+        },
+        {
+          "kind": "cta",
+          "id": "log-in",
+          "name": "logIn",
+          "role": "any-role"
+        }
+      ]
+    },
+    "ooux-object-map--ooux-object-marketplace-listing": {
+      "id": "ooux-object-map--ooux-object-marketplace-listing",
+      "label": "Marketplace Listing",
+      "parentId": "ooux-object-map",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "ooux-object",
+      "objectRef": "marketplace-listing",
+      "oouxRows": [
+        {
+          "kind": "attribute",
+          "id": "listing-title",
+          "name": "listing_title",
+          "valueType": "string",
+          "role": "core",
+          "traits": []
+        },
+        {
+          "kind": "attribute",
+          "id": "category",
+          "name": "category",
+          "valueType": "enum",
+          "role": "metadata",
+          "traits": [
+            "filterable",
+            "sortable"
+          ]
+        },
+        {
+          "kind": "cta",
+          "id": "install",
+          "name": "install",
+          "role": "provider"
+        }
+      ]
+    },
+    "ooux-object-map--ooux-object-interface": {
+      "id": "ooux-object-map--ooux-object-interface",
+      "label": "Interface",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "ooux-object",
+      "objectRef": "interface",
+      "oouxRows": [
+        {
+          "kind": "attribute",
+          "id": "interface-name",
+          "name": "interface_name",
+          "valueType": "string",
+          "role": "core",
+          "traits": []
+        },
+        {
+          "kind": "attribute",
+          "id": "version",
+          "name": "version",
+          "valueType": "string",
+          "role": "metadata",
+          "traits": [
+            "filterable"
+          ]
+        },
+        {
+          "kind": "cta",
+          "id": "subscribe",
+          "name": "subscribe",
+          "role": "developer"
+        }
+      ]
+    }
+  },
+  "wires": {
+    "ooux-object-map--wire-1": {
+      "id": "ooux-object-map--wire-1",
+      "kind": "owns",
+      "label": "ownsd",
+      "source": {
+        "nodeId": "ooux-object-map--ooux-object-organization",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "ooux-object-map--ooux-object-app",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "ooux-object-map--wire-2": {
+      "id": "ooux-object-map--wire-2",
+      "kind": "references",
+      "label": "includes",
+      "source": {
+        "nodeId": "ooux-object-map--ooux-object-app",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "ooux-object-map--ooux-object-api",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "ooux-object-map--wire-3": {
+      "id": "ooux-object-map--wire-3",
+      "kind": "references",
+      "label": "manages",
+      "source": {
+        "nodeId": "ooux-object-map--ooux-object-organization",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "ooux-object-map--ooux-object-console",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "ooux-object-map--wire-4": {
+      "id": "ooux-object-map--wire-4",
+      "kind": "references",
+      "label": "listed as",
+      "source": {
+        "nodeId": "ooux-object-map--ooux-object-app",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "ooux-object-map--ooux-object-marketplace-listing",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "ooux-object-map--wire-5": {
+      "id": "ooux-object-map--wire-5",
+      "kind": "references",
+      "label": "exposed through",
+      "source": {
+        "nodeId": "ooux-object-map--ooux-object-api",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "ooux-object-map--ooux-object-interface",
+        "cardinality": "one-or-many"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "ooux-object-map": {
+          "nodeId": "ooux-object-map",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 1124,
+            "height": 516
+          },
+          "pinned": false
+        },
+        "ooux-object-map--ooux-object-organization": {
+          "nodeId": "ooux-object-map--ooux-object-organization",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 190
+          },
+          "pinned": false
+        },
+        "ooux-object-map--ooux-object-app": {
+          "nodeId": "ooux-object-map--ooux-object-app",
+          "position": {
+            "x": 564,
+            "y": -348
+          },
+          "size": {
+            "width": 300,
+            "height": 190
+          },
+          "pinned": false
+        },
+        "ooux-object-map--ooux-object-api": {
+          "nodeId": "ooux-object-map--ooux-object-api",
+          "position": {
+            "x": 1032,
+            "y": -180
+          },
+          "size": {
+            "width": 300,
+            "height": 158
+          },
+          "pinned": false
+        },
+        "ooux-object-map--ooux-object-console": {
+          "nodeId": "ooux-object-map--ooux-object-console",
+          "position": {
+            "x": 920,
+            "y": 280
+          },
+          "size": {
+            "width": 300,
+            "height": 126
+          },
+          "pinned": false
+        },
+        "ooux-object-map--ooux-object-marketplace-listing": {
+          "nodeId": "ooux-object-map--ooux-object-marketplace-listing",
+          "position": {
+            "x": 40,
+            "y": 318
+          },
+          "size": {
+            "width": 300,
+            "height": 158
+          },
+          "pinned": false
+        },
+        "ooux-object-map--ooux-object-interface": {
+          "nodeId": "ooux-object-map--ooux-object-interface",
+          "position": {
+            "x": 456,
+            "y": 636
+          },
+          "size": {
+            "width": 300,
+            "height": 158
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {
+        "ooux-object-map--wire-4": {
+          "wireId": "ooux-object-map--wire-4",
+          "waypoints": [
+            {
+              "x": 394,
+              "y": -141.12109375
+            },
+            {
+              "x": 394,
+              "y": 358.87890625
+            },
+            {
+              "x": 229.87890625,
+              "y": 358.87890625
+            }
+          ]
+        }
+      },
+      "appearanceByNodeId": {},
+      "appearanceByWireId": {},
+      "arrangementByContainerId": {
+        "ooux-object-map": {
+          "layout": "grid",
+          "childIds": [
+            "ooux-object-map--ooux-object-organization",
+            "ooux-object-map--ooux-object-marketplace-listing",
+            "ooux-object-map--ooux-object-console"
+          ],
+          "gap": 32,
+          "align": "stretch",
+          "columns": 3
+        }
+      }
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-8dfce150-e66a-4ef5-b714-f694e53704ca": {
+      "operationId": "cli-apply-8dfce150-e66a-4ef5-b714-f694e53704ca",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-22T09:34:42.261Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/tmp/ooux-six.canvas"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace"
+      ]
+    },
+    "ui-77a2d810-83ef-48e4-bfc3-48c66e7b4964": {
+      "operationId": "ui-77a2d810-83ef-48e4-bfc3-48c66e7b4964",
+      "revision": 2,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-22T09:35:45.271Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setCardinality"
+      ]
+    },
+    "ui-f47b8852-bb1a-42d3-8d69-f893dd39590c": {
+      "operationId": "ui-f47b8852-bb1a-42d3-8d69-f893dd39590c",
+      "revision": 3,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-22T09:36:36.968Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "cli-apply-dc72e5cc-1271-4ea1-9fa2-5f812bb138b9": {
+      "operationId": "cli-apply-dc72e5cc-1271-4ea1-9fa2-5f812bb138b9",
+      "revision": 4,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-22T09:36:55.295Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/tmp/ooux-six.canvas"
+      },
+      "commandKinds": [
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "node.remove",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.resize",
+        "node.move",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.resize",
+        "node.move",
+        "node.resize",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace"
+      ]
+    },
+    "studio-896236d6-95c7-4049-9695-feff39e9ced4": {
+      "operationId": "studio-896236d6-95c7-4049-9695-feff39e9ced4",
+      "revision": 5,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-22T09:46:42.729Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-6a0f9c86-ddbb-47a7-b9f4-fab696a4ce86": {
+      "operationId": "studio-6a0f9c86-ddbb-47a7-b9f4-fab696a4ce86",
+      "revision": 6,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-22T09:46:45.514Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-5c375c38-5fe1-4ef7-8a32-59056c780b4a": {
+      "operationId": "studio-5c375c38-5fe1-4ef7-8a32-59056c780b4a",
+      "revision": 8,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-22T09:47:11.513Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "ui-14804342-37ec-4445-a751-3227dab485c4": {
+      "operationId": "ui-14804342-37ec-4445-a751-3227dab485c4",
+      "revision": 9,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-22T09:48:59.492Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.update"
+      ]
+    },
+    "ui-649d279b-ce39-418f-b06d-9b148b9a7b4b": {
+      "operationId": "ui-649d279b-ce39-418f-b06d-9b148b9a7b4b",
+      "revision": 10,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-22T09:49:01.589Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.update"
+      ]
+    },
+    "ui-60289edb-5bd3-46d8-a937-b47f39d2480e": {
+      "operationId": "ui-60289edb-5bd3-46d8-a937-b47f39d2480e",
+      "revision": 11,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-22T09:49:10.988Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.update"
+      ]
+    },
+    "studio-09502aa8-2e85-4f67-a30f-57221fc874a8": {
+      "operationId": "studio-09502aa8-2e85-4f67-a30f-57221fc874a8",
+      "revision": 12,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-22T10:27:32.303Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-ace1d600-e7c8-4366-a3f1-263803725e0c": {
+      "operationId": "studio-ace1d600-e7c8-4366-a3f1-263803725e0c",
+      "revision": 13,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-22T10:27:36.755Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-24c6f67d-6286-4730-a7ef-546a1722db94": {
+      "operationId": "studio-24c6f67d-6286-4730-a7ef-546a1722db94",
+      "revision": 14,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-22T10:27:39.570Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-26c82a58-6a2c-4a8a-935f-38e14e5ccad2": {
+      "operationId": "studio-26c82a58-6a2c-4a8a-935f-38e14e5ccad2",
+      "revision": 15,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-22T10:27:49.820Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-23619ba0-18f5-4ba7-a718-7bbdc8ba3f58": {
+      "operationId": "ui-23619ba0-18f5-4ba7-a718-7bbdc8ba3f58",
+      "revision": 16,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-22T10:27:53.904Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "studio-f4d8566b-1d94-474f-89b3-54bb2cfe5347": {
+      "operationId": "studio-f4d8566b-1d94-474f-89b3-54bb2cfe5347",
+      "revision": 17,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-22T10:28:17.537Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-25aa338a-0b0d-4e53-9572-58673dfd4adc": {
+      "operationId": "studio-25aa338a-0b0d-4e53-9572-58673dfd4adc",
+      "revision": 18,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-22T10:34:52.299Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.add",
+        "wire.add",
+        "wire.setRoute"
+      ]
+    },
+    "ui-188c2d67-3ea5-4adb-8824-04a91db5e950": {
+      "operationId": "ui-188c2d67-3ea5-4adb-8824-04a91db5e950",
+      "revision": 19,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-22T10:34:58.433Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.remove"
+      ]
+    },
+    "studio-b477df83-b643-4986-985c-1c12f076106d": {
+      "operationId": "studio-b477df83-b643-4986-985c-1c12f076106d",
+      "revision": 20,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-22T10:35:17.235Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "codex-ooux-manages-cardinality-20260822": {
+      "operationId": "codex-ooux-manages-cardinality-20260822",
+      "revision": 21,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-22T10:45:00.000Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "ooux-object-map"
+      },
+      "commandKinds": [
+        "wire.setCardinality"
+      ]
+    }
+  }
+}

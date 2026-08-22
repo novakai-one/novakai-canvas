@@ -1,5 +1,12 @@
 import { z } from 'zod';
+import { allComponents, contentFieldsFor, kindList } from '../components/registry.ts';
 import type { DiagramRecord, LibraryIndex } from './records.ts';
+import {
+  containerArrangementSchema, nodeAppearanceSchema,
+} from './canvas-presentation.ts';
+import { validateRecordIntegrity } from './record-integrity.ts';
+import { wireAppearanceSchema } from './wire-appearance.ts';
+import { wireCardinalitySchema } from './wire-cardinality.ts';
 
 const position = z.object({ x: z.number(), y: z.number() });
 const size = z.object({ width: z.number().positive(), height: z.number().positive() });
@@ -8,32 +15,33 @@ const portSide = z.enum(['top', 'right', 'bottom', 'left']);
 const endpoint = z.object({
   nodeId: z.string().min(1),
   anchor: z.object({ side: portSide, ordinal: z.number().int().nonnegative() }).optional(),
+  cardinality: wireCardinalitySchema.optional(),
 });
-
-const treeRows = z.array(z.object({
-  id: z.string().min(1),
-  kind: z.enum(['project', 'mission', 'task', 'bucket']),
-  status: z.string().optional(),
-  parentRowId: z.string().optional(),
-  badges: z.array(z.string()),
-  label: z.string().optional(),
-})).optional();
 
 const canvasReference = z.object({ namespace: z.string().min(1), id: z.string().min(1) });
 const sourceReference = canvasReference.extend({ label: z.string().optional() });
 
-const canvasNode = z.object({
+const canvasNodeBase = {
   id: z.string().min(1),
-  kind: z.enum(['group', 'module', 'object', 'runtime', 'resource', 'comment', 'tree']),
   label: z.string(),
   description: z.string().optional(),
   parentId: z.string().min(1).optional(),
   interfaceIds: z.array(z.string().min(1)),
   typeIds: z.array(z.string().min(1)),
-  rows: treeRows,
   subjectRef: canvasReference.optional(),
   expandsToDiagramId: z.string().min(1).optional(),
-});
+};
+
+const canvasNodeOptions = allComponents().map((component) => z.object({
+  ...canvasNodeBase,
+  kind: z.literal(component.kind),
+  ...contentFieldsFor(component.kind),
+}).strict());
+
+const canvasNode = z.discriminatedUnion('kind', canvasNodeOptions as [
+  (typeof canvasNodeOptions)[number],
+  ...(typeof canvasNodeOptions)[number][],
+]);
 
 const canvasWire = z.object({
   id: z.string().min(1),
@@ -44,7 +52,8 @@ const canvasWire = z.object({
 });
 
 const nodePlacement = z.object({
-  nodeId: z.string().min(1), position, size, pinned: z.boolean(),
+  nodeId: z.string().min(1), position, size,
+  sizeMode: z.enum(['auto', 'manual']).optional(), pinned: z.boolean(),
 });
 
 const wireRouteHint = z.object({
@@ -61,6 +70,9 @@ const canvasLayout = z.object({
   strategy: z.enum(['manual', 'hierarchy', 'flow']),
   placements: z.record(z.string(), nodePlacement),
   wireRouteHints: z.record(z.string(), wireRouteHint),
+  appearanceByNodeId: z.record(z.string(), nodeAppearanceSchema).default({}),
+  appearanceByWireId: z.record(z.string(), wireAppearanceSchema).default({}),
+  arrangementByContainerId: z.record(z.string(), containerArrangementSchema).default({}),
 });
 
 const canvasView = z.object({
@@ -69,7 +81,7 @@ const canvasView = z.object({
   layoutId: z.string().min(1),
   viewport: z.object({ x: z.number(), y: z.number(), zoom: z.number() }),
   collapsedNodeIds: z.array(z.string().min(1)),
-  hiddenKinds: z.array(z.enum(['group', 'module', 'object', 'runtime', 'resource', 'comment', 'tree'])),
+  hiddenKinds: z.array(z.enum(kindList())),
 });
 
 const interfaceObjects = z.record(z.string(), z.object({
@@ -116,15 +128,7 @@ const diagramRecord = z.object({
   subjectRef: canvasReference.optional(),
   sourceRefs: z.array(sourceReference),
   appliedOperations: z.record(z.string(), appliedOperation),
-}).superRefine((record, context) => {
-  if (!record.views[record.activeViewId]) {
-    context.addIssue({
-      code: 'custom',
-      message: `active view "${record.activeViewId}" does not exist`,
-      path: ['activeViewId'],
-    });
-  }
-});
+}).superRefine((record, context) => validateRecordIntegrity(record as DiagramRecord, context));
 
 /** Runtime validator for one independently stored diagram record. */
 export const diagramRecordSchema = {
@@ -137,8 +141,14 @@ const crossDiagramLink = z.object({
   id: z.string().min(1),
   kind: z.enum(['owns', 'references', 'assigns', 'queries', 'executes', 'mentions', 'missing']),
   label: z.string(),
-  source: z.object({ diagramId: z.string().min(1), nodeId: z.string().min(1) }),
-  target: z.object({ diagramId: z.string().min(1), nodeId: z.string().min(1) }),
+  source: z.object({
+    diagramId: z.string().min(1), nodeId: z.string().min(1),
+    cardinality: wireCardinalitySchema.optional(),
+  }),
+  target: z.object({
+    diagramId: z.string().min(1), nodeId: z.string().min(1),
+    cardinality: wireCardinalitySchema.optional(),
+  }),
 });
 
 const libraryEntry = z.object({
