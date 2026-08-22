@@ -59,7 +59,7 @@ describe('target scale', () => {
 describe('canvas controls hold their size on screen', () => {
   it('divides every control drawn inside the viewport by the live zoom', () => {
     // Labels read the edge-label renderer's own copy of the zoom; the shapes read the surface's.
-    for (const selector of ['.wire-endpoint', '.wire-waypoint', '.wire-grab', '.wire-label']) {
+    for (const selector of ['.wire-endpoint', '.wire-segment-handle', '.wire-grab', '.wire-label']) {
       expect(rule(selector), selector).toMatch(/var\(--nvk-(label-)?zoom, 1\)/);
     }
   });

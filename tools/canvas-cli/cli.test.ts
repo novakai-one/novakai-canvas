@@ -204,76 +204,39 @@ describe('canvas CLI', () => {
       nodeAliases: { group: 'scope' },
     });
     expect(description.commandKinds).toContain('node.add');
-    expect(description.dsl).toEqual({
-      components: [
-        {
-          kind: 'group', keyword: 'zone',
-          declaration: {
-            syntax: 'zone "name" ["optional description"] ... end',
-            example: 'zone "Stores" "Persistent data"\n  resource "missions.json"\nend',
-          },
-          children: [],
-        },
-        ...['module', 'object', 'runtime', 'resource'].map((kind) => ({
-          kind, keyword: kind,
-          declaration: {
-            syntax: `${kind} "name" ["optional description"]`,
-            example: `${kind} "Session broker" "Owns leases and allocation"`,
-          },
-          children: [],
-        })),
-        {
-          kind: 'comment', keyword: 'note',
-          declaration: { syntax: 'note "text"', example: 'note "Why this shape is load-bearing."' },
-          children: [],
-        },
-        {
-          kind: 'tree', keyword: 'tree',
-          declaration: { syntax: 'tree "name" ["optional description"]', example: 'tree "Delivery hierarchy"' },
-          children: [{
-            keyword: 'row',
-            syntax: 'row <id> <project|mission|task|bucket> [status] [parent=<id>] [badges=a,b] [label "text"]',
-            example: 'row project-1 project active label "Project One"',
-          }],
-        },
-        {
-          kind: 'timeline', keyword: 'timeline',
-          declaration: { syntax: 'timeline "name" ["optional description"]', example: 'timeline "Session history"' },
-          children: [{
-            keyword: 'step', syntax: 'step "label" [fork="session-id"]',
-            example: 'step "turn 3" fork="session-xyz789"',
-          }],
-        },
-        {
-          kind: 'metric', keyword: 'metric',
-          declaration: {
-            syntax: 'metric "label" value="text" [detail="text"] [status=neutral|success|warning|critical]',
-            example: 'metric "Success rate" value="92%" detail="12 of 13 runs" status=success',
-          },
-          children: [],
-        },
-        {
-          kind: 'icon-card', keyword: 'icon-card',
-          declaration: {
-            syntax: 'icon-card "title" icon=check|clock|people|shield|target|trend description="text"',
-            example: 'icon-card "Automated checks" icon=check description="Every change is verified."',
-          },
-          children: [],
-        },
-        {
-          kind: 'callout-stack', keyword: 'callout-stack',
-          declaration: {
-            syntax: 'callout-stack "name" ["optional description"]',
-            example: 'callout-stack "Release decision"',
-          },
-          children: [{
-            keyword: 'callout',
-            syntax: 'callout "text" id=<stable-id> kind=info|warning|decision|success',
-            example: 'callout "Evidence is complete" id=evidence kind=info',
-          }],
-        },
-      ],
+    const dsl = description.dsl as {
+      components: Array<Record<string, unknown>>;
+      wire: Record<string, unknown>;
+    };
+    expect(dsl.components.map((component) => component.kind)).toEqual([
+      'group', 'module', 'object', 'runtime', 'resource', 'comment', 'tree', 'timeline',
+      'metric', 'icon-card', 'callout-stack', 'block',
+    ]);
+    expect(dsl.components.find((component) => component.kind === 'group')).toMatchObject({
+      keyword: 'zone',
+      arrangement: { layout: { values: ['stack', 'row', 'grid'] } },
     });
+    expect(dsl.components.find((component) => component.kind === 'icon-card')).toMatchObject({
+      keyword: 'icon-card',
+      declaration: {
+        syntax: 'icon-card "title" icon=check|clock|people|shield|target|trend description="text"',
+      },
+      appearance: [],
+    });
+    const block = dsl.components.find((component) => component.kind === 'block');
+    expect(block).toMatchObject({ keyword: 'block' });
+    expect(block?.appearance).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        key: 'icon', values: ['check', 'clock', 'people', 'shield', 'target', 'trend'],
+      }),
+      expect.objectContaining({ key: 'vertical-align', values: ['top', 'center', 'bottom'] }),
+    ]));
+    expect(dsl.wire).toMatchObject({
+      endpoints: ['label', '@ref', '#node-id'],
+    });
+    expect(dsl.wire.appearance).toEqual(expect.arrayContaining([
+      expect.objectContaining({ key: 'shape', values: ['elbow', 'straight', 'curved', 'stepped'] }),
+    ]));
   });
 
   it('check validates and lays out file or stdin DSL without changing stored data', async () => {

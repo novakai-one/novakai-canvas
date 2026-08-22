@@ -1,7 +1,6 @@
 import {
   canonicalNodeAppearance, type ContainerArrangement,
 } from '../../domain/canvas-presentation.ts';
-import { componentFor } from '../../components/registry.ts';
 import { reflowPresentation } from '../../domain/diagram-geometry.ts';
 import type { DiagramRecord } from '../../domain/records.ts';
 import { canonicalWireAppearance } from '../../domain/wire-appearance.ts';
@@ -79,7 +78,6 @@ export function reflowAfterCommand(
       if (command.arrangement) arrangementAffectedIds = [command.id];
       break;
     case 'node.add':
-      if (componentFor(command.node.kind).creation) resizedNodeIds = [command.node.id as string];
       if (command.node.parentId) arrangementAffectedIds = [command.node.parentId as string];
       break;
     case 'node.update':

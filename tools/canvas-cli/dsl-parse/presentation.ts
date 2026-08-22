@@ -1,7 +1,7 @@
 import type { DiagramComponent } from '../../../src/components/component.ts';
 import {
   CONTAINER_ALIGNS, GRID_COLUMNS, SPACINGS, appearanceEntry, appearanceSpecification,
-  canonicalNodeAppearance, isAppearanceKey, isArrangementKey, isPresentationAttributeKey,
+  canonicalNodeAppearance, isAppearanceKey, isArrangementKey,
   type AuthoredArrangement, type ParsedPresentation,
 } from '../../../src/domain/canvas-presentation.ts';
 import { attributeKey } from './tokens.ts';
@@ -159,8 +159,12 @@ function parseAttributes(
 /** Strips and validates shared presentation tokens against component metadata. */
 export function splitPresentation(component: DiagramComponent, tokens: string[]): SplitResult {
   const context = contextFor(component, tokens);
-  const firstAttribute = tokens.findIndex((token, index) => index >= 2
-    && isPresentationAttributeKey(attributeKey(token) ?? ''));
+  const firstAttribute = tokens.findIndex((token, index) => {
+    if (index < 2) return false;
+    const key = attributeKey(token) ?? '';
+    return (isAppearanceKey(key) && context.appearanceKeys.includes(key))
+      || (context.arrangementModes.length > 0 && isArrangementKey(key));
+  });
   if (firstAttribute === -1) return { semanticTokens: tokens };
   const authored = parseAttributes(tokens, firstAttribute, context);
   if ('error' in authored) return authored;
