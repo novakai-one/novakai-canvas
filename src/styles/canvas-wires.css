@@ -110,12 +110,6 @@
 .wire-label.is-movable { cursor: grab; }
 .wire-label.is-movable:active { cursor: grabbing; }
 
-/* Below the chosen semantic-zoom boundary, labels become clutter rather than explanation. */
-.canvas-surface[data-wire-labels-hidden] .wire-label {
-  visibility: hidden;
-  pointer-events: none;
-}
-
 /*
  * The ends of a selected wire.
  *

@@ -94,11 +94,10 @@ export function reflowAfterCommand(
       autoSizedNodeIds = [command.id];
       arrangementAffectedIds = [command.id];
       break;
-    case 'node.reparent': {
-      const oldParent = previous.nodes[command.id]?.parentId as string | undefined;
-      arrangementAffectedIds = [command.id, oldParent, command.parentId].filter(Boolean) as string[];
+    case 'node.reparent':
+      // Membership changes immediately, but placement remains under the user's hand.
+      // Reparenting itself is not a request to rerun the container's arrangement.
       break;
-    }
     case 'node.remove': {
       const oldParent = previous.nodes[command.id]?.parentId as string | undefined;
       arrangementAffectedIds = oldParent ? [oldParent] : [];

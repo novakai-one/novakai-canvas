@@ -179,6 +179,34 @@ describe('canvas workspace', () => {
     expect(outcome).toMatchObject({ status: 'rejected', reason: 'parent-cycle' });
   });
 
+  it('reparents one node without rearranging its former siblings', () => {
+    const record = structuredClone(openMessagingScope());
+    const group = record.nodes['messaging-scope'];
+    const childIds = Object.values(record.nodes)
+      .filter((node) => node.parentId === group.id)
+      .map((node) => node.id as string);
+    const layout = record.layouts[record.views[record.activeViewId].layoutId];
+    layout.arrangementByContainerId ??= {};
+    layout.arrangementByContainerId[group.id] = {
+      layout: 'grid', childIds, gap: 32, align: 'stretch', columns: 3,
+    };
+    const movedId = childIds[1];
+    const siblingPositions = Object.fromEntries(childIds
+      .filter((id) => id !== movedId)
+      .map((id) => [id, structuredClone(layout.placements[id].position)]));
+    const workspace = createCanvasWorkspace(record, human);
+
+    workspace.submit(batch([
+      { kind: 'node.reparent', id: movedId },
+      { kind: 'node.move', id: movedId, position: { x: 1_200, y: 400 } },
+    ], record.revision, 'op-reparent'));
+
+    const after = workspace.snapshot().layouts[layout.id];
+    expect(after.placements[movedId].position).toEqual({ x: 1_200, y: 400 });
+    expect(Object.fromEntries(Object.keys(siblingPositions)
+      .map((id) => [id, after.placements[id].position]))).toEqual(siblingPositions);
+  });
+
   it('records who acted from host context, not from the payload', () => {
     const agent: ActorContext = {
       actor: { id: 'codex-1', kind: 'agent' },

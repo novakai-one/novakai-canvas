@@ -199,7 +199,7 @@ const TRAVEL_MS = 700;
  * The same hook publishes the travel contract other chrome uses, and answers the one question
  * placement needs: which point in the diagram the user is actually looking at.
  */
-function useCamera(activeDiagramId: string, minimumWireLabelZoom: number): {
+function useCamera(activeDiagramId: string): {
   surface: RefObject<HTMLElement | null>;
   fitOnOpen: boolean;
   remember: (viewport: Viewport) => void;
@@ -242,14 +242,7 @@ function useCamera(activeDiagramId: string, minimumWireLabelZoom: number): {
     const element = surface.current;
     if (!element) return;
     element.style.setProperty('--nvk-zoom', String(zoom));
-    element.toggleAttribute('data-wire-labels-hidden', zoom <= minimumWireLabelZoom);
-  }, [minimumWireLabelZoom]);
-
-  // A preference change must take effect immediately, without waiting for the camera to move.
-  useEffect(() => {
-    const zoom = flow.current?.getViewport().zoom;
-    if (zoom !== undefined) publishZoom(zoom);
-  }, [publishZoom]);
+  }, []);
 
   return {
     surface,
@@ -323,7 +316,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   useEscapeStepsOutward(active && pendingConnection === null, record, selection, setSelection);
   useUndoShortcut(active, editable && props.canUndo, props.undo);
   useSelectionReleasesWithItsObject(record, selection, setSelection);
-  const camera = useCamera(activeDiagramId, labelSizing.minimumZoom);
+  const camera = useCamera(activeDiagramId);
   useRefitWhenPanelsMove(preferences.panel);
   /** The port a drag began on, remembered until it lands somewhere or on nothing. */
   const dragFrom = useRef<ConnectionOrigin | null>(null);

@@ -75,15 +75,15 @@ export interface ResolvedWireAppearance {
  */
 const MINIMUM_STROKE = 1.7;
 
-/** Label type and the zoom where keeping it screen-sized would exceed its chosen maximum. */
+/** Label type sizing; visibility remains solely under the explicit wire-label preference. */
 export function wireLabelSizing(preferences: CanvasPreferences): {
-  baseSize: number; maximumSize: number; minimumZoom: number;
+  baseSize: number; maximumSize: number;
 } {
   const baseSize = WIRE_LABEL_SIZE_LIMITS.base
     * (preferences.appearance.textScale ?? 1)
     * (preferences.wires.labelScale ?? 1);
   const maximumSize = preferences.wires.maxLabelSize ?? WIRE_LABEL_SIZE_LIMITS.defaultMaximum;
-  return { baseSize, maximumSize, minimumZoom: baseSize / maximumSize };
+  return { baseSize, maximumSize };
 }
 
 /** Stroke width for one wire, never thinner than the legibility floor. */

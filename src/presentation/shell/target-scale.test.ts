@@ -73,4 +73,8 @@ describe('canvas controls hold their size on screen', () => {
   it('keeps React Flow\'s own reconnect anchors out of the way of the grab region', () => {
     expect(rule('.canvas-surface .react-flow__edgeupdater')).toContain('pointer-events: none');
   });
+
+  it('never lets semantic zoom override explicit wire-label visibility', () => {
+    expect(canvasCss()).not.toContain('[data-wire-labels-hidden]');
+  });
 });
