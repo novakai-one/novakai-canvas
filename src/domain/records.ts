@@ -9,6 +9,8 @@ import type {
 } from './architecture-values.ts';
 import type { CanvasLayout, CanvasViewBase, PortSide } from './layout-record.ts';
 import type { NodeKind } from './node-kind.ts';
+import type { OouxRow } from './ooux-object.ts';
+import type { WireCardinality } from './wire-cardinality.ts';
 
 export type {
   CanvasLayout, LayoutStrategyName, NodePlacement, PortSide, WireRouteHint,
@@ -45,7 +47,7 @@ export type WireKind =
 export interface PortAnchor { side: PortSide; ordinal: number }
 
 /** One end of a wire. Absent anchor means "attach to the node, renderer picks the side". */
-export interface Endpoint { nodeId: NodeId; anchor?: PortAnchor }
+export interface Endpoint { nodeId: NodeId; anchor?: PortAnchor; cardinality?: WireCardinality }
 
 /** One semantic, selectable object. Geometry lives in a layout, never here. */
 export interface CanvasNode {
@@ -73,6 +75,9 @@ export interface CanvasNode {
   lines?: string[];
   /** Stable agent-facing address for a block; never used as the stored wire join. */
   wireRef?: string;
+  /** Stable CLI identity and ordered compartments; present only on `ooux-object`. */
+  objectRef?: string;
+  oouxRows?: OouxRow[];
   /** The real thing this occurrence depicts. Canvas references it and never owns it. */
   subjectRef?: CanvasReference;
   /** Deeper explanation opened from this occurrence; integrity is owned by the library. */
@@ -139,8 +144,8 @@ export interface CrossDiagramLink {
   id: LinkId;
   kind: WireKind;
   label: string;
-  source: { diagramId: DiagramId; nodeId: NodeId };
-  target: { diagramId: DiagramId; nodeId: NodeId };
+  source: { diagramId: DiagramId; nodeId: NodeId; cardinality?: WireCardinality };
+  target: { diagramId: DiagramId; nodeId: NodeId; cardinality?: WireCardinality };
 }
 
 /** One library entry: enough to list and search without opening the record. */

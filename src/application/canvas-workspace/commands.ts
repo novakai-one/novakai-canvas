@@ -5,6 +5,7 @@ import type {
 } from '../../domain/canvas-presentation.ts';
 import type { WireAppearance } from '../../domain/wire-appearance.ts';
 import type { DiagramRecord, PortSide } from '../../domain/records.ts';
+import type { WireCardinality } from '../../domain/wire-cardinality.ts';
 
 interface PlacementInput {
   position: { x: number; y: number };
@@ -41,6 +42,11 @@ export type RecordCommand =
   | { kind: 'wire.add'; wire: DiagramRecord['wires'][string] }
   | { kind: 'wire.reconnect'; id: string; source?: string; target?: string }
   | { kind: 'wire.setRoute'; id: string; route: RouteInput }
+  | {
+    kind: 'wire.setCardinality'; id: string;
+    /** `null` removes one end; omission preserves it. */
+    source?: WireCardinality | null; target?: WireCardinality | null;
+  }
   | {
     kind: 'wire.update';
     id: string;

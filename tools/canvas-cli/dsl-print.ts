@@ -7,6 +7,7 @@ import { printDeclarations } from './dsl-print/declarations.ts';
 import { arrangementAttributes, byWireOrder, quote } from './dsl-print/ordering.ts';
 import type { WireAppearance } from '../../src/domain/wire-appearance.ts';
 import { printWireAttributes } from './wire-attributes.ts';
+import type { WireCardinality } from '../../src/domain/wire-cardinality.ts';
 import { printWireReference, wireReferenceFor } from './wire-reference.ts';
 
 export type { CrossDiagramContext, MapSummary } from './dsl-print/contract.ts';
@@ -17,8 +18,10 @@ function wireLine(
   label: string,
   kind: string,
   appearance?: WireAppearance,
+  sourceCardinality?: WireCardinality,
+  targetCardinality?: WireCardinality,
 ): string {
-  const attributes = printWireAttributes(appearance ? { appearance } : {});
+  const attributes = printWireAttributes({ appearance, sourceCardinality, targetCardinality });
   return `  wire ${printWireReference(source)} -> ${printWireReference(target)}`
     + `${attributes.length ? ` ${attributes.join(' ')}` : ''} : ${label}`
     + `${kind === 'references' ? '' : ` [${kind}]`}`;
@@ -41,15 +44,23 @@ function printWires(record: DiagramRecord, context?: CrossDiagramContext): strin
       wire.label,
       wire.kind,
       layout?.appearanceByWireId?.[wire.id],
+      wire.source.cardinality,
+      wire.target.cardinality,
     ));
   }
   for (const link of (context?.links ?? [])
     .filter((link) => link.source.diagramId === record.id)
     .sort((a, b) => (a.id as string).localeCompare(b.id as string))) {
-    const source = record.nodes[link.source.nodeId]?.label;
-    const target = context?.labelOf(link.target.diagramId as string, link.target.nodeId as string);
+    const sourceNode = record.nodes[link.source.nodeId];
+    const source = sourceNode ? wireReferenceFor(sourceNode) : undefined;
+    const target = context?.referenceOf?.(
+      link.target.diagramId as string, link.target.nodeId as string,
+    ) ?? context?.labelOf(link.target.diagramId as string, link.target.nodeId as string);
     if (!source || !target) continue;
-    lines.push(wireLine(source, target, link.label, link.kind));
+    lines.push(wireLine(
+      source, target, link.label, link.kind, undefined,
+      link.source.cardinality, link.target.cardinality,
+    ));
   }
   return lines;
 }

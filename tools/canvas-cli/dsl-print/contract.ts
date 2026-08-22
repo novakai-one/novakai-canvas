@@ -4,6 +4,8 @@ import type { CrossDiagramLink } from '../../../src/canvas.ts';
 export interface CrossDiagramContext {
   links: CrossDiagramLink[];
   labelOf(diagramId: string, nodeId: string): string | undefined;
+  /** Canonical @ref/#id address when the far node is not label-addressed. */
+  referenceOf?(diagramId: string, nodeId: string): string | undefined;
 }
 
 /** One map as the `maps` listing shows it. */

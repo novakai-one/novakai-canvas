@@ -207,16 +207,24 @@ describe('canvas workspace', () => {
     const [id, original] = Object.entries(before.wires)[0];
 
     const outcome = workspace.submit(batch(
-      [{ kind: 'wire.update', id, patch: { label: 'renamed', kind: 'queries' } }],
+      [
+        { kind: 'wire.update', id, patch: { label: 'renamed', kind: 'queries' } },
+        { kind: 'wire.setCardinality', id, source: 'one', target: 'zero-or-many' },
+      ],
       before.revision,
       'op-wire-update',
     ));
 
     expect(outcome.status).toBe('applied');
+    expect(workspace.snapshot().wires[id]).toMatchObject({
+      label: 'renamed', kind: 'queries',
+      source: { nodeId: original.source.nodeId, cardinality: 'one' },
+      target: { nodeId: original.target.nodeId, cardinality: 'zero-or-many' },
+    });
     const after = workspace.snapshot().wires[id];
     expect(after).toMatchObject({ label: 'renamed', kind: 'queries' });
-    expect(after.source).toEqual(original.source);
-    expect(after.target).toEqual(original.target);
+    expect(after.source.nodeId).toBe(original.source.nodeId);
+    expect(after.target.nodeId).toBe(original.target.nodeId);
   });
 
   it('refuses to update a wire that is not there', () => {

@@ -246,12 +246,20 @@ function fullyPopulatedRecord(): DiagramRecord {
       { id: 'decision', kind: 'decision', text: 'Ship the release' },
     ],
   };
+  const oouxNode: CanvasNode = {
+    id: 'ooux-object' as never, kind: 'ooux-object', label: 'Organization',
+    interfaceIds: [], typeIds: [], objectRef: 'organization',
+    oouxRows: [
+      { kind: 'attribute', id: 'org-name', name: 'org_name', valueType: 'string', role: 'core', traits: [] },
+      { kind: 'cta', id: 'invite-member', name: 'inviteMember', role: 'admin' },
+    ],
+  };
   const wireOne: CanvasWire = {
     id: 'wire-1' as never,
     kind: 'owns',
     label: 'owns',
-    source: { nodeId: rootNode.id, anchor: { side: 'top', ordinal: 0 } },
-    target: { nodeId: childNode.id, anchor: { side: 'right', ordinal: 1 } },
+    source: { nodeId: rootNode.id, anchor: { side: 'top', ordinal: 0 }, cardinality: 'one' },
+    target: { nodeId: childNode.id, anchor: { side: 'right', ordinal: 1 }, cardinality: 'zero-or-many' },
   };
   const wireTwo: CanvasWire = {
     id: 'wire-2' as never,
@@ -281,6 +289,9 @@ function fullyPopulatedRecord(): DiagramRecord {
     },
     [calloutStackNode.id]: {
       nodeId: calloutStackNode.id, position: { x: 1360, y: 0 }, size: { width: 280, height: 156 }, pinned: false,
+    },
+    [oouxNode.id]: {
+      nodeId: oouxNode.id, position: { x: 1680, y: 0 }, size: { width: 340, height: 220 }, pinned: false,
     },
   };
   const wireRouteHint: WireRouteHint = {
@@ -325,6 +336,7 @@ function fullyPopulatedRecord(): DiagramRecord {
       [metricNode.id]: metricNode,
       [iconCardNode.id]: iconCardNode,
       [calloutStackNode.id]: calloutStackNode,
+      [oouxNode.id]: oouxNode,
     },
     wires: { [wireOne.id]: wireOne, [wireTwo.id]: wireTwo },
     interfaces: {
@@ -427,5 +439,16 @@ describe('migrated record round-trip', () => {
       ],
     };
     expect(() => diagramRecordSchema.parse(duplicateCallouts)).toThrow();
+
+    const oouxInvalid = JSON.parse(JSON.stringify(record));
+    oouxInvalid.nodes.module = {
+      id: 'module', kind: 'module', label: 'Module', interfaceIds: [], typeIds: [],
+      objectRef: 'organization', oouxRows: [],
+    };
+    expect(() => diagramRecordSchema.parse(oouxInvalid)).toThrow();
+
+    const cardinalityInvalid = JSON.parse(JSON.stringify(fullyPopulatedRecord()));
+    cardinalityInvalid.wires[Object.keys(cardinalityInvalid.wires)[0]].source.cardinality = 'several';
+    expect(() => diagramRecordSchema.parse(cardinalityInvalid)).toThrow();
   });
 });

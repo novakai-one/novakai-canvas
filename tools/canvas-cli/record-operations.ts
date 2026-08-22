@@ -34,7 +34,7 @@ function structurallyEqual(left: RecordNode, right: RecordNode): boolean {
 function sameWires(left: DiagramRecord['wires'], right: DiagramRecord['wires']): boolean {
   const key = (wires: DiagramRecord['wires']): string => JSON.stringify(
     Object.values(wires)
-      .map((wire) => [wire.id, wire.kind, wire.label, wire.source.nodeId, wire.target.nodeId])
+      .map((wire) => [wire.id, wire.kind, wire.label, wire.source, wire.target])
       .sort((a, b) => String(a[0]).localeCompare(String(b[0]))),
   );
   return key(left) === key(right);

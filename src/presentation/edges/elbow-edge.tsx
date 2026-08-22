@@ -7,6 +7,7 @@ import {
 import { wirePath } from './wire-shape';
 import { useWireLabel } from './wire-label';
 import { WireRouteHandles } from './wire-route-handles';
+import { planWireEndDecorations } from './wire-end-decorations';
 
 type ElbowFlowEdge = Edge<ArchitectureEdgeData, 'elbow'>;
 
@@ -43,7 +44,12 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
   const [preview, setPreview] = useState<WireRouteEditResult | null>(null);
   const route = preview?.route ?? committed;
   const shape = props.data?.appearance.shape ?? 'elbow';
-  const path = useMemo(() => wirePath(route.points, shape), [route.points, shape]);
+  const decorations = useMemo(() => planWireEndDecorations(
+    route.points, props.data?.sourceCardinality, props.data?.targetCardinality,
+  ), [route.points, props.data?.sourceCardinality, props.data?.targetCardinality]);
+  const path = useMemo(
+    () => wirePath(decorations.bodyPoints, shape), [decorations.bodyPoints, shape],
+  );
 
   const visibility = props.data?.preferences.wires.showLabels;
   const showLabel = !props.data?.editable || visibility === 'always'
@@ -69,6 +75,13 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
   return <>
     <BaseEdge className={preview && !preview.valid ? 'wire-preview-invalid' : undefined}
       id={props.id} interactionWidth={18} markerEnd={props.markerEnd} path={path} style={style} />
+    {decorations.notationMode && <g fill="none" stroke={appearance?.strokeColorCss}
+      strokeLinecap="round" strokeLinejoin="round" strokeWidth={appearance?.strokeWidth}>
+      {decorations.lines.map((line, index) => <line key={`line-${index}`}
+        x1={line.from.x} x2={line.to.x} y1={line.from.y} y2={line.to.y} />)}
+      {decorations.circles.map((circle, index) => <circle key={`circle-${index}`}
+        cx={circle.center.x} cy={circle.center.y} fill="none" r={circle.radius} />)}
+    </g>}
     <WireRouteHandles
       editable={Boolean(props.data?.editable)}
       moveEnd={props.data?.moveEnd}

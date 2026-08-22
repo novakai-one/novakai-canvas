@@ -6,6 +6,7 @@ import {
 } from './canvas-presentation.ts';
 import { validateRecordIntegrity } from './record-integrity.ts';
 import { wireAppearanceSchema } from './wire-appearance.ts';
+import { wireCardinalitySchema } from './wire-cardinality.ts';
 
 const position = z.object({ x: z.number(), y: z.number() });
 const size = z.object({ width: z.number().positive(), height: z.number().positive() });
@@ -14,6 +15,7 @@ const portSide = z.enum(['top', 'right', 'bottom', 'left']);
 const endpoint = z.object({
   nodeId: z.string().min(1),
   anchor: z.object({ side: portSide, ordinal: z.number().int().nonnegative() }).optional(),
+  cardinality: wireCardinalitySchema.optional(),
 });
 
 const canvasReference = z.object({ namespace: z.string().min(1), id: z.string().min(1) });
@@ -139,8 +141,14 @@ const crossDiagramLink = z.object({
   id: z.string().min(1),
   kind: z.enum(['owns', 'references', 'assigns', 'queries', 'executes', 'mentions', 'missing']),
   label: z.string(),
-  source: z.object({ diagramId: z.string().min(1), nodeId: z.string().min(1) }),
-  target: z.object({ diagramId: z.string().min(1), nodeId: z.string().min(1) }),
+  source: z.object({
+    diagramId: z.string().min(1), nodeId: z.string().min(1),
+    cardinality: wireCardinalitySchema.optional(),
+  }),
+  target: z.object({
+    diagramId: z.string().min(1), nodeId: z.string().min(1),
+    cardinality: wireCardinalitySchema.optional(),
+  }),
 });
 
 const libraryEntry = z.object({

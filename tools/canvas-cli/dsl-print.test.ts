@@ -147,16 +147,19 @@ scope "Every Keyword" "one of each"
   callout-stack "Release decision"
     callout "Evidence is complete" id=evidence kind=info
     callout "Ship the release" id=decision kind=decision
+  ooux-object "Organization" ref=organization
+    attribute "org_name" id=org-name type=string role=core
+    cta "inviteMember" id=invite-member role=admin
   zone "A zone" "holding one node"
     module "zoned module"
   end
-  wire "A module" -> "zoned module" : call(In) -> Out [queries]
+  wire "A module" -> "zoned module" source-cardinality=one target-cardinality=zero-or-many : call(In) -> Out [queries]
 `;
 
   it('parses, prints, and re-parses to the same record content', () => {
     const record = buildRecord(EVERY_KEYWORD_DSL);
     expect(Object.values(record.nodes).map((node) => node.kind).sort()).toEqual(
-      ['callout-stack', 'comment', 'group', 'group', 'icon-card', 'metric', 'module', 'module', 'object', 'resource', 'runtime', 'timeline', 'tree'],
+      ['callout-stack', 'comment', 'group', 'group', 'icon-card', 'metric', 'module', 'module', 'object', 'ooux-object', 'resource', 'runtime', 'timeline', 'tree'],
     );
     const printed = printRecord(record);
     for (const node of Object.values(record.nodes).filter((candidate) => candidate.parentId)) {
@@ -171,7 +174,11 @@ scope "Every Keyword" "one of each"
       'icon-card "Automated checks" icon=check description="Every change is verified."',
       'callout-stack "Release decision"',
       'callout "Evidence is complete" id=evidence kind=info',
-      'callout "Ship the release" id=decision kind=decision']) {
+      'callout "Ship the release" id=decision kind=decision',
+      'ooux-object "Organization" ref=organization',
+      'attribute "org_name" id=org-name type=string role=core',
+      'cta "inviteMember" id=invite-member role=admin',
+      'source-cardinality=one target-cardinality=zero-or-many']) {
       expect(printed).toContain(statement);
     }
     expect(Object.values(record.nodes).find((node) => node.kind === 'metric')).toMatchObject({
@@ -185,6 +192,16 @@ scope "Every Keyword" "one of each"
       { id: 'evidence', kind: 'info', text: 'Evidence is complete' },
       { id: 'decision', kind: 'decision', text: 'Ship the release' },
     ]);
+    expect(Object.values(record.nodes).find((node) => node.kind === 'ooux-object')).toMatchObject({
+      objectRef: 'organization',
+      oouxRows: [
+        { kind: 'attribute', id: 'org-name', valueType: 'string', role: 'core', traits: [] },
+        { kind: 'cta', id: 'invite-member', role: 'admin' },
+      ],
+    });
+    expect(Object.values(record.wires)[0]).toMatchObject({
+      source: { cardinality: 'one' }, target: { cardinality: 'zero-or-many' },
+    });
     const reapplied = buildRecord(printed, { [record.id]: record });
     expect(content(reapplied)).toEqual(content(record));
     expect(printRecord(reapplied)).toBe(printed);

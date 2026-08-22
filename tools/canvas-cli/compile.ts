@@ -3,6 +3,7 @@
 import type { CrossDiagramLink, DiagramRecord } from '../../src/canvas.ts';
 import { componentFor } from '../../src/components/registry.ts';
 import type { ScopeAst } from './dsl-ast.ts';
+import { wireReferenceKey } from './wire-reference.ts';
 import type {
   CompileMessages, CompileResult, DeclaredScope, ForeignCatalog,
 } from './compile/contract.ts';
@@ -53,13 +54,18 @@ function foreignCatalog(
     if (selfIds.has(record.id as string)) continue;
     for (const node of Object.values(record.nodes)) {
       const address = componentFor(node.kind).identity?.wireAddress;
-      if (address === false || (address && address !== 'label')) continue;
-      const slug = slugify(node.label);
-      labels.set(slug, node.label);
-      ends.set(slug, [...(ends.get(slug) ?? []), {
-        diagramId: record.id as string,
-        nodeId: node.id as string,
-      }]);
+      if (address === false) continue;
+      const end = { diagramId: record.id as string, nodeId: node.id as string };
+      labels.set(slugify(node.label), node.label);
+      const authored = address && address !== 'label'
+        ? node[address.field] : node.label;
+      if (typeof authored === 'string' && authored.length > 0) {
+        const token = address && address !== 'label' ? `@${authored}` : authored;
+        const key = wireReferenceKey(token);
+        ends.set(key, [...(ends.get(key) ?? []), end]);
+      }
+      const idKey = wireReferenceKey(`#${node.id}`);
+      ends.set(idKey, [...(ends.get(idKey) ?? []), end]);
     }
   }
   return { ends, labels };

@@ -10,6 +10,7 @@ import { ARCHITECTURE_FLOW } from '../../domain/flow';
 import { resolveWireAppearance, wireStrokeWidth, type ResolvedWireAppearance } from '../wire-styles';
 import type { ProjectionInput } from '../projection-contract';
 import { connectedIds } from '../projection-selection';
+import type { WireCardinality } from '../../domain/wire-cardinality';
 
 /** How one wire is shaped by hand, read from the active layout route hint. */
 export interface EdgeRoute {
@@ -31,6 +32,8 @@ export interface ArchitectureEdgeData extends Record<string, unknown> {
   moveEnd?: (end: 'source' | 'target', nodeId: string, side?: string) => void;
   lane: number;
   appearance: ResolvedWireAppearance;
+  sourceCardinality?: WireCardinality;
+  targetCardinality?: WireCardinality;
 }
 
 /** Projects the visible wires of one diagram into React Flow edges. */
@@ -59,7 +62,7 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
     type: 'elbow',
     selected: selection?.kind === 'wire' && selection.id === wire.id,
     zIndex: selection?.kind === 'wire' && selection.id === wire.id ? 1000 : 0,
-    markerEnd: {
+    markerEnd: wire.source.cardinality || wire.target.cardinality ? undefined : {
       type: MarkerType.ArrowClosed,
       color: appearance.strokeColor,
       width: 14,
@@ -75,6 +78,8 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
       select: () => select({ kind: 'wire', id: wire.id }),
       lane: plan?.lane ?? 0,
       appearance,
+      sourceCardinality: wire.source.cardinality,
+      targetCardinality: wire.target.cardinality,
       route: {
         waypoints: hints[wire.id]?.waypoints ?? [],
         labelPosition: hints[wire.id]?.labelPosition,

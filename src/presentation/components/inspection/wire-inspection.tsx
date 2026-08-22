@@ -2,6 +2,7 @@ import { FieldRow, ObjectRow, PanelSection } from '../../shell';
 import type { InspectPanelProps, Inspection } from './contract';
 import { WireAppearanceControls } from './presentation-controls';
 import { inspectionSupport } from './support';
+import { WireCardinalityControl } from './wire-cardinality-control';
 
 const { diagramInspection, sectionProps } = inspectionSupport;
 
@@ -53,6 +54,12 @@ export function wireInspection(props: InspectPanelProps, id: string): Inspection
           key={`${end.id}-${index}`} kind={index ? 'to' : 'from'} label={end.label}
           onJump={() => (props.jumpTo ?? props.select)({ kind: 'node', id: end.id })}
           onPeek={() => props.select({ kind: 'node', id: end.id })} />)}</ul>
+        <WireCardinalityControl disabled={!props.editable} label="Source cardinality"
+          value={wire.source.cardinality}
+          update={(source) => props.execute({ kind: 'wire.setCardinality', id, source })} />
+        <WireCardinalityControl disabled={!props.editable} label="Target cardinality"
+          value={wire.target.cardinality}
+          update={(target) => props.execute({ kind: 'wire.setCardinality', id, target })} />
       </PanelSection>
       <PanelSection {...sectionProps(props, 'style')} title="Style">
         <WireAppearanceControls props={props} wireId={id} />

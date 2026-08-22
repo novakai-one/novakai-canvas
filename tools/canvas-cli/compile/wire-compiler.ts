@@ -34,8 +34,8 @@ class WireCompiler {
       this.scope.diagram.crossDiagramWires.push({
         kind: wire.kind,
         label: wire.contract,
-        source: source.end,
-        target: target.end,
+        source: { ...source.end, ...(wire.sourceCardinality ? { cardinality: wire.sourceCardinality } : {}) },
+        target: { ...target.end, ...(wire.targetCardinality ? { cardinality: wire.targetCardinality } : {}) },
       });
       return;
     }
@@ -45,8 +45,14 @@ class WireCompiler {
       id: asId(wireId),
       kind: wire.kind,
       label: wire.contract,
-      source: { nodeId: asId(source.local) },
-      target: { nodeId: asId(target.local) },
+      source: {
+        nodeId: asId(source.local),
+        ...(wire.sourceCardinality ? { cardinality: wire.sourceCardinality } : {}),
+      },
+      target: {
+        nodeId: asId(target.local),
+        ...(wire.targetCardinality ? { cardinality: wire.targetCardinality } : {}),
+      },
     };
     if (wire.appearance) this.scope.diagram.appearanceByWireId[wireId] = wire.appearance;
   }

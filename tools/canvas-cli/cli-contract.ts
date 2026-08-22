@@ -5,6 +5,7 @@ import {
   CONTAINER_ALIGNS, GRID_COLUMNS, SPACINGS, appearanceSpecification,
 } from '../../src/domain/canvas-presentation.ts';
 import { WIRE_APPEARANCE_SPECIFICATIONS } from '../../src/domain/wire-appearance.ts';
+import { WIRE_CARDINALITIES } from '../../src/domain/wire-cardinality.ts';
 import { wireAttributeHelp } from './wire-attributes.ts';
 
 const wireAppearanceHelp = wireAttributeHelp();
@@ -72,7 +73,7 @@ ${componentHelp}
 export const COMMAND_KINDS = [
   'node.add', 'node.move', 'node.resize', 'node.autoSize', 'node.pin', 'node.update',
   'node.content.set', 'node.reparent',
-  'node.remove', 'wire.add', 'wire.reconnect', 'wire.remove', 'view.setCollapsed',
+  'node.remove', 'wire.add', 'wire.reconnect', 'wire.setCardinality', 'wire.remove', 'view.setCollapsed',
   'view.setViewport', 'diagram.rename', 'layout.presentation.replace',
 ] as const;
 
@@ -85,6 +86,7 @@ export function describeCapability(): unknown {
     nodeKinds: [...kindList()],
     nodeAliases: { group: 'scope' },
     wireKinds: ['owns', 'references', 'assigns', 'queries', 'executes', 'mentions', 'missing'],
+    wireCardinalities: [...WIRE_CARDINALITIES],
     changeSet: {
       operationId: 'string — stable retry identity; a repeat returns "duplicate"',
       expectedRevision: 'number — the revision the batch was composed against',
@@ -96,6 +98,10 @@ export function describeCapability(): unknown {
       wire: {
         syntax: `wire <label|@ref|#node-id> -> <label|@ref|#node-id> ${wireAppearanceHelp} : <contract> [kind]`,
         endpoints: ['label', '@ref', '#node-id'],
+        cardinality: {
+          source: { key: 'source-cardinality', values: [...WIRE_CARDINALITIES], omitted: 'arrow' },
+          target: { key: 'target-cardinality', values: [...WIRE_CARDINALITIES], omitted: 'arrow' },
+        },
         appearance: WIRE_APPEARANCE_SPECIFICATIONS.map((entry) => ({
           key: entry.key, values: [...entry.values], omitted: entry.omitted,
         })),

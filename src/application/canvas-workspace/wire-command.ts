@@ -3,6 +3,7 @@
 import { componentFor } from '../../components/registry.ts';
 import type { DiagramRecord, WireRouteHint } from '../../domain/records.ts';
 import type { RecordCommand } from './commands.ts';
+import { WIRE_CARDINALITIES } from '../../domain/wire-cardinality.ts';
 
 type WireCommand = Extract<RecordCommand, { kind: `wire.${string}` }>;
 type Layout = DiagramRecord['layouts'][string];
@@ -44,6 +45,13 @@ export function validateWireCommand(record: DiagramRecord, command: WireCommand)
     if (command.target) requireWireEndpoint(record, command.target);
   }
   if (command.kind === 'wire.setRoute') validateRoute(command);
+  if (command.kind === 'wire.setCardinality') {
+    for (const value of [command.source, command.target]) {
+      if (value !== undefined && value !== null && !WIRE_CARDINALITIES.includes(value)) {
+        throw new Error(`wire-cardinality-not-permitted:${value}`);
+      }
+    }
+  }
 }
 
 function setWireRoute(
@@ -80,6 +88,14 @@ export function applyWireCommand(
       return;
     }
     case 'wire.setRoute': setWireRoute(layout, command); return;
+    case 'wire.setCardinality': {
+      const wire = record.wires[command.id];
+      if (command.source === null) delete wire.source.cardinality;
+      else if (command.source !== undefined) wire.source.cardinality = command.source;
+      if (command.target === null) delete wire.target.cardinality;
+      else if (command.target !== undefined) wire.target.cardinality = command.target;
+      return;
+    }
     case 'wire.update': Object.assign(record.wires[command.id], command.patch); return;
     case 'wire.remove':
       delete record.wires[command.id];

@@ -63,8 +63,7 @@ class WireResolver {
     line: number,
   ): ResolvedWireEnd | undefined {
     if (local) return { local, end: { diagramId: this.scope.diagram.id, nodeId: local } };
-    const far = wireReferenceKey(name).startsWith('label:')
-      ? this.resolveForeign(name, nearNodeId) : undefined;
+    const far = this.resolveForeign(name, nearNodeId);
     if (far) return { end: far };
     this.context.messages.errors.push({
       message: `wire endpoint "${name}" (line ${line}) does not match any node`,
@@ -76,7 +75,7 @@ class WireResolver {
   }
 
   private resolveForeign(name: string, nearNodeId: string | undefined): LinkEnd | undefined {
-    const candidates = this.context.foreign.ends.get(slugify(name));
+    const candidates = this.context.foreign.ends.get(wireReferenceKey(name));
     if (!candidates || candidates.length === 0) return undefined;
     if (candidates.length === 1) return candidates[0];
     const alreadyLinked = candidates.find((candidate) => this.context.links.some((link) =>

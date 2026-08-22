@@ -10,8 +10,9 @@ import type {
 import type { AppliedCanvasOperation } from './legacy-operation.ts';
 import type { Position, Size } from './spatial.ts';
 import type { WireAppearance } from './wire-appearance.ts';
+import type { OouxRow } from './ooux-object.ts';
 
-export type NodeKind = 'scope' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline' | 'metric' | 'icon-card' | 'block';
+export type NodeKind = 'scope' | 'module' | 'object' | 'runtime' | 'resource' | 'comment' | 'tree' | 'timeline' | 'metric' | 'icon-card' | 'block' | 'ooux-object';
 
 /** Relationship vocabulary carried by wires; renderers style each kind distinctly. */
 export type WireKind =
@@ -43,6 +44,8 @@ export interface CanvasNode {
   lines?: string[];
   /** Stable agent-facing address for a block. */
   wireRef?: string;
+  objectRef?: string;
+  oouxRows?: OouxRow[];
   /** Optional identity of the real thing this drawing occurrence represents. */
   subjectRef?: CanvasReference;
   /** Optional deeper explanation opened from this overview occurrence. */
