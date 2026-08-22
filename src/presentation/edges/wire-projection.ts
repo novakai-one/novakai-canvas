@@ -29,7 +29,6 @@ export interface ArchitectureEdgeData extends Record<string, unknown> {
   route: EdgeRoute;
   obstacles: RouteObstacle[];
   setRoute?: (route: Partial<EdgeRoute>) => void;
-  moveEnd?: (end: 'source' | 'target', nodeId: string, side?: string) => void;
   lane: number;
   appearance: ResolvedWireAppearance;
   sourceCardinality?: WireCardinality;
@@ -88,26 +87,6 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
       obstacles: plan?.obstacles ?? [],
       setRoute: execute && editable
         ? (route: Partial<EdgeRoute>) => execute({ kind: 'wire.setRoute', id: wire.id, route })
-        : undefined,
-      moveEnd: execute && editable
-        ? (end: 'source' | 'target', nodeId: string, side?: string) => {
-          const isSide = side === 'top' || side === 'right' || side === 'bottom' || side === 'left';
-          execute({
-            kind: 'wire.reconnect',
-            id: wire.id,
-            source: end === 'source' ? nodeId : (wire.source.nodeId as string),
-            target: end === 'target' ? nodeId : (wire.target.nodeId as string),
-          });
-          if (isSide) {
-            execute({
-              kind: 'wire.setRoute',
-              id: wire.id,
-              route: end === 'source'
-                ? { preferredSourceSide: side }
-                : { preferredTargetSide: side },
-            });
-          }
-        }
         : undefined,
     },
     });

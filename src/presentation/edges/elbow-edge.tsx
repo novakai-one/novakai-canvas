@@ -84,7 +84,6 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
     </g>}
     <WireRouteHandles
       editable={Boolean(props.data?.editable)}
-      moveEnd={props.data?.moveEnd}
       preview={setPreview}
       route={route}
       routeRequest={routeRequest}
