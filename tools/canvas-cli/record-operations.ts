@@ -39,6 +39,11 @@ function sameWires(left: DiagramRecord['wires'], right: DiagramRecord['wires']):
   return key(left) === key(right);
 }
 
+function sameDefinitions(left: DiagramRecord, right: DiagramRecord): boolean {
+  return JSON.stringify(left.interfaces) === JSON.stringify(right.interfaces)
+    && JSON.stringify(left.types) === JSON.stringify(right.types);
+}
+
 function activeLayout(record: DiagramRecord): DiagramRecord['layouts'][string] {
   return record.layouts[record.views[record.activeViewId].layoutId];
 }
@@ -128,6 +133,13 @@ export function commandsFor(before: DiagramRecord, target: DiagramRecord): Recor
     commands.push({
       kind: 'node.add', node: target.nodes[id],
       placement: placementInput(placement),
+    });
+  }
+  if (!sameDefinitions(before, target)) {
+    commands.push({
+      kind: 'diagram.definitions.replace',
+      interfaces: target.interfaces,
+      types: target.types,
     });
   }
   const rebuilt = new Set(rebuiltIds);

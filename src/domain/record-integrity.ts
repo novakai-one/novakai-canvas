@@ -22,6 +22,47 @@ function validateWireAddresses(record: DiagramRecord, context: RefinementCtx): v
   }
 }
 
+function validateDefinitionReferences(record: DiagramRecord, context: RefinementCtx): void {
+  for (const [nodeId, node] of Object.entries(record.nodes)) {
+    node.interfaceIds.forEach((interfaceId, index) => {
+      const item = record.interfaces[interfaceId];
+      if (!item) {
+        context.addIssue({
+          code: 'custom', message: `node "${nodeId}" names missing interface "${interfaceId}"`,
+          path: ['nodes', nodeId, 'interfaceIds', index], input: interfaceId,
+        });
+      } else if (item.ownerId !== nodeId) {
+        context.addIssue({
+          code: 'custom', message: `interface "${interfaceId}" is owned by "${item.ownerId}", not "${nodeId}"`,
+          path: ['nodes', nodeId, 'interfaceIds', index], input: interfaceId,
+        });
+      }
+    });
+    node.typeIds.forEach((typeId, index) => {
+      if (record.types[typeId]) return;
+      context.addIssue({
+        code: 'custom', message: `node "${nodeId}" names missing type "${typeId}"`,
+        path: ['nodes', nodeId, 'typeIds', index], input: typeId,
+      });
+    });
+  }
+  for (const [interfaceId, item] of Object.entries(record.interfaces)) {
+    const owner = record.nodes[item.ownerId];
+    if (!owner) {
+      context.addIssue({
+        code: 'custom', message: `interface "${interfaceId}" names missing owner "${item.ownerId}"`,
+        path: ['interfaces', interfaceId, 'ownerId'], input: item.ownerId,
+      });
+      continue;
+    }
+    if ((owner.interfaceIds as readonly string[]).includes(interfaceId)) continue;
+    context.addIssue({
+      code: 'custom', message: `owner "${item.ownerId}" does not reference interface "${interfaceId}"`,
+      path: ['interfaces', interfaceId], input: interfaceId,
+    });
+  }
+}
+
 function validateWireAppearanceTargets(
   record: DiagramRecord,
   layoutId: string,
@@ -121,6 +162,7 @@ export function validateRecordIntegrity(record: DiagramRecord, context: Refineme
       path: ['activeViewId'], input: record.activeViewId,
     });
   }
+  validateDefinitionReferences(record, context);
   validateWireAddresses(record, context);
   for (const [layoutId, layout] of Object.entries(record.layouts)) {
     validateWireAppearanceTargets(record, layoutId, layout, context);

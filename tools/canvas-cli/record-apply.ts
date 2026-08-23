@@ -35,9 +35,8 @@ export interface ApplyContext {
  * Applies one compiled scope block to its record as a single change set.
  *
  * The workspace remains the authority for revision, authorship and idempotency; the write that
- * follows carries its snapshot verbatim, plus methods and types: those objects remain the only
- * dictionaries outside the command vocabulary. Layout presentation travels exclusively through
- * `layout.presentation.replace` and therefore participates in the same atomic revision.
+ * follows carries its snapshot verbatim. Methods, types and layout presentation travel through
+ * typed commands and therefore participate in the same atomic revision and undo history.
  */
 export async function applyCompiledDiagram(
   context: ApplyContext,
@@ -85,11 +84,7 @@ export async function applyCompiledDiagram(
     };
   }
 
-  const written = await repository.writeDiagram({
-    ...workspace.snapshot(),
-    interfaces: compiled.interfaces,
-    types: compiled.types,
-  }, before.revision);
+  const written = await repository.writeDiagram(workspace.snapshot(), before.revision);
   if (written.status !== 'written') {
     return { diagramId: compiled.id, reason: `save ${written.status}` };
   }

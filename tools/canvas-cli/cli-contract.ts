@@ -76,7 +76,7 @@ export const COMMAND_KINDS = [
   'node.add', 'node.move', 'node.resize', 'node.autoSize', 'node.pin', 'node.update',
   'node.content.set', 'node.reparent',
   'node.remove', 'wire.add', 'wire.reconnect', 'wire.setCardinality', 'wire.remove', 'view.setCollapsed',
-  'view.setViewport', 'diagram.rename', 'layout.presentation.replace',
+  'view.setViewport', 'diagram.rename', 'diagram.definitions.replace', 'layout.presentation.replace',
 ] as const;
 
 /** The vocabulary an unfamiliar agent needs to drive Canvas without reading code. */

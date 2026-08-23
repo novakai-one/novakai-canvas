@@ -71,4 +71,8 @@ export type RecordCommand =
   | { kind: 'layout.nodeAppearance.set'; id: string; appearance: NodeAppearance }
   | { kind: 'layout.wireAppearance.set'; id: string; appearance: WireAppearance }
   | { kind: 'layout.arrangement.set'; id: string; arrangement?: AuthoredArrangement }
+  | {
+    kind: 'diagram.definitions.replace';
+    interfaces: DiagramRecord['interfaces']; types: DiagramRecord['types'];
+  }
   | { kind: 'diagram.rename'; name: string };
