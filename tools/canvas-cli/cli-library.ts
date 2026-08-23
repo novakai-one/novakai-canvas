@@ -9,7 +9,6 @@ import { crossDiagramContext } from './cli-links.ts';
 import { listMaps, printLibrary, printRecord } from './dsl-print.ts';
 import { readAllRecords, type OpenedLibrary } from './library-io.ts';
 import { removalCommandsFor } from './record-apply.ts';
-import { layoutRecord } from './record-graph.ts';
 import { slugify } from './slug.ts';
 
 export async function runMaps(opened: OpenedLibrary): Promise<void> {
@@ -65,7 +64,7 @@ export async function runRemove(opened: OpenedLibrary, args: CliArgs): Promise<v
     commands: removalCommandsFor(record, target.id as string),
   });
   if (outcome.status !== 'applied') fail(`rm ${outcome.status}: ${JSON.stringify(outcome)}`);
-  const written = await opened.repository.writeDiagram(layoutRecord(workspace.snapshot()), record.revision);
+  const written = await opened.repository.writeDiagram(workspace.snapshot(), record.revision);
   if (written.status !== 'written') fail(`rm save ${written.status}`);
   await opened.library.rebuildIndex();
   process.stdout.write(`removed: ${target.label} (revision ${written.revision})\n`);

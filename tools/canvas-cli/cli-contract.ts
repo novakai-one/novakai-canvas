@@ -50,7 +50,7 @@ Usage
   --operation-id <id>  stable retry identity for apply
 
 DSL — one statement per line; a scope block fully declares that map.
-Layout is automatic: never write coordinates, never edit the JSON by hand.
+New objects are placed automatically; saved placement is preserved. Never write coordinates or edit JSON by hand.
 Scope and zone containers share the zone.layout, zone.gap and zone.align vocabulary.
 
   scope "Agent Browser Sessions"
