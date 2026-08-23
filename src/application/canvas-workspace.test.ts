@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { parseArchitectureDocument } from '../domain/schema';
 import { migrateDocumentToLibrary } from '../domain/migrate/v2-to-v3';
+import { asId } from '../domain/id-cast';
+import type { InterfaceId, NodeId } from '../domain/ids';
 import {
   createCanvasWorkspace, isSignatureName, type ActorContext, type RecordCommand,
 } from './canvas-workspace';
@@ -46,6 +48,23 @@ describe('canvas workspace', () => {
     ], before.revision));
 
     expect(outcome).toMatchObject({ status: 'rejected', commandIndex: 1 });
+    expect(workspace.snapshot()).toEqual(before);
+  });
+
+  it('rejects a batch whose completed record has a dangling definition', () => {
+    const workspace = createCanvasWorkspace(openMessagingScope(), human);
+    const before = structuredClone(workspace.snapshot());
+
+    const outcome = workspace.submit(batch([{
+      kind: 'node.add',
+      node: {
+        id: asId<NodeId>('invalid-module'), kind: 'module', label: 'Invalid',
+        interfaceIds: [asId<InterfaceId>('missing-interface')], typeIds: [],
+      },
+      placement: { position: { x: 0, y: 0 }, size: { width: 200, height: 100 } },
+    }], before.revision));
+
+    expect(outcome).toMatchObject({ status: 'rejected', reason: expect.stringContaining('invalid-final-record') });
     expect(workspace.snapshot()).toEqual(before);
   });
 

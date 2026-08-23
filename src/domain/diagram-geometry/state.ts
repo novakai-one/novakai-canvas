@@ -56,13 +56,13 @@ export class LayoutState {
   measureNode(nodeId: string): Size {
     const node = this.document.nodes[nodeId];
     const placement = this.layout.placements[nodeId];
-    const interfaceLines = node.interfaceIds.map((id) => {
+    const interfaceLines = node.interfaceIds.flatMap((id) => {
       const item = this.document.interfaces[id];
-      return `${item.name}(${item.accepts.join(', ')}) -> ${item.returns.join(', ')}`;
+      return item ? [`${item.name}(${item.accepts.join(', ')}) -> ${item.returns.join(', ')}`] : [];
     });
-    const typeLines = node.typeIds.map((id) => {
+    const typeLines = node.typeIds.flatMap((id) => {
       const item = this.document.types[id];
-      return `${item.name} { ${item.fields.join(', ')} }`;
+      return item ? [`${item.name} { ${item.fields.join(', ')} }`] : [];
     });
     const authored = this.layout.appearanceByNodeId?.[node.id];
     const required = componentFor(node.kind).measure(node as unknown as RecordNode, {

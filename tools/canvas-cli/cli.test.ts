@@ -38,6 +38,15 @@ scope "CLI Demo"
   wire "Demo client" -> "Demo broker" : acquire(AgentId) -> DemoHandle [queries]
 `;
 
+const ARRANGED_DEFINITIONS = `
+scope "Arranged definitions"
+  zone "Flow" layout=stack gap=16 align=stretch
+    module "Send service"
+      send(Message) -> Receipt
+      type Message { id, body }
+  end
+`;
+
 let dataDir: string;
 
 async function readRecord(id: string): Promise<DiagramRecord> {
@@ -120,6 +129,18 @@ describe('canvas CLI', () => {
     expect((await readRecord('cli-demo')).nodes['cli-demo--demo-history'].steps).toEqual([
       { id: 'turn-2', label: 'turn 2', fork: 'session-demo' },
     ]);
+  });
+
+  it('applies module definitions inside an arranged zone', async () => {
+    const result = await runCli(['apply', '--file', dataDir], ARRANGED_DEFINITIONS);
+
+    expect(result.code, result.stderr).toBe(0);
+    const record = await readRecord('arranged-definitions');
+    const module = record.nodes['arranged-definitions--flow--send-service'];
+    expect(module.interfaceIds).toHaveLength(1);
+    expect(module.typeIds).toHaveLength(1);
+    expect(record.interfaces[module.interfaceIds[0]]?.name).toBe('send');
+    expect(record.types[module.typeIds[0]]?.name).toBe('Message');
   });
 
   it('read prints the applied scope back as DSL', async () => {

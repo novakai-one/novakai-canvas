@@ -60,6 +60,15 @@ function endpointIds(record: DiagramRecord, wireId: string): string[] {
   return wire ? [wire.source.nodeId as string, wire.target.nodeId as string] : [];
 }
 
+function definitionState(record: DiagramRecord, nodeId: string): string {
+  const node = record.nodes[nodeId];
+  if (!node) return '';
+  return JSON.stringify([
+    node.interfaceIds.map((id) => record.interfaces[id] ?? null),
+    node.typeIds.map((id) => record.types[id] ?? null),
+  ]);
+}
+
 /** Reflows geometry affected by one semantic or presentation mutation. */
 export function reflowAfterCommand(
   previous: DiagramRecord,
@@ -126,6 +135,11 @@ export function reflowAfterCommand(
       if (ownerId) resizedNodeIds = arrangementAffectedIds = [ownerId];
       break;
     }
+    case 'diagram.definitions.replace':
+      resizedNodeIds = Object.keys(next.nodes)
+        .filter((id) => definitionState(previous, id) !== definitionState(next, id));
+      arrangementAffectedIds = resizedNodeIds;
+      break;
   }
   return resizedNodeIds.length || arrangementAffectedIds.length
     ? reflowPresentation(next, { resizedNodeIds, autoSizedNodeIds, arrangementAffectedIds }) : next;

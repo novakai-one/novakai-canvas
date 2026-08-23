@@ -1,4 +1,5 @@
 import type { DiagramRecord } from '../domain/records.ts';
+import { diagramRecordSchema } from '../domain/record-schema.ts';
 import { executeRecordCommand } from './canvas-workspace/command.ts';
 import type {
   ActorContext, CanvasWorkspace, ChangeOutcome, RecordChangeSet, RecordCommand,
@@ -12,7 +13,7 @@ export { isSignatureName } from '../domain/interface-signature.ts';
 type PreflightFailure = Exclude<ChangeOutcome, { status: 'applied' }>;
 type BatchExecution =
   | { applied: true; record: DiagramRecord }
-  | { applied: false; reason: string; commandIndex: number };
+  | { applied: false; reason: string; commandIndex?: number };
 
 class WorkspaceRuntime implements CanvasWorkspace {
   private record: DiagramRecord;
@@ -36,7 +37,10 @@ class WorkspaceRuntime implements CanvasWorkspace {
     if (failure) return failure;
     const execution = this.applyCommands(changeSet.commands);
     if (!execution.applied) {
-      return { status: 'rejected', reason: execution.reason, commandIndex: execution.commandIndex };
+      return {
+        status: 'rejected', reason: execution.reason,
+        ...(execution.commandIndex === undefined ? {} : { commandIndex: execution.commandIndex }),
+      };
     }
     return this.commit(execution.record, changeSet);
   }
@@ -98,7 +102,12 @@ class WorkspaceRuntime implements CanvasWorkspace {
       if (!execution.applied) return { ...execution, commandIndex: index };
       candidate = execution.record;
     }
-    return { applied: true, record: candidate };
+    try {
+      return { applied: true, record: diagramRecordSchema.parse(candidate) };
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : String(error);
+      return { applied: false, reason: `invalid-final-record:${detail}` };
+    }
   }
 
   private commit(candidate: DiagramRecord, changeSet: RecordChangeSet): ChangeOutcome {
