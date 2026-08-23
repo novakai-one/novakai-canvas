@@ -60,7 +60,7 @@ export interface CompileMessages {
 export interface CompiledScope {
   declared: DeclaredScope;
   diagram: CompiledDiagram;
-  endpointByLabelSlug: Map<string, string>;
+  endpointByLabelSlug: Map<string, string[]>;
   endpointByRef: Map<string, string>;
   endpointById: Map<string, string>;
   localLabels: Map<string, string>;

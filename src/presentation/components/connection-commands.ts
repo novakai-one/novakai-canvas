@@ -86,10 +86,11 @@ export function reconnectedWire(
       ...(targetChanged ? { target: connection.target } : {}),
     });
   }
-  if (sourceSideChanged || targetSideChanged) {
+  if (sourceChanged || targetChanged || sourceSideChanged || targetSideChanged) {
     commands.push({
       kind: 'wire.setRoute', id: edge.id,
       route: {
+        ...(sourceChanged || targetChanged ? { waypoints: [] } : {}),
         ...(sourceSideChanged ? { preferredSourceSide: nextSourceSide ?? null } : {}),
         ...(targetSideChanged ? { preferredTargetSide: nextTargetSide ?? null } : {}),
       },

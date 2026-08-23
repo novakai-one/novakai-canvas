@@ -3,6 +3,7 @@ import type { DiagramRecord } from '../../src/canvas.ts';
 import { parseDsl } from './dsl-parse.ts';
 import { compile } from './compile.ts';
 import { buildRecords } from './dsl-fixture.ts';
+import { printRecord } from './dsl-print.ts';
 
 /**
  * Two records standing in for the shape of the real library: one map holding `Session`, another
@@ -14,6 +15,7 @@ scope "Novakai IDE"
   module Planning
     create(Plan) -> PlanId
   module Session
+  module Agent
 
 scope "Agent Messaging"
   module Agents
@@ -116,18 +118,22 @@ scope "Browser Sessions"
 
   it('resolves an endpoint inside the applied map before looking at any other map', () => {
     const existing = fixture();
-    const scopes = parseOk(`
+    const source = `
 scope "Agent Messaging"
-  module Agents
+  entity "Agent" ref=agent
   module Session
-  wire Session -> Agents : local wins [queries]
-`);
-    const { diagrams, errors } = compile(scopes, existing);
+  wire Session -> Agent : local wins [queries]
+`;
+    const built = buildRecords(source, existing);
+    const { diagrams, errors } = built.result;
     expect(errors).toEqual([]);
     const [diagram] = diagrams;
-    // "Session" also exists in Novakai IDE; the local node is the one that wins.
+    // Local display labels win even when the node's durable address is an @ref.
     expect(Object.values(diagram.wires)[0].source.nodeId).toBe('agent-messaging--session');
+    expect(Object.values(diagram.wires)[0].target.nodeId).toBe('agent-messaging--entity-agent');
     expect(diagram.crossDiagramWires).toEqual([]);
+    expect(printRecord(built.records['agent-messaging']))
+      .toContain('wire "Session" -> @agent : local wins [queries]');
   });
 
   it('errors on unresolved wire endpoints with close candidates', () => {
