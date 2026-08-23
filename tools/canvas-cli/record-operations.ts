@@ -126,9 +126,13 @@ export function commandsFor(before: DiagramRecord, target: DiagramRecord): Recor
     .sort((a, b) => depthOf(target.nodes, a) - depthOf(target.nodes, b))) {
     const placement = placements[id] ?? { ...PLACEHOLDER_PLACEMENT, nodeId: asId(id) };
     commands.push({
-      kind: 'node.add', node: target.nodes[id],
+      kind: 'node.add', node: { ...target.nodes[id], interfaceIds: [] as never },
       placement: placementInput(placement),
     });
+    for (const interfaceId of target.nodes[id].interfaceIds) {
+      const iface = target.interfaces[interfaceId as string];
+      if (iface) commands.push({ kind: 'interface.add', ownerId: id, iface });
+    }
   }
   const rebuilt = new Set(rebuiltIds);
   for (const id of survivingIds) {
