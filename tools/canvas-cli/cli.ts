@@ -23,7 +23,7 @@ async function main(): Promise<void> {
   }
   const opened = await openLibrary(args.dataDir, args.positional[0] ?? 'stdin');
   if (args.verb === 'maps') return runMaps(opened);
-  if (args.verb === 'read') return runRead(opened, args.positional[0]);
+  if (args.verb === 'read') return runRead(opened, args);
   if (args.verb === 'apply') return runApply(opened, args);
   if (args.verb === 'batch') return runBatch(opened, args);
   if (args.verb === 'rm') {

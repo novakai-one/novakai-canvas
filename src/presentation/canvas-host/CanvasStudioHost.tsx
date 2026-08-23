@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import App, { type AppProps } from '../../App';
-import { createFileLibraryRepository, createCanvasLibrary, type ActorContext } from '../../canvas';
+import {
+  createCanvasLibrary, createDiagramExportService, createFileLibraryRepository, type ActorContext,
+} from '../../canvas';
 import { createHttpJsonRepository } from '../../adapters/http-json-repository';
 import { canvasPreferencesSchema } from '../../domain/schema';
 import { defaultPreferences } from '../../domain/defaults';
@@ -57,6 +59,7 @@ async function createSession(actor: ActorContext): Promise<CanvasStudioSession> 
     preferencesRepository.load(),
   ]);
   const library = createCanvasLibrary(repository, index, actor);
+  const diagramExporter = createDiagramExportService(repository, library);
 
   // The first-run case is the sole load path that writes, and it cannot overwrite a record.
   const summaries = library.list();
@@ -71,6 +74,7 @@ async function createSession(actor: ActorContext): Promise<CanvasStudioSession> 
     initialDiagramId: first.id,
     initialPreferences: preferences,
     initialWorkspace: workspace,
+    diagramExporter,
     library,
     preferencesRepository,
   };

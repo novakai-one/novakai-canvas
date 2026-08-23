@@ -3,14 +3,14 @@
 import type { CrossDiagramLink, DiagramRecord } from '../../src/canvas.ts';
 import { componentFor } from '../../src/components/registry.ts';
 import type { ScopeAst } from './dsl-ast.ts';
-import { wireReferenceKey } from './wire-reference.ts';
+import { wireReferenceKey } from '../../src/authoring/wire-reference.ts';
 import type {
   CompileMessages, CompileResult, DeclaredScope, ForeignCatalog,
 } from './compile/contract.ts';
 import { compileScope } from './compile/scope-compiler.ts';
 import { compileScopeWires } from './compile/wire-compiler.ts';
 import { rootGroupId } from './record-graph.ts';
-import { slugify } from './slug.ts';
+import { slugify } from '../../src/authoring/slug.ts';
 import type { LinkEnd } from './wire-authoring.ts';
 
 export type {

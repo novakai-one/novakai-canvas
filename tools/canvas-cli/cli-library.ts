@@ -1,15 +1,42 @@
 /** Maps, read, remove and batch verbs for an opened library. */
 
 import { randomUUID } from 'node:crypto';
-import type { RecordCommand } from '../../src/canvas.ts';
+import {
+  createDiagramExportService,
+  type CrossDiagramLink, type DiagramRecord, type RecordCommand,
+} from '../../src/canvas.ts';
 import type { CliArgs } from './cli-args.ts';
 import { diagramIdOrFail, fail, readStdinOr } from './cli-args.ts';
 import { COMMAND_KINDS } from './cli-contract.ts';
-import { crossDiagramContext } from './cli-links.ts';
-import { listMaps, printLibrary, printRecord } from './dsl-print.ts';
 import { readAllRecords, type OpenedLibrary } from './library-io.ts';
 import { removalCommandsFor } from './record-apply.ts';
-import { slugify } from './slug.ts';
+import { rootGroupId } from '../../src/diagram-export/ordering.ts';
+import { slugify } from '../../src/authoring/slug.ts';
+
+/** One map as the `maps` listing shows it. */
+export interface MapSummary {
+  id: string;
+  label: string;
+  nodes: number;
+  wires: number;
+}
+
+/** Lists maps in record order with their visible node and wire counts. */
+export function listMaps(
+  records: readonly DiagramRecord[],
+  links: readonly CrossDiagramLink[] = [],
+): MapSummary[] {
+  return records.map((record) => {
+    const rootId = rootGroupId(record);
+    const outbound = links.filter((link) => link.source.diagramId === record.id).length;
+    return {
+      id: record.id as string,
+      label: (rootId ? record.nodes[rootId]?.label : undefined) ?? record.name,
+      nodes: Object.keys(record.nodes).length - (rootId ? 1 : 0),
+      wires: Object.keys(record.wires).length + outbound,
+    };
+  });
+}
 
 export async function runMaps(opened: OpenedLibrary): Promise<void> {
   const records = await readAllRecords(opened.repository, opened.library);
@@ -23,15 +50,19 @@ export async function runMaps(opened: OpenedLibrary): Promise<void> {
   }
 }
 
-export async function runRead(opened: OpenedLibrary, query: string | undefined): Promise<void> {
-  const records = await readAllRecords(opened.repository, opened.library);
-  const context = crossDiagramContext(records, Object.values(opened.library.index().links));
-  if (!query) {
-    const ordered = opened.library.list({ includeArchived: true }).map((summary) => records[summary.id]);
-    process.stdout.write(printLibrary(ordered, context));
-    return;
+export async function runRead(opened: OpenedLibrary, args: CliArgs): Promise<void> {
+  let selected: DiagramRecord[];
+  if (args.positional[0]) {
+    selected = [await opened.repository.readDiagram(
+      diagramIdOrFail(opened.library, args.positional[0]),
+    )];
+  } else {
+    const records = await readAllRecords(opened.repository, opened.library);
+    selected = opened.library.list({ includeArchived: true })
+      .map((summary) => records[summary.id]);
   }
-  process.stdout.write(printRecord(records[diagramIdOrFail(opened.library, query)], context));
+  const exporter = createDiagramExportService(opened.repository, opened.library);
+  process.stdout.write(await exporter.render(selected, args.format ?? 'dsl'));
 }
 
 export async function runRemove(opened: OpenedLibrary, args: CliArgs): Promise<void> {

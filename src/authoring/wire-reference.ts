@@ -1,7 +1,7 @@
 /** One owner for label, @ref and #node-id wire addresses. */
 
-import { componentFor } from '../../src/components/registry.ts';
-import type { CanvasNode } from '../../src/domain/records.ts';
+import { componentFor } from '../components/registry.ts';
+import type { CanvasNode } from '../domain/records.ts';
 import { slugify } from './slug.ts';
 
 type WireReferenceNamespace = 'label' | 'ref' | 'id';

@@ -2,23 +2,7 @@
 
 import type { CanvasLibrary, CrossDiagramLink, DiagramRecord } from '../../src/canvas.ts';
 import type { CrossDiagramWire, LinkEnd } from './wire-authoring.ts';
-import type { CrossDiagramContext } from './dsl-print.ts';
 import { asId } from './record-graph.ts';
-import { wireReferenceFor } from './wire-reference.ts';
-
-export function crossDiagramContext(
-  records: Record<string, DiagramRecord>,
-  links: CrossDiagramLink[],
-): CrossDiagramContext {
-  return {
-    links,
-    labelOf: (diagramId, nodeId) => records[diagramId]?.nodes[nodeId]?.label,
-    referenceOf: (diagramId, nodeId) => {
-      const node = records[diagramId]?.nodes[nodeId];
-      return node ? wireReferenceFor(node) : undefined;
-    },
-  };
-}
 
 function linkIdFor(existing: CrossDiagramLink[], wire: CrossDiagramWire): string {
   const already = existing.find((link) =>

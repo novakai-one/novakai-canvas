@@ -1,16 +1,38 @@
 /** Prints records as canonical, round-trippable agent DSL. */
 
-import type { CrossDiagramLink, DiagramRecord } from '../../src/canvas.ts';
-import { placedNodes, rootGroupId } from './record-graph.ts';
-import type { CrossDiagramContext, MapSummary } from './dsl-print/contract.ts';
-import { printDeclarations } from './dsl-print/declarations.ts';
-import { arrangementAttributes, byWireOrder, quote } from './dsl-print/ordering.ts';
-import type { WireAppearance } from '../../src/domain/wire-appearance.ts';
-import { printWireAttributes } from './wire-attributes.ts';
-import type { WireCardinality } from '../../src/domain/wire-cardinality.ts';
-import { printWireReference, wireReferenceFor } from './wire-reference.ts';
+import { printWireReference, wireReferenceFor } from '../authoring/wire-reference.ts';
+import type { DiagramRecord } from '../domain/records.ts';
+import {
+  WIRE_APPEARANCE_SPECIFICATIONS, type WireAppearance,
+} from '../domain/wire-appearance.ts';
+import type { WireCardinality } from '../domain/wire-cardinality.ts';
+import type { DiagramExportContext } from './contract.ts';
+import { printDeclarations } from './declarations.ts';
+import {
+  arrangementAttributes, byWireOrder, exportNodes, quote, rootGroupId,
+} from './ordering.ts';
 
-export type { CrossDiagramContext, MapSummary } from './dsl-print/contract.ts';
+const CARDINALITY_ATTRIBUTES = [
+  { key: 'source-cardinality', field: 'sourceCardinality' },
+  { key: 'target-cardinality', field: 'targetCardinality' },
+] as const;
+
+function printWireAttributes(attributes: {
+  sourceCardinality?: WireCardinality;
+  targetCardinality?: WireCardinality;
+  appearance?: WireAppearance;
+}): string[] {
+  return [
+    ...CARDINALITY_ATTRIBUTES.flatMap((entry) => {
+      const value = attributes[entry.field];
+      return value === undefined ? [] : [`${entry.key}=${value}`];
+    }),
+    ...WIRE_APPEARANCE_SPECIFICATIONS.flatMap((entry) => {
+      const value = attributes.appearance?.[entry.key];
+      return value === undefined ? [] : [`${entry.key}=${value}`];
+    }),
+  ];
+}
 
 function wireLine(
   source: string,
@@ -27,14 +49,14 @@ function wireLine(
     + `${kind === 'references' ? '' : ` [${kind}]`}`;
 }
 
-function printWires(record: DiagramRecord, context?: CrossDiagramContext): string[] {
+function printWires(record: DiagramRecord, context: DiagramExportContext): string[] {
   const lines: string[] = [];
   const layout = record.layouts[record.views[record.activeViewId]?.layoutId];
   for (const wire of Object.values(record.wires)
     .sort((a, b) => byWireOrder(a.id as string, b.id as string))) {
     const source = record.nodes[wire.source.nodeId];
     const target = record.nodes[wire.target.nodeId];
-    if (!source || !target) continue;
+    if (!source || !target) throw new Error(`diagram-export-missing-wire-end:${wire.id}`);
     const sourceReference = wireReferenceFor(source);
     const targetReference = wireReferenceFor(target);
     if (!sourceReference || !targetReference) continue;
@@ -48,15 +70,14 @@ function printWires(record: DiagramRecord, context?: CrossDiagramContext): strin
       wire.target.cardinality,
     ));
   }
-  for (const link of (context?.links ?? [])
+  for (const link of context.links
     .filter((link) => link.source.diagramId === record.id)
     .sort((a, b) => (a.id as string).localeCompare(b.id as string))) {
     const sourceNode = record.nodes[link.source.nodeId];
     const source = sourceNode ? wireReferenceFor(sourceNode) : undefined;
-    const target = context?.referenceOf?.(
-      link.target.diagramId as string, link.target.nodeId as string,
-    ) ?? context?.labelOf(link.target.diagramId as string, link.target.nodeId as string);
-    if (!source || !target) continue;
+    const targetNode = context.records[link.target.diagramId]?.nodes[link.target.nodeId];
+    const target = targetNode ? wireReferenceFor(targetNode) : undefined;
+    if (!source || !target) throw new Error(`diagram-export-missing-link-end:${link.id}`);
     lines.push(wireLine(
       source, target, link.label, link.kind, undefined,
       link.source.cardinality, link.target.cardinality,
@@ -66,8 +87,8 @@ function printWires(record: DiagramRecord, context?: CrossDiagramContext): strin
 }
 
 /** Prints one complete record, including nested declarations and outbound relationships. */
-export function printRecord(record: DiagramRecord, context?: CrossDiagramContext): string {
-  const nodes = placedNodes(record);
+export function printRecord(record: DiagramRecord, context: DiagramExportContext): string {
+  const nodes = exportNodes(record);
   const rootId = rootGroupId(record);
   const root = rootId ? nodes[rootId] : undefined;
   const layout = record.layouts[record.views[record.activeViewId]?.layoutId];
@@ -85,23 +106,9 @@ export function printRecord(record: DiagramRecord, context?: CrossDiagramContext
 }
 
 /** Every record as DSL, in library order. */
-export function printLibrary(records: DiagramRecord[], context?: CrossDiagramContext): string {
+export function printLibrary(
+  records: readonly DiagramRecord[],
+  context: DiagramExportContext,
+): string {
   return records.map((record) => printRecord(record, context)).join('\n');
-}
-
-/** Lists maps in record order with their visible node and wire counts. */
-export function listMaps(
-  records: DiagramRecord[],
-  links: CrossDiagramLink[] = [],
-): MapSummary[] {
-  return records.map((record) => {
-    const rootId = rootGroupId(record);
-    const outbound = links.filter((link) => link.source.diagramId === record.id).length;
-    return {
-      id: record.id as string,
-      label: (rootId ? record.nodes[rootId]?.label : undefined) ?? record.name,
-      nodes: Object.keys(record.nodes).length - (rootId ? 1 : 0),
-      wires: Object.keys(record.wires).length + outbound,
-    };
-  });
 }

@@ -3,7 +3,7 @@
 import { componentFor } from '../../../src/components/registry.ts';
 import type { NodeAst } from '../dsl-ast.ts';
 import { descendantIds } from '../record-graph.ts';
-import { slugify } from '../slug.ts';
+import { slugify } from '../../../src/authoring/slug.ts';
 import type { CompileMessages, DeclaredScope } from './contract.ts';
 
 export interface AllocatedNode {

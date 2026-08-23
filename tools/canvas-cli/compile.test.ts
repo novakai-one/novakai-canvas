@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import type { DiagramRecord } from '../../src/canvas.ts';
+import { exportDiagram, type DiagramRecord } from '../../src/canvas.ts';
 import { parseDsl } from './dsl-parse.ts';
 import { compile } from './compile.ts';
 import { buildRecords } from './dsl-fixture.ts';
-import { printRecord } from './dsl-print.ts';
+
+function printRecord(record: DiagramRecord): string {
+  return exportDiagram(record, { records: { [record.id]: record }, links: [] }, 'dsl');
+}
 
 /**
  * Two records standing in for the shape of the real library: one map holding `Session`, another
