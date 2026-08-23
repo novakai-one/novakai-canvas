@@ -18,6 +18,7 @@ const LABELS: Record<string, string> = {
   align: 'Horizontal alignment', 'vertical-align': 'Vertical alignment',
   text: 'Text colour', background: 'Background', 'border-color': 'Border colour',
   border: 'Border width', radius: 'Corner radius', padding: 'Padding', badge: 'Kind badge',
+  palette: 'Palette',
   width: 'Width', pattern: 'Pattern', color: 'Colour', shape: 'Shape', gap: 'Gap', columns: 'Columns',
 };
 

@@ -129,7 +129,7 @@ describe('every node-declaring keyword round-trips', () => {
   // vocabulary moves from hardcoded lists to the component registry.
   const EVERY_KEYWORD_DSL = `
 scope "Every Keyword" "one of each"
-  module "A module" "with a description"
+  module "A module" "with a description" palette=sage
     call(In) -> Out
     type Shape { a, b }
   object "An object"
@@ -147,9 +147,12 @@ scope "Every Keyword" "one of each"
   callout-stack "Release decision"
     callout "Evidence is complete" id=evidence kind=info
     callout "Ship the release" id=decision kind=decision
-  ooux-object "Organization" ref=organization
+  ooux-object "Organization" ref=organization palette=neutral
     attribute "org_name" id=org-name type=string role=core
     cta "inviteMember" id=invite-member role=admin
+  entity "Provider session" ref=provider-session palette=violet
+    field "id" id=id type=string keys=pk
+    field "agentId" id=agent-id type=string keys=fk,uk
   zone "A zone" "holding one node"
     module "zoned module"
   end
@@ -159,13 +162,13 @@ scope "Every Keyword" "one of each"
   it('parses, prints, and re-parses to the same record content', () => {
     const record = buildRecord(EVERY_KEYWORD_DSL);
     expect(Object.values(record.nodes).map((node) => node.kind).sort()).toEqual(
-      ['callout-stack', 'comment', 'group', 'group', 'icon-card', 'metric', 'module', 'module', 'object', 'ooux-object', 'resource', 'runtime', 'timeline', 'tree'],
+      ['callout-stack', 'comment', 'entity', 'group', 'group', 'icon-card', 'metric', 'module', 'module', 'object', 'ooux-object', 'resource', 'runtime', 'timeline', 'tree'],
     );
     const printed = printRecord(record);
     for (const node of Object.values(record.nodes).filter((candidate) => candidate.parentId)) {
       expect(printed).toContain(componentFor(node.kind).declaration.print(node));
     }
-    for (const statement of ['module "A module"', 'object "An object"', 'runtime "A runtime"',
+    for (const statement of ['module "A module" "with a description" palette=sage', 'object "An object"', 'runtime "A runtime"',
       'resource "a-resource.json"', 'note "A free-text note."', 'tree "A tree"',
       'zone "A zone"', 'row proj1 project active label "Project One"',
       'row task1 task in-progress parent=proj1 badges=team,outcome',
@@ -175,9 +178,12 @@ scope "Every Keyword" "one of each"
       'callout-stack "Release decision"',
       'callout "Evidence is complete" id=evidence kind=info',
       'callout "Ship the release" id=decision kind=decision',
-      'ooux-object "Organization" ref=organization',
+      'ooux-object "Organization" ref=organization palette=neutral',
       'attribute "org_name" id=org-name type=string role=core',
       'cta "inviteMember" id=invite-member role=admin',
+      'entity "Provider session" ref=provider-session palette=violet',
+      'field "id" id=id type=string keys=pk',
+      'field "agentId" id=agent-id type=string keys=fk,uk',
       'source-cardinality=one target-cardinality=zero-or-many']) {
       expect(printed).toContain(statement);
     }
@@ -197,6 +203,13 @@ scope "Every Keyword" "one of each"
       oouxRows: [
         { kind: 'attribute', id: 'org-name', valueType: 'string', role: 'core', traits: [] },
         { kind: 'cta', id: 'invite-member', role: 'admin' },
+      ],
+    });
+    expect(Object.values(record.nodes).find((node) => node.kind === 'entity')).toMatchObject({
+      entityRef: 'provider-session',
+      entityFields: [
+        { id: 'id', name: 'id', valueType: 'string', keys: ['pk'] },
+        { id: 'agent-id', name: 'agentId', valueType: 'string', keys: ['fk', 'uk'] },
       ],
     });
     expect(Object.values(record.wires)[0]).toMatchObject({

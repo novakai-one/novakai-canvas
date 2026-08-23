@@ -25,7 +25,7 @@ export function cardComponent<K extends 'module' | 'object' | 'runtime' | 'resou
     },
     resize: { minSize: { width: 160, height: 80 } },
     layoutRole: 'leaf',
-    appearanceKeys: ['badge'],
+    appearanceKeys: ['badge', 'palette'],
     measure: (node, ctx) => estimateNodeSize(node.label, node.description, ctx.interfaceLines, ctx.typeLines),
   };
 }

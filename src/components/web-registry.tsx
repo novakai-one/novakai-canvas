@@ -10,6 +10,7 @@ import { IconCardNode } from './icon-card/web.tsx';
 import { CalloutStackNode } from './callout-stack/web.tsx';
 import { BlockNode } from './block/web.tsx';
 import { OouxObjectNode } from './ooux-object/web.tsx';
+import { EntityNode } from './entity/web.tsx';
 import type { CanvasNode } from '../domain/records.ts';
 import type { ArchitectureNodeData } from '../presentation/projection.ts';
 import { componentFor } from './registry.ts';
@@ -63,4 +64,5 @@ export const webRenderers = {
   'callout-stack': registeredRenderer('callout-stack', CalloutStackNode),
   block: registeredRenderer('block', BlockNode),
   'ooux-object': registeredRenderer('ooux-object', OouxObjectNode),
+  entity: registeredRenderer('entity', EntityNode),
 } satisfies Record<CanvasNode['kind'], ComponentType<NodeProps<never>>>;

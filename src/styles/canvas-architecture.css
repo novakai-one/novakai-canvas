@@ -32,9 +32,10 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 1px solid var(--component-frame, var(--border));
   border-radius: var(--node-radius);
-  background: var(--card);
+  color: var(--component-text, inherit);
+  background: var(--component-surface, var(--card));
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
 }
 
@@ -51,12 +52,14 @@
   min-height: 43px;
   padding: 0 13px;
   border-bottom: 1px solid var(--border-soft);
+  color: var(--component-header-text, inherit);
+  background: var(--component-header, transparent);
 }
 
 .node-label { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; }
 
 .node-kind {
-  color: var(--faint);
+  color: var(--component-header-muted, var(--faint));
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -66,7 +69,7 @@
 .node-description {
   margin: 0;
   padding: 9px 13px;
-  color: var(--muted);
+  color: var(--component-muted, var(--muted));
   font-size: 11px;
   line-height: 1.45;
   border-bottom: 1px solid var(--border-soft);
@@ -141,4 +144,3 @@
 
 .kind-runtime .node-label,
 .kind-resource .node-label { margin-right: auto; }
-
