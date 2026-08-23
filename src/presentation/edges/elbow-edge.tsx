@@ -92,7 +92,8 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
         enabled: props.data?.preferences.canvas.snapToGrid ?? false,
         gridSize: props.data?.preferences.canvas.gridSize ?? 8,
       }}
-      setWaypoints={setRoute ? (waypoints) => setRoute({ waypoints }) : undefined}
+      setWaypoints={setRoute && shape !== 'straight'
+        ? (waypoints) => setRoute({ waypoints }) : undefined}
     />
     {label.element}
   </>;

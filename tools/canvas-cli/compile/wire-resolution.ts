@@ -7,6 +7,10 @@ import type { CompiledScope, WireCompileContext } from './contract.ts';
 
 export interface ResolvedWireEnd { local?: string; end: LinkEnd }
 export interface ResolvedWireEnds { source: ResolvedWireEnd; target: ResolvedWireEnd }
+type LocalResolution =
+  | { kind: 'resolved'; nodeId: string }
+  | { kind: 'ambiguous'; count: number }
+  | { kind: 'missing' };
 
 function closestCandidates(labels: Map<string, string>, query: string): string[] {
   const querySlug = slugify(query);
@@ -44,25 +48,52 @@ class WireResolver {
   resolve(wire: WireAst): ResolvedWireEnds | undefined {
     const localSource = this.resolveLocal(wire.source);
     const localTarget = this.resolveLocal(wire.target);
-    const source = this.resolveEnd(wire.source, localSource, localTarget, wire.line);
-    const target = this.resolveEnd(wire.target, localTarget, localSource, wire.line);
+    const source = this.resolveEnd(
+      wire.source, localSource,
+      localTarget.kind === 'resolved' ? localTarget.nodeId : undefined,
+      wire.line,
+    );
+    const target = this.resolveEnd(
+      wire.target, localTarget,
+      localSource.kind === 'resolved' ? localSource.nodeId : undefined,
+      wire.line,
+    );
     return source && target ? { source, target } : undefined;
   }
 
-  private resolveLocal(name: string): string | undefined {
+  private resolveLocal(name: string): LocalResolution {
     const [namespace, value] = wireReferenceKey(name).split(':', 2);
-    if (namespace === 'ref') return this.scope.endpointByRef.get(value);
-    if (namespace === 'id') return this.scope.endpointById.get(value);
-    return this.scope.endpointByLabelSlug.get(value);
+    if (namespace === 'ref' || namespace === 'id') {
+      const nodeId = namespace === 'ref'
+        ? this.scope.endpointByRef.get(value) : this.scope.endpointById.get(value);
+      return nodeId ? { kind: 'resolved', nodeId } : { kind: 'missing' };
+    }
+    const matches = this.scope.endpointByLabelSlug.get(value) ?? [];
+    if (matches.length === 1) return { kind: 'resolved', nodeId: matches[0] };
+    return matches.length > 1
+      ? { kind: 'ambiguous', count: matches.length }
+      : { kind: 'missing' };
   }
 
   private resolveEnd(
     name: string,
-    local: string | undefined,
+    local: LocalResolution,
     nearNodeId: string | undefined,
     line: number,
   ): ResolvedWireEnd | undefined {
-    if (local) return { local, end: { diagramId: this.scope.diagram.id, nodeId: local } };
+    if (local.kind === 'resolved') {
+      return {
+        local: local.nodeId,
+        end: { diagramId: this.scope.diagram.id, nodeId: local.nodeId },
+      };
+    }
+    if (local.kind === 'ambiguous') {
+      this.context.messages.errors.push({
+        message: `wire endpoint "${name}" (line ${line}) matches ${local.count} local nodes`,
+        hint: 'use @ref or #node-id to choose one local node',
+      });
+      return undefined;
+    }
     const far = this.resolveForeign(name, nearNodeId);
     if (far) return { end: far };
     this.context.messages.errors.push({

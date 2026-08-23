@@ -13,7 +13,7 @@ export interface AllocatedNode {
 
 /** Owns every identity namespace used while compiling one scope. */
 export class NodeIdentityIndex {
-  readonly endpointByLabelSlug = new Map<string, string>();
+  readonly endpointByLabelSlug = new Map<string, string[]>();
   readonly endpointByRef = new Map<string, string>();
   readonly endpointById = new Map<string, string>();
   readonly localLabels = new Map<string, string>();
@@ -81,12 +81,18 @@ export class NodeIdentityIndex {
       ? this.oldIdByParentIdentity.get(parentKey)
         ?? `${parentId}--${identity!.namespace}-${slugify(keyValue)}`
       : this.oldIdBySlug.get(labelSlug) ?? `${parentId}--${labelSlug}`;
-    if (address !== false) this.endpointById.set(nodeId, nodeId);
+    if (address !== false) {
+      this.endpointById.set(nodeId, nodeId);
+      this.endpointByLabelSlug.set(
+        labelSlug,
+        [...(this.endpointByLabelSlug.get(labelSlug) ?? []), nodeId],
+      );
+    }
     if (address && address !== 'label') {
       if (typeof reference === 'string' && reference.length > 0) {
         this.endpointByRef.set(reference, nodeId);
       }
-    } else if (address !== false) this.endpointByLabelSlug.set(labelSlug, nodeId);
+    }
     return { nodeId, labelSlug };
   }
 
@@ -99,7 +105,10 @@ export class NodeIdentityIndex {
     }
     this.localLabels.set(labelSlug, label);
     const zoneId = this.oldIdBySlug.get(labelSlug) ?? `${parentId}--${labelSlug}`;
-    this.endpointByLabelSlug.set(labelSlug, zoneId);
+    this.endpointByLabelSlug.set(
+      labelSlug,
+      [...(this.endpointByLabelSlug.get(labelSlug) ?? []), zoneId],
+    );
     this.endpointById.set(zoneId, zoneId);
     return zoneId;
   }
