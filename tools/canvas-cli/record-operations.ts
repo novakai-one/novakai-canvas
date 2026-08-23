@@ -3,9 +3,8 @@
 import type { DiagramRecord, RecordCommand } from '../../src/canvas.ts';
 import { contentFieldsFor } from '../../src/components/registry.ts';
 import {
-  asId, placementsOf, type PlacedNode, type RecordNode,
+  asId, PLACEHOLDER_PLACEMENT, placementsOf, type PlacedNode, type RecordNode,
 } from './record-graph.ts';
-import { PLACEHOLDER } from './record-target.ts';
 
 function depthOf(nodes: Record<string, RecordNode>, id: string): number {
   let depth = 0;
@@ -40,16 +39,79 @@ function sameWires(left: DiagramRecord['wires'], right: DiagramRecord['wires']):
   return key(left) === key(right);
 }
 
+function activeLayout(record: DiagramRecord): DiagramRecord['layouts'][string] {
+  return record.layouts[record.views[record.activeViewId].layoutId];
+}
+
+function presentationOf(record: DiagramRecord) {
+  const layout = activeLayout(record);
+  return {
+    appearanceByNodeId: layout.appearanceByNodeId ?? {},
+    appearanceByWireId: layout.appearanceByWireId ?? {},
+    arrangementByContainerId: layout.arrangementByContainerId ?? {},
+  };
+}
+
+function placementInput(placement: ReturnType<typeof placementsOf>[string]) {
+  return {
+    position: placement.position,
+    size: placement.size,
+    ...(placement.sizeMode ? { sizeMode: placement.sizeMode } : {}),
+  };
+}
+
+function routeRestoreCommands(target: DiagramRecord, restore: boolean): RecordCommand[] {
+  if (!restore) return [];
+  const hints = activeLayout(target).wireRouteHints;
+  return Object.keys(target.wires).flatMap((wireId) => {
+    const hint = hints[wireId];
+    if (!hint) return [];
+    return [{
+      kind: 'wire.setRoute' as const,
+      id: wireId,
+      route: {
+        waypoints: hint.waypoints,
+        ...(hint.labelPosition === undefined ? {} : { labelPosition: hint.labelPosition }),
+        ...(hint.preferredSourceSide ? { preferredSourceSide: hint.preferredSourceSide } : {}),
+        ...(hint.preferredTargetSide ? { preferredTargetSide: hint.preferredTargetSide } : {}),
+      },
+    }];
+  });
+}
+
+function finalGeometryCommands(
+  before: DiagramRecord,
+  target: DiagramRecord,
+  forcedIds: ReadonlySet<string>,
+): RecordCommand[] {
+  const previous = placementsOf(before);
+  const placements = placementsOf(target);
+  const ids = Object.keys(target.nodes).filter((id) => placements[id]);
+  const changedSize = (id: string) => forcedIds.has(id) || !previous[id]
+    || JSON.stringify(previous[id].size) !== JSON.stringify(placements[id].size)
+    || previous[id].sizeMode !== placements[id].sizeMode;
+  const changedPosition = (id: string) => forcedIds.has(id) || !previous[id]
+    || JSON.stringify(previous[id].position) !== JSON.stringify(placements[id].position);
+  const resized = ids.filter(changedSize)
+    .sort((left, right) => depthOf(target.nodes, right) - depthOf(target.nodes, left))
+    .map((id): RecordCommand => ({
+      kind: 'node.resize', id, size: placements[id].size,
+      ...(placements[id].sizeMode ? { sizeMode: placements[id].sizeMode } : {}),
+    }));
+  const moved = ids.filter(changedPosition)
+    .map((id): RecordCommand => ({ kind: 'node.move', id, position: placements[id].position }));
+  return [...resized, ...moved];
+}
+
 /** Expresses the difference between a stored record and a target as one ordered command batch. */
 export function commandsFor(before: DiagramRecord, target: DiagramRecord): RecordCommand[] {
   const placements = placementsOf(target);
-  const previous = placementsOf(before);
   const commands: RecordCommand[] = [];
   const removedIds = Object.keys(before.nodes).filter((id) => !target.nodes[id]);
   const addedIds = Object.keys(target.nodes).filter((id) => !before.nodes[id]);
   const survivingIds = Object.keys(target.nodes).filter((id) => before.nodes[id]);
   const rebuiltIds = survivingIds.filter((id) => !structurallyEqual(before.nodes[id], target.nodes[id]));
-  const rebuildWires = removedIds.length > 0 || addedIds.length > 0 || rebuiltIds.length > 0
+  const rebuildWires = removedIds.length > 0 || rebuiltIds.length > 0
     || !sameWires(before.wires, target.wires);
 
   if (before.name !== target.name) commands.push({ kind: 'diagram.rename', name: target.name });
@@ -62,10 +124,10 @@ export function commandsFor(before: DiagramRecord, target: DiagramRecord): Recor
   }
   for (const id of [...addedIds, ...rebuiltIds]
     .sort((a, b) => depthOf(target.nodes, a) - depthOf(target.nodes, b))) {
-    const placement = placements[id] ?? { ...PLACEHOLDER, nodeId: asId(id) };
+    const placement = placements[id] ?? { ...PLACEHOLDER_PLACEMENT, nodeId: asId(id) };
     commands.push({
       kind: 'node.add', node: target.nodes[id],
-      placement: { position: placement.position, size: placement.size },
+      placement: placementInput(placement),
     });
   }
   const rebuilt = new Set(rebuiltIds);
@@ -76,35 +138,21 @@ export function commandsFor(before: DiagramRecord, target: DiagramRecord): Recor
     if (from.label !== to.label || from.description !== to.description) {
       commands.push({ kind: 'node.update', id, patch: { label: to.label, description: to.description } });
     }
-    const now = placements[id];
-    const was = previous[id];
-    if (now && was) {
-      if (now.position.x !== was.position.x || now.position.y !== was.position.y) {
-        commands.push({ kind: 'node.move', id, position: now.position });
-      }
-      if (now.size.width !== was.size.width || now.size.height !== was.size.height) {
-        commands.push({ kind: 'node.resize', id, size: now.size });
-      }
-    }
   }
   if (rebuildWires) {
     for (const wire of Object.values(target.wires)) commands.push({ kind: 'wire.add', wire });
   }
-  const beforeLayout = before.layouts[before.views[before.activeViewId].layoutId];
-  const targetLayout = target.layouts[target.views[target.activeViewId].layoutId];
-  const beforePresentation = {
-    appearanceByNodeId: beforeLayout.appearanceByNodeId ?? {},
-    appearanceByWireId: beforeLayout.appearanceByWireId ?? {},
-    arrangementByContainerId: beforeLayout.arrangementByContainerId ?? {},
-  };
-  const targetPresentation = {
-    appearanceByNodeId: targetLayout.appearanceByNodeId ?? {},
-    appearanceByWireId: targetLayout.appearanceByWireId ?? {},
-    arrangementByContainerId: targetLayout.arrangementByContainerId ?? {},
-  };
-  if (JSON.stringify(beforePresentation) !== JSON.stringify(targetPresentation)) {
+  const targetPresentation = presentationOf(target);
+  if (rebuildWires || rebuiltIds.length > 0
+    || JSON.stringify(presentationOf(before)) !== JSON.stringify(targetPresentation)) {
     commands.push({ kind: 'layout.presentation.replace', ...targetPresentation });
   }
+  commands.push(...routeRestoreCommands(target, rebuildWires));
+  const recreated = new Set([...addedIds, ...rebuiltIds]);
+  for (const id of recreated) {
+    if (placements[id]?.pinned) commands.push({ kind: 'node.pin', id, pinned: true });
+  }
+  commands.push(...finalGeometryCommands(before, target, recreated));
   return commands;
 }
 

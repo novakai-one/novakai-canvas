@@ -45,6 +45,12 @@ describe('printRecord', () => {
 
   it('preserves node ids and placements for unchanged nodes across a re-apply', () => {
     const record = buildRecord(DSL);
+    const layout = record.layouts[record.views[record.activeViewId].layoutId];
+    layout.placements['browser-sessions--browse-cli'] = {
+      ...layout.placements['browser-sessions--browse-cli'],
+      position: { x: 640, y: 360 }, size: { width: 330, height: 180 },
+      sizeMode: 'manual', pinned: true,
+    };
     const reapplied = buildRecord(printRecord(record), { [record.id]: record });
     expect(Object.keys(reapplied.nodes).sort()).toEqual(Object.keys(record.nodes).sort());
     expect(reapplied.layouts[reapplied.views[reapplied.activeViewId].layoutId].placements)

@@ -33,8 +33,10 @@ export interface PlacedNode extends RecordNode {
   size: { width: number; height: number };
 }
 
-/** Geometry a node with no saved placement reads as, and the marker layout treats as "new". */
-const UNPLACED = { position: { x: 0, y: 0 }, size: { width: 1, height: 1 } };
+/** Geometry carried by a semantic node until an initial or incremental layout measures it. */
+export const PLACEHOLDER_PLACEMENT: Omit<RecordPlacement, 'nodeId'> = {
+  position: { x: 0, y: 0 }, size: { width: 1, height: 1 }, pinned: false,
+};
 
 function activeLayoutId(record: DiagramRecord): string {
   return record.views[record.activeViewId].layoutId as string;
@@ -50,8 +52,8 @@ export function placedNodes(record: DiagramRecord): Record<string, PlacedNode> {
   const placements = placementsOf(record);
   return Object.fromEntries(Object.entries(record.nodes).map(([id, node]) => [id, {
     ...node,
-    position: placements[id]?.position ?? { ...UNPLACED.position },
-    size: placements[id]?.size ?? { ...UNPLACED.size },
+    position: placements[id]?.position ?? { ...PLACEHOLDER_PLACEMENT.position },
+    size: placements[id]?.size ?? { ...PLACEHOLDER_PLACEMENT.size },
   }]));
 }
 
@@ -127,13 +129,12 @@ function documentFor(record: DiagramRecord): ArchitectureDocument {
 }
 
 /**
- * Re-lays out a record's contents from its own content, in place, and returns the new record.
+ * Supplies the first complete layout for a new or synthetic record.
  *
- * Layout is per-record now, which removes the old cross-map overlap problem entirely: two
- * diagrams no longer share one coordinate plane, so a re-applied map can never push another
- * one over. Pinned flags survive; positions are recomputed.
+ * Existing records use incremental reconciliation instead. Keeping this interface named for
+ * its one legitimate lifecycle prevents a semantic CLI update from quietly arranging a map.
  */
-export function layoutRecord(record: DiagramRecord, groupPadding?: number): DiagramRecord {
+export function layoutInitialRecord(record: DiagramRecord, groupPadding?: number): DiagramRecord {
   const rootId = rootGroupId(record);
   if (!rootId) return record;
   const laidOut = layoutScopes(documentFor(record), [rootId], undefined, groupPadding);
@@ -144,8 +145,8 @@ export function layoutRecord(record: DiagramRecord, groupPadding?: number): Diag
       const placement = laidOut.layouts[layoutId].placements[nodeId];
       return [nodeId, {
         nodeId,
-        position: placement?.position ?? { ...UNPLACED.position },
-        size: placement?.size ?? { ...UNPLACED.size },
+        position: placement?.position ?? { ...PLACEHOLDER_PLACEMENT.position },
+        size: placement?.size ?? { ...PLACEHOLDER_PLACEMENT.size },
         ...(previous[nodeId]?.sizeMode ? { sizeMode: previous[nodeId].sizeMode } : {}),
         pinned: previous[nodeId]?.pinned ?? false,
       }];

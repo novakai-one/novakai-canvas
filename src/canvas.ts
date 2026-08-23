@@ -29,7 +29,7 @@ export type {
 export { projectView } from './domain/project-view.ts';
 export type { PositionedNode, ProjectedView } from './domain/project-view.ts';
 export {
-  layoutScopes, planWireRoutes, routeWire,
+  layoutScopes, planWireRoutes, reflowPresentation, routeWire,
 } from './domain/diagram-geometry.ts';
 export type {
   PlannedWireRoute, Point as GeometryPoint, Rect as GeometryRect, RouteObstacle, RouteSide,

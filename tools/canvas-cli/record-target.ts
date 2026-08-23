@@ -3,15 +3,9 @@
 import type { DiagramRecord } from '../../src/canvas.ts';
 import type { CompiledDiagram } from './compile.ts';
 import {
-  asId, layoutRecord, placementsOf, type RecordPlacement,
+  asId, layoutInitialRecord, PLACEHOLDER_PLACEMENT, placementsOf, type RecordPlacement,
 } from './record-graph.ts';
-
-/** Geometry used only until automatic layout resolves a new node. */
-export const PLACEHOLDER: Omit<RecordPlacement, 'nodeId'> = {
-  position: { x: 0, y: 0 },
-  size: { width: 1, height: 1 },
-  pinned: false,
-};
+import { placeCompiledInsertions } from './record-insertion.ts';
 
 /** An empty record with one default layout and one default view. */
 export function blankRecord(id: string, name: string): DiagramRecord {
@@ -53,16 +47,13 @@ export function blankRecord(id: string, name: string): DiagramRecord {
 export function recordForCompiled(before: DiagramRecord, compiled: CompiledDiagram): DiagramRecord {
   const layoutId = before.views[before.activeViewId].layoutId as string;
   const existing = placementsOf(before);
-  const placements = Object.fromEntries(Object.keys(compiled.nodes).map((nodeId) => [nodeId, {
-    nodeId: asId(nodeId),
-    ...structuredClone(existing[nodeId] ? {
-      position: existing[nodeId].position,
-      size: existing[nodeId].size,
-      pinned: existing[nodeId].pinned,
-    } : PLACEHOLDER),
-  }])) as Record<string, RecordPlacement>;
+  const placements = Object.fromEntries(Object.keys(compiled.nodes).map((nodeId) => [nodeId,
+    existing[nodeId]
+      ? structuredClone(existing[nodeId])
+      : { nodeId: asId(nodeId), ...structuredClone(PLACEHOLDER_PLACEMENT) },
+  ])) as Record<string, RecordPlacement>;
 
-  return layoutRecord({
+  const target: DiagramRecord = {
     ...before,
     name: compiled.name,
     nodes: compiled.nodes,
@@ -81,5 +72,8 @@ export function recordForCompiled(before: DiagramRecord, compiled: CompiledDiagr
         arrangementByContainerId: structuredClone(compiled.arrangementByContainerId),
       },
     },
-  });
+  };
+  return Object.keys(before.nodes).length === 0
+    ? layoutInitialRecord(target)
+    : placeCompiledInsertions(before, target);
 }

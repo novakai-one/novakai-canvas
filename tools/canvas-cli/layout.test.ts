@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { DiagramRecord } from '../../src/canvas.ts';
 import { buildRecord } from './dsl-fixture.ts';
 import { estimateNodeSize } from './layout.ts';
-import { layoutRecord, placementsOf } from './record-graph.ts';
+import { layoutInitialRecord, placementsOf } from './record-graph.ts';
 
 const DSL = `
 scope "Browser Sessions"
@@ -48,7 +48,7 @@ describe('estimateNodeSize', () => {
   });
 });
 
-describe('layoutRecord', () => {
+describe('layoutInitialRecord', () => {
   it('lays out children without overlap, inside the root group, flowing top to bottom', () => {
     const laid = buildRecord(DSL);
     const scope = placement(laid, 'browser-sessions');
@@ -77,13 +77,13 @@ describe('layoutRecord', () => {
 
   it('is deterministic', () => {
     const record = buildRecord(DSL);
-    expect(layoutRecord(record)).toEqual(layoutRecord(record));
+    expect(layoutInitialRecord(record)).toEqual(layoutInitialRecord(record));
   });
 
   it('uses the requested group breathing room without changing semantic nodes', () => {
     const record = buildRecord(DSL);
-    const compact = layoutRecord(record, 24);
-    const spacious = layoutRecord(record, 96);
+    const compact = layoutInitialRecord(record, 24);
+    const spacious = layoutInitialRecord(record, 96);
     const childId = 'browser-sessions--browse-cli';
 
     expect(placement(spacious, childId).position.x)
@@ -100,11 +100,23 @@ describe('layoutRecord', () => {
     expect(placement(laid, 'browser-sessions').position).toEqual({ x: 40, y: 80 });
   });
 
-  it('keeps a re-applied map anchored at its prior position', () => {
+  it('keeps manual survivor geometry while placing additions without overlap', () => {
     const once = buildRecord(DSL);
-    const again = buildRecord(DSL, { [once.id]: once });
+    const manualId = 'browser-sessions--browse-cli';
+    const layoutId = once.views[once.activeViewId].layoutId;
+    once.layouts[layoutId].placements[manualId] = {
+      ...once.layouts[layoutId].placements[manualId],
+      position: { x: 500, y: 420 }, size: { width: 360, height: 190 },
+      sizeMode: 'manual', pinned: true,
+    };
+    const again = buildRecord(`${DSL}\n  module "Added later"\n`, { [once.id]: once });
     expect(placement(again, 'browser-sessions').position)
       .toEqual(placement(once, 'browser-sessions').position);
+    expect(placement(again, manualId)).toEqual(placement(once, manualId));
+    expect(intersects(rect(again, manualId), rect(again, 'browser-sessions--added-later')))
+      .toBe(false);
+    expect(placement(again, 'browser-sessions').size.height)
+      .toBeGreaterThanOrEqual(placement(once, 'browser-sessions').size.height);
   });
 
   it('flat container: query-only wires still drive dagre rank (status quo)', () => {
@@ -235,7 +247,7 @@ scope "Explicit Layout"
     const zones = Array.from({ length: 8 }, (_, index) =>
       `  zone "Z${index}"\n    module "m${index}"\n  end\n`).join('');
     const record = buildRecord(`scope Wide\n${zones}`);
-    expect(layoutRecord(record)).toEqual(layoutRecord(record));
+    expect(layoutInitialRecord(record)).toEqual(layoutInitialRecord(record));
     const scope = placement(record, 'wide');
     expect(scope.size.width).toBeLessThanOrEqual(2000 + 320 + 40);
     expect(scope.size.height).toBeGreaterThan(160);
