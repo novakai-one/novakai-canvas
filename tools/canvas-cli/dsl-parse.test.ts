@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { slugify } from './slug.ts';
+import { slugify } from '../../src/authoring/slug.ts';
 import { parseDsl } from './dsl-parse.ts';
 
 const EXAMPLE = `

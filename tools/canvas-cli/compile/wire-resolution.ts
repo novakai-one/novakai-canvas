@@ -1,7 +1,7 @@
 /** Deterministic local/cross-map endpoint resolution and authored diagnostics. */
 
-import { slugify } from '../slug.ts';
-import { wireReferenceKey } from '../wire-reference.ts';
+import { slugify } from '../../../src/authoring/slug.ts';
+import { wireReferenceKey } from '../../../src/authoring/wire-reference.ts';
 import type { LinkEnd, WireAst } from '../wire-authoring.ts';
 import type { CompiledScope, WireCompileContext } from './contract.ts';
 

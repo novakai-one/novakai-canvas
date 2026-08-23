@@ -1,5 +1,10 @@
-import type { ContainerArrangement } from '../../../src/domain/canvas-presentation.ts';
-import type { PlacedNode } from '../record-graph.ts';
+import type { ContainerArrangement } from '../domain/canvas-presentation.ts';
+import type { CanvasNode, DiagramRecord } from '../domain/records.ts';
+
+/** One semantic node joined with the active layout position used only for stable ordering. */
+export interface ExportNode extends CanvasNode {
+  position: { x: number; y: number };
+}
 
 /** Double-quotes one DSL value. */
 export function quote(value: string): string {
@@ -20,10 +25,10 @@ export function byWireOrder(left: string, right: string): number {
 
 /** Returns direct children in authored arrangement order, then stable geometric order. */
 export function childrenOf(
-  nodes: Record<string, PlacedNode>,
+  nodes: Readonly<Record<string, ExportNode>>,
   containerId: string | undefined,
   arrangement?: ContainerArrangement,
-): PlacedNode[] {
+): ExportNode[] {
   const children = Object.values(nodes)
     .filter((node) => (node.parentId as string | undefined) === containerId)
     .sort((a, b) => a.position.y - b.position.y || a.position.x - b.position.x
@@ -38,6 +43,23 @@ export function childrenOf(
     return [child];
   });
   return [...authored, ...children.filter((node) => !emitted.has(node.id as string))];
+}
+
+/** Every record node joined with its active-layout position. */
+export function exportNodes(record: DiagramRecord): Record<string, ExportNode> {
+  const view = record.views[record.activeViewId];
+  const placements = record.layouts[view.layoutId]?.placements ?? {};
+  return Object.fromEntries(Object.entries(record.nodes).map(([id, node]) => [id, {
+    ...node,
+    position: placements[id]?.position ?? { x: 0, y: 0 },
+  }]));
+}
+
+/** The sole root scope when one exists; malformed or rootless records return undefined. */
+export function rootGroupId(record: DiagramRecord): string | undefined {
+  const roots = Object.values(record.nodes)
+    .filter((node) => node.kind === 'group' && !node.parentId);
+  return roots.length === 1 ? roots[0].id as string : undefined;
 }
 
 /** Canonical arrangement order is layout, columns, gap, align. */

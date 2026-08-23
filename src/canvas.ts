@@ -6,6 +6,12 @@ export { createCanvasLibrary } from './application/canvas-library.ts';
 export type {
   CanvasLibrary, CanvasLibraryRepository, DiagramSummary, LibraryFailure, WriteOutcome,
 } from './application/canvas-library.ts';
+export { createDiagramExportService } from './application/diagram-export-service.ts';
+export { exportDiagram, exportDiagrams } from './diagram-export/export-diagrams.ts';
+export { DIAGRAM_EXPORT_FORMATS } from './diagram-export/contract.ts';
+export type {
+  DiagramExportContext, DiagramExportFormat, DiagramExportService,
+} from './diagram-export/contract.ts';
 export { createCanvasWorkspace } from './application/canvas-workspace.ts';
 export type {
   ActorContext, CanvasWorkspace, ChangeOutcome, RecordChangeSet, RecordCommand,

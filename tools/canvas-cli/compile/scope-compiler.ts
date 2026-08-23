@@ -3,7 +3,7 @@ import type { DiagramRecord } from '../../../src/domain/records.ts';
 import type { NodeAst, ZoneAst } from '../dsl-ast.ts';
 import type { RecordNode } from '../record-graph.ts';
 import { asId } from '../record-graph.ts';
-import { slugify } from '../slug.ts';
+import { slugify } from '../../../src/authoring/slug.ts';
 import type {
   CompileMessages, CompiledDiagram, CompiledScope, DeclaredScope,
 } from './contract.ts';

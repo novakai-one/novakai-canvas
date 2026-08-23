@@ -90,18 +90,3 @@ export function parseWireAttributes(tokens: string[]): WireAttributeParseResult 
     },
   };
 }
-
-/** Prints canonical attributes; omitted values remain absent. */
-export function printWireAttributes(attributes: AuthoredWireAttributes): string[] {
-  const appearance = attributes.appearance;
-  return [
-    ...CARDINALITY_ATTRIBUTES.flatMap((entry) => {
-      const value = attributes[entry.field];
-      return value === undefined ? [] : [`${entry.key}=${value}`];
-    }),
-    ...WIRE_APPEARANCE_SPECIFICATIONS.flatMap((entry) => {
-      const value = appearance?.[entry.key];
-      return value === undefined ? [] : [`${entry.key}=${value}`];
-    }),
-  ];
-}

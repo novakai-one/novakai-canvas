@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
 import type { CanvasLibrary, DiagramSummary } from './application/canvas-library';
+import type { DiagramExportFormat, DiagramExportService } from './diagram-export/contract';
 import type { CanvasWorkspace, RecordCommand } from './application/canvas-workspace';
 import type { JsonRepository } from './application/json-repository';
 import { asId } from './domain/id-cast';
@@ -27,6 +28,7 @@ export interface AppProps {
   initialWorkspace: CanvasWorkspace;
   initialPreferences: CanvasPreferences;
   preferencesRepository: JsonRepository<CanvasPreferences>;
+  diagramExporter: DiagramExportService;
   /** Lets an embedding host remember navigation without retaining the Canvas render tree. */
   onActiveDiagramChange?: (diagramId: string) => void;
 }
@@ -53,7 +55,7 @@ const SAVE_STATUS = {
 /** Composes the diagram library and one open workspace with replaceable presentation. */
 export default function App(props: AppProps) {
   const {
-    initialDiagramId, initialPreferences, initialWorkspace, library,
+    diagramExporter, initialDiagramId, initialPreferences, initialWorkspace, library,
     onActiveDiagramChange, preferencesRepository,
   } = props;
   const [open, setOpen] = useState<OpenDiagram>(
@@ -294,22 +296,17 @@ export default function App(props: AppProps) {
 
   const contents = useMemo(() => diagramContents(record, view), [record, view]);
 
-  /**
-   * The open diagram, on the clipboard.
-   *
-   * "I can just copy the json and give it to AI, they see the flow" — so this is the product's
-   * output, not a debug view, and it costs one click from anywhere in the app.
-   */
-  const copyRecord = useCallback(async (): Promise<boolean> => {
+  /** Exports the current in-memory record, then performs the browser's sole clipboard write. */
+  const copyDiagram = useCallback(async (format: DiagramExportFormat): Promise<boolean> => {
     try {
-      await navigator.clipboard.writeText(JSON.stringify(record, null, 2));
+      await navigator.clipboard.writeText(await diagramExporter.render([record], format));
       return true;
     } catch (error) {
-      console.warn('[canvas] clipboard refused the record', error);
+      console.warn('[canvas] diagram copy failed', error);
       setSaveStatus('Could not copy');
       return false;
     }
-  }, [record]);
+  }, [diagramExporter, record]);
 
   const shellStyle = {
     '--density': String(DENSITY_SCALE[preferences.appearance.density] ?? 1),
@@ -382,7 +379,7 @@ export default function App(props: AppProps) {
         />
       </ReactFlowProvider>
       <Inspector
-        copyRecord={copyRecord}
+        copyDiagram={copyDiagram}
         addInterface={(ownerId) => {
           const id = `iface-${crypto.randomUUID().slice(0, 8)}`;
           execute({

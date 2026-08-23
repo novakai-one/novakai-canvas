@@ -1,8 +1,21 @@
 import { describe, expect, it } from 'vitest';
-import type { CrossDiagramLink, DiagramRecord } from '../../src/canvas.ts';
+import {
+  exportDiagram, exportDiagrams, type CrossDiagramLink, type DiagramExportContext,
+  type DiagramRecord,
+} from '../../src/canvas.ts';
 import { componentFor } from '../../src/components/registry.ts';
 import { buildRecord, buildRecords } from './dsl-fixture.ts';
-import { listMaps, printLibrary, printRecord } from './dsl-print.ts';
+import { listMaps } from './cli-library.ts';
+
+function printRecord(record: DiagramRecord, context?: DiagramExportContext): string {
+  return exportDiagram(record, context ?? { records: { [record.id]: record }, links: [] }, 'dsl');
+}
+
+function printLibrary(records: readonly DiagramRecord[]): string {
+  return exportDiagrams(
+    records, { records: Object.fromEntries(records.map((record) => [record.id, record])), links: [] }, 'dsl',
+  );
+}
 
 const DSL = `
 scope "Browser Sessions" "Isolated per-agent browsing"
@@ -99,10 +112,7 @@ scope "Agent Messaging"
       source: { diagramId: 'novakai-ide', nodeId: 'novakai-ide--session' },
       target: { diagramId: 'agent-messaging', nodeId: 'agent-messaging--agents' },
     } as unknown as CrossDiagramLink;
-    const context = {
-      links: [link],
-      labelOf: (diagramId: string, nodeId: string) => records[diagramId]?.nodes[nodeId]?.label,
-    };
+    const context = { links: [link], records };
     expect(printRecord(records['novakai-ide'], context)).toContain('wire "Session" -> "Agents" : is a');
     // The link is outbound from one map only; the other must not print it a second time.
     expect(printRecord(records['agent-messaging'], context)).not.toContain('is a');
@@ -224,6 +234,11 @@ scope "Every Keyword" "one of each"
     const reapplied = buildRecord(printed, { [record.id]: record });
     expect(content(reapplied)).toEqual(content(record));
     expect(printRecord(reapplied)).toBe(printed);
+
+    const context = { records: { [record.id]: record }, links: [] };
+    expect(exportDiagram(record, context, 'agent')).toBe(`\`\`\`canvas\n${printed}\`\`\`\n`);
+    expect(exportDiagram(record, context, 'markdown')).toContain('| @provider-session | entity | — |');
+    expect(exportDiagram(record, context, 'json')).toBe(JSON.stringify(record, null, 2));
 
     const edited = buildRecord(EVERY_KEYWORD_DSL
       .replace('callout "Evidence is complete" id=evidence kind=info',

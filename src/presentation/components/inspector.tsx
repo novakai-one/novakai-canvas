@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import type { CanvasPreferences, PreferenceSection } from '../../domain/model';
+import type { DiagramExportFormat } from '../../diagram-export/contract';
 import {
   Flyout, IconButton, PanelBody, PanelCollapse, PanelHeader, PanelShell, STUDIO_BOUNDS,
   TabStrip, clampPanelWidth, resolveOpenSection,
@@ -14,14 +15,22 @@ export interface InspectorProps extends Omit<InspectPanelProps, 'isSectionOpen' 
   updatePreferences: (preferences: CanvasPreferences) => void;
   collapsed: boolean;
   setWidth: (width: number) => void;
-  /** Puts the open diagram's record on the clipboard — the whole point of the tool. */
-  copyRecord: () => Promise<boolean>;
+  /** Renders and copies one of the three user-facing diagram products. */
+  copyDiagram: (format: CopyDiagramFormat) => Promise<boolean>;
   /** Passed to the header: a brand-new diagram's title field wakes up focused, text selected. */
   focusTitle?: boolean;
 }
 
 /** How long "Copied" stays on screen before the control goes quiet again. */
 const COPIED_MS = 1400;
+
+type CopyDiagramFormat = Exclude<DiagramExportFormat, 'dsl'>;
+
+const COPY_FORMATS = [
+  { id: 'agent', label: 'Copy for agent', hint: 'Canonical Canvas DSL in a Markdown fence' },
+  { id: 'markdown', label: 'Copy as Markdown', hint: 'Compact objects, members and relationships' },
+  { id: 'json', label: 'Copy full JSON', hint: 'Complete persistence record' },
+] as const;
 
 /**
  * The Studio: one skeleton for everything.
@@ -52,8 +61,8 @@ export function Inspector(props: InspectorProps) {
   const toggleSection = useCallback((id: string) => setOpenSection(id), []);
   const inspection = describeSelection({ ...props, isSectionOpen: isOpen, toggleSection });
 
-  const copy = useCallback(() => {
-    void props.copyRecord().then((ok) => {
+  const copy = useCallback((format: CopyDiagramFormat) => {
+    void props.copyDiagram(format).then((ok) => {
       if (!ok) return;
       setCopied(true);
       window.setTimeout(() => setCopied(false), COPIED_MS);
@@ -84,12 +93,14 @@ export function Inspector(props: InspectorProps) {
               * it says so when it has done it.
               */}
             {!settingsOpen && (
-              <IconButton
-                glyph={copied ? '✓' : '⧉'}
-                label={copied ? 'Copied' : 'Copy diagram JSON'}
-                onClick={copy}
-                tone={copied ? 'accent' : undefined}
-              />
+              <Flyout
+                items={COPY_FORMATS}
+                label={copied ? 'Copied' : 'Copy diagram'}
+                onPick={(format) => copy(format as CopyDiagramFormat)}
+              >
+                <span aria-hidden>{copied ? '✓' : '⧉'}</span>
+                <span>{copied ? 'Copied' : 'Copy'}</span>
+              </Flyout>
             )}
             {!settingsOpen && inspection.remove && (
               <Flyout

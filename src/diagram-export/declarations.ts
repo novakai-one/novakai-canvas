@@ -1,17 +1,16 @@
-import { componentFor } from '../../../src/components/registry.ts';
-import { appearanceSpecification } from '../../../src/domain/canvas-presentation.ts';
-import type { DiagramRecord } from '../../../src/domain/records.ts';
-import type { PlacedNode } from '../record-graph.ts';
-import { arrangementAttributes, childrenOf } from './ordering.ts';
+import { componentFor } from '../components/registry.ts';
+import { appearanceSpecification } from '../domain/canvas-presentation.ts';
+import type { DiagramRecord } from '../domain/records.ts';
+import { arrangementAttributes, childrenOf, type ExportNode } from './ordering.ts';
 
 type Layout = DiagramRecord['layouts'][string] | undefined;
 
 class DeclarationPrinter {
   private readonly record: DiagramRecord;
-  private readonly nodes: Record<string, PlacedNode>;
+  private readonly nodes: Record<string, ExportNode>;
   private readonly layout: Layout;
 
-  constructor(record: DiagramRecord, nodes: Record<string, PlacedNode>, layout: Layout) {
+  constructor(record: DiagramRecord, nodes: Record<string, ExportNode>, layout: Layout) {
     this.record = record;
     this.nodes = nodes;
     this.layout = layout;
@@ -24,7 +23,7 @@ class DeclarationPrinter {
       .flatMap((node) => this.printNode(node, indent));
   }
 
-  private printNode(node: PlacedNode, indent: string): string[] {
+  private printNode(node: ExportNode, indent: string): string[] {
     const component = componentFor(node.kind);
     const declaration = this.declarationLine(node, indent);
     if (component.layoutRole === 'container') {
@@ -42,7 +41,7 @@ class DeclarationPrinter {
     return lines;
   }
 
-  private declarationLine(node: PlacedNode, indent: string): string {
+  private declarationLine(node: ExportNode, indent: string): string {
     const component = componentFor(node.kind);
     const authored = this.layout?.appearanceByNodeId?.[node.id];
     const appearance = (component.appearanceKeys ?? []).flatMap((key) => {
@@ -57,7 +56,7 @@ class DeclarationPrinter {
       + `${attributes.length ? ` ${attributes.join(' ')}` : ''}`;
   }
 
-  private appendMembers(lines: string[], node: PlacedNode, indent: string): void {
+  private appendMembers(lines: string[], node: ExportNode, indent: string): void {
     for (const interfaceId of node.interfaceIds) {
       const method = this.record.interfaces[interfaceId];
       if (!method) continue;
@@ -76,7 +75,7 @@ class DeclarationPrinter {
 /** Prints every declaration below one container in canonical recursive order. */
 export function printDeclarations(
   record: DiagramRecord,
-  nodes: Record<string, PlacedNode>,
+  nodes: Record<string, ExportNode>,
   layout: Layout,
   containerId: string | undefined,
 ): string[] {

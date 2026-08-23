@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import type { DiagramRecord } from '../../src/canvas.ts';
+import { exportDiagram, type DiagramRecord } from '../../src/canvas.ts';
 import { diagramRecordSchema } from '../../src/domain/record-schema.ts';
 import { parseDsl } from './dsl-parse.ts';
 import { buildRecord } from './dsl-fixture.ts';
-import { printRecord } from './dsl-print.ts';
+
+function printRecord(record: DiagramRecord): string {
+  return exportDiagram(record, { records: { [record.id]: record }, links: [] }, 'dsl');
+}
 
 const DSL = `
 scope "Mission State"

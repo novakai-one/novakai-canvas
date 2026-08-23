@@ -1,6 +1,7 @@
 /** Human and machine-readable Canvas CLI vocabulary. */
 
 import { allComponents, kindList } from '../../src/components/registry.ts';
+import { DIAGRAM_EXPORT_FORMATS } from '../../src/diagram-export/contract.ts';
 import {
   CONTAINER_ALIGNS, GRID_COLUMNS, SPACINGS, appearanceSpecification,
 } from '../../src/domain/canvas-presentation.ts';
@@ -37,7 +38,8 @@ export const CLI_HELP = `canvas — draw architecture maps from your terminal
 
 Usage
   ./canvas maps                     list maps (top-level scopes)
-  ./canvas read [map]               print a map (or all maps) as DSL
+  ./canvas read [map] [--format dsl|agent|markdown|json]
+                                    export one map (or all maps); default dsl
   ./canvas describe                 print the machine-readable command vocabulary
   ./canvas batch <map> [json-file]  atomically apply one typed change set (file or stdin)
   ./canvas apply [dsl-file]         create/replace maps from DSL (file or stdin)
@@ -48,6 +50,7 @@ Usage
 
   --file <path>   use another data directory (default: public/data)
   --operation-id <id>  stable retry identity for apply
+  --format <format>     read output: ${DIAGRAM_EXPORT_FORMATS.join('|')} (default dsl)
 
 DSL — one statement per line; a scope block fully declares that map.
 New objects are placed automatically; saved placement is preserved. Never write coordinates or edit JSON by hand.
@@ -96,6 +99,11 @@ export function describeCapability(): unknown {
       commands: 'RecordCommand[] — applied in order, all or nothing',
     },
     outcomes: ['applied', 'duplicate', 'conflict', 'rejected'],
+    exports: {
+      formats: [...DIAGRAM_EXPORT_FORMATS],
+      default: 'dsl',
+      command: './canvas read [map] --format <format>',
+    },
     dsl: {
       wire: {
         syntax: `wire <label|@ref|#node-id> -> <label|@ref|#node-id> ${wireAppearanceHelp} : <contract> [kind]`,

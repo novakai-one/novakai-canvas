@@ -3,8 +3,11 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import type { CanvasLibrary } from '../../src/canvas.ts';
+import {
+  DIAGRAM_EXPORT_FORMATS, type DiagramExportFormat,
+} from '../../src/diagram-export/contract.ts';
 import { dataDirectoryOf } from './library-io.ts';
-import { slugify } from './slug.ts';
+import { slugify } from '../../src/authoring/slug.ts';
 
 const DEFAULT_DATA_DIR = fileURLToPath(new URL('../../public/data', import.meta.url));
 
@@ -14,6 +17,7 @@ export interface CliArgs {
   dataDir: string;
   out?: string;
   operationId?: string;
+  format?: DiagramExportFormat;
 }
 
 /** Parses process arguments without executing a verb. */
@@ -23,8 +27,17 @@ export function parseArgs(argv: string[]): CliArgs {
     if (argv[index] === '--file' || argv[index] === '--data') args.dataDir = dataDirectoryOf(argv[(index += 1)]);
     else if (argv[index] === '-o' || argv[index] === '--out') args.out = argv[(index += 1)];
     else if (argv[index] === '--operation-id') args.operationId = argv[(index += 1)];
+    else if (argv[index] === '--format') {
+      if (args.format) fail(`--format may appear once; use one of: ${DIAGRAM_EXPORT_FORMATS.join(', ')}`);
+      const value = argv[(index += 1)];
+      if (!DIAGRAM_EXPORT_FORMATS.some((candidate) => candidate === value)) {
+        fail(`invalid --format "${value ?? ''}"; use one of: ${DIAGRAM_EXPORT_FORMATS.join(', ')}`);
+      }
+      args.format = value as DiagramExportFormat;
+    }
     else args.positional.push(argv[index]);
   }
+  if (args.format && args.verb !== 'read') fail('--format is accepted only by ./canvas read');
   return args;
 }
 
