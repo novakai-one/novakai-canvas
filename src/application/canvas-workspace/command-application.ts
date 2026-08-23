@@ -1,5 +1,6 @@
 import type { DiagramRecord } from '../../domain/records.ts';
 import type { RecordCommand } from './contract.ts';
+import { applyDefinitionReplacement } from './definition-command.ts';
 import { applyNodeCommand } from './node-command-application.ts';
 import {
   applyTargetedPresentation, isTargetedPresentation, reflowAfterCommand,
@@ -66,6 +67,8 @@ export function applyRecordCommand(record: DiagramRecord, command: RecordCommand
     layout.arrangementByContainerId = structuredClone(command.arrangementByContainerId);
   } else if (isTargetedPresentation(command)) {
     applyTargetedPresentation(next, command);
+  } else if (command.kind === 'diagram.definitions.replace') {
+    applyDefinitionReplacement(next, command);
   } else if (command.kind === 'diagram.rename') next.name = command.name;
   return reflowAfterCommand(record, next, command);
 }

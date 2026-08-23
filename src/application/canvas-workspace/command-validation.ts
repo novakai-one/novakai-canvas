@@ -2,6 +2,7 @@ import { componentFor } from '../../components/registry.ts';
 import { signatureFailure } from '../../domain/interface-signature.ts';
 import type { CanvasNode, DiagramRecord } from '../../domain/records.ts';
 import type { RecordCommand } from './contract.ts';
+import { validateDefinitionReplacement } from './definition-command.ts';
 import {
   validatePresentation, validateTargetedPresentation,
 } from './presentation-validation.ts';
@@ -133,6 +134,9 @@ function validateOrThrow(record: DiagramRecord, command: RecordCommand): void {
     || command.kind === 'layout.wireAppearance.set'
     || command.kind === 'layout.arrangement.set') {
     return validateTargetedPresentation(record, command);
+  }
+  if (command.kind === 'diagram.definitions.replace') {
+    return validateDefinitionReplacement(record, command);
   }
   if (command.kind === 'diagram.rename' && command.name.trim().length === 0) {
     throw new Error('diagram-name-empty');
