@@ -66,13 +66,65 @@ export interface ComponentItem {
   fields: readonly { label: string; value: string }[];
 }
 
-/** Host-neutral declaration of one semantic content field a person may edit. */
-export interface ContentEditorDeclaration {
+/** Host-neutral declaration of a semantic string collection a person may edit. */
+export interface StringListContentEditorDeclaration {
   field: string;
   kind: 'string-list';
   label: string;
   itemLabel: string;
 }
+
+/** One required or optional text field in a structured content row. */
+export interface RecordEditorTextField {
+  field: string;
+  label: string;
+  control: 'text';
+  required?: boolean;
+  maxLength?: number;
+}
+
+/** One closed single-value field in a structured content row. */
+export interface RecordEditorSelectField {
+  field: string;
+  label: string;
+  control: 'select';
+  values: readonly string[];
+  required?: boolean;
+}
+
+/** One closed set-valued field in a structured content row. */
+export interface RecordEditorMultiSelectField {
+  field: string;
+  label: string;
+  control: 'multi-select';
+  values: readonly string[];
+}
+
+export type RecordEditorField =
+  | RecordEditorTextField | RecordEditorSelectField | RecordEditorMultiSelectField;
+
+/** One valid row variant and the fields that become editable when selected. */
+export interface RecordEditorVariant {
+  key: string;
+  label: string;
+  defaults: Readonly<Record<string, unknown>>;
+  fields: readonly RecordEditorField[];
+}
+
+/** Host-neutral declaration of an ordered structured collection. */
+export interface RecordListContentEditorDeclaration {
+  field: string;
+  kind: 'record-list';
+  label: string;
+  itemLabel: string;
+  identity: { field: string; prefix: string };
+  discriminator?: string;
+  variants: readonly [RecordEditorVariant, ...RecordEditorVariant[]];
+}
+
+/** Every semantic editor a registered component can expose to a host. */
+export type ContentEditorDeclaration =
+  | StringListContentEditorDeclaration | RecordListContentEditorDeclaration;
 
 export interface DiagramComponent<K extends string = string> {
   /** Durable id stored in records. Never renamed once shipped. */

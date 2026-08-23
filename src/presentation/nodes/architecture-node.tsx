@@ -1,4 +1,6 @@
+import { type CSSProperties } from 'react';
 import { type NodeProps, type Node } from '@xyflow/react';
+import { paletteCssVariables, resolveComponentPalette } from '../../components/component-palette';
 import { NodePorts } from './node-ports';
 import { NodeLabel } from './node-label';
 import type { ArchitectureNodeData } from '../projection';
@@ -11,6 +13,8 @@ export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowN
   const showInterfaces = !editable || preferences.nodes.showInterfaces === 'always'
     || (preferences.nodes.showInterfaces === 'selected' && selected);
   const portsClass = preferences.nodes.showPorts === 'always' ? 'ports-always' : '';
+  const palette = resolveComponentPalette(appearance.palette, appearance.theme, 'standard');
+  const style = palette ? paletteCssVariables(palette) as CSSProperties : undefined;
 
   return (
     /*
@@ -24,7 +28,7 @@ export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowN
       * starts exactly where the box ends.
       */
     <>
-      <article className={`architecture-node kind-${node.kind} ${portsClass}`}>
+      <article className={`architecture-node kind-${node.kind} ${portsClass}`} style={style}>
         <header className="node-header">
         <NodeLabel
           editable={editable}

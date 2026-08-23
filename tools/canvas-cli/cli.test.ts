@@ -210,7 +210,7 @@ describe('canvas CLI', () => {
     };
     expect(dsl.components.map((component) => component.kind)).toEqual([
       'group', 'module', 'object', 'runtime', 'resource', 'comment', 'tree', 'timeline',
-      'metric', 'icon-card', 'callout-stack', 'block', 'ooux-object',
+      'metric', 'icon-card', 'callout-stack', 'block', 'ooux-object', 'entity',
     ]);
     expect(dsl.components.find((component) => component.kind === 'group')).toMatchObject({
       keyword: 'zone',
@@ -231,6 +231,17 @@ describe('canvas CLI', () => {
       }),
       expect.objectContaining({ key: 'vertical-align', values: ['top', 'center', 'bottom'] }),
     ]));
+    expect(dsl.components.find((component) => component.kind === 'entity')).toMatchObject({
+      keyword: 'entity',
+      children: [{
+        keyword: 'field',
+        syntax: 'field "name" id=stable-id type=value-type [keys=pk,fk,uk]',
+      }],
+      appearance: [{
+        key: 'palette', values: ['neutral', 'blue', 'violet', 'sage'],
+        omitted: 'component default',
+      }],
+    });
     expect(dsl.wire).toMatchObject({
       endpoints: ['label', '@ref', '#node-id'],
       cardinality: {

@@ -1,4 +1,7 @@
 import { componentFor } from '../../../src/components/registry.ts';
+import {
+  resolveComponentPalette, type ComponentPaletteColors,
+} from '../../../src/components/component-palette.ts';
 import { resolveNodeAppearance } from '../../../src/domain/canvas-presentation.ts';
 import type { DiagramRecord } from '../../../src/domain/records.ts';
 import type { PlacedNode } from '../record-graph.ts';
@@ -32,11 +35,14 @@ function renderComment(node: PlacedNode, x: number, y: number): string[] {
   return parts;
 }
 
-function appendDescription(parts: string[], node: PlacedNode, x: number, cursor: number): number {
+function appendDescription(
+  parts: string[], node: PlacedNode, x: number, cursor: number,
+  palette?: ComponentPaletteColors,
+): number {
   if (!node.description) return cursor;
   const charsPerLine = Math.max(30, Math.floor((node.size.width - 28) / 6.4));
   for (const line of wrapText(node.description, charsPerLine)) {
-    parts.push(`<text x="${x + 14}" y="${cursor}" fill="${SNAPSHOT_STYLE.colors.muted}" font-family="${SNAPSHOT_STYLE.font}" font-size="11">${escapeSvg(line)}</text>`);
+    parts.push(`<text x="${x + 14}" y="${cursor}" fill="${palette?.muted ?? SNAPSHOT_STYLE.colors.muted}" font-family="${SNAPSHOT_STYLE.font}" font-size="11">${escapeSvg(line)}</text>`);
     cursor += 16;
   }
   return cursor + 8;
@@ -48,17 +54,18 @@ function appendMembers(
   node: PlacedNode,
   x: number,
   cursor: number,
+  palette?: ComponentPaletteColors,
 ): void {
   const { colors, font } = SNAPSHOT_STYLE;
   for (const interfaceId of node.interfaceIds) {
     const item = record.interfaces[interfaceId];
     const signature = `${item.name}(${item.accepts.join(', ')}) → ${item.returns.join(', ')}`;
-    parts.push(`<text x="${x + 14}" y="${cursor}" fill="${colors.ink}" font-family="${font}" font-size="12">${escapeSvg(signature)}</text>`);
+    parts.push(`<text x="${x + 14}" y="${cursor}" fill="${palette?.text ?? colors.ink}" font-family="${font}" font-size="12">${escapeSvg(signature)}</text>`);
     cursor += 26;
   }
   for (const typeId of node.typeIds) {
     const item = record.types[typeId];
-    parts.push(`<text x="${x + 14}" y="${cursor}" fill="${colors.faint}" font-family="${font}" font-size="11">${escapeSvg(`${item.name} { ${item.fields.join(', ')} }`)}</text>`);
+    parts.push(`<text x="${x + 14}" y="${cursor}" fill="${palette?.muted ?? colors.faint}" font-family="${font}" font-size="11">${escapeSvg(`${item.name} { ${item.fields.join(', ')} }`)}</text>`);
     cursor += 24;
   }
 }
@@ -80,15 +87,17 @@ function renderFallbackCard(
     node, { x, y, width: node.size.width, height: node.size.height }, appearance,
   );
   if (custom !== undefined) return [custom];
+  const palette = resolveComponentPalette(appearance.palette, appearance.theme, 'standard');
   const parts = [
-    `<rect x="${x}" y="${y}" width="${node.size.width}" height="${node.size.height}" fill="${colors.card}" stroke="${colors.border}" rx="6"/>`,
-    `<text x="${x + 14}" y="${y + 24}" fill="${colors.ink}" font-family="${font}" font-size="13" font-weight="600">${escapeSvg(node.label)}</text>`,
+    `<rect x="${x}" y="${y}" width="${node.size.width}" height="${node.size.height}" fill="${palette?.surface ?? colors.card}" stroke="${palette?.frame ?? colors.border}" rx="6"/>`,
+    ...(palette ? [`<path d="M${x + 1},${y + 6}Q${x + 1},${y + 1} ${x + 6},${y + 1}H${x + node.size.width - 6}Q${x + node.size.width - 1},${y + 1} ${x + node.size.width - 1},${y + 6}V${y + 42}H${x + 1}Z" fill="${palette.header}"/>`] : []),
+    `<text x="${x + 14}" y="${y + 24}" fill="${palette?.headerText ?? colors.ink}" font-family="${font}" font-size="13" font-weight="600">${escapeSvg(node.label)}</text>`,
   ];
   if (appearance.showKindBadge) {
-    parts.push(`<text x="${x + node.size.width - 14}" y="${y + 24}" fill="${colors.muted}" font-family="${font}" font-size="9" text-anchor="end" letter-spacing="1">${escapeSvg(node.kind.toUpperCase())}</text>`);
+    parts.push(`<text x="${x + node.size.width - 14}" y="${y + 24}" fill="${palette?.headerMuted ?? colors.muted}" font-family="${font}" font-size="9" text-anchor="end" letter-spacing="1">${escapeSvg(node.kind.toUpperCase())}</text>`);
   }
-  const cursor = appendDescription(parts, node, x, y + 44);
-  appendMembers(parts, record, node, x, cursor);
+  const cursor = appendDescription(parts, node, x, palette ? y + 52 : y + 44, palette);
+  appendMembers(parts, record, node, x, cursor, palette);
   return parts;
 }
 

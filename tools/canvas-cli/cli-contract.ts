@@ -18,7 +18,9 @@ const componentHelp = [
     ...(component.dslChildren ?? []).map((child) => `  ${child.contentKey.padEnd(12)} ${child.syntax}`),
     ...(component.appearanceKeys ?? []).map((key) => {
       const specification = appearanceSpecification(key);
-      return `  ${(component.dslKeyword + '.' + key).padEnd(12)} ${specification.values.join('|')} (default ${specification.default})`;
+      const omission = specification.default === undefined
+        ? 'component default' : `default ${specification.default}`;
+      return `  ${(component.dslKeyword + '.' + key).padEnd(12)} ${specification.values.join('|')} (${omission})`;
     }),
     ...((component.arrangementModes?.length ?? 0) > 0 ? [
       `  ${(component.dslKeyword + '.layout').padEnd(12)} ${component.arrangementModes?.join('|')}`,
@@ -115,7 +117,11 @@ export function describeCapability(): unknown {
         })),
         appearance: (component.appearanceKeys ?? []).map((key) => {
           const specification = appearanceSpecification(key);
-          return { key, values: [...specification.values], default: specification.default };
+          return {
+            key, values: [...specification.values],
+            ...(specification.default === undefined
+              ? { omitted: 'component default' } : { default: specification.default }),
+          };
         }),
         ...(component.arrangementModes ? {
           arrangement: {

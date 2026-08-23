@@ -17,6 +17,7 @@ import { iconCardComponent } from './icon-card/component.ts';
 import { calloutStackComponent } from './callout-stack/component.ts';
 import { blockComponent } from './block/component.ts';
 import { oouxObjectComponent } from './ooux-object/component.ts';
+import { entityComponent } from './entity/component.ts';
 import type { CanvasNode } from '../domain/records.ts';
 
 // `satisfies`, not a `: DiagramComponent[]` annotation, so each entry keeps its own literal
@@ -32,6 +33,7 @@ const components = [
   calloutStackComponent,
   blockComponent,
   oouxObjectComponent,
+  entityComponent,
 ] satisfies DiagramComponent[];
 
 export function allComponents(): readonly DiagramComponent[] { return components; }

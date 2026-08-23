@@ -83,7 +83,7 @@ function setContent(record: DiagramRecord, command: Extract<NodeCommand, {
     (candidate) => candidate.field === command.field,
   );
   const content = node as unknown as Record<string, unknown>;
-  if (editor?.kind === 'string-list' && Array.isArray(command.value) && command.value.length === 0) {
+  if (editor && Array.isArray(command.value) && command.value.length === 0) {
     delete content[command.field];
   } else content[command.field] = structuredClone(command.value);
 }

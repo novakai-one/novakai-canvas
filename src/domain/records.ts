@@ -10,6 +10,7 @@ import type {
 import type { CanvasLayout, CanvasViewBase, PortSide } from './layout-record.ts';
 import type { NodeKind } from './node-kind.ts';
 import type { OouxRow } from './ooux-object.ts';
+import type { EntityField } from './entity.ts';
 import type { WireCardinality } from './wire-cardinality.ts';
 
 export type {
@@ -78,6 +79,9 @@ export interface CanvasNode {
   /** Stable CLI identity and ordered compartments; present only on `ooux-object`. */
   objectRef?: string;
   oouxRows?: OouxRow[];
+  /** Stable CLI identity and ordered fixed-column fields; present only on `entity`. */
+  entityRef?: string;
+  entityFields?: EntityField[];
   /** The real thing this occurrence depicts. Canvas references it and never owns it. */
   subjectRef?: CanvasReference;
   /** Deeper explanation opened from this occurrence; integrity is owned by the library. */

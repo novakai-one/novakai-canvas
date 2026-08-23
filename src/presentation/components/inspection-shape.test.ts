@@ -36,6 +36,19 @@ const NODES = {
     id: asId<NodeId>('block'), kind: 'block' as const, label: 'Required output',
     parentId: asId<NodeId>('root'), interfaceIds: [], typeIds: [], lines: ['Exactly one'],
   },
+  entity: {
+    id: asId<NodeId>('entity'), kind: 'entity' as const, label: 'Provider session',
+    parentId: asId<NodeId>('root'), interfaceIds: [], typeIds: [], entityRef: 'provider-session',
+    entityFields: [{ id: 'id', name: 'id', valueType: 'string', keys: ['pk' as const] }],
+  },
+  ooux: {
+    id: asId<NodeId>('ooux'), kind: 'ooux-object' as const, label: 'Organization',
+    parentId: asId<NodeId>('root'), interfaceIds: [], typeIds: [], objectRef: 'organization',
+    oouxRows: [{
+      kind: 'attribute' as const, id: 'name', name: 'name', valueType: 'string',
+      role: 'core' as const, traits: [],
+    }],
+  },
 };
 
 const record = {
@@ -109,6 +122,23 @@ describe('inspection shape', () => {
     expect(validateRecordCommand(record, {
       kind: 'node.content.set', id: 'block', field: 'wireRef', value: 'other-ref',
     })).toEqual({ valid: false, reason: 'node-content-not-editable:block:wireRef' });
+    expect(describeSelection(props({
+      selection: { kind: 'node', id: 'entity' },
+    })).sections).toEqual(['description', 'content', 'box', 'placement']);
+    expect(componentFor('entity').contentEditors?.[0]).toMatchObject({
+      field: 'entityFields', kind: 'record-list', identity: { field: 'id', prefix: 'field' },
+    });
+    expect(componentFor('ooux-object').contentEditors?.[0]).toMatchObject({
+      field: 'oouxRows', kind: 'record-list', discriminator: 'kind',
+    });
+    expect(validateRecordCommand(record, {
+      kind: 'node.content.set', id: 'entity', field: 'entityFields',
+      value: [{ id: 'provider', name: 'provider', valueType: 'string', keys: ['pk', 'fk'] }],
+    })).toEqual({ valid: true });
+    expect(validateRecordCommand(record, {
+      kind: 'node.content.set', id: 'entity', field: 'entityFields',
+      value: [{ id: 'provider', name: '', valueType: 'string', keys: [] }],
+    })).toEqual({ valid: false, reason: 'invalid-node-content:entity:entityFields' });
   });
 
   it('keeps deleting out of the body and out of a read-only session', () => {

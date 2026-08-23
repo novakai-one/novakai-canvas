@@ -8,38 +8,13 @@ import type { CanvasNode } from '../../domain/records.ts';
 import type {
   ComponentItem, DiagramComponent, DslChildStatement, DslNodeDeclaration,
 } from '../component.ts';
+import { parseAssignedFields } from '../dsl-fields.ts';
+import { resolveComponentPalette } from '../component-palette.ts';
 
 const DECLARATION = 'ooux-object "name" ref=kebab-case';
 const DECLARATION_EXAMPLE = 'ooux-object "Organization" ref=organization';
 const ATTRIBUTE = 'attribute "name" id=stable-id type=value-type role=core|metadata [traits=filterable,sortable]';
 const CTA = 'cta "name" id=stable-id role=role-name';
-
-function assignment(tokens: string[], index: number) {
-  const token = tokens[index];
-  const equals = token.indexOf('=');
-  if (equals < 1) return undefined;
-  const inline = token.slice(equals + 1);
-  const value = inline || tokens[index + 1] || '';
-  return { key: token.slice(0, equals), value, next: inline ? index + 1 : index + 2 };
-}
-
-type ParsedFields = { valid: true; fields: Record<string, string> }
-  | { valid: false; error: string; hint: string };
-
-function fields(tokens: string[], allowed: readonly string[], grammar: string): ParsedFields {
-  const result: Record<string, string> = {};
-  for (let index = 2; index < tokens.length;) {
-    const field = assignment(tokens, index);
-    if (!field || !allowed.includes(field.key)) {
-      return { valid: false, error: `unexpected "${tokens[index]}"`, hint: grammar };
-    }
-    if (field.key in result) return { valid: false, error: `repeated ${field.key}`, hint: grammar };
-    if (!field.value) return { valid: false, error: `${field.key} cannot be empty`, hint: grammar };
-    result[field.key] = field.value;
-    index = field.next;
-  }
-  return { valid: true, fields: result };
-}
 
 function printRows(node: CanvasNode): string[] {
   return (node.oouxRows ?? []).map((row) => row.kind === 'attribute'
@@ -51,7 +26,7 @@ const declaration: DslNodeDeclaration = {
   syntax: DECLARATION, example: DECLARATION_EXAMPLE, allowsBody: true,
   parse(tokens) {
     const label = tokens[1];
-    const parsed = fields(tokens, ['ref'], DECLARATION);
+    const parsed = parseAssignedFields(tokens, ['ref'], DECLARATION);
     if (!label || label.includes('=')) return { error: 'ooux-object needs a name', hint: DECLARATION_EXAMPLE };
     if (!parsed.valid) return parsed;
     if (!parsed.fields.ref) return { error: 'ooux-object needs ref=kebab-case', hint: DECLARATION_EXAMPLE };
@@ -70,7 +45,7 @@ const attributeChild: DslChildStatement = {
   parse(tokens) {
     const name = tokens[1];
     if (!name || name.includes('=')) return { error: 'attribute needs a name', hint: ATTRIBUTE };
-    const parsed = fields(tokens, ['id', 'type', 'role', 'traits'], ATTRIBUTE);
+    const parsed = parseAssignedFields(tokens, ['id', 'type', 'role', 'traits'], ATTRIBUTE);
     if (!parsed.valid) return parsed;
     const values = parsed.fields;
     if (!values.id || !values.type || !values.role) return { error: 'attribute needs id, type, and role', hint: ATTRIBUTE };
@@ -102,7 +77,7 @@ const ctaChild: DslChildStatement = {
   parse(tokens) {
     const name = tokens[1];
     if (!name || name.includes('=')) return { error: 'cta needs a name', hint: CTA };
-    const parsed = fields(tokens, ['id', 'role'], CTA);
+    const parsed = parseAssignedFields(tokens, ['id', 'role'], CTA);
     if (!parsed.valid) return parsed;
     if (!parsed.fields.id || !parsed.fields.role) return { error: 'cta needs id and role', hint: CTA };
     if (parsed.fields.role.length > 64) return { error: 'cta role exceeds 64 characters', hint: CTA };
@@ -148,28 +123,55 @@ export const oouxObjectComponent: DiagramComponent<'ooux-object'> = {
     wireAddress: { field: 'objectRef' }, preserveDeclarationOrder: true,
   },
   contentFields: { objectRef: oouxObjectRefSchema, oouxRows: oouxRowsSchema.optional() },
+  contentEditors: [{
+    field: 'oouxRows', kind: 'record-list', label: 'Object rows', itemLabel: 'Row',
+    identity: { field: 'id', prefix: 'row' }, discriminator: 'kind',
+    variants: [
+      {
+        key: 'attribute', label: 'Attribute',
+        defaults: { name: '', valueType: 'string', role: 'core', traits: [] },
+        fields: [
+          { field: 'name', label: 'Name', control: 'text', required: true },
+          { field: 'valueType', label: 'Type', control: 'text', required: true, maxLength: 48 },
+          { field: 'role', label: 'Role', control: 'select', required: true, values: OOUX_ATTRIBUTE_ROLES },
+          { field: 'traits', label: 'Traits', control: 'multi-select', values: OOUX_ATTRIBUTE_TRAITS },
+        ],
+      },
+      {
+        key: 'cta', label: 'CTA', defaults: { name: '', role: 'admin' },
+        fields: [
+          { field: 'name', label: 'Name', control: 'text', required: true },
+          { field: 'role', label: 'Role', control: 'text', required: true, maxLength: 64 },
+        ],
+      },
+    ],
+  }],
   dslChildren: [attributeChild, ctaChild],
+  appearanceKeys: ['palette'],
   items(node) { return (node.oouxRows ?? []).map(item); },
   measure(node) {
     const longest = Math.max(node.label.length, ...(node.oouxRows ?? []).map((row) => row.name.length));
     return { width: Math.min(460, Math.max(300, 170 + longest * 6)), height: 62 + (node.oouxRows?.length ?? 0) * 32 };
   },
-  renderSvg(node, box) {
+  renderSvg(node, box, appearance) {
+    const colors = resolveComponentPalette(appearance.palette, appearance.theme, 'ooux');
+    if (!colors) return '';
     const parts = [
-      `<rect x="${box.x}" y="${box.y}" width="${box.width}" height="${box.height}" fill="#f8f9fb" stroke="#34495e" stroke-width="2" rx="8"/>`,
-      `<path d="M${box.x},${box.y + 50}H${box.x + box.width}" stroke="#34495e" stroke-width="2"/>`,
-      `<rect x="${box.x + 1}" y="${box.y + 1}" width="${box.width - 2}" height="48" fill="#3677b8" rx="7"/>`,
-      `<text x="${box.x + box.width / 2}" y="${box.y + 23}" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif" font-size="15" font-weight="700">${esc(node.label.toUpperCase())}</text>`,
-      `<text x="${box.x + box.width / 2}" y="${box.y + 40}" text-anchor="middle" fill="#dceafb" font-family="Inter,sans-serif" font-size="9">«object»</text>`,
+      `<rect x="${box.x}" y="${box.y}" width="${box.width}" height="${box.height}" fill="${colors.surface}" stroke="${colors.frame}" stroke-width="2" rx="8"/>`,
+      `<path d="M${box.x},${box.y + 50}H${box.x + box.width}" stroke="${colors.frame}" stroke-width="2"/>`,
+      `<rect x="${box.x + 1}" y="${box.y + 1}" width="${box.width - 2}" height="48" fill="${colors.header}" rx="7"/>`,
+      `<text x="${box.x + box.width / 2}" y="${box.y + 23}" text-anchor="middle" fill="${colors.headerText}" font-family="Inter,sans-serif" font-size="15" font-weight="700">${esc(node.label.toUpperCase())}</text>`,
+      `<text x="${box.x + box.width / 2}" y="${box.y + 40}" text-anchor="middle" fill="${colors.headerMuted}" font-family="Inter,sans-serif" font-size="9">«object»</text>`,
     ];
     (node.oouxRows ?? []).forEach((row, index) => {
       const y = box.y + 60 + index * 32;
-      const fill = row.kind === 'cta' ? '#ccebc9' : row.role === 'core' ? '#ffe9a8' : '#f6cada';
+      const fill = row.kind === 'cta' ? colors.action
+        : row.role === 'core' ? colors.core : colors.metadata;
       const suffix = row.kind === 'cta' ? `@${row.role}` : row.traits.join(' · ') || row.role;
       const main = row.kind === 'cta' ? `ƒ  ${row.name}()` : `${row.name} : ${row.valueType}`;
       parts.push(`<rect x="${box.x + 10}" y="${y}" width="${box.width - 20}" height="25" fill="${fill}"/>`);
-      parts.push(`<text x="${box.x + 18}" y="${y + 17}" fill="#28323c" font-family="Inter,sans-serif" font-size="11">${esc(main)}</text>`);
-      parts.push(`<text x="${box.x + box.width - 18}" y="${y + 17}" text-anchor="end" fill="#66717c" font-family="Inter,sans-serif" font-size="9" font-style="italic">${esc(suffix)}</text>`);
+      parts.push(`<text x="${box.x + 18}" y="${y + 17}" fill="${colors.text}" font-family="Inter,sans-serif" font-size="11">${esc(main)}</text>`);
+      parts.push(`<text x="${box.x + box.width - 18}" y="${y + 17}" text-anchor="end" fill="${colors.muted}" font-family="Inter,sans-serif" font-size="9" font-style="italic">${esc(suffix)}</text>`);
     });
     return parts.join('\n');
   },

@@ -21,7 +21,7 @@ export function nodeInspection(props: InspectPanelProps, id: string): Inspection
     (key) => ['icon', 'font', 'size', 'weight', 'align', 'vertical-align', 'text'].includes(key),
   ) ?? false;
   const hasBox = component.appearanceKeys?.some(
-    (key) => ['background', 'border-color', 'border', 'radius', 'padding', 'badge'].includes(key),
+    (key) => ['background', 'border-color', 'border', 'radius', 'padding', 'badge', 'palette'].includes(key),
   ) ?? false;
   const hasInterfaces = component.allowsMembers !== false;
   const hasContent = Boolean(component.contentEditors?.length);
