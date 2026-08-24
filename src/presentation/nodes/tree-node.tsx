@@ -21,11 +21,11 @@ export function TreeNode({ data }: NodeProps<TreeFlowNode>) {
   const rows = orderedTreeRows(node.rows ?? []);
   return (
     <article className="tree-node">
-      <header className="node-header">
+      <header className="node-header semantic-summary">
         <span className="node-label">{node.label}</span>
         <span className="node-kind">tree</span>
       </header>
-      <div className="tree-rows">
+      <div className="tree-rows semantic-essential">
         {rows.map((row) => {
           const depth = treeRowDepth(node.rows ?? [], row);
           const isSelected = selection?.kind === 'component-item'

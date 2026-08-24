@@ -50,3 +50,24 @@ export function connectedIds(input: ProjectionInput): Set<string> {
   });
   return ids;
 }
+
+/** Visible wire IDs that directly constitute the active selection's local neighbourhood. */
+export function connectedWireIds(input: ProjectionInput): Set<string> {
+  const { record, selection, view } = input;
+  if (!selection) return new Set();
+  if (selection.kind === 'wire') {
+    return view.wires.some((wire) => wire.id === selection.id)
+      ? new Set([selection.id]) : new Set();
+  }
+  const owner = selectedOwner(record, selection);
+  if (!owner) return new Set();
+  if (record.nodes[owner]?.kind !== 'group') {
+    return new Set(view.wires
+      .filter((wire) => wire.source.nodeId === owner || wire.target.nodeId === owner)
+      .map((wire) => wire.id as string));
+  }
+  const relatedNodes = connectedIds(input);
+  return new Set(view.wires
+    .filter((wire) => relatedNodes.has(wire.source.nodeId) && relatedNodes.has(wire.target.nodeId))
+    .map((wire) => wire.id as string));
+}
