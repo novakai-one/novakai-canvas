@@ -51,18 +51,18 @@ describe('target scale', () => {
 
 describe('semantic zoom tiers', () => {
   it('classifies first paint and crosses a boundary only beyond its hysteresis band', () => {
-    expect(semanticZoomTier(0.31)).toBe('overview');
-    expect(semanticZoomTier(0.32)).toBe('readable');
-    expect(semanticZoomTier(0.67)).toBe('readable');
-    expect(semanticZoomTier(0.68)).toBe('detail');
-    expect(semanticZoomTier(0.35, 'overview')).toBe('overview');
-    expect(semanticZoomTier(0.37, 'overview')).toBe('readable');
-    expect(semanticZoomTier(0.29, 'readable')).toBe('readable');
-    expect(semanticZoomTier(0.27, 'readable')).toBe('overview');
-    expect(semanticZoomTier(0.71, 'readable')).toBe('readable');
-    expect(semanticZoomTier(0.73, 'readable')).toBe('detail');
-    expect(semanticZoomTier(0.65, 'detail')).toBe('detail');
-    expect(semanticZoomTier(0.63, 'detail')).toBe('readable');
+    expect(semanticZoomTier(0.19)).toBe('overview');
+    expect(semanticZoomTier(0.2)).toBe('readable');
+    expect(semanticZoomTier(0.49)).toBe('readable');
+    expect(semanticZoomTier(0.5)).toBe('detail');
+    expect(semanticZoomTier(0.23, 'overview')).toBe('overview');
+    expect(semanticZoomTier(0.25, 'overview')).toBe('readable');
+    expect(semanticZoomTier(0.17, 'readable')).toBe('readable');
+    expect(semanticZoomTier(0.15, 'readable')).toBe('overview');
+    expect(semanticZoomTier(0.53, 'readable')).toBe('readable');
+    expect(semanticZoomTier(0.55, 'readable')).toBe('detail');
+    expect(semanticZoomTier(0.47, 'detail')).toBe('detail');
+    expect(semanticZoomTier(0.45, 'detail')).toBe('readable');
   });
 
   it('keeps prior visibility for invalid live values and otherwise fails open to detail', () => {

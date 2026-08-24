@@ -3,8 +3,8 @@ export type SemanticZoomTier = 'overview' | 'readable' | 'detail';
 
 /** Published centre points; hysteresis keeps a tier stable near either boundary. */
 export const SEMANTIC_ZOOM_THRESHOLDS = {
-  overview: 0.32,
-  detail: 0.68,
+  overview: 0.2,
+  detail: 0.5,
   hysteresis: 0.04,
 } as const;
 

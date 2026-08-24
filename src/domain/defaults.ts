@@ -48,7 +48,7 @@ export const defaultPreferences: CanvasPreferences = {
     showPorts: 'hover',
   },
   wires: {
-    showLabels: 'selected',
+    showLabels: 'always',
     width: 1.25,
     dimUnrelated: true,
     shape: 'elbow',
