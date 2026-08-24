@@ -6,10 +6,15 @@ import {
 import {
   nearestPositionAlong, pointAlong, type Point, type RouteObstacle,
 } from '../../domain/diagram-geometry';
+import { wireLabelSpread } from '../../domain/wire-label-seed';
 
 const DEFAULT_LABEL_POSITION = 0.5;
+/** Gap between the wire's stroke and the nearest edge of its label. */
+const LABEL_CLEARANCE = 6;
 
 interface WireLabelRequest {
+  /** Stable wire id; seeds the deterministic spread that keeps coincident labels apart. */
+  seed: string;
   label: string;
   points: Point[];
   obstacles?: RouteObstacle[];
@@ -41,28 +46,49 @@ export function useWireLabel(request: WireLabelRequest): {
       && Math.abs(current.height - next.height) < 1 ? current : next));
   }, []);
 
+  const spread = useMemo(() => wireLabelSpread(request.seed), [request.seed]);
+  const home = DEFAULT_LABEL_POSITION + spread.along;
+
+  /*
+   * The label anchor for one route position: beside the wire, never on it. A centred label gets
+   * its own route drawn through the text — on horizontal wires that reads as a strikethrough.
+   * The offset lifts the label clear by its own half-extent along the route normal, so it works
+   * for every wire direction, and the seeded side spreads coincident wires to opposite banks.
+   */
+  const anchorAt = useCallback((at: number): Point => {
+    const point = pointAlong(request.points, at);
+    const normal = { x: -Math.sin(point.angle), y: Math.cos(point.angle) };
+    const clearance = Math.abs(normal.x) * (labelSize.width / 2)
+      + Math.abs(normal.y) * (labelSize.height / 2)
+      + LABEL_CLEARANCE;
+    return {
+      x: point.x + normal.x * clearance * spread.side,
+      y: point.y + normal.y * clearance * spread.side,
+    };
+  }, [labelSize.height, labelSize.width, request.points, spread.side]);
+
   const clearPosition = useMemo(() => {
     const rects = request.obstacles ?? [];
-    if (rects.length === 0) return DEFAULT_LABEL_POSITION;
+    if (rects.length === 0) return home;
     const halfWidth = labelSize.width / 2;
     const halfHeight = labelSize.height / 2;
     const covered = (at: number): boolean => {
-      const point = pointAlong(request.points, at);
-      return rects.some(({ rect }) => point.x + halfWidth > rect.x
-        && point.x - halfWidth < rect.x + rect.width
-        && point.y + halfHeight > rect.y
-        && point.y - halfHeight < rect.y + rect.height);
+      const anchor = anchorAt(at);
+      return rects.some(({ rect }) => anchor.x + halfWidth > rect.x
+        && anchor.x - halfWidth < rect.x + rect.width
+        && anchor.y + halfHeight > rect.y
+        && anchor.y - halfHeight < rect.y + rect.height);
     };
-    if (!covered(DEFAULT_LABEL_POSITION)) return DEFAULT_LABEL_POSITION;
+    if (!covered(home)) return home;
     for (let step = 1; step <= 8; step += 1) {
-      for (const at of [DEFAULT_LABEL_POSITION - step * 0.05, DEFAULT_LABEL_POSITION + step * 0.05]) {
+      for (const at of [home - step * 0.05, home + step * 0.05]) {
         if (at > 0.06 && at < 0.94 && !covered(at)) return at;
       }
     }
-    return DEFAULT_LABEL_POSITION;
-  }, [labelSize.height, labelSize.width, request.obstacles, request.points]);
+    return home;
+  }, [anchorAt, home, labelSize.height, labelSize.width, request.obstacles]);
   const position = dragged ?? request.storedPosition ?? clearPosition;
-  const point = useMemo(() => pointAlong(request.points, position), [position, request.points]);
+  const anchor = useMemo(() => anchorAt(position), [anchorAt, position]);
 
   const onPointerDown = useCallback((event: ReactPointerEvent<HTMLButtonElement>) => {
     if (!setPosition || event.button !== 0) return;
@@ -93,7 +119,7 @@ export function useWireLabel(request: WireLabelRequest): {
         onPointerUp={onPointerUp}
         ref={measureLabel}
         style={{
-          transform: `translate(-50%, -50%) translate(${point.x}px, ${point.y}px)`,
+          transform: `translate(-50%, -50%) translate(${anchor.x}px, ${anchor.y}px)`,
           zIndex: request.selected ? 1001 : undefined,
         }}
         type="button"

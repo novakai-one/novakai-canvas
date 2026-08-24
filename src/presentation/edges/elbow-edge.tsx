@@ -57,6 +57,7 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
     || (visibility === 'selected' && props.selected));
   const setRoute = props.data?.setRoute;
   const label = useWireLabel({
+    seed: props.id,
     label: showLabel ? props.data?.label ?? '' : '',
     points: route.points,
     obstacles: props.data?.obstacles,
