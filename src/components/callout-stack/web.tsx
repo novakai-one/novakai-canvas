@@ -12,11 +12,11 @@ export function CalloutStackNode({ data }: NodeProps<CalloutStackFlowNode>) {
   return (
     <div className={`callout-stack-node-shell${portsClass}`}>
       <article className="callout-stack-node">
-        <header className="node-header">
+        <header className="node-header semantic-summary">
           <span className="node-label">{node.label}</span>
           {(!editable || preferences.nodes.showKinds) && <span className="node-kind">callout stack</span>}
         </header>
-        <div className="callout-list">
+        <div className="callout-list semantic-essential">
           {callouts.map((callout) => {
             const isSelected = selection?.kind === 'component-item'
               && selection.nodeId === node.id

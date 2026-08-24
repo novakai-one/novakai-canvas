@@ -14,12 +14,12 @@ export function OouxObjectNode({ data }: NodeProps<OouxObjectFlowNode>) {
   const style = colors ? paletteCssVariables(colors) as CSSProperties : undefined;
   return <div className={`ooux-object-shell${preferences.nodes.showPorts === 'always' ? ' ports-always' : ''}`}>
     <article className="ooux-object-node" style={style}>
-      <header className="ooux-object-header">
+      <header className="ooux-object-header semantic-summary">
         <NodeLabel editable={editable} label={node.label}
           rename={(next) => data.rename?.(node.id as string, next)} />
         <span>«object»</span>
       </header>
-      <div className="ooux-object-rows">
+      <div className="ooux-object-rows semantic-essential">
         {(node.oouxRows ?? []).map((row) => {
           const selected = selection?.kind === 'component-item'
             && selection.nodeId === node.id && selection.collection === 'oouxRows'

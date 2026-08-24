@@ -12,11 +12,11 @@ export function MetricNode({ data }: NodeProps<MetricFlowNode>) {
   return (
     <div className={`metric-node-shell${portsClass}`}>
       <article className={`metric-node status-${status}`}>
-        <header className="node-header">
+        <header className="node-header semantic-summary">
           <span className="node-label">{node.label}</span>
           {(!editable || preferences.nodes.showKinds) && <span className="node-kind">metric</span>}
         </header>
-        <div className="metric-content">
+        <div className="metric-content semantic-essential">
           <strong className="metric-value">{node.value}</strong>
           {node.detail && <span className="metric-detail">{node.detail}</span>}
           <span className="metric-status">{status}</span>

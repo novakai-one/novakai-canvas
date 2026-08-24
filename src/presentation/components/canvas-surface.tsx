@@ -1,9 +1,9 @@
 import {
-  useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type RefObject,
+  useCallback, useEffect, useMemo, useRef, useState, type CSSProperties,
 } from 'react';
 import {
   Background, BackgroundVariant, ConnectionMode, Controls, ReactFlow,
-  type NodeChange, type Viewport,
+  type NodeChange,
 } from '@xyflow/react';
 import type { DiagramSummary } from '../../application/canvas-library';
 import type { RecordCommand } from '../../application/canvas-workspace';
@@ -11,9 +11,8 @@ import type { CanvasPreferences, Selection } from '../../domain/model';
 import type { ProjectedView } from '../../domain/project-view';
 import type { DiagramRecord } from '../../domain/records';
 import {
-  escapeStep, placedNodes, resolveDrop, selectionResolves, type WorldPoint,
+  placedNodes, resolveDrop, type WorldPoint,
 } from '../canvas-actions';
-import { canvasCamera, publishCanvasCamera } from '../canvas-camera';
 import { RailToggle, StudioToggle, targetScale } from '../shell';
 import { projectEdges, projectNodes } from '../projection';
 import { applyFrame, clearInFlight, mergeInFlight, takeInFlight, type InFlight } from '../in-flight';
@@ -26,6 +25,8 @@ import { wireLabelSizing } from '../wire-styles';
 import { useCanvasActivity } from '../shell/canvas-activity-context';
 import { ConnectionCreationPicker } from './connection-creation-picker.tsx';
 import { useConnectionGestures } from './use-connection-gestures.ts';
+import { useCanvasCamera, useRefitWhenPanelsMove } from './use-canvas-camera.ts';
+import { useCanvasShortcuts } from './use-canvas-shortcuts.ts';
 
 const nodeTypes = webRenderers;
 const edgeTypes = { elbow: ElbowEdge };
@@ -97,210 +98,6 @@ function applyDrop(
   ]);
 }
 
-/** True while the keystroke belongs to a field the user is typing in, not to the canvas. */
-function typingInAField(target: EventTarget | null): boolean {
-  if (!(target instanceof HTMLElement)) return false;
-  return target.isContentEditable
-    || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
-}
-
-/**
- * Escape, owned by the canvas.
- *
- * The canvas is the only thing that knows what "outward" means, so the keystroke is read here
- * rather than in the shell. It never touches the camera — Escape only ever renames the
- * selection, one step at a time, until there is none.
- */
-function useEscapeStepsOutward(
-  active: boolean,
-  record: DiagramRecord,
-  selection: Selection,
-  setSelection: (selection: Selection) => void,
-): void {
-  useEffect(() => {
-    if (!active) return;
-    const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key !== 'Escape' || typingInAField(event.target)) return;
-      if (!selection) return;
-      event.preventDefault();
-      setSelection(escapeStep(record, selection));
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [active, record, selection, setSelection]);
-}
-
-/**
- * Binds the undo everyone's hands already know.
- *
- * The toolbar button was the only way to undo, which means the reflex every other application
- * on the machine has trained fires into nothing — and the more confident you are that ⌘Z has
- * you, the more expensive its silence is. Typing in a studio field is left to the browser's own
- * text undo, which is what the same keystroke should mean while a caret is in a field.
- */
-function useUndoShortcut(active: boolean, canUndo: boolean, undo: () => void): void {
-  useEffect(() => {
-    if (!active) return;
-    const onKeyDown = (event: KeyboardEvent): void => {
-      const key = event.key.toLowerCase();
-      if (key !== 'z' || !(event.metaKey || event.ctrlKey)) return;
-      if (event.shiftKey || typingInAField(event.target)) return;
-      event.preventDefault();
-      if (canUndo) undo();
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [active, canUndo, undo]);
-}
-
-/**
- * Drops a selection whose object has gone.
- *
- * Undo and delete can retire the selected object while the selection still names it. Left
- * alone, "dim unrelated" then dims every node against a thing that no longer exists and the
- * canvas sits grey with nothing selected. Releasing the selection releases the dim with it.
- */
-function useSelectionReleasesWithItsObject(
-  record: DiagramRecord,
-  selection: Selection,
-  setSelection: (selection: Selection) => void,
-): void {
-  useEffect(() => {
-    if (!selectionResolves(record, selection)) setSelection(null);
-  }, [record, selection, setSelection]);
-}
-
-/** Only the parts of React Flow's instance the camera actually uses. */
-interface FlowInstance {
-  setViewport: (viewport: Viewport) => unknown;
-  getViewport: () => Viewport;
-  fitView: (options?: {
-    nodes?: { id: string }[]; duration?: number; padding?: number;
-    minZoom?: number; maxZoom?: number;
-  }) => unknown;
-  screenToFlowPosition: (point: { x: number; y: number }) => { x: number; y: number };
-}
-
-/** Calm is slow: travel is a structural move, and the eye must be able to follow it. */
-const TRAVEL_MS = 700;
-
-/**
- * Everything about where the canvas is looking.
- *
- * A diagram is a place. Coming back to one and finding a different view of it is the same
- * disorientation as coming back to a document scrolled to a line you never chose, so the camera
- * is remembered per diagram and restored on return. Only a diagram's very first opening earns a
- * fit; after that the user's own framing wins. Memory is deliberately session-scoped — it is a
- * property of this sitting, not of the record, and it never reaches disk.
- *
- * The same hook publishes the travel contract other chrome uses, and answers the one question
- * placement needs: which point in the diagram the user is actually looking at.
- */
-function useCamera(activeDiagramId: string): {
-  surface: RefObject<HTMLElement | null>;
-  fitOnOpen: boolean;
-  remember: (viewport: Viewport) => void;
-  attach: (instance: FlowInstance) => void;
-  publishZoom: (zoom: number) => void;
-  focusPoint: () => WorldPoint;
-  /** One screen point in diagram coordinates — where a pointer actually let go. */
-  toWorld: (point: { x: number; y: number }) => WorldPoint;
-} {
-  const flow = useRef<FlowInstance | null>(null);
-  const surface = useRef<HTMLElement | null>(null);
-  const cameras = useRef(new Map<string, Viewport>());
-  const remembered = cameras.current.get(activeDiagramId);
-
-  useEffect(() => {
-    publishCanvasCamera({
-      centerOnNode: (nodeId) => {
-        const instance = flow.current;
-        if (!instance) return;
-        // Travel, not re-framing: the zoom the user chose is pinned, only the centre changes.
-        const { zoom } = instance.getViewport();
-        instance.fitView({
-          nodes: [{ id: nodeId }], duration: TRAVEL_MS, minZoom: zoom, maxZoom: zoom,
-        });
-      },
-      fit: () => flow.current?.fitView({ duration: TRAVEL_MS, padding: 0.12, maxZoom: 1 }),
-      focusPoint: () => {
-        const instance = flow.current;
-        const box = surface.current?.getBoundingClientRect();
-        if (!instance || !box) return { x: 0, y: 0 };
-        return instance.screenToFlowPosition({
-          x: box.x + box.width / 2, y: box.y + box.height / 2,
-        });
-      },
-    });
-    return () => publishCanvasCamera(null);
-  }, []);
-
-  const publishZoom = useCallback((zoom: number): void => {
-    const element = surface.current;
-    if (!element) return;
-    element.style.setProperty('--nvk-zoom', String(zoom));
-  }, []);
-
-  return {
-    surface,
-    fitOnOpen: remembered === undefined,
-    remember: (viewport: Viewport) => { cameras.current.set(activeDiagramId, viewport); },
-
-    /**
-     * Publishes the live zoom to CSS so anything that must keep a constant *screen* size can
-     * divide by it.
-     *
-     * Written straight to the node rather than held in state: this fires on every frame of a
-     * zoom, and re-rendering the whole canvas at 60fps to move a number is a cost with no
-     * benefit. Ports are the reason it exists — drawn inside the scaled viewport they shrank
-     * to two physical pixels at the app's own default framing, which is not a small target,
-     * it is an invisible one.
-     */
-    publishZoom,
-    attach: (instance: FlowInstance) => {
-      flow.current = instance;
-      const saved = cameras.current.get(activeDiagramId);
-      if (saved) { instance.setViewport(saved); return; }
-      // React Flow measures before the shell's panels have their widths, so its own first fit
-      // frames a viewport that no longer exists. One more fit after layout settles corrects it.
-      window.setTimeout(() => {
-        if (!cameras.current.has(activeDiagramId)) {
-          instance.fitView({ padding: 0.1, maxZoom: 1, minZoom: 0.05 });
-        }
-      }, 90);
-    },
-    focusPoint: () => {
-      const instance = flow.current;
-      const box = surface.current?.getBoundingClientRect();
-      if (!instance || !box) return { x: 0, y: 0 };
-      return instance.screenToFlowPosition({
-        x: box.x + box.width / 2, y: box.y + box.height / 2,
-      });
-    },
-    toWorld: (point: { x: number; y: number }) =>
-      flow.current?.screenToFlowPosition(point) ?? { x: 0, y: 0 },
-  };
-}
-
-/**
- * Panels push the canvas, so their movement changes what the user can see. When one finishes
- * opening, closing, or resizing, the diagram re-frames itself calmly — the semantics table's
- * one sanctioned camera move that the user did not make with the camera itself.
- */
-function useRefitWhenPanelsMove(panel: CanvasPreferences['panel']): void {
-  const { railCollapsed, railWidth, reframeOnPanelMove, studioCollapsed, width } = panel;
-  const settled = useRef(false);
-  useEffect(() => {
-    if (!settled.current) { settled.current = true; return; }
-    // Opt-in, and off by default. Moving a panel changes how much of the diagram you can see;
-    // it is not a request to look somewhere else, and the camera moving on its own is the one
-    // thing Chris has asked for twice that it must never do.
-    if (!reframeOnPanelMove) return;
-    const timer = window.setTimeout(() => canvasCamera().fit(), TRAVEL_MS + 60);
-    return () => window.clearTimeout(timer);
-  }, [railCollapsed, railWidth, reframeOnPanelMove, studioCollapsed, width]);
-}
-
 /** Interactive editor or clean, read-only presentation of one open diagram record. */
 export function CanvasSurface(props: CanvasSurfaceProps) {
   const {
@@ -309,14 +106,20 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   const active = useCanvasActivity();
   const editable = mode === 'edit';
   const labelSizing = wireLabelSizing(preferences);
-  const camera = useCamera(activeDiagramId);
+  const camera = useCanvasCamera(activeDiagramId);
   const connections = useConnectionGestures({
     editable, resetKey: activeDiagramId, view, executeAll, setSelection, surface: camera.surface,
     toWorld: camera.toWorld,
   });
-  useEscapeStepsOutward(active && !connections.pendingConnection, record, selection, setSelection);
-  useUndoShortcut(active, editable && props.canUndo, props.undo);
-  useSelectionReleasesWithItsObject(record, selection, setSelection);
+  useCanvasShortcuts({
+    active,
+    canUndo: editable && props.canUndo,
+    escapeActive: active && !connections.pendingConnection,
+    record,
+    selection,
+    setSelection,
+    undo: props.undo,
+  });
   useRefitWhenPanelsMove(preferences.panel);
   const [inFlight, setInFlight] = useState<InFlight>({});
   /*

@@ -13,11 +13,11 @@ export function IconCardNode({ data }: NodeProps<IconCardFlowNode>) {
   return (
     <div className={`icon-card-node-shell${portsClass}`}>
       <article className="icon-card-node">
-        <header className="node-header">
+        <header className="node-header semantic-summary">
           <span className="node-label">{node.label}</span>
           {(!editable || preferences.nodes.showKinds) && <span className="node-kind">icon card</span>}
         </header>
-        <div className="icon-card-body">
+        <div className="icon-card-body semantic-essential">
           <span aria-label={`${icon} icon`} className="icon-card-glyph" role="img">
             <svg aria-hidden viewBox="0 0 24 24">
               <path d={GLYPHS[icon]} />

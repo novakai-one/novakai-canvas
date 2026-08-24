@@ -200,4 +200,35 @@ describe('projectEdges', () => {
     wired.views['view-default'].hiddenKinds = ['comment'];
     expect(projectEdges(input(wired))).toEqual([]);
   });
+
+  it('marks exactly the selected node or wire neighbourhood as related', () => {
+    const wired = record(
+      [
+        node('map', 'group'), node('a', 'module', 'map'),
+        node('b', 'module', 'map'), node('c', 'module', 'map'),
+      ],
+      [wire('wire-ab', 'a', 'b'), wire('wire-bc', 'b', 'c')],
+    );
+    const nodeSelected = {
+      ...input(wired), selection: { kind: 'node' as const, id: asId<NodeId>('a') },
+    };
+    expect(projectNodes(nodeSelected).slice(1).map((item) => [item.id, item.className])).toEqual([
+      ['a', 'is-related'], ['b', 'is-related'], ['c', 'is-dimmed'],
+    ]);
+    expect(projectEdges(nodeSelected).map((item) => [
+      item.id, item.className, item.data?.related,
+    ])).toEqual([
+      ['wire-ab', 'is-related', true], ['wire-bc', 'is-dimmed', false],
+    ]);
+
+    const wireSelected = {
+      ...input(wired), selection: { kind: 'wire' as const, id: asId('wire-bc') },
+    };
+    expect(projectNodes(wireSelected).slice(1).map((item) => [item.id, item.className])).toEqual([
+      ['a', 'is-dimmed'], ['b', 'is-related'], ['c', 'is-related'],
+    ]);
+    expect(projectEdges(wireSelected).map((item) => [item.id, item.className])).toEqual([
+      ['wire-ab', 'is-dimmed'], ['wire-bc', 'is-related'],
+    ]);
+  });
 });

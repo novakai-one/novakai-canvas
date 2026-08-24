@@ -12,11 +12,11 @@ export function TimelineNode({ data }: NodeProps<TimelineFlowNode>) {
   return (
     <div className={`timeline-node-shell${portsClass}`}>
       <article className="tree-node timeline-node">
-        <header className="node-header">
+        <header className="node-header semantic-summary">
           <span className="node-label">{node.label}</span>
           <span className="node-kind">timeline</span>
         </header>
-        <div className="tree-rows">
+        <div className="tree-rows semantic-essential">
           {steps.map((step, index) => {
             const isSelected = selection?.kind === 'component-item'
               && selection.nodeId === node.id && selection.collection === 'steps' && selection.itemId === step.id;

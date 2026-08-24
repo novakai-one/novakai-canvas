@@ -29,7 +29,7 @@ export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowN
       */
     <>
       <article className={`architecture-node kind-${node.kind} ${portsClass}`} style={style}>
-        <header className="node-header">
+        <header className="node-header semantic-summary">
         <NodeLabel
           editable={editable}
           label={node.label}
@@ -38,10 +38,10 @@ export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowN
         {appearance.showKindBadge && <span className="node-kind">{node.kind}</span>}
       </header>
       {(!editable || preferences.nodes.showDescriptions) && node.description && (
-        <p className="node-description">{node.description}</p>
+        <p className="node-description semantic-detail">{node.description}</p>
       )}
       {showInterfaces && interfaces.length > 0 && (
-        <div className="interface-list">
+        <div className="interface-list semantic-essential">
           {interfaces.map((item) => (
             <button
               className={selection?.kind === 'interface' && selection.id === item.id ? 'is-selected' : ''}
@@ -57,7 +57,7 @@ export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowN
         </div>
       )}
         {(!editable || preferences.nodes.showTypes) && types.length > 0 && (
-        <div className="type-list">
+        <div className="type-list semantic-detail">
           {types.map((item) => (
             <button
               className={selection?.kind === 'type' && selection.id === item.id ? 'is-selected' : ''}

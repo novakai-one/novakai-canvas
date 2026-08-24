@@ -1,0 +1,50 @@
+/*
+ * Semantic zoom removes information; it never rescales it.
+ *
+ * Each component owns the meaning of its static summary/essential/detail regions. This shared
+ * layer owns only when those regions are visible. The live tier is published directly by the
+ * camera, so zooming does not rebuild React Flow nodes or write presentation state to disk.
+ */
+.semantic-essential,
+.semantic-detail {
+  transition: opacity 140ms ease;
+}
+
+.canvas-surface[data-zoom-tier='overview'] :is(.semantic-essential, .semantic-detail),
+.canvas-surface[data-zoom-tier='readable'] .semantic-detail {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Selection is an explicit request for detail. Node selection, child-item selection and wire
+   endpoint projection all resolve to selected/is-related on the React Flow wrapper. */
+.canvas-surface[data-zoom-tier='overview']
+  .react-flow__node:is(.selected, .is-related) :is(.semantic-essential, .semantic-detail),
+.canvas-surface[data-zoom-tier='readable']
+  .react-flow__node:is(.selected, .is-related) .semantic-detail {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* At overview scale a scope is a named region, not another rectangle competing with its nodes. */
+.canvas-surface[data-zoom-tier='overview'] .scope-node:not(.is-selected) {
+  border-color: transparent;
+  background: transparent;
+}
+
+/* Labels exist only when the explicit preference constructed them. Below detail, semantic zoom
+   suppresses idle permitted labels; actual path hover, selection and local focus reveal one. */
+.canvas-surface:is([data-zoom-tier='overview'], [data-zoom-tier='readable'])
+  .wire-label:not(.is-selected, .is-related, .is-hovered) {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.canvas-surface:is([data-zoom-tier='overview'], [data-zoom-tier='readable'])
+  .wire-label:is(.is-selected, .is-related, .is-hovered) {
+  visibility: visible;
+  pointer-events: all;
+}

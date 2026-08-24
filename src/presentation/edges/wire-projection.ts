@@ -9,7 +9,7 @@ import type { WireKind } from '../../domain/records';
 import { ARCHITECTURE_FLOW } from '../../domain/flow';
 import { resolveWireAppearance, wireStrokeWidth, type ResolvedWireAppearance } from '../wire-styles';
 import type { ProjectionInput } from '../projection-contract';
-import { connectedIds } from '../projection-selection';
+import { connectedIds, connectedWireIds } from '../projection-selection';
 import type { WireCardinality } from '../../domain/wire-cardinality';
 
 /** How one wire is shaped by hand, read from the active layout route hint. */
@@ -33,12 +33,14 @@ export interface ArchitectureEdgeData extends Record<string, unknown> {
   appearance: ResolvedWireAppearance;
   sourceCardinality?: WireCardinality;
   targetCardinality?: WireCardinality;
+  related: boolean;
 }
 
 /** Projects the visible wires of one diagram into React Flow edges. */
 export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>[] {
   const { editable, execute, preferences, record, select, selection, view } = input;
   const connected = connectedIds(input);
+  const connectedWires = connectedWireIds(input);
   const hints = record.layouts[record.views[record.activeViewId]?.layoutId]?.wireRouteHints ?? {};
   const plans = planWireRoutes(view, hints, {
     avoidObstacles: preferences.wires.avoidNodes ?? true,
@@ -52,6 +54,7 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
       fallbackWidth: wireStrokeWidth(preferences.wires.width),
       fallbackShape: preferences.wires.shape,
     });
+    const related = selection !== null && connectedWires.has(wire.id as string);
     return ({
     id: wire.id,
     source: wire.source.nodeId,
@@ -67,8 +70,12 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
       width: 14,
       height: 14,
     },
-    className: preferences.wires.dimUnrelated && selection
-      && (!connected.has(wire.source.nodeId) || !connected.has(wire.target.nodeId)) ? 'is-dimmed' : '',
+    className: [
+      related ? 'is-related' : '',
+      preferences.wires.dimUnrelated && selection
+        && (!connected.has(wire.source.nodeId) || !connected.has(wire.target.nodeId))
+        ? 'is-dimmed' : '',
+    ].filter(Boolean).join(' '),
     data: {
       label: wire.label,
       kind: wire.kind,
@@ -79,6 +86,7 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
       appearance,
       sourceCardinality: wire.source.cardinality,
       targetCardinality: wire.target.cardinality,
+      related,
       route: {
         waypoints: hints[wire.id]?.waypoints ?? [],
         labelPosition: hints[wire.id]?.labelPosition,

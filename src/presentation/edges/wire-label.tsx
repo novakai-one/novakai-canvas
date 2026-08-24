@@ -15,6 +15,8 @@ interface WireLabelRequest {
   obstacles?: RouteObstacle[];
   storedPosition?: number;
   selected: boolean;
+  related: boolean;
+  hovered: boolean;
   movable: boolean;
   select: () => void;
   setPosition?: (position: number) => void;
@@ -84,7 +86,7 @@ export function useWireLabel(request: WireLabelRequest): {
   const element = request.label ? (
     <EdgeLabelRenderer>
       <button
-        className={`wire-label nodrag nopan${request.selected ? ' is-selected' : ''}${request.movable ? ' is-movable' : ''}`}
+        className={`wire-label nodrag nopan${request.selected ? ' is-selected' : ''}${request.related ? ' is-related' : ''}${request.hovered ? ' is-hovered' : ''}${request.movable ? ' is-movable' : ''}`}
         onClick={(event) => { event.stopPropagation(); if (!moved.current) request.select(); }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}

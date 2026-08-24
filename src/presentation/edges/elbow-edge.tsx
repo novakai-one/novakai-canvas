@@ -42,6 +42,7 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
   }, [planned, props.data?.route.waypoints, props.sourceX, props.sourceY, props.targetX,
     props.targetY, routeRequest]);
   const [preview, setPreview] = useState<WireRouteEditResult | null>(null);
+  const [hovered, setHovered] = useState(false);
   const route = preview?.route ?? committed;
   const shape = props.data?.appearance.shape ?? 'elbow';
   const decorations = useMemo(() => planWireEndDecorations(
@@ -52,8 +53,8 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
   );
 
   const visibility = props.data?.preferences.wires.showLabels;
-  const showLabel = !props.data?.editable || visibility === 'always'
-    || (visibility === 'selected' && props.selected);
+  const showLabel = visibility !== 'never' && (!props.data?.editable || visibility === 'always'
+    || (visibility === 'selected' && props.selected));
   const setRoute = props.data?.setRoute;
   const label = useWireLabel({
     label: showLabel ? props.data?.label ?? '' : '',
@@ -61,6 +62,8 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
     obstacles: props.data?.obstacles,
     storedPosition: props.data?.route.labelPosition,
     selected: Boolean(props.selected),
+    related: Boolean(props.data?.related),
+    hovered,
     movable: Boolean(setRoute),
     select: () => props.data?.select(),
     setPosition: setRoute ? (labelPosition) => setRoute({ labelPosition }) : undefined,
@@ -73,15 +76,17 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
   } as CSSProperties;
 
   return <>
-    <BaseEdge className={preview && !preview.valid ? 'wire-preview-invalid' : undefined}
-      id={props.id} interactionWidth={18} markerEnd={props.markerEnd} path={path} style={style} />
-    {decorations.notationMode && <g fill="none" stroke={appearance?.strokeColorCss}
-      strokeLinecap="round" strokeLinejoin="round" strokeWidth={appearance?.strokeWidth}>
-      {decorations.lines.map((line, index) => <line key={`line-${index}`}
-        x1={line.from.x} x2={line.to.x} y1={line.from.y} y2={line.to.y} />)}
-      {decorations.circles.map((circle, index) => <circle key={`circle-${index}`}
-        cx={circle.center.x} cy={circle.center.y} fill="none" r={circle.radius} />)}
-    </g>}
+    <g onPointerEnter={() => setHovered(true)} onPointerLeave={() => setHovered(false)}>
+      <BaseEdge className={preview && !preview.valid ? 'wire-preview-invalid' : undefined}
+        id={props.id} interactionWidth={18} markerEnd={props.markerEnd} path={path} style={style} />
+      {decorations.notationMode && <g fill="none" stroke={appearance?.strokeColorCss}
+        strokeLinecap="round" strokeLinejoin="round" strokeWidth={appearance?.strokeWidth}>
+        {decorations.lines.map((line, index) => <line key={`line-${index}`}
+          x1={line.from.x} x2={line.to.x} y1={line.from.y} y2={line.to.y} />)}
+        {decorations.circles.map((circle, index) => <circle key={`circle-${index}`}
+          cx={circle.center.x} cy={circle.center.y} fill="none" r={circle.radius} />)}
+      </g>}
+    </g>
     <WireRouteHandles
       editable={Boolean(props.data?.editable)}
       preview={setPreview}

@@ -2,12 +2,14 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { semanticZoomTier } from '../semantic-zoom';
 import { TARGET_SIZES, targetScale } from './target-scale';
 
 function canvasCss(): string {
   const text = [
     '../../styles/canvas-groups.css',
     '../../styles/canvas-wires.css',
+    '../../styles/canvas-semantic-zoom.css',
   ].map((relativePath) => readFileSync(
     fileURLToPath(new URL(relativePath, import.meta.url)),
     'utf8',
@@ -47,6 +49,29 @@ describe('target scale', () => {
   });
 });
 
+describe('semantic zoom tiers', () => {
+  it('classifies first paint and crosses a boundary only beyond its hysteresis band', () => {
+    expect(semanticZoomTier(0.31)).toBe('overview');
+    expect(semanticZoomTier(0.32)).toBe('readable');
+    expect(semanticZoomTier(0.67)).toBe('readable');
+    expect(semanticZoomTier(0.68)).toBe('detail');
+    expect(semanticZoomTier(0.35, 'overview')).toBe('overview');
+    expect(semanticZoomTier(0.37, 'overview')).toBe('readable');
+    expect(semanticZoomTier(0.29, 'readable')).toBe('readable');
+    expect(semanticZoomTier(0.27, 'readable')).toBe('overview');
+    expect(semanticZoomTier(0.71, 'readable')).toBe('readable');
+    expect(semanticZoomTier(0.73, 'readable')).toBe('detail');
+    expect(semanticZoomTier(0.65, 'detail')).toBe('detail');
+    expect(semanticZoomTier(0.63, 'detail')).toBe('readable');
+  });
+
+  it('keeps prior visibility for invalid live values and otherwise fails open to detail', () => {
+    expect(semanticZoomTier(Number.NaN)).toBe('detail');
+    expect(semanticZoomTier(Number.POSITIVE_INFINITY, 'readable')).toBe('readable');
+    expect(semanticZoomTier(0, 'overview')).toBe('overview');
+  });
+});
+
 /**
  * What is inside the zoom transform, and what is not.
  *
@@ -77,7 +102,13 @@ describe('canvas controls hold their size on screen', () => {
     expect(updater).toContain('var(--nvk-zoom, 1)');
   });
 
-  it('never lets semantic zoom override explicit wire-label visibility', () => {
-    expect(canvasCss()).not.toContain('[data-wire-labels-hidden]');
+  it('suppresses tiered detail and idle labels while preserving explicit local overrides', () => {
+    const css = canvasCss();
+    expect(css).toContain("[data-zoom-tier='overview']");
+    expect(css).toContain("[data-zoom-tier='readable']");
+    expect(css).toContain('.semantic-essential');
+    expect(css).toContain('.semantic-detail');
+    expect(css).toContain('.is-selected, .is-related, .is-hovered');
+    expect(css).toContain('pointer-events: none');
   });
 });

@@ -14,15 +14,15 @@ export function EntityNode({ data }: NodeProps<EntityFlowNode>) {
   const style = colors ? paletteCssVariables(colors) as CSSProperties : undefined;
   return <div className={`entity-shell${preferences.nodes.showPorts === 'always' ? ' ports-always' : ''}`}>
     <article className="entity-node" style={style}>
-      <header className="entity-header">
+      <header className="entity-header semantic-summary">
         <NodeLabel editable={editable} label={node.label}
           rename={(next) => data.rename?.(node.id as string, next)} />
         <span>«entity»</span>
       </header>
-      <div className="entity-columns" aria-hidden="true">
+      <div className="entity-columns semantic-essential" aria-hidden="true">
         <span>Type</span><span>Field</span><span>Keys</span>
       </div>
-      <div className="entity-rows">
+      <div className="entity-rows semantic-essential">
         {(node.entityFields ?? []).map((field) => {
           const selected = selection?.kind === 'component-item'
             && selection.nodeId === node.id && selection.collection === 'entityFields'

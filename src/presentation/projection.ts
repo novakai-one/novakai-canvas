@@ -53,6 +53,11 @@ export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>
     && view.nodes.some((node) => connected.has(node.id as string));
   return view.nodes.map((node) => {
     const parentId = node.parentId && byId[node.parentId] ? node.parentId as string : undefined;
+    const related = selection !== null && connected.has(node.id as string);
+    const className = [
+      related ? 'is-related' : '',
+      dimming && !related && node.kind !== 'group' ? 'is-dimmed' : '',
+    ].filter(Boolean).join(' ');
     return {
       id: node.id as string,
       type: flowNodeType(node.kind),
@@ -62,7 +67,7 @@ export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>
       height: node.size.height,
       measured: { width: node.size.width, height: node.size.height },
       selected: selection?.kind === 'node' && selection.id === node.id,
-      className: dimming && !connected.has(node.id) && node.kind !== 'group' ? 'is-dimmed' : '',
+      className,
       style: node.kind === 'group' ? { pointerEvents: 'none' as const } : undefined,
       zIndex: node.kind === 'group'
         ? (selection?.kind === 'node' && selection.id === node.id ? 4 : scopeDepth(byId, node) - 1)
