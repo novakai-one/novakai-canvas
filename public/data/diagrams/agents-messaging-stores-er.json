@@ -1,0 +1,883 @@
+{
+  "schemaVersion": 3,
+  "id": "agents-messaging-stores-er",
+  "name": "Agents & Messaging — Stores ER",
+  "status": "active",
+  "revision": 1,
+  "nodes": {
+    "agents-messaging-stores-er": {
+      "id": "agents-messaging-stores-er",
+      "label": "Agents & Messaging — Stores ER",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "agents-messaging-stores-er--note-1-crow-s-feet-er-over-the-": {
+      "id": "agents-messaging-stores-er--note-1-crow-s-feet-er-over-the-",
+      "label": "Crow's-feet ER over the Novakai-Command JSONL stores. Store file named on each object. Message, Thread, Delivery, Inbox Item and Endpoint Claim have no file of their own — they live inside messagingStoreOps.jsonl payloads.",
+      "parentId": "agents-messaging-stores-er",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "agents-messaging-stores-er--identity": {
+      "id": "agents-messaging-stores-er--identity",
+      "label": "Identity",
+      "parentId": "agents-messaging-stores-er",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "agents-messaging-stores-er--runtime": {
+      "id": "agents-messaging-stores-er--runtime",
+      "label": "Runtime",
+      "parentId": "agents-messaging-stores-er",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "agents-messaging-stores-er--messaging": {
+      "id": "agents-messaging-stores-er--messaging",
+      "label": "Messaging",
+      "parentId": "agents-messaging-stores-er",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "agents-messaging-stores-er--terminal": {
+      "id": "agents-messaging-stores-er--terminal",
+      "label": "Terminal",
+      "parentId": "agents-messaging-stores-er",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "agents-messaging-stores-er--identity--person": {
+      "id": "agents-messaging-stores-er--identity--person",
+      "label": "Person",
+      "description": "Principal id only — no store file of its own",
+      "parentId": "agents-messaging-stores-er--identity",
+      "interfaceIds": [],
+      "typeIds": [
+        "agents-messaging-stores-er--identity--person--type-personid"
+      ],
+      "kind": "object"
+    },
+    "agents-messaging-stores-er--identity--agent": {
+      "id": "agents-messaging-stores-er--identity--agent",
+      "label": "Agent",
+      "description": "agents.jsonl — the stable individual",
+      "parentId": "agents-messaging-stores-er--identity",
+      "interfaceIds": [],
+      "typeIds": [
+        "agents-messaging-stores-er--identity--agent--type-agentrecord"
+      ],
+      "kind": "object"
+    },
+    "agents-messaging-stores-er--runtime--agent-run": {
+      "id": "agents-messaging-stores-er--runtime--agent-run",
+      "label": "Agent Run",
+      "description": "agentRuns.jsonl — one provider context (a shift)",
+      "parentId": "agents-messaging-stores-er--runtime",
+      "interfaceIds": [],
+      "typeIds": [
+        "agents-messaging-stores-er--runtime--agent-run--type-agentrun"
+      ],
+      "kind": "object"
+    },
+    "agents-messaging-stores-er--runtime--provider-session": {
+      "id": "agents-messaging-stores-er--runtime--provider-session",
+      "label": "Provider Session",
+      "description": "providerSessionHandles.jsonl — resumable provider handle",
+      "parentId": "agents-messaging-stores-er--runtime",
+      "interfaceIds": [],
+      "typeIds": [
+        "agents-messaging-stores-er--runtime--provider-session--type-providersession"
+      ],
+      "kind": "object"
+    },
+    "agents-messaging-stores-er--runtime--run-continuation": {
+      "id": "agents-messaging-stores-er--runtime--run-continuation",
+      "label": "Run Continuation",
+      "description": "runContinuations.jsonl — resume/fresh/compact/handover edge",
+      "parentId": "agents-messaging-stores-er--runtime",
+      "interfaceIds": [],
+      "typeIds": [
+        "agents-messaging-stores-er--runtime--run-continuation--type-runcontinuation"
+      ],
+      "kind": "object"
+    },
+    "agents-messaging-stores-er--runtime--transcript-binding": {
+      "id": "agents-messaging-stores-er--runtime--transcript-binding",
+      "label": "Transcript Binding",
+      "description": "transcriptBindings.jsonl — Run owns which raw provider file",
+      "parentId": "agents-messaging-stores-er--runtime",
+      "interfaceIds": [],
+      "typeIds": [
+        "agents-messaging-stores-er--runtime--transcript-binding--type-transcriptbinding"
+      ],
+      "kind": "object"
+    },
+    "agents-messaging-stores-er--messaging--thread": {
+      "id": "agents-messaging-stores-er--messaging--thread",
+      "label": "Thread",
+      "description": "messagingStoreOps.jsonl payload — direct pair or room",
+      "parentId": "agents-messaging-stores-er--messaging",
+      "interfaceIds": [],
+      "typeIds": [
+        "agents-messaging-stores-er--messaging--thread--type-thread"
+      ],
+      "kind": "object"
+    },
+    "agents-messaging-stores-er--messaging--message": {
+      "id": "agents-messaging-stores-er--messaging--message",
+      "label": "Message",
+      "description": "messagingStoreOps.jsonl payload",
+      "parentId": "agents-messaging-stores-er--messaging",
+      "interfaceIds": [],
+      "typeIds": [
+        "agents-messaging-stores-er--messaging--message--type-message"
+      ],
+      "kind": "object"
+    },
+    "agents-messaging-stores-er--messaging--delivery": {
+      "id": "agents-messaging-stores-er--messaging--delivery",
+      "label": "Delivery",
+      "description": "messagingStoreOps.jsonl payload — one per recipient person",
+      "parentId": "agents-messaging-stores-er--messaging",
+      "interfaceIds": [],
+      "typeIds": [
+        "agents-messaging-stores-er--messaging--delivery--type-delivery"
+      ],
+      "kind": "object"
+    },
+    "agents-messaging-stores-er--messaging--agent-inbox-item": {
+      "id": "agents-messaging-stores-er--messaging--agent-inbox-item",
+      "label": "Agent Inbox Item",
+      "description": "messagingStoreOps.jsonl payload — one per agent+message",
+      "parentId": "agents-messaging-stores-er--messaging",
+      "interfaceIds": [],
+      "typeIds": [
+        "agents-messaging-stores-er--messaging--agent-inbox-item--type-inboxitem"
+      ],
+      "kind": "object"
+    },
+    "agents-messaging-stores-er--messaging--agent-endpoint-claim": {
+      "id": "agents-messaging-stores-er--messaging--agent-endpoint-claim",
+      "label": "Agent Endpoint Claim",
+      "description": "messagingStoreOps.jsonl payload — which Run owns the agent's terminal endpoint",
+      "parentId": "agents-messaging-stores-er--messaging",
+      "interfaceIds": [],
+      "typeIds": [
+        "agents-messaging-stores-er--messaging--agent-endpoint-claim--type-endpointclaim"
+      ],
+      "kind": "object"
+    },
+    "agents-messaging-stores-er--terminal--terminal-session": {
+      "id": "agents-messaging-stores-er--terminal--terminal-session",
+      "label": "Terminal Session",
+      "description": "terminalSessions.jsonl — a PTY; owner is agent-run or plain shell",
+      "parentId": "agents-messaging-stores-er--terminal",
+      "interfaceIds": [],
+      "typeIds": [
+        "agents-messaging-stores-er--terminal--terminal-session--type-terminalsession"
+      ],
+      "kind": "object"
+    },
+    "agents-messaging-stores-er--terminal--terminal-input-attempt": {
+      "id": "agents-messaging-stores-er--terminal--terminal-input-attempt",
+      "label": "Terminal Input Attempt",
+      "description": "terminalInputAttempts.jsonl — one ordered input outcome",
+      "parentId": "agents-messaging-stores-er--terminal",
+      "interfaceIds": [],
+      "typeIds": [
+        "agents-messaging-stores-er--terminal--terminal-input-attempt--type-inputattempt"
+      ],
+      "kind": "object"
+    }
+  },
+  "wires": {
+    "agents-messaging-stores-er--wire-1": {
+      "id": "agents-messaging-stores-er--wire-1",
+      "kind": "references",
+      "label": "is the persona of",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--identity--person",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--identity--agent",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "agents-messaging-stores-er--wire-2": {
+      "id": "agents-messaging-stores-er--wire-2",
+      "kind": "owns",
+      "label": "works shifts",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--identity--agent",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--runtime--agent-run",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "agents-messaging-stores-er--wire-3": {
+      "id": "agents-messaging-stores-er--wire-3",
+      "kind": "references",
+      "label": "runs inside",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--runtime--agent-run",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--runtime--provider-session",
+        "cardinality": "one"
+      }
+    },
+    "agents-messaging-stores-er--wire-4": {
+      "id": "agents-messaging-stores-er--wire-4",
+      "kind": "references",
+      "label": "types into",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--runtime--agent-run",
+        "cardinality": "zero-or-one"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--terminal--terminal-session",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "agents-messaging-stores-er--wire-5": {
+      "id": "agents-messaging-stores-er--wire-5",
+      "kind": "references",
+      "label": "replaced via",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--runtime--agent-run",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--runtime--run-continuation",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "agents-messaging-stores-er--wire-6": {
+      "id": "agents-messaging-stores-er--wire-6",
+      "kind": "references",
+      "label": "opens next run",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--runtime--run-continuation",
+        "cardinality": "zero-or-one"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--runtime--agent-run",
+        "cardinality": "one"
+      }
+    },
+    "agents-messaging-stores-er--wire-7": {
+      "id": "agents-messaging-stores-er--wire-7",
+      "kind": "owns",
+      "label": "owns transcript files",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--runtime--agent-run",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--runtime--transcript-binding",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "agents-messaging-stores-er--wire-8": {
+      "id": "agents-messaging-stores-er--wire-8",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--messaging--thread",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--messaging--message",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "agents-messaging-stores-er--wire-9": {
+      "id": "agents-messaging-stores-er--wire-9",
+      "kind": "references",
+      "label": "sends",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--identity--person",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--messaging--message",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "agents-messaging-stores-er--wire-10": {
+      "id": "agents-messaging-stores-er--wire-10",
+      "kind": "owns",
+      "label": "fans out per person",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--messaging--message",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--messaging--delivery",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "agents-messaging-stores-er--wire-11": {
+      "id": "agents-messaging-stores-er--wire-11",
+      "kind": "references",
+      "label": "receives",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--identity--person",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--messaging--delivery",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "agents-messaging-stores-er--wire-12": {
+      "id": "agents-messaging-stores-er--wire-12",
+      "kind": "owns",
+      "label": "fans out per agent",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--messaging--message",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--messaging--agent-inbox-item",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "agents-messaging-stores-er--wire-13": {
+      "id": "agents-messaging-stores-er--wire-13",
+      "kind": "owns",
+      "label": "accepts into inbox",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--identity--agent",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--messaging--agent-inbox-item",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "agents-messaging-stores-er--wire-14": {
+      "id": "agents-messaging-stores-er--wire-14",
+      "kind": "owns",
+      "label": "endpoint generations",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--identity--agent",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--messaging--agent-endpoint-claim",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "agents-messaging-stores-er--wire-15": {
+      "id": "agents-messaging-stores-er--wire-15",
+      "kind": "references",
+      "label": "currently holds",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--runtime--agent-run",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--messaging--agent-endpoint-claim",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "agents-messaging-stores-er--wire-16": {
+      "id": "agents-messaging-stores-er--wire-16",
+      "kind": "references",
+      "label": "points at",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--messaging--agent-endpoint-claim",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--terminal--terminal-session",
+        "cardinality": "one"
+      }
+    },
+    "agents-messaging-stores-er--wire-17": {
+      "id": "agents-messaging-stores-er--wire-17",
+      "kind": "references",
+      "label": "delivered via",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--messaging--agent-inbox-item",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--messaging--agent-endpoint-claim",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "agents-messaging-stores-er--wire-18": {
+      "id": "agents-messaging-stores-er--wire-18",
+      "kind": "references",
+      "label": "typed as",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--messaging--agent-inbox-item",
+        "cardinality": "zero-or-one"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--terminal--terminal-input-attempt",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "agents-messaging-stores-er--wire-19": {
+      "id": "agents-messaging-stores-er--wire-19",
+      "kind": "owns",
+      "label": "receives",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--terminal--terminal-session",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--terminal--terminal-input-attempt",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "agents-messaging-stores-er--wire-20": {
+      "id": "agents-messaging-stores-er--wire-20",
+      "kind": "references",
+      "label": "mirrored from terminal",
+      "source": {
+        "nodeId": "agents-messaging-stores-er--messaging--message",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "agents-messaging-stores-er--runtime--transcript-binding",
+        "cardinality": "zero-or-one"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {
+    "agents-messaging-stores-er--identity--person--type-personid": {
+      "id": "agents-messaging-stores-er--identity--person--type-personid",
+      "name": "PersonId",
+      "fields": [
+        "id"
+      ]
+    },
+    "agents-messaging-stores-er--identity--agent--type-agentrecord": {
+      "id": "agents-messaging-stores-er--identity--agent--type-agentrecord",
+      "name": "AgentRecord",
+      "fields": [
+        "agentId",
+        "provider",
+        "model"
+      ]
+    },
+    "agents-messaging-stores-er--runtime--agent-run--type-agentrun": {
+      "id": "agents-messaging-stores-er--runtime--agent-run--type-agentrun",
+      "name": "AgentRun",
+      "fields": [
+        "agentRunId",
+        "lifecycle",
+        "activity"
+      ]
+    },
+    "agents-messaging-stores-er--runtime--provider-session--type-providersession": {
+      "id": "agents-messaging-stores-er--runtime--provider-session--type-providersession",
+      "name": "ProviderSession",
+      "fields": [
+        "providerSessionId",
+        "resumeHandle"
+      ]
+    },
+    "agents-messaging-stores-er--runtime--run-continuation--type-runcontinuation": {
+      "id": "agents-messaging-stores-er--runtime--run-continuation--type-runcontinuation",
+      "name": "RunContinuation",
+      "fields": [
+        "fromRunId",
+        "toRunId",
+        "mode"
+      ]
+    },
+    "agents-messaging-stores-er--runtime--transcript-binding--type-transcriptbinding": {
+      "id": "agents-messaging-stores-er--runtime--transcript-binding--type-transcriptbinding",
+      "name": "TranscriptBinding",
+      "fields": [
+        "bindingId",
+        "sourceFile"
+      ]
+    },
+    "agents-messaging-stores-er--messaging--thread--type-thread": {
+      "id": "agents-messaging-stores-er--messaging--thread--type-thread",
+      "name": "Thread",
+      "fields": [
+        "threadId",
+        "threadKind"
+      ]
+    },
+    "agents-messaging-stores-er--messaging--message--type-message": {
+      "id": "agents-messaging-stores-er--messaging--message--type-message",
+      "name": "Message",
+      "fields": [
+        "messageId",
+        "sequence",
+        "senderId"
+      ]
+    },
+    "agents-messaging-stores-er--messaging--delivery--type-delivery": {
+      "id": "agents-messaging-stores-er--messaging--delivery--type-delivery",
+      "name": "Delivery",
+      "fields": [
+        "deliveryId",
+        "state"
+      ]
+    },
+    "agents-messaging-stores-er--messaging--agent-inbox-item--type-inboxitem": {
+      "id": "agents-messaging-stores-er--messaging--agent-inbox-item--type-inboxitem",
+      "name": "InboxItem",
+      "fields": [
+        "state"
+      ]
+    },
+    "agents-messaging-stores-er--messaging--agent-endpoint-claim--type-endpointclaim": {
+      "id": "agents-messaging-stores-er--messaging--agent-endpoint-claim--type-endpointclaim",
+      "name": "EndpointClaim",
+      "fields": [
+        "generation",
+        "state"
+      ]
+    },
+    "agents-messaging-stores-er--terminal--terminal-session--type-terminalsession": {
+      "id": "agents-messaging-stores-er--terminal--terminal-session--type-terminalsession",
+      "name": "TerminalSession",
+      "fields": [
+        "terminalSessionId",
+        "status"
+      ]
+    },
+    "agents-messaging-stores-er--terminal--terminal-input-attempt--type-inputattempt": {
+      "id": "agents-messaging-stores-er--terminal--terminal-input-attempt--type-inputattempt",
+      "name": "InputAttempt",
+      "fields": [
+        "attemptId",
+        "outcome"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "agents-messaging-stores-er": {
+          "nodeId": "agents-messaging-stores-er",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 2040,
+            "height": 1446
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--note-1-crow-s-feet-er-over-the-": {
+          "nodeId": "agents-messaging-stores-er--note-1-crow-s-feet-er-over-the-",
+          "position": {
+            "x": 1501,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 195
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--identity": {
+          "nodeId": "agents-messaging-stores-er--identity",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 421,
+            "height": 424
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--runtime": {
+          "nodeId": "agents-messaging-stores-er--runtime",
+          "position": {
+            "x": 40,
+            "y": 966
+          },
+          "size": {
+            "width": 1420,
+            "height": 440
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--messaging": {
+          "nodeId": "agents-messaging-stores-er--messaging",
+          "position": {
+            "x": 501,
+            "y": 56
+          },
+          "size": {
+            "width": 960,
+            "height": 840
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--terminal": {
+          "nodeId": "agents-messaging-stores-er--terminal",
+          "position": {
+            "x": 1500,
+            "y": 966
+          },
+          "size": {
+            "width": 500,
+            "height": 440
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--identity--person": {
+          "nodeId": "agents-messaging-stores-er--identity--person",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 341,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--identity--agent": {
+          "nodeId": "agents-messaging-stores-er--identity--agent",
+          "position": {
+            "x": 55,
+            "y": 256
+          },
+          "size": {
+            "width": 312,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--runtime--agent-run": {
+          "nodeId": "agents-messaging-stores-er--runtime--agent-run",
+          "position": {
+            "x": 525,
+            "y": 56
+          },
+          "size": {
+            "width": 370,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--runtime--provider-session": {
+          "nodeId": "agents-messaging-stores-er--runtime--provider-session",
+          "position": {
+            "x": 40,
+            "y": 264
+          },
+          "size": {
+            "width": 420,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--runtime--run-continuation": {
+          "nodeId": "agents-messaging-stores-er--runtime--run-continuation",
+          "position": {
+            "x": 500,
+            "y": 256
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--runtime--transcript-binding": {
+          "nodeId": "agents-messaging-stores-er--runtime--transcript-binding",
+          "position": {
+            "x": 960,
+            "y": 256
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--messaging--thread": {
+          "nodeId": "agents-messaging-stores-er--messaging--thread",
+          "position": {
+            "x": 277,
+            "y": 56
+          },
+          "size": {
+            "width": 406,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--messaging--message": {
+          "nodeId": "agents-messaging-stores-er--messaging--message",
+          "position": {
+            "x": 321,
+            "y": 256
+          },
+          "size": {
+            "width": 319,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--messaging--delivery": {
+          "nodeId": "agents-messaging-stores-er--messaging--delivery",
+          "position": {
+            "x": 500,
+            "y": 456
+          },
+          "size": {
+            "width": 420,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--messaging--agent-inbox-item": {
+          "nodeId": "agents-messaging-stores-er--messaging--agent-inbox-item",
+          "position": {
+            "x": 40,
+            "y": 456
+          },
+          "size": {
+            "width": 420,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--messaging--agent-endpoint-claim": {
+          "nodeId": "agents-messaging-stores-er--messaging--agent-endpoint-claim",
+          "position": {
+            "x": 40,
+            "y": 656
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--terminal--terminal-session": {
+          "nodeId": "agents-messaging-stores-er--terminal--terminal-session",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "agents-messaging-stores-er--terminal--terminal-input-attempt": {
+          "nodeId": "agents-messaging-stores-er--terminal--terminal-input-attempt",
+          "position": {
+            "x": 40,
+            "y": 272
+          },
+          "size": {
+            "width": 420,
+            "height": 128
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {},
+      "appearanceByWireId": {},
+      "arrangementByContainerId": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-d31c3131-fba8-40ad-a287-20faaf581bb4": {
+      "operationId": "cli-apply-d31c3131-fba8-40ad-a287-20faaf581bb4",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-22T22:15:57.835Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command/cbc14d76-2723-414a-bf0d-598b556b4f44/scratchpad/agents-messaging-er.dsl"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add"
+      ]
+    }
+  }
+}

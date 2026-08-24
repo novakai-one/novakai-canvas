@@ -1,0 +1,3751 @@
+{
+  "schemaVersion": 3,
+  "id": "transcript-first-data-model",
+  "name": "Transcript-First — Data Model",
+  "status": "active",
+  "revision": 151,
+  "nodes": {
+    "transcript-first-data-model": {
+      "id": "transcript-first-data-model",
+      "label": "Transcript-First — Data Model",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-data-model--external-provider-s-world-black-box--provider-server": {
+      "id": "transcript-first-data-model--external-provider-s-world-black-box--provider-server",
+      "label": "Provider Server",
+      "description": "Anthropic / OpenAI / Moonshot — remote provider infrastructure outside Novakai",
+      "parentId": "transcript-first-data-model--external-provider-s-world-black-box",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "runtime"
+    },
+    "transcript-first-data-model--external-provider-s-world-black-box--provider-session-file": {
+      "id": "transcript-first-data-model--external-provider-s-world-black-box--provider-session-file",
+      "label": "Provider Session File",
+      "description": "~/.claude/projects, ~/.codex, kimi dirs — provider-owned, purged ~30 days",
+      "parentId": "transcript-first-data-model--external-provider-s-world-black-box",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "transcript-first-data-model--ingestion-the-one-door--ingestion": {
+      "id": "transcript-first-data-model--ingestion-the-one-door--ingestion",
+      "label": "Ingestion",
+      "description": "the ONLY code that reads provider files. Per tick: stat; unchanged = read nothing; grown = seek to offset, read tail only; signature mismatch = recalibrate that one file, uuid dedupe keeps it safe",
+      "parentId": "transcript-first-data-model--ingestion-the-one-door",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "transcript-first-data-model--ingestion-the-one-door--entity-ingest-checkpoint": {
+      "id": "transcript-first-data-model--ingestion-the-one-door--entity-ingest-checkpoint",
+      "label": "Ingest Checkpoint",
+      "parentId": "transcript-first-data-model--ingestion-the-one-door",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "ingest-checkpoint",
+      "entityFields": [
+        {
+          "id": "ic-source-id",
+          "name": "sourceId",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "ic-offset",
+          "name": "offset",
+          "valueType": "bytes — fast path only",
+          "keys": []
+        },
+        {
+          "id": "ic-signature",
+          "name": "fileSignature",
+          "valueType": "inode + first-line hash",
+          "keys": []
+        }
+      ]
+    },
+    "transcript-first-data-model--root-store-single-source-of-truth--entity-agent": {
+      "id": "transcript-first-data-model--root-store-single-source-of-truth--entity-agent",
+      "label": "Agent",
+      "parentId": "transcript-first-data-model--root-store-single-source-of-truth",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "agent",
+      "entityFields": [
+        {
+          "id": "ag-id",
+          "name": "agentId",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "ag-parent",
+          "name": "parentAgentId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "ag-provider",
+          "name": "provider",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "ag-model",
+          "name": "model",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "ag-origin",
+          "name": "origin",
+          "valueType": "nvk-spawned|provider-spawned|agent-spawned",
+          "keys": []
+        }
+      ]
+    },
+    "transcript-first-data-model--root-store-single-source-of-truth--entity-provider-session": {
+      "id": "transcript-first-data-model--root-store-single-source-of-truth--entity-provider-session",
+      "label": "Provider Session",
+      "parentId": "transcript-first-data-model--root-store-single-source-of-truth",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "provider-session",
+      "entityFields": [
+        {
+          "id": "ps-id",
+          "name": "sessionId",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "ps-agent",
+          "name": "agentId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "ps-provider",
+          "name": "provider",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "ps-resume",
+          "name": "resumeId",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "ps-status",
+          "name": "status",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    },
+    "transcript-first-data-model--root-store-single-source-of-truth--entity-transcript-line": {
+      "id": "transcript-first-data-model--root-store-single-source-of-truth--entity-transcript-line",
+      "label": "Transcript Line",
+      "parentId": "transcript-first-data-model--root-store-single-source-of-truth",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "transcript-line",
+      "entityFields": [
+        {
+          "id": "tl-id",
+          "name": "id",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "tl-session",
+          "name": "sessionId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "tl-turn",
+          "name": "turnId",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "tl-role",
+          "name": "role",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "tl-text",
+          "name": "text",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "tl-toolcall",
+          "name": "toolCall",
+          "valueType": "json",
+          "keys": []
+        },
+        {
+          "id": "tl-tokens",
+          "name": "tokenUsage",
+          "valueType": "json",
+          "keys": []
+        },
+        {
+          "id": "tl-raw",
+          "name": "raw",
+          "valueType": "verbatim-provider-line",
+          "keys": []
+        }
+      ]
+    },
+    "transcript-first-data-model--app-view--entity-conversation": {
+      "id": "transcript-first-data-model--app-view--entity-conversation",
+      "label": "Conversation",
+      "parentId": "transcript-first-data-model--app-view",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "conversation",
+      "entityFields": [
+        {
+          "id": "cv-id",
+          "name": "conversationId",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "cv-participants",
+          "name": "participantIds",
+          "valueType": "agentId[] — or you",
+          "keys": []
+        },
+        {
+          "id": "cv-title",
+          "name": "titleOverride",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "cv-pinned",
+          "name": "pinned",
+          "valueType": "boolean",
+          "keys": []
+        },
+        {
+          "id": "cv-lastread",
+          "name": "lastReadLineId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        }
+      ]
+    },
+    "transcript-first-data-model--send-and-delivery--entity-send-journal": {
+      "id": "transcript-first-data-model--send-and-delivery--entity-send-journal",
+      "label": "Send Journal",
+      "parentId": "transcript-first-data-model--send-and-delivery",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "send-journal",
+      "entityFields": [
+        {
+          "id": "sj-id",
+          "name": "sendId",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "sj-conversation",
+          "name": "conversationId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "sj-issuedby",
+          "name": "issuedBy",
+          "valueType": "agentId | you",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "sj-target",
+          "name": "targetSessionId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "sj-clientop",
+          "name": "clientOpId",
+          "valueType": "string",
+          "keys": [
+            "uk"
+          ]
+        },
+        {
+          "id": "sj-state",
+          "name": "state",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    },
+    "transcript-first-data-model--send-and-delivery--one-shot-cli-send": {
+      "id": "transcript-first-data-model--send-and-delivery--one-shot-cli-send",
+      "label": "One-shot CLI Send",
+      "description": "claude -p --resume / codex exec resume / kimi -p -S; one send = one child process",
+      "parentId": "transcript-first-data-model--send-and-delivery",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "transcript-first-data-model--send-and-delivery--entity-pending-delivery": {
+      "id": "transcript-first-data-model--send-and-delivery--entity-pending-delivery",
+      "label": "Pending Delivery",
+      "parentId": "transcript-first-data-model--send-and-delivery",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "pending-delivery",
+      "entityFields": [
+        {
+          "id": "pd-id",
+          "name": "id",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "pd-line",
+          "name": "transcriptLineId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "pd-recipient",
+          "name": "recipientAgentId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "pd-state",
+          "name": "state",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    },
+    "transcript-first-data-model--send-and-delivery--delivery-router": {
+      "id": "transcript-first-data-model--send-and-delivery--delivery-router",
+      "label": "Delivery Router",
+      "description": "delivers pending items into the recipient's session ONLY when idle, batched at turn boundaries — children never interrupt a parent",
+      "parentId": "transcript-first-data-model--send-and-delivery",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "transcript-first-data-model--projections-rebuildable-never-authoritative--entity-usage-rollup": {
+      "id": "transcript-first-data-model--projections-rebuildable-never-authoritative--entity-usage-rollup",
+      "label": "Usage Rollup",
+      "parentId": "transcript-first-data-model--projections-rebuildable-never-authoritative",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "usage-rollup",
+      "entityFields": [
+        {
+          "id": "ur-session",
+          "name": "sessionId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "ur-tokens",
+          "name": "tokens",
+          "valueType": "number",
+          "keys": []
+        }
+      ]
+    },
+    "transcript-first-data-model--projections-rebuildable-never-authoritative--entity-tool-call-index": {
+      "id": "transcript-first-data-model--projections-rebuildable-never-authoritative--entity-tool-call-index",
+      "label": "Tool Call Index",
+      "parentId": "transcript-first-data-model--projections-rebuildable-never-authoritative",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "tool-call-index",
+      "entityFields": [
+        {
+          "id": "tc-line",
+          "name": "transcriptLineId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "tc-tool",
+          "name": "toolName",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    },
+    "transcript-first-data-model--transcript-first-data-model": {
+      "id": "transcript-first-data-model--transcript-first-data-model",
+      "label": "Transcript-First — Data Model",
+      "parentId": "transcript-first-data-model",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-data-model--external-provider-s-world-black-box": {
+      "id": "transcript-first-data-model--external-provider-s-world-black-box",
+      "label": "External — provider's world, black box",
+      "parentId": "transcript-first-data-model",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-data-model--external-provider-s-world-black-box--provider-cli-process": {
+      "id": "transcript-first-data-model--external-provider-s-world-black-box--provider-cli-process",
+      "label": "Provider CLI Process",
+      "description": "Local provider-owned child process. Invokes the registered Novakai hook, communicates with the provider server, and writes the provider session file.",
+      "parentId": "transcript-first-data-model--external-provider-s-world-black-box",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "runtime"
+    },
+    "transcript-first-data-model--transcript-first-data-model--note-1-target-shape-entity-nota": {
+      "id": "transcript-first-data-model--transcript-first-data-model--note-1-target-shape-entity-nota",
+      "label": "Target shape, entity notation. One door in: Ingestion is the only reader of provider files. Transcript Line is the single root; projections rebuild from it. Acceptance test: delete a provider session file, restart, nothing changes.",
+      "parentId": "transcript-first-data-model--transcript-first-data-model",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "transcript-first-data-model--ingestion-the-one-door": {
+      "id": "transcript-first-data-model--ingestion-the-one-door",
+      "label": "Ingestion — the one door",
+      "parentId": "transcript-first-data-model--transcript-first-data-model",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-data-model--root-store-single-source-of-truth": {
+      "id": "transcript-first-data-model--root-store-single-source-of-truth",
+      "label": "Root store — single source of truth",
+      "parentId": "transcript-first-data-model--transcript-first-data-model",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-data-model--app-view": {
+      "id": "transcript-first-data-model--app-view",
+      "label": "App view",
+      "parentId": "transcript-first-data-model--transcript-first-data-model",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-data-model--send-and-delivery": {
+      "id": "transcript-first-data-model--send-and-delivery",
+      "label": "Send and delivery",
+      "parentId": "transcript-first-data-model--transcript-first-data-model",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-data-model--projections-rebuildable-never-authoritative": {
+      "id": "transcript-first-data-model--projections-rebuildable-never-authoritative",
+      "label": "Projections — rebuildable, never authoritative",
+      "parentId": "transcript-first-data-model--transcript-first-data-model",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-data-model--ingestion-the-one-door--provider-transcript-adapters": {
+      "id": "transcript-first-data-model--ingestion-the-one-door--provider-transcript-adapters",
+      "label": "Provider Transcript Adapters",
+      "description": "Claude, Codex and Kimi parsers that recognise each provider's persisted Novakai hook representation and emit normalized {sessionId, agentId} evidence.",
+      "parentId": "transcript-first-data-model--ingestion-the-one-door",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "transcript-first-data-model--ingestion-the-one-door--session-assignment": {
+      "id": "transcript-first-data-model--ingestion-the-one-door--session-assignment",
+      "label": "Session Assignment",
+      "description": "Consumes explicit {sessionId, agentId} evidence and fills the existing Provider Session agentId FK. Agent creation is owned by a separate future process.",
+      "parentId": "transcript-first-data-model--ingestion-the-one-door",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "transcript-first-data-model--send-and-delivery--novakai-agent-identity-hook": {
+      "id": "transcript-first-data-model--send-and-delivery--novakai-agent-identity-hook",
+      "label": "Novakai Agent Identity Hook",
+      "description": "Novakai-owned UserPromptSubmit hook. Receives the Agent ID supplied by sendMessage, emits it when invoked by the provider CLI, and causes it to be persisted in the provider session file.",
+      "parentId": "transcript-first-data-model--send-and-delivery",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    }
+  },
+  "wires": {
+    "transcript-first-data-model--wire-1": {
+      "id": "transcript-first-data-model--wire-1",
+      "kind": "executes",
+      "label": "writes provider transcript and hook output",
+      "source": {
+        "nodeId": "transcript-first-data-model--external-provider-s-world-black-box--provider-cli-process"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--external-provider-s-world-black-box--provider-session-file"
+      }
+    },
+    "transcript-first-data-model--wire-2": {
+      "id": "transcript-first-data-model--wire-2",
+      "kind": "queries",
+      "label": "read tail-to-tip",
+      "source": {
+        "nodeId": "transcript-first-data-model--external-provider-s-world-black-box--provider-session-file",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--ingestion-the-one-door--ingestion",
+        "cardinality": "one"
+      }
+    },
+    "transcript-first-data-model--wire-3": {
+      "id": "transcript-first-data-model--wire-3",
+      "kind": "executes",
+      "label": "parse provider-specific identity evidence",
+      "source": {
+        "nodeId": "transcript-first-data-model--ingestion-the-one-door--ingestion"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--ingestion-the-one-door--provider-transcript-adapters"
+      }
+    },
+    "transcript-first-data-model--wire-4": {
+      "id": "transcript-first-data-model--wire-4",
+      "kind": "executes",
+      "label": "emit normalized {sessionId, agentId} evidence",
+      "source": {
+        "nodeId": "transcript-first-data-model--ingestion-the-one-door--provider-transcript-adapters"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--ingestion-the-one-door--session-assignment"
+      }
+    },
+    "transcript-first-data-model--wire-5": {
+      "id": "transcript-first-data-model--wire-5",
+      "kind": "executes",
+      "label": "appends every line",
+      "source": {
+        "nodeId": "transcript-first-data-model--ingestion-the-one-door--ingestion"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-transcript-line"
+      }
+    },
+    "transcript-first-data-model--wire-6": {
+      "id": "transcript-first-data-model--wire-6",
+      "kind": "owns",
+      "label": "tracks progress per file",
+      "source": {
+        "nodeId": "transcript-first-data-model--ingestion-the-one-door--ingestion",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--ingestion-the-one-door--entity-ingest-checkpoint",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "transcript-first-data-model--wire-7": {
+      "id": "transcript-first-data-model--wire-7",
+      "kind": "executes",
+      "label": "registers each discovered session; agentId empty if external",
+      "source": {
+        "nodeId": "transcript-first-data-model--ingestion-the-one-door--ingestion"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-provider-session"
+      }
+    },
+    "transcript-first-data-model--wire-8": {
+      "id": "transcript-first-data-model--wire-8",
+      "kind": "executes",
+      "label": "fill agentId FK from explicit evidence",
+      "source": {
+        "nodeId": "transcript-first-data-model--ingestion-the-one-door--session-assignment"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-provider-session"
+      }
+    },
+    "transcript-first-data-model--wire-9": {
+      "id": "transcript-first-data-model--wire-9",
+      "kind": "owns",
+      "label": "works sessions over time",
+      "source": {
+        "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-agent",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-provider-session",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "transcript-first-data-model--wire-10": {
+      "id": "transcript-first-data-model--wire-10",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-provider-session",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-transcript-line",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "transcript-first-data-model--wire-11": {
+      "id": "transcript-first-data-model--wire-11",
+      "kind": "owns",
+      "label": "spawns sub-agents via our CLI; parent-child",
+      "source": {
+        "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-agent",
+        "cardinality": "zero-or-one"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-agent",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "transcript-first-data-model--wire-12": {
+      "id": "transcript-first-data-model--wire-12",
+      "kind": "queries",
+      "label": "renders from the root",
+      "source": {
+        "nodeId": "transcript-first-data-model--app-view--entity-conversation",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-transcript-line",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "transcript-first-data-model--wire-13": {
+      "id": "transcript-first-data-model--wire-13",
+      "kind": "owns",
+      "label": "you hit send",
+      "source": {
+        "nodeId": "transcript-first-data-model--app-view--entity-conversation",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--send-and-delivery--entity-send-journal",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "transcript-first-data-model--wire-14": {
+      "id": "transcript-first-data-model--wire-14",
+      "kind": "executes",
+      "label": "one send = one child process",
+      "source": {
+        "nodeId": "transcript-first-data-model--send-and-delivery--entity-send-journal"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--send-and-delivery--one-shot-cli-send"
+      }
+    },
+    "transcript-first-data-model--wire-15": {
+      "id": "transcript-first-data-model--wire-15",
+      "kind": "executes",
+      "label": "spawn or resume the provider CLI",
+      "source": {
+        "nodeId": "transcript-first-data-model--send-and-delivery--one-shot-cli-send"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--external-provider-s-world-black-box--provider-cli-process"
+      }
+    },
+    "transcript-first-data-model--wire-16": {
+      "id": "transcript-first-data-model--wire-16",
+      "kind": "executes",
+      "label": "supply agentId for this invocation",
+      "source": {
+        "nodeId": "transcript-first-data-model--send-and-delivery--one-shot-cli-send"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--send-and-delivery--novakai-agent-identity-hook"
+      }
+    },
+    "transcript-first-data-model--wire-17": {
+      "id": "transcript-first-data-model--wire-17",
+      "kind": "executes",
+      "label": "invoke UserPromptSubmit",
+      "source": {
+        "nodeId": "transcript-first-data-model--external-provider-s-world-black-box--provider-cli-process"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--send-and-delivery--novakai-agent-identity-hook"
+      }
+    },
+    "transcript-first-data-model--wire-18": {
+      "id": "transcript-first-data-model--wire-18",
+      "kind": "executes",
+      "label": "emit persisted identity evidence",
+      "source": {
+        "nodeId": "transcript-first-data-model--send-and-delivery--novakai-agent-identity-hook"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--external-provider-s-world-black-box--provider-session-file"
+      }
+    },
+    "transcript-first-data-model--wire-19": {
+      "id": "transcript-first-data-model--wire-19",
+      "kind": "executes",
+      "label": "send prompt and receive response",
+      "source": {
+        "nodeId": "transcript-first-data-model--external-provider-s-world-black-box--provider-cli-process"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--external-provider-s-world-black-box--provider-server"
+      }
+    },
+    "transcript-first-data-model--wire-20": {
+      "id": "transcript-first-data-model--wire-20",
+      "kind": "owns",
+      "label": "reply addressed to another agent queues here",
+      "source": {
+        "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-transcript-line",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--send-and-delivery--entity-pending-delivery",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "transcript-first-data-model--wire-21": {
+      "id": "transcript-first-data-model--wire-21",
+      "kind": "queries",
+      "label": "watches for undelivered items",
+      "source": {
+        "nodeId": "transcript-first-data-model--send-and-delivery--delivery-router"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--send-and-delivery--entity-pending-delivery"
+      }
+    },
+    "transcript-first-data-model--wire-22": {
+      "id": "transcript-first-data-model--wire-22",
+      "kind": "queries",
+      "label": "rolled up",
+      "source": {
+        "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-transcript-line",
+        "cardinality": "one-or-many"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--projections-rebuildable-never-authoritative--entity-usage-rollup",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "transcript-first-data-model--wire-23": {
+      "id": "transcript-first-data-model--wire-23",
+      "kind": "queries",
+      "label": "indexed",
+      "source": {
+        "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-transcript-line",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--projections-rebuildable-never-authoritative--entity-tool-call-index",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "transcript-first-data-model--wire-24": {
+      "id": "transcript-first-data-model--wire-24",
+      "kind": "references",
+      "label": "participantIds — agents, or you; never empty",
+      "source": {
+        "nodeId": "transcript-first-data-model--app-view--entity-conversation",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-agent",
+        "cardinality": "one-or-many"
+      }
+    },
+    "transcript-first-data-model--wire-25": {
+      "id": "transcript-first-data-model--wire-25",
+      "kind": "executes",
+      "label": "creates a send row — same path as you",
+      "source": {
+        "nodeId": "transcript-first-data-model--send-and-delivery--delivery-router"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--send-and-delivery--entity-send-journal"
+      }
+    },
+    "transcript-first-data-model--wire-26": {
+      "id": "transcript-first-data-model--wire-26",
+      "kind": "references",
+      "label": "issuedBy — you or an agent",
+      "source": {
+        "nodeId": "transcript-first-data-model--send-and-delivery--entity-send-journal",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-agent",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "transcript-first-data-model--wire-27": {
+      "id": "transcript-first-data-model--wire-27",
+      "kind": "references",
+      "label": "targetSessionId — the session the CLI resumes",
+      "source": {
+        "nodeId": "transcript-first-data-model--send-and-delivery--entity-send-journal",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-provider-session",
+        "cardinality": "one"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "transcript-first-data-model": {
+          "nodeId": "transcript-first-data-model",
+          "position": {
+            "x": 528,
+            "y": 8532
+          },
+          "size": {
+            "width": 3132,
+            "height": 3360
+          },
+          "sizeMode": "manual",
+          "pinned": false
+        },
+        "transcript-first-data-model--external-provider-s-world-black-box--provider-server": {
+          "nodeId": "transcript-first-data-model--external-provider-s-world-black-box--provider-server",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--external-provider-s-world-black-box--provider-session-file": {
+          "nodeId": "transcript-first-data-model--external-provider-s-world-black-box--provider-session-file",
+          "position": {
+            "x": 40,
+            "y": 248
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--ingestion-the-one-door--ingestion": {
+          "nodeId": "transcript-first-data-model--ingestion-the-one-door--ingestion",
+          "position": {
+            "x": 1092,
+            "y": 60
+          },
+          "size": {
+            "width": 420,
+            "height": 152
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--ingestion-the-one-door--entity-ingest-checkpoint": {
+          "nodeId": "transcript-first-data-model--ingestion-the-one-door--entity-ingest-checkpoint",
+          "position": {
+            "x": 708,
+            "y": 276
+          },
+          "size": {
+            "width": 360,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--root-store-single-source-of-truth--entity-agent": {
+          "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-agent",
+          "position": {
+            "x": -12,
+            "y": 228
+          },
+          "size": {
+            "width": 420,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--root-store-single-source-of-truth--entity-provider-session": {
+          "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-provider-session",
+          "position": {
+            "x": 1200,
+            "y": 24
+          },
+          "size": {
+            "width": 320,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--root-store-single-source-of-truth--entity-transcript-line": {
+          "nodeId": "transcript-first-data-model--root-store-single-source-of-truth--entity-transcript-line",
+          "position": {
+            "x": 648,
+            "y": 312
+          },
+          "size": {
+            "width": 320,
+            "height": 338
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--app-view--entity-conversation": {
+          "nodeId": "transcript-first-data-model--app-view--entity-conversation",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 340,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--send-and-delivery--entity-send-journal": {
+          "nodeId": "transcript-first-data-model--send-and-delivery--entity-send-journal",
+          "position": {
+            "x": 84,
+            "y": 96
+          },
+          "size": {
+            "width": 320,
+            "height": 274
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--send-and-delivery--one-shot-cli-send": {
+          "nodeId": "transcript-first-data-model--send-and-delivery--one-shot-cli-send",
+          "position": {
+            "x": 132,
+            "y": 600
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--send-and-delivery--entity-pending-delivery": {
+          "nodeId": "transcript-first-data-model--send-and-delivery--entity-pending-delivery",
+          "position": {
+            "x": 732,
+            "y": 180
+          },
+          "size": {
+            "width": 320,
+            "height": 210
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--send-and-delivery--delivery-router": {
+          "nodeId": "transcript-first-data-model--send-and-delivery--delivery-router",
+          "position": {
+            "x": 864,
+            "y": 672
+          },
+          "size": {
+            "width": 420,
+            "height": 136
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--projections-rebuildable-never-authoritative--entity-usage-rollup": {
+          "nodeId": "transcript-first-data-model--projections-rebuildable-never-authoritative--entity-usage-rollup",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--projections-rebuildable-never-authoritative--entity-tool-call-index": {
+          "nodeId": "transcript-first-data-model--projections-rebuildable-never-authoritative--entity-tool-call-index",
+          "position": {
+            "x": 400,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--transcript-first-data-model": {
+          "nodeId": "transcript-first-data-model--transcript-first-data-model",
+          "position": {
+            "x": 40,
+            "y": 2580
+          },
+          "size": {
+            "width": 2932,
+            "height": 2708
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--external-provider-s-world-black-box": {
+          "nodeId": "transcript-first-data-model--external-provider-s-world-black-box",
+          "position": {
+            "x": 1100,
+            "y": 1792
+          },
+          "size": {
+            "width": 500,
+            "height": 624
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--external-provider-s-world-black-box--provider-cli-process": {
+          "nodeId": "transcript-first-data-model--external-provider-s-world-black-box--provider-cli-process",
+          "position": {
+            "x": 40,
+            "y": 448
+          },
+          "size": {
+            "width": 420,
+            "height": 136
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--transcript-first-data-model--note-1-target-shape-entity-nota": {
+          "nodeId": "transcript-first-data-model--transcript-first-data-model--note-1-target-shape-entity-nota",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 195
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--ingestion-the-one-door": {
+          "nodeId": "transcript-first-data-model--ingestion-the-one-door",
+          "position": {
+            "x": 332,
+            "y": 52
+          },
+          "size": {
+            "width": 1704,
+            "height": 918
+          },
+          "sizeMode": "manual",
+          "pinned": false
+        },
+        "transcript-first-data-model--root-store-single-source-of-truth": {
+          "nodeId": "transcript-first-data-model--root-store-single-source-of-truth",
+          "position": {
+            "x": 704,
+            "y": 568
+          },
+          "size": {
+            "width": 1568,
+            "height": 954
+          },
+          "sizeMode": "manual",
+          "pinned": false
+        },
+        "transcript-first-data-model--app-view": {
+          "nodeId": "transcript-first-data-model--app-view",
+          "position": {
+            "x": 2408,
+            "y": 1036
+          },
+          "size": {
+            "width": 484,
+            "height": 916
+          },
+          "sizeMode": "manual",
+          "pinned": false
+        },
+        "transcript-first-data-model--send-and-delivery": {
+          "nodeId": "transcript-first-data-model--send-and-delivery",
+          "position": {
+            "x": 44,
+            "y": 1588
+          },
+          "size": {
+            "width": 1366,
+            "height": 1080
+          },
+          "sizeMode": "manual",
+          "pinned": false
+        },
+        "transcript-first-data-model--projections-rebuildable-never-authoritative": {
+          "nodeId": "transcript-first-data-model--projections-rebuildable-never-authoritative",
+          "position": {
+            "x": 1544,
+            "y": 1912
+          },
+          "size": {
+            "width": 760,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--ingestion-the-one-door--provider-transcript-adapters": {
+          "nodeId": "transcript-first-data-model--ingestion-the-one-door--provider-transcript-adapters",
+          "position": {
+            "x": 40,
+            "y": 534
+          },
+          "size": {
+            "width": 420,
+            "height": 136
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--ingestion-the-one-door--session-assignment": {
+          "nodeId": "transcript-first-data-model--ingestion-the-one-door--session-assignment",
+          "position": {
+            "x": 40,
+            "y": 742
+          },
+          "size": {
+            "width": 420,
+            "height": 136
+          },
+          "pinned": false
+        },
+        "transcript-first-data-model--send-and-delivery--novakai-agent-identity-hook": {
+          "nodeId": "transcript-first-data-model--send-and-delivery--novakai-agent-identity-hook",
+          "position": {
+            "x": 40,
+            "y": 888
+          },
+          "size": {
+            "width": 420,
+            "height": 152
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {
+        "transcript-first-data-model--wire-6": {
+          "wireId": "transcript-first-data-model--wire-6",
+          "waypoints": [],
+          "labelPosition": 0.5204002862324456
+        },
+        "transcript-first-data-model--wire-8": {
+          "wireId": "transcript-first-data-model--wire-8",
+          "waypoints": [],
+          "labelPosition": 0.5059190427698574
+        },
+        "transcript-first-data-model--wire-10": {
+          "wireId": "transcript-first-data-model--wire-10",
+          "waypoints": [],
+          "labelPosition": 0.12345673347530915
+        },
+        "transcript-first-data-model--wire-16": {
+          "wireId": "transcript-first-data-model--wire-16",
+          "preferredTargetSide": "left",
+          "waypoints": []
+        },
+        "transcript-first-data-model--wire-19": {
+          "wireId": "transcript-first-data-model--wire-19",
+          "waypoints": [],
+          "labelPosition": 0.32627471084976023
+        },
+        "transcript-first-data-model--wire-24": {
+          "wireId": "transcript-first-data-model--wire-24",
+          "waypoints": [],
+          "labelPosition": 0.5533768805271595
+        }
+      },
+      "appearanceByNodeId": {
+        "transcript-first-data-model--ingestion-the-one-door--entity-ingest-checkpoint": {
+          "palette": "neutral"
+        },
+        "transcript-first-data-model--root-store-single-source-of-truth--entity-provider-session": {
+          "palette": "blue"
+        },
+        "transcript-first-data-model--root-store-single-source-of-truth--entity-agent": {
+          "palette": "blue"
+        },
+        "transcript-first-data-model--root-store-single-source-of-truth--entity-transcript-line": {
+          "palette": "blue"
+        },
+        "transcript-first-data-model--app-view--entity-conversation": {
+          "palette": "violet"
+        },
+        "transcript-first-data-model--send-and-delivery--entity-send-journal": {
+          "palette": "sage"
+        },
+        "transcript-first-data-model--send-and-delivery--entity-pending-delivery": {
+          "palette": "sage"
+        },
+        "transcript-first-data-model--projections-rebuildable-never-authoritative--entity-usage-rollup": {
+          "palette": "neutral"
+        },
+        "transcript-first-data-model--projections-rebuildable-never-authoritative--entity-tool-call-index": {
+          "palette": "neutral"
+        }
+      },
+      "appearanceByWireId": {},
+      "arrangementByContainerId": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-326f1c97-5cf4-481e-b7a3-a9356dbf8be4": {
+      "operationId": "cli-apply-326f1c97-5cf4-481e-b7a3-a9356dbf8be4",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-23T02:57:23.747Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command/cbc14d76-2723-414a-bf0d-598b556b4f44/scratchpad/transcript-target-entity.dsl"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    },
+    "studio-27eaad88-8da5-454b-bd24-57e4c394573e": {
+      "operationId": "studio-27eaad88-8da5-454b-bd24-57e4c394573e",
+      "revision": 2,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:51:15.351Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "studio-df735ffb-0c39-4b68-863e-f07b79987b3c": {
+      "operationId": "studio-df735ffb-0c39-4b68-863e-f07b79987b3c",
+      "revision": 3,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:51:24.218Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-7da24d2e-a326-40f4-b2bf-4720e5e87875": {
+      "operationId": "studio-7da24d2e-a326-40f4-b2bf-4720e5e87875",
+      "revision": 4,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:51:25.652Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-cddaa7a5-8643-414f-9ad2-bd298c7c3f95": {
+      "operationId": "studio-cddaa7a5-8643-414f-9ad2-bd298c7c3f95",
+      "revision": 5,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:51:45.718Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "studio-84cff573-5be7-435f-8736-6c38856d12f3": {
+      "operationId": "studio-84cff573-5be7-435f-8736-6c38856d12f3",
+      "revision": 6,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:51:51.987Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-a87abb8b-8efa-4927-ae42-55c315d3337e": {
+      "operationId": "studio-a87abb8b-8efa-4927-ae42-55c315d3337e",
+      "revision": 7,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:51:56.403Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-60adbe33-2956-4c3d-867a-89f47afc6666": {
+      "operationId": "studio-60adbe33-2956-4c3d-867a-89f47afc6666",
+      "revision": 8,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:52:00.235Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-8365fc26-e11f-453f-a570-3ec784c2c17f": {
+      "operationId": "studio-8365fc26-e11f-453f-a570-3ec784c2c17f",
+      "revision": 9,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:52:02.952Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-fa306c67-9654-40d0-8c3a-035fdc93f642": {
+      "operationId": "studio-fa306c67-9654-40d0-8c3a-035fdc93f642",
+      "revision": 10,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:52:07.918Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-caa859e5-2257-4268-9efd-6df75cb3dda8": {
+      "operationId": "studio-caa859e5-2257-4268-9efd-6df75cb3dda8",
+      "revision": 11,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:52:10.185Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-32c7c973-9128-4297-ba35-bbab3dc61552": {
+      "operationId": "studio-32c7c973-9128-4297-ba35-bbab3dc61552",
+      "revision": 12,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:52:25.419Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-d48ac677-599a-4854-a4b5-b6ed8b1788de": {
+      "operationId": "studio-d48ac677-599a-4854-a4b5-b6ed8b1788de",
+      "revision": 13,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:52:28.852Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-863a2af4-1531-4139-9765-e6d0eed5a7b8": {
+      "operationId": "studio-863a2af4-1531-4139-9765-e6d0eed5a7b8",
+      "revision": 14,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:52:35.920Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-ef24d13b-5940-443d-be45-b7b8aa5eae6e": {
+      "operationId": "studio-ef24d13b-5940-443d-be45-b7b8aa5eae6e",
+      "revision": 15,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:52:37.669Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-38088bd8-271e-484f-a77c-3641e5c4f381": {
+      "operationId": "studio-38088bd8-271e-484f-a77c-3641e5c4f381",
+      "revision": 16,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:52:41.221Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-94116ca7-9e28-4437-a134-de7ccac87515": {
+      "operationId": "studio-94116ca7-9e28-4437-a134-de7ccac87515",
+      "revision": 17,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:52:44.270Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-8bb75b24-2fd7-41a3-85a0-27c33a643a37": {
+      "operationId": "studio-8bb75b24-2fd7-41a3-85a0-27c33a643a37",
+      "revision": 18,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:52:56.319Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move",
+        "node.resize"
+      ]
+    },
+    "studio-49a3162b-a4be-4dcb-9b67-a1615ed8cd2b": {
+      "operationId": "studio-49a3162b-a4be-4dcb-9b67-a1615ed8cd2b",
+      "revision": 19,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:52:58.969Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-e2e145f0-1fe3-4b24-a33d-a1277ff8786f": {
+      "operationId": "studio-e2e145f0-1fe3-4b24-a33d-a1277ff8786f",
+      "revision": 20,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:53:11.336Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-9232c10f-1f45-4af5-a4c3-a1f239af33ef": {
+      "operationId": "studio-9232c10f-1f45-4af5-a4c3-a1f239af33ef",
+      "revision": 21,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:53:13.287Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-6711d8dd-4cf4-4c73-ad89-48da399e5f2d": {
+      "operationId": "studio-6711d8dd-4cf4-4c73-ad89-48da399e5f2d",
+      "revision": 22,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:53:17.202Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "studio-24362015-9e6e-4b89-a314-0e5827af9d49": {
+      "operationId": "studio-24362015-9e6e-4b89-a314-0e5827af9d49",
+      "revision": 23,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:53:19.236Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-405614ae-9f11-4b8e-89f7-c52e946148f3": {
+      "operationId": "studio-405614ae-9f11-4b8e-89f7-c52e946148f3",
+      "revision": 24,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:53:21.487Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-2042e726-3cde-4a0d-9793-ed0026ac4d1a": {
+      "operationId": "studio-2042e726-3cde-4a0d-9793-ed0026ac4d1a",
+      "revision": 25,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:53:24.869Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-ff1bc3b8-694c-4fc0-8569-b8d6c31b5be2": {
+      "operationId": "studio-ff1bc3b8-694c-4fc0-8569-b8d6c31b5be2",
+      "revision": 26,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:53:32.252Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "studio-e13c964f-5541-4ee3-8c45-88559b379e9b": {
+      "operationId": "studio-e13c964f-5541-4ee3-8c45-88559b379e9b",
+      "revision": 27,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:53:35.569Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-0de81079-be04-4591-9f14-01d6ce06ddb8": {
+      "operationId": "studio-0de81079-be04-4591-9f14-01d6ce06ddb8",
+      "revision": 28,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:53:48.019Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-9be007d1-a0ff-40dd-8e9b-d5b1e9457208": {
+      "operationId": "studio-9be007d1-a0ff-40dd-8e9b-d5b1e9457208",
+      "revision": 29,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:54:07.490Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-40beb102-be83-4b42-ac86-b2fcfb3251dc": {
+      "operationId": "studio-40beb102-be83-4b42-ac86-b2fcfb3251dc",
+      "revision": 30,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:54:10.804Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-c69b1971-657e-427f-ae48-d8f3b9f5a189": {
+      "operationId": "studio-c69b1971-657e-427f-ae48-d8f3b9f5a189",
+      "revision": 31,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:54:16.403Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-77eda7fc-e322-4a58-8d81-b97f07979ca5": {
+      "operationId": "studio-77eda7fc-e322-4a58-8d81-b97f07979ca5",
+      "revision": 32,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:54:20.753Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-436f7e3e-b6d4-4c08-9423-41a4cc3cd903": {
+      "operationId": "studio-436f7e3e-b6d4-4c08-9423-41a4cc3cd903",
+      "revision": 33,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:54:27.903Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-25586bc2-33e8-419e-9899-4805c774b989": {
+      "operationId": "studio-25586bc2-33e8-419e-9899-4805c774b989",
+      "revision": 34,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:54:30.636Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-a3dbf162-bd54-4c47-ab08-15fd4ac42c77": {
+      "operationId": "studio-a3dbf162-bd54-4c47-ab08-15fd4ac42c77",
+      "revision": 35,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:55:01.411Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-492190b2-8468-48fd-9bcc-eeb5ccd746b0": {
+      "operationId": "studio-492190b2-8468-48fd-9bcc-eeb5ccd746b0",
+      "revision": 36,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:55:05.037Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-4e719c09-c637-416a-9f39-366185e8f000": {
+      "operationId": "studio-4e719c09-c637-416a-9f39-366185e8f000",
+      "revision": 37,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:55:10.504Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-3141bb50-c42a-4bdb-af7b-77266cfc1664": {
+      "operationId": "studio-3141bb50-c42a-4bdb-af7b-77266cfc1664",
+      "revision": 38,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:55:15.006Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-a14724e0-c0aa-4045-991f-828cc3f09ad5": {
+      "operationId": "studio-a14724e0-c0aa-4045-991f-828cc3f09ad5",
+      "revision": 39,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:55:18.737Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move",
+        "node.resize"
+      ]
+    },
+    "studio-f62b292d-d2a1-43e1-bfb7-6cc04a1f7023": {
+      "operationId": "studio-f62b292d-d2a1-43e1-bfb7-6cc04a1f7023",
+      "revision": 40,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:55:22.587Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-0ee326a2-d046-476d-90f8-a3dc7b3f9a7e": {
+      "operationId": "ui-0ee326a2-d046-476d-90f8-a3dc7b3f9a7e",
+      "revision": 41,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:55:27.388Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "studio-f4ad61ac-3e9d-4a85-b1da-11198b31a896": {
+      "operationId": "studio-f4ad61ac-3e9d-4a85-b1da-11198b31a896",
+      "revision": 42,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:55:31.360Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-40026401-e03a-4488-b724-2e6e720f5c4a": {
+      "operationId": "studio-40026401-e03a-4488-b724-2e6e720f5c4a",
+      "revision": 43,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:55:34.138Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-33ca34ec-db25-42c1-b5b5-154db73b658f": {
+      "operationId": "studio-33ca34ec-db25-42c1-b5b5-154db73b658f",
+      "revision": 44,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:56:08.405Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-09a31e58-7766-4b87-b7f6-b220d14f8aff": {
+      "operationId": "studio-09a31e58-7766-4b87-b7f6-b220d14f8aff",
+      "revision": 45,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:56:38.322Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-92d819f2-f3d1-4fff-96df-b4aac895087c": {
+      "operationId": "studio-92d819f2-f3d1-4fff-96df-b4aac895087c",
+      "revision": 46,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:56:55.455Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-97c24ccc-1581-4655-9607-9217fe7c81ab": {
+      "operationId": "studio-97c24ccc-1581-4655-9607-9217fe7c81ab",
+      "revision": 47,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:57:40.922Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-514e48cf-9b5c-485c-a6b4-e3fa4ba81b40": {
+      "operationId": "studio-514e48cf-9b5c-485c-a6b4-e3fa4ba81b40",
+      "revision": 48,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:57:55.408Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-d2c154d5-b5b8-4984-9e07-d0c96d8690d0": {
+      "operationId": "ui-d2c154d5-b5b8-4984-9e07-d0c96d8690d0",
+      "revision": 49,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:58:48.507Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-12c22b27-e609-4701-a1b3-9a05137d67bc": {
+      "operationId": "ui-12c22b27-e609-4701-a1b3-9a05137d67bc",
+      "revision": 50,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:59:12.607Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "studio-e51d8c62-707f-458e-a36b-28b1f8dc25c5": {
+      "operationId": "studio-e51d8c62-707f-458e-a36b-28b1f8dc25c5",
+      "revision": 51,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:59:17.960Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "studio-55546c0c-bcdb-4f53-992a-df072a8831d7": {
+      "operationId": "studio-55546c0c-bcdb-4f53-992a-df072a8831d7",
+      "revision": 52,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:59:24.024Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-bb4a6a40-31ed-412b-b244-cc2715f5396e": {
+      "operationId": "ui-bb4a6a40-31ed-412b-b244-cc2715f5396e",
+      "revision": 53,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:59:26.056Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-ad769e7b-efda-4a5d-a36e-a66489d7fefb": {
+      "operationId": "ui-ad769e7b-efda-4a5d-a36e-a66489d7fefb",
+      "revision": 54,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:59:31.657Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "studio-1b592e5f-e6aa-4e7f-8b30-6099bbd2ada8": {
+      "operationId": "studio-1b592e5f-e6aa-4e7f-8b30-6099bbd2ada8",
+      "revision": 55,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T07:59:50.944Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-362e881d-c1ae-449a-9472-99a02581a6ee": {
+      "operationId": "studio-362e881d-c1ae-449a-9472-99a02581a6ee",
+      "revision": 56,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T08:00:02.678Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-c0af9f41-9c2e-46bd-be2b-5a804c4165e4": {
+      "operationId": "studio-c0af9f41-9c2e-46bd-be2b-5a804c4165e4",
+      "revision": 57,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T08:01:29.414Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-7341c23a-6c32-4d20-8b24-3bae9ea39cae": {
+      "operationId": "studio-7341c23a-6c32-4d20-8b24-3bae9ea39cae",
+      "revision": 58,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T08:01:52.950Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-78200259-2c7e-4844-9086-07c321f8fceb": {
+      "operationId": "studio-78200259-2c7e-4844-9086-07c321f8fceb",
+      "revision": 59,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T08:02:08.879Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-2de63c63-4887-4ba1-966b-50da1c16b6ef": {
+      "operationId": "studio-2de63c63-4887-4ba1-966b-50da1c16b6ef",
+      "revision": 60,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T08:07:09.749Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-e14f1be1-6550-4f10-bb4c-882a7158bf7c": {
+      "operationId": "studio-e14f1be1-6550-4f10-bb4c-882a7158bf7c",
+      "revision": 61,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T08:07:13.435Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-ee34b949-578c-4b39-a99d-7ca78ebeb039": {
+      "operationId": "studio-ee34b949-578c-4b39-a99d-7ca78ebeb039",
+      "revision": 62,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T08:07:16.999Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-d69b4f11-fd27-4ce2-9019-94f711f8aee4": {
+      "operationId": "ui-d69b4f11-fd27-4ce2-9019-94f711f8aee4",
+      "revision": 63,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:29:02.622Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "layout.nodeAppearance.set"
+      ]
+    },
+    "ui-73d93cb5-cf2d-408e-9a47-82d549c061b5": {
+      "operationId": "ui-73d93cb5-cf2d-408e-9a47-82d549c061b5",
+      "revision": 64,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:29:04.271Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "layout.nodeAppearance.set"
+      ]
+    },
+    "ui-cda2ece3-5490-4309-87fb-1c8b12b4d959": {
+      "operationId": "ui-cda2ece3-5490-4309-87fb-1c8b12b4d959",
+      "revision": 65,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:29:06.087Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "layout.nodeAppearance.set"
+      ]
+    },
+    "studio-c7fc0fd2-4f6d-4c74-a7cf-05fa5aa1491f": {
+      "operationId": "studio-c7fc0fd2-4f6d-4c74-a7cf-05fa5aa1491f",
+      "revision": 66,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:32:17.770Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-5f9c0a71-0b82-4e57-9788-cacfa698ec04": {
+      "operationId": "studio-5f9c0a71-0b82-4e57-9788-cacfa698ec04",
+      "revision": 67,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:33:59.270Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "studio-42e1f3ff-9877-4f00-88f8-331eee2054cb": {
+      "operationId": "studio-42e1f3ff-9877-4f00-88f8-331eee2054cb",
+      "revision": 68,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:34:10.437Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-3d935d5f-650c-4c57-a61d-97ceed134ae9": {
+      "operationId": "studio-3d935d5f-650c-4c57-a61d-97ceed134ae9",
+      "revision": 69,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:34:15.387Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-05f64b79-7c15-429f-929b-0656f9631bf8": {
+      "operationId": "studio-05f64b79-7c15-429f-929b-0656f9631bf8",
+      "revision": 70,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:39:32.838Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-d6c906b5-602a-456e-928d-c7f39800c071": {
+      "operationId": "studio-d6c906b5-602a-456e-928d-c7f39800c071",
+      "revision": 71,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:39:36.104Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "one-loop-refactor-2026-08-23": {
+      "operationId": "one-loop-refactor-2026-08-23",
+      "revision": 72,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-23T18:40:00.000Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "transcript-first-data-model"
+      },
+      "commandKinds": [
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "node.remove",
+        "node.content.set",
+        "node.content.set",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add"
+      ]
+    },
+    "studio-bd6103e8-0224-46bc-a577-47a8d7675e5a": {
+      "operationId": "studio-bd6103e8-0224-46bc-a577-47a8d7675e5a",
+      "revision": 73,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:45:07.121Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-b709ec0c-d92a-4e20-bd4d-98b4dff8d020": {
+      "operationId": "studio-b709ec0c-d92a-4e20-bd4d-98b4dff8d020",
+      "revision": 74,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:48:12.838Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-c303c5b1-6cb7-49dc-8455-862811818971": {
+      "operationId": "ui-c303c5b1-6cb7-49dc-8455-862811818971",
+      "revision": 75,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:50:12.110Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-6571c3ef-7de8-4d45-941d-11d64b633acf": {
+      "operationId": "ui-6571c3ef-7de8-4d45-941d-11d64b633acf",
+      "revision": 76,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:50:17.143Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "studio-3894a86f-456d-4b62-a661-013f0e2cd73c": {
+      "operationId": "studio-3894a86f-456d-4b62-a661-013f0e2cd73c",
+      "revision": 77,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:50:30.493Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-38354e17-07ae-4852-9ffb-75e269e7e579": {
+      "operationId": "studio-38354e17-07ae-4852-9ffb-75e269e7e579",
+      "revision": 78,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:50:35.309Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-7e1e3c10-3243-4b50-890e-4316319dbef0": {
+      "operationId": "studio-7e1e3c10-3243-4b50-890e-4316319dbef0",
+      "revision": 79,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:50:39.910Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-e2346dae-015a-4f2d-b7c3-49ed2c292391": {
+      "operationId": "ui-e2346dae-015a-4f2d-b7c3-49ed2c292391",
+      "revision": 80,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:51:11.709Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-429d1edc-0f68-45be-9aa3-66a7d8f50ad6": {
+      "operationId": "ui-429d1edc-0f68-45be-9aa3-66a7d8f50ad6",
+      "revision": 81,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:51:12.776Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-84c77255-2b8d-4d82-8a5b-5e362c2a3afb": {
+      "operationId": "ui-84c77255-2b8d-4d82-8a5b-5e362c2a3afb",
+      "revision": 82,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T10:51:15.059Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "checkpoint-signature-2026-08-23": {
+      "operationId": "checkpoint-signature-2026-08-23",
+      "revision": 83,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-23T19:20:00.000Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "transcript-first-data-model"
+      },
+      "commandKinds": [
+        "node.content.set",
+        "node.update"
+      ]
+    },
+    "studio-514dc636-a953-4f67-bf9a-56c81024a7bb": {
+      "operationId": "studio-514dc636-a953-4f67-bf9a-56c81024a7bb",
+      "revision": 84,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-23T12:26:26.067Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-d39d8889-e0a8-4b74-8fe7-41b4f0beea0f": {
+      "operationId": "ui-d39d8889-e0a8-4b74-8fe7-41b4f0beea0f",
+      "revision": 85,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T06:07:39.614Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "studio-c484e2f6-468a-489e-8fba-851fc040c60f": {
+      "operationId": "studio-c484e2f6-468a-489e-8fba-851fc040c60f",
+      "revision": 86,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T06:07:40.859Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-4d198ce6-d532-460f-82f7-279dffbd2069": {
+      "operationId": "studio-4d198ce6-d532-460f-82f7-279dffbd2069",
+      "revision": 87,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T06:07:42.763Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-36a2d0b2-7bbb-49b0-b2ae-9fd08857cd85": {
+      "operationId": "studio-36a2d0b2-7bbb-49b0-b2ae-9fd08857cd85",
+      "revision": 88,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T06:07:44.776Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-63c098af-a61c-4edc-ad7f-739bd3c04442": {
+      "operationId": "ui-63c098af-a61c-4edc-ad7f-739bd3c04442",
+      "revision": 89,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T06:07:45.385Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.remove"
+      ]
+    },
+    "ui-49f66255-ecf6-4b0f-9bd3-fd3976013a82": {
+      "operationId": "ui-49f66255-ecf6-4b0f-9bd3-fd3976013a82",
+      "revision": 90,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T06:07:54.599Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "studio-b9cbca71-03c4-4997-8fbf-137f75693910": {
+      "operationId": "studio-b9cbca71-03c4-4997-8fbf-137f75693910",
+      "revision": 91,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T06:07:55.688Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-fa64c923-a94b-430c-a7f2-bb5d79886d7c": {
+      "operationId": "ui-fa64c923-a94b-430c-a7f2-bb5d79886d7c",
+      "revision": 92,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T06:08:15.060Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "ui-6703d27c-83f6-4ce5-a0dc-fda144f0b53d": {
+      "operationId": "ui-6703d27c-83f6-4ce5-a0dc-fda144f0b53d",
+      "revision": 93,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T06:08:17.487Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.update"
+      ]
+    },
+    "ui-a8334f36-c468-4dd6-a2da-096199cd4e2e": {
+      "operationId": "ui-a8334f36-c468-4dd6-a2da-096199cd4e2e",
+      "revision": 94,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T06:08:17.660Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.update"
+      ]
+    },
+    "ui-b0cec508-7d2b-4ecd-8782-1c18a4ba6a54": {
+      "operationId": "ui-b0cec508-7d2b-4ecd-8782-1c18a4ba6a54",
+      "revision": 95,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T06:08:25.998Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.update"
+      ]
+    },
+    "ui-f03d253b-b7cd-4bf5-9aeb-11778265ad11": {
+      "operationId": "ui-f03d253b-b7cd-4bf5-9aeb-11778265ad11",
+      "revision": 96,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T06:41:01.000Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.remove"
+      ]
+    },
+    "ui-46e7b919-b384-423a-a0e6-9e213599ca67": {
+      "operationId": "ui-46e7b919-b384-423a-a0e6-9e213599ca67",
+      "revision": 97,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T06:41:02.679Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.remove"
+      ]
+    },
+    "studio-90ca5ca1-b10e-4b15-9285-77f81366df0c": {
+      "operationId": "studio-90ca5ca1-b10e-4b15-9285-77f81366df0c",
+      "revision": 98,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T10:35:16.461Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-8b0e9eac-c0cf-4099-9bc3-84552b229620": {
+      "operationId": "studio-8b0e9eac-c0cf-4099-9bc3-84552b229620",
+      "revision": 99,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T10:35:20.242Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "studio-68f9574c-a448-4c2c-a079-5a16b89fdc31": {
+      "operationId": "studio-68f9574c-a448-4c2c-a079-5a16b89fdc31",
+      "revision": 100,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T10:35:23.860Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-cf095848-c39c-450f-a4f6-a9c7011db541": {
+      "operationId": "studio-cf095848-c39c-450f-a4f6-a9c7011db541",
+      "revision": 101,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T10:35:26.267Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-b5f63b51-0837-4f6e-b83f-ebcfe87c68fd": {
+      "operationId": "studio-b5f63b51-0837-4f6e-b83f-ebcfe87c68fd",
+      "revision": 102,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T10:35:28.526Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-fb3e2572-918e-43c1-bb5a-f591b2785687": {
+      "operationId": "studio-fb3e2572-918e-43c1-bb5a-f591b2785687",
+      "revision": 103,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T10:35:31.309Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-0b4eb4e3-5195-4f37-8ab0-eb7221ac8b1e": {
+      "operationId": "studio-0b4eb4e3-5195-4f37-8ab0-eb7221ac8b1e",
+      "revision": 104,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T10:35:42.125Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move",
+        "node.resize"
+      ]
+    },
+    "studio-e1373b1b-a8b1-4852-a4c4-e51c79ce912e": {
+      "operationId": "studio-e1373b1b-a8b1-4852-a4c4-e51c79ce912e",
+      "revision": 105,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T10:35:43.258Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move",
+        "node.resize"
+      ]
+    },
+    "transcript-identity-hook-proposal-20260824": {
+      "operationId": "transcript-identity-hook-proposal-20260824",
+      "revision": 106,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-24T11:18:43.751Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/tmp/transcript-first-identity-hook.dsl"
+      },
+      "commandKinds": [
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.update",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace",
+        "wire.setRoute",
+        "wire.setRoute",
+        "wire.setRoute",
+        "wire.setRoute",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    },
+    "studio-66a073b0-a0b9-4272-8d84-c750e4aeb3b5": {
+      "operationId": "studio-66a073b0-a0b9-4272-8d84-c750e4aeb3b5",
+      "revision": 107,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:25:22.076Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-d9570ab7-ca76-43fc-a5a7-d60d11cf3041": {
+      "operationId": "studio-d9570ab7-ca76-43fc-a5a7-d60d11cf3041",
+      "revision": 108,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:25:24.226Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-65a7a60c-db95-4bd6-8fbd-eae07b425857": {
+      "operationId": "studio-65a7a60c-db95-4bd6-8fbd-eae07b425857",
+      "revision": 109,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:25:26.192Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-2f75725d-fb6d-4398-b4fb-de5d25bdf0a3": {
+      "operationId": "studio-2f75725d-fb6d-4398-b4fb-de5d25bdf0a3",
+      "revision": 110,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:25:30.163Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-5a2aa8f9-e7a7-42cf-939f-6b4173d2d1f6": {
+      "operationId": "studio-5a2aa8f9-e7a7-42cf-939f-6b4173d2d1f6",
+      "revision": 112,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:25:34.058Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-a40a4b88-61b7-41ab-a8f4-f71161422b5d": {
+      "operationId": "studio-a40a4b88-61b7-41ab-a8f4-f71161422b5d",
+      "revision": 117,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:25:39.926Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-f4bf3985-94bf-4e1f-a5fa-23b299a2281e": {
+      "operationId": "studio-f4bf3985-94bf-4e1f-a5fa-23b299a2281e",
+      "revision": 118,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:25:44.458Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move",
+        "node.resize"
+      ]
+    },
+    "studio-b49011ee-6ffd-45fa-970a-c88c6fe405d4": {
+      "operationId": "studio-b49011ee-6ffd-45fa-970a-c88c6fe405d4",
+      "revision": 119,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:25:51.891Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-2fa88dd7-f92e-4f18-98af-2fbb07187239": {
+      "operationId": "studio-2fa88dd7-f92e-4f18-98af-2fbb07187239",
+      "revision": 120,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:27:05.475Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-8612e02f-5f34-4424-8ad9-a5e33439841f": {
+      "operationId": "studio-8612e02f-5f34-4424-8ad9-a5e33439841f",
+      "revision": 121,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:27:11.205Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "ui-0f5c7b54-a9d4-4130-bc84-74332846b7d9": {
+      "operationId": "ui-0f5c7b54-a9d4-4130-bc84-74332846b7d9",
+      "revision": 124,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:56:14.258Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-038cf64f-cf6c-4776-aca9-e95b777b92e2": {
+      "operationId": "ui-038cf64f-cf6c-4776-aca9-e95b777b92e2",
+      "revision": 125,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:56:24.858Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "studio-a06dde6d-c82e-4781-a156-3fc76b7f529c": {
+      "operationId": "studio-a06dde6d-c82e-4781-a156-3fc76b7f529c",
+      "revision": 126,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:56:32.591Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-f5352a68-f62c-4ffb-a008-52e16f029364": {
+      "operationId": "studio-f5352a68-f62c-4ffb-a008-52e16f029364",
+      "revision": 127,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:56:42.374Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-33bc0296-3a3b-4e2d-9800-e169947e4556": {
+      "operationId": "studio-33bc0296-3a3b-4e2d-9800-e169947e4556",
+      "revision": 128,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:56:45.179Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-e1d80d19-4c60-476b-8dfa-846371ddb919": {
+      "operationId": "studio-e1d80d19-4c60-476b-8dfa-846371ddb919",
+      "revision": 129,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:56:51.190Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-bcf7ab16-3c63-47bc-92eb-b8ebd9e277c4": {
+      "operationId": "ui-bcf7ab16-3c63-47bc-92eb-b8ebd9e277c4",
+      "revision": 130,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:56:57.774Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "studio-2d6fd786-50ef-42a5-b6ee-94ed3ac9e2b8": {
+      "operationId": "studio-2d6fd786-50ef-42a5-b6ee-94ed3ac9e2b8",
+      "revision": 131,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:57:14.575Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-38631b47-505b-49f6-9295-78f64e2aad28": {
+      "operationId": "studio-38631b47-505b-49f6-9295-78f64e2aad28",
+      "revision": 132,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:57:44.340Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-52e70fbe-232e-44db-a915-9b9fa7f12e1e": {
+      "operationId": "studio-52e70fbe-232e-44db-a915-9b9fa7f12e1e",
+      "revision": 133,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:57:47.740Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-27d1e401-24c2-44e8-b0c6-835a9cd7f7f7": {
+      "operationId": "studio-27d1e401-24c2-44e8-b0c6-835a9cd7f7f7",
+      "revision": 134,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:57:52.389Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move",
+        "node.resize"
+      ]
+    },
+    "studio-4740e516-3b7a-4320-ba7f-4dc6e8aeaf4d": {
+      "operationId": "studio-4740e516-3b7a-4320-ba7f-4dc6e8aeaf4d",
+      "revision": 135,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:57:57.573Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-6adb0496-50df-4bae-a6f2-652f8be2092c": {
+      "operationId": "studio-6adb0496-50df-4bae-a6f2-652f8be2092c",
+      "revision": 136,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:57:59.625Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-f2715f6d-fba5-495d-bedd-9a05248128db": {
+      "operationId": "studio-f2715f6d-fba5-495d-bedd-9a05248128db",
+      "revision": 137,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:58:05.423Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-29239aa7-f1d5-45b0-9af1-1abc5842a9a8": {
+      "operationId": "studio-29239aa7-f1d5-45b0-9af1-1abc5842a9a8",
+      "revision": 138,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:58:13.529Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move",
+        "node.resize"
+      ]
+    },
+    "studio-86b9bd35-9593-4bc5-8203-5de55db36188": {
+      "operationId": "studio-86b9bd35-9593-4bc5-8203-5de55db36188",
+      "revision": 139,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:58:20.023Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move",
+        "node.resize"
+      ]
+    },
+    "studio-7b95bfbd-65eb-4672-ab2b-ba4ba1d945e6": {
+      "operationId": "studio-7b95bfbd-65eb-4672-ab2b-ba4ba1d945e6",
+      "revision": 140,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:58:23.922Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "studio-1a011dd9-1f1d-41c0-b6cd-d461fa086444": {
+      "operationId": "studio-1a011dd9-1f1d-41c0-b6cd-d461fa086444",
+      "revision": 141,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T11:58:36.205Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-6d9b9985-8f13-4433-b84c-09158a4b49f2": {
+      "operationId": "ui-6d9b9985-8f13-4433-b84c-09158a4b49f2",
+      "revision": 142,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T12:00:03.571Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "studio-7895d0a7-fd61-40af-a95f-0497fc1e0826": {
+      "operationId": "studio-7895d0a7-fd61-40af-a95f-0497fc1e0826",
+      "revision": 143,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T12:00:06.657Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-580262ce-9432-4aea-a1ff-b0427ecd1479": {
+      "operationId": "studio-580262ce-9432-4aea-a1ff-b0427ecd1479",
+      "revision": 145,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T12:00:24.387Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-4cae6568-1e87-43d6-806b-e16ce9e6625a": {
+      "operationId": "studio-4cae6568-1e87-43d6-806b-e16ce9e6625a",
+      "revision": 147,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T12:00:28.587Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "studio-8c1390c5-9bc5-45cd-802e-982afad93a37": {
+      "operationId": "studio-8c1390c5-9bc5-45cd-802e-982afad93a37",
+      "revision": 149,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T12:00:34.109Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "ui-09641dbb-ac6f-4445-9713-08274745ac1b": {
+      "operationId": "ui-09641dbb-ac6f-4445-9713-08274745ac1b",
+      "revision": 151,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-24T21:58:05.014Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    }
+  }
+}

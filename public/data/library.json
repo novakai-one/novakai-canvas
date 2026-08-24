@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "revision": 135,
+  "revision": 318,
   "entries": {
     "agent-visual-authoring-poc": {
       "id": "agent-visual-authoring-poc",
@@ -12,6 +12,33 @@
         "Automated checks",
         "Release decision",
         "Success rate"
+      ]
+    },
+    "agents-messaging-stores-er": {
+      "id": "agents-messaging-stores-er",
+      "name": "Agents & Messaging — Stores ER",
+      "status": "active",
+      "revision": 1,
+      "nodeLabels": [
+        "Agent",
+        "Agent Endpoint Claim",
+        "Agent Inbox Item",
+        "Agent Run",
+        "Agents & Messaging — Stores ER",
+        "Crow's-feet ER over the Novakai-Command JSONL stores. Store file named on each object. Message, Thread, Delivery, Inbox Item and Endpoint Claim have no file of their own — they live inside messagingStoreOps.jsonl payloads.",
+        "Delivery",
+        "Identity",
+        "Message",
+        "Messaging",
+        "Person",
+        "Provider Session",
+        "Run Continuation",
+        "Runtime",
+        "Terminal",
+        "Terminal Input Attempt",
+        "Terminal Session",
+        "Thread",
+        "Transcript Binding"
       ]
     },
     "ai-evaluation-connected-operating-models": {
@@ -99,7 +126,7 @@
       "id": "browser-scope",
       "name": "Agent Browser Sessions",
       "status": "active",
-      "revision": 2435,
+      "revision": 2440,
       "nodeLabels": [
         "Agent Browser Sessions",
         "Allocation policy",
@@ -343,6 +370,29 @@
         "Tasks:",
         "Tasks:",
         "Tasks:"
+      ]
+    },
+    "messaging-how-it-works-today": {
+      "id": "messaging-how-it-works-today",
+      "name": "Messaging — How It Works Today",
+      "status": "active",
+      "revision": 3,
+      "nodeLabels": [
+        "Agent",
+        "Agent side — today",
+        "B3 engine — built, not wired to the window yet",
+        "Conversation",
+        "Delivery Machinery",
+        "Message",
+        "Messaging StoreOp",
+        "Messaging store — today",
+        "Messaging — How It Works Today",
+        "One-shot CLI run",
+        "Provider Session",
+        "Reply forwarder",
+        "The live path your chat window runs right now — verified against boot.ts + methods.ts + liveLane.ts on 2026-08-23. The B3 engine zone at the bottom is built and contract-complete, but the window does not use it yet.",
+        "Thread",
+        "Your window — shell"
       ]
     },
     "messaging-scope": {
@@ -609,11 +659,95 @@
       "id": "session-continuity-v2",
       "name": "Session continuity v2",
       "status": "active",
-      "revision": 1,
+      "revision": 10,
       "nodeLabels": [
         "Session continuity v2",
         "session-abc123",
         "session-xyz789"
+      ]
+    },
+    "transcript-first-data-model": {
+      "id": "transcript-first-data-model",
+      "name": "Transcript-First — Data Model",
+      "status": "active",
+      "revision": 151,
+      "nodeLabels": [
+        "Agent",
+        "App view",
+        "Conversation",
+        "Delivery Router",
+        "External — provider's world, black box",
+        "Ingest Checkpoint",
+        "Ingestion",
+        "Ingestion — the one door",
+        "Novakai Agent Identity Hook",
+        "One-shot CLI Send",
+        "Pending Delivery",
+        "Projections — rebuildable, never authoritative",
+        "Provider CLI Process",
+        "Provider Server",
+        "Provider Session",
+        "Provider Session File",
+        "Provider Transcript Adapters",
+        "Root store — single source of truth",
+        "Send Journal",
+        "Send and delivery",
+        "Session Assignment",
+        "Target shape, entity notation. One door in: Ingestion is the only reader of provider files. Transcript Line is the single root; projections rebuild from it. Acceptance test: delete a provider session file, restart, nothing changes.",
+        "Tool Call Index",
+        "Transcript Line",
+        "Transcript-First — Data Model",
+        "Transcript-First — Data Model",
+        "Usage Rollup"
+      ]
+    },
+    "transcript-first-module-contracts": {
+      "id": "transcript-first-module-contracts",
+      "name": "Transcript-First — Module Contracts",
+      "status": "active",
+      "revision": 1,
+      "nodeLabels": [
+        "App view",
+        "Conversations",
+        "Core",
+        "Delivery",
+        "External — provider's world",
+        "Ingestion",
+        "Provider Server",
+        "Provider Session File",
+        "Send",
+        "Send and delivery",
+        "Target modules and their public APIs. Every wire names the call or event that crosses the boundary. Nobody touches another module's store.",
+        "Transcript",
+        "Transcript-First — Module Contracts"
+      ]
+    },
+    "transcript-first-target-database-structure": {
+      "id": "transcript-first-target-database-structure",
+      "name": "Transcript-First — Target Database Structure",
+      "status": "active",
+      "revision": 2,
+      "nodeLabels": [
+        "Agent",
+        "App view",
+        "Conversation",
+        "External — provider's world, black box",
+        "Ingest Checkpoint",
+        "Ingestion",
+        "Ingestion — the one door",
+        "One-shot CLI Send",
+        "Projections — rebuildable, never authoritative",
+        "Provider Server",
+        "Provider Session",
+        "Provider Session File",
+        "Root store — single source of truth",
+        "Send Journal",
+        "Send path",
+        "The agreed target shape. One door in: ingestion is the only reader of provider files. Transcript Line store is the single root; every downstream store is a rebuildable projection of it. Acceptance test: delete a provider session file, restart, nothing changes.",
+        "Tool Call Index",
+        "Transcript Line",
+        "Transcript-First — Target Database Structure",
+        "Usage Rollup"
       ]
     },
     "unfiled": {

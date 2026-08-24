@@ -1,0 +1,653 @@
+{
+  "schemaVersion": 3,
+  "id": "messaging-how-it-works-today",
+  "name": "Messaging — How It Works Today",
+  "status": "active",
+  "revision": 3,
+  "nodes": {
+    "messaging-how-it-works-today": {
+      "id": "messaging-how-it-works-today",
+      "label": "Messaging — How It Works Today",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "messaging-how-it-works-today--note-1-the-live-path-your-chat-": {
+      "id": "messaging-how-it-works-today--note-1-the-live-path-your-chat-",
+      "label": "The live path your chat window runs right now — verified against boot.ts + methods.ts + liveLane.ts on 2026-08-23. The B3 engine zone at the bottom is built and contract-complete, but the window does not use it yet.",
+      "parentId": "messaging-how-it-works-today",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "messaging-how-it-works-today--your-window-shell": {
+      "id": "messaging-how-it-works-today--your-window-shell",
+      "label": "Your window — shell",
+      "parentId": "messaging-how-it-works-today",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "messaging-how-it-works-today--messaging-store-today": {
+      "id": "messaging-how-it-works-today--messaging-store-today",
+      "label": "Messaging store — today",
+      "parentId": "messaging-how-it-works-today",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "messaging-how-it-works-today--agent-side-today": {
+      "id": "messaging-how-it-works-today--agent-side-today",
+      "label": "Agent side — today",
+      "parentId": "messaging-how-it-works-today",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "messaging-how-it-works-today--b3-engine-built-not-wired-to-the-window-yet": {
+      "id": "messaging-how-it-works-today--b3-engine-built-not-wired-to-the-window-yet",
+      "label": "B3 engine — built, not wired to the window yet",
+      "parentId": "messaging-how-it-works-today",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "messaging-how-it-works-today--your-window-shell--conversation": {
+      "id": "messaging-how-it-works-today--your-window-shell--conversation",
+      "label": "Conversation",
+      "description": "conversationViews.jsonl — your sidebar row: pin, archive, title, read cursor, agent binding",
+      "parentId": "messaging-how-it-works-today--your-window-shell",
+      "interfaceIds": [],
+      "typeIds": [
+        "messaging-how-it-works-today--your-window-shell--conversation--type-conversation"
+      ],
+      "kind": "object"
+    },
+    "messaging-how-it-works-today--messaging-store-today--thread": {
+      "id": "messaging-how-it-works-today--messaging-store-today--thread",
+      "label": "Thread",
+      "description": ".novakai/messaging.jsonl — direct pair (you + agent person) or room",
+      "parentId": "messaging-how-it-works-today--messaging-store-today",
+      "interfaceIds": [],
+      "typeIds": [
+        "messaging-how-it-works-today--messaging-store-today--thread--type-thread"
+      ],
+      "kind": "object"
+    },
+    "messaging-how-it-works-today--messaging-store-today--message": {
+      "id": "messaging-how-it-works-today--messaging-store-today--message",
+      "label": "Message",
+      "description": ".novakai/messaging.jsonl — one event per message",
+      "parentId": "messaging-how-it-works-today--messaging-store-today",
+      "interfaceIds": [],
+      "typeIds": [
+        "messaging-how-it-works-today--messaging-store-today--message--type-message"
+      ],
+      "kind": "object"
+    },
+    "messaging-how-it-works-today--agent-side-today--agent": {
+      "id": "messaging-how-it-works-today--agent-side-today--agent",
+      "label": "Agent",
+      "description": "agents.jsonl — who the window is bound to",
+      "parentId": "messaging-how-it-works-today--agent-side-today",
+      "interfaceIds": [],
+      "typeIds": [
+        "messaging-how-it-works-today--agent-side-today--agent--type-agentrecord"
+      ],
+      "kind": "object"
+    },
+    "messaging-how-it-works-today--agent-side-today--provider-session": {
+      "id": "messaging-how-it-works-today--agent-side-today--provider-session",
+      "label": "Provider Session",
+      "description": "providerSessions.jsonl — the resumable conversation state with the provider (holds the resume id); not a running process",
+      "parentId": "messaging-how-it-works-today--agent-side-today",
+      "interfaceIds": [],
+      "typeIds": [
+        "messaging-how-it-works-today--agent-side-today--provider-session--type-providersession"
+      ],
+      "kind": "object"
+    },
+    "messaging-how-it-works-today--b3-engine-built-not-wired-to-the-window-yet--messaging-storeop": {
+      "id": "messaging-how-it-works-today--b3-engine-built-not-wired-to-the-window-yet--messaging-storeop",
+      "label": "Messaging StoreOp",
+      "description": "messagingStoreOps.jsonl — atomic ops carrying B3 Message, Thread, Delivery, Inbox Item, Endpoint Claim",
+      "parentId": "messaging-how-it-works-today--b3-engine-built-not-wired-to-the-window-yet",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "object"
+    },
+    "messaging-how-it-works-today--b3-engine-built-not-wired-to-the-window-yet--delivery-machinery": {
+      "id": "messaging-how-it-works-today--b3-engine-built-not-wired-to-the-window-yet--delivery-machinery",
+      "label": "Delivery Machinery",
+      "description": "inbox item per agent+message; endpoint claim binds a Run to a terminal; input attempts confirm keystrokes",
+      "parentId": "messaging-how-it-works-today--b3-engine-built-not-wired-to-the-window-yet",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "object"
+    },
+    "messaging-how-it-works-today--agent-side-today--one-shot-cli-run": {
+      "id": "messaging-how-it-works-today--agent-side-today--one-shot-cli-run",
+      "label": "One-shot CLI run",
+      "description": "one message = one process: claude -p --resume / codex exec resume / kimi -p -S; no persistent terminal",
+      "parentId": "messaging-how-it-works-today--agent-side-today",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "runtime"
+    },
+    "messaging-how-it-works-today--agent-side-today--reply-forwarder": {
+      "id": "messaging-how-it-works-today--agent-side-today--reply-forwarder",
+      "label": "Reply forwarder",
+      "description": "code name live lane — watches the CLI run output; each reply chunk becomes one Message in the thread",
+      "parentId": "messaging-how-it-works-today--agent-side-today",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    }
+  },
+  "wires": {
+    "messaging-how-it-works-today--wire-1": {
+      "id": "messaging-how-it-works-today--wire-1",
+      "kind": "references",
+      "label": "bound to via agentId",
+      "source": {
+        "nodeId": "messaging-how-it-works-today--agent-side-today--agent",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "messaging-how-it-works-today--your-window-shell--conversation",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "messaging-how-it-works-today--wire-2": {
+      "id": "messaging-how-it-works-today--wire-2",
+      "kind": "references",
+      "label": "threadRef, learned on first send",
+      "source": {
+        "nodeId": "messaging-how-it-works-today--your-window-shell--conversation",
+        "cardinality": "zero-or-one"
+      },
+      "target": {
+        "nodeId": "messaging-how-it-works-today--messaging-store-today--thread",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "messaging-how-it-works-today--wire-3": {
+      "id": "messaging-how-it-works-today--wire-3",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "messaging-how-it-works-today--messaging-store-today--thread",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "messaging-how-it-works-today--messaging-store-today--message",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "messaging-how-it-works-today--wire-4": {
+      "id": "messaging-how-it-works-today--wire-4",
+      "kind": "executes",
+      "label": "you hit send",
+      "source": {
+        "nodeId": "messaging-how-it-works-today--your-window-shell--conversation"
+      },
+      "target": {
+        "nodeId": "messaging-how-it-works-today--messaging-store-today--message"
+      }
+    },
+    "messaging-how-it-works-today--wire-5": {
+      "id": "messaging-how-it-works-today--wire-5",
+      "kind": "references",
+      "label": "its current session — empty until an agent is spawned",
+      "source": {
+        "nodeId": "messaging-how-it-works-today--your-window-shell--conversation",
+        "cardinality": "zero-or-one"
+      },
+      "target": {
+        "nodeId": "messaging-how-it-works-today--agent-side-today--provider-session",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "messaging-how-it-works-today--wire-6": {
+      "id": "messaging-how-it-works-today--wire-6",
+      "kind": "executes",
+      "label": "your text passed as the prompt",
+      "source": {
+        "nodeId": "messaging-how-it-works-today--agent-side-today--provider-session"
+      },
+      "target": {
+        "nodeId": "messaging-how-it-works-today--agent-side-today--one-shot-cli-run"
+      }
+    },
+    "messaging-how-it-works-today--wire-7": {
+      "id": "messaging-how-it-works-today--wire-7",
+      "kind": "executes",
+      "label": "output chunks",
+      "source": {
+        "nodeId": "messaging-how-it-works-today--agent-side-today--one-shot-cli-run"
+      },
+      "target": {
+        "nodeId": "messaging-how-it-works-today--agent-side-today--reply-forwarder"
+      }
+    },
+    "messaging-how-it-works-today--wire-8": {
+      "id": "messaging-how-it-works-today--wire-8",
+      "kind": "executes",
+      "label": "agent reply committed",
+      "source": {
+        "nodeId": "messaging-how-it-works-today--agent-side-today--reply-forwarder"
+      },
+      "target": {
+        "nodeId": "messaging-how-it-works-today--messaging-store-today--message"
+      }
+    },
+    "messaging-how-it-works-today--wire-9": {
+      "id": "messaging-how-it-works-today--wire-9",
+      "kind": "missing",
+      "label": "future delivery path",
+      "source": {
+        "nodeId": "messaging-how-it-works-today--messaging-store-today--message"
+      },
+      "target": {
+        "nodeId": "messaging-how-it-works-today--b3-engine-built-not-wired-to-the-window-yet--delivery-machinery"
+      }
+    },
+    "messaging-how-it-works-today--wire-10": {
+      "id": "messaging-how-it-works-today--wire-10",
+      "kind": "missing",
+      "label": "moves here at cutover",
+      "source": {
+        "nodeId": "messaging-how-it-works-today--messaging-store-today--thread"
+      },
+      "target": {
+        "nodeId": "messaging-how-it-works-today--b3-engine-built-not-wired-to-the-window-yet--messaging-storeop"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {
+    "messaging-how-it-works-today--your-window-shell--conversation--type-conversation": {
+      "id": "messaging-how-it-works-today--your-window-shell--conversation--type-conversation",
+      "name": "Conversation",
+      "fields": [
+        "conversationId",
+        "agentId",
+        "threadRef"
+      ]
+    },
+    "messaging-how-it-works-today--messaging-store-today--thread--type-thread": {
+      "id": "messaging-how-it-works-today--messaging-store-today--thread--type-thread",
+      "name": "Thread",
+      "fields": [
+        "threadId",
+        "threadKind"
+      ]
+    },
+    "messaging-how-it-works-today--messaging-store-today--message--type-message": {
+      "id": "messaging-how-it-works-today--messaging-store-today--message--type-message",
+      "name": "Message",
+      "fields": [
+        "messageId",
+        "senderId",
+        "text"
+      ]
+    },
+    "messaging-how-it-works-today--agent-side-today--agent--type-agentrecord": {
+      "id": "messaging-how-it-works-today--agent-side-today--agent--type-agentrecord",
+      "name": "AgentRecord",
+      "fields": [
+        "agentId",
+        "provider"
+      ]
+    },
+    "messaging-how-it-works-today--agent-side-today--provider-session--type-providersession": {
+      "id": "messaging-how-it-works-today--agent-side-today--provider-session--type-providersession",
+      "name": "ProviderSession",
+      "fields": [
+        "sessionId",
+        "status"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "messaging-how-it-works-today": {
+          "nodeId": "messaging-how-it-works-today",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 1939,
+            "height": 1246
+          },
+          "pinned": false
+        },
+        "messaging-how-it-works-today--note-1-the-live-path-your-chat-": {
+          "nodeId": "messaging-how-it-works-today--note-1-the-live-path-your-chat-",
+          "position": {
+            "x": 580,
+            "y": 766
+          },
+          "size": {
+            "width": 280,
+            "height": 195
+          },
+          "pinned": false
+        },
+        "messaging-how-it-works-today--your-window-shell": {
+          "nodeId": "messaging-how-it-works-today--your-window-shell",
+          "position": {
+            "x": 900,
+            "y": 766
+          },
+          "size": {
+            "width": 500,
+            "height": 240
+          },
+          "pinned": false
+        },
+        "messaging-how-it-works-today--messaging-store-today": {
+          "nodeId": "messaging-how-it-works-today--messaging-store-today",
+          "position": {
+            "x": 40,
+            "y": 766
+          },
+          "size": {
+            "width": 500,
+            "height": 440
+          },
+          "pinned": false
+        },
+        "messaging-how-it-works-today--agent-side-today": {
+          "nodeId": "messaging-how-it-works-today--agent-side-today",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 859,
+            "height": 640
+          },
+          "pinned": false
+        },
+        "messaging-how-it-works-today--b3-engine-built-not-wired-to-the-window-yet": {
+          "nodeId": "messaging-how-it-works-today--b3-engine-built-not-wired-to-the-window-yet",
+          "position": {
+            "x": 939,
+            "y": 56
+          },
+          "size": {
+            "width": 960,
+            "height": 216
+          },
+          "pinned": false
+        },
+        "messaging-how-it-works-today--your-window-shell--conversation": {
+          "nodeId": "messaging-how-it-works-today--your-window-shell--conversation",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "messaging-how-it-works-today--messaging-store-today--thread": {
+          "nodeId": "messaging-how-it-works-today--messaging-store-today--thread",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "messaging-how-it-works-today--messaging-store-today--message": {
+          "nodeId": "messaging-how-it-works-today--messaging-store-today--message",
+          "position": {
+            "x": 65,
+            "y": 272
+          },
+          "size": {
+            "width": 370,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "messaging-how-it-works-today--agent-side-today--agent": {
+          "nodeId": "messaging-how-it-works-today--agent-side-today--agent",
+          "position": {
+            "x": 40,
+            "y": 72
+          },
+          "size": {
+            "width": 319,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "messaging-how-it-works-today--agent-side-today--provider-session": {
+          "nodeId": "messaging-how-it-works-today--agent-side-today--provider-session",
+          "position": {
+            "x": 399,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "messaging-how-it-works-today--b3-engine-built-not-wired-to-the-window-yet--messaging-storeop": {
+          "nodeId": "messaging-how-it-works-today--b3-engine-built-not-wired-to-the-window-yet--messaging-storeop",
+          "position": {
+            "x": 500,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "messaging-how-it-works-today--b3-engine-built-not-wired-to-the-window-yet--delivery-machinery": {
+          "nodeId": "messaging-how-it-works-today--b3-engine-built-not-wired-to-the-window-yet--delivery-machinery",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "messaging-how-it-works-today--agent-side-today--one-shot-cli-run": {
+          "nodeId": "messaging-how-it-works-today--agent-side-today--one-shot-cli-run",
+          "position": {
+            "x": 399,
+            "y": 288
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "messaging-how-it-works-today--agent-side-today--reply-forwarder": {
+          "nodeId": "messaging-how-it-works-today--agent-side-today--reply-forwarder",
+          "position": {
+            "x": 399,
+            "y": 480
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {},
+      "appearanceByWireId": {},
+      "arrangementByContainerId": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-5d906bba-9c6e-4a95-8954-4ee27e054120": {
+      "operationId": "cli-apply-5d906bba-9c6e-4a95-8954-4ee27e054120",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-22T22:45:56.341Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command/cbc14d76-2723-414a-bf0d-598b556b4f44/scratchpad/messaging-today.dsl"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add"
+      ]
+    },
+    "cli-apply-b398d86b-b94c-40f6-ba6a-9239555b19cc": {
+      "operationId": "cli-apply-b398d86b-b94c-40f6-ba6a-9239555b19cc",
+      "revision": 2,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-22T22:59:09.890Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command/cbc14d76-2723-414a-bf0d-598b556b4f44/scratchpad/messaging-today.dsl"
+      },
+      "commandKinds": [
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "node.remove",
+        "node.add",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.resize",
+        "node.update",
+        "node.move",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add"
+      ]
+    },
+    "cli-apply-12ab5c6c-31b9-46f9-8323-d49231dde4c1": {
+      "operationId": "cli-apply-12ab5c6c-31b9-46f9-8323-d49231dde4c1",
+      "revision": 3,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-22T23:08:22.273Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command/cbc14d76-2723-414a-bf0d-598b556b4f44/scratchpad/messaging-today.dsl"
+      },
+      "commandKinds": [
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "node.remove",
+        "node.add",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.resize",
+        "node.move",
+        "node.update",
+        "node.resize",
+        "node.move",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add"
+      ]
+    }
+  }
+}
