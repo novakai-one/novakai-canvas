@@ -24,12 +24,12 @@ const PALETTES: Record<Theme, Record<ComponentPalette, ComponentPaletteColors>> 
       metadata: '#e7e9ec', action: '#dde1e4',
     },
     blue: {
-      frame: '#496f9c', surface: '#f8fbff', header: '#3f72aa', headerText: '#ffffff',
+      frame: '#496f9c', surface: '#f8fbff', header: '#647f9b', headerText: '#ffffff',
       headerMuted: '#ffffff', text: '#1f2a35', muted: '#4c5967', core: '#e5effa',
       metadata: '#dbe8f5', action: '#cfdfef',
     },
     violet: {
-      frame: '#6f579c', surface: '#fbf9ff', header: '#6f579c', headerText: '#ffffff',
+      frame: '#6f579c', surface: '#fbf9ff', header: '#796c8e', headerText: '#ffffff',
       headerMuted: '#eee7fb', text: '#292431', muted: '#57505f', core: '#eee8f8',
       metadata: '#e4dcf2', action: '#d9ceeb',
     },
@@ -46,12 +46,12 @@ const PALETTES: Record<Theme, Record<ComponentPalette, ComponentPaletteColors>> 
       metadata: '#383a40', action: '#41444a',
     },
     blue: {
-      frame: '#7f9fc7', surface: '#1b222b', header: '#354f6e', headerText: '#f5f8fc',
+      frame: '#7f9fc7', surface: '#1b222b', header: '#34465a', headerText: '#f5f8fc',
       headerMuted: '#c7d9ee', text: '#edf2f8', muted: '#b8c5d3', core: '#243142',
       metadata: '#2a3950', action: '#31445d',
     },
     violet: {
-      frame: '#a08ac8', surface: '#241f2b', header: '#574474', headerText: '#f8f5fc',
+      frame: '#a08ac8', surface: '#241f2b', header: '#493f58', headerText: '#f8f5fc',
       headerMuted: '#d8caec', text: '#f0ecf5', muted: '#c5bbcf', core: '#31283d',
       metadata: '#3a2f49', action: '#443756',
     },

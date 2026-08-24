@@ -34,19 +34,19 @@ const WIRE_DASH_ARRAYS: Record<WireDash, string> = {
 };
 
 /**
- * Muted per-theme colours; no neon, but every one reads at working zoom.
+ * Muted per-theme colours; dash patterns carry the primary semantic distinction.
  *
- * These are the DEFAULT state. Faintness belongs to the dimmed state alone — a wire you cannot
- * follow across a 44-node diagram is not restrained, it is broken.
+ * The tones stay close enough to form one supporting layer instead of seven competing accents.
+ * Interaction opacity is owned by canvas-wires.css so selection can still make one path crisp.
  */
 const WIRE_TONE_COLORS: Record<WireTone, Record<CanvasTheme, string>> = {
-  neutral: { dark: '#948d80', light: '#6f695d' },
-  sage: { dark: '#8dbd9b', light: '#3f6c51' },
-  steel: { dark: '#8aa8c6', light: '#41607f' },
-  slate: { dark: '#a2aabb', light: '#5a6271' },
-  violet: { dark: '#b19bc9', light: '#68527f' },
-  amber: { dark: '#d3a468', light: '#8f6530' },
-  rust: { dark: '#c98376', light: '#8f4438' },
+  neutral: { dark: '#6f7278', light: '#73777b' },
+  sage: { dark: '#748078', light: '#6f7b73' },
+  steel: { dark: '#717c86', light: '#747d87' },
+  slate: { dark: '#777a82', light: '#787a81' },
+  violet: { dark: '#7c7583', light: '#7e7783' },
+  amber: { dark: '#81786d', light: '#847b70' },
+  rust: { dark: '#826e6a', light: '#886f6b' },
 };
 
 const AUTHORED_COLOR_TONES: Record<WireColor, WireTone> = {

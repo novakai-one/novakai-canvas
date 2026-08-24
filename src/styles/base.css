@@ -31,7 +31,7 @@
   background: var(--bg);
 
   --bg: #11110f;
-  --bg-read: #0d0d0f;
+  --bg-read: #15171a;
   --panel: #151411;
   --card: #191816;
   --card-2: #1f1d19;
@@ -45,9 +45,13 @@
   --ink-soft: #d3ccc0;
   --muted: #9b968c;
   --faint: #777269;
-  --panel-read: #1b1b1e;
-  --card-read: #252529;
-  --border-read: #2f2f34;
+  --scope-fill-read: #181b1f;
+  --scope-border-read: #2a2d32;
+  --scope-title-read: #aeb2b8;
+  --card-read: #22262c;
+  --node-border-read: #4d535b;
+  --diagram-node-shadow: 0 2px 8px rgb(0 0 0 / 14%);
+  --wire-label-read: #b7bbc1;
   --ink-read: #ececee;
   --muted-read: #a2a2aa;
   --faint-read: #8b8b94;
@@ -124,7 +128,7 @@
 
 .app-shell[data-theme='light'] {
   --bg: #f2efe7;
-  --bg-read: #f7f5ef;
+  --bg-read: #f3f2ee;
   --panel: #eae6db;
   --card: #fbf9f4;
   --card-2: #f1ede2;
@@ -138,9 +142,13 @@
   --ink-soft: #4a4438;
   --muted: #6b6558;
   --faint: #8b8478;
-  --panel-read: #f0ede5;
+  --scope-fill-read: #f8f7f3;
+  --scope-border-read: #dddad2;
+  --scope-title-read: #5d6269;
   --card-read: #ffffff;
-  --border-read: #d8d3c8;
+  --node-border-read: #aeb2b8;
+  --diagram-node-shadow: 0 1px 4px rgb(28 32 38 / 10%);
+  --wire-label-read: #51565d;
   --ink-read: #22211e;
   --muted-read: #5f5d57;
   --faint-read: #7e7b73;

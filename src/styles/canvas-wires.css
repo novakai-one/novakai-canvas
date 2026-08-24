@@ -55,31 +55,32 @@
   stroke: var(--wire-stroke, var(--wire));
   stroke-linecap: round;
   stroke-linejoin: round;
+  opacity: 0.68;
   transition: opacity 160ms ease, stroke 120ms ease;
 }
 
+.canvas-surface .react-flow__edge:hover .react-flow__edge-path { opacity: 0.9; }
+
 /* Gold marks the one wire you are working on, and only while you are working on it. */
-.canvas-surface .react-flow__edge.selected .react-flow__edge-path { stroke: var(--gold); }
+.canvas-surface .react-flow__edge.selected .react-flow__edge-path { stroke: var(--gold); opacity: 1; }
 /* Faint is the DIMMED state and nothing else. */
-.canvas-surface .react-flow__edge.is-dimmed .react-flow__edge-path { stroke: var(--wire-dim); }
-.canvas-surface .react-flow__edge.is-dimmed { opacity: 0.55; }
-.canvas-surface .react-flow__edge.is-dimmed .wire-label { opacity: 0.35; }
+.canvas-surface .react-flow__edge.is-dimmed .react-flow__edge-path { stroke: var(--wire-dim); opacity: 0.28; }
+.canvas-surface .react-flow__edge.is-dimmed .wire-label { opacity: 0.28; }
 
 /*
- * A wire label rides on its own wire and cuts a hole in it.
+ * A wire label rides on its own wire without becoming a second diagram object.
  *
- * No box, no border: at working density a hundred bordered chips read as noise. The halo is
- * painted in the canvas background so the label separates from whatever it crosses — that is
- * what stops neighbouring labels from smearing into one grey band.
+ * No box, no border: at working density a hundred bordered chips read as noise. A compact halo
+ * separates the text from its route while letting the surface beneath remain visible.
  */
 .wire-label {
   position: absolute;
   padding: 0 var(--space-1);
   border: 0;
   color: var(--wire-label);
-  /* Painted in the canvas colour, so it reads as a gap in the wire rather than as a chip. A
-     halo alone left the wire showing through the spaces between words. */
-  background: var(--bg);
+  /* A transparent label avoids the black/cream pills that became the strongest marks on dense
+     diagrams. The halo below is the only separation from the route. */
+  background: transparent;
   font-family: var(--font-ui);
   /*
    * A label is read at a distance, over a moving background, inside a scaled viewport. At
@@ -99,15 +100,15 @@
      could not be selected or moved at all. React Flow elevates each edge's own svg to 2, so a
      label has to sit above that to be reachable at all. */
   z-index: 3;
+  opacity: 0.78;
   pointer-events: all;
   cursor: pointer;
   text-shadow:
-    0 0 3px var(--bg), 0 0 3px var(--bg), 0 0 3px var(--bg),
-    1px 0 1px var(--bg), -1px 0 1px var(--bg),
-    0 1px 1px var(--bg), 0 -1px 1px var(--bg);
+    0 0 2px var(--bg),
+    0 0 4px var(--bg);
 }
 
-.wire-label:hover { color: var(--ink); }
+.wire-label:hover { color: var(--ink); opacity: 1; }
 .wire-label.is-movable { cursor: grab; }
 .wire-label.is-movable:active { cursor: grabbing; }
 
@@ -175,6 +176,7 @@
 .wire-label.is-selected {
   color: var(--gold-bright);
   font-weight: 500;
+  opacity: 1;
 }
 
 /* Labels are drawn outside the scaled viewport, so the routing search needs the zoom to convert

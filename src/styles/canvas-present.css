@@ -3,19 +3,22 @@
 .canvas-surface.is-present .react-flow { background: var(--bg-read); }
 
 .is-present .scope-node {
-  border-color: var(--border-read);
-  background: var(--panel-read);
+  border-color: var(--scope-border-read);
+  background: var(--scope-fill-read);
 }
 
 .is-present .scope-node__title {
-  color: var(--accent-strong);
-  font-size: 15px;
+  color: var(--scope-title-read);
+  font-size: 12px;
+  font-weight: 600;
   letter-spacing: 0;
   text-transform: none;
 }
 
+.is-present .scope-node.is-selected .scope-node__title { color: var(--accent-strong); }
+
 .is-present .architecture-node {
-  border-color: var(--border-read);
+  border-color: var(--node-border-read);
   background: var(--card-read);
   box-shadow: none;
 }
@@ -63,7 +66,7 @@
 }
 
 .is-present .comment-node {
-  border-color: var(--border-read);
+  border-color: var(--node-border-read);
   border-style: dashed;
   color: var(--muted-read);
   background: transparent;
@@ -78,11 +81,9 @@
 .canvas-surface.is-present .react-flow__edge-path { stroke: var(--wire-stroke, var(--wire)); }
 
 .is-present .wire-label {
-  color: var(--muted-read);
-  background: var(--bg-read);
+  color: var(--wire-label-read);
+  background: transparent;
   text-shadow:
-    0 0 3px var(--bg-read), 0 0 3px var(--bg-read), 0 0 3px var(--bg-read),
-    1px 0 1px var(--bg-read), -1px 0 1px var(--bg-read),
-    0 1px 1px var(--bg-read), 0 -1px 1px var(--bg-read);
+    0 0 2px var(--bg-read),
+    0 0 4px var(--bg-read);
 }
-
