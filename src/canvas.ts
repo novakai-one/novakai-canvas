@@ -41,12 +41,12 @@ export type {
   PlannedWireRoute, Point as GeometryPoint, Rect as GeometryRect, RouteObstacle, RouteSide,
   WireRoute, WireRouteRequest,
 } from './domain/diagram-geometry.ts';
-export {
-  defaultLayoutOptions, graphOfDiagram, layoutStrategyFor, planSliceLayout,
-} from './domain/layout-strategy.ts';
+export { defaultLayoutOptions } from './domain/layout/contract.ts';
 export type {
   LayoutGraph, LayoutOptions, LayoutPlan, LayoutSliceTarget, LayoutStrategy,
-} from './domain/layout-strategy.ts';
+} from './domain/layout/contract.ts';
+export { graphOfDiagram } from './domain/layout/graph.ts';
+export { layoutStrategyFor, planSliceLayout } from './domain/layout/plan.ts';
 
 export { createCanvasEngine, type CanvasEngine } from './application/canvas-engine.ts';
 export type { JsonRepository } from './application/json-repository.ts';
