@@ -1,4 +1,5 @@
 import { componentFor } from '../../components/registry.ts';
+import { orientationOf, resolveAxis, type Axis } from '../axis.ts';
 import { resolveNodeAppearance, type ContainerArrangement } from '../canvas-presentation.ts';
 import { positionedNodes, resolveLayout } from '../layouts.ts';
 import type {
@@ -29,6 +30,8 @@ export class LayoutState {
   readonly document: PositionedDocument;
   readonly layout: CanvasLayout;
   readonly groupPadding: number;
+  /** Resolved once, so no step downstream re-decides which way this diagram runs. */
+  readonly axis: Axis;
 
   private constructor(
     document: PositionedDocument,
@@ -38,6 +41,7 @@ export class LayoutState {
     this.document = document;
     this.layout = layout;
     this.groupPadding = groupPadding;
+    this.axis = resolveAxis(orientationOf(document));
   }
 
   static create(

@@ -6,7 +6,7 @@ import {
 } from '../../domain/diagram-geometry';
 import type { CanvasPreferences } from '../../domain/model';
 import type { WireKind } from '../../domain/records';
-import { ARCHITECTURE_FLOW } from '../../domain/flow';
+import { orientationOf, resolveAxis } from '../../domain/axis';
 import { resolveWireAppearance, wireStrokeWidth, type ResolvedWireAppearance } from '../wire-styles';
 import type { ProjectionInput } from '../projection-contract';
 import { connectedIds, connectedWireIds } from '../projection-selection';
@@ -42,7 +42,9 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
   const connected = connectedIds(input);
   const connectedWires = connectedWireIds(input);
   const hints = record.layouts[record.views[record.activeViewId]?.layoutId]?.wireRouteHints ?? {};
+  const axis = resolveAxis(orientationOf(record));
   const plans = planWireRoutes(view, hints, {
+    axis,
     avoidObstacles: preferences.wires.avoidNodes ?? true,
   });
   const authoredAppearance = record.layouts[record.views[record.activeViewId]?.layoutId]
@@ -59,8 +61,8 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
     id: wire.id,
     source: wire.source.nodeId,
     target: wire.target.nodeId,
-    sourceHandle: plan?.sourceSide ?? ARCHITECTURE_FLOW.sourcePort,
-    targetHandle: plan?.targetSide ?? ARCHITECTURE_FLOW.targetPort,
+    sourceHandle: plan?.sourceSide ?? axis.sourcePort,
+    targetHandle: plan?.targetSide ?? axis.targetPort,
     type: 'elbow',
     selected: selection?.kind === 'wire' && selection.id === wire.id,
     zIndex: selection?.kind === 'wire' && selection.id === wire.id ? 1000 : 0,

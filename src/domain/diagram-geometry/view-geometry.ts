@@ -1,3 +1,4 @@
+import { crossAxis, type Axis } from '../axis.ts';
 import type { ProjectedView, PositionedNode } from '../project-view.ts';
 import type { PortSide } from '../records.ts';
 import type { Point, Rect, RouteObstacle } from './contract.ts';
@@ -9,6 +10,7 @@ const LANE_GAP = 22;
 export function facingSides(
   source: Rect,
   target: Rect,
+  axis: Axis,
 ): { sourceSide: PortSide; targetSide: PortSide } {
   const spans = (aLow: number, aHigh: number, bLow: number, bHigh: number): number =>
     Math.min(aHigh, bHigh) - Math.max(aLow, bLow);
@@ -16,9 +18,10 @@ export function facingSides(
   const overlapY = spans(source.y, source.y + source.height, target.y, target.y + target.height);
   const dx = (target.x + target.width / 2) - (source.x + source.width / 2);
   const dy = (target.y + target.height / 2) - (source.y + source.height / 2);
+  // Overlap decides when it can; otherwise the tie goes to the axis the diagram runs along.
   const vertical = overlapX > 0 && overlapY <= 0 ? true
     : overlapY > 0 && overlapX <= 0 ? false
-      : Math.abs(dy) >= Math.abs(dx);
+      : (axis.along === 'y' ? Math.abs(dy) >= Math.abs(dx) : Math.abs(dy) > Math.abs(dx));
   if (vertical) {
     return dy >= 0
       ? { sourceSide: 'bottom', targetSide: 'top' }
@@ -42,14 +45,17 @@ export function chooseSides(
   source: Rect,
   target: Rect,
   obstacles: RouteObstacle[],
+  axis: Axis,
 ): { sourceSide: PortSide; targetSide: PortSide } {
-  const facing = facingSides(source, target);
+  const facing = facingSides(source, target, axis);
+  const across = crossAxis(axis);
+  // The diagram's own axis is offered before the one at right angles to it, forwards first.
   const alternatives: Array<{ sourceSide: PortSide; targetSide: PortSide }> = [
     facing,
-    { sourceSide: 'bottom', targetSide: 'top' },
-    { sourceSide: 'top', targetSide: 'bottom' },
-    { sourceSide: 'right', targetSide: 'left' },
-    { sourceSide: 'left', targetSide: 'right' },
+    { sourceSide: axis.sourcePort, targetSide: axis.targetPort },
+    { sourceSide: axis.targetPort, targetSide: axis.sourcePort },
+    { sourceSide: across.sourcePort, targetSide: across.targetPort },
+    { sourceSide: across.targetPort, targetSide: across.sourcePort },
   ];
   for (const pair of alternatives) {
     const route = routeWire({

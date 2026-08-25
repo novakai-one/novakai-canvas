@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { planWireRoutes, projectView, type DiagramRecord } from '../../src/canvas.ts';
+import {
+  orientationOf, planWireRoutes, projectView, resolveAxis, type DiagramRecord,
+} from '../../src/canvas.ts';
 import { buildRecord } from './dsl-fixture.ts';
 import { blankRecord } from './record-apply.ts';
 import { asId, type RecordNode, type RecordPlacement, type RecordWire } from './record-graph.ts';
@@ -190,7 +192,9 @@ describe('renderRecordSvg with nested zones', () => {
     expect(svg).toContain('stroke-dasharray="7 5"');
     expect(svg).toContain('stroke-dasharray="9 4 2 4"');
     const layout = record.layouts[record.views[record.activeViewId].layoutId];
-    const plans = planWireRoutes(projectView(record), layout.wireRouteHints);
+    const plans = planWireRoutes(projectView(record), layout.wireRouteHints, {
+      axis: resolveAxis(orientationOf(record)),
+    });
     expect(Object.values(plans).every((plan) => plan.collisions === 0)).toBe(true);
     const points = plans['w-node-node'].points.map((point) => ({
       x: point.x + 24, y: point.y + 24,

@@ -70,5 +70,9 @@ export function applyRecordCommand(record: DiagramRecord, command: RecordCommand
   } else if (command.kind === 'diagram.definitions.replace') {
     applyDefinitionReplacement(next, command);
   } else if (command.kind === 'diagram.rename') next.name = command.name;
+  else if (command.kind === 'diagram.setOrientation') {
+    if (command.orientation === undefined) delete next.orientation;
+    else next.orientation = command.orientation;
+  }
   return reflowAfterCommand(record, next, command);
 }

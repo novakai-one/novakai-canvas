@@ -23,14 +23,13 @@ function arrangeContainer(
   containerId: string | undefined,
   working: Map<string, NodePlacement>,
   options: LayoutOptions,
-  rankDirection: 'TB' | 'LR',
   mayResizeContainer: boolean,
 ): void {
   const childIds = childIdsOf(graph, containerId);
   if (childIds.length === 0) return;
   for (const childId of childIds) {
     if (graph.nodes[childId].kind === 'group') {
-      arrangeContainer(graph, childId, working, options, rankDirection, true);
+      arrangeContainer(graph, childId, working, options, true);
     }
   }
 
@@ -40,7 +39,7 @@ function arrangeContainer(
     const origin = containerId === undefined
       ? topLeftOf(movableIds, working)
       : { x: options.groupPadding, y: options.groupPadding + GROUP_TITLE_SPACE };
-    const ranked = rankedPositions(graph, movableIds, working, options, rankDirection);
+    const ranked = rankedPositions(graph, movableIds, working, options);
     for (const id of movableIds) {
       const placement = working.get(id) as NodePlacement;
       const position = ranked.get(id) as Position;
@@ -63,14 +62,13 @@ function arrangeNamedNodes(
   ids: string[],
   working: Map<string, NodePlacement>,
   options: LayoutOptions,
-  rankDirection: 'TB' | 'LR',
 ): void {
   const movableIds = ids.filter((id) => !(working.get(id) as NodePlacement).pinned);
   // One movable node has nothing to be arranged against, so there is no arrangement to propose.
   if (movableIds.length < 2) return;
 
   const origin = topLeftOf(movableIds, working);
-  const ranked = rankedPositions(graph, movableIds, working, options, rankDirection);
+  const ranked = rankedPositions(graph, movableIds, working, options);
   for (const id of movableIds) {
     const placement = working.get(id) as NodePlacement;
     const position = ranked.get(id) as Position;
@@ -95,15 +93,14 @@ export function arrangeSlice(
   graph: LayoutGraph,
   target: LayoutSliceTarget,
   options: LayoutOptions,
-  rankDirection: 'TB' | 'LR',
 ): Record<string, NodePlacement> {
   const working = workingPlacements(graph);
   if (target.kind === 'nodes') {
-    arrangeNamedNodes(graph, namedIdsOf(graph, target.nodeIds), working, options, rankDirection);
+    arrangeNamedNodes(graph, namedIdsOf(graph, target.nodeIds), working, options);
   } else if (target.kind === 'group') {
-    arrangeContainer(graph, target.groupId, working, options, rankDirection, true);
+    arrangeContainer(graph, target.groupId, working, options, true);
   } else {
-    arrangeContainer(graph, undefined, working, options, rankDirection, false);
+    arrangeContainer(graph, undefined, working, options, false);
   }
   return placementsFor(targetNodeIds(graph, target), working);
 }

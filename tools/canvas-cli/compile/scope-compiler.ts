@@ -49,6 +49,7 @@ class ScopeCompiler {
       diagram: {
         id,
         name: scopeAst.label,
+        ...(scopeAst.orientation === undefined ? {} : { orientation: scopeAst.orientation }),
         rootNodeId,
         nodes: this.nodes,
         wires: {},

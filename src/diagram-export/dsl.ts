@@ -92,9 +92,11 @@ export function printRecord(record: DiagramRecord, context: DiagramExportContext
   const rootId = rootGroupId(record);
   const root = rootId ? nodes[rootId] : undefined;
   const layout = record.layouts[record.views[record.activeViewId]?.layoutId];
-  const rootAttributes = arrangementAttributes(
-    rootId ? layout?.arrangementByContainerId?.[rootId] : undefined,
-  );
+  const rootAttributes = [
+    ...arrangementAttributes(rootId ? layout?.arrangementByContainerId?.[rootId] : undefined),
+    // Printed only when declared: writing the default would rewrite every existing map.
+    ...(record.orientation === undefined ? [] : [`orientation=${record.orientation}`]),
+  ];
   const title = root?.label ?? record.name;
   const lines = [
     `scope ${quote(title)}${root?.description ? ` ${quote(root.description)}` : ''}`

@@ -56,7 +56,7 @@ DSL — one statement per line; a scope block fully declares that map.
 New objects are placed automatically; saved placement is preserved. Never write coordinates or edit JSON by hand.
 Scope and zone containers share the zone.layout, zone.gap and zone.align vocabulary.
 
-  scope "Agent Browser Sessions"
+  scope "Agent Browser Sessions" [orientation=top-down|left-right]  # which way the map runs
     note "One session per instance; renders off-screen."
     module "Session broker" "Owns leases and allocation"
       acquire(AgentId) -> SessionHandle
@@ -79,7 +79,8 @@ export const COMMAND_KINDS = [
   'node.add', 'node.move', 'node.resize', 'node.autoSize', 'node.pin', 'node.update',
   'node.content.set', 'node.reparent',
   'node.remove', 'wire.add', 'wire.reconnect', 'wire.setCardinality', 'wire.remove', 'view.setCollapsed',
-  'view.setViewport', 'diagram.rename', 'diagram.definitions.replace', 'layout.presentation.replace',
+  'view.setViewport', 'diagram.rename', 'diagram.setOrientation',
+  'diagram.definitions.replace', 'layout.presentation.replace',
 ] as const;
 
 /** The vocabulary an unfamiliar agent needs to drive Canvas without reading code. */

@@ -1,5 +1,5 @@
 import { Handle, Position } from '@xyflow/react';
-import { NODE_PORTS } from '../../domain/flow';
+import { NODE_PORTS } from '../../domain/axis';
 
 const PORT_POSITION = {
   top: Position.Top, bottom: Position.Bottom, left: Position.Left, right: Position.Right,

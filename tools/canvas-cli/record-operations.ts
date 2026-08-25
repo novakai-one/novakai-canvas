@@ -120,6 +120,9 @@ export function commandsFor(before: DiagramRecord, target: DiagramRecord): Recor
     || !sameWires(before.wires, target.wires);
 
   if (before.name !== target.name) commands.push({ kind: 'diagram.rename', name: target.name });
+  if (before.orientation !== target.orientation) {
+    commands.push({ kind: 'diagram.setOrientation', orientation: target.orientation });
+  }
   if (rebuildWires) {
     for (const wire of Object.values(before.wires)) commands.push({ kind: 'wire.remove', id: wire.id as string });
   }

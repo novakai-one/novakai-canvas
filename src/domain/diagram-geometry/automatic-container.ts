@@ -1,5 +1,4 @@
 import dagre from '@dagrejs/dagre';
-import { ARCHITECTURE_FLOW } from '../flow.ts';
 import type { Size } from '../model.ts';
 import { enclosingSize, type Rect } from './geometry.ts';
 import { minimumConnectionSeparation } from './policy.ts';
@@ -20,7 +19,7 @@ function layoutDagreChildren(state: LayoutState, childIds: readonly string[]): S
   const graph = new dagre.graphlib.Graph();
   const ranksep = state.hasInternalWire(childIds)
     ? Math.max(GRID_ROW_GAP, minimumConnectionSeparation()) : GRID_ROW_GAP;
-  graph.setGraph({ rankdir: ARCHITECTURE_FLOW.rankDirection, nodesep: GRID_COL_GAP, ranksep });
+  graph.setGraph({ rankdir: state.axis.rankDirection, nodesep: GRID_COL_GAP, ranksep });
   graph.setDefaultEdgeLabel(() => ({}));
   for (const id of childIds) graph.setNode(id, state.measureNode(id));
   const childSet = new Set(childIds);

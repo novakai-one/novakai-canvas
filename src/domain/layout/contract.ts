@@ -1,3 +1,4 @@
+import { resolveAxis, type Axis } from '../axis.ts';
 import type { NodeId } from '../ids.ts';
 import type { CanvasNode, CanvasWire, LayoutStrategyName, NodePlacement } from '../records.ts';
 
@@ -41,6 +42,8 @@ export type LayoutSliceTarget =
 /** Tuning for one layout run. Passed to the strategy in full so a result is reproducible. */
 export interface LayoutOptions {
   strategy: LayoutStrategyName;
+  /** Which way this run ranks and routes. */
+  axis: Axis;
   /** Gap between two nodes sharing a rank. */
   nodeGap: number;
   /** Gap between one rank and the next. */
@@ -51,7 +54,7 @@ export interface LayoutOptions {
 
 /** The options used when a caller names only the parts it cares about. */
 export const defaultLayoutOptions: LayoutOptions = {
-  strategy: 'hierarchy', nodeGap: 40, rankGap: 70, groupPadding: 40,
+  strategy: 'hierarchy', axis: resolveAxis('top-down'), nodeGap: 40, rankGap: 70, groupPadding: 40,
 };
 
 /**

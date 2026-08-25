@@ -1,3 +1,4 @@
+import type { Axis } from '../axis.ts';
 import type { WireId } from '../ids.ts';
 import type { PortSide } from '../layout-record.ts';
 import type { Position } from '../model.ts';
@@ -41,6 +42,8 @@ export interface PlannedWireRoute extends WireRoute {
 }
 
 export interface WirePlanOptions {
+  /** Which way the diagram runs. Required: a router may not invent a default. */
+  axis: Axis;
   avoidObstacles?: boolean;
 }
 

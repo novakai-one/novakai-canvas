@@ -1,3 +1,4 @@
+import type { Orientation } from '../../../src/domain/axis.ts';
 import type { CrossDiagramLink, DiagramRecord } from '../../../src/canvas.ts';
 import type { ContainerArrangement, NodeAppearance } from '../../../src/domain/canvas-presentation.ts';
 import type { WireAppearance } from '../../../src/domain/wire-appearance.ts';
@@ -15,6 +16,8 @@ export interface CompiledDiagram {
   /** Reuses the existing record's id when the scope already exists, so identity survives. */
   id: string;
   name: string;
+  /** Declared on the root scope. Omitted here means omitted in the file. */
+  orientation?: Orientation;
   rootNodeId: string;
   nodes: Record<string, RecordNode>;
   wires: Record<string, RecordWire>;

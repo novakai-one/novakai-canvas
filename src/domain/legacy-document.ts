@@ -1,5 +1,6 @@
 /** V2 document contracts retained for migration and compatibility hosts. */
 
+import type { Orientation } from './axis.ts';
 import type { ContainerArrangement, NodeAppearance } from './canvas-presentation.ts';
 import type {
   CanvasReference, InterfaceObject, SourceReference, TypeObject,
@@ -127,6 +128,8 @@ export interface ArchitectureDocument {
   schemaVersion: 2;
   id: string;
   name: string;
+  /** Copied from the record; the geometry engine resolves its axis from this. */
+  orientation?: Orientation;
   revision: number;
   nodes: Record<string, CanvasNode>;
   interfaces: Record<string, InterfaceObject>;

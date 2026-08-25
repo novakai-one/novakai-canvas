@@ -1,3 +1,4 @@
+import type { Orientation } from '../../src/domain/axis.ts';
 import type { CanvasNode as RecordNode } from '../../src/domain/records.ts';
 import type { ParsedPresentation } from '../../src/domain/canvas-presentation.ts';
 import type { WireAst } from './wire-authoring.ts';
@@ -39,6 +40,8 @@ export interface ZoneAst {
 export interface ScopeAst {
   label: string;
   description?: string;
+  /** Which way the whole map runs. Omitted means top-down. */
+  orientation?: Orientation;
   nodes: NodeAst[];
   wires: WireAst[];
   zones: ZoneAst[];

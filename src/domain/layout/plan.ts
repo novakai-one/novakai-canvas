@@ -1,5 +1,6 @@
 /** Resolving a strategy, judging a target, and planning one slice without applying it. */
 
+import { resolveAxis } from '../axis.ts';
 import type { NodeId } from '../ids.ts';
 import type { LayoutStrategyName, NodePlacement } from '../records.ts';
 import {
@@ -13,8 +14,11 @@ import { arrangeSlice, targetNodeIds } from './arrange.ts';
 const strategies: Record<LayoutStrategyName, LayoutStrategy> = {
   // The identity strategy: a hand-placed diagram is a decision, and honouring it is a feature.
   manual: () => ({}),
-  hierarchy: (graph, target, options) => arrangeSlice(graph, target, options, 'TB'),
-  flow: (graph, target, options) => arrangeSlice(graph, target, options, 'LR'),
+  // Each named strategy keeps its own historical axis; the record's orientation is separate.
+  hierarchy: (graph, target, options) =>
+    arrangeSlice(graph, target, { ...options, axis: resolveAxis('top-down') }),
+  flow: (graph, target, options) =>
+    arrangeSlice(graph, target, { ...options, axis: resolveAxis('left-right') }),
 };
 
 /** Resolves one named strategy. Every name in the record model has an implementation. */

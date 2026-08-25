@@ -31,7 +31,7 @@ layout is automatic, so never write coordinates.
 `./canvas help` prints the full DSL grammar. The one-screen version:
 
 ```
-scope "My System"                              # a scope block FULLY declares that map
+scope "My System" [orientation=top-down|left-right]   # a scope block FULLY declares that map
   note "Free-text remark."
   module "Session broker" "optional description"
     acquire(AgentId) -> SessionHandle          # methods: bare type names

@@ -8,6 +8,7 @@ import type {
   CanvasReference, InterfaceObject, SourceReference, TypeObject,
 } from './architecture-values.ts';
 import type { CanvasLayout, CanvasViewBase, PortSide } from './layout-record.ts';
+import type { Orientation } from './axis.ts';
 import type { NodeKind } from './node-kind.ts';
 import type { OouxRow } from './ooux-object.ts';
 import type { EntityField } from './entity.ts';
@@ -124,6 +125,8 @@ export interface DiagramRecord {
   id: DiagramId;
   /** The diagram owns its own title; no node carries it. */
   name: string;
+  /** Which way this diagram runs. Absent means top-down; see `axis.ts`. */
+  orientation?: Orientation;
   status: 'active' | 'archived';
   revision: number;
   nodes: Record<string, CanvasNode>;

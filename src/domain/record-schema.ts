@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ORIENTATIONS } from './axis.ts';
 import { allComponents, contentFieldsFor, kindList } from '../components/registry.ts';
 import type { DiagramRecord, LibraryIndex } from './records.ts';
 import {
@@ -116,6 +117,7 @@ const diagramRecord = z.object({
   schemaVersion: z.literal(3),
   id: z.string().min(1),
   name: z.string(),
+  orientation: z.enum(ORIENTATIONS).optional(),
   status: z.enum(['active', 'archived']),
   revision: z.number().int().nonnegative(),
   nodes: z.record(z.string(), canvasNode),

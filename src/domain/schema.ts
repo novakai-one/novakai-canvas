@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ORIENTATIONS } from './axis.ts';
 import { allComponents, contentFieldsFor, kindList } from '../components/registry.ts';
 import type { CanvasChangeSet } from './legacy-commands.ts';
 import type { ArchitectureDocument } from './legacy-document.ts';
@@ -77,7 +78,7 @@ const appliedOperations = z.record(z.string(), z.object({
   provenance,
   commandKinds: z.array(z.enum([
     'document.import',
-    'diagram.create', 'diagram.rename', 'diagram.setStatus', 'diagram.setReferences',
+    'diagram.create', 'diagram.rename', 'diagram.setOrientation', 'diagram.setStatus', 'diagram.setReferences',
     'node.add', 'node.move', 'node.resize', 'node.pin', 'node.update', 'node.remove',
     'node.setSubject', 'node.setDetailDiagram', 'node.reparent', 'node.setCollapsed',
     'wire.add', 'wire.update', 'wire.reconnect', 'wire.remove', 'layout.apply', 'scope.layout',
@@ -88,6 +89,7 @@ const architectureDocumentV2 = z.object({
   schemaVersion: z.literal(2),
   id: z.string().min(1),
   name: z.string().min(1),
+  orientation: z.enum(ORIENTATIONS).optional(),
   revision: z.number().int().nonnegative(),
   nodes: z.record(z.string(), semanticNode),
   interfaces: interfaceObjects,

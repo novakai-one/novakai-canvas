@@ -41,6 +41,10 @@ export type {
   PlannedWireRoute, Point as GeometryPoint, Rect as GeometryRect, RouteObstacle, RouteSide,
   WireRoute, WireRouteRequest,
 } from './domain/diagram-geometry.ts';
+export {
+  crossAxis, isOrientation, orientationOf, resolveAxis, ORIENTATIONS,
+  type Axis, type Orientation,
+} from './domain/axis.ts';
 export { defaultLayoutOptions } from './domain/layout/contract.ts';
 export type {
   LayoutGraph, LayoutOptions, LayoutPlan, LayoutSliceTarget, LayoutStrategy,

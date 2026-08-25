@@ -53,8 +53,11 @@ export function recordForCompiled(before: DiagramRecord, compiled: CompiledDiagr
       : { nodeId: asId(nodeId), ...structuredClone(PLACEHOLDER_PLACEMENT) },
   ])) as Record<string, RecordPlacement>;
 
+  // The scope block fully declares the map, so an omitted orientation clears a stored one.
+  const { orientation: _replaced, ...carried } = before;
   const target: DiagramRecord = {
-    ...before,
+    ...carried,
+    ...(compiled.orientation === undefined ? {} : { orientation: compiled.orientation }),
     name: compiled.name,
     nodes: compiled.nodes,
     wires: compiled.wires,

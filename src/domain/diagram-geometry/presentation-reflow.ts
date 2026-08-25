@@ -29,6 +29,7 @@ function geometryDocument(record: DiagramRecord): ArchitectureDocument {
     schemaVersion: 2,
     id: record.id as string,
     name: record.name,
+    orientation: record.orientation,
     revision: record.revision,
     nodes: Object.fromEntries(Object.entries(record.nodes).map(([id, node]) => [id, {
       ...node,

@@ -4,10 +4,11 @@ import {
   canonicalNodeAppearance, isAppearanceKey, isArrangementKey,
   type AuthoredArrangement, type ParsedPresentation,
 } from '../../../src/domain/canvas-presentation.ts';
+import { ORIENTATIONS, isOrientation, type Orientation } from '../../../src/domain/axis.ts';
 import { attributeKey } from './tokens.ts';
 
 type SplitResult =
-  | { semanticTokens: string[]; presentation?: ParsedPresentation }
+  | { semanticTokens: string[]; presentation?: ParsedPresentation; orientation?: Orientation }
   | { error: string; hint: string };
 type Failure = { error: string; hint: string };
 
@@ -22,7 +23,12 @@ interface AuthoredPresentation {
   appearance: NonNullable<ParsedPresentation['appearance']>;
   arrangement: Partial<AuthoredArrangement>;
   hasArrangementAttribute: boolean;
+  orientation?: Orientation;
 }
+
+/** Which way the map runs is a property of the map, so only its root scope may say it. */
+const ORIENTATION_KEY = 'orientation';
+const ORIENTATION_HINT = `${ORIENTATION_KEY}=${ORIENTATIONS.join('|')}`;
 
 function contextFor(component: DiagramComponent, tokens: string[]): PresentationContext {
   const arrangementModes = component.arrangementModes ?? [];
@@ -33,7 +39,7 @@ function contextFor(component: DiagramComponent, tokens: string[]): Presentation
     arrangementModes,
     owner: tokens[0],
     hint: tokens[0] === 'scope'
-      ? `scope "name" ["optional description"] [layout=${layoutValues}]${columnsHint} [gap=0|4|8|12|16|24|32] [align=stretch|start|center|end]`
+      ? `scope "name" ["optional description"] [layout=${layoutValues}]${columnsHint} [gap=0|4|8|12|16|24|32] [align=stretch|start|center|end] [${ORIENTATION_HINT}]`
       : component.declaration.syntax,
   };
 }
@@ -134,6 +140,7 @@ function parseAttributes(
   const appearance: NonNullable<ParsedPresentation['appearance']> = {};
   const arrangement: Partial<AuthoredArrangement> = {};
   let hasArrangementAttribute = false;
+  let orientation: Orientation | undefined;
   const seen = new Set<string>();
   for (const token of tokens.slice(firstAttribute)) {
     const equals = token.indexOf('=');
@@ -141,6 +148,22 @@ function parseAttributes(
     const raw = equals < 1 ? '' : token.slice(equals + 1);
     if (seen.has(key)) return { error: `duplicate attribute "${key}"`, hint: context.hint };
     seen.add(key);
+    if (key === ORIENTATION_KEY) {
+      if (context.owner !== 'scope') {
+        return {
+          error: `${ORIENTATION_KEY} belongs on the map's root scope, not on ${context.owner}`,
+          hint: `move ${ORIENTATION_HINT} to the scope line`,
+        };
+      }
+      if (!isOrientation(raw)) {
+        return {
+          error: `invalid ${ORIENTATION_KEY} "${raw}"; use one of: ${ORIENTATIONS.join(', ')}`,
+          hint: context.hint,
+        };
+      }
+      orientation = raw;
+      continue;
+    }
     const arrangementResult = parseArrangement(key, raw, context, arrangement);
     if (arrangementResult.handled) {
       hasArrangementAttribute = true;
@@ -153,7 +176,7 @@ function parseAttributes(
     }
     if (appearanceResult.error) return { error: appearanceResult.error, hint: context.hint };
   }
-  return { appearance, arrangement, hasArrangementAttribute };
+  return { appearance, arrangement, hasArrangementAttribute, orientation };
 }
 
 /** Strips and validates shared presentation tokens against component metadata. */
@@ -162,13 +185,14 @@ export function splitPresentation(component: DiagramComponent, tokens: string[])
   const firstAttribute = tokens.findIndex((token, index) => {
     if (index < 2) return false;
     const key = attributeKey(token) ?? '';
-    return (isAppearanceKey(key) && context.appearanceKeys.includes(key))
+    return key === ORIENTATION_KEY
+      || (isAppearanceKey(key) && context.appearanceKeys.includes(key))
       || (context.arrangementModes.length > 0 && isArrangementKey(key));
   });
   if (firstAttribute === -1) return { semanticTokens: tokens };
   const authored = parseAttributes(tokens, firstAttribute, context);
   if ('error' in authored) return authored;
-  const { appearance, arrangement, hasArrangementAttribute } = authored;
+  const { appearance, arrangement, hasArrangementAttribute, orientation } = authored;
   const failure = arrangementFailure(arrangement, context, hasArrangementAttribute);
   if (failure) return failure;
   const parsed: ParsedPresentation = {};
@@ -184,5 +208,6 @@ export function splitPresentation(component: DiagramComponent, tokens: string[])
   return {
     semanticTokens: tokens.slice(0, firstAttribute),
     ...(Object.keys(parsed).length > 0 ? { presentation: parsed } : {}),
+    ...(orientation === undefined ? {} : { orientation }),
   };
 }

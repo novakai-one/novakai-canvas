@@ -90,6 +90,7 @@ function parseScope(
   const scope: ScopeAst = {
     label: split.semanticTokens[1],
     ...(split.semanticTokens[2] === undefined ? {} : { description: split.semanticTokens[2] }),
+    ...(split.orientation === undefined ? {} : { orientation: split.orientation }),
     nodes: [], wires: [], zones: [], declarations: [],
     ...(split.presentation ? { presentation: split.presentation } : {}),
   };

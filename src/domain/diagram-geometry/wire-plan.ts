@@ -10,7 +10,7 @@ import {
 export function planWireRoutes(
   view: ProjectedView,
   hints: Record<string, WireRouteHint>,
-  options: WirePlanOptions = {},
+  options: WirePlanOptions,
 ): Record<string, PlannedWireRoute> {
   const rects = nodeRects(view);
   const lanes = laneOffsets(view.wires);
@@ -21,7 +21,7 @@ export function planWireRoutes(
     if (!source || !target) continue;
     const obstacles = options.avoidObstacles === false
       ? [] : wireObstacles(view, rects, wire);
-    const automatic = chooseSides(source, target, obstacles);
+    const automatic = chooseSides(source, target, obstacles, options.axis);
     const hint = hints[wire.id];
     const sourceSide = hint?.preferredSourceSide ?? automatic.sourceSide;
     const targetSide = hint?.preferredTargetSide ?? automatic.targetSide;

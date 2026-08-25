@@ -18,10 +18,11 @@ export function rankedPositions(
   ids: string[],
   working: Map<string, NodePlacement>,
   options: LayoutOptions,
-  rankDirection: 'TB' | 'LR',
 ): Map<string, Position> {
   const ranked = new dagre.graphlib.Graph();
-  ranked.setGraph({ rankdir: rankDirection, nodesep: options.nodeGap, ranksep: options.rankGap });
+  ranked.setGraph({
+    rankdir: options.axis.rankDirection, nodesep: options.nodeGap, ranksep: options.rankGap,
+  });
   ranked.setDefaultEdgeLabel(() => ({}));
   for (const id of ids) {
     const { size } = working.get(id) as NodePlacement;

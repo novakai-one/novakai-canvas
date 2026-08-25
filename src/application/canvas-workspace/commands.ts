@@ -1,3 +1,4 @@
+import type { Orientation } from '../../domain/axis.ts';
 /** Typed mutation vocabulary accepted by CanvasWorkspace. */
 
 import type {
@@ -75,4 +76,5 @@ export type RecordCommand =
     kind: 'diagram.definitions.replace';
     interfaces: DiagramRecord['interfaces']; types: DiagramRecord['types'];
   }
-  | { kind: 'diagram.rename'; name: string };
+  | { kind: 'diagram.rename'; name: string }
+  | { kind: 'diagram.setOrientation'; orientation?: Orientation };
