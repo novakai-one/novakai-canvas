@@ -1,4 +1,4 @@
-import type { Orientation } from '../../src/domain/axis.ts';
+import type { Orientation } from '../../src/domain/orientation.ts';
 import type { CanvasNode as RecordNode } from '../../src/domain/records.ts';
 import type { ParsedPresentation } from '../../src/domain/canvas-presentation.ts';
 import type { WireAst } from './wire-authoring.ts';

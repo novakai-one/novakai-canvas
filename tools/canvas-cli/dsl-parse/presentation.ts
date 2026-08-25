@@ -4,7 +4,7 @@ import {
   canonicalNodeAppearance, isAppearanceKey, isArrangementKey,
   type AuthoredArrangement, type ParsedPresentation,
 } from '../../../src/domain/canvas-presentation.ts';
-import { ORIENTATIONS, isOrientation, type Orientation } from '../../../src/domain/axis.ts';
+import { ORIENTATIONS, isOrientation, type Orientation } from '../../../src/domain/orientation.ts';
 import type { CrossingPolicy } from '../../../src/domain/topology.ts';
 import { attributeKey } from './tokens.ts';
 

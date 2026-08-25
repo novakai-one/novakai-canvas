@@ -1,4 +1,4 @@
-import type { Orientation } from '../../domain/axis.ts';
+import type { Orientation } from '../../domain/orientation.ts';
 /** Typed mutation vocabulary accepted by CanvasWorkspace. */
 
 import type {

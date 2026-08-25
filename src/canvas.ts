@@ -46,9 +46,9 @@ export type {
   WireRoute, WireRouteRequest,
 } from './domain/diagram-geometry.ts';
 export {
-  crossAxis, isOrientation, orientationOf, resolveAxis, ORIENTATIONS,
-  type Axis, type Orientation,
+  crossAxis, orientationOf, resolveAxis, type Axis,
 } from './domain/axis.ts';
+export { isOrientation, ORIENTATIONS, type Orientation } from './domain/orientation.ts';
 export { defaultLayoutOptions } from './domain/layout/contract.ts';
 export type {
   LayoutGraph, LayoutOptions, LayoutPlan, LayoutSliceTarget, LayoutStrategy,

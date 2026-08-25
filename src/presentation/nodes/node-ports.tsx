@@ -1,5 +1,5 @@
 import { Handle, Position } from '@xyflow/react';
-import { NODE_PORTS } from '../../domain/axis';
+import { NODE_PORTS } from '../../domain/node-port';
 import { portAxisFraction, portHandleId } from '../../domain/interface-signature';
 import { interfaceRowCenter } from '../../components/card/measure';
 import type { InterfaceObject } from '../../domain/model';

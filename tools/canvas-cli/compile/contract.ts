@@ -1,4 +1,4 @@
-import type { Orientation } from '../../../src/domain/axis.ts';
+import type { Orientation } from '../../../src/domain/orientation.ts';
 import type { CrossDiagramLink, DiagramRecord } from '../../../src/canvas.ts';
 import type { ContainerArrangement, NodeAppearance } from '../../../src/domain/canvas-presentation.ts';
 import type { WireAppearance } from '../../../src/domain/wire-appearance.ts';

@@ -1,7 +1,7 @@
 /** Pure command plans for creating and reconnecting Canvas wires. */
 
 import type { RecordCommand } from '../../application/canvas-workspace.ts';
-import { NODE_PORTS } from '../../domain/axis.ts';
+import { NODE_PORTS } from '../../domain/node-port.ts';
 import { asId } from '../../domain/id-cast.ts';
 import type { NodeId, WireId } from '../../domain/ids.ts';
 import type { PortSide } from '../../domain/records.ts';

@@ -1,10 +1,8 @@
 /** The one place any direction is decided. */
 
 import type { PortSide } from './layout-record.ts';
+import type { Orientation } from './orientation.ts';
 import type { DiagramRecord } from './records.ts';
-
-export const ORIENTATIONS = ['top-down', 'left-right'] as const;
-export type Orientation = typeof ORIENTATIONS[number];
 
 /** Every direction one diagram needs, resolved from its orientation. */
 export interface Axis {
@@ -40,16 +38,3 @@ export function crossAxis(axis: Axis): Axis {
 export function orientationOf(record: Pick<DiagramRecord, 'orientation'>): Orientation {
   return record.orientation ?? 'top-down';
 }
-
-export function isOrientation(value: string): value is Orientation {
-  return (ORIENTATIONS as readonly string[]).includes(value);
-}
-
-/**
- * The sides a node offers a wire, in the order they are rendered.
- *
- * Unrelated to `Axis`: this is what a *hand* may use, not what the router prefers.
- */
-export const NODE_PORTS = ['top', 'right', 'bottom', 'left'] as const;
-
-export type NodePort = typeof NODE_PORTS[number];

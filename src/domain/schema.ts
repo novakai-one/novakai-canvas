@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ORIENTATIONS } from './axis.ts';
+import { ORIENTATIONS } from './orientation.ts';
 import { allComponents, contentFieldsFor, kindList } from '../components/registry.ts';
 import type { CanvasChangeSet } from './legacy-commands.ts';
 import type { ArchitectureDocument } from './legacy-document.ts';

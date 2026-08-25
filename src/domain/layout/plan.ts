@@ -8,7 +8,7 @@ import {
   type LayoutGraph, type LayoutOptions, type LayoutPlan, type LayoutSliceTarget,
   type LayoutStrategy,
 } from './contract.ts';
-import { childIdsOf, namedIdsOf } from './graph.ts';
+import { childIdsOf, namedIdsOf } from './selection.ts';
 import { arrangeSlice, targetNodeIds } from './arrange.ts';
 
 const strategies: Record<LayoutStrategyName, LayoutStrategy> = {

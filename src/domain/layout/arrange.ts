@@ -3,9 +3,8 @@
 import type { Position } from '../spatial.ts';
 import type { NodePlacement } from '../records.ts';
 import type { LayoutGraph, LayoutOptions, LayoutSliceTarget } from './contract.ts';
-import {
-  childIdsOf, containedIdsOf, namedIdsOf, topLeftOf, workingPlacements,
-} from './graph.ts';
+import { topLeftOf, workingPlacements } from './placements.ts';
+import { childIdsOf, containedIdsOf, namedIdsOf } from './selection.ts';
 import { rankedPositions, sizeContaining } from './rank.ts';
 
 /** Extra top padding inside a group, leaving room for its title. */

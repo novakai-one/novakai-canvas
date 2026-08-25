@@ -1,4 +1,5 @@
 import type { ContainerArrangement, ParsedPresentation } from '../../../src/domain/canvas-presentation.ts';
+import type { InterfaceId, NodeId, TypeId } from '../../../src/domain/ids.ts';
 import type { DiagramRecord } from '../../../src/domain/records.ts';
 import type { NodeAst, ZoneAst } from '../dsl-ast.ts';
 import type { RecordNode } from '../record-graph.ts';
@@ -31,7 +32,7 @@ class ScopeCompiler {
   compile(): CompiledScope {
     const { scopeAst, rootNodeId, id } = this.declared;
     this.nodes[rootNodeId] = {
-      id: asId(rootNodeId),
+      id: asId<NodeId>(rootNodeId),
       kind: 'group',
       label: scopeAst.label,
       ...(scopeAst.description ? { description: scopeAst.description } : {}),
@@ -86,15 +87,15 @@ class ScopeCompiler {
       Object.entries(nodeAst.children).filter(([, content]) => content.length > 0),
     );
     this.nodes[nodeId] = {
-      id: asId(nodeId),
+      id: asId<NodeId>(nodeId),
       kind: nodeAst.kind,
       label: nodeAst.label,
       ...(nodeAst.description ? { description: nodeAst.description } : {}),
-      parentId: asId(parentId),
+      parentId: asId<NodeId>(parentId),
       ...(nodeAst.band === undefined ? {} : { band: nodeAst.band }),
       ...(nodeAst.lane === undefined ? {} : { lane: nodeAst.lane }),
-      interfaceIds: interfaceIds.map((id) => asId(id)),
-      typeIds: typeIds.map((id) => asId(id)),
+      interfaceIds: interfaceIds.map((id) => asId<InterfaceId>(id)),
+      typeIds: typeIds.map((id) => asId<TypeId>(id)),
       ...nodeAst.content,
       ...childContent,
     };
@@ -145,11 +146,11 @@ class ScopeCompiler {
     const zoneId = this.identity.allocateZone(zone.label, parentId);
     if (!zoneId) return undefined;
     this.nodes[zoneId] = {
-      id: asId(zoneId),
+      id: asId<NodeId>(zoneId),
       kind: 'group',
       label: zone.label,
       ...(zone.description ? { description: zone.description } : {}),
-      parentId: asId(parentId),
+      parentId: asId<NodeId>(parentId),
       interfaceIds: [],
       typeIds: [],
     };
@@ -158,7 +159,7 @@ class ScopeCompiler {
     this.nodes[zoneId] = {
       ...this.nodes[zoneId],
       ...(zone.crossing === undefined ? {} : { crossing: zone.crossing }),
-      ...(gate === undefined ? {} : { gate: asId(gate) }),
+      ...(gate === undefined ? {} : { gate: asId<NodeId>(gate) }),
     };
     this.storeArrangement(zoneId, zone.presentation, childIds);
     return zoneId;

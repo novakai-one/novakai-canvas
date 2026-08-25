@@ -8,7 +8,7 @@ import type {
   CanvasReference, InterfaceObject, SourceReference, TypeObject,
 } from './architecture-values.ts';
 import type { CanvasLayout, CanvasViewBase, PortSide } from './layout-record.ts';
-import type { Orientation } from './axis.ts';
+import type { Orientation } from './orientation.ts';
 import type { NodeKind } from './node-kind.ts';
 import type { OouxRow } from './ooux-object.ts';
 import type { EntityField } from './entity.ts';

@@ -1,6 +1,6 @@
 /** V2 document contracts retained for migration and compatibility hosts. */
 
-import type { Orientation } from './axis.ts';
+import type { Orientation } from './orientation.ts';
 import type { ContainerArrangement, NodeAppearance } from './canvas-presentation.ts';
 import type {
   CanvasReference, InterfaceObject, SourceReference, TypeObject,
