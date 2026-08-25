@@ -53,6 +53,7 @@ class ScopeCompiler {
         rootNodeId,
         nodes: this.nodes,
         wires: {},
+        flows: {},
         interfaces: this.interfaces,
         types: this.types,
         appearanceByNodeId: this.appearanceByNodeId,

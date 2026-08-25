@@ -7,6 +7,7 @@ import {
   nearestPositionAlong, pointAlong, type Point, type RouteObstacle,
 } from '../../domain/diagram-geometry';
 import { wireLabelSpread } from '../../domain/wire-label-seed';
+import type { Emphasis } from '../../domain/flows.ts';
 
 const DEFAULT_LABEL_POSITION = 0.5;
 /** Gap between the wire's stroke and the nearest edge of its label. */
@@ -22,6 +23,7 @@ interface WireLabelRequest {
   selected: boolean;
   related: boolean;
   hovered: boolean;
+  emphasis?: Emphasis;
   movable: boolean;
   select: () => void;
   setPosition?: (position: number) => void;
@@ -112,7 +114,8 @@ export function useWireLabel(request: WireLabelRequest): {
   const element = request.label ? (
     <EdgeLabelRenderer>
       <button
-        className={`wire-label nodrag nopan${request.selected ? ' is-selected' : ''}${request.related ? ' is-related' : ''}${request.hovered ? ' is-hovered' : ''}${request.movable ? ' is-movable' : ''}`}
+        className={`wire-label nodrag nopan${request.emphasis ? ` has-flow-${request.emphasis}` : ''}${request.selected ? ' is-selected' : ''}${request.related ? ' is-related' : ''}${request.hovered ? ' is-hovered' : ''}${request.movable ? ' is-movable' : ''}`}
+        data-emphasis={request.emphasis}
         onClick={(event) => { event.stopPropagation(); if (!moved.current) request.select(); }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}

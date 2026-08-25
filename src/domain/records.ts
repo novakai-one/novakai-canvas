@@ -1,5 +1,5 @@
 import type {
-  DiagramId, InterfaceId, LinkId, NodeId, TypeId, ViewId, WireId,
+  DiagramId, FlowId, InterfaceId, LinkId, NodeId, TypeId, ViewId, WireId,
 } from './ids.ts';
 import type {
   CalloutItem, IconCardIcon, MetricStatus, TimelineStep, TreeRow,
@@ -106,6 +106,16 @@ export interface CanvasWire {
   target: Endpoint;
 }
 
+/** One ordered reference to a wire already owned by this diagram. */
+export interface FlowStep { ref: WireId; ordinal: number }
+
+/** A named semantic path over existing wires; it owns no graph or geometry. */
+export interface Flow {
+  id: FlowId;
+  name: string;
+  steps: FlowStep[];
+}
+
 /**
  * One saved reading view.
  *
@@ -139,6 +149,8 @@ export interface DiagramRecord {
   revision: number;
   nodes: Record<string, CanvasNode>;
   wires: Record<string, CanvasWire>;
+  /** Optional so every pre-F5 v3 record remains byte-compatible. */
+  flows?: Record<string, Flow>;
   interfaces: Record<string, InterfaceObject>;
   types: Record<string, TypeObject>;
   layouts: Record<string, CanvasLayout>;

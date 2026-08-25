@@ -20,6 +20,7 @@ import { CanvasPortalProvider, ShellGeometryProvider, targetScale } from './pres
 import { useWorkspaceRecord } from './presentation/use-workspace-record';
 import { wireToneCssVariables } from './presentation/wire-styles';
 import { DEFAULT_CANVAS_MODE, type CanvasMode } from './presentation/view-mode';
+import { compileFlows } from './domain/flows.ts';
 
 /** What the host hands the app once the library and the first diagram have been read. */
 export interface AppProps {
@@ -63,6 +64,8 @@ export default function App(props: AppProps) {
   );
   const record = useWorkspaceRecord(open.workspace);
   const view = useMemo(() => projectView(record), [record]);
+  const flows = useMemo(() => compileFlows(record), [record]);
+  const activeFlowId = record.views[record.activeViewId]?.flowId;
   const [diagrams, setDiagrams] = useState<DiagramSummary[]>(
     () => library.list({ includeArchived: true }),
   );
@@ -337,6 +340,8 @@ export default function App(props: AppProps) {
       <Rail
         activeDiagramId={open.id}
         activeDiagramName={record.name}
+        activeFlowId={activeFlowId}
+        activateFlow={(flowId) => execute({ kind: 'flow.activate', flowId })}
         addNode={addNode}
         canUndo={open.workspace.canUndo()}
         changeDiagram={changeDiagram}
@@ -346,6 +351,7 @@ export default function App(props: AppProps) {
         defaultTab={preferences.panel.leftDefaultTab ?? 'build'}
         diagrams={diagrams}
         editable={mode === 'edit'}
+        flows={flows}
         jumpTo={jumpTo}
         openAtObject={openAtObject}
         select={select}

@@ -7,6 +7,7 @@ import type {
 import type { WireAppearance } from '../../domain/wire-appearance.ts';
 import type { DiagramRecord, PortAnchor, PortSide } from '../../domain/records.ts';
 import type { WireCardinality } from '../../domain/wire-cardinality.ts';
+import type { FlowId } from '../../domain/ids.ts';
 
 interface PlacementInput {
   position: { x: number; y: number };
@@ -67,6 +68,7 @@ export type RecordCommand =
   | { kind: 'interface.remove'; id: string }
   | { kind: 'view.setCollapsed'; id: string; collapsed: boolean }
   | { kind: 'view.setViewport'; viewport: { x: number; y: number; zoom: number } }
+  | { kind: 'flow.activate'; flowId?: FlowId }
   | {
     kind: 'layout.presentation.replace';
     appearanceByNodeId: Record<string, NodeAppearance>;
@@ -80,5 +82,6 @@ export type RecordCommand =
     kind: 'diagram.definitions.replace';
     interfaces: DiagramRecord['interfaces']; types: DiagramRecord['types'];
   }
+  | { kind: 'diagram.flows.replace'; flows: NonNullable<DiagramRecord['flows']> }
   | { kind: 'diagram.rename'; name: string }
   | { kind: 'diagram.setOrientation'; orientation?: Orientation };

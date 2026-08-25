@@ -11,6 +11,15 @@ export interface ParseError { line: number; message: string; hint: string }
 export interface InterfaceAst { name: string; accepts: string[]; returns: string[] }
 /** Named record-like type declaration owned by a node. */
 export interface TypeAst { name: string; fields: string[] }
+/** One source-located wire reference in a named flow. */
+export interface FlowStepAst { ordinal: number; ref: string; line: number }
+/** A scope-level semantic overlay; never part of the node declaration tree. */
+export interface FlowAst {
+  label: string;
+  id?: string;
+  steps: FlowStepAst[];
+  line: number;
+}
 /** One registry-owned semantic node declaration. */
 export interface NodeAst {
   kind: RecordNode['kind'];
@@ -52,6 +61,7 @@ export interface ScopeAst {
   orientation?: Orientation;
   nodes: NodeAst[];
   wires: WireAst[];
+  flows: FlowAst[];
   zones: ZoneAst[];
   /** The authoritative mixed order of direct node and zone declarations. */
   declarations: (NodeAst | ZoneAst)[];

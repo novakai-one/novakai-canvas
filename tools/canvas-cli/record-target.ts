@@ -54,15 +54,21 @@ export function recordForCompiled(before: DiagramRecord, compiled: CompiledDiagr
   ])) as Record<string, RecordPlacement>;
 
   // The scope block fully declares the map, so an omitted orientation clears a stored one.
-  const { orientation: _replaced, ...carried } = before;
+  const { orientation: _replaced, flows: _replacedFlows, ...carried } = before;
+  const views = structuredClone(before.views);
+  for (const view of Object.values(views)) {
+    if (view.flowId && !compiled.flows[view.flowId]) delete view.flowId;
+  }
   const target: DiagramRecord = {
     ...carried,
     ...(compiled.orientation === undefined ? {} : { orientation: compiled.orientation }),
     name: compiled.name,
     nodes: compiled.nodes,
     wires: compiled.wires,
+    ...(Object.keys(compiled.flows).length === 0 ? {} : { flows: compiled.flows }),
     interfaces: compiled.interfaces,
     types: compiled.types,
+    views,
     layouts: {
       ...before.layouts,
       [layoutId]: {

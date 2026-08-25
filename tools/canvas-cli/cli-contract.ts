@@ -38,6 +38,7 @@ export const CLI_HELP = `canvas — draw architecture maps from your terminal
 
 Usage
   ./canvas maps                     list maps (top-level scopes)
+  ./canvas flows <map>              list named flows and their ordered wire IDs
   ./canvas read [map] [--format dsl|agent|markdown|json]
                                     export one map (or all maps); default dsl
   ./canvas describe                 print the machine-readable command vocabulary
@@ -66,6 +67,9 @@ Scope and zone containers share the zone.layout, zone.gap and zone.align vocabul
     resource "sessions.json"
     zone "Protected store" [crossing=gated|free] [gate="node label"] ... end
     wire "browse CLI" -> "Session broker.acquire" : acquire(AgentId) -> SessionHandle [queries]
+    flow "Acquire a session"
+      step 1 "agent-browser-sessions--wire-1"
+    end
 
 ${componentHelp}
   methods       name(TypeA, TypeB) -> TypeC            under a node; bare type names
@@ -74,6 +78,7 @@ ${componentHelp}
                 kind: owns|references|assigns|queries|executes|mentions|missing
                 A.method names one method declared directly under node A
                 an endpoint naming a node in another map becomes a cross-map link
+  flows         flow "Name" [id=stable-id] ... step 1 "existing-wire-id" ... end
   names         quote multi-word names: "browse CLI"; single tokens can go bare
 `;
 
@@ -82,7 +87,7 @@ export const COMMAND_KINDS = [
   'node.content.set', 'node.reparent',
   'node.remove', 'wire.add', 'wire.reconnect', 'wire.setCardinality', 'wire.remove', 'view.setCollapsed',
   'view.setViewport', 'diagram.rename', 'diagram.setOrientation',
-  'diagram.definitions.replace', 'layout.presentation.replace',
+  'flow.activate', 'diagram.definitions.replace', 'diagram.flows.replace', 'layout.presentation.replace',
 ] as const;
 
 /** The vocabulary an unfamiliar agent needs to drive Canvas without reading code. */
@@ -108,6 +113,11 @@ export function describeCapability(): unknown {
       command: './canvas read [map] --format <format>',
     },
     dsl: {
+      flow: {
+        syntax: 'flow <name> [id=<stable-id>] ... step <positive ordinal> <wire-id> ... end',
+        ownership: 'diagram semantic data; creates no node, wire, layout, or view',
+        activationCommand: 'flow.activate',
+      },
       wire: {
         syntax: `wire <label|node.method|@ref|#node-id> -> <label|node.method|@ref|#node-id> ${wireAppearanceHelp} : <contract> [kind]`,
         endpoints: ['label', 'node.method', '@ref', '#node-id'],

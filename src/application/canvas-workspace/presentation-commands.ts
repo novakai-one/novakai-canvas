@@ -3,6 +3,8 @@ import {
 } from '../../domain/canvas-presentation.ts';
 import { reflowPresentation } from '../../domain/diagram-geometry.ts';
 import type { DiagramRecord } from '../../domain/records.ts';
+import type { FlowId } from '../../domain/ids.ts';
+import { compileFlows } from '../../domain/flows.ts';
 import { canonicalWireAppearance } from '../../domain/wire-appearance.ts';
 import { directChildIds } from './arrangement.ts';
 import type { RecordCommand } from './contract.ts';
@@ -16,6 +18,18 @@ function activeLayout(record: DiagramRecord) {
   const layout = record.layouts[view.layoutId];
   if (!layout) throw new Error(`unknown-layout:${view.layoutId}`);
   return layout;
+}
+
+/** Selects one semantic overlay while leaving the record's basemap byte-for-byte unchanged. */
+export function activateFlow(record: DiagramRecord, flowId: FlowId | undefined): DiagramRecord {
+  const library = compileFlows(record);
+  if (flowId !== undefined && !library.has(flowId)) return record;
+  const next = structuredClone(record);
+  const view = next.views[next.activeViewId];
+  if (!view) return record;
+  if (flowId === undefined) delete view.flowId;
+  else view.flowId = flowId;
+  return next;
 }
 
 function arrangementChildren(record: DiagramRecord, id: string): string[] {

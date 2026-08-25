@@ -12,6 +12,7 @@ import { readAllRecords, type OpenedLibrary } from './library-io.ts';
 import { removalCommandsFor } from './record-apply.ts';
 import { rootGroupId } from '../../src/diagram-export/ordering.ts';
 import { slugify } from '../../src/authoring/slug.ts';
+import { compileFlows, stepsOf } from '../../src/domain/flows.ts';
 
 /** One map as the `maps` listing shows it. */
 export interface MapSummary {
@@ -47,6 +48,23 @@ export async function runMaps(opened: OpenedLibrary): Promise<void> {
   const width = Math.max(...maps.map((map) => map.id.length), 2);
   for (const map of maps) {
     process.stdout.write(`${map.id.padEnd(width)}  ${String(map.nodes).padStart(3)} nodes  ${String(map.wires).padStart(3)} wires  ${map.label}\n`);
+  }
+}
+
+/** Lists the semantic paths declared by one map without changing its record. */
+export async function runFlows(opened: OpenedLibrary, args: CliArgs): Promise<void> {
+  if (args.positional.length === 0) fail('flows needs a map: ./canvas flows <map>');
+  const diagramId = diagramIdOrFail(opened.library, args.positional[0]);
+  const record = await opened.repository.readDiagram(diagramId);
+  const flows = compileFlows(record);
+  if (flows.size === 0) {
+    process.stdout.write(`no flows: ${record.name}\n`);
+    return;
+  }
+  for (const [id, flow] of flows) {
+    const steps = stepsOf(flow);
+    const count = `${steps.length} ${steps.length === 1 ? 'step' : 'steps'}`;
+    process.stdout.write(`${id}  ${count}  ${flow.name}  ${steps.map((step) => step.ref).join(' -> ')}\n`);
   }
 }
 

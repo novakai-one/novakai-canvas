@@ -1,4 +1,4 @@
-import type { LayoutId, NodeId, ViewId, WireId } from './ids.ts';
+import type { FlowId, LayoutId, NodeId, ViewId, WireId } from './ids.ts';
 import type { Position, Size } from './spatial.ts';
 import type { ContainerArrangement, NodeAppearance } from './canvas-presentation.ts';
 import type { WireAppearance } from './wire-appearance.ts';
@@ -50,4 +50,6 @@ export interface CanvasViewBase {
   layoutId: LayoutId;
   viewport: { x: number; y: number; zoom: number };
   collapsedNodeIds: NodeId[];
+  /** Selected semantic overlay; absence means the unchanged structural diagram. */
+  flowId?: FlowId;
 }

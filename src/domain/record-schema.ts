@@ -56,6 +56,15 @@ const canvasWire = z.object({
   target: endpoint,
 });
 
+const flow = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  steps: z.array(z.object({
+    ref: z.string().min(1),
+    ordinal: z.number().int(),
+  })),
+});
+
 const nodePlacement = z.object({
   nodeId: z.string().min(1), position, size,
   sizeMode: z.enum(['auto', 'manual']).optional(), pinned: z.boolean(),
@@ -87,6 +96,7 @@ const canvasView = z.object({
   viewport: z.object({ x: z.number(), y: z.number(), zoom: z.number() }),
   collapsedNodeIds: z.array(z.string().min(1)),
   hiddenKinds: z.array(z.enum(kindList())),
+  flowId: z.string().min(1).optional(),
 });
 
 const interfaceObjects = z.record(z.string(), z.object({
@@ -126,6 +136,7 @@ const diagramRecord = z.object({
   revision: z.number().int().nonnegative(),
   nodes: z.record(z.string(), canvasNode),
   wires: z.record(z.string(), canvasWire),
+  flows: z.record(z.string(), flow).optional(),
   interfaces: interfaceObjects,
   types: typeObjects,
   layouts: z.record(z.string(), canvasLayout),

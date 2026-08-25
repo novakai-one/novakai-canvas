@@ -65,6 +65,7 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
     selected: Boolean(props.selected),
     related: Boolean(props.data?.related),
     hovered,
+    emphasis: props.data?.flowActive ? props.data.emphasis : undefined,
     movable: Boolean(setRoute),
     select: () => props.data?.select(),
     setPosition: setRoute ? (labelPosition) => setRoute({ labelPosition }) : undefined,
@@ -77,7 +78,8 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
   } as CSSProperties;
 
   return <>
-    <g onPointerEnter={() => setHovered(true)} onPointerLeave={() => setHovered(false)}>
+    <g data-emphasis={props.data?.emphasis}
+      onPointerEnter={() => setHovered(true)} onPointerLeave={() => setHovered(false)}>
       <BaseEdge className={preview && !preview.valid ? 'wire-preview-invalid' : undefined}
         id={props.id} interactionWidth={18} markerEnd={props.markerEnd} path={path} style={style} />
       {decorations.notationMode && <g fill="none" stroke={appearance?.strokeColorCss}

@@ -21,6 +21,7 @@ export interface CompiledDiagram {
   rootNodeId: string;
   nodes: Record<string, RecordNode>;
   wires: Record<string, RecordWire>;
+  flows: NonNullable<DiagramRecord['flows']>;
   interfaces: DiagramRecord['interfaces'];
   types: DiagramRecord['types'];
   appearanceByNodeId: Record<string, NodeAppearance>;

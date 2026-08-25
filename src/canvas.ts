@@ -23,15 +23,19 @@ export { migrateDocumentToLibrary } from './domain/migrate/v2-to-v3.ts';
 export { censusOfLegacyDocument, censusOfMigratedLibrary } from './domain/migrate/census.ts';
 export type { CanvasCensus } from './domain/migrate/census.ts';
 export type {
-  CrossDiagramLink, DiagramRecord, LibraryEntry, LibraryIndex, MigratedLibrary, MigrationReport,
+  CrossDiagramLink, DiagramRecord, Flow, FlowStep, LibraryEntry, LibraryIndex, MigratedLibrary, MigrationReport,
 } from './domain/records.ts';
 export { resolveNodeAppearance } from './domain/canvas-presentation.ts';
 export type {
   AppearanceKey, ContainerArrangement, NodeAppearance, PresentationContext, ResolvedNodeAppearance,
 } from './domain/canvas-presentation.ts';
 export type {
-  DiagramId, LayoutId, LinkId, NodeId, TypeId, ViewId, WireId,
+  DiagramId, FlowId, LayoutId, LinkId, NodeId, TypeId, ViewId, WireId,
 } from './domain/ids.ts';
+export {
+  compileFlows, emphasisLevel, FlowError, stepsOf, wireEmphasis,
+  type CompiledFlow, type Emphasis, type FlowLibrary,
+} from './domain/flows.ts';
 export { projectView } from './domain/project-view.ts';
 export type { PositionedNode, ProjectedView } from './domain/project-view.ts';
 export {

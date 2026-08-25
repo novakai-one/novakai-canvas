@@ -4,7 +4,7 @@ import type { RecordCommand } from './contract.ts';
 import { applyDefinitionReplacement } from './definition-command.ts';
 import { applyNodeCommand } from './node-command-application.ts';
 import {
-  applyTargetedPresentation, isTargetedPresentation, reflowAfterCommand,
+  activateFlow, applyTargetedPresentation, isTargetedPresentation, reflowAfterCommand,
 } from './presentation-commands.ts';
 import { applyWireCommand } from './wire-command.ts';
 
@@ -52,6 +52,7 @@ function applyView(view: View, command: ViewCommand): void {
 
 /** Applies one already-validated command to a clone of the supplied record. */
 export function applyRecordCommand(record: DiagramRecord, command: RecordCommand): DiagramRecord {
+  if (command.kind === 'flow.activate') return activateFlow(record, command.flowId);
   const next = structuredClone(record);
   const view = activeView(next);
   const layout = next.layouts[view.layoutId];
@@ -70,6 +71,8 @@ export function applyRecordCommand(record: DiagramRecord, command: RecordCommand
     applyTargetedPresentation(next, command);
   } else if (command.kind === 'diagram.definitions.replace') {
     applyDefinitionReplacement(next, command);
+  } else if (command.kind === 'diagram.flows.replace') {
+    next.flows = structuredClone(command.flows);
   } else if (command.kind === 'diagram.rename') next.name = command.name;
   else if (command.kind === 'diagram.setOrientation') {
     if (command.orientation === undefined) delete next.orientation;

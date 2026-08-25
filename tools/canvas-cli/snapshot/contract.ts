@@ -2,6 +2,8 @@ import type { DiagramRecord } from '../../../src/domain/records.ts';
 import type { PlannedWireRoute } from '../../../src/domain/diagram-geometry.ts';
 import type { PlacedNode } from '../record-graph.ts';
 import type { Crossing, Topology } from '../../../src/domain/topology.ts';
+import type { Emphasis, FlowLibrary } from '../../../src/domain/flows.ts';
+import type { FlowId } from '../../../src/domain/ids.ts';
 
 interface Point { x: number; y: number }
 
@@ -18,6 +20,9 @@ export interface SnapshotScene {
   routes: Record<string, PlannedWireRoute>;
   topology: Topology;
   crossings: readonly Crossing[];
+  flows: FlowLibrary;
+  activeFlowId?: FlowId;
+  emphasis: Record<string, Emphasis>;
   routeOffset: Point;
   positionOf(id: string): Point;
 }

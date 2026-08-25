@@ -31,9 +31,12 @@ export type LayoutId = Branded<'LayoutId'>;
 /** Identifies one saved reading view of a diagram. */
 export type ViewId = Branded<'ViewId'>;
 
+/** Identifies one named path over a diagram's existing wires. */
+export type FlowId = Branded<'FlowId'>;
+
 /** Identifies one relationship whose ends live in different diagrams. Owned by the library. */
 export type LinkId = Branded<'LinkId'>;
 
 /** Any identifier this capability mints. */
 export type CanvasId =
-  | DiagramId | NodeId | WireId | InterfaceId | TypeId | LayoutId | ViewId | LinkId;
+  | DiagramId | NodeId | WireId | InterfaceId | TypeId | LayoutId | ViewId | FlowId | LinkId;

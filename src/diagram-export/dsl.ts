@@ -13,6 +13,8 @@ import { printDeclarations } from './declarations.ts';
 import {
   arrangementAttributes, byWireOrder, exportNodes, quote, rootGroupId,
 } from './ordering.ts';
+import { compileFlows, stepsOf } from '../domain/flows.ts';
+import { slugify } from '../authoring/slug.ts';
 
 const CARDINALITY_ATTRIBUTES = [
   { key: 'source-cardinality', field: 'sourceCardinality' },
@@ -88,6 +90,17 @@ function printWires(record: DiagramRecord, context: DiagramExportContext): strin
   return lines;
 }
 
+function printFlows(record: DiagramRecord, rootId: string | undefined): string[] {
+  const lines: string[] = [];
+  for (const [id, flow] of compileFlows(record)) {
+    const generated = `${rootId ?? record.id}--flow-${slugify(flow.name)}`;
+    lines.push(`  flow ${quote(flow.name)}${id === generated ? '' : ` id=${quote(id)}`}`);
+    for (const step of stepsOf(flow)) lines.push(`    step ${step.ordinal} ${quote(step.ref)}`);
+    lines.push('  end');
+  }
+  return lines;
+}
+
 /** Prints one complete record, including nested declarations and outbound relationships. */
 export function printRecord(record: DiagramRecord, context: DiagramExportContext): string {
   const nodes = exportNodes(record);
@@ -105,6 +118,7 @@ export function printRecord(record: DiagramRecord, context: DiagramExportContext
       + `${rootAttributes.length ? ` ${rootAttributes.join(' ')}` : ''}`,
     ...printDeclarations(record, nodes, layout, rootId),
     ...printWires(record, context),
+    ...printFlows(record, rootId),
   ];
   return `${lines.join('\n')}\n`;
 }

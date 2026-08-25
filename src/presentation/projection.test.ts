@@ -182,6 +182,20 @@ describe('projectNodes', () => {
 });
 
 describe('projectEdges', () => {
+  it('derives flow emphasis without filtering any wire', () => {
+    const wired = record(
+      ['map', 'a', 'b', 'c', 'd', 'e'].map((id) => node(id, id === 'map' ? 'group' : 'module', id === 'map' ? undefined : 'map')),
+      [wire('ab', 'a', 'b'), wire('bc', 'b', 'c'), wire('de', 'd', 'e')],
+    );
+    wired.flows = { path: { id: asId('path'), name: 'Path', steps: [{ ref: asId('ab'), ordinal: 1 }] } };
+    wired.views['view-default'].flowId = asId('path');
+    const edges = projectEdges(input(wired));
+    expect(edges.map((edge) => [edge.id, edge.data?.emphasis])).toEqual([
+      ['ab', 'focal'], ['bc', 'context'], ['de', 'muted'],
+    ]);
+    expect(edges.every((edge) => edge.className?.includes(`has-flow-${edge.data?.emphasis}`))).toBe(true);
+  });
+
   it('reads both endpoints off the record wire', () => {
     const wired = record(
       [node('map', 'group'), node('a', 'module', 'map'), node('b', 'module', 'map')],

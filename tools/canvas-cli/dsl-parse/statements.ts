@@ -1,5 +1,5 @@
 import type { DiagramComponent } from '../../../src/components/component.ts';
-import type { NodeAst, ScopeAst, TypeAst, ZoneAst } from '../dsl-ast.ts';
+import type { FlowAst, NodeAst, ScopeAst, TypeAst, ZoneAst } from '../dsl-ast.ts';
 import { DSL_GRAMMAR } from './grammar.ts';
 import { ParserState } from './parser-state.ts';
 import { splitPresentation } from './presentation.ts';
@@ -91,10 +91,45 @@ function parseScope(
     label: split.semanticTokens[1],
     ...(split.semanticTokens[2] === undefined ? {} : { description: split.semanticTokens[2] }),
     ...(split.orientation === undefined ? {} : { orientation: split.orientation }),
-    nodes: [], wires: [], zones: [], declarations: [],
+    nodes: [], wires: [], flows: [], zones: [], declarations: [],
     ...(split.presentation ? { presentation: split.presentation } : {}),
   };
   state.openScope(scope, lineNumber);
+}
+
+function parseFlow(
+  state: ParserState,
+  tokens: string[],
+  lineNumber: number,
+): void {
+  if (!state.currentScope()) {
+    state.fail(lineNumber, 'flow outside a scope', 'declare scope "My System" first');
+    return;
+  }
+  if (state.inZone()) {
+    state.fail(lineNumber, 'flow must be declared directly under a scope', 'close the zone with end, then declare the flow');
+    return;
+  }
+  const attributes = tokens.slice(2);
+  const unknown = attributes.find((token) => !token.startsWith('id='));
+  const ids = attributes.filter((token) => token.startsWith('id='));
+  const id = ids[0]?.slice(3);
+  if (!tokens[1] || unknown || ids.length > 1 || (id !== undefined && id.length === 0)) {
+    state.fail(lineNumber, `invalid flow declaration "${tokens.join(' ')}"`, 'flow "Flow name" [id=stable-id]');
+    return;
+  }
+  state.openFlow({
+    label: tokens[1], ...(id === undefined ? {} : { id }), steps: [], line: lineNumber,
+  } satisfies FlowAst);
+}
+
+function parseFlowStep(state: ParserState, line: string, lineNumber: number): void {
+  const { tokens, error } = tokenize(line);
+  if (error || tokens.length !== 3 || !/^-?\d+$/.test(tokens[1])) {
+    state.fail(lineNumber, `invalid flow step "${line}"`, 'step 1 "existing-wire-id"');
+    return;
+  }
+  state.appendFlowStep({ ordinal: Number(tokens[1]), ref: tokens[2], line: lineNumber });
 }
 
 function parseComponent(
@@ -152,6 +187,10 @@ function parseGrammarStatement(
     parseScope(state, DSL_GRAMMAR.componentForKind('group') as DiagramComponent, tokens, lineNumber);
     return;
   }
+  if (keyword === 'flow') {
+    parseFlow(state, tokens, lineNumber);
+    return;
+  }
   const component = DSL_GRAMMAR.component(keyword);
   if (component) {
     parseComponent(state, component, tokens, lineNumber);
@@ -172,6 +211,15 @@ function parseGrammarStatement(
 
 /** Parses one non-empty, non-comment source line in the grammar's fixed priority order. */
 export function parseLine(state: ParserState, line: string, lineNumber: number): void {
+  if (state.currentFlow()) {
+    if (line === 'end') { state.closeFlow(); return; }
+    if (line.startsWith('step ') || line === 'step') {
+      parseFlowStep(state, line, lineNumber);
+      return;
+    }
+    state.fail(lineNumber, `unexpected statement inside flow: "${line}"`, 'use step <positive ordinal> "<wire-id>", or end');
+    return;
+  }
   if (line.startsWith('wire ') || line === 'wire') return parseWire(state, line, lineNumber);
   if (parseChild(state, line, lineNumber)) return;
   if (parseMember(state, line, lineNumber)) return;

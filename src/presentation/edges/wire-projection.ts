@@ -13,6 +13,7 @@ import { connectedIds, connectedWireIds } from '../projection-selection';
 import type { WireCardinality } from '../../domain/wire-cardinality';
 import { compileTopology, crossingsOf } from '../../domain/topology';
 import { portHandleId } from '../../domain/interface-signature';
+import { compileFlows, wireEmphasis, type Emphasis } from '../../domain/flows';
 
 /** How one wire is shaped by hand, read from the active layout route hint. */
 export interface EdgeRoute {
@@ -36,6 +37,8 @@ export interface ArchitectureEdgeData extends Record<string, unknown> {
   sourceCardinality?: WireCardinality;
   targetCardinality?: WireCardinality;
   related: boolean;
+  emphasis: Emphasis;
+  flowActive: boolean;
 }
 
 /** Projects the visible wires of one diagram into React Flow edges. */
@@ -44,6 +47,9 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
   const connected = connectedIds(input);
   const connectedWires = connectedWireIds(input);
   const topology = compileTopology(record);
+  const flows = compileFlows(record);
+  const activeFlowId = record.views[record.activeViewId]?.flowId;
+  const emphasis = wireEmphasis(flows, activeFlowId, view.wires.map((wire) => wire.id));
   const boundaryById = new Map(topology.boundaries.map((boundary) => [boundary.nodeId, boundary]));
   const crossingsByWire = new Map<string, ReturnType<typeof crossingsOf>>();
   for (const crossing of crossingsOf(record, topology)) {
@@ -89,6 +95,7 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
       height: 14,
     },
     className: [
+      activeFlowId ? `has-flow-${emphasis[wire.id]}` : '',
       related ? 'is-related' : '',
       crossings.length > 0 ? 'is-crossing' : '',
       bypassesGate ? 'is-crossing-bypass' : '',
@@ -107,6 +114,8 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
       sourceCardinality: wire.source.cardinality,
       targetCardinality: wire.target.cardinality,
       related,
+      emphasis: emphasis[wire.id],
+      flowActive: activeFlowId !== undefined,
       route: {
         waypoints: hints[wire.id]?.waypoints ?? [],
         labelPosition: hints[wire.id]?.labelPosition,

@@ -12,6 +12,7 @@ import { compileScopeWires } from './compile/wire-compiler.ts';
 import { rootGroupId } from './record-graph.ts';
 import { slugify } from '../../src/authoring/slug.ts';
 import type { LinkEnd } from './wire-authoring.ts';
+import { compileScopeFlows } from './compile/flow-compiler.ts';
 
 export type {
   CompileError, CompiledDiagram, CompileResult,
@@ -87,6 +88,7 @@ export function compile(
   for (const declaration of declared.values()) {
     const compiled = compileScope(declaration, messages);
     compileScopeWires(compiled, { foreign, links, messages });
+    compileScopeFlows(compiled, messages);
     diagrams.push(compiled.diagram);
   }
   return {

@@ -22,6 +22,7 @@ layout is automatic, so never write coordinates.
 
 ```
 ./canvas maps                     list maps
+./canvas flows <map>              list named flows and their ordered wire IDs
 ./canvas read <map>               print a map as DSL (cheap context reload)
 ./canvas apply [dsl-file]         create/replace maps from DSL (file or stdin)
 ./canvas rm <map> [node]          remove a node or a whole map
@@ -40,11 +41,15 @@ scope "My System" [orientation=top-down|left-right]   # a scope block FULLY decl
   zone "Stores" [crossing=gated|free] [gate="Node"] ... end
                                                  # boundary attributes are optional
   wire "browse CLI" -> "Session broker.acquire" : acquire(AgentId) -> SessionHandle [queries]
+  flow "Acquire a session"
+    step 1 "my-system--wire-1"             # references existing wire IDs only
+  end
 ```
 
 Every wire needs its contract (the actual call it carries). Quote multi-word
 names and `"Module.method"` port endpoints. Re-applying a scope replaces that
-map; other maps are untouched.
+map; other maps are untouched. Flows add no graph objects or geometry; select
+one in the app to emphasise its existing wires, or choose Structure only.
 
 Use `./canvas`, not `npm run canvas` (npm swallows flags). The dev server
 (`npm run dev`) binds IPv6 — open `http://localhost:5173`, not `127.0.0.1`.
