@@ -53,7 +53,7 @@ export function TimelineNode({ data }: NodeProps<TimelineFlowNode>) {
           })}
         </div>
       </article>
-      <NodePorts connectable={editable} />
+      <NodePorts connectable={editable} methods={data.interfaces} node={data.node} />
     </div>
   );
 }

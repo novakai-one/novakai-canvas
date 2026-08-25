@@ -58,7 +58,7 @@ function validateArrangements(
 
 /** Validates the complete presentation replacement against its record. */
 export function validatePresentation(record: DiagramRecord, command: PresentationCommand): void {
-  compileTopology(record.nodes);
+  compileTopology(record);
   layoutPresentationSchema.parse({
     appearanceByNodeId: command.appearanceByNodeId,
     appearanceByWireId: command.appearanceByWireId,
@@ -76,7 +76,7 @@ export function validateTargetedPresentation(
   record: DiagramRecord,
   command: TargetedPresentationCommand,
 ): void {
-  compileTopology(record.nodes);
+  compileTopology(record);
   if (command.kind === 'layout.nodeAppearance.set') {
     requireNode(record, command.id);
     nodeAppearanceSchema.parse(command.appearance);

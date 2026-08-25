@@ -9,6 +9,24 @@
 import type { Size } from '../component.ts';
 
 const CHAR_WIDTH = 7.2;
+const CARD_HEADER_HEIGHT = 48;
+const INTERFACE_ROW_HEIGHT = 26;
+
+function descriptionHeight(description: string | undefined, width: number): number {
+  if (!description) return 0;
+  const charsPerLine = Math.max(30, Math.floor(width / CHAR_WIDTH));
+  return 24 + 16 * Math.ceil(description.length / charsPerLine);
+}
+
+/** Canonical centre of a rendered interface row, measured from the card's top edge. */
+export function interfaceRowCenter(
+  description: string | undefined,
+  width: number,
+  ordinal: number,
+): number {
+  return CARD_HEADER_HEIGHT + descriptionHeight(description, width)
+    + INTERFACE_ROW_HEIGHT * ordinal + INTERFACE_ROW_HEIGHT / 2;
+}
 
 export function estimateNodeSize(
   label: string,
@@ -23,8 +41,8 @@ export function estimateNodeSize(
     description ? Math.min(description.length, 55) : 0,
   );
   const width = Math.min(420, Math.max(200, Math.round(24 + CHAR_WIDTH * longestLine)));
-  const charsPerLine = Math.max(30, Math.floor(width / CHAR_WIDTH));
-  const descriptionBlock = description ? 24 + 16 * Math.ceil(description.length / charsPerLine) : 0;
-  const height = 48 + descriptionBlock + 26 * interfaceLines.length + 24 * typeLines.length + 16;
+  const descriptionBlock = descriptionHeight(description, width);
+  const height = CARD_HEADER_HEIGHT + descriptionBlock
+    + INTERFACE_ROW_HEIGHT * interfaceLines.length + 24 * typeLines.length + 16;
   return { width, height };
 }

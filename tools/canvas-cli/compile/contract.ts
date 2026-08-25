@@ -9,7 +9,7 @@ import type { CrossDiagramWire, LinkEnd } from '../wire-authoring.ts';
 export type { CrossDiagramWire, LinkEnd } from '../wire-authoring.ts';
 
 /** A refusal to compile, always paired with the fix that would make it compile. */
-export interface CompileError { message: string; hint: string }
+export interface CompileError { message: string; hint: string; line?: number }
 
 /** One diagram's complete content, exactly as its scope block declares it. */
 export interface CompiledDiagram {

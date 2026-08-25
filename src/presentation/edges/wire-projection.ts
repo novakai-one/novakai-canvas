@@ -12,6 +12,7 @@ import type { ProjectionInput } from '../projection-contract';
 import { connectedIds, connectedWireIds } from '../projection-selection';
 import type { WireCardinality } from '../../domain/wire-cardinality';
 import { compileTopology, crossingsOf } from '../../domain/topology';
+import { portHandleId } from '../../domain/interface-signature';
 
 /** How one wire is shaped by hand, read from the active layout route hint. */
 export interface EdgeRoute {
@@ -42,7 +43,7 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
   const { editable, execute, preferences, record, select, selection, view } = input;
   const connected = connectedIds(input);
   const connectedWires = connectedWireIds(input);
-  const topology = compileTopology(record.nodes);
+  const topology = compileTopology(record);
   const boundaryById = new Map(topology.boundaries.map((boundary) => [boundary.nodeId, boundary]));
   const crossingsByWire = new Map<string, ReturnType<typeof crossingsOf>>();
   for (const crossing of crossingsOf(record, topology)) {
@@ -74,8 +75,10 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
     id: wire.id,
     source: wire.source.nodeId,
     target: wire.target.nodeId,
-    sourceHandle: plan?.sourceSide ?? axis.sourcePort,
-    targetHandle: plan?.targetSide ?? axis.targetPort,
+    sourceHandle: wire.source.anchor
+      ? portHandleId(wire.source.anchor) : plan?.sourceSide ?? axis.sourcePort,
+    targetHandle: wire.target.anchor
+      ? portHandleId(wire.target.anchor) : plan?.targetSide ?? axis.targetPort,
     type: 'elbow',
     selected: selection?.kind === 'wire' && selection.id === wire.id,
     zIndex: selection?.kind === 'wire' && selection.id === wire.id ? 1000 : 0,

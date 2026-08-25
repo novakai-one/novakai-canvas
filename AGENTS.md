@@ -39,11 +39,12 @@ scope "My System" [orientation=top-down|left-right]   # a scope block FULLY decl
   runtime "Chrome instances"                   # kinds: module|object|runtime|resource
   zone "Stores" [crossing=gated|free] [gate="Node"] ... end
                                                  # boundary attributes are optional
-  wire "browse CLI" -> "Session broker" : acquire(AgentId) -> SessionHandle [queries]
+  wire "browse CLI" -> "Session broker.acquire" : acquire(AgentId) -> SessionHandle [queries]
 ```
 
 Every wire needs its contract (the actual call it carries). Quote multi-word
-names. Re-applying a scope replaces that map; other maps are untouched.
+names and `"Module.method"` port endpoints. Re-applying a scope replaces that
+map; other maps are untouched.
 
 Use `./canvas`, not `npm run canvas` (npm swallows flags). The dev server
 (`npm run dev`) binds IPv6 — open `http://localhost:5173`, not `127.0.0.1`.

@@ -1,4 +1,5 @@
 import type { DiagramRecord } from '../../domain/records.ts';
+import { orientationOf, resolveAxis } from '../../domain/axis.ts';
 import type { RecordCommand } from './contract.ts';
 import { applyDefinitionReplacement } from './definition-command.ts';
 import { applyNodeCommand } from './node-command-application.ts';
@@ -73,6 +74,11 @@ export function applyRecordCommand(record: DiagramRecord, command: RecordCommand
   else if (command.kind === 'diagram.setOrientation') {
     if (command.orientation === undefined) delete next.orientation;
     else next.orientation = command.orientation;
+    const axis = resolveAxis(orientationOf(next));
+    for (const wire of Object.values(next.wires)) {
+      if (wire.source.anchor) wire.source.anchor.side = axis.sourcePort;
+      if (wire.target.anchor) wire.target.anchor.side = axis.targetPort;
+    }
   }
   return reflowAfterCommand(record, next, command);
 }

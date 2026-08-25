@@ -47,7 +47,7 @@ export function flowNodeType(kind: NodeKind): NodeKind {
 export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>[] {
   const { editable, preferences, record, select, selection, view } = input;
   const connected = connectedIds(input);
-  const topology = compileTopology(record.nodes);
+  const topology = compileTopology(record);
   const gateIds = new Set(topology.boundaries.flatMap((boundary) =>
     boundary.gate ? [boundary.gate as string] : []));
   const byId: Record<string, NestedNode> = Object.fromEntries(

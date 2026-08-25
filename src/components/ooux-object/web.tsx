@@ -44,6 +44,6 @@ export function OouxObjectNode({ data }: NodeProps<OouxObjectFlowNode>) {
         })}
       </div>
     </article>
-    <NodePorts connectable={editable} />
+    <NodePorts connectable={editable} methods={data.interfaces} node={node} />
   </div>;
 }

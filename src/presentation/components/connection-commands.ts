@@ -5,6 +5,7 @@ import { NODE_PORTS } from '../../domain/axis.ts';
 import { asId } from '../../domain/id-cast.ts';
 import type { NodeId, WireId } from '../../domain/ids.ts';
 import type { PortSide } from '../../domain/records.ts';
+import { portAnchorFromHandle } from '../../domain/interface-signature.ts';
 import {
   createCanvasNode, type CreatableNodeKind, type PlacedNode, type WorldPoint,
 } from '../canvas-actions.ts';
@@ -26,6 +27,13 @@ export interface PendingConnection { from: ConnectionOrigin; world: WorldPoint; 
 const OPPOSITE_SIDE: Record<PortSide, PortSide> = {
   top: 'bottom', bottom: 'top', left: 'right', right: 'left',
 };
+
+function sameAnchor(
+  left: ReturnType<typeof portAnchorFromHandle>,
+  right: ReturnType<typeof portAnchorFromHandle>,
+): boolean {
+  return left?.side === right?.side && left?.ordinal === right?.ordinal;
+}
 
 /** Reads a shared port id as the durable routing side it names. */
 export function sideOfHandle(handleId: string | null | undefined): PortSide | undefined {
@@ -49,6 +57,8 @@ export function connectedWire(
   if (!connection.source || !connection.target) return null;
   const id = `wire-${crypto.randomUUID().slice(0, 8)}`;
   const route = wireRouteCommand(id, connection);
+  const sourceAnchor = portAnchorFromHandle(connection.sourceHandle);
+  const targetAnchor = portAnchorFromHandle(connection.targetHandle);
   return {
     id,
     commands: [
@@ -56,8 +66,14 @@ export function connectedWire(
         kind: 'wire.add',
         wire: {
           id: asId<WireId>(id), kind: 'references', label: 'connects',
-          source: { nodeId: asId<NodeId>(connection.source) },
-          target: { nodeId: asId<NodeId>(connection.target) },
+          source: {
+            nodeId: asId<NodeId>(connection.source),
+            ...(sourceAnchor ? { anchor: sourceAnchor } : {}),
+          },
+          target: {
+            nodeId: asId<NodeId>(connection.target),
+            ...(targetAnchor ? { anchor: targetAnchor } : {}),
+          },
         },
       },
       ...(route ? [route] : []),
@@ -76,14 +92,22 @@ export function reconnectedWire(
   const previousTargetSide = sideOfHandle(edge.targetHandle);
   const nextSourceSide = sideOfHandle(connection.sourceHandle);
   const nextTargetSide = sideOfHandle(connection.targetHandle);
+  const previousSourceAnchor = portAnchorFromHandle(edge.sourceHandle);
+  const previousTargetAnchor = portAnchorFromHandle(edge.targetHandle);
+  const nextSourceAnchor = portAnchorFromHandle(connection.sourceHandle);
+  const nextTargetAnchor = portAnchorFromHandle(connection.targetHandle);
+  const sourceAnchorChanged = !sameAnchor(previousSourceAnchor, nextSourceAnchor);
+  const targetAnchorChanged = !sameAnchor(previousTargetAnchor, nextTargetAnchor);
   const sourceSideChanged = previousSourceSide !== nextSourceSide;
   const targetSideChanged = previousTargetSide !== nextTargetSide;
   const commands: RecordCommand[] = [];
-  if (sourceChanged || targetChanged) {
+  if (sourceChanged || targetChanged || sourceAnchorChanged || targetAnchorChanged) {
     commands.push({
       kind: 'wire.reconnect', id: edge.id,
       ...(sourceChanged ? { source: connection.source } : {}),
       ...(targetChanged ? { target: connection.target } : {}),
+      ...(sourceChanged || sourceAnchorChanged ? { sourceAnchor: nextSourceAnchor ?? null } : {}),
+      ...(targetChanged || targetAnchorChanged ? { targetAnchor: nextTargetAnchor ?? null } : {}),
     });
   }
   if (sourceChanged || targetChanged || sourceSideChanged || targetSideChanged) {

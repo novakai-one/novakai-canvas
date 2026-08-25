@@ -1,5 +1,9 @@
 import { Handle, Position } from '@xyflow/react';
 import { NODE_PORTS } from '../../domain/axis';
+import { portAxisFraction, portHandleId } from '../../domain/interface-signature';
+import { interfaceRowCenter } from '../../components/card/measure';
+import type { InterfaceObject } from '../../domain/model';
+import type { CanvasNode, PortSide } from '../../domain/records';
 
 const PORT_POSITION = {
   top: Position.Top, bottom: Position.Bottom, left: Position.Left, right: Position.Right,
@@ -18,7 +22,26 @@ const PORT_POSITION = {
  * side it was dropped on by that name. A node kind rendering a different set would leave edges
  * pointing at handles that are not there.
  */
-export function NodePorts({ connectable }: { connectable: boolean }) {
+interface NodePortsProps {
+  connectable: boolean;
+  methods?: readonly InterfaceObject[];
+  node?: Pick<CanvasNode, 'description'> & { size: { width: number } };
+}
+
+function methodPosition(
+  side: PortSide,
+  ordinal: number,
+  count: number,
+  node: NodePortsProps['node'],
+) {
+  if ((side === 'left' || side === 'right') && node) {
+    return { top: interfaceRowCenter(node.description, node.size.width, ordinal) };
+  }
+  const offset = `${portAxisFraction(ordinal, count) * 100}%`;
+  return side === 'top' || side === 'bottom' ? { left: offset } : { top: offset };
+}
+
+export function NodePorts({ connectable, methods = [], node }: NodePortsProps) {
   return (
     <>
       {NODE_PORTS.map((side) => (
@@ -30,6 +53,18 @@ export function NodePorts({ connectable }: { connectable: boolean }) {
           type="source"
         />
       ))}
+      {NODE_PORTS.flatMap((side) => methods.map((method, ordinal) => (
+        <Handle
+          aria-label={`${method.name} ${side} port`}
+          className="method-port"
+          id={portHandleId({ side, ordinal })}
+          isConnectable={connectable}
+          key={`${side}:${method.id}`}
+          position={PORT_POSITION[side]}
+          style={methodPosition(side, ordinal, methods.length, node)}
+          type="source"
+        />
+      )))}
     </>
   );
 }

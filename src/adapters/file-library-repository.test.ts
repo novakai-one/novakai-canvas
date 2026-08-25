@@ -197,7 +197,7 @@ function fullyPopulatedRecord(): DiagramRecord {
     kind: 'module',
     label: 'Child',
     parentId: 'root' as never,
-    interfaceIds: [],
+    interfaceIds: ['iface-child-1' as never, 'iface-child-2' as never],
     typeIds: [],
     subjectRef: { namespace: 'ns', id: 'subject-1' },
   };
@@ -205,7 +205,7 @@ function fullyPopulatedRecord(): DiagramRecord {
     id: 'expander' as never,
     kind: 'object',
     label: 'Expander',
-    interfaceIds: [],
+    interfaceIds: ['iface-expander-1' as never, 'iface-expander-2' as never, 'iface-expander-3' as never],
     typeIds: [],
     expandsToDiagramId: 'other-diagram' as never,
   };
@@ -343,6 +343,11 @@ function fullyPopulatedRecord(): DiagramRecord {
       'iface-1': {
         id: 'iface-1' as never, ownerId: rootNode.id, name: 'doThing', accepts: ['string'], returns: ['void'],
       },
+      'iface-child-1': { id: 'iface-child-1' as never, ownerId: childNode.id, name: 'start', accepts: [], returns: [] },
+      'iface-child-2': { id: 'iface-child-2' as never, ownerId: childNode.id, name: 'stop', accepts: [], returns: [] },
+      'iface-expander-1': { id: 'iface-expander-1' as never, ownerId: expanderNode.id, name: 'open', accepts: [], returns: [] },
+      'iface-expander-2': { id: 'iface-expander-2' as never, ownerId: expanderNode.id, name: 'close', accepts: [], returns: [] },
+      'iface-expander-3': { id: 'iface-expander-3' as never, ownerId: expanderNode.id, name: 'expand', accepts: [], returns: [] },
     },
     types: {
       'type-1': { id: 'type-1' as never, name: 'Thing', fields: ['name'] },

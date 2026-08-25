@@ -65,13 +65,14 @@ Scope and zone containers share the zone.layout, zone.gap and zone.align vocabul
     runtime "Chrome instances"
     resource "sessions.json"
     zone "Protected store" [crossing=gated|free] [gate="node label"] ... end
-    wire "browse CLI" -> "Session broker" : acquire(AgentId) -> SessionHandle [queries]
+    wire "browse CLI" -> "Session broker.acquire" : acquire(AgentId) -> SessionHandle [queries]
 
 ${componentHelp}
   methods       name(TypeA, TypeB) -> TypeC            under a node; bare type names
   types         type Name { fieldA, fieldB }           under a node
-  wires         wire A|@ref|#node-id -> B|@ref|#node-id ${wireAppearanceHelp} : <the actual call> [kind]
+  wires         wire A|A.method|@ref|#node-id -> B|B.method|@ref|#node-id ${wireAppearanceHelp} : <contract> [kind]
                 kind: owns|references|assigns|queries|executes|mentions|missing
+                A.method names one method declared directly under node A
                 an endpoint naming a node in another map becomes a cross-map link
   names         quote multi-word names: "browse CLI"; single tokens can go bare
 `;
@@ -108,8 +109,8 @@ export function describeCapability(): unknown {
     },
     dsl: {
       wire: {
-        syntax: `wire <label|@ref|#node-id> -> <label|@ref|#node-id> ${wireAppearanceHelp} : <contract> [kind]`,
-        endpoints: ['label', '@ref', '#node-id'],
+        syntax: `wire <label|node.method|@ref|#node-id> -> <label|node.method|@ref|#node-id> ${wireAppearanceHelp} : <contract> [kind]`,
+        endpoints: ['label', 'node.method', '@ref', '#node-id'],
         cardinality: {
           source: { key: 'source-cardinality', values: [...WIRE_CARDINALITIES], omitted: 'arrow' },
           target: { key: 'target-cardinality', values: [...WIRE_CARDINALITIES], omitted: 'arrow' },

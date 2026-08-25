@@ -1,6 +1,8 @@
 /** Prints records as canonical, round-trippable agent DSL. */
 
-import { printWireReference, wireReferenceFor } from '../authoring/wire-reference.ts';
+import {
+  printWireReference, wireReferenceFor, wireReferenceForEndpoint,
+} from '../authoring/wire-reference.ts';
 import type { DiagramRecord } from '../domain/records.ts';
 import {
   WIRE_APPEARANCE_SPECIFICATIONS, type WireAppearance,
@@ -57,8 +59,8 @@ function printWires(record: DiagramRecord, context: DiagramExportContext): strin
     const source = record.nodes[wire.source.nodeId];
     const target = record.nodes[wire.target.nodeId];
     if (!source || !target) throw new Error(`diagram-export-missing-wire-end:${wire.id}`);
-    const sourceReference = wireReferenceFor(source);
-    const targetReference = wireReferenceFor(target);
+    const sourceReference = wireReferenceForEndpoint(record, wire.source);
+    const targetReference = wireReferenceForEndpoint(record, wire.target);
     if (!sourceReference || !targetReference) continue;
     lines.push(wireLine(
       sourceReference,

@@ -1,6 +1,7 @@
 /** Compiles already-resolved authored relationships into local wires or cross-map links. */
 
 import type { WireAst } from '../wire-authoring.ts';
+import { orientationOf, resolveAxis } from '../../../src/domain/axis.ts';
 import { asId } from '../record-graph.ts';
 import type { CompiledScope, WireCompileContext } from './contract.ts';
 import { resolveWireEnds } from './wire-resolution.ts';
@@ -24,10 +25,19 @@ class WireCompiler {
     if (!resolved) return;
     const { source, target } = resolved;
     if (!source.local || !target.local) {
+      if (source.port || target.port) {
+        this.context.messages.errors.push({
+          message: `cross-map wire cannot address a method port`,
+          hint: 'address both method ports inside one scope, or use node endpoints for a cross-map link',
+          line: wire.line,
+        });
+        return;
+      }
       if (wire.appearance) {
         this.context.messages.errors.push({
-          message: `cross-map wire on line ${wire.line} cannot carry appearance`,
+          message: `cross-map wire cannot carry appearance`,
           hint: 'wire appearance is local to one diagram layout; remove width, pattern, color and shape',
+          line: wire.line,
         });
         return;
       }
@@ -41,16 +51,19 @@ class WireCompiler {
     }
     this.wireCount += 1;
     const wireId = `${this.scope.diagram.rootNodeId}--wire-${this.wireCount}`;
+    const axis = resolveAxis(orientationOf(this.scope.diagram));
     this.scope.diagram.wires[wireId] = {
       id: asId(wireId),
       kind: wire.kind,
       label: wire.contract,
       source: {
         nodeId: asId(source.local),
+        ...(source.port ? { anchor: { side: axis.sourcePort, ordinal: source.port.ordinal } } : {}),
         ...(wire.sourceCardinality ? { cardinality: wire.sourceCardinality } : {}),
       },
       target: {
         nodeId: asId(target.local),
+        ...(target.port ? { anchor: { side: axis.targetPort, ordinal: target.port.ordinal } } : {}),
         ...(wire.targetCardinality ? { cardinality: wire.targetCardinality } : {}),
       },
     };

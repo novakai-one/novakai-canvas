@@ -3,7 +3,7 @@ import type { ProjectedView } from '../project-view.ts';
 import type { PlannedWireRoute, WirePlanOptions } from './contract.ts';
 import { routeWire } from './wire-router.ts';
 import {
-  attachmentPoint, chooseSides, laneOffsets, nodeRects, wireObstacles,
+  anchorFor, chooseSides, laneOffsets, nodeRects, wireObstacles,
 } from './view-geometry.ts';
 
 /** Plans every visible wire once from committed geometry and deliberate route hints. */
@@ -13,23 +13,32 @@ export function planWireRoutes(
   options: WirePlanOptions,
 ): Record<string, PlannedWireRoute> {
   const rects = nodeRects(view);
+  const nodes = new Map(view.nodes.map((node) => [node.id as string, node]));
   const lanes = laneOffsets(view.wires);
   const planned: Record<string, PlannedWireRoute> = {};
   for (const wire of view.wires) {
     const source = rects.get(wire.source.nodeId as string);
     const target = rects.get(wire.target.nodeId as string);
+    const sourceNode = nodes.get(wire.source.nodeId as string);
+    const targetNode = nodes.get(wire.target.nodeId as string);
     if (!source || !target) continue;
     const obstacles = options.avoidObstacles === false
       ? [] : wireObstacles(view, rects, wire);
     const automatic = chooseSides(source, target, obstacles, options.axis);
     const hint = hints[wire.id];
-    const sourceSide = hint?.preferredSourceSide ?? automatic.sourceSide;
-    const targetSide = hint?.preferredTargetSide ?? automatic.targetSide;
+    const sourceSide = wire.source.anchor?.side ?? hint?.preferredSourceSide ?? automatic.sourceSide;
+    const targetSide = wire.target.anchor?.side ?? hint?.preferredTargetSide ?? automatic.targetSide;
     const lane = lanes.get(wire.id) ?? 0;
     const route = routeWire({
-      source: attachmentPoint(source, sourceSide),
+      source: anchorFor(
+        wire.source, source, sourceSide,
+        sourceNode?.interfaceIds.length ?? 0, sourceNode,
+      ),
       sourceSide,
-      target: attachmentPoint(target, targetSide),
+      target: anchorFor(
+        wire.target, target, targetSide,
+        targetNode?.interfaceIds.length ?? 0, targetNode,
+      ),
       targetSide,
       obstacles,
       waypoints: hint?.waypoints,

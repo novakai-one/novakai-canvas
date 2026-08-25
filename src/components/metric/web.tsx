@@ -22,7 +22,7 @@ export function MetricNode({ data }: NodeProps<MetricFlowNode>) {
           <span className="metric-status">{status}</span>
         </div>
       </article>
-      <NodePorts connectable={editable} />
+      <NodePorts connectable={editable} methods={data.interfaces} node={data.node} />
     </div>
   );
 }

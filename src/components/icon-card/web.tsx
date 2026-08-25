@@ -26,7 +26,7 @@ export function IconCardNode({ data }: NodeProps<IconCardFlowNode>) {
           <p>{node.description}</p>
         </div>
       </article>
-      <NodePorts connectable={editable} />
+      <NodePorts connectable={editable} methods={data.interfaces} node={data.node} />
     </div>
   );
 }

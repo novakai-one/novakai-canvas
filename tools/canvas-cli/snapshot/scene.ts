@@ -63,7 +63,7 @@ export function buildSnapshotScene(record: DiagramRecord): SnapshotScene {
     axis: resolveAxis(orientationOf(record)), avoidObstacles: true,
   });
   const routeOffset = { x: panel.x - scope.position.x, y: panel.y - scope.position.y };
-  const topology = compileTopology(record.nodes);
+  const topology = compileTopology(record);
   return {
     nodes, scopeId, scope, layout, descendants, wires, panel, total, routes, routeOffset,
     topology, crossings: crossingsOf(record, topology),

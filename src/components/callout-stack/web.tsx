@@ -43,7 +43,7 @@ export function CalloutStackNode({ data }: NodeProps<CalloutStackFlowNode>) {
           })}
         </div>
       </article>
-      <NodePorts connectable={editable} />
+      <NodePorts connectable={editable} methods={data.interfaces} node={data.node} />
     </div>
   );
 }

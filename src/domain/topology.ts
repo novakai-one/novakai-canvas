@@ -43,17 +43,23 @@ type TopologyNodes = Readonly<Record<string, TopologyNode>>;
 /** A rejected topology fact, with enough location for adapters to report without revalidating. */
 export class TopologyError extends Error {
   readonly nodeId: string;
-  readonly field: 'crossing' | 'gate';
+  readonly field: 'crossing' | 'gate' | 'anchor';
+  readonly path: readonly (string | number)[];
+  readonly input: unknown;
 
   constructor(
     message: string,
     nodeId: string,
-    field: 'crossing' | 'gate',
+    field: 'crossing' | 'gate' | 'anchor',
+    path: readonly (string | number)[] = ['nodes', nodeId, field],
+    input?: unknown,
   ) {
     super(message);
     this.name = 'TopologyError';
     this.nodeId = nodeId;
     this.field = field;
+    this.path = path;
+    this.input = input;
   }
 }
 
@@ -127,9 +133,44 @@ function compile(nodes: TopologyNodes, includeBoundaries: boolean): Topology {
   return { bands, lanes, boundaries };
 }
 
-/** Compiles durable node facts and rejects invalid boundary references in one authority. */
-export function compileTopology(nodes: TopologyNodes): Topology {
-  return compile(nodes, true);
+function validatePortAnchors(record: DiagramRecord): void {
+  const wires = Object.values(record.wires)
+    .sort((left, right) => (left.id as string).localeCompare(right.id as string));
+  for (const wire of wires) {
+    for (const role of ['source', 'target'] as const) {
+      const endpoint = wire[role];
+      if (!endpoint.anchor) continue;
+      const node = record.nodes[endpoint.nodeId];
+      const path = ['wires', wire.id as string, role, 'anchor'] as const;
+      if (!node) {
+        throw new TopologyError(
+          `wire "${wire.label}": ${role} port belongs to missing node "${endpoint.nodeId}"`,
+          endpoint.nodeId as string, 'anchor', path, endpoint.anchor,
+        );
+      }
+      const interfaceId = node.interfaceIds[endpoint.anchor.ordinal];
+      if (interfaceId && record.interfaces[interfaceId]) continue;
+      const methods = node.interfaceIds.flatMap((id) => {
+        const item = record.interfaces[id];
+        return item ? [item.name] : [];
+      });
+      throw new TopologyError(
+        `wire "${wire.label}": ${role} port ${endpoint.anchor.ordinal} does not exist on "${node.label}"; declared methods: ${methods.join(', ') || 'none'}`,
+        endpoint.nodeId as string, 'anchor', path, endpoint.anchor,
+      );
+    }
+  }
+}
+
+/** Compiles durable facts and rejects boundary/port references in one authority. */
+export function compileTopology(record: DiagramRecord): Topology;
+export function compileTopology(nodes: TopologyNodes): Topology;
+export function compileTopology(recordOrNodes: DiagramRecord | TopologyNodes): Topology {
+  const record = 'wires' in recordOrNodes && 'interfaces' in recordOrNodes
+    ? recordOrNodes as DiagramRecord : undefined;
+  const topology = compile(record ? record.nodes : recordOrNodes as TopologyNodes, true);
+  if (record) validatePortAnchors(record);
+  return topology;
 }
 
 /**

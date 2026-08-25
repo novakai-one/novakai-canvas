@@ -25,7 +25,7 @@ export async function runApply(opened: OpenedLibrary, args: CliArgs): Promise<vo
   const compiled = compile(scopes, records, Object.values(opened.library.index().links));
   const allErrors = [
     ...parseErrors.map((error) => `line ${error.line}: ${error.message}\n  fix: ${error.hint}`),
-    ...compiled.errors.map((error) => `${error.message}\n  fix: ${error.hint}`),
+    ...compiled.errors.map((error) => `${error.line ? `line ${error.line}: ` : ''}${error.message}\n  fix: ${error.hint}`),
   ];
   if (allErrors.length > 0) fail(`${allErrors.length} error(s), nothing written:\n${allErrors.join('\n')}`);
   for (const warning of compiled.warnings) process.stderr.write(`warning: ${warning}\n`);
@@ -86,7 +86,7 @@ export async function runCheck(args: CliArgs): Promise<void> {
       line: error.line, reason: error.message, correction: error.hint,
     })),
     ...compiled.errors.map((error) => ({
-      line: null, reason: error.message, correction: error.hint,
+      line: error.line ?? null, reason: error.message, correction: error.hint,
     })),
   ];
   if (parsed.scopes.length === 0 && parsed.errors.length === 0) {

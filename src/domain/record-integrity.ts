@@ -8,13 +8,14 @@ type Layout = DiagramRecord['layouts'][string];
 
 function validateTopology(record: DiagramRecord, context: RefinementCtx): void {
   try {
-    compileTopology(record.nodes);
+    compileTopology(record);
   } catch (error) {
     if (!(error instanceof TopologyError)) throw error;
     context.addIssue({
       code: 'custom', message: error.message,
-      path: ['nodes', error.nodeId, error.field],
-      input: record.nodes[error.nodeId]?.[error.field],
+      path: [...error.path],
+      input: error.input ?? (error.field === 'anchor'
+        ? undefined : record.nodes[error.nodeId]?.[error.field]),
     });
   }
 }
