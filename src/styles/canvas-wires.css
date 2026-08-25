@@ -68,10 +68,11 @@
 .canvas-surface .react-flow__edge.is-dimmed .wire-label { opacity: 0.28; }
 
 /*
- * A wire label rides on its own wire without becoming a second diagram object.
+ * A wire label rides beside its own wire without becoming a second diagram object.
  *
- * No box, no border: at working density a hundred bordered chips read as noise. A compact halo
- * separates the text from its route while letting the surface beneath remain visible.
+ * No box, no border: at working density a hundred bordered chips read as noise. The label is
+ * anchored off the route (see wire-label.tsx), so the line never strikes through the text, and
+ * a stacked halo separates the words from whatever passes underneath.
  */
 .wire-label {
   position: absolute;
@@ -79,7 +80,7 @@
   border: 0;
   color: var(--wire-label);
   /* A transparent label avoids the black/cream pills that became the strongest marks on dense
-     diagrams. The halo below is the only separation from the route. */
+     diagrams. The halo below is the only separation from the surface beneath. */
   background: transparent;
   font-family: var(--font-ui);
   /*
@@ -100,12 +101,14 @@
      could not be selected or moved at all. React Flow elevates each edge's own svg to 2, so a
      label has to sit above that to be reachable at all. */
   z-index: 3;
-  opacity: 0.78;
+  opacity: 0.95;
   pointer-events: all;
   cursor: pointer;
   text-shadow:
     0 0 2px var(--bg),
-    0 0 4px var(--bg);
+    0 0 4px var(--bg),
+    0 0 8px var(--bg),
+    0 0 14px var(--bg);
 }
 
 .wire-label:hover { color: var(--ink); opacity: 1; }

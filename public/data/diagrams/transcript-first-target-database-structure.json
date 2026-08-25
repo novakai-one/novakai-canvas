@@ -1,0 +1,794 @@
+{
+  "schemaVersion": 3,
+  "id": "transcript-first-target-database-structure",
+  "name": "Transcript-First — Target Database Structure",
+  "status": "active",
+  "revision": 2,
+  "nodes": {
+    "transcript-first-target-database-structure": {
+      "id": "transcript-first-target-database-structure",
+      "label": "Transcript-First — Target Database Structure",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-target-database-structure--note-1-the-agreed-target-shape-": {
+      "id": "transcript-first-target-database-structure--note-1-the-agreed-target-shape-",
+      "label": "The agreed target shape. One door in: ingestion is the only reader of provider files. Transcript Line store is the single root; every downstream store is a rebuildable projection of it. Acceptance test: delete a provider session file, restart, nothing changes.",
+      "parentId": "transcript-first-target-database-structure",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "transcript-first-target-database-structure--ingestion-the-one-door": {
+      "id": "transcript-first-target-database-structure--ingestion-the-one-door",
+      "label": "Ingestion — the one door",
+      "parentId": "transcript-first-target-database-structure",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-target-database-structure--root-store-single-source-of-truth": {
+      "id": "transcript-first-target-database-structure--root-store-single-source-of-truth",
+      "label": "Root store — single source of truth",
+      "parentId": "transcript-first-target-database-structure",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-target-database-structure--app-view": {
+      "id": "transcript-first-target-database-structure--app-view",
+      "label": "App view",
+      "parentId": "transcript-first-target-database-structure",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-target-database-structure--send-path": {
+      "id": "transcript-first-target-database-structure--send-path",
+      "label": "Send path",
+      "parentId": "transcript-first-target-database-structure",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-target-database-structure--projections-rebuildable-never-authoritative": {
+      "id": "transcript-first-target-database-structure--projections-rebuildable-never-authoritative",
+      "label": "Projections — rebuildable, never authoritative",
+      "parentId": "transcript-first-target-database-structure",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-target-database-structure--ingestion-the-one-door--ingestion": {
+      "id": "transcript-first-target-database-structure--ingestion-the-one-door--ingestion",
+      "label": "Ingestion",
+      "description": "the ONLY code that reads provider files; copies every line, adds the Novakai wrapper",
+      "parentId": "transcript-first-target-database-structure--ingestion-the-one-door",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "transcript-first-target-database-structure--ingestion-the-one-door--ingest-checkpoint": {
+      "id": "transcript-first-target-database-structure--ingestion-the-one-door--ingest-checkpoint",
+      "label": "Ingest Checkpoint",
+      "description": "ingestCheckpoints.jsonl — how far each provider file has been read",
+      "parentId": "transcript-first-target-database-structure--ingestion-the-one-door",
+      "interfaceIds": [],
+      "typeIds": [
+        "transcript-first-target-database-structure--ingestion-the-one-door--ingest-checkpoint--type-checkpoint"
+      ],
+      "kind": "object"
+    },
+    "transcript-first-target-database-structure--root-store-single-source-of-truth--transcript-line": {
+      "id": "transcript-first-target-database-structure--root-store-single-source-of-truth--transcript-line",
+      "label": "Transcript Line",
+      "description": "transcriptLines.jsonl — one row per provider event. COMPLETE: thinking, tool calls, meta all kept. raw = provider line verbatim, so any row can be re-derived",
+      "parentId": "transcript-first-target-database-structure--root-store-single-source-of-truth",
+      "interfaceIds": [],
+      "typeIds": [
+        "transcript-first-target-database-structure--root-store-single-source-of-truth--transcript-line--type-transcriptline"
+      ],
+      "kind": "object"
+    },
+    "transcript-first-target-database-structure--root-store-single-source-of-truth--provider-session": {
+      "id": "transcript-first-target-database-structure--root-store-single-source-of-truth--provider-session",
+      "label": "Provider Session",
+      "description": "providerSessions.jsonl — your record of one CLI session: agent binding + resume id",
+      "parentId": "transcript-first-target-database-structure--root-store-single-source-of-truth",
+      "interfaceIds": [],
+      "typeIds": [
+        "transcript-first-target-database-structure--root-store-single-source-of-truth--provider-session--type-providersession"
+      ],
+      "kind": "object"
+    },
+    "transcript-first-target-database-structure--root-store-single-source-of-truth--agent": {
+      "id": "transcript-first-target-database-structure--root-store-single-source-of-truth--agent",
+      "label": "Agent",
+      "description": "agents.jsonl — the stable identity",
+      "parentId": "transcript-first-target-database-structure--root-store-single-source-of-truth",
+      "interfaceIds": [],
+      "typeIds": [
+        "transcript-first-target-database-structure--root-store-single-source-of-truth--agent--type-agent"
+      ],
+      "kind": "object"
+    },
+    "transcript-first-target-database-structure--app-view--conversation": {
+      "id": "transcript-first-target-database-structure--app-view--conversation",
+      "label": "Conversation",
+      "description": "conversationViews.jsonl — sidebar row: pin, archive, title, read cursor, agent binding. Renders lines straight from the root store",
+      "parentId": "transcript-first-target-database-structure--app-view",
+      "interfaceIds": [],
+      "typeIds": [
+        "transcript-first-target-database-structure--app-view--conversation--type-conversation"
+      ],
+      "kind": "object"
+    },
+    "transcript-first-target-database-structure--send-path--send-journal": {
+      "id": "transcript-first-target-database-structure--send-path--send-journal",
+      "label": "Send Journal",
+      "description": "outboundSends.jsonl — what you asked to send: idempotency + receipt",
+      "parentId": "transcript-first-target-database-structure--send-path",
+      "interfaceIds": [],
+      "typeIds": [
+        "transcript-first-target-database-structure--send-path--send-journal--type-outboundsend"
+      ],
+      "kind": "object"
+    },
+    "transcript-first-target-database-structure--send-path--one-shot-cli-send": {
+      "id": "transcript-first-target-database-structure--send-path--one-shot-cli-send",
+      "label": "One-shot CLI Send",
+      "description": "claude -p --resume / codex exec resume / kimi -p -S; reply lands in the provider file and comes back through ingestion",
+      "parentId": "transcript-first-target-database-structure--send-path",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "transcript-first-target-database-structure--projections-rebuildable-never-authoritative--usage-rollup": {
+      "id": "transcript-first-target-database-structure--projections-rebuildable-never-authoritative--usage-rollup",
+      "label": "Usage Rollup",
+      "description": "derived from tokenUsage on lines; delete and rebuild anytime",
+      "parentId": "transcript-first-target-database-structure--projections-rebuildable-never-authoritative",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "object"
+    },
+    "transcript-first-target-database-structure--projections-rebuildable-never-authoritative--tool-call-index": {
+      "id": "transcript-first-target-database-structure--projections-rebuildable-never-authoritative--tool-call-index",
+      "label": "Tool Call Index",
+      "description": "derived from toolCall rows; delete and rebuild anytime",
+      "parentId": "transcript-first-target-database-structure--projections-rebuildable-never-authoritative",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "object"
+    },
+    "transcript-first-target-database-structure--external-provider-s-world-black-box": {
+      "id": "transcript-first-target-database-structure--external-provider-s-world-black-box",
+      "label": "External — provider's world, black box",
+      "parentId": "transcript-first-target-database-structure",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-target-database-structure--external-provider-s-world-black-box--provider-server": {
+      "id": "transcript-first-target-database-structure--external-provider-s-world-black-box--provider-server",
+      "label": "Provider Server",
+      "description": "Anthropic / OpenAI / Moonshot — completely outside Novakai; it alone writes the session file",
+      "parentId": "transcript-first-target-database-structure--external-provider-s-world-black-box",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "runtime"
+    },
+    "transcript-first-target-database-structure--external-disposable--provider-session-file": {
+      "id": "transcript-first-target-database-structure--external-disposable--provider-session-file",
+      "label": "Provider Session File",
+      "description": "~/.claude/projects, ~/.codex, kimi dirs — provider-owned, purged ~30 days. Zero impact if deleted after ingest",
+      "parentId": "transcript-first-target-database-structure--external-provider-s-world-black-box",
+      "interfaceIds": [],
+      "typeIds": [
+        "transcript-first-target-database-structure--external-disposable--provider-session-file--type-providerfile"
+      ],
+      "kind": "object"
+    }
+  },
+  "wires": {
+    "transcript-first-target-database-structure--wire-1": {
+      "id": "transcript-first-target-database-structure--wire-1",
+      "kind": "queries",
+      "label": "read tail-to-tip",
+      "source": {
+        "nodeId": "transcript-first-target-database-structure--external-disposable--provider-session-file",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "transcript-first-target-database-structure--ingestion-the-one-door--ingestion",
+        "cardinality": "one"
+      }
+    },
+    "transcript-first-target-database-structure--wire-2": {
+      "id": "transcript-first-target-database-structure--wire-2",
+      "kind": "executes",
+      "label": "appends every line",
+      "source": {
+        "nodeId": "transcript-first-target-database-structure--ingestion-the-one-door--ingestion"
+      },
+      "target": {
+        "nodeId": "transcript-first-target-database-structure--root-store-single-source-of-truth--transcript-line"
+      }
+    },
+    "transcript-first-target-database-structure--wire-3": {
+      "id": "transcript-first-target-database-structure--wire-3",
+      "kind": "owns",
+      "label": "tracks progress per file",
+      "source": {
+        "nodeId": "transcript-first-target-database-structure--ingestion-the-one-door--ingestion",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "transcript-first-target-database-structure--ingestion-the-one-door--ingest-checkpoint",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "transcript-first-target-database-structure--wire-4": {
+      "id": "transcript-first-target-database-structure--wire-4",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "transcript-first-target-database-structure--root-store-single-source-of-truth--provider-session",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "transcript-first-target-database-structure--root-store-single-source-of-truth--transcript-line",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "transcript-first-target-database-structure--wire-5": {
+      "id": "transcript-first-target-database-structure--wire-5",
+      "kind": "owns",
+      "label": "works sessions over time",
+      "source": {
+        "nodeId": "transcript-first-target-database-structure--root-store-single-source-of-truth--agent",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "transcript-first-target-database-structure--root-store-single-source-of-truth--provider-session",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "transcript-first-target-database-structure--wire-6": {
+      "id": "transcript-first-target-database-structure--wire-6",
+      "kind": "references",
+      "label": "bound via agentId",
+      "source": {
+        "nodeId": "transcript-first-target-database-structure--root-store-single-source-of-truth--agent",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "transcript-first-target-database-structure--app-view--conversation",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "transcript-first-target-database-structure--wire-7": {
+      "id": "transcript-first-target-database-structure--wire-7",
+      "kind": "queries",
+      "label": "renders from the root",
+      "source": {
+        "nodeId": "transcript-first-target-database-structure--app-view--conversation",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "transcript-first-target-database-structure--root-store-single-source-of-truth--transcript-line",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "transcript-first-target-database-structure--wire-8": {
+      "id": "transcript-first-target-database-structure--wire-8",
+      "kind": "owns",
+      "label": "you hit send",
+      "source": {
+        "nodeId": "transcript-first-target-database-structure--app-view--conversation",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "transcript-first-target-database-structure--send-path--send-journal",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "transcript-first-target-database-structure--wire-9": {
+      "id": "transcript-first-target-database-structure--wire-9",
+      "kind": "executes",
+      "label": "one send = one child process",
+      "source": {
+        "nodeId": "transcript-first-target-database-structure--send-path--send-journal"
+      },
+      "target": {
+        "nodeId": "transcript-first-target-database-structure--send-path--one-shot-cli-send"
+      }
+    },
+    "transcript-first-target-database-structure--wire-10": {
+      "id": "transcript-first-target-database-structure--wire-10",
+      "kind": "executes",
+      "label": "sends to the provider's server",
+      "source": {
+        "nodeId": "transcript-first-target-database-structure--send-path--one-shot-cli-send"
+      },
+      "target": {
+        "nodeId": "transcript-first-target-database-structure--external-provider-s-world-black-box--provider-server"
+      }
+    },
+    "transcript-first-target-database-structure--wire-11": {
+      "id": "transcript-first-target-database-structure--wire-11",
+      "kind": "executes",
+      "label": "provider writes its own session file",
+      "source": {
+        "nodeId": "transcript-first-target-database-structure--external-provider-s-world-black-box--provider-server"
+      },
+      "target": {
+        "nodeId": "transcript-first-target-database-structure--external-disposable--provider-session-file"
+      }
+    },
+    "transcript-first-target-database-structure--wire-12": {
+      "id": "transcript-first-target-database-structure--wire-12",
+      "kind": "queries",
+      "label": "rolled up",
+      "source": {
+        "nodeId": "transcript-first-target-database-structure--root-store-single-source-of-truth--transcript-line",
+        "cardinality": "one-or-many"
+      },
+      "target": {
+        "nodeId": "transcript-first-target-database-structure--projections-rebuildable-never-authoritative--usage-rollup",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "transcript-first-target-database-structure--wire-13": {
+      "id": "transcript-first-target-database-structure--wire-13",
+      "kind": "queries",
+      "label": "indexed",
+      "source": {
+        "nodeId": "transcript-first-target-database-structure--root-store-single-source-of-truth--transcript-line",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "transcript-first-target-database-structure--projections-rebuildable-never-authoritative--tool-call-index",
+        "cardinality": "zero-or-one"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {
+    "transcript-first-target-database-structure--external-disposable--provider-session-file--type-providerfile": {
+      "id": "transcript-first-target-database-structure--external-disposable--provider-session-file--type-providerfile",
+      "name": "ProviderFile",
+      "fields": [
+        "provider",
+        "sessionId",
+        "path"
+      ]
+    },
+    "transcript-first-target-database-structure--ingestion-the-one-door--ingest-checkpoint--type-checkpoint": {
+      "id": "transcript-first-target-database-structure--ingestion-the-one-door--ingest-checkpoint--type-checkpoint",
+      "name": "Checkpoint",
+      "fields": [
+        "sourceId",
+        "offset"
+      ]
+    },
+    "transcript-first-target-database-structure--root-store-single-source-of-truth--transcript-line--type-transcriptline": {
+      "id": "transcript-first-target-database-structure--root-store-single-source-of-truth--transcript-line--type-transcriptline",
+      "name": "TranscriptLine",
+      "fields": [
+        "id",
+        "sessionId",
+        "turnId",
+        "role",
+        "text",
+        "toolCall",
+        "tokenUsage",
+        "raw"
+      ]
+    },
+    "transcript-first-target-database-structure--root-store-single-source-of-truth--provider-session--type-providersession": {
+      "id": "transcript-first-target-database-structure--root-store-single-source-of-truth--provider-session--type-providersession",
+      "name": "ProviderSession",
+      "fields": [
+        "sessionId",
+        "agentId",
+        "provider",
+        "resumeId",
+        "status"
+      ]
+    },
+    "transcript-first-target-database-structure--root-store-single-source-of-truth--agent--type-agent": {
+      "id": "transcript-first-target-database-structure--root-store-single-source-of-truth--agent--type-agent",
+      "name": "Agent",
+      "fields": [
+        "agentId",
+        "provider",
+        "model"
+      ]
+    },
+    "transcript-first-target-database-structure--app-view--conversation--type-conversation": {
+      "id": "transcript-first-target-database-structure--app-view--conversation--type-conversation",
+      "name": "Conversation",
+      "fields": [
+        "conversationId",
+        "agentId",
+        "lastReadLineId"
+      ]
+    },
+    "transcript-first-target-database-structure--send-path--send-journal--type-outboundsend": {
+      "id": "transcript-first-target-database-structure--send-path--send-journal--type-outboundsend",
+      "name": "OutboundSend",
+      "fields": [
+        "sendId",
+        "conversationId",
+        "clientOpId",
+        "state"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "transcript-first-target-database-structure": {
+          "nodeId": "transcript-first-target-database-structure",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 1980,
+            "height": 1788
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--note-1-the-agreed-target-shape-": {
+          "nodeId": "transcript-first-target-database-structure--note-1-the-agreed-target-shape-",
+          "position": {
+            "x": 1660,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 216
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--ingestion-the-one-door": {
+          "nodeId": "transcript-first-target-database-structure--ingestion-the-one-door",
+          "position": {
+            "x": 1120,
+            "y": 56
+          },
+          "size": {
+            "width": 500,
+            "height": 432
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--root-store-single-source-of-truth": {
+          "nodeId": "transcript-first-target-database-structure--root-store-single-source-of-truth",
+          "position": {
+            "x": 1033,
+            "y": 558
+          },
+          "size": {
+            "width": 500,
+            "height": 672
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--app-view": {
+          "nodeId": "transcript-first-target-database-structure--app-view",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 500,
+            "height": 256
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--send-path": {
+          "nodeId": "transcript-first-target-database-structure--send-path",
+          "position": {
+            "x": 40,
+            "y": 1300
+          },
+          "size": {
+            "width": 500,
+            "height": 448
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--projections-rebuildable-never-authoritative": {
+          "nodeId": "transcript-first-target-database-structure--projections-rebuildable-never-authoritative",
+          "position": {
+            "x": 40,
+            "y": 558
+          },
+          "size": {
+            "width": 953,
+            "height": 216
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--ingestion-the-one-door--ingestion": {
+          "nodeId": "transcript-first-target-database-structure--ingestion-the-one-door--ingestion",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--ingestion-the-one-door--ingest-checkpoint": {
+          "nodeId": "transcript-first-target-database-structure--ingestion-the-one-door--ingest-checkpoint",
+          "position": {
+            "x": 40,
+            "y": 248
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--root-store-single-source-of-truth--transcript-line": {
+          "nodeId": "transcript-first-target-database-structure--root-store-single-source-of-truth--transcript-line",
+          "position": {
+            "x": 40,
+            "y": 472
+          },
+          "size": {
+            "width": 420,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--root-store-single-source-of-truth--provider-session": {
+          "nodeId": "transcript-first-target-database-structure--root-store-single-source-of-truth--provider-session",
+          "position": {
+            "x": 40,
+            "y": 256
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--root-store-single-source-of-truth--agent": {
+          "nodeId": "transcript-first-target-database-structure--root-store-single-source-of-truth--agent",
+          "position": {
+            "x": 116,
+            "y": 56
+          },
+          "size": {
+            "width": 269,
+            "height": 128
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--app-view--conversation": {
+          "nodeId": "transcript-first-target-database-structure--app-view--conversation",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--send-path--send-journal": {
+          "nodeId": "transcript-first-target-database-structure--send-path--send-journal",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--send-path--one-shot-cli-send": {
+          "nodeId": "transcript-first-target-database-structure--send-path--one-shot-cli-send",
+          "position": {
+            "x": 40,
+            "y": 272
+          },
+          "size": {
+            "width": 420,
+            "height": 136
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--projections-rebuildable-never-authoritative--usage-rollup": {
+          "nodeId": "transcript-first-target-database-structure--projections-rebuildable-never-authoritative--usage-rollup",
+          "position": {
+            "x": 493,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--projections-rebuildable-never-authoritative--tool-call-index": {
+          "nodeId": "transcript-first-target-database-structure--projections-rebuildable-never-authoritative--tool-call-index",
+          "position": {
+            "x": 40,
+            "y": 64
+          },
+          "size": {
+            "width": 413,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--external-provider-s-world-black-box": {
+          "nodeId": "transcript-first-target-database-structure--external-provider-s-world-black-box",
+          "position": {
+            "x": 580,
+            "y": 56
+          },
+          "size": {
+            "width": 500,
+            "height": 432
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--external-provider-s-world-black-box--provider-server": {
+          "nodeId": "transcript-first-target-database-structure--external-provider-s-world-black-box--provider-server",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "transcript-first-target-database-structure--external-disposable--provider-session-file": {
+          "nodeId": "transcript-first-target-database-structure--external-disposable--provider-session-file",
+          "position": {
+            "x": 40,
+            "y": 248
+          },
+          "size": {
+            "width": 420,
+            "height": 144
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {},
+      "appearanceByWireId": {},
+      "arrangementByContainerId": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-542ca4fc-dc72-40bb-95f6-9ba2c9f3b782": {
+      "operationId": "cli-apply-542ca4fc-dc72-40bb-95f6-9ba2c9f3b782",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-23T01:14:08.501Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command/cbc14d76-2723-414a-bf0d-598b556b4f44/scratchpad/transcript-target-er.dsl"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add"
+      ]
+    },
+    "cli-apply-df01881e-4ae2-458c-81d0-ab8e36301f1c": {
+      "operationId": "cli-apply-df01881e-4ae2-458c-81d0-ab8e36301f1c",
+      "revision": 2,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-23T01:24:23.092Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command/cbc14d76-2723-414a-bf0d-598b556b4f44/scratchpad/transcript-target-er.dsl"
+      },
+      "commandKinds": [
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "node.remove",
+        "node.remove",
+        "node.add",
+        "node.add",
+        "node.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add"
+      ]
+    }
+  }
+}

@@ -34,16 +34,17 @@
   background: transparent;
 }
 
-/* Labels exist only when the explicit preference constructed them. Below detail, semantic zoom
-   suppresses idle permitted labels; actual path hover, selection and local focus reveal one. */
-.canvas-surface:is([data-zoom-tier='overview'], [data-zoom-tier='readable'])
+/* Labels exist only when the explicit preference constructed them. At overview scale every
+   label would collide into noise, so idle labels hide there; from readable up they stay
+   visible. Path hover, selection and local focus still reveal one early. */
+.canvas-surface[data-zoom-tier='overview']
   .wire-label:not(.is-selected, .is-related, .is-hovered) {
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
 }
 
-.canvas-surface:is([data-zoom-tier='overview'], [data-zoom-tier='readable'])
+.canvas-surface[data-zoom-tier='overview']
   .wire-label:is(.is-selected, .is-related, .is-hovered) {
   visibility: visible;
   pointer-events: all;

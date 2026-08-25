@@ -1,0 +1,687 @@
+{
+  "schemaVersion": 3,
+  "id": "transcript-first-module-contracts",
+  "name": "Transcript-First — Module Contracts",
+  "status": "active",
+  "revision": 1,
+  "nodes": {
+    "transcript-first-module-contracts": {
+      "id": "transcript-first-module-contracts",
+      "label": "Transcript-First — Module Contracts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-module-contracts--note-1-target-modules-and-their": {
+      "id": "transcript-first-module-contracts--note-1-target-modules-and-their",
+      "label": "Target modules and their public APIs. Every wire names the call or event that crosses the boundary. Nobody touches another module's store.",
+      "parentId": "transcript-first-module-contracts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "transcript-first-module-contracts--external-provider-s-world": {
+      "id": "transcript-first-module-contracts--external-provider-s-world",
+      "label": "External — provider's world",
+      "parentId": "transcript-first-module-contracts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-module-contracts--core": {
+      "id": "transcript-first-module-contracts--core",
+      "label": "Core",
+      "parentId": "transcript-first-module-contracts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-module-contracts--send-and-delivery": {
+      "id": "transcript-first-module-contracts--send-and-delivery",
+      "label": "Send and delivery",
+      "parentId": "transcript-first-module-contracts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-module-contracts--app-view": {
+      "id": "transcript-first-module-contracts--app-view",
+      "label": "App view",
+      "parentId": "transcript-first-module-contracts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "transcript-first-module-contracts--external-provider-s-world--provider-server": {
+      "id": "transcript-first-module-contracts--external-provider-s-world--provider-server",
+      "label": "Provider Server",
+      "description": "Anthropic / OpenAI / Moonshot — black box",
+      "parentId": "transcript-first-module-contracts--external-provider-s-world",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "runtime"
+    },
+    "transcript-first-module-contracts--external-provider-s-world--provider-session-file": {
+      "id": "transcript-first-module-contracts--external-provider-s-world--provider-session-file",
+      "label": "Provider Session File",
+      "description": "provider-owned; the provider alone writes it",
+      "parentId": "transcript-first-module-contracts--external-provider-s-world",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "transcript-first-module-contracts--core--transcript": {
+      "id": "transcript-first-module-contracts--core--transcript",
+      "label": "Transcript",
+      "description": "root store — owns Agent, Provider Session, Transcript Line",
+      "parentId": "transcript-first-module-contracts--core",
+      "interfaceIds": [
+        "transcript-first-module-contracts--core--transcript--if-appendlines",
+        "transcript-first-module-contracts--core--transcript--if-registersession",
+        "transcript-first-module-contracts--core--transcript--if-sessionsmissingagent",
+        "transcript-first-module-contracts--core--transcript--if-mintagent",
+        "transcript-first-module-contracts--core--transcript--if-linesfor",
+        "transcript-first-module-contracts--core--transcript--if-resolveresume"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "transcript-first-module-contracts--core--ingestion": {
+      "id": "transcript-first-module-contracts--core--ingestion",
+      "label": "Ingestion",
+      "description": "sole reader of provider files; checkpoints + signatures; tail-only reads",
+      "parentId": "transcript-first-module-contracts--core",
+      "interfaceIds": [
+        "transcript-first-module-contracts--core--ingestion--if-tick"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "transcript-first-module-contracts--send-and-delivery--send": {
+      "id": "transcript-first-module-contracts--send-and-delivery--send",
+      "label": "Send",
+      "description": "owns Send Journal; spawns the one-shot CLI; idempotent via clientOpId",
+      "parentId": "transcript-first-module-contracts--send-and-delivery",
+      "interfaceIds": [
+        "transcript-first-module-contracts--send-and-delivery--send--if-send",
+        "transcript-first-module-contracts--send-and-delivery--send--if-state"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "transcript-first-module-contracts--send-and-delivery--delivery": {
+      "id": "transcript-first-module-contracts--send-and-delivery--delivery",
+      "label": "Delivery",
+      "description": "owns Pending Delivery; deliver only when idle, batched at turn boundaries",
+      "parentId": "transcript-first-module-contracts--send-and-delivery",
+      "interfaceIds": [
+        "transcript-first-module-contracts--send-and-delivery--delivery--if-pending"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "transcript-first-module-contracts--app-view--conversations": {
+      "id": "transcript-first-module-contracts--app-view--conversations",
+      "label": "Conversations",
+      "description": "owns Conversation rows; everything the UI touches",
+      "parentId": "transcript-first-module-contracts--app-view",
+      "interfaceIds": [
+        "transcript-first-module-contracts--app-view--conversations--if-list",
+        "transcript-first-module-contracts--app-view--conversations--if-open",
+        "transcript-first-module-contracts--app-view--conversations--if-sendmessage",
+        "transcript-first-module-contracts--app-view--conversations--if-markread",
+        "transcript-first-module-contracts--app-view--conversations--if-pin"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    }
+  },
+  "wires": {
+    "transcript-first-module-contracts--wire-1": {
+      "id": "transcript-first-module-contracts--wire-1",
+      "kind": "queries",
+      "label": "stat + read tail only",
+      "source": {
+        "nodeId": "transcript-first-module-contracts--core--ingestion"
+      },
+      "target": {
+        "nodeId": "transcript-first-module-contracts--external-provider-s-world--provider-session-file"
+      }
+    },
+    "transcript-first-module-contracts--wire-2": {
+      "id": "transcript-first-module-contracts--wire-2",
+      "kind": "executes",
+      "label": "appendLines / registerSession",
+      "source": {
+        "nodeId": "transcript-first-module-contracts--core--ingestion"
+      },
+      "target": {
+        "nodeId": "transcript-first-module-contracts--core--transcript"
+      }
+    },
+    "transcript-first-module-contracts--wire-3": {
+      "id": "transcript-first-module-contracts--wire-3",
+      "kind": "executes",
+      "label": "event lineAppended — matches receipts, confirms sends",
+      "source": {
+        "nodeId": "transcript-first-module-contracts--core--transcript"
+      },
+      "target": {
+        "nodeId": "transcript-first-module-contracts--send-and-delivery--send"
+      }
+    },
+    "transcript-first-module-contracts--wire-4": {
+      "id": "transcript-first-module-contracts--wire-4",
+      "kind": "executes",
+      "label": "event lineAppended — queues lines addressed to other agents",
+      "source": {
+        "nodeId": "transcript-first-module-contracts--core--transcript"
+      },
+      "target": {
+        "nodeId": "transcript-first-module-contracts--send-and-delivery--delivery"
+      }
+    },
+    "transcript-first-module-contracts--wire-5": {
+      "id": "transcript-first-module-contracts--wire-5",
+      "kind": "queries",
+      "label": "resolveResume(SessionId)",
+      "source": {
+        "nodeId": "transcript-first-module-contracts--send-and-delivery--send"
+      },
+      "target": {
+        "nodeId": "transcript-first-module-contracts--core--transcript"
+      }
+    },
+    "transcript-first-module-contracts--wire-6": {
+      "id": "transcript-first-module-contracts--wire-6",
+      "kind": "executes",
+      "label": "spawn one-shot CLI — claude -p --resume / codex exec resume",
+      "source": {
+        "nodeId": "transcript-first-module-contracts--send-and-delivery--send"
+      },
+      "target": {
+        "nodeId": "transcript-first-module-contracts--external-provider-s-world--provider-server"
+      }
+    },
+    "transcript-first-module-contracts--wire-7": {
+      "id": "transcript-first-module-contracts--wire-7",
+      "kind": "executes",
+      "label": "provider writes its own file",
+      "source": {
+        "nodeId": "transcript-first-module-contracts--external-provider-s-world--provider-server"
+      },
+      "target": {
+        "nodeId": "transcript-first-module-contracts--external-provider-s-world--provider-session-file"
+      }
+    },
+    "transcript-first-module-contracts--wire-8": {
+      "id": "transcript-first-module-contracts--wire-8",
+      "kind": "executes",
+      "label": "send(batch) — just another caller",
+      "source": {
+        "nodeId": "transcript-first-module-contracts--send-and-delivery--delivery"
+      },
+      "target": {
+        "nodeId": "transcript-first-module-contracts--send-and-delivery--send"
+      }
+    },
+    "transcript-first-module-contracts--wire-9": {
+      "id": "transcript-first-module-contracts--wire-9",
+      "kind": "executes",
+      "label": "send(SendRequest)",
+      "source": {
+        "nodeId": "transcript-first-module-contracts--app-view--conversations"
+      },
+      "target": {
+        "nodeId": "transcript-first-module-contracts--send-and-delivery--send"
+      }
+    },
+    "transcript-first-module-contracts--wire-10": {
+      "id": "transcript-first-module-contracts--wire-10",
+      "kind": "queries",
+      "label": "linesFor(SessionId, AfterLineId)",
+      "source": {
+        "nodeId": "transcript-first-module-contracts--app-view--conversations"
+      },
+      "target": {
+        "nodeId": "transcript-first-module-contracts--core--transcript"
+      }
+    }
+  },
+  "interfaces": {
+    "transcript-first-module-contracts--core--transcript--if-appendlines": {
+      "id": "transcript-first-module-contracts--core--transcript--if-appendlines",
+      "ownerId": "transcript-first-module-contracts--core--transcript",
+      "name": "appendLines",
+      "accepts": [
+        "SessionId",
+        "Lines"
+      ],
+      "returns": [
+        "AppendResult"
+      ]
+    },
+    "transcript-first-module-contracts--core--transcript--if-registersession": {
+      "id": "transcript-first-module-contracts--core--transcript--if-registersession",
+      "ownerId": "transcript-first-module-contracts--core--transcript",
+      "name": "registerSession",
+      "accepts": [
+        "Provider",
+        "SessionId"
+      ],
+      "returns": [
+        "ProviderSession"
+      ]
+    },
+    "transcript-first-module-contracts--core--transcript--if-sessionsmissingagent": {
+      "id": "transcript-first-module-contracts--core--transcript--if-sessionsmissingagent",
+      "ownerId": "transcript-first-module-contracts--core--transcript",
+      "name": "sessionsMissingAgent",
+      "accepts": [],
+      "returns": [
+        "ProviderSessions"
+      ]
+    },
+    "transcript-first-module-contracts--core--transcript--if-mintagent": {
+      "id": "transcript-first-module-contracts--core--transcript--if-mintagent",
+      "ownerId": "transcript-first-module-contracts--core--transcript",
+      "name": "mintAgent",
+      "accepts": [
+        "Origin",
+        "ParentAgentId"
+      ],
+      "returns": [
+        "Agent"
+      ]
+    },
+    "transcript-first-module-contracts--core--transcript--if-linesfor": {
+      "id": "transcript-first-module-contracts--core--transcript--if-linesfor",
+      "ownerId": "transcript-first-module-contracts--core--transcript",
+      "name": "linesFor",
+      "accepts": [
+        "SessionId",
+        "AfterLineId"
+      ],
+      "returns": [
+        "TranscriptLines"
+      ]
+    },
+    "transcript-first-module-contracts--core--transcript--if-resolveresume": {
+      "id": "transcript-first-module-contracts--core--transcript--if-resolveresume",
+      "ownerId": "transcript-first-module-contracts--core--transcript",
+      "name": "resolveResume",
+      "accepts": [
+        "SessionId"
+      ],
+      "returns": [
+        "ResumeTarget"
+      ]
+    },
+    "transcript-first-module-contracts--core--ingestion--if-tick": {
+      "id": "transcript-first-module-contracts--core--ingestion--if-tick",
+      "ownerId": "transcript-first-module-contracts--core--ingestion",
+      "name": "tick",
+      "accepts": [],
+      "returns": [
+        "IngestReport"
+      ]
+    },
+    "transcript-first-module-contracts--send-and-delivery--send--if-send": {
+      "id": "transcript-first-module-contracts--send-and-delivery--send--if-send",
+      "ownerId": "transcript-first-module-contracts--send-and-delivery--send",
+      "name": "send",
+      "accepts": [
+        "SendRequest"
+      ],
+      "returns": [
+        "SendReceipt"
+      ]
+    },
+    "transcript-first-module-contracts--send-and-delivery--send--if-state": {
+      "id": "transcript-first-module-contracts--send-and-delivery--send--if-state",
+      "ownerId": "transcript-first-module-contracts--send-and-delivery--send",
+      "name": "state",
+      "accepts": [
+        "SendId"
+      ],
+      "returns": [
+        "SendState"
+      ]
+    },
+    "transcript-first-module-contracts--send-and-delivery--delivery--if-pending": {
+      "id": "transcript-first-module-contracts--send-and-delivery--delivery--if-pending",
+      "ownerId": "transcript-first-module-contracts--send-and-delivery--delivery",
+      "name": "pending",
+      "accepts": [
+        "RecipientAgentId"
+      ],
+      "returns": [
+        "PendingDeliveries"
+      ]
+    },
+    "transcript-first-module-contracts--app-view--conversations--if-list": {
+      "id": "transcript-first-module-contracts--app-view--conversations--if-list",
+      "ownerId": "transcript-first-module-contracts--app-view--conversations",
+      "name": "list",
+      "accepts": [],
+      "returns": [
+        "ConversationSummaries"
+      ]
+    },
+    "transcript-first-module-contracts--app-view--conversations--if-open": {
+      "id": "transcript-first-module-contracts--app-view--conversations--if-open",
+      "ownerId": "transcript-first-module-contracts--app-view--conversations",
+      "name": "open",
+      "accepts": [
+        "ConversationId"
+      ],
+      "returns": [
+        "ConversationView"
+      ]
+    },
+    "transcript-first-module-contracts--app-view--conversations--if-sendmessage": {
+      "id": "transcript-first-module-contracts--app-view--conversations--if-sendmessage",
+      "ownerId": "transcript-first-module-contracts--app-view--conversations",
+      "name": "sendMessage",
+      "accepts": [
+        "ConversationId",
+        "Text"
+      ],
+      "returns": [
+        "SendReceipt"
+      ]
+    },
+    "transcript-first-module-contracts--app-view--conversations--if-markread": {
+      "id": "transcript-first-module-contracts--app-view--conversations--if-markread",
+      "ownerId": "transcript-first-module-contracts--app-view--conversations",
+      "name": "markRead",
+      "accepts": [
+        "ConversationId",
+        "LineId"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "transcript-first-module-contracts--app-view--conversations--if-pin": {
+      "id": "transcript-first-module-contracts--app-view--conversations--if-pin",
+      "ownerId": "transcript-first-module-contracts--app-view--conversations",
+      "name": "pin",
+      "accepts": [
+        "ConversationId",
+        "Pinned"
+      ],
+      "returns": [
+        "void"
+      ]
+    }
+  },
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "transcript-first-module-contracts": {
+          "nodeId": "transcript-first-module-contracts",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 1858,
+            "height": 1226
+          },
+          "pinned": false
+        },
+        "transcript-first-module-contracts--note-1-target-modules-and-their": {
+          "nodeId": "transcript-first-module-contracts--note-1-target-modules-and-their",
+          "position": {
+            "x": 1538,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 153
+          },
+          "pinned": false
+        },
+        "transcript-first-module-contracts--external-provider-s-world": {
+          "nodeId": "transcript-first-module-contracts--external-provider-s-world",
+          "position": {
+            "x": 1077,
+            "y": 56
+          },
+          "size": {
+            "width": 421,
+            "height": 376
+          },
+          "pinned": false
+        },
+        "transcript-first-module-contracts--core": {
+          "nodeId": "transcript-first-module-contracts--core",
+          "position": {
+            "x": 537,
+            "y": 56
+          },
+          "size": {
+            "width": 500,
+            "height": 574
+          },
+          "pinned": false
+        },
+        "transcript-first-module-contracts--send-and-delivery": {
+          "nodeId": "transcript-first-module-contracts--send-and-delivery",
+          "position": {
+            "x": 40,
+            "y": 700
+          },
+          "size": {
+            "width": 500,
+            "height": 486
+          },
+          "pinned": false
+        },
+        "transcript-first-module-contracts--app-view": {
+          "nodeId": "transcript-first-module-contracts--app-view",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 457,
+            "height": 330
+          },
+          "pinned": false
+        },
+        "transcript-first-module-contracts--external-provider-s-world--provider-server": {
+          "nodeId": "transcript-first-module-contracts--external-provider-s-world--provider-server",
+          "position": {
+            "x": 51,
+            "y": 56
+          },
+          "size": {
+            "width": 319,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "transcript-first-module-contracts--external-provider-s-world--provider-session-file": {
+          "nodeId": "transcript-first-module-contracts--external-provider-s-world--provider-session-file",
+          "position": {
+            "x": 40,
+            "y": 232
+          },
+          "size": {
+            "width": 341,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "transcript-first-module-contracts--core--transcript": {
+          "nodeId": "transcript-first-module-contracts--core--transcript",
+          "position": {
+            "x": 40,
+            "y": 274
+          },
+          "size": {
+            "width": 420,
+            "height": 260
+          },
+          "pinned": false
+        },
+        "transcript-first-module-contracts--core--ingestion": {
+          "nodeId": "transcript-first-module-contracts--core--ingestion",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "transcript-first-module-contracts--send-and-delivery--send": {
+          "nodeId": "transcript-first-module-contracts--send-and-delivery--send",
+          "position": {
+            "x": 40,
+            "y": 274
+          },
+          "size": {
+            "width": 420,
+            "height": 172
+          },
+          "pinned": false
+        },
+        "transcript-first-module-contracts--send-and-delivery--delivery": {
+          "nodeId": "transcript-first-module-contracts--send-and-delivery--delivery",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "transcript-first-module-contracts--app-view--conversations": {
+          "nodeId": "transcript-first-module-contracts--app-view--conversations",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 377,
+            "height": 234
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {},
+      "appearanceByWireId": {},
+      "arrangementByContainerId": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-c359c348-b3d2-48a3-acf6-cf8e316b2098": {
+      "operationId": "cli-apply-c359c348-b3d2-48a3-acf6-cf8e316b2098",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-23T11:53:46.604Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command/cbc14d76-2723-414a-bf0d-598b556b4f44/scratchpad/module-contracts.dsl"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "interface.add",
+        "interface.add",
+        "interface.add",
+        "interface.add",
+        "interface.add",
+        "interface.add",
+        "node.add",
+        "interface.add",
+        "node.add",
+        "interface.add",
+        "interface.add",
+        "node.add",
+        "interface.add",
+        "node.add",
+        "interface.add",
+        "interface.add",
+        "interface.add",
+        "interface.add",
+        "interface.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    }
+  }
+}

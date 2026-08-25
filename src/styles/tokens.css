@@ -77,7 +77,7 @@
   --wire: #62626c;
   --wire-strong: #8a8a94;
   --wire-dim: #35353b;
-  --wire-label: var(--ink-muted);
+  --wire-label: var(--ink);
 
   /* Shape */
   --radius: 5px;
