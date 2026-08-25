@@ -2,8 +2,22 @@ import type { RefinementCtx } from 'zod';
 import { componentFor } from '../components/registry.ts';
 import { appearanceKeyForJsonKey } from './canvas-presentation.ts';
 import type { DiagramRecord } from './records.ts';
+import { compileTopology, TopologyError } from './topology.ts';
 
 type Layout = DiagramRecord['layouts'][string];
+
+function validateTopology(record: DiagramRecord, context: RefinementCtx): void {
+  try {
+    compileTopology(record.nodes);
+  } catch (error) {
+    if (!(error instanceof TopologyError)) throw error;
+    context.addIssue({
+      code: 'custom', message: error.message,
+      path: ['nodes', error.nodeId, error.field],
+      input: record.nodes[error.nodeId]?.[error.field],
+    });
+  }
+}
 
 function validateWireAddresses(record: DiagramRecord, context: RefinementCtx): void {
   const wireAddresses = new Map<string, string>();
@@ -164,6 +178,7 @@ export function validateRecordIntegrity(record: DiagramRecord, context: Refineme
   }
   validateDefinitionReferences(record, context);
   validateWireAddresses(record, context);
+  validateTopology(record, context);
   for (const [layoutId, layout] of Object.entries(record.layouts)) {
     validateWireAppearanceTargets(record, layoutId, layout, context);
     validateNodeAppearances(record, layoutId, layout, context);

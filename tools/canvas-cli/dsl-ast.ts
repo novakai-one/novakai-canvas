@@ -33,6 +33,10 @@ export interface NodeAst {
 export interface ZoneAst {
   label: string;
   description?: string;
+  /** Optional membrane policy; absence means this is an ordinary visual container. */
+  crossing?: 'gated' | 'free';
+  /** Author-facing label resolved to a durable NodeId by the scope compiler. */
+  gateLabel?: string;
   nodes: NodeAst[];
   zones: ZoneAst[];
   /** The authoritative mixed order of direct node and zone declarations. */

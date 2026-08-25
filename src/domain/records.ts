@@ -63,6 +63,10 @@ export interface CanvasNode {
   band?: number;
   /** Declared column across the axis among its siblings; absent means the node floats. */
   lane?: number;
+  /** A group with a crossing policy is a boundary; absence means an ordinary container. */
+  crossing?: 'gated' | 'free';
+  /** Durable identity of the descendant through which a gated boundary may be crossed. */
+  gate?: NodeId;
   interfaceIds: InterfaceId[];
   typeIds: TypeId[];
   /** Semantic hierarchy rows; present only on kind `tree`. */

@@ -3,7 +3,7 @@ import { orientationOf, resolveAxis, type Axis } from '../axis.ts';
 import { resolveNodeAppearance, type ContainerArrangement } from '../canvas-presentation.ts';
 import { laneRuler as computeLaneRuler, type LaneRuler } from '../lane-ruler.ts';
 import { positionedNodes, resolveLayout } from '../layouts.ts';
-import { compileTopology, type Topology } from '../topology.ts';
+import { compileFrameTopology, type Topology } from '../topology.ts';
 import type {
   ArchitectureDocument, CanvasLayout, NodePlacement, PositionedCanvasNode, Size,
 } from '../model.ts';
@@ -47,7 +47,7 @@ export class LayoutState {
     this.layout = layout;
     this.groupPadding = groupPadding;
     this.axis = resolveAxis(orientationOf(document));
-    this.topology = compileTopology(document.nodes);
+    this.topology = compileFrameTopology(document.nodes);
   }
 
   static create(

@@ -37,7 +37,8 @@ scope "My System" [orientation=top-down|left-right]   # a scope block FULLY decl
     acquire(AgentId) -> SessionHandle          # methods: bare type names
     type Lease { agentId, ttl }
   runtime "Chrome instances"                   # kinds: module|object|runtime|resource
-  zone "Stores" ... end                        # nested containers; labels unique per map
+  zone "Stores" [crossing=gated|free] [gate="Node"] ... end
+                                                 # boundary attributes are optional
   wire "browse CLI" -> "Session broker" : acquire(AgentId) -> SessionHandle [queries]
 ```
 

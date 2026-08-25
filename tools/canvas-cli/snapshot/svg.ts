@@ -10,6 +10,7 @@ export const SNAPSHOT_STYLE = {
     muted: '#a2a2aa',
     faint: '#8b8b94',
     gold: '#d0a14b',
+    danger: '#c26d5a',
     border: '#2f2f34',
   },
   font: 'Inter, sans-serif',

@@ -121,6 +121,8 @@ function parseComponent(
     const zone: ZoneAst = {
       label: parsed.label,
       ...(parsed.description === undefined ? {} : { description: parsed.description }),
+      ...(split.boundary?.crossing === undefined ? {} : { crossing: split.boundary.crossing }),
+      ...(split.boundary?.gateLabel === undefined ? {} : { gateLabel: split.boundary.gateLabel }),
       nodes: [], zones: [], declarations: [],
       ...(split.presentation ? { presentation: split.presentation } : {}),
       line: lineNumber,

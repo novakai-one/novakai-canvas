@@ -1,6 +1,7 @@
 import type { DiagramRecord } from '../../../src/domain/records.ts';
 import type { PlannedWireRoute } from '../../../src/domain/diagram-geometry.ts';
 import type { PlacedNode } from '../record-graph.ts';
+import type { Crossing, Topology } from '../../../src/domain/topology.ts';
 
 interface Point { x: number; y: number }
 
@@ -15,6 +16,8 @@ export interface SnapshotScene {
   panel: { x: number; y: number; width: number; height: number };
   total: { width: number; height: number };
   routes: Record<string, PlannedWireRoute>;
+  topology: Topology;
+  crossings: readonly Crossing[];
   routeOffset: Point;
   positionOf(id: string): Point;
 }

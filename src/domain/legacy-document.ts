@@ -31,6 +31,10 @@ export interface CanvasNode {
   band?: number;
   /** Declared column across the axis among its siblings; absent means the node floats. */
   lane?: number;
+  /** A scope with a crossing policy is a boundary; absent scopes remain ordinary containers. */
+  crossing?: 'gated' | 'free';
+  /** Durable identity of the descendant gate for a gated boundary. */
+  gate?: string;
   interfaceIds: string[];
   typeIds: string[];
   /** Semantic hierarchy rows; present only on kind "tree". */

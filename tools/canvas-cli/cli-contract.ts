@@ -64,6 +64,7 @@ Scope and zone containers share the zone.layout, zone.gap and zone.align vocabul
       type SessionHandle { sessionId, cdpEndpoint }
     runtime "Chrome instances"
     resource "sessions.json"
+    zone "Protected store" [crossing=gated|free] [gate="node label"] ... end
     wire "browse CLI" -> "Session broker" : acquire(AgentId) -> SessionHandle [queries]
 
 ${componentHelp}

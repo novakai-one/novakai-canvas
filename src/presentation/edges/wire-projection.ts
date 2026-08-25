@@ -11,6 +11,7 @@ import { resolveWireAppearance, wireStrokeWidth, type ResolvedWireAppearance } f
 import type { ProjectionInput } from '../projection-contract';
 import { connectedIds, connectedWireIds } from '../projection-selection';
 import type { WireCardinality } from '../../domain/wire-cardinality';
+import { compileTopology, crossingsOf } from '../../domain/topology';
 
 /** How one wire is shaped by hand, read from the active layout route hint. */
 export interface EdgeRoute {
@@ -41,6 +42,15 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
   const { editable, execute, preferences, record, select, selection, view } = input;
   const connected = connectedIds(input);
   const connectedWires = connectedWireIds(input);
+  const topology = compileTopology(record.nodes);
+  const boundaryById = new Map(topology.boundaries.map((boundary) => [boundary.nodeId, boundary]));
+  const crossingsByWire = new Map<string, ReturnType<typeof crossingsOf>>();
+  for (const crossing of crossingsOf(record, topology)) {
+    crossingsByWire.set(
+      crossing.wireId as string,
+      [...(crossingsByWire.get(crossing.wireId as string) ?? []), crossing],
+    );
+  }
   const hints = record.layouts[record.views[record.activeViewId]?.layoutId]?.wireRouteHints ?? {};
   const axis = resolveAxis(orientationOf(record));
   const plans = planWireRoutes(view, hints, {
@@ -57,6 +67,9 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
       fallbackShape: preferences.wires.shape,
     });
     const related = selection !== null && connectedWires.has(wire.id as string);
+    const crossings = crossingsByWire.get(wire.id as string) ?? [];
+    const bypassesGate = crossings.some((crossing) =>
+      boundaryById.get(crossing.boundaryId)?.crossing === 'gated' && crossing.gateNodeId === null);
     return ({
     id: wire.id,
     source: wire.source.nodeId,
@@ -74,6 +87,8 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
     },
     className: [
       related ? 'is-related' : '',
+      crossings.length > 0 ? 'is-crossing' : '',
+      bypassesGate ? 'is-crossing-bypass' : '',
       preferences.wires.dimUnrelated && selection
         && (!connected.has(wire.source.nodeId) || !connected.has(wire.target.nodeId))
         ? 'is-dimmed' : '',

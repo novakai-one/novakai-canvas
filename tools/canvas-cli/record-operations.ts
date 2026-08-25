@@ -25,6 +25,8 @@ function structurallyEqual(left: RecordNode, right: RecordNode): boolean {
     && left.parentId === right.parentId
     && left.band === right.band
     && left.lane === right.lane
+    && left.crossing === right.crossing
+    && left.gate === right.gate
     && JSON.stringify(left.interfaceIds) === JSON.stringify(right.interfaceIds)
     && JSON.stringify(left.typeIds) === JSON.stringify(right.typeIds)
     && componentContentMatches

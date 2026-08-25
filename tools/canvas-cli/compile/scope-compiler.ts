@@ -153,8 +153,28 @@ class ScopeCompiler {
       typeIds: [],
     };
     const childIds = this.compileDeclarations(zone.declarations, zoneId);
+    const gate = this.resolveGate(zone);
+    this.nodes[zoneId] = {
+      ...this.nodes[zoneId],
+      ...(zone.crossing === undefined ? {} : { crossing: zone.crossing }),
+      ...(gate === undefined ? {} : { gate: asId(gate) }),
+    };
     this.storeArrangement(zoneId, zone.presentation, childIds);
     return zoneId;
+  }
+
+  private resolveGate(zone: ZoneAst): string | undefined {
+    if (zone.gateLabel === undefined) return undefined;
+    const matches = this.identity.endpointByLabelSlug.get(slugify(zone.gateLabel)) ?? [];
+    if (matches.length === 1) return matches[0];
+    this.messages.errors.push(matches.length === 0 ? {
+      message: `zone "${zone.label}": no node named "${zone.gateLabel}" in this map`,
+      hint: 'name a node declared inside this zone',
+    } : {
+      message: `zone "${zone.label}": node name "${zone.gateLabel}" is ambiguous`,
+      hint: 'give the intended gate a unique label',
+    });
+    return undefined;
   }
 
   private storeArrangement(

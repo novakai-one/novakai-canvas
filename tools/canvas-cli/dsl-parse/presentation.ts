@@ -5,11 +5,13 @@ import {
   type AuthoredArrangement, type ParsedPresentation,
 } from '../../../src/domain/canvas-presentation.ts';
 import { ORIENTATIONS, isOrientation, type Orientation } from '../../../src/domain/axis.ts';
+import type { CrossingPolicy } from '../../../src/domain/topology.ts';
 import { attributeKey } from './tokens.ts';
 
 type SplitResult =
   | { semanticTokens: string[]; presentation?: ParsedPresentation; orientation?: Orientation;
-      topology?: { band?: number; lane?: number } }
+      topology?: { band?: number; lane?: number };
+      boundary?: { crossing?: CrossingPolicy; gateLabel?: string } }
   | { error: string; hint: string };
 type Failure = { error: string; hint: string };
 
@@ -27,6 +29,7 @@ interface AuthoredPresentation {
   hasArrangementAttribute: boolean;
   orientation?: Orientation;
   topology: { band?: number; lane?: number };
+  boundary: { crossing?: CrossingPolicy; gateLabel?: string };
 }
 
 /** Which way the map runs is a property of the map, so only its root scope may say it. */
@@ -35,6 +38,8 @@ const ORIENTATION_HINT = `${ORIENTATION_KEY}=${ORIENTATIONS.join('|')}`;
 /** Frame ordinals are per-node, so only leaf components may say them (zones derive from children). */
 const TOPOLOGY_KEYS = ['band', 'lane'] as const;
 const TOPOLOGY_HINT = '[band=0|1|2|…] [lane=0|1|2|…]';
+const BOUNDARY_KEYS = ['crossing', 'gate'] as const;
+const BOUNDARY_HINT = '[crossing=gated|free] [gate="node label"]';
 
 function contextFor(component: DiagramComponent, tokens: string[]): PresentationContext {
   const arrangementModes = component.arrangementModes ?? [];
@@ -49,7 +54,7 @@ function contextFor(component: DiagramComponent, tokens: string[]): Presentation
       ? `scope "name" ["optional description"] [layout=${layoutValues}]${columnsHint} [gap=0|4|8|12|16|24|32] [align=stretch|start|center|end] [${ORIENTATION_HINT}]`
       : component.layoutRole === 'leaf'
         ? `${component.declaration.syntax} ${TOPOLOGY_HINT}`
-        : component.declaration.syntax,
+        : `${component.declaration.syntax} ${BOUNDARY_HINT}`,
   };
 }
 
@@ -155,6 +160,25 @@ function parseTopologyOrdinal(
   return undefined;
 }
 
+function parseBoundaryAttribute(
+  key: string,
+  raw: string,
+  context: PresentationContext,
+  boundary: { crossing?: CrossingPolicy; gateLabel?: string },
+): string | undefined {
+  if (context.owner !== 'zone') return `${key} belongs on a zone, not on ${context.owner}`;
+  if (key === 'gate') {
+    if (raw.length === 0) return 'gate needs a node label';
+    boundary.gateLabel = raw;
+    return undefined;
+  }
+  if (raw !== 'gated' && raw !== 'free') {
+    return `invalid crossing "${raw}"; use one of: gated, free`;
+  }
+  boundary.crossing = raw;
+  return undefined;
+}
+
 function parseAttributes(
   tokens: string[],
   firstAttribute: number,
@@ -163,6 +187,7 @@ function parseAttributes(
   const appearance: NonNullable<ParsedPresentation['appearance']> = {};
   const arrangement: Partial<AuthoredArrangement> = {};
   const topology: { band?: number; lane?: number } = {};
+  const boundary: { crossing?: CrossingPolicy; gateLabel?: string } = {};
   let hasArrangementAttribute = false;
   let orientation: Orientation | undefined;
   const seen = new Set<string>();
@@ -193,6 +218,11 @@ function parseAttributes(
       if (error) return { error, hint: context.hint };
       continue;
     }
+    if ((BOUNDARY_KEYS as readonly string[]).includes(key)) {
+      const error = parseBoundaryAttribute(key, raw, context, boundary);
+      if (error) return { error, hint: context.hint };
+      continue;
+    }
     const arrangementResult = parseArrangement(key, raw, context, arrangement);
     if (arrangementResult.handled) {
       hasArrangementAttribute = true;
@@ -205,7 +235,7 @@ function parseAttributes(
     }
     if (appearanceResult.error) return { error: appearanceResult.error, hint: context.hint };
   }
-  return { appearance, arrangement, hasArrangementAttribute, orientation, topology };
+  return { appearance, arrangement, hasArrangementAttribute, orientation, topology, boundary };
 }
 
 /** Strips and validates shared presentation tokens against component metadata. */
@@ -218,13 +248,16 @@ export function splitPresentation(component: DiagramComponent, tokens: string[])
       // Topology keys are detected for every role so a container gets the leaf-only
       // error instead of silently reading `band=` as its description.
       || (TOPOLOGY_KEYS as readonly string[]).includes(key)
+      || (BOUNDARY_KEYS as readonly string[]).includes(key)
       || (isAppearanceKey(key) && context.appearanceKeys.includes(key))
       || (context.arrangementModes.length > 0 && isArrangementKey(key));
   });
   if (firstAttribute === -1) return { semanticTokens: tokens };
   const authored = parseAttributes(tokens, firstAttribute, context);
   if ('error' in authored) return authored;
-  const { appearance, arrangement, hasArrangementAttribute, orientation, topology } = authored;
+  const {
+    appearance, arrangement, hasArrangementAttribute, orientation, topology, boundary,
+  } = authored;
   const failure = arrangementFailure(arrangement, context, hasArrangementAttribute);
   if (failure) return failure;
   const parsed: ParsedPresentation = {};
@@ -242,5 +275,6 @@ export function splitPresentation(component: DiagramComponent, tokens: string[])
     ...(Object.keys(parsed).length > 0 ? { presentation: parsed } : {}),
     ...(orientation === undefined ? {} : { orientation }),
     ...(topology.band === undefined && topology.lane === undefined ? {} : { topology }),
+    ...(boundary.crossing === undefined && boundary.gateLabel === undefined ? {} : { boundary }),
   };
 }

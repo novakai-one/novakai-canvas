@@ -1,7 +1,7 @@
 import { componentFor } from '../components/registry.ts';
 import { appearanceSpecification } from '../domain/canvas-presentation.ts';
 import type { DiagramRecord } from '../domain/records.ts';
-import { arrangementAttributes, childrenOf, type ExportNode } from './ordering.ts';
+import { arrangementAttributes, childrenOf, quote, type ExportNode } from './ordering.ts';
 
 type Layout = DiagramRecord['layouts'][string] | undefined;
 
@@ -51,6 +51,12 @@ class DeclarationPrinter {
     });
     const arrangement = component.layoutRole === 'container'
       ? arrangementAttributes(this.layout?.arrangementByContainerId?.[node.id]) : [];
+    const boundary = component.layoutRole === 'container' && node.crossing
+      ? [
+        `crossing=${node.crossing}`,
+        ...(node.gate ? [`gate=${quote(this.record.nodes[node.gate]?.label ?? node.gate)}`] : []),
+      ]
+      : [];
     // Frame ordinals are durable node data; printed only when declared, leaf nodes only.
     const topology = component.layoutRole === 'leaf'
       ? [
@@ -58,7 +64,7 @@ class DeclarationPrinter {
         ...(node.lane === undefined ? [] : [`lane=${node.lane}`]),
       ]
       : [];
-    const attributes = [...appearance, ...arrangement, ...topology];
+    const attributes = [...appearance, ...arrangement, ...boundary, ...topology];
     return `${indent}${component.declaration.print(node)}`
       + `${attributes.length ? ` ${attributes.join(' ')}` : ''}`;
   }

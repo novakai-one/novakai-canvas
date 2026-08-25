@@ -4,6 +4,7 @@ import type { Node } from '@xyflow/react';
 import type { CanvasPreferences, InterfaceObject, Selection, TypeObject } from '../domain/model';
 import type { PositionedNode } from '../domain/project-view';
 import type { NodeKind } from '../domain/records';
+import { compileTopology } from '../domain/topology';
 import { resolveNodeAppearance, type ResolvedNodeAppearance } from '../domain/canvas-presentation';
 import type { ProjectionInput } from './projection-contract';
 import { connectedIds } from './projection-selection';
@@ -46,6 +47,9 @@ export function flowNodeType(kind: NodeKind): NodeKind {
 export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>[] {
   const { editable, preferences, record, select, selection, view } = input;
   const connected = connectedIds(input);
+  const topology = compileTopology(record.nodes);
+  const gateIds = new Set(topology.boundaries.flatMap((boundary) =>
+    boundary.gate ? [boundary.gate as string] : []));
   const byId: Record<string, NestedNode> = Object.fromEntries(
     view.nodes.map((node) => [node.id as string, node]),
   );
@@ -56,6 +60,8 @@ export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>
     const related = selection !== null && connected.has(node.id as string);
     const className = [
       related ? 'is-related' : '',
+      node.crossing ? 'is-boundary' : '',
+      gateIds.has(node.id as string) ? 'is-boundary-gate' : '',
       dimming && !related && node.kind !== 'group' ? 'is-dimmed' : '',
     ].filter(Boolean).join(' ');
     return {

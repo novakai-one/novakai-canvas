@@ -2,6 +2,7 @@ import type { DiagramRecord } from '../../../src/domain/records.ts';
 import { orientationOf, resolveAxis } from '../../../src/domain/axis.ts';
 import { planWireRoutes } from '../../../src/domain/diagram-geometry.ts';
 import { projectView } from '../../../src/domain/project-view.ts';
+import { compileTopology, crossingsOf } from '../../../src/domain/topology.ts';
 import { placedNodes, rootGroupId, type PlacedNode } from '../record-graph.ts';
 import type { SnapshotScene } from './contract.ts';
 import { SNAPSHOT_STYLE } from './svg.ts';
@@ -62,8 +63,10 @@ export function buildSnapshotScene(record: DiagramRecord): SnapshotScene {
     axis: resolveAxis(orientationOf(record)), avoidObstacles: true,
   });
   const routeOffset = { x: panel.x - scope.position.x, y: panel.y - scope.position.y };
+  const topology = compileTopology(record.nodes);
   return {
     nodes, scopeId, scope, layout, descendants, wires, panel, total, routes, routeOffset,
+    topology, crossings: crossingsOf(record, topology),
     positionOf: positionResolver(nodes, scopeId, panel),
   };
 }

@@ -51,7 +51,10 @@ export type {
 } from './domain/layout/contract.ts';
 export { graphOfDiagram } from './domain/layout/graph.ts';
 export { layoutStrategyFor, planSliceLayout } from './domain/layout/plan.ts';
-export { compileTopology, EMPTY_TOPOLOGY, isEmptyTopology, type Topology } from './domain/topology.ts';
+export {
+  compileTopology, crossingsOf, EMPTY_TOPOLOGY, gateOf, isEmptyTopology, isInside,
+  TopologyError, type Boundary, type Crossing, type CrossingPolicy, type Topology,
+} from './domain/topology.ts';
 export { laneRuler, LANE_GAP, type LaneRuler } from './domain/lane-ruler.ts';
 
 export { createCanvasEngine, type CanvasEngine } from './application/canvas-engine.ts';

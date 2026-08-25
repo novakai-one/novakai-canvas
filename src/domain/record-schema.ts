@@ -29,6 +29,8 @@ const canvasNodeBase = {
   parentId: z.string().min(1).optional(),
   band: z.number().int().nonnegative().optional(),
   lane: z.number().int().nonnegative().optional(),
+  crossing: z.enum(['gated', 'free']).optional(),
+  gate: z.string().min(1).optional(),
   interfaceIds: z.array(z.string().min(1)),
   typeIds: z.array(z.string().min(1)),
   subjectRef: canvasReference.optional(),
