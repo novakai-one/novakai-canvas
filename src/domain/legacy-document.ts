@@ -27,6 +27,10 @@ export interface CanvasNode {
   label: string;
   description?: string;
   parentId?: string;
+  /** Declared rank along the axis among its siblings; absent means the engine ranks by wires. */
+  band?: number;
+  /** Declared column across the axis among its siblings; absent means the node floats. */
+  lane?: number;
   interfaceIds: string[];
   typeIds: string[];
   /** Semantic hierarchy rows; present only on kind "tree". */

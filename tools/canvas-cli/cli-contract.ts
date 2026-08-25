@@ -58,7 +58,7 @@ Scope and zone containers share the zone.layout, zone.gap and zone.align vocabul
 
   scope "Agent Browser Sessions" [orientation=top-down|left-right]  # which way the map runs
     note "One session per instance; renders off-screen."
-    module "Session broker" "Owns leases and allocation"
+    module "Session broker" "Owns leases and allocation" [band=0|1|2|…] [lane=0|1|2|…]
       acquire(AgentId) -> SessionHandle
       release(SessionId) -> void
       type SessionHandle { sessionId, cdpEndpoint }

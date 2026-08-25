@@ -51,7 +51,14 @@ class DeclarationPrinter {
     });
     const arrangement = component.layoutRole === 'container'
       ? arrangementAttributes(this.layout?.arrangementByContainerId?.[node.id]) : [];
-    const attributes = [...appearance, ...arrangement];
+    // Frame ordinals are durable node data; printed only when declared, leaf nodes only.
+    const topology = component.layoutRole === 'leaf'
+      ? [
+        ...(node.band === undefined ? [] : [`band=${node.band}`]),
+        ...(node.lane === undefined ? [] : [`lane=${node.lane}`]),
+      ]
+      : [];
+    const attributes = [...appearance, ...arrangement, ...topology];
     return `${indent}${component.declaration.print(node)}`
       + `${attributes.length ? ` ${attributes.join(' ')}` : ''}`;
   }

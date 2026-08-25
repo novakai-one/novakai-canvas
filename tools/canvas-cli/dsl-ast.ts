@@ -22,6 +22,10 @@ export interface NodeAst {
   types: TypeAst[];
   /** Child-statement content, keyed by each statement's content key. */
   children: Record<string, unknown[]>;
+  /** Declared rank along the axis; parsed from `band=`, leaf nodes only. */
+  band?: number;
+  /** Declared column across the axis; parsed from `lane=`, leaf nodes only. */
+  lane?: number;
   /** Authored presentation compiles into the active layout, never node content. */
   presentation?: ParsedPresentation;
 }

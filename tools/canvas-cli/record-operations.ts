@@ -23,6 +23,8 @@ function structurallyEqual(left: RecordNode, right: RecordNode): boolean {
       === JSON.stringify((right as unknown as Record<string, unknown>)[field] ?? null));
   return left.kind === right.kind
     && left.parentId === right.parentId
+    && left.band === right.band
+    && left.lane === right.lane
     && JSON.stringify(left.interfaceIds) === JSON.stringify(right.interfaceIds)
     && JSON.stringify(left.typeIds) === JSON.stringify(right.typeIds)
     && componentContentMatches

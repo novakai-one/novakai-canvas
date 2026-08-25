@@ -133,6 +133,8 @@ function parseComponent(
     label: parsed.label,
     ...(parsed.description === undefined ? {} : { description: parsed.description }),
     content: parsed.content ?? {}, interfaces: [], types: [], children: {},
+    ...(split.topology?.band === undefined ? {} : { band: split.topology.band }),
+    ...(split.topology?.lane === undefined ? {} : { lane: split.topology.lane }),
     ...(split.presentation ? { presentation: split.presentation } : {}),
   };
   state.appendNode(node, component.declaration.allowsBody);

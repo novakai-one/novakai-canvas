@@ -35,7 +35,7 @@ export type {
 export { projectView } from './domain/project-view.ts';
 export type { PositionedNode, ProjectedView } from './domain/project-view.ts';
 export {
-  layoutScopes, planWireRoutes, reflowPresentation, routeWire,
+  layoutScopes, planWireRoutes, reflowPresentation, reflowTopology, routeWire,
 } from './domain/diagram-geometry.ts';
 export type {
   PlannedWireRoute, Point as GeometryPoint, Rect as GeometryRect, RouteObstacle, RouteSide,
@@ -51,6 +51,8 @@ export type {
 } from './domain/layout/contract.ts';
 export { graphOfDiagram } from './domain/layout/graph.ts';
 export { layoutStrategyFor, planSliceLayout } from './domain/layout/plan.ts';
+export { compileTopology, EMPTY_TOPOLOGY, isEmptyTopology, type Topology } from './domain/topology.ts';
+export { laneRuler, LANE_GAP, type LaneRuler } from './domain/lane-ruler.ts';
 
 export { createCanvasEngine, type CanvasEngine } from './application/canvas-engine.ts';
 export type { JsonRepository } from './application/json-repository.ts';

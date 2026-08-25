@@ -90,6 +90,8 @@ class ScopeCompiler {
       label: nodeAst.label,
       ...(nodeAst.description ? { description: nodeAst.description } : {}),
       parentId: asId(parentId),
+      ...(nodeAst.band === undefined ? {} : { band: nodeAst.band }),
+      ...(nodeAst.lane === undefined ? {} : { lane: nodeAst.lane }),
       interfaceIds: interfaceIds.map((id) => asId(id)),
       typeIds: typeIds.map((id) => asId(id)),
       ...nodeAst.content,

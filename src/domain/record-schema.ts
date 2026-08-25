@@ -27,6 +27,8 @@ const canvasNodeBase = {
   label: z.string(),
   description: z.string().optional(),
   parentId: z.string().min(1).optional(),
+  band: z.number().int().nonnegative().optional(),
+  lane: z.number().int().nonnegative().optional(),
   interfaceIds: z.array(z.string().min(1)),
   typeIds: z.array(z.string().min(1)),
   subjectRef: canvasReference.optional(),

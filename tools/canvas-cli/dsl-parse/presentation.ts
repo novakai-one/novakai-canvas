@@ -8,13 +8,15 @@ import { ORIENTATIONS, isOrientation, type Orientation } from '../../../src/doma
 import { attributeKey } from './tokens.ts';
 
 type SplitResult =
-  | { semanticTokens: string[]; presentation?: ParsedPresentation; orientation?: Orientation }
+  | { semanticTokens: string[]; presentation?: ParsedPresentation; orientation?: Orientation;
+      topology?: { band?: number; lane?: number } }
   | { error: string; hint: string };
 type Failure = { error: string; hint: string };
 
 interface PresentationContext {
   appearanceKeys: NonNullable<DiagramComponent['appearanceKeys']>;
   arrangementModes: NonNullable<DiagramComponent['arrangementModes']>;
+  layoutRole: DiagramComponent['layoutRole'];
   hint: string;
   owner: string;
 }
@@ -24,11 +26,15 @@ interface AuthoredPresentation {
   arrangement: Partial<AuthoredArrangement>;
   hasArrangementAttribute: boolean;
   orientation?: Orientation;
+  topology: { band?: number; lane?: number };
 }
 
 /** Which way the map runs is a property of the map, so only its root scope may say it. */
 const ORIENTATION_KEY = 'orientation';
 const ORIENTATION_HINT = `${ORIENTATION_KEY}=${ORIENTATIONS.join('|')}`;
+/** Frame ordinals are per-node, so only leaf components may say them (zones derive from children). */
+const TOPOLOGY_KEYS = ['band', 'lane'] as const;
+const TOPOLOGY_HINT = '[band=0|1|2|…] [lane=0|1|2|…]';
 
 function contextFor(component: DiagramComponent, tokens: string[]): PresentationContext {
   const arrangementModes = component.arrangementModes ?? [];
@@ -37,10 +43,13 @@ function contextFor(component: DiagramComponent, tokens: string[]): Presentation
   return {
     appearanceKeys: component.appearanceKeys ?? [],
     arrangementModes,
+    layoutRole: component.layoutRole,
     owner: tokens[0],
     hint: tokens[0] === 'scope'
       ? `scope "name" ["optional description"] [layout=${layoutValues}]${columnsHint} [gap=0|4|8|12|16|24|32] [align=stretch|start|center|end] [${ORIENTATION_HINT}]`
-      : component.declaration.syntax,
+      : component.layoutRole === 'leaf'
+        ? `${component.declaration.syntax} ${TOPOLOGY_HINT}`
+        : component.declaration.syntax,
   };
 }
 
@@ -132,6 +141,20 @@ function arrangementFailure(
   return undefined;
 }
 
+function parseTopologyOrdinal(
+  key: string,
+  raw: string,
+  context: PresentationContext,
+  topology: { band?: number; lane?: number },
+): string | undefined {
+  if (context.layoutRole !== 'leaf') {
+    return `${key} belongs on a leaf node; containers derive their frame from their children`;
+  }
+  if (!/^\d+$/.test(raw)) return `invalid ${key} "${raw}"; use a non-negative integer`;
+  topology[key as 'band' | 'lane'] = Number(raw);
+  return undefined;
+}
+
 function parseAttributes(
   tokens: string[],
   firstAttribute: number,
@@ -139,6 +162,7 @@ function parseAttributes(
 ): AuthoredPresentation | Failure {
   const appearance: NonNullable<ParsedPresentation['appearance']> = {};
   const arrangement: Partial<AuthoredArrangement> = {};
+  const topology: { band?: number; lane?: number } = {};
   let hasArrangementAttribute = false;
   let orientation: Orientation | undefined;
   const seen = new Set<string>();
@@ -164,6 +188,11 @@ function parseAttributes(
       orientation = raw;
       continue;
     }
+    if ((TOPOLOGY_KEYS as readonly string[]).includes(key)) {
+      const error = parseTopologyOrdinal(key, raw, context, topology);
+      if (error) return { error, hint: context.hint };
+      continue;
+    }
     const arrangementResult = parseArrangement(key, raw, context, arrangement);
     if (arrangementResult.handled) {
       hasArrangementAttribute = true;
@@ -176,7 +205,7 @@ function parseAttributes(
     }
     if (appearanceResult.error) return { error: appearanceResult.error, hint: context.hint };
   }
-  return { appearance, arrangement, hasArrangementAttribute, orientation };
+  return { appearance, arrangement, hasArrangementAttribute, orientation, topology };
 }
 
 /** Strips and validates shared presentation tokens against component metadata. */
@@ -186,13 +215,16 @@ export function splitPresentation(component: DiagramComponent, tokens: string[])
     if (index < 2) return false;
     const key = attributeKey(token) ?? '';
     return key === ORIENTATION_KEY
+      // Topology keys are detected for every role so a container gets the leaf-only
+      // error instead of silently reading `band=` as its description.
+      || (TOPOLOGY_KEYS as readonly string[]).includes(key)
       || (isAppearanceKey(key) && context.appearanceKeys.includes(key))
       || (context.arrangementModes.length > 0 && isArrangementKey(key));
   });
   if (firstAttribute === -1) return { semanticTokens: tokens };
   const authored = parseAttributes(tokens, firstAttribute, context);
   if ('error' in authored) return authored;
-  const { appearance, arrangement, hasArrangementAttribute, orientation } = authored;
+  const { appearance, arrangement, hasArrangementAttribute, orientation, topology } = authored;
   const failure = arrangementFailure(arrangement, context, hasArrangementAttribute);
   if (failure) return failure;
   const parsed: ParsedPresentation = {};
@@ -209,5 +241,6 @@ export function splitPresentation(component: DiagramComponent, tokens: string[])
     semanticTokens: tokens.slice(0, firstAttribute),
     ...(Object.keys(parsed).length > 0 ? { presentation: parsed } : {}),
     ...(orientation === undefined ? {} : { orientation }),
+    ...(topology.band === undefined && topology.lane === undefined ? {} : { topology }),
   };
 }
