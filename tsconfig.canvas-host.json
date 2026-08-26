@@ -13,7 +13,6 @@
   ],
   "exclude": [
     "src/presentation/prototype/**",
-    "src/presentation/work-session-report/**",
     "**/*.test.ts",
     "**/*.test.tsx"
   ]

@@ -15,10 +15,7 @@
     "check": "npm run lint && npm run test && tsc -p tsconfig.tools.json && npm run build",
     "canvas": "node packages/canvas/cli/canvas.ts",
     "check:canvas": "npm run test:canvas && tsc -p packages/canvas/tsconfig.json && tsc -p packages/canvas/tsconfig.tests.json && tsc -p tsconfig.canvas-host.json",
-    "test:canvas": "vitest run --config packages/canvas/vitest.config.ts",
-    "report:poc": "node tools/report-session/cli.ts generate --final --complete",
-    "report:poc:preview": "node tools/report-session/cli.ts generate",
-    "report:show": "node tools/report-session/cli.ts show"
+    "test:canvas": "vitest run --config packages/canvas/vitest.config.ts"
   },
   "dependencies": {
     "@xyflow/react": "^12.11.2",

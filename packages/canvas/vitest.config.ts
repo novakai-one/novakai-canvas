@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitest/config';
 import { fileURLToPath } from 'node:url';
 
-/** Canvas-only verification deliberately excludes unrelated prototype and reporting suites. */
+/** Canvas-only verification deliberately excludes unrelated prototype suites. */
 export default defineConfig({
   resolve: {
     alias: {
@@ -15,9 +15,6 @@ export default defineConfig({
       'src/presentation/**/*.test.tsx',
       'src/second-host.test.ts',
     ],
-    exclude: [
-      'src/presentation/prototype/**',
-      'src/presentation/work-session-report/**',
-    ],
+    exclude: ['src/presentation/prototype/**'],
   },
 });

@@ -26,9 +26,6 @@ dist-ssr
 # Agent worktrees
 .worktrees/
 
-# Private Work Session Reporting authority (raw sessions, receipts, drafts)
-.novakai-reports/
-
 # Browser verification artifacts are generated outside the repository contract
 .playwright-cli/
 output/playwright/
