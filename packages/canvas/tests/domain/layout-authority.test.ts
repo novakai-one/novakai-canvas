@@ -91,8 +91,8 @@ describe('layout authority', () => {
     const manuallySized = layoutScopes(manual, ['stack']);
     expect(manuallySized.layouts['layout-default'].placements.stack.size)
       .toEqual({ width: 1_000, height: 800 });
-    expect(manuallySized.layouts['layout-default'].placements.one.size.width).toBeGreaterThan(1);
-    expect(manuallySized.layouts['layout-default'].placements.one.size.height).toBeGreaterThan(1);
+    expect(manuallySized.layouts['layout-default'].placements.one.size)
+      .toEqual({ width: 240, height: 80 });
   });
 
   it('moves geometry in the active layout without mutating semantic node meaning', () => {

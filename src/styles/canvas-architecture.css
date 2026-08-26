@@ -56,7 +56,15 @@
   background: var(--component-header, transparent);
 }
 
-.node-label { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; }
+.node-label {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .node-kind {
   color: var(--component-header-muted, var(--faint));
@@ -101,8 +109,11 @@
 }
 
 .interface-list button span:last-child {
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
   color: var(--faint);
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -119,6 +130,7 @@
 }
 
 .type-list button {
+  max-width: 100%;
   padding: 3px 6px;
   border: 1px solid var(--border-soft);
   border-radius: 3px;
@@ -126,6 +138,7 @@
   background: var(--card-3);
   font-family: "SFMono-Regular", Consolas, monospace;
   font-size: 8px;
+  overflow-wrap: anywhere;
   cursor: pointer;
 }
 
