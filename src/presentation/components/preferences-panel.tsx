@@ -47,7 +47,6 @@ function CanvasControls({ patch, value }: { value: CanvasPreferences; patch: Pat
         <SwitchRow checked={value.canvas.showGrid} label="Grid" onChange={(showGrid) => patch('canvas', { ...value.canvas, showGrid })} />
         <SwitchRow checked={value.canvas.snapToGrid} label="Snap to grid" onChange={(snapToGrid) => patch('canvas', { ...value.canvas, snapToGrid })} />
         <SwitchRow checked={value.canvas.showControls} label="Zoom controls" onChange={(showControls) => patch('canvas', { ...value.canvas, showControls })} />
-        <SwitchRow checked={value.canvas.showLegend} label="Legend" onChange={(showLegend) => patch('canvas', { ...value.canvas, showLegend })} />
       </PanelSection>
       <PanelSection title="Measure">
         <FieldRow hint={`${value.canvas.gridSize}px`} label="Grid size">

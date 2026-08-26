@@ -312,7 +312,6 @@ export const canvasPreferencesSchema = z.object({
   }),
   canvas: z.object({
     showGrid: z.boolean(), snapToGrid: z.boolean(), gridSize: z.number().min(4).max(32), showControls: z.boolean(),
-    showLegend: z.boolean().default(true),
     groupPadding: z.number().min(16).max(160).default(40),
     targetSize: z.enum(['small', 'medium', 'large']).optional(),
   }),

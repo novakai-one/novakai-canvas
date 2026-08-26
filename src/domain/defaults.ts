@@ -36,7 +36,6 @@ export const defaultPreferences: CanvasPreferences = {
     snapToGrid: true,
     gridSize: 8,
     showControls: true,
-    showLegend: true,
     groupPadding: 40,
     targetSize: 'medium',
   },
