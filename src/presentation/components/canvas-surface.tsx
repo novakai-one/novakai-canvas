@@ -7,7 +7,7 @@ import {
 } from '@xyflow/react';
 import type { DiagramSummary } from '@novakai/canvas';
 import type { RecordCommand } from '@novakai/canvas';
-import type { CanvasPreferences, Selection } from '@novakai/canvas';
+import type { CanvasPreferences, ResolvedCanvasTheme, Selection } from '@novakai/canvas';
 import type { ProjectedView } from '@novakai/canvas';
 import type { DiagramRecord } from '@novakai/canvas';
 import {
@@ -35,6 +35,7 @@ export interface CanvasSurfaceProps {
   record: DiagramRecord;
   view: ProjectedView;
   preferences: CanvasPreferences;
+  theme: ResolvedCanvasTheme;
   selection: Selection;
   setSelection: (selection: Selection) => void;
   /** The one way the canvas changes anything; every intention reaches the open workspace here. */
@@ -100,7 +101,7 @@ function applyDrop(
 /** Interactive editor or clean, read-only presentation of one open diagram record. */
 export function CanvasSurface(props: CanvasSurfaceProps) {
   const {
-    activeDiagramId, execute, executeAll, mode, preferences, record, selection, setSelection, view,
+    activeDiagramId, execute, executeAll, mode, preferences, record, selection, setSelection, theme, view,
   } = props;
   const active = useCanvasActivity();
   const editable = mode === 'edit';
@@ -143,7 +144,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
    */
   const projectedNodes = useMemo(
     () => projectNodes({
-      view, record, preferences, selection, editable, select: setSelection, execute,
+      view, record, preferences, theme, selection, editable, select: setSelection, execute,
       // A resize moves two facts for north/west handles — where the corner sits and how big
       // the box is — and one fact for the rest. Either way it is one gesture, so it commits
       // as one revision through executeAll, straight from the frames the overlay accumulated.
@@ -165,7 +166,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         }
         : undefined,
     }),
-    [editable, execute, executeAll, preferences, record, selection, setSelection, updateInFlight, view],
+    [editable, execute, executeAll, preferences, record, selection, setSelection, theme, updateInFlight, view],
   );
   const nodes = useMemo(
     () => mergeInFlight(projectedNodes, inFlight),
@@ -173,9 +174,9 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
   );
   const edges = useMemo(
     () => projectEdges({
-      view, record, preferences, selection, editable, select: setSelection, execute,
+      view, record, preferences, theme, selection, editable, select: setSelection, execute,
     }),
-    [editable, execute, preferences, record, selection, setSelection, view],
+    [editable, execute, preferences, record, selection, setSelection, theme, view],
   );
   return (
     <main
@@ -193,7 +194,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         */}
       <ReactFlow
         key={activeDiagramId}
-        colorMode={preferences.appearance.theme} connectionMode={ConnectionMode.Loose} deleteKeyCode={active && editable ? ['Backspace', 'Delete'] : null} edgeTypes={edgeTypes} edges={edges}
+        colorMode={theme.mode} connectionMode={ConnectionMode.Loose} deleteKeyCode={active && editable ? ['Backspace', 'Delete'] : null} edgeTypes={edgeTypes} edges={edges}
         edgesReconnectable={editable} elementsSelectable fitView={camera.fitOnOpen} fitViewOptions={{ padding: editable ? 0.12 : 0.05, maxZoom: 1, minZoom: 0.05 }} minZoom={0.05}
         nodeTypes={nodeTypes} nodes={nodes} nodesConnectable={editable} nodesDraggable={editable}
         {...connections.handlers}
@@ -235,7 +236,7 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
         snapToGrid={editable && preferences.canvas.snapToGrid}
         reconnectRadius={targetScale(preferences.canvas.targetSize ?? 'medium').grab / 2}
       >
-        {preferences.canvas.showGrid && editable && <Background color={preferences.appearance.theme === 'light' ? '#d9d4c8' : '#34312b'} gap={preferences.canvas.gridSize * 2} variant={BackgroundVariant.Dots} />}
+        {preferences.canvas.showGrid && editable && <Background color={theme.colors.border} gap={preferences.canvas.gridSize * 2} variant={BackgroundVariant.Dots} />}
         {/* Fit is never optional: it is the way back when you are lost, so it stays on screen
           * whatever the zoom buttons are set to. */}
         <Controls position="bottom-left" showFitView showInteractive={false} showZoom={preferences.canvas.showControls} />

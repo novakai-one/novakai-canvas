@@ -10,7 +10,14 @@ export type {
   CanvasPreferences,
   CanvasTheme,
   PreferenceSection,
+  ResolvedCanvasTheme,
+  ThemeColorRole,
+  ThemeOverrides,
+  ThemeOverridesByPreset,
+  ThemePalette,
+  ThemePresetId,
 } from './records/preferences.ts';
+export { THEME_COLOR_ROLES, THEME_PRESET_IDS } from './records/preferences.ts';
 export type { Selection } from './types/selection.ts';
 export type { InterfaceObject, TypeObject } from './records/architecture.ts';
 export type { NodeKind } from './types/node-kind.ts';
@@ -83,6 +90,14 @@ export {
 export type { WireCardinality } from './schemas/wire-cardinality.ts';
 export { WIRE_LABEL_SIZE_LIMITS } from './schemas/preferences.ts';
 export { defaultPreferences, emptyArchitecture } from '../core/domain/defaults.ts';
+export { THEME_PRESETS } from '../core/domain/theme-palettes.ts';
+export {
+  mixThemeColors,
+  resolveCanvasTheme,
+  themeContrastRatio,
+  themeTokenColor,
+  withThemeAlpha,
+} from '../core/domain/theme-resolver.ts';
 export { canvasPreferencesSchema } from './schemas/preferences.ts';
 export { createHttpJsonRepository } from '../adapters/http-json-repository.ts';
 export { isSignatureName } from '../core/application/canvas-workspace.ts';
@@ -108,11 +123,11 @@ export type {
 } from '../core/domain/diagram-geometry.ts';
 export { wireLabelSpread } from '../core/domain/wire-label-seed.ts';
 export {
-  TREE_TONE_COLORS,
+  resolveTreeToneColors,
+  resolveWireToneColors,
   resolveWireAppearance,
   wireLabelSizing,
   wireStrokeWidth,
-  wireToneCssVariables,
 } from '../core/rendering/wire-styles.ts';
 export type { ResolvedWireAppearance } from '../core/rendering/wire-styles.ts';
 export {

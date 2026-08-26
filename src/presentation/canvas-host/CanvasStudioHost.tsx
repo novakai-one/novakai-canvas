@@ -6,11 +6,15 @@ import {
 import { createHttpJsonRepository } from '@novakai/canvas';
 import { canvasPreferencesSchema } from '@novakai/canvas';
 import { defaultPreferences } from '@novakai/canvas';
+import { resolveCanvasTheme } from '@novakai/canvas';
 import { LoadFailure } from '../components/load-failure';
 import { CanvasActivityProvider } from '../shell/canvas-activity-provider';
 import '@xyflow/react/dist/style.css';
 import '../../styles.css';
 import './canvas-studio-host.css';
+import { themeCssVariables } from '../canvas-app/theme-css';
+
+const DEFAULT_THEME_STYLE = themeCssVariables(resolveCanvasTheme(defaultPreferences.appearance));
 
 /** The only fact a host supplies: who its Canvas changes are attributed to. */
 export interface CanvasStudioHostProps {
@@ -150,7 +154,7 @@ export function CanvasStudioHost({ active = true, actor }: CanvasStudioHostProps
 
   return (
     <CanvasActivityProvider active={active}>
-      <section className="canvas-host" aria-label="Canvas studio">
+      <section className="canvas-host" aria-label="Canvas studio" style={DEFAULT_THEME_STYLE}>
         {externalChange && (
           <ExternalChangeNotice reload={() => {
             setExternalChange(false);

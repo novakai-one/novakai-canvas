@@ -3,7 +3,7 @@ import { resolveWireAppearance } from '../wire-styles.ts';
 import { wirePath } from '../wire-shape.ts';
 import { planWireEndDecorations } from '../wire-end-decorations.ts';
 import type { SnapshotScene } from './contract.ts';
-import { escapeSvg, SNAPSHOT_STYLE } from './svg.ts';
+import { escapeSvg } from './svg.ts';
 import { emphasisLevel } from '../../domain/flows.ts';
 
 /** Emits every internal wire beneath node cards using stable elbow geometry. */
@@ -23,7 +23,7 @@ export function renderSnapshotWires(scene: SnapshotScene): string[] {
     const label = pointAlong(points, hint?.labelPosition ?? 0.5);
     const authored = scene.layout.appearanceByWireId?.[wire.id];
     const appearance = resolveWireAppearance(wire.kind, authored, {
-      theme: 'dark', fallbackWidth: 1.4, fallbackShape: 'elbow',
+      theme: scene.theme, fallbackWidth: 1.4, fallbackShape: 'elbow',
     });
     const emphasis = scene.emphasis[wire.id];
     const level = emphasisLevel(emphasis);
@@ -33,10 +33,10 @@ export function renderSnapshotWires(scene: SnapshotScene): string[] {
     const crossings = scene.crossings.filter((crossing) => crossing.wireId === wire.id);
     const bypass = crossings.some((crossing) =>
       boundaryById.get(crossing.boundaryId)?.crossing === 'gated' && crossing.gateNodeId === null);
-    const ordinaryStroke = crossings.length > 0 ? SNAPSHOT_STYLE.colors.gold : appearance.strokeColor;
-    const stroke = bypass ? SNAPSHOT_STYLE.colors.danger
-      : scene.activeFlowId && level === 2 ? SNAPSHOT_STYLE.colors.gold
-      : scene.activeFlowId && level === 0 ? SNAPSHOT_STYLE.colors.faint : ordinaryStroke;
+    const ordinaryStroke = crossings.length > 0 ? scene.style.colors.accent : appearance.strokeColor;
+    const stroke = bypass ? scene.style.colors.danger
+      : scene.activeFlowId && level === 2 ? scene.style.colors.accent
+      : scene.activeFlowId && level === 0 ? scene.style.colors.faint : ordinaryStroke;
     const strokeWidth = scene.activeFlowId && level === 2 ? appearance.strokeWidth * 1.6
       : scene.activeFlowId && level === 0 ? appearance.strokeWidth * 0.8 : appearance.strokeWidth;
     const opacity = scene.activeFlowId && level === 0 ? ' opacity="0.3"' : '';
@@ -52,7 +52,7 @@ export function renderSnapshotWires(scene: SnapshotScene): string[] {
       `<path${classes ? ` class="${classes}"` : ''}${flowAttribute} d="${wirePath(decorations.bodyPoints, appearance.shape)}" fill="none" stroke="${stroke}"${appearance.dashArray ? ` stroke-dasharray="${appearance.dashArray}"` : ''} stroke-width="${strokeWidth}"${opacity}${decorations.notationMode ? '' : ` marker-end="url(#${markerId})"`}/>`,
       ...decorations.lines.map((line) => `<line${flowAttribute} x1="${line.from.x}" y1="${line.from.y}" x2="${line.to.x}" y2="${line.to.y}" stroke="${stroke}" stroke-width="${strokeWidth}"${opacity} stroke-linecap="round"/>`),
       ...decorations.circles.map((circle) => `<circle${flowAttribute} cx="${circle.center.x}" cy="${circle.center.y}" r="${circle.radius}" fill="none" stroke="${stroke}" stroke-width="${strokeWidth}"${opacity}/>`),
-      `<text${flowAttribute} x="${label.x}" y="${label.y - 6}" fill="${scene.activeFlowId && level === 2 ? SNAPSHOT_STYLE.colors.gold : SNAPSHOT_STYLE.colors.muted}"${opacity} font-family="${SNAPSHOT_STYLE.font}" font-size="11" text-anchor="middle">${escapeSvg(wire.label)}</text>`,
+      `<text${flowAttribute} x="${label.x}" y="${label.y - 6}" fill="${scene.activeFlowId && level === 2 ? scene.style.colors.accent : scene.style.colors.muted}"${opacity} font-family="${scene.style.font}" font-size="11" text-anchor="middle">${escapeSvg(wire.label)}</text>`,
     );
   }
   return parts;

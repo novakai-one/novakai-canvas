@@ -6,27 +6,27 @@ import { resolveNodeAppearance } from '../../domain/node-appearance.ts';
 import type { DiagramRecord } from '../../../contract/records/index.ts';
 import type { PlacedNode } from '../../authoring/records/record-graph.ts';
 import type { SnapshotScene } from './contract.ts';
-import { escapeSvg, SNAPSHOT_STYLE, wrapText } from './svg.ts';
+import { escapeSvg, type SnapshotStyle, wrapText } from './svg.ts';
 
 /** Emits zone containers before cards so nested content remains visible above its boundary. */
 export function renderSnapshotZones(scene: SnapshotScene): string[] {
   const parts: string[] = [];
-  const { colors, font } = SNAPSHOT_STYLE;
+  const { colors, font } = scene.style;
   for (const zone of scene.descendants.filter((node) => node.kind === 'group')) {
     const { x, y } = scene.positionOf(zone.id as string);
     const { width, height } = zone.size;
     const dash = zone.label.startsWith('Standalone') ? ' stroke-dasharray="6 4"' : '';
     const boundary = scene.topology.boundaries.some((item) => item.nodeId === zone.id);
     parts.push(
-      `<rect${boundary ? ' class="topology-boundary"' : ''} x="${x}" y="${y}" width="${width}" height="${height}" fill="none" stroke="${boundary ? colors.gold : colors.border}"${dash} rx="6"/>`,
-      `<text x="${x + 14}" y="${y + 22}" fill="${colors.gold}" font-family="${font}" font-size="12" font-weight="600">${escapeSvg(zone.label)}</text>`,
+      `<rect${boundary ? ' class="topology-boundary"' : ''} x="${x}" y="${y}" width="${width}" height="${height}" fill="none" stroke="${boundary ? colors.accent : colors.border}"${dash} rx="6"/>`,
+      `<text x="${x + 14}" y="${y + 22}" fill="${colors.accent}" font-family="${font}" font-size="12" font-weight="600">${escapeSvg(zone.label)}</text>`,
     );
   }
   return parts;
 }
 
-function renderComment(node: PlacedNode, x: number, y: number): string[] {
-  const { colors } = SNAPSHOT_STYLE;
+function renderComment(node: PlacedNode, x: number, y: number, style: SnapshotStyle): string[] {
+  const { colors } = style;
   const parts = [
     `<rect x="${x}" y="${y}" width="${node.size.width}" height="${node.size.height}" fill="none" stroke="${colors.border}" stroke-dasharray="4 4" rx="6"/>`,
   ];
@@ -38,12 +38,13 @@ function renderComment(node: PlacedNode, x: number, y: number): string[] {
 
 function appendDescription(
   parts: string[], node: PlacedNode, x: number, cursor: number,
+  style: SnapshotStyle,
   palette?: ComponentPaletteColors,
 ): number {
   if (!node.description) return cursor;
   const charsPerLine = Math.max(30, Math.floor((node.size.width - 28) / 6.4));
   for (const line of wrapText(node.description, charsPerLine)) {
-    parts.push(`<text x="${x + 14}" y="${cursor}" fill="${palette?.muted ?? SNAPSHOT_STYLE.colors.muted}" font-family="${SNAPSHOT_STYLE.font}" font-size="11">${escapeSvg(line)}</text>`);
+    parts.push(`<text x="${x + 14}" y="${cursor}" fill="${palette?.muted ?? style.colors.muted}" font-family="${style.font}" font-size="11">${escapeSvg(line)}</text>`);
     cursor += 16;
   }
   return cursor + 8;
@@ -55,9 +56,10 @@ function appendMembers(
   node: PlacedNode,
   x: number,
   cursor: number,
+  style: SnapshotStyle,
   palette?: ComponentPaletteColors,
 ): void {
-  const { colors, font } = SNAPSHOT_STYLE;
+  const { colors, font } = style;
   for (const interfaceId of node.interfaceIds) {
     const item = record.interfaces[interfaceId];
     const signature = `${item.name}(${item.accepts.join(', ')}) → ${item.returns.join(', ')}`;
@@ -78,11 +80,11 @@ function renderFallbackCard(
   x: number,
   y: number,
 ): string[] {
-  const { colors, font } = SNAPSHOT_STYLE;
+  const { colors, font } = scene.style;
   const appearance = resolveNodeAppearance(
     node.kind,
     scene.layout.appearanceByNodeId?.[node.id],
-    { theme: 'dark', showKinds: true },
+    { theme: scene.theme, showKinds: true },
   );
   const custom = componentFor(node.kind).renderSvg?.(
     node, { x, y, width: node.size.width, height: node.size.height }, appearance,
@@ -97,8 +99,8 @@ function renderFallbackCard(
   if (appearance.showKindBadge) {
     parts.push(`<text x="${x + node.size.width - 14}" y="${y + 24}" fill="${palette?.headerMuted ?? colors.muted}" font-family="${font}" font-size="9" text-anchor="end" letter-spacing="1">${escapeSvg(node.kind.toUpperCase())}</text>`);
   }
-  const cursor = appendDescription(parts, node, x, palette ? y + 52 : y + 44, palette);
-  appendMembers(parts, record, node, x, cursor, palette);
+  const cursor = appendDescription(parts, node, x, palette ? y + 52 : y + 44, scene.style, palette);
+  appendMembers(parts, record, node, x, cursor, scene.style, palette);
   return parts;
 }
 
@@ -111,11 +113,11 @@ export function renderSnapshotNodes(record: DiagramRecord, scene: SnapshotScene)
     if (node.kind === 'group') continue;
     const { x, y } = scene.positionOf(node.id as string);
     parts.push(...(node.kind === 'comment'
-      ? renderComment(node, x, y)
+      ? renderComment(node, x, y, scene.style)
       : renderFallbackCard(record, scene, node, x, y)));
     if (gateIds.has(node.id as string)) {
       parts.push(
-        `<circle class="topology-gate" cx="${x + node.size.width - 18}" cy="${y}" r="7" fill="${SNAPSHOT_STYLE.colors.page}" stroke="${SNAPSHOT_STYLE.colors.gold}" stroke-width="2"/>`,
+        `<circle class="topology-gate" cx="${x + node.size.width - 18}" cy="${y}" r="7" fill="${scene.style.colors.page}" stroke="${scene.style.colors.accent}" stroke-width="2"/>`,
       );
     }
   }

@@ -21,44 +21,13 @@
   outline-offset: 2px;
 }
 
-/* Theme tokens. Wire/tree tone variables arrive as inline style from
-   wire-styles.ts; everything else themes here. Dark is the identity default. */
+/* Concrete theme variables arrive together from theme-css.ts. */
 .app-shell {
   display: flex;
   width: 100%;
   height: 100%;
   color: var(--ink);
   background: var(--bg);
-
-  --bg: #11110f;
-  --bg-read: #15171a;
-  --panel: #151411;
-  --card: #191816;
-  --card-2: #1f1d19;
-  --card-3: #1b1916;
-  --hover: #24211c;
-  --overlay: rgba(24, 23, 20, 0.94);
-  --scope-fill: rgba(20, 19, 16, 0.52);
-  --border: #302e29;
-  --border-soft: #2b2925;
-  --ink-strong: #eee8dc;
-  --ink-soft: #d3ccc0;
-  --muted: #9b968c;
-  --faint: #777269;
-  --scope-fill-read: #181b1f;
-  --scope-border-read: #2a2d32;
-  --scope-title-read: #aeb2b8;
-  --card-read: #22262c;
-  --node-border-read: #4d535b;
-  --diagram-node-shadow: 0 2px 8px rgb(0 0 0 / 14%);
-  --wire-label-read: #b7bbc1;
-  --ink-read: #ececee;
-  --muted-read: #a2a2aa;
-  --faint-read: #8b8b94;
-  --accent: #a8864f;
-  --accent-strong: #d0a14b;
-  --accent-bright: #e2ba6e;
-  --accent-dim: #8e754a;
 
   /* ---- Groups ----------------------------------------------------------
      Every repeated look is defined once here and referenced everywhere else,
@@ -112,64 +81,47 @@
   cursor: default;
 }
 
-.app-shell[data-accent='sage'] {
-  --accent: #6f9c7d;
-  --accent-strong: #78a886;
-  --accent-bright: #93bfa1;
-  --accent-dim: #5c8168;
+.theme-color-inputs {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: var(--space-2);
 }
 
-.app-shell[data-accent='slate'] {
-  --accent: #75879a;
-  --accent-strong: #7d8fa0;
-  --accent-bright: #9db0c2;
-  --accent-dim: #64758a;
+.panel-shell .field-row .theme-color-inputs input[type='color'] {
+  width: 42px;
+  min-height: 34px;
+  padding: 3px;
+  cursor: pointer;
 }
 
-.app-shell[data-theme='light'] {
-  --bg: #f2efe7;
-  --bg-read: #f3f2ee;
-  --panel: #eae6db;
-  --card: #fbf9f4;
-  --card-2: #f1ede2;
-  --card-3: #f3efe5;
-  --hover: #e7e1d2;
-  --overlay: rgba(250, 248, 243, 0.94);
-  --scope-fill: rgba(255, 255, 255, 0.5);
-  --border: #c9c2b1;
-  --border-soft: #dcd6c7;
-  --ink-strong: #1f1c16;
-  --ink-soft: #4a4438;
-  --muted: #6b6558;
-  --faint: #8b8478;
-  --scope-fill-read: #f8f7f3;
-  --scope-border-read: #dddad2;
-  --scope-title-read: #5d6269;
-  --card-read: #ffffff;
-  --node-border-read: #aeb2b8;
-  --diagram-node-shadow: 0 1px 4px rgb(28 32 38 / 10%);
-  --wire-label-read: #51565d;
-  --ink-read: #22211e;
-  --muted-read: #5f5d57;
-  --faint-read: #7e7b73;
-  --accent: #8a6b36;
-  --accent-strong: #9c7a40;
-  --accent-bright: #75592c;
-  --accent-dim: #9c8258;
+.panel-shell .field-row .theme-color-inputs input[type='text'],
+.panel-shell .field-row .theme-color-inputs input:not([type]) {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
 }
 
-.app-shell[data-theme='light'][data-accent='sage'] {
-  --accent: #4f7d60;
-  --accent-strong: #5c8f6e;
-  --accent-bright: #3f6b50;
-  --accent-dim: #6f9c7d;
+.theme-reset {
+  position: relative;
+  z-index: 1;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  color: var(--ink-muted);
+  background: var(--surface-3);
+  font-size: var(--text-xs);
+  cursor: pointer;
 }
 
-.app-shell[data-theme='light'][data-accent='slate'] {
-  --accent: #5c7186;
-  --accent-strong: #68809a;
-  --accent-bright: #4a5d70;
-  --accent-dim: #7d8fa0;
+.theme-reset:disabled { opacity: 0.45; cursor: default; }
+
+.theme-contrast-warning {
+  margin: 0;
+  padding: var(--space-2);
+  border-left: 2px solid var(--accent);
+  color: var(--ink-muted);
+  background: var(--surface-2);
+  font-size: var(--text-sm);
+  line-height: 1.4;
 }
 
 .is-dimmed { opacity: 0.22; }

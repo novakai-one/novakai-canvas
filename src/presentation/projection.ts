@@ -45,7 +45,7 @@ export function flowNodeType(kind: NodeKind): NodeKind {
 
 /** Projects the visible nodes of one diagram into React Flow nodes, in source order. */
 export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>[] {
-  const { editable, preferences, record, select, selection, view } = input;
+  const { editable, preferences, record, select, selection, theme, view } = input;
   const connected = connectedIds(input);
   const topology = compileTopology(record);
   const gateIds = new Set(topology.boundaries.flatMap((boundary) =>
@@ -91,7 +91,7 @@ export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>
         editable,
         select,
         appearance: resolveNodeAppearance(node.kind, node.appearance, {
-          theme: preferences.appearance.theme,
+          theme,
           showKinds: preferences.nodes.showKinds,
         }),
       },

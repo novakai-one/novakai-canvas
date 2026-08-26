@@ -6,18 +6,51 @@ export type InspectorTab = 'inspect' | 'preferences' | 'json';
 /** Compact preference categories. */
 export type PreferenceSection = 'theme' | 'canvas' | 'nodes' | 'wires' | 'panel' | 'files';
 
-/** App colour theme choices. */
+/** Curated theme presets. User overrides are stored independently for each preset. */
+export const THEME_PRESET_IDS = [
+  'carbon', 'midnight', 'plum', 'frost', 'porcelain', 'blueprint',
+] as const;
+export type ThemePresetId = (typeof THEME_PRESET_IDS)[number];
+
+/** The small colour vocabulary exposed in Settings. */
+export const THEME_COLOR_ROLES = [
+  'canvas', 'panel', 'surface', 'raised', 'border', 'text', 'muted', 'accent',
+] as const;
+export type ThemeColorRole = (typeof THEME_COLOR_ROLES)[number];
 export type CanvasTheme = 'dark' | 'light';
-type CanvasAccent = 'gold' | 'sage' | 'slate';
+export type ThemeOverrides = Partial<Record<ThemeColorRole, string>>;
+export type ThemeOverridesByPreset = Partial<Record<ThemePresetId, ThemeOverrides>>;
+
+/** Concrete base colours resolved from one preset and its optional overrides. */
+export type ThemePalette = Record<ThemeColorRole, string>;
+
+/** Semantic colours remain system-owned so status meaning cannot be remapped accidentally. */
+export interface ThemeSemanticPalette {
+  blue: string;
+  violet: string;
+  sage: string;
+  rose: string;
+  amber: string;
+  danger: string;
+}
+
+/** Complete theme consumed by browser and SVG renderers. */
+export interface ResolvedCanvasTheme {
+  preset: ThemePresetId;
+  label: string;
+  mode: CanvasTheme;
+  colors: ThemePalette;
+  semantic: ThemeSemanticPalette;
+}
 
 /** User-controlled visual and interaction preferences. */
 export interface CanvasPreferences {
-  schemaVersion: 1;
+  schemaVersion: 2;
   appearance: {
     density: 'compact' | 'comfortable' | 'roomy';
     radius: number;
-    theme: CanvasTheme;
-    accent: CanvasAccent;
+    preset: ThemePresetId;
+    overridesByPreset: ThemeOverridesByPreset;
     /** Scales every type size together, independently of density. */
     textScale?: number;
   };

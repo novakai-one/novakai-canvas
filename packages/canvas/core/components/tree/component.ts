@@ -6,11 +6,10 @@
 
 import { TREE_ROW_KINDS, nodeContentFields } from '../../../contract/schemas/content.ts';
 import { orderedTreeRows, treeRowDepth, treeRowText } from './content.ts';
-import { TREE_TONE_COLORS } from '../../rendering/wire-styles.ts';
+import { resolveTreeToneColors } from '../../rendering/wire-styles.ts';
 import type { TreeRow } from '../../../contract/records/legacy.ts';
 import { namedNodeDeclaration, type ComponentItem, type DiagramComponent } from '../component.ts';
 
-const COLORS = { card: '#252529', ink: '#ececee', border: '#2f2f34' };
 const FONT = 'Inter, sans-serif';
 const ROW_KINDS = new Set<string>(TREE_ROW_KINDS);
 const ROW_SHAPE = 'row <id> <project|mission|task|bucket> [status] [parent=<id>] [badges=a,b] [label "text"]';
@@ -101,11 +100,13 @@ export const treeComponent: DiagramComponent<'tree'> = {
       height: 56 + ordered.length * 24 + 14,
     };
   },
-  renderSvg(node, box) {
+  renderSvg(node, box, appearance) {
     const { x, y, width, height } = box;
+    const colors = appearance.theme.colors;
+    const tones = resolveTreeToneColors(appearance.theme);
     const parts: string[] = [
-      `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="${COLORS.card}" stroke="${COLORS.border}" rx="6"/>`,
-      `<text x="${x + 14}" y="${y + 24}" fill="${COLORS.ink}" font-family="${FONT}" font-size="13" font-weight="600">${esc(node.label)}</text>`,
+      `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="${colors.surface}" stroke="${colors.border}" rx="6"/>`,
+      `<text x="${x + 14}" y="${y + 24}" fill="${colors.text}" font-family="${FONT}" font-size="13" font-weight="600">${esc(node.label)}</text>`,
     ];
     const rows = node.rows ?? [];
     orderedTreeRows(rows).forEach((row, index) => {
@@ -114,7 +115,7 @@ export const treeComponent: DiagramComponent<'tree'> = {
           : row.status === 'done' ? 'done'
             : row.status === 'in-progress' ? 'active'
               : row.status === 'todo' || row.status === 'retired' ? 'muted' : 'tombstone';
-      const fill = TREE_TONE_COLORS[tone].dark;
+      const fill = tones[tone];
       const rowX = x + 16 + treeRowDepth(rows, row) * 20;
       const weight = row.kind === 'project' || row.kind === 'bucket' ? ' font-weight="600"' : '';
       parts.push(`<text x="${rowX}" y="${y + 48 + index * 24}" fill="${fill}" font-family="SFMono-Regular, Consolas, monospace" font-size="11"${weight}>${esc(treeRowText(row))}</text>`);

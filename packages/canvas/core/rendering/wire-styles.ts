@@ -1,8 +1,9 @@
 /** The one kind→style mapping shared by interactive edges and SVG snapshots. */
 
-import type { CanvasPreferences, CanvasTheme, WireKind } from '../../contract/records/legacy.ts';
+import type { CanvasPreferences, ResolvedCanvasTheme, WireKind } from '../../contract/records/legacy.ts';
 import { WIRE_LABEL_SIZE_LIMITS } from '../../contract/schemas/preferences.ts';
 import type { WireAppearance, WireShape } from '../../contract/schemas/wire-appearance.ts';
+import { mixThemeColors } from '../domain/theme-resolver.ts';
 
 type WireDash = 'solid' | 'dashed' | 'dotted' | 'dashdot';
 type WireTone = 'neutral' | 'sage' | 'steel' | 'slate' | 'violet' | 'amber' | 'rust';
@@ -29,22 +30,6 @@ const WIRE_DASH_ARRAYS: Record<WireDash, string> = {
   dashed: '7 5',
   dotted: '2 4',
   dashdot: '9 4 2 4',
-};
-
-/**
- * Muted per-theme colours; dash patterns carry the primary semantic distinction.
- *
- * The tones stay close enough to form one supporting layer instead of seven competing accents.
- * Interaction opacity is owned by canvas-wires.css so selection can still make one path crisp.
- */
-const WIRE_TONE_COLORS: Record<WireTone, Record<CanvasTheme, string>> = {
-  neutral: { dark: '#6f7278', light: '#73777b' },
-  sage: { dark: '#748078', light: '#6f7b73' },
-  steel: { dark: '#717c86', light: '#747d87' },
-  slate: { dark: '#777a82', light: '#787a81' },
-  violet: { dark: '#7c7583', light: '#7e7783' },
-  amber: { dark: '#81786d', light: '#847b70' },
-  rust: { dark: '#826e6a', light: '#886f6b' },
 };
 
 const AUTHORED_COLOR_TONES: Record<WireColor, WireTone> = {
@@ -103,12 +88,13 @@ export function wireKindColorVariable(kind: WireKind): string {
 export function resolveWireAppearance(
   kind: WireKind,
   authored: WireAppearance | undefined,
-  options: { theme: CanvasTheme; fallbackWidth: number; fallbackShape?: WireShape },
+  options: { theme: ResolvedCanvasTheme; fallbackWidth: number; fallbackShape?: WireShape },
 ): ResolvedWireAppearance {
   const tone = authored?.color ? AUTHORED_COLOR_TONES[authored.color] : WIRE_KIND_STYLES[kind].tone;
   const pattern: WirePattern = authored?.pattern ?? WIRE_KIND_STYLES[kind].dash;
+  const colors = resolveWireToneColors(options.theme);
   return {
-    strokeColor: WIRE_TONE_COLORS[tone][options.theme],
+    strokeColor: colors[tone],
     strokeColorCss: `var(--wire-${tone})`,
     strokeWidth: authored?.width ? AUTHORED_WIDTHS[authored.width] : options.fallbackWidth,
     dashArray: WIRE_DASH_ARRAYS[pattern],
@@ -116,20 +102,28 @@ export function resolveWireAppearance(
   };
 }
 
-/** Tree-row tone colours, kept beside wire tones so every renderer shares one table. */
-export const TREE_TONE_COLORS: Record<string, Record<CanvasTheme, string>> = {
-  project: { dark: '#6ea08f', light: '#3f7263' },
-  done: { dark: '#78a886', light: '#4f7d60' },
-  active: { dark: '#7591ad', light: '#4f6d8c' },
-  muted: { dark: '#8a857c', light: '#82796b' },
-  tombstone: { dark: '#66625a', light: '#9c9488' },
-  badge: { dark: '#c39257', light: '#a2743a' },
-};
+/** Restrained wire tones derived from one theme; dash patterns carry the semantic distinction. */
+export function resolveWireToneColors(theme: ResolvedCanvasTheme): Record<WireTone, string> {
+  const muted = theme.colors.muted;
+  return {
+    neutral: mixThemeColors(muted, theme.colors.border, 0.28),
+    sage: mixThemeColors(muted, theme.semantic.sage, 0.22),
+    steel: mixThemeColors(muted, theme.semantic.blue, 0.22),
+    slate: mixThemeColors(muted, theme.colors.text, 0.08),
+    violet: mixThemeColors(muted, theme.semantic.violet, 0.2),
+    amber: mixThemeColors(muted, theme.semantic.amber, 0.18),
+    rust: mixThemeColors(muted, theme.semantic.danger, 0.2),
+  };
+}
 
-/** CSS custom properties for one theme, applied at the app shell. */
-export function wireToneCssVariables(theme: CanvasTheme): Record<string, string> {
-  return Object.fromEntries([
-    ...Object.entries(WIRE_TONE_COLORS).map(([tone, colors]) => [`--wire-${tone}`, colors[theme]]),
-    ...Object.entries(TREE_TONE_COLORS).map(([tone, colors]) => [`--tree-${tone}`, colors[theme]]),
-  ]);
+/** Tree status colours share the same semantic source as nodes and wires. */
+export function resolveTreeToneColors(theme: ResolvedCanvasTheme): Record<string, string> {
+  return {
+    project: mixThemeColors(theme.colors.muted, theme.semantic.sage, 0.5),
+    done: theme.semantic.sage,
+    active: theme.semantic.blue,
+    muted: theme.colors.muted,
+    tombstone: mixThemeColors(theme.colors.muted, theme.colors.canvas, 0.34),
+    badge: theme.semantic.amber,
+  };
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { defaultPreferences } from '@novakai/canvas';
+import { defaultPreferences, resolveCanvasTheme } from '@novakai/canvas';
 import { asId } from '@novakai/canvas';
 import type { NodeId } from '@novakai/canvas';
 import { projectView } from '@novakai/canvas';
@@ -81,6 +81,7 @@ function input(source: DiagramRecord) {
     record: source,
     view: projectView(source),
     preferences: defaultPreferences,
+    theme: resolveCanvasTheme(defaultPreferences.appearance),
     selection: null,
     editable: true,
     select: () => {},

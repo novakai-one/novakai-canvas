@@ -5,8 +5,10 @@ import { projectView } from '../../domain/project-view.ts';
 import { compileTopology, crossingsOf } from '../../domain/topology.ts';
 import { placedNodes, rootGroupId, type PlacedNode } from '../../authoring/records/record-graph.ts';
 import type { SnapshotScene } from './contract.ts';
-import { SNAPSHOT_STYLE } from './svg.ts';
+import { SNAPSHOT_MARGIN, snapshotStyle } from './svg.ts';
 import { compileFlows, wireEmphasis } from '../../domain/flows.ts';
+import { defaultPreferences } from '../../domain/defaults.ts';
+import { resolveCanvasTheme } from '../../domain/theme-resolver.ts';
 
 interface Point { x: number; y: number }
 
@@ -57,7 +59,9 @@ export function buildSnapshotScene(record: DiagramRecord): SnapshotScene {
     .filter((wire) => descendantIds.has(wire.source.nodeId as string)
       && descendantIds.has(wire.target.nodeId as string))
     .sort((a, b) => (a.id as string).localeCompare(b.id as string));
-  const margin = SNAPSHOT_STYLE.margin;
+  const theme = resolveCanvasTheme(defaultPreferences.appearance);
+  const style = snapshotStyle(theme);
+  const margin = SNAPSHOT_MARGIN;
   const panel = { x: margin, y: margin, width: scope.size.width, height: scope.size.height };
   const total = { width: panel.width + 2 * margin, height: panel.height + 2 * margin };
   const routes = planWireRoutes(view, layout.wireRouteHints, {
@@ -69,7 +73,7 @@ export function buildSnapshotScene(record: DiagramRecord): SnapshotScene {
   const activeFlowId = record.views[record.activeViewId]?.flowId;
   const emphasis = wireEmphasis(flows, activeFlowId, wires.map((wire) => wire.id));
   return {
-    nodes, scopeId, scope, layout, descendants, wires, panel, total, routes, routeOffset,
+    theme, style, nodes, scopeId, scope, layout, descendants, wires, panel, total, routes, routeOffset,
     topology, crossings: crossingsOf(record, topology),
     flows, activeFlowId, emphasis,
     positionOf: positionResolver(nodes, scopeId, panel),
