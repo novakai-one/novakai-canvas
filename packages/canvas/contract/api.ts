@@ -31,7 +31,7 @@ export type {
   DiagramId, FlowId, LayoutId, LinkId, NodeId, TypeId, ViewId, WireId,
 } from './brands.ts';
 export {
-  compileFlows, emphasisLevel, FlowError, stepsOf, wireEmphasis,
+  compileFlows, emphasisLevel, FlowError, stepsByWire, stepsOf, wireEmphasis,
   type CompiledFlow, type Emphasis, type FlowLibrary,
 } from '../core/domain/flows.ts';
 export { projectView } from '../core/domain/project-view.ts';

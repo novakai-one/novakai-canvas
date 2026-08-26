@@ -67,7 +67,16 @@ export interface CanvasWire {
 }
 
 /** One ordered reference to a wire already owned by this diagram. */
-export interface FlowStep { ref: WireId; ordinal: number }
+export interface FlowStep {
+  ref: WireId;
+  ordinal: number;
+  /**
+   * What this step does, shown on the wire's step badge and in the flow
+   * panel (e.g. "save()"). Absent, the badge shows the ordinal alone.
+   * Steps may reuse one wire with different labels.
+   */
+  label?: string;
+}
 
 /** A named semantic path over existing wires; it owns no graph or geometry. */
 export interface Flow { id: FlowId; name: string; steps: FlowStep[] }

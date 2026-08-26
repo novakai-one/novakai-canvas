@@ -6,6 +6,7 @@ import type {
   CanvasPreferences, DiagramRecord, FlowId, FlowLibrary, ProjectedView, RecordCommand, Selection,
 } from '@novakai/canvas';
 import { CanvasSurface } from '../components/canvas-surface';
+import { flowStepRows } from '../components/flow-panel';
 import { Inspector } from '../components/inspector';
 import { Rail } from '../components/rail';
 import type { ContentRow } from '../components/diagram-contents';
@@ -80,6 +81,7 @@ export function CanvasAppView(props: CanvasAppViewProps) {
             diagrams={navigation.diagrams}
             editable={mode === 'edit'}
             flows={flows}
+            flowSteps={flowStepRows(activeFlowId ? flows.get(activeFlowId) : undefined, record)}
             jumpTo={actions.jumpTo}
             openAtObject={navigation.openAtObject}
             select={select}

@@ -13,7 +13,8 @@ import { connectedIds, connectedWireIds } from '../projection-selection';
 import type { WireCardinality } from '@novakai/canvas';
 import { compileTopology, crossingsOf } from '@novakai/canvas';
 import { portHandleId } from '@novakai/canvas';
-import { compileFlows, wireEmphasis, type Emphasis } from '@novakai/canvas';
+import { compileFlows, stepsByWire, wireEmphasis, type Emphasis } from '@novakai/canvas';
+import type { FlowStep } from '@novakai/canvas';
 
 /** How one wire is shaped by hand, read from the active layout route hint. */
 export interface EdgeRoute {
@@ -41,6 +42,18 @@ export interface ArchitectureEdgeData extends Record<string, unknown> {
   flowActive: boolean;
 }
 
+/*
+ * A wire shows one message at a time: its structural label, or — while a flow
+ * is active — its step badge ("2", "2 · save()", "2 · save()  7 · load()").
+ * Wires the active flow does not ride show nothing. The edge only renders.
+ */
+function stepBadgeText(steps: readonly Readonly<FlowStep>[] | undefined): string {
+  if (!steps) return '';
+  return steps
+    .map((step) => (step.label ? `${step.ordinal} · ${step.label}` : String(step.ordinal)))
+    .join('  ');
+}
+
 /** Projects the visible wires of one diagram into React Flow edges. */
 export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>[] {
   const { editable, execute, preferences, record, select, selection, view } = input;
@@ -50,6 +63,8 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
   const flows = compileFlows(record);
   const activeFlowId = record.views[record.activeViewId]?.flowId;
   const emphasis = wireEmphasis(flows, activeFlowId, view.wires.map((wire) => wire.id));
+  const activeFlow = activeFlowId ? flows.get(activeFlowId) : undefined;
+  const flowSteps = activeFlow ? stepsByWire(activeFlow) : undefined;
   const boundaryById = new Map(topology.boundaries.map((boundary) => [boundary.nodeId, boundary]));
   const crossingsByWire = new Map<string, ReturnType<typeof crossingsOf>>();
   for (const crossing of crossingsOf(record, topology)) {
@@ -104,7 +119,7 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
         ? 'is-dimmed' : '',
     ].filter(Boolean).join(' '),
     data: {
-      label: wire.label,
+      label: flowSteps ? stepBadgeText(flowSteps.get(wire.id)) : wire.label,
       kind: wire.kind,
       preferences,
       editable,

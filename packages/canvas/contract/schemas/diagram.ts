@@ -39,7 +39,9 @@ const canvasWire = z.object({
 });
 const flow = z.object({
   id: z.string().min(1), name: z.string().min(1),
-  steps: z.array(z.object({ ref: z.string().min(1), ordinal: z.number().int() })),
+  steps: z.array(z.object({
+    ref: z.string().min(1), ordinal: z.number().int(), label: z.string().min(1).optional(),
+  })),
 });
 const canvasView = z.object({
   id: z.string().min(1), name: z.string(), layoutId: z.string().min(1),

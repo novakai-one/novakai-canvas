@@ -200,6 +200,40 @@ describe('projectEdges', () => {
     expect(edges.every((edge) => edge.className?.includes(`has-flow-${edge.data?.emphasis}`))).toBe(true);
   });
 
+  it('swaps labels to step badges while a flow is active', () => {
+    const wired = record(
+      ['map', 'a', 'b', 'c'].map((id) => node(id, id === 'map' ? 'group' : 'module', id === 'map' ? undefined : 'map')),
+      [wire('ab', 'a', 'b'), wire('bc', 'b', 'c')],
+    );
+    wired.flows = {
+      path: {
+        id: asId('path'),
+        name: 'Path',
+        steps: [
+          { ref: asId('ab'), ordinal: 1, label: 'save()' },
+          { ref: asId('bc'), ordinal: 2 },
+          { ref: asId('ab'), ordinal: 3 },
+        ],
+      },
+    };
+    wired.views['view-default'].flowId = asId('path');
+    const edges = projectEdges(input(wired));
+    expect(edges.map((edge) => edge.data?.label)).toEqual(['1 · save()  3', '2']);
+  });
+
+  it('leaves structural labels alone and empties non-focal labels correctly', () => {
+    const wired = record(
+      ['map', 'a', 'b', 'c'].map((id) => node(id, id === 'map' ? 'group' : 'module', id === 'map' ? undefined : 'map')),
+      [wire('ab', 'a', 'b'), wire('bc', 'b', 'c')],
+    );
+    expect(projectEdges(input(wired)).map((edge) => edge.data?.label)).toEqual(['ab', 'bc']);
+    wired.flows = {
+      path: { id: asId('path'), name: 'Path', steps: [{ ref: asId('ab'), ordinal: 1 }] },
+    };
+    wired.views['view-default'].flowId = asId('path');
+    expect(projectEdges(input(wired)).map((edge) => edge.data?.label)).toEqual(['1', '']);
+  });
+
   it('reads both endpoints off the record wire', () => {
     const wired = record(
       [node('map', 'group'), node('a', 'module', 'map'), node('b', 'module', 'map')],

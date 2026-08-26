@@ -67,6 +67,21 @@ export function stepsOf(flow: Pick<Flow, 'steps'> | CompiledFlow): readonly Read
   return [...flow.steps].sort((left, right) => left.ordinal - right.ordinal);
 }
 
+/**
+ * Groups one flow's steps by the wire they ride, each group in ordinal
+ * order. A wire used by steps 2 and 7 maps to both steps. Pure query;
+ * safe for any host (React, snapshot, CLI).
+ */
+export function stepsByWire(
+  flow: Pick<Flow, 'steps'> | CompiledFlow,
+): ReadonlyMap<WireId, readonly Readonly<FlowStep>[]> {
+  const grouped = new Map<WireId, Readonly<FlowStep>[]>();
+  for (const step of stepsOf(flow)) {
+    grouped.set(step.ref, [...(grouped.get(step.ref) ?? []), step]);
+  }
+  return grouped;
+}
+
 function issue(
   issues: FlowIssue[], message: string, path: readonly (string | number)[], input: unknown,
 ): void {
