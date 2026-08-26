@@ -18,7 +18,10 @@ describe('renderRecordSvg', () => {
     flowed.views[flowed.activeViewId].flowId = Object.keys(flowed.flows ?? {})[0] as never;
     const active = renderRecordSvg(flowed);
     expect(['focal', 'context', 'muted'].every((value) => active.includes(`data-emphasis="${value}"`))).toBe(true);
-    expect(['focal', 'adjacent', 'remote'].every((label) => active.includes(`>${label}</text>`))).toBe(true);
+    // The ridden wire swaps its label for a step badge; the rest say nothing.
+    expect(active).toContain('data-label-kind="step"');
+    expect(active).toContain('>1</text>');
+    expect(['focal', 'adjacent', 'remote'].some((label) => active.includes(`>${label}</text>`))).toBe(false);
   });
 
   it('renders every label, signature, and contract, XML-escaped', () => {

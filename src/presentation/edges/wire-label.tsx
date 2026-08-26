@@ -17,6 +17,8 @@ interface WireLabelRequest {
   /** Stable wire id; seeds the deterministic spread that keeps coincident labels apart. */
   seed: string;
   label: string;
+  /** What the text is — a structural label or a flow step badge; styling keys off this. */
+  kind: 'wire' | 'step';
   points: Point[];
   obstacles?: RouteObstacle[];
   storedPosition?: number;
@@ -116,6 +118,7 @@ export function useWireLabel(request: WireLabelRequest): {
       <button
         className={`wire-label nodrag nopan${request.emphasis ? ` has-flow-${request.emphasis}` : ''}${request.selected ? ' is-selected' : ''}${request.related ? ' is-related' : ''}${request.hovered ? ' is-hovered' : ''}${request.movable ? ' is-movable' : ''}`}
         data-emphasis={request.emphasis}
+        data-label-kind={request.kind}
         onClick={(event) => { event.stopPropagation(); if (!moved.current) request.select(); }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}

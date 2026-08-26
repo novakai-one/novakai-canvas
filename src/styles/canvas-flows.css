@@ -32,18 +32,15 @@
   opacity: 0.28;
 }
 
-/*
- * While a flow is active a focal wire's label IS its step badge (projection
- * swaps the text), so the focal state carries the badge treatment.
- */
-.wire-label.has-flow-focal {
+.wire-label.has-flow-focal { color: var(--accent-strong); opacity: 1; font-weight: 600; }
+
+/* A step badge is a declared label kind, not a side effect of emphasis. */
+.wire-label[data-label-kind='step'] {
   padding: 1px var(--space-2);
   border: 1px solid var(--accent-strong);
   border-radius: 999px;
   color: var(--accent-strong);
   background: var(--surface-1);
-  opacity: 1;
-  font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
 .wire-label.has-flow-context { opacity: 0.72; }
