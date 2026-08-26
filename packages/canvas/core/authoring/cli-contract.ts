@@ -68,7 +68,7 @@ Scope and zone containers share the zone.layout, zone.gap and zone.align vocabul
     zone "Protected store" [crossing=gated|free] [gate="node label"] ... end
     wire "browse CLI" -> "Session broker.acquire" : acquire(AgentId) -> SessionHandle [queries]
     flow "Acquire a session"
-      step 1 "agent-browser-sessions--wire-1"
+      step 1 "agent-browser-sessions--wire-1" "acquire()"
     end
 
 ${componentHelp}
@@ -78,7 +78,8 @@ ${componentHelp}
                 kind: owns|references|assigns|queries|executes|mentions|missing
                 A.method names one method declared directly under node A
                 an endpoint naming a node in another map becomes a cross-map link
-  flows         flow "Name" [id=stable-id] ... step 1 "existing-wire-id" ... end
+  flows         flow "Name" [id=stable-id] ... step 1 "existing-wire-id" ["label"] ... end
+                a step's optional label shows on its badge while the flow is active; steps may reuse one wire
   names         quote multi-word names: "browse CLI"; single tokens can go bare
 `;
 
@@ -114,7 +115,8 @@ export function describeCapability(): unknown {
     },
     dsl: {
       flow: {
-        syntax: 'flow <name> [id=<stable-id>] ... step <positive ordinal> <wire-id> ... end',
+        syntax: 'flow <name> [id=<stable-id>] ... step <positive ordinal> <wire-id> ["<label>"] ... end',
+        stepLabel: 'optional; shows on the step badge and panel while the flow is active, falling back to the wire label; steps may reuse one wire',
         ownership: 'diagram semantic data; creates no node, wire, layout, or view',
         activationCommand: 'flow.activate',
       },

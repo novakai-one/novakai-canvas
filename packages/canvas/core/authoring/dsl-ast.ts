@@ -11,8 +11,8 @@ export interface ParseError { line: number; message: string; hint: string }
 export interface InterfaceAst { name: string; accepts: string[]; returns: string[] }
 /** Named record-like type declaration owned by a node. */
 export interface TypeAst { name: string; fields: string[] }
-/** One source-located wire reference in a named flow. */
-export interface FlowStepAst { ordinal: number; ref: string; line: number }
+/** One source-located wire reference in a named flow; label overrides the wire's label on badges. */
+export interface FlowStepAst { ordinal: number; ref: string; label?: string; line: number }
 /** A scope-level semantic overlay; never part of the node declaration tree. */
 export interface FlowAst {
   label: string;

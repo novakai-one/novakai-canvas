@@ -54,7 +54,10 @@ export function compileScopeFlows(scope: CompiledScope, messages: CompileMessage
     astById.set(storageKey, flow);
     flows[storageKey] = {
       id: asId(id), name: flow.label,
-      steps: flow.steps.map((step) => ({ ref: asId(step.ref), ordinal: step.ordinal })),
+      steps: flow.steps.map((step) => ({
+        ref: asId(step.ref), ordinal: step.ordinal,
+        ...(step.label === undefined ? {} : { label: step.label }),
+      })),
     };
   }
   try {

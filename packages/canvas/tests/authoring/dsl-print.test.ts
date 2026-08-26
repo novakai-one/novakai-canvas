@@ -28,11 +28,11 @@ describe('printRecord', () => {
   wire B -> C : second
   flow "Delivery"
     step 2 "flow-round-trip--wire-2"
-    step 1 "flow-round-trip--wire-1"
+    step 1 "flow-round-trip--wire-1" "save()"
   end`);
     const basemap = JSON.stringify([record.nodes, record.wires, record.layouts, record.views]);
     const printed = printRecord(record);
-    expect(printed).toContain('step 1 "flow-round-trip--wire-1"\n    step 2 "flow-round-trip--wire-2"');
+    expect(printed).toContain('step 1 "flow-round-trip--wire-1" "save()"\n    step 2 "flow-round-trip--wire-2"');
     const reapplied = buildRecord(printed, { [record.id]: record });
     expect(reapplied.flows).toEqual(record.flows);
     expect(JSON.stringify([reapplied.nodes, reapplied.wires, reapplied.layouts, reapplied.views])).toBe(basemap);
