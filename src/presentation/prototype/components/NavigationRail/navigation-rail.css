@@ -1,6 +1,6 @@
 /**
  * NavigationRail — persistent, quiet, and never the loudest thing on screen.
- * A count is a plain number; it goes gold only when this area holds the elected subject.
+ * The sole Canvas destination stays selected while the rail itself can collapse.
  */
 .navigation-rail {
   /* Local: the animated alias between two global widths. */
@@ -118,15 +118,6 @@
   opacity: 0;
   width: 0;
 }
-
-.navigation-rail__count {
-  font-size: var(--text-xs);
-  font-variant-numeric: tabular-nums;
-  color: var(--ink-faint);
-}
-
-/* Counts stay plain numbers. A badge on every row is the overstimulation this
-   design exists to avoid, and the header beacon already carries the one signal. */
 
 .navigation-rail__footer {
   display: flex;

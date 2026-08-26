@@ -128,7 +128,7 @@
   --layer-inspector: 40;
   --layer-dialog: 50;
 
-  /* Semantic zoom — the LOOK of a tier. Thresholds live in interaction/semantic-zoom.ts. */
+  /* Canvas semantic tiers. */
   --zoom-tier-transition: 200ms;
   --zoom-overview-detail-opacity: 0;
   --zoom-readable-detail-opacity: 1;

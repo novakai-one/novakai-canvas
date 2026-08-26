@@ -1,4 +1,0 @@
-{"loopId":"loop_transport-03a","kind":"loop","agentRunId":"run_tunnel-transport-03","taskId":"task_pty-delivery","goal":"Write into the recipient PTY without corrupting an in-flight turn","status":"running"}
-{"loopId":"loop_transport-03b","kind":"loop","agentRunId":"run_tunnel-transport-03","taskId":"task_pty-delivery","goal":"Confirm delivery ordering under two concurrent senders","status":"planned"}
-{"loopId":"loop_turn-queue-01a","kind":"loop","agentRunId":"run_turn-queue-01","taskId":"task_turn-queue","goal":"Hold normal messages until the turn boundary","status":"running"}
-{"loopId":"loop_election-01a","kind":"loop","agentRunId":"run_election-01","taskId":"task_election-rule","goal":"Rank candidate subjects by severity then age","status":"running"}

@@ -1,4 +1,4 @@
-/** The app frame. It owns the rail | workspace | inspector grid and nothing else. */
+/** The app frame. It owns the rail and the Canvas workspace, and nothing else. */
 .prototype-shell {
   display: flex;
   height: 100vh;
@@ -20,14 +20,4 @@
   min-height: 0;
   min-width: 0;
   overflow: hidden;
-}
-
-/* A load failure replaces information about the surface, never the shell itself. */
-.prototype-shell__warning {
-  margin: 0;
-  padding: var(--space-2) var(--space-6);
-  font-size: var(--text-sm);
-  color: var(--danger-strong);
-  background: var(--danger);
-  border-bottom: var(--border) solid var(--rule);
 }
