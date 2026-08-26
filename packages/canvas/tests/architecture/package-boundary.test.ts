@@ -30,7 +30,7 @@ const CONTRACT_FACADES = new Set([
 function walk(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {
     const file = `${dir}/${name}`;
-    if (['node_modules', 'dist', 'tests', 'prototype', 'work-session-report'].includes(name)) return [];
+    if (['node_modules', 'dist', 'tests', 'prototype'].includes(name)) return [];
     if (statSync(file).isDirectory()) return walk(file);
     return /\.(ts|tsx)$/.test(name) && !/test/.test(name) ? [file] : [];
   });
