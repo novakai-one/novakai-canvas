@@ -171,11 +171,12 @@ export interface DiagramComponent<K extends string = string> {
   /** Selectable children owned by this component node. */
   items?(node: RecordNode): readonly ComponentItem[];
   layoutRole: 'leaf' | 'container';
-  /** Content-driven size for auto-layout. ctx gives interface/type lines already resolved. */
+  /** Content-driven size for auto-layout. ctx gives resolved lines and any manual width constraint. */
   measure(node: RecordNode, ctx: {
     interfaceLines: string[];
     typeLines: string[];
     appearance: ResolvedNodeAppearance;
+    availableWidth?: number;
   }): Size;
   /** SVG body for `./canvas snapshot`. Return undefined to use the shared card renderer. */
   renderSvg?(

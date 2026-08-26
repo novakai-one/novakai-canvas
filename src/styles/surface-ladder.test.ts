@@ -2,6 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { THEME_PRESETS } from '@novakai/canvas';
 
 /**
  * One stylesheet, read from disk, with its comments removed.
@@ -39,13 +40,15 @@ describe('panel surface ladder', () => {
   });
 
   it('orders the four surfaces from darkest page to lightest control', () => {
-    const tokens = declarations('./tokens.css');
-    const value = (name: string): number => {
-      const hex = new RegExp(`${name}:\\s*#([0-9a-f]{6})`).exec(tokens)?.[1];
-      if (!hex) throw new Error(`${name} is not defined as a hex value`);
-      return parseInt(hex.slice(0, 2), 16);
+    const luminance = (hex: string): number => {
+      const channels = [1, 3, 5].map((start) => parseInt(hex.slice(start, start + 2), 16));
+      return channels.reduce((total, channel) => total + channel, 0);
     };
-    const ladder = ['--surface-page', '--surface-1', '--surface-2', '--surface-3'].map(value);
-    expect(ladder).toEqual([...ladder].sort((left, right) => left - right));
+    for (const preset of Object.values(THEME_PRESETS)) {
+      const ladder = [
+        preset.colors.canvas, preset.colors.panel, preset.colors.surface, preset.colors.raised,
+      ].map(luminance);
+      expect(ladder, preset.label).toEqual([...ladder].sort((left, right) => left - right));
+    }
   });
 });

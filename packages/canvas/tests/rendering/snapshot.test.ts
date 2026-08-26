@@ -55,7 +55,7 @@ describe('renderRecordSvg', () => {
     expect(() => renderRecordSvg(record)).toThrow('no single root group');
   });
 
-  it('renders dark resolved block styles, multiline text, and a hidden card badge', () => {
+  it('renders the resolved Carbon palette, multiline text, and a hidden card badge', () => {
     const record = buildRecord(`
 scope "Styled Snapshot" layout=stack gap=16
   block "Tasks:" weight=600
@@ -71,8 +71,10 @@ scope "Styled Snapshot" layout=stack gap=16
     placement.size = { ...placement.size, height: 180 };
     placement.sizeMode = 'manual';
     const svg = renderRecordSvg(record);
-    expect(svg).toContain('fill="transparent" stroke="#78a886" stroke-width="1" rx="8"');
-    expect(svg).toContain('fill="#78a886" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" text-anchor="middle"');
+    expect(svg).toContain('fill="#0B0E12"');
+    expect(svg).toContain('fill="#6D9FC7" font-family="Inter, sans-serif"');
+    expect(svg).toContain('fill="transparent" stroke="#7CAD8A" stroke-width="1" rx="8"');
+    expect(svg).toContain('fill="#7CAD8A" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" text-anchor="middle"');
     expect(svg).toContain('>Tasks:</text>');
     expect(svg).toContain('>• Safety</text>');
     expect(svg).toContain('>• Code</text>');

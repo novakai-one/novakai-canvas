@@ -86,6 +86,7 @@ export default function App(props: AppProps) {
       setPanel={preferenceState.setPanel}
       setPreferences={preferenceState.setPreferences}
       shellStyle={preferenceState.shellStyle}
+      theme={preferenceState.theme}
       view={view}
     />
   );

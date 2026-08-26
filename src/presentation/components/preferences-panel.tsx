@@ -3,42 +3,9 @@ import { WIRE_LABEL_SIZE_LIMITS } from '@novakai/canvas';
 import { WIRE_SHAPES } from '@novakai/canvas';
 import { FieldRow, PanelSection, SwitchRow, TARGET_SIZES, targetScale } from '../shell';
 import { WIRE_SHAPE_HINTS } from '@novakai/canvas';
+import { ThemePreferences } from './theme-preferences';
 
 type Patch = <K extends keyof CanvasPreferences>(key: K, value: CanvasPreferences[K]) => void;
-
-function ThemeControls({ patch, value }: { value: CanvasPreferences; patch: Patch }) {
-  return (
-    <PanelSection title="Appearance">
-      <FieldRow label="Theme">
-        <select onChange={(event) => patch('appearance', { ...value.appearance, theme: event.target.value as CanvasPreferences['appearance']['theme'] })} value={value.appearance.theme}>
-          <option value="dark">Dark</option><option value="light">Light</option>
-        </select>
-      </FieldRow>
-      <FieldRow label="Accent">
-        <select onChange={(event) => patch('appearance', { ...value.appearance, accent: event.target.value as CanvasPreferences['appearance']['accent'] })} value={value.appearance.accent}>
-          <option value="gold">Gold</option><option value="sage">Sage</option><option value="slate">Slate</option>
-        </select>
-      </FieldRow>
-      <FieldRow hint={`${value.appearance.radius}px`} label="Corner radius">
-        <input max="16" min="0" onChange={(event) => patch('appearance', { ...value.appearance, radius: Number(event.target.value) })} type="range" value={value.appearance.radius} />
-      </FieldRow>
-      {/*
-        * Breathing room and type size, as two numbers rather than one taste.
-        * "Roomier" and "bigger words" are different complaints, so they get different knobs.
-        */}
-      <FieldRow label="Density">
-        <select onChange={(event) => patch('appearance', { ...value.appearance, density: event.target.value as CanvasPreferences['appearance']['density'] })} value={value.appearance.density}>
-          <option value="compact">Compact</option>
-          <option value="comfortable">Comfortable</option>
-          <option value="roomy">Roomy</option>
-        </select>
-      </FieldRow>
-      <FieldRow hint={`${Math.round((value.appearance.textScale ?? 1) * 100)}%`} label="Text size">
-        <input max="1.35" min="0.85" onChange={(event) => patch('appearance', { ...value.appearance, textScale: Number(event.target.value) })} step="0.05" type="range" value={value.appearance.textScale ?? 1} />
-      </FieldRow>
-    </PanelSection>
-  );
-}
 
 function CanvasControls({ patch, value }: { value: CanvasPreferences; patch: Patch }) {
   return (
@@ -200,7 +167,9 @@ export function PreferenceControls({
   update: (preferences: CanvasPreferences) => void;
 }) {
   const patch: Patch = (key, value) => update({ ...preferences, [key]: value });
-  if (section === 'theme') return <ThemeControls patch={patch} value={preferences} />;
+  if (section === 'theme') return (
+    <ThemePreferences patch={(appearance) => patch('appearance', appearance)} value={preferences} />
+  );
   if (section === 'canvas') return <CanvasControls patch={patch} value={preferences} />;
   if (section === 'nodes') return <NodeControls patch={patch} value={preferences} />;
   if (section === 'wires') return <WireControls patch={patch} value={preferences} />;

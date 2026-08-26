@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import type { CanvasPreferences, JsonRepository } from '@novakai/canvas';
-import { wireToneCssVariables } from '@novakai/canvas';
+import { resolveCanvasTheme } from '@novakai/canvas';
 import { targetScale } from '../shell';
+import { themeCssVariables } from './theme-css';
 
 /** How much air each density setting puts between things, as a multiplier on the 4px grid. */
 const DENSITY_SCALE: Record<CanvasPreferences['appearance']['density'], number> = {
@@ -35,13 +36,18 @@ export function useCanvasPreferences(
     setPreferences((current) => ({ ...current, panel: { ...current.panel, ...patch } }));
   }, []);
 
+  const theme = useMemo(
+    () => resolveCanvasTheme(preferences.appearance),
+    [preferences.appearance],
+  );
+
   const shellStyle = {
     '--density': String(DENSITY_SCALE[preferences.appearance.density] ?? 1),
     '--text-scale': String(preferences.appearance.textScale ?? 1),
     '--target-scale': String(targetScale(preferences.canvas.targetSize ?? 'medium').multiplier),
     '--node-radius': `${preferences.appearance.radius}px`,
-    ...wireToneCssVariables(preferences.appearance.theme),
+    ...themeCssVariables(theme),
   } as CSSProperties;
 
-  return { preferences, setPanel, setPreferences, shellStyle };
+  return { preferences, setPanel, setPreferences, shellStyle, theme };
 }

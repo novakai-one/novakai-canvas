@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { defaultPreferences } from '@novakai/canvas';
+import {
+  defaultPreferences, resolveCanvasTheme, THEME_COLOR_ROLES, THEME_PRESET_IDS,
+} from '@novakai/canvas';
 import { canvasPreferencesSchema } from '@novakai/canvas';
 
 /**
@@ -22,6 +24,26 @@ describe('preference defaults', () => {
 
   it('validates against its own schema', () => {
     expect(() => canvasPreferencesSchema.parse(defaultPreferences)).not.toThrow();
+  });
+
+  it('resolves every editable colour role for all six presets', () => {
+    for (const preset of THEME_PRESET_IDS) {
+      const theme = resolveCanvasTheme({
+        ...defaultPreferences.appearance, preset,
+      });
+      expect(Object.keys(theme.colors).sort()).toEqual([...THEME_COLOR_ROLES].sort());
+      expect(Object.values(theme.colors).every((color) => /^#[0-9A-F]{6}$/.test(color))).toBe(true);
+    }
+  });
+
+  it('keeps user overrides scoped to the preset they modify', () => {
+    const appearance = {
+      ...defaultPreferences.appearance,
+      overridesByPreset: { carbon: { canvas: '#123456' } },
+    };
+    expect(resolveCanvasTheme(appearance).colors.canvas).toBe('#123456');
+    expect(resolveCanvasTheme({ ...appearance, preset: 'midnight' }).colors.canvas).not.toBe('#123456');
+    expect(resolveCanvasTheme({ ...appearance, preset: 'carbon' }).colors.canvas).toBe('#123456');
   });
 
   it('still opens a preferences file written before any of these settings existed', () => {
@@ -54,6 +76,9 @@ describe('preference defaults', () => {
     expect(parsed.panel.sections).toBeUndefined();
     expect(parsed.canvas.targetSize).toBeUndefined();
     expect('showLegend' in parsed.canvas).toBe(false);
+    expect(parsed.schemaVersion).toBe(2);
+    expect(parsed.appearance.preset).toBe('carbon');
+    expect(parsed.appearance.overridesByPreset).toEqual({});
   });
 
   it('refuses a text or label scale outside what the type system can carry', () => {

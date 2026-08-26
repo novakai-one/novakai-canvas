@@ -97,19 +97,20 @@ describe('canvas workspace', () => {
     workspace.submit(batch([
       { kind: 'node.move', id: nodeId, position: { x: 50, y: 60 } },
       {
-        kind: 'node.resize', id: nodeId, size: { width: 400, height: 300 }, sizeMode: 'manual',
+        kind: 'node.resize', id: nodeId, size: { width: 160, height: 80 }, sizeMode: 'manual',
       },
     ], before.revision, 'op-resize'));
 
     const settled = placementOf(workspace.snapshot());
     expect(settled?.position).toEqual({ x: 50, y: 60 });
-    expect(settled?.size).toEqual({ width: 400, height: 300 });
+    expect(settled?.size.width).toBe(160);
+    expect(settled?.size.height).toBeGreaterThanOrEqual(80);
     expect(settled?.sizeMode).toBe('manual');
 
     workspace.execute({ kind: 'node.autoSize', id: nodeId });
     const automatic = placementOf(workspace.snapshot());
     expect(automatic?.sizeMode).toBe('auto');
-    expect(automatic?.size).not.toEqual({ width: 400, height: 300 });
+    expect(automatic?.size).not.toEqual({ width: 160, height: 80 });
 
     expect(workspace.undo()).toBe(true);
     expect(placementOf(workspace.snapshot())?.sizeMode).toBe('manual');

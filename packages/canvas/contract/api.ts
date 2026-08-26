@@ -24,6 +24,7 @@ export type {
   CrossDiagramLink, DiagramRecord, Flow, FlowStep, LibraryEntry, LibraryIndex, MigratedLibrary, MigrationReport,
 } from './records/index.ts';
 export { resolveNodeAppearance } from '../core/domain/node-appearance.ts';
+export { resolveCanvasTheme } from '../core/domain/theme-resolver.ts';
 export type {
   AppearanceKey, ContainerArrangement, NodeAppearance, PresentationContext, ResolvedNodeAppearance,
 } from './schemas/presentation.ts';

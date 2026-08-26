@@ -56,7 +56,7 @@ function stepBadgeText(steps: readonly Readonly<FlowStep>[] | undefined): string
 
 /** Projects the visible wires of one diagram into React Flow edges. */
 export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>[] {
-  const { editable, execute, preferences, record, select, selection, view } = input;
+  const { editable, execute, preferences, record, select, selection, theme, view } = input;
   const connected = connectedIds(input);
   const connectedWires = connectedWireIds(input);
   const topology = compileTopology(record);
@@ -84,7 +84,7 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
   return view.wires.map((wire) => {
     const plan = plans[wire.id];
     const appearance = resolveWireAppearance(wire.kind, authoredAppearance[wire.id], {
-      theme: preferences.appearance.theme,
+      theme,
       fallbackWidth: wireStrokeWidth(preferences.wires.width),
       fallbackShape: preferences.wires.shape,
     });

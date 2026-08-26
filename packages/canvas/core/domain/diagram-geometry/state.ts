@@ -28,6 +28,19 @@ export function resolveRequiredSize(
   };
 }
 
+/** Preserves a leaf's manual width while keeping enough height to render its measured content. */
+export function resolveResizableSize(
+  required: Size,
+  placement: Pick<NodePlacement, 'size' | 'sizeMode'> | undefined,
+  minimum: Size,
+): Size {
+  if (placement?.sizeMode !== 'manual') return required;
+  return {
+    width: Math.max(minimum.width, placement.size.width),
+    height: Math.max(required.height, minimum.height, placement.size.height),
+  };
+}
+
 /** Mutable working state private to one deterministic geometry calculation. */
 export class LayoutState {
   readonly document: PositionedDocument;
@@ -86,12 +99,20 @@ export class LayoutState {
       return `${item.name} { ${item.fields.join(', ')} }`;
     });
     const authored = this.layout.appearanceByNodeId?.[node.id];
-    const required = componentFor(node.kind).measure(node as unknown as RecordNode, {
+    const component = componentFor(node.kind);
+    const minimum = component.resize?.minSize;
+    const availableWidth = placement?.sizeMode === 'manual' && minimum
+      ? Math.max(minimum.width, placement.size.width)
+      : undefined;
+    const required = component.measure(node as unknown as RecordNode, {
       interfaceLines,
       typeLines,
       appearance: resolveNodeAppearance(node.kind as RecordNode['kind'], authored),
+      availableWidth,
     });
-    return resolveRequiredSize(required, placement);
+    return minimum
+      ? resolveResizableSize(required, placement, minimum)
+      : resolveRequiredSize(required, placement);
   }
 
   orderedDirectChildIds(containerId: string): string[] {

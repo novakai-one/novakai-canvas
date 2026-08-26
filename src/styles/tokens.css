@@ -1,7 +1,6 @@
 /**
  * Novakai Canvas design tokens — the single vocabulary for spacing, surfaces, type,
- * motion, and accent. Every presentation stylesheet reads these; none redefines them.
- * Dark is the canonical brand; the light theme overrides only the surface/ink groups.
+ * motion, and theme role names. Concrete colours arrive from the resolved theme adapter.
  */
 .canvas-host,
 .canvas-host .app-shell {
@@ -48,37 +47,6 @@
   --target-md: calc(12px * var(--target-scale));   /* wire endpoints and waypoints */
   --target-grab: calc(22px * var(--target-scale)); /* invisible pointer region around a dot */
 
-  /* Surfaces — page darkest, then three panel levels, children lighter than parents. */
-  --surface-page: #0d0d0f;
-  --surface-1: #121214;
-  --surface-2: #1b1b1e;
-  --surface-3: #252529;
-
-  /* Ink */
-  --ink: #ececee;
-  --ink-muted: #a2a2aa;
-  --ink-faint: #8b8b94;
-
-  /* Lines */
-  --edge-soft: #232327;
-  --edge: #2c2c31;
-
-  /* Accent — gold is scarce: one signal per screen. Sage marks settled/verified. */
-  --gold: #d0a14b;
-  --gold-bright: #e2ba6e;
-  --gold-ink: #17130a;  /* text on solid gold */
-  --sage: #78a886;
-
-  /* Danger — only ever an outcome of hovering a destructive control, never a resting state. */
-  --danger: #5a433a;
-  --danger-strong: #c8a798;
-
-  /* Wires — default must read at working zoom; faint is ONLY the dimmed state. */
-  --wire: #62626c;
-  --wire-strong: #8a8a94;
-  --wire-dim: #35353b;
-  --wire-label: var(--ink);
-
   /* Shape */
   --radius: 5px;
   --radius-lg: 8px;
@@ -95,22 +63,4 @@
   --studio-min: 280px;
   --studio-max: 520px;
   --header-height: 48px;
-}
-
-.canvas-host [data-theme='light'] {
-  --surface-page: #f7f5ef;
-  --surface-1: #f2efe7;
-  --surface-2: #faf8f2;
-  --surface-3: #ffffff;
-  --ink: #26262a;
-  --ink-muted: #5f5f66;
-  --ink-faint: #8b8b90;
-  --edge-soft: #e2ddd0;
-  --edge: #d0cabb;
-  --wire: #9b958a;
-  --wire-strong: #6f6a60;
-  --wire-dim: #ddd8cc;
-  --gold-ink: #17130a;
-  --danger: #b08578;
-  --danger-strong: #8c4f3d;
 }

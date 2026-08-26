@@ -4,11 +4,15 @@ import type { PlacedNode } from '../../authoring/records/record-graph.ts';
 import type { Crossing, Topology } from '../../domain/topology.ts';
 import type { Emphasis, FlowLibrary } from '../../domain/flows.ts';
 import type { FlowId } from '../../../contract/brands.ts';
+import type { ResolvedCanvasTheme } from '../../../contract/records/preferences.ts';
+import type { SnapshotStyle } from './svg.ts';
 
 interface Point { x: number; y: number }
 
 /** Geometry and ordered content shared by the snapshot rendering phases. */
 export interface SnapshotScene {
+  theme: ResolvedCanvasTheme;
+  style: SnapshotStyle;
   nodes: Record<string, PlacedNode>;
   scopeId: string;
   scope: PlacedNode;

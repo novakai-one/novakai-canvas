@@ -61,8 +61,8 @@
 
 .canvas-surface .react-flow__edge:hover .react-flow__edge-path { opacity: 0.9; }
 
-/* Gold marks the one wire you are working on, and only while you are working on it. */
-.canvas-surface .react-flow__edge.selected .react-flow__edge-path { stroke: var(--gold); opacity: 1; }
+/* Accent marks the one wire you are working on, and only while you are working on it. */
+.canvas-surface .react-flow__edge.selected .react-flow__edge-path { stroke: var(--accent); opacity: 1; }
 /* Faint is the DIMMED state and nothing else. */
 .canvas-surface .react-flow__edge.is-dimmed .react-flow__edge-path { stroke: var(--wire-dim); opacity: 0.28; }
 .canvas-surface .react-flow__edge.is-dimmed .wire-label { opacity: 0.28; }
@@ -124,7 +124,7 @@
  */
 .wire-endpoint {
   r: calc(var(--target-md) / 2 / var(--nvk-zoom, 1));
-  fill: var(--gold);
+  fill: var(--accent);
   stroke: var(--bg);
   stroke-width: calc(2px / var(--nvk-zoom, 1));
   pointer-events: none;
@@ -143,7 +143,7 @@
 .wire-segment-handle {
   r: calc(var(--target-md) / 2 / var(--nvk-zoom, 1));
   fill: var(--surface-3);
-  stroke: var(--gold);
+  stroke: var(--accent);
   stroke-width: calc(1.5px / var(--nvk-zoom, 1));
   pointer-events: none;
 }
@@ -177,7 +177,7 @@
 
 /* A selected wire's contract must stay readable above everything else. */
 .wire-label.is-selected {
-  color: var(--gold-bright);
+  color: var(--accent-bright);
   font-weight: 500;
   opacity: 1;
 }

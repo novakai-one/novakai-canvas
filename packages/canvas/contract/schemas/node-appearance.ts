@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { ICON_NAMES, type IconName } from '../records/components.ts';
+import type { ResolvedCanvasTheme } from '../records/preferences.ts';
 
 export const FONT_FAMILIES = ['sans', 'serif', 'mono'] as const;
 export const FONT_SIZES = [12, 14, 16, 20, 24, 32, 40] as const;
@@ -31,7 +32,7 @@ export type Radius = (typeof RADII)[number];
 export type Badge = (typeof BADGES)[number];
 export type ComponentPalette = (typeof COMPONENT_PALETTES)[number];
 export type BlockIcon = IconName;
-export type Theme = 'dark' | 'light';
+export type Theme = ResolvedCanvasTheme['mode'];
 
 /** Closed authored values stored on a layout, never on a semantic node. */
 export interface NodeAppearance {
@@ -51,7 +52,7 @@ export interface NodeAppearance {
   palette?: ComponentPalette;
 }
 
-export interface PresentationContext { theme: Theme; showKinds: boolean }
+export interface PresentationContext { theme: ResolvedCanvasTheme; showKinds: boolean }
 
 /** Concrete values consumed verbatim by measurement and both render hosts. */
 export interface ResolvedNodeAppearance {
@@ -71,7 +72,7 @@ export interface ResolvedNodeAppearance {
   badge: Badge;
   showKindBadge: boolean;
   palette?: ComponentPalette;
-  theme: Theme;
+  theme: ResolvedCanvasTheme;
 }
 
 export type AppearanceKey =

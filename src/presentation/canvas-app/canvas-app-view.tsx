@@ -4,6 +4,7 @@ import type {
 import { ReactFlowProvider } from '@xyflow/react';
 import type {
   CanvasPreferences, DiagramRecord, FlowId, FlowLibrary, ProjectedView, RecordCommand, Selection,
+  ResolvedCanvasTheme,
 } from '@novakai/canvas';
 import { CanvasSurface } from '../components/canvas-surface';
 import { flowStepRows } from '../components/flow-panel';
@@ -35,6 +36,7 @@ interface CanvasAppViewProps {
   setPanel: (patch: Partial<CanvasPreferences['panel']>) => void;
   setPreferences: Dispatch<SetStateAction<CanvasPreferences>>;
   shellStyle: CSSProperties;
+  theme: ResolvedCanvasTheme;
   view: ProjectedView;
 }
 
@@ -43,7 +45,7 @@ export function CanvasAppView(props: CanvasAppViewProps) {
   const {
     actions, activeFlowId, changeMode, contents, executeInspectorCommands, flows, focusTitle,
     mode, navigation, open, preferences, record, saveStatus, select, selection, setPanel,
-    setPreferences, shellStyle, view,
+    setPreferences, shellStyle, theme, view,
   } = props;
   const railCollapsed = preferences.panel.railCollapsed ?? false;
   const studioCollapsed = preferences.panel.studioCollapsed ?? false;
@@ -60,9 +62,9 @@ export function CanvasAppView(props: CanvasAppViewProps) {
     >
       <div
         className={`app-shell mode-${mode}`}
-        data-accent={preferences.appearance.accent}
         data-dividers={(preferences.panel.showDividers ?? true) ? undefined : 'off'}
-        data-theme={preferences.appearance.theme}
+        data-preset={theme.preset}
+        data-theme={theme.mode}
         style={shellStyle}
       >
         <CanvasPortalProvider>
@@ -110,6 +112,7 @@ export function CanvasAppView(props: CanvasAppViewProps) {
               selection={selection}
               setDiagramStatus={navigation.setDiagramStatus}
               setSelection={select}
+              theme={theme}
               undo={undo}
               view={view}
             />

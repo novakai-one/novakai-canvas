@@ -1,10 +1,10 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "appearance": {
     "density": "comfortable",
     "radius": 8,
-    "theme": "dark",
-    "accent": "gold"
+    "preset": "carbon",
+    "overridesByPreset": {}
   },
   "canvas": {
     "showGrid": false,
