@@ -220,6 +220,7 @@ describe('projectEdges', () => {
     wired.views['view-default'].flowId = asId('path');
     const edges = projectEdges(input(wired));
     expect(edges.map((edge) => edge.data?.label)).toEqual(['1 · save()  3', '2']);
+    expect(edges.map((edge) => edge.data?.labelKind)).toEqual(['step', 'step']);
   });
 
   it('leaves structural labels alone and empties non-focal labels correctly', () => {
@@ -227,7 +228,8 @@ describe('projectEdges', () => {
       ['map', 'a', 'b', 'c'].map((id) => node(id, id === 'map' ? 'group' : 'module', id === 'map' ? undefined : 'map')),
       [wire('ab', 'a', 'b'), wire('bc', 'b', 'c')],
     );
-    expect(projectEdges(input(wired)).map((edge) => edge.data?.label)).toEqual(['ab', 'bc']);
+    expect(projectEdges(input(wired)).map((edge) => [edge.data?.label, edge.data?.labelKind]))
+      .toEqual([['ab', 'wire'], ['bc', 'wire']]);
     wired.flows = {
       path: { id: asId('path'), name: 'Path', steps: [{ ref: asId('ab'), ordinal: 1 }] },
     };

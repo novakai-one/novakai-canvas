@@ -13,8 +13,9 @@ import { connectedIds, connectedWireIds } from '../projection-selection';
 import type { WireCardinality } from '@novakai/canvas';
 import { compileTopology, crossingsOf } from '@novakai/canvas';
 import { portHandleId } from '@novakai/canvas';
-import { compileFlows, stepsByWire, wireEmphasis, type Emphasis } from '@novakai/canvas';
-import type { FlowStep } from '@novakai/canvas';
+import {
+  compileFlows, stepsByWire, wireEmphasis, wireLabelOf, wireLabelText, type Emphasis,
+} from '@novakai/canvas';
 
 /** How one wire is shaped by hand, read from the active layout route hint. */
 export interface EdgeRoute {
@@ -40,18 +41,8 @@ export interface ArchitectureEdgeData extends Record<string, unknown> {
   related: boolean;
   emphasis: Emphasis;
   flowActive: boolean;
-}
-
-/*
- * A wire shows one message at a time: its structural label, or — while a flow
- * is active — its step badge ("2", "2 · save()", "2 · save()  7 · load()").
- * Wires the active flow does not ride show nothing. The edge only renders.
- */
-function stepBadgeText(steps: readonly Readonly<FlowStep>[] | undefined): string {
-  if (!steps) return '';
-  return steps
-    .map((step) => (step.label ? `${step.ordinal} · ${step.label}` : String(step.ordinal)))
-    .join('  ');
+  /** What the label text is — the structural label, or a flow step badge. */
+  labelKind: 'wire' | 'step';
 }
 
 /** Projects the visible wires of one diagram into React Flow edges. */
@@ -82,6 +73,7 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
   const authoredAppearance = record.layouts[record.views[record.activeViewId]?.layoutId]
     ?.appearanceByWireId ?? {};
   return view.wires.map((wire) => {
+    const wireLabel = wireLabelOf(wire, flowSteps);
     const plan = plans[wire.id];
     const appearance = resolveWireAppearance(wire.kind, authoredAppearance[wire.id], {
       theme,
@@ -119,7 +111,8 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
         ? 'is-dimmed' : '',
     ].filter(Boolean).join(' '),
     data: {
-      label: flowSteps ? stepBadgeText(flowSteps.get(wire.id)) : wire.label,
+      label: wireLabelText(wireLabel),
+      labelKind: wireLabel?.kind ?? 'wire',
       kind: wire.kind,
       preferences,
       editable,

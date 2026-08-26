@@ -60,11 +60,19 @@ function parseFlow(
 
 function parseFlowStep(state: ParserState, line: string, lineNumber: number): void {
   const { tokens, error } = tokenize(line);
-  if (error || tokens.length !== 3 || !/^-?\d+$/.test(tokens[1])) {
-    state.fail(lineNumber, `invalid flow step "${line}"`, 'step 1 "existing-wire-id"');
+  const label = tokens[3];
+  if (error || tokens.length < 3 || tokens.length > 4 || !/^-?\d+$/.test(tokens[1])) {
+    state.fail(lineNumber, `invalid flow step "${line}"`, 'step 1 "existing-wire-id" ["what happens"]');
     return;
   }
-  state.appendFlowStep({ ordinal: Number(tokens[1]), ref: tokens[2], line: lineNumber });
+  if (label !== undefined && label.length === 0) {
+    state.fail(lineNumber, `empty step label in "${line}"`, 'write a non-empty label or omit it');
+    return;
+  }
+  state.appendFlowStep({
+    ordinal: Number(tokens[1]), ref: tokens[2],
+    ...(label === undefined ? {} : { label }), line: lineNumber,
+  });
 }
 
 function parseComponent(
@@ -152,7 +160,7 @@ export function parseLine(state: ParserState, line: string, lineNumber: number):
       parseFlowStep(state, line, lineNumber);
       return;
     }
-    state.fail(lineNumber, `unexpected statement inside flow: "${line}"`, 'use step <positive ordinal> "<wire-id>", or end');
+    state.fail(lineNumber, `unexpected statement inside flow: "${line}"`, 'use step <positive ordinal> "<wire-id>" ["label"], or end');
     return;
   }
   if (line.startsWith('wire ') || line === 'wire') return parseWire(state, line, lineNumber);

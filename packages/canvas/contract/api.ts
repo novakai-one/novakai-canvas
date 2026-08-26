@@ -35,6 +35,9 @@ export {
   compileFlows, emphasisLevel, FlowError, stepsByWire, stepsOf, wireEmphasis,
   type CompiledFlow, type Emphasis, type FlowLibrary,
 } from '../core/domain/flows.ts';
+export {
+  wireLabelOf, wireLabelText, type WireLabel,
+} from '../core/domain/wire-labels.ts';
 export { projectView } from '../core/domain/project-view.ts';
 export type { PositionedNode, ProjectedView } from '../core/domain/project-view.ts';
 export {

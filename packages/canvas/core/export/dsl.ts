@@ -95,7 +95,9 @@ function printFlows(record: DiagramRecord, rootId: string | undefined): string[]
   for (const [id, flow] of compileFlows(record)) {
     const generated = `${rootId ?? record.id}--flow-${slugify(flow.name)}`;
     lines.push(`  flow ${quote(flow.name)}${id === generated ? '' : ` id=${quote(id)}`}`);
-    for (const step of stepsOf(flow)) lines.push(`    step ${step.ordinal} ${quote(step.ref)}`);
+    for (const step of stepsOf(flow)) {
+      lines.push(`    step ${step.ordinal} ${quote(step.ref)}${step.label === undefined ? '' : ` ${quote(step.label)}`}`);
+    }
     lines.push('  end');
   }
   return lines;

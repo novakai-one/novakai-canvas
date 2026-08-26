@@ -61,6 +61,7 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
   const label = useWireLabel({
     seed: props.id,
     label: showLabel ? props.data?.label ?? '' : '',
+    kind: props.data?.labelKind ?? 'wire',
     points: route.points,
     obstacles: props.data?.obstacles,
     storedPosition: props.data?.route.labelPosition,

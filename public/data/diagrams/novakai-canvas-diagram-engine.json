@@ -4,7 +4,7 @@
   "name": "Novakai Canvas diagram engine",
   "orientation": "left-right",
   "status": "active",
-  "revision": 3,
+  "revision": 5,
   "nodes": {
     "novakai-canvas-diagram-engine": {
       "id": "novakai-canvas-diagram-engine",
@@ -1660,6 +1660,38 @@
         "kind": "human"
       },
       "timestamp": "2026-08-26T13:17:13.797Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-607e8d90-83da-4539-ab82-264bace41711": {
+      "operationId": "ui-607e8d90-83da-4539-ab82-264bace41711",
+      "revision": 4,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-26T21:59:10.218Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-47a9d73f-7f01-4ab3-90ec-b6e44352492d": {
+      "operationId": "ui-47a9d73f-7f01-4ab3-90ec-b6e44352492d",
+      "revision": 5,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-26T22:00:17.206Z",
       "provenance": {
         "source": "ui",
         "sourceRef": "prototype:canvas-room"

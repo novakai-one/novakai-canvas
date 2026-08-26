@@ -4,7 +4,8 @@ import { wirePath } from '../wire-shape.ts';
 import { planWireEndDecorations } from '../wire-end-decorations.ts';
 import type { SnapshotScene } from './contract.ts';
 import { escapeSvg } from './svg.ts';
-import { emphasisLevel } from '../../domain/flows.ts';
+import { emphasisLevel, stepsByWire } from '../../domain/flows.ts';
+import { wireLabelOf, wireLabelText } from '../../domain/wire-labels.ts';
 
 /** Emits every internal wire beneath node cards using stable elbow geometry. */
 export function renderSnapshotWires(scene: SnapshotScene): string[] {
@@ -12,6 +13,8 @@ export function renderSnapshotWires(scene: SnapshotScene): string[] {
   const boundaryById = new Map(
     scene.topology.boundaries.map((boundary) => [boundary.nodeId, boundary]),
   );
+  const activeFlow = scene.activeFlowId ? scene.flows.get(scene.activeFlowId) : undefined;
+  const flowSteps = activeFlow ? stepsByWire(activeFlow) : undefined;
   for (const wire of scene.wires) {
     const plan = scene.routes[wire.id];
     if (!plan) continue;
@@ -52,8 +55,14 @@ export function renderSnapshotWires(scene: SnapshotScene): string[] {
       `<path${classes ? ` class="${classes}"` : ''}${flowAttribute} d="${wirePath(decorations.bodyPoints, appearance.shape)}" fill="none" stroke="${stroke}"${appearance.dashArray ? ` stroke-dasharray="${appearance.dashArray}"` : ''} stroke-width="${strokeWidth}"${opacity}${decorations.notationMode ? '' : ` marker-end="url(#${markerId})"`}/>`,
       ...decorations.lines.map((line) => `<line${flowAttribute} x1="${line.from.x}" y1="${line.from.y}" x2="${line.to.x}" y2="${line.to.y}" stroke="${stroke}" stroke-width="${strokeWidth}"${opacity} stroke-linecap="round"/>`),
       ...decorations.circles.map((circle) => `<circle${flowAttribute} cx="${circle.center.x}" cy="${circle.center.y}" r="${circle.radius}" fill="none" stroke="${stroke}" stroke-width="${strokeWidth}"${opacity}/>`),
-      `<text${flowAttribute} x="${label.x}" y="${label.y - 6}" fill="${scene.activeFlowId && level === 2 ? scene.style.colors.accent : scene.style.colors.muted}"${opacity} font-family="${scene.style.font}" font-size="11" text-anchor="middle">${escapeSvg(wire.label)}</text>`,
     );
+    const wireLabel = wireLabelOf(wire, flowSteps);
+    const text = wireLabelText(wireLabel);
+    if (text) {
+      parts.push(
+        `<text${flowAttribute}${wireLabel?.kind === 'step' ? ' data-label-kind="step"' : ''} x="${label.x}" y="${label.y - 6}" fill="${scene.activeFlowId && level === 2 ? scene.style.colors.accent : scene.style.colors.muted}"${opacity} font-family="${scene.style.font}" font-size="11" text-anchor="middle"${wireLabel?.kind === 'step' ? ' font-weight="600"' : ''}>${escapeSvg(text)}</text>`,
+      );
+    }
   }
   return parts;
 }
