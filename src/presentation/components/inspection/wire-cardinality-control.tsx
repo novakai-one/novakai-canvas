@@ -1,6 +1,6 @@
 import {
   WIRE_CARDINALITIES, WIRE_CARDINALITY_LABELS, type WireCardinality,
-} from '../../../domain/wire-cardinality';
+} from '@novakai/canvas';
 import { FieldRow } from '../../shell';
 
 /** One endpoint's optional semantic cardinality selector. */

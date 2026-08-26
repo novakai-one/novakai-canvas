@@ -1,4 +1,4 @@
-import { componentFor } from '../../../components/registry';
+import { componentFor } from '@novakai/canvas';
 import { rootGroupId } from '../../canvas-actions';
 import { FieldRow, ObjectRow, PanelSection, SwitchRow } from '../../shell';
 import { ComponentContentEditor } from './component-content-editor';

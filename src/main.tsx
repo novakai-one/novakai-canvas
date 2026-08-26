@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import type { ActorContext } from './application/canvas-workspace';
+import type { ActorContext } from '@novakai/canvas';
 import './styles/standalone.css';
 
 /** Who this host acts as. Every change it submits carries this attribution, never a caller's. */

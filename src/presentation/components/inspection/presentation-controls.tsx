@@ -1,13 +1,13 @@
-import { componentFor } from '../../../components/registry';
+import { componentFor } from '@novakai/canvas';
 import {
   APPEARANCE_SPECIFICATIONS, CONTAINER_ALIGNS, GRID_COLUMNS, SPACINGS,
   type AppearanceSpecification,
   type AuthoredArrangement, type GridColumns, type NodeAppearance, type Spacing,
-} from '../../../domain/canvas-presentation';
-import type { DiagramRecord } from '../../../domain/records';
+} from '@novakai/canvas';
+import type { DiagramRecord } from '@novakai/canvas';
 import {
   WIRE_APPEARANCE_SPECIFICATIONS, type WireAppearance,
-} from '../../../domain/wire-appearance';
+} from '@novakai/canvas';
 import { FieldRow } from '../../shell';
 import type { InspectPanelProps } from './contract';
 import { inspectionSupport } from './support';

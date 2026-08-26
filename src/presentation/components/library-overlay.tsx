@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useCanvasActivity } from '../shell/canvas-activity-context';
-import type { DiagramSummary } from '../../application/canvas-library';
+import type { DiagramSummary } from '@novakai/canvas';
 import { PanelSection, oneLine, useCanvasPortalTarget } from '../shell';
 import { findObjects, groupDiagrams } from './rail-filter';
 

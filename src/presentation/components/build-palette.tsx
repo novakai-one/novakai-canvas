@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { allComponents } from '../../components/registry';
+import { allComponents } from '@novakai/canvas';
 import type { CreatableNodeKind } from '../canvas-actions';
 import { Flyout, PanelSection } from '../shell';
 

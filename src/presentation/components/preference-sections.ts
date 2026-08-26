@@ -1,4 +1,4 @@
-import type { PreferenceSection } from '../../domain/model';
+import type { PreferenceSection } from '@novakai/canvas';
 
 /** The preference categories, in the order the Studio offers them. */
 export const PREFERENCE_SECTIONS: readonly PreferenceSection[] = [

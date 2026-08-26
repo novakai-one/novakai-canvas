@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, type RefObject } from 'react';
 import type { Viewport } from '@xyflow/react';
-import type { CanvasPreferences } from '../../domain/model';
+import type { CanvasPreferences } from '@novakai/canvas';
 import type { WorldPoint } from '../canvas-actions';
 import { canvasCamera, publishCanvasCamera } from '../canvas-camera';
 import { semanticZoomTier, type SemanticZoomTier } from '../semantic-zoom';

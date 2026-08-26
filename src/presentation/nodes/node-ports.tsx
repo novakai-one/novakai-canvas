@@ -1,9 +1,9 @@
 import { Handle, Position } from '@xyflow/react';
-import { NODE_PORTS } from '../../domain/node-port';
-import { portAxisFraction, portHandleId } from '../../domain/interface-signature';
-import { interfaceRowCenter } from '../../components/card/measure';
-import type { InterfaceObject } from '../../domain/model';
-import type { CanvasNode, PortSide } from '../../domain/records';
+import { NODE_PORTS } from '@novakai/canvas';
+import { portAxisFraction, portHandleId } from '@novakai/canvas';
+import { interfaceRowCenter } from '@novakai/canvas';
+import type { InterfaceObject } from '@novakai/canvas';
+import type { DiagramNode as CanvasNode, PortSide } from '@novakai/canvas';
 
 const PORT_POSITION = {
   top: Position.Top, bottom: Position.Bottom, left: Position.Left, right: Position.Right,

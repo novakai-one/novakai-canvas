@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.canvas-host.tsbuildinfo"
+  },
+  "include": [
+    "src/App.tsx",
+    "src/main.tsx",
+    "src/components/**/*.ts",
+    "src/components/**/*.tsx",
+    "src/presentation/**/*.ts",
+    "src/presentation/**/*.tsx"
+  ],
+  "exclude": [
+    "src/presentation/prototype/**",
+    "src/presentation/work-session-report/**",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
+}

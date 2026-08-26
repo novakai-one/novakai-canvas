@@ -1,5 +1,5 @@
-import type { ContentEditorDeclaration } from '../../../components/component';
-import type { CanvasNode } from '../../../domain/records';
+import type { ContentEditorDeclaration } from '@novakai/canvas';
+import type { DiagramNode as CanvasNode } from '@novakai/canvas';
 import type { InspectPanelProps } from './contract';
 import { RecordListContentEditor } from './record-list-content-editor';
 import { StringListContentEditor } from './string-list-content-editor';

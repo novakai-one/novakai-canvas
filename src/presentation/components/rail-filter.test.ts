@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import type { DiagramSummary } from '../../application/canvas-library';
-import { asId } from '../../domain/id-cast';
-import type { DiagramId } from '../../domain/ids';
+import type { DiagramSummary } from '@novakai/canvas';
+import { asId } from '@novakai/canvas';
+import type { DiagramId } from '@novakai/canvas';
 import { findObjects, groupDiagrams } from './rail-filter';
 
 function entry(id: string, name: string, status: 'active' | 'archived', nodeLabels: string[] = []): DiagramSummary {

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { allComponents } from '../../components/registry.ts';
+import { allComponents } from '@novakai/canvas';
 import type { CreatableNodeKind } from '../canvas-actions.ts';
 
 const connectionCreationEntries = allComponents().flatMap((component) => {

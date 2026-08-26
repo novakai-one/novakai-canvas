@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { diagramRecordSchema, orientationOf, projectView, resolveAxis } from '../../canvas';
-import type { Axis } from '../../canvas';
-import type { DiagramRecord } from '../../canvas';
+import { diagramRecordSchema, orientationOf, projectView, resolveAxis } from '@novakai/canvas';
+import type { Axis } from '@novakai/canvas';
+import type { DiagramRecord } from '@novakai/canvas';
 import { chooseSides, nodeRects, wireObstacles } from '../projection';
 import {
   routeCollisions, routeWire, type Rect, type RouteSide,
-} from '../../domain/diagram-geometry';
+} from '@novakai/canvas';
 
 /**
  * The routing gate.

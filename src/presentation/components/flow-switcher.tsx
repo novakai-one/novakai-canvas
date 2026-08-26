@@ -1,5 +1,5 @@
-import type { FlowId } from '../../domain/ids.ts';
-import type { FlowLibrary } from '../../domain/flows.ts';
+import type { FlowId } from '@novakai/canvas';
+import type { FlowLibrary } from '@novakai/canvas';
 
 interface FlowSwitcherProps {
   flows: FlowLibrary;
