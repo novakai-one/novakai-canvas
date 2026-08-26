@@ -5,18 +5,20 @@ import { WIRE_KIND_STYLES, wireKindColorVariable, wireKindDashArray } from '../w
 interface LegendProps {
   view: ProjectedView;
   preferences: CanvasPreferences;
+  activeFlowName?: string;
 }
 
 /** Quiet overlay explaining only the wire kinds the visible diagram actually uses. */
-export function Legend({ preferences, view }: LegendProps) {
+export function Legend({ activeFlowName, preferences, view }: LegendProps) {
   if (!preferences.canvas.showLegend) return null;
   const present = new Set<string>(view.wires.map((wire) => wire.kind));
   const kinds = (Object.keys(WIRE_KIND_STYLES) as WireKind[]).filter((kind) => present.has(kind));
   const standalone = view.nodes
     .some((node) => node.kind === 'group' && node.label.startsWith('Standalone'));
-  if (kinds.length === 0 && !standalone) return null;
+  if (kinds.length === 0 && !standalone && !activeFlowName) return null;
   return (
     <aside className="canvas-legend" aria-label="Wire kinds">
+      {activeFlowName && <div className="legend-flow">Flow: {activeFlowName}</div>}
       {kinds.map((kind) => (
         <div className="legend-row" key={kind}>
           <svg aria-hidden height="10" width="34">

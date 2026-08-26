@@ -1,11 +1,13 @@
+import type { Orientation } from '../../domain/orientation.ts';
 /** Typed mutation vocabulary accepted by CanvasWorkspace. */
 
 import type {
   AuthoredArrangement, ContainerArrangement, NodeAppearance,
 } from '../../domain/canvas-presentation.ts';
 import type { WireAppearance } from '../../domain/wire-appearance.ts';
-import type { DiagramRecord, PortSide } from '../../domain/records.ts';
+import type { DiagramRecord, PortAnchor, PortSide } from '../../domain/records.ts';
 import type { WireCardinality } from '../../domain/wire-cardinality.ts';
+import type { FlowId } from '../../domain/ids.ts';
 
 interface PlacementInput {
   position: { x: number; y: number };
@@ -40,7 +42,11 @@ export type RecordCommand =
   | { kind: 'node.reparent'; id: string; parentId?: string }
   | { kind: 'node.remove'; id: string }
   | { kind: 'wire.add'; wire: DiagramRecord['wires'][string] }
-  | { kind: 'wire.reconnect'; id: string; source?: string; target?: string }
+  | {
+    kind: 'wire.reconnect'; id: string; source?: string; target?: string;
+    /** `null` chooses the ordinary node endpoint; omission preserves unless its node changes. */
+    sourceAnchor?: PortAnchor | null; targetAnchor?: PortAnchor | null;
+  }
   | { kind: 'wire.setRoute'; id: string; route: RouteInput }
   | {
     kind: 'wire.setCardinality'; id: string;
@@ -62,6 +68,7 @@ export type RecordCommand =
   | { kind: 'interface.remove'; id: string }
   | { kind: 'view.setCollapsed'; id: string; collapsed: boolean }
   | { kind: 'view.setViewport'; viewport: { x: number; y: number; zoom: number } }
+  | { kind: 'flow.activate'; flowId?: FlowId }
   | {
     kind: 'layout.presentation.replace';
     appearanceByNodeId: Record<string, NodeAppearance>;
@@ -75,4 +82,6 @@ export type RecordCommand =
     kind: 'diagram.definitions.replace';
     interfaces: DiagramRecord['interfaces']; types: DiagramRecord['types'];
   }
-  | { kind: 'diagram.rename'; name: string };
+  | { kind: 'diagram.flows.replace'; flows: NonNullable<DiagramRecord['flows']> }
+  | { kind: 'diagram.rename'; name: string }
+  | { kind: 'diagram.setOrientation'; orientation?: Orientation };

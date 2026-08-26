@@ -22,6 +22,20 @@ function batch(commands: RecordCommand[], expectedRevision: number, operationId 
 }
 
 describe('canvas workspace', () => {
+  it('activates only a declared flow and leaves its basemap unchanged', () => {
+    const record = openMessagingScope();
+    const ref = Object.keys(record.wires)[0];
+    record.flows = { delivery: { id: 'delivery' as never, name: 'Delivery', steps: [{ ref: ref as never, ordinal: 1 }] } };
+    const workspace = createCanvasWorkspace(record, human);
+    const basemap = JSON.stringify([record.nodes, record.wires, record.layouts]);
+    expect(workspace.execute({ kind: 'flow.activate', flowId: 'delivery' as never }).status).toBe('applied');
+    expect(workspace.snapshot().views[record.activeViewId].flowId).toBe('delivery');
+    expect(JSON.stringify([workspace.snapshot().nodes, workspace.snapshot().wires, workspace.snapshot().layouts])).toBe(basemap);
+    const activated = workspace.snapshot();
+    expect(workspace.execute({ kind: 'flow.activate', flowId: 'missing' as never })).toMatchObject({ status: 'rejected' });
+    expect(workspace.snapshot()).toBe(activated);
+  });
+
   it('applies a batch as one revision', () => {
     const workspace = createCanvasWorkspace(openMessagingScope(), human);
     const before = workspace.snapshot().revision;

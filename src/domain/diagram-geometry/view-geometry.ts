@@ -1,5 +1,8 @@
+import { crossAxis, type Axis } from '../axis.ts';
+import { interfaceRowCenter } from '../../components/card/measure.ts';
+import { portAxisFraction } from '../interface-signature.ts';
 import type { ProjectedView, PositionedNode } from '../project-view.ts';
-import type { PortSide } from '../records.ts';
+import type { CanvasNode, Endpoint, PortAnchor, PortSide } from '../records.ts';
 import type { Point, Rect, RouteObstacle } from './contract.ts';
 import { routeWire } from './wire-router.ts';
 
@@ -9,6 +12,7 @@ const LANE_GAP = 22;
 export function facingSides(
   source: Rect,
   target: Rect,
+  axis: Axis,
 ): { sourceSide: PortSide; targetSide: PortSide } {
   const spans = (aLow: number, aHigh: number, bLow: number, bHigh: number): number =>
     Math.min(aHigh, bHigh) - Math.max(aLow, bLow);
@@ -16,9 +20,10 @@ export function facingSides(
   const overlapY = spans(source.y, source.y + source.height, target.y, target.y + target.height);
   const dx = (target.x + target.width / 2) - (source.x + source.width / 2);
   const dy = (target.y + target.height / 2) - (source.y + source.height / 2);
+  // Overlap decides when it can; otherwise the tie goes to the axis the diagram runs along.
   const vertical = overlapX > 0 && overlapY <= 0 ? true
     : overlapY > 0 && overlapX <= 0 ? false
-      : Math.abs(dy) >= Math.abs(dx);
+      : (axis.along === 'y' ? Math.abs(dy) >= Math.abs(dx) : Math.abs(dy) > Math.abs(dx));
   if (vertical) {
     return dy >= 0
       ? { sourceSide: 'bottom', targetSide: 'top' }
@@ -37,19 +42,44 @@ export function attachmentPoint(rect: Rect, side: PortSide): Point {
   return { x: rect.x + rect.width, y: rect.y + rect.height / 2 };
 }
 
+/** Point for a durable method ordinal; absent anchors preserve the centre-edge attachment. */
+export function anchorFor(
+  endpoint: Pick<Endpoint, 'anchor'>,
+  rect: Rect,
+  defaultSide: PortSide,
+  methodCount: number,
+  node?: Pick<CanvasNode, 'description'>,
+): Point {
+  if (!endpoint.anchor) return attachmentPoint(rect, defaultSide);
+  const anchor: PortAnchor = endpoint.anchor;
+  const fraction = portAxisFraction(anchor.ordinal, methodCount);
+  if (anchor.side === 'top') return { x: rect.x + rect.width * fraction, y: rect.y };
+  if (anchor.side === 'bottom') {
+    return { x: rect.x + rect.width * fraction, y: rect.y + rect.height };
+  }
+  const row = node
+    ? Math.min(rect.height - 8, Math.max(8, interfaceRowCenter(node.description, rect.width, anchor.ordinal)))
+    : rect.height * fraction;
+  if (anchor.side === 'left') return { x: rect.x, y: rect.y + row };
+  return { x: rect.x + rect.width, y: rect.y + row };
+}
+
 /** Chooses the natural side pair unless another pair is the first collision-free route. */
 export function chooseSides(
   source: Rect,
   target: Rect,
   obstacles: RouteObstacle[],
+  axis: Axis,
 ): { sourceSide: PortSide; targetSide: PortSide } {
-  const facing = facingSides(source, target);
+  const facing = facingSides(source, target, axis);
+  const across = crossAxis(axis);
+  // The diagram's own axis is offered before the one at right angles to it, forwards first.
   const alternatives: Array<{ sourceSide: PortSide; targetSide: PortSide }> = [
     facing,
-    { sourceSide: 'bottom', targetSide: 'top' },
-    { sourceSide: 'top', targetSide: 'bottom' },
-    { sourceSide: 'right', targetSide: 'left' },
-    { sourceSide: 'left', targetSide: 'right' },
+    { sourceSide: axis.sourcePort, targetSide: axis.targetPort },
+    { sourceSide: axis.targetPort, targetSide: axis.sourcePort },
+    { sourceSide: across.sourcePort, targetSide: across.targetPort },
+    { sourceSide: across.targetPort, targetSide: across.sourcePort },
   ];
   for (const pair of alternatives) {
     const route = routeWire({

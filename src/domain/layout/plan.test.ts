@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import type { NodeId } from './ids';
-import {
-  defaultLayoutOptions, graphOfDiagram, layoutStrategyFor, planSliceLayout,
-} from './layout-strategy';
-import type { LayoutGraph, LayoutPlan, LayoutSliceTarget } from './layout-strategy';
-import { diagramRecordSchema } from './record-schema';
-import type { DiagramRecord, NodePlacement } from './records';
+import type { NodeId } from '../ids';
+import { defaultLayoutOptions } from './contract';
+import type { LayoutGraph, LayoutPlan, LayoutSliceTarget } from './contract';
+import { graphOfDiagram } from './graph';
+import { layoutStrategyFor, planSliceLayout } from './plan';
+import { diagramRecordSchema } from '../record-schema';
+import type { DiagramRecord, NodePlacement } from '../records';
 
 /** The real migrated diagrams: layout is judged against the shapes Chris actually draws. */
 const records: Array<[string, DiagramRecord]> = Object.entries(
-  import.meta.glob('../../public/data/diagrams/*.json', {
+  import.meta.glob('../../../public/data/diagrams/*.json', {
     query: '?raw', import: 'default', eager: true,
   }) as Record<string, string>,
 )

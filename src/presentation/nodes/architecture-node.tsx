@@ -70,7 +70,7 @@ export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowN
         </div>
       )}
       </article>
-      <NodePorts connectable={editable} />
+      <NodePorts connectable={editable} methods={interfaces} node={node} />
     </>
   );
 }

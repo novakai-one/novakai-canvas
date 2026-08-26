@@ -1,6 +1,6 @@
 /** Incremental geometry for semantic CLI updates: measure additions, never move survivors. */
 
-import { reflowPresentation, type DiagramRecord } from '../../src/canvas.ts';
+import { reflowPresentation, reflowTopology, type DiagramRecord } from '../../src/canvas.ts';
 import {
   asId, layoutInitialRecord, PLACEHOLDER_PLACEMENT, placementsOf, type RecordPlacement,
 } from './record-graph.ts';
@@ -211,6 +211,12 @@ function changedArrangementIds(before: DiagramRecord, target: DiagramRecord): st
   return Object.keys(next).filter((id) => JSON.stringify(previous[id]) !== JSON.stringify(next[id]));
 }
 
+function topologyChanged(before: DiagramRecord, target: DiagramRecord): boolean {
+  const ids = new Set([...Object.keys(before.nodes), ...Object.keys(target.nodes)]);
+  return [...ids].some((id) => before.nodes[id]?.band !== target.nodes[id]?.band
+    || before.nodes[id]?.lane !== target.nodes[id]?.lane);
+}
+
 /**
  * Reconciles geometry for an existing compiled map.
  *
@@ -227,7 +233,8 @@ export function placeCompiledInsertions(
   layoutAddedSubtrees(before, next, addedIds);
   const resizedNodeIds = changedAutoSizedIds(before, next);
   const arrangementAffectedIds = changedArrangementIds(before, next);
-  return resizedNodeIds.length || arrangementAffectedIds.length
+  const reflowed = resizedNodeIds.length || arrangementAffectedIds.length
     ? reflowPresentation(next, { resizedNodeIds, arrangementAffectedIds })
     : next;
+  return topologyChanged(before, next) ? reflowTopology(reflowed) : reflowed;
 }

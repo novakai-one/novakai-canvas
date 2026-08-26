@@ -23,6 +23,10 @@ function structurallyEqual(left: RecordNode, right: RecordNode): boolean {
       === JSON.stringify((right as unknown as Record<string, unknown>)[field] ?? null));
   return left.kind === right.kind
     && left.parentId === right.parentId
+    && left.band === right.band
+    && left.lane === right.lane
+    && left.crossing === right.crossing
+    && left.gate === right.gate
     && JSON.stringify(left.interfaceIds) === JSON.stringify(right.interfaceIds)
     && JSON.stringify(left.typeIds) === JSON.stringify(right.typeIds)
     && componentContentMatches
@@ -42,6 +46,14 @@ function sameWires(left: DiagramRecord['wires'], right: DiagramRecord['wires']):
 function sameDefinitions(left: DiagramRecord, right: DiagramRecord): boolean {
   return JSON.stringify(left.interfaces) === JSON.stringify(right.interfaces)
     && JSON.stringify(left.types) === JSON.stringify(right.types);
+}
+
+function sameFlows(left: DiagramRecord, right: DiagramRecord): boolean {
+  return JSON.stringify(left.flows ?? {}) === JSON.stringify(right.flows ?? {});
+}
+
+function activeFlow(record: DiagramRecord): string | undefined {
+  return record.views[record.activeViewId]?.flowId as string | undefined;
 }
 
 function activeLayout(record: DiagramRecord): DiagramRecord['layouts'][string] {
@@ -118,8 +130,15 @@ export function commandsFor(before: DiagramRecord, target: DiagramRecord): Recor
   const rebuiltIds = survivingIds.filter((id) => !structurallyEqual(before.nodes[id], target.nodes[id]));
   const rebuildWires = removedIds.length > 0 || rebuiltIds.length > 0
     || !sameWires(before.wires, target.wires);
+  const beforeFlow = activeFlow(before);
+  const targetFlow = activeFlow(target);
+
+  if (beforeFlow && beforeFlow !== targetFlow) commands.push({ kind: 'flow.activate' });
 
   if (before.name !== target.name) commands.push({ kind: 'diagram.rename', name: target.name });
+  if (before.orientation !== target.orientation) {
+    commands.push({ kind: 'diagram.setOrientation', orientation: target.orientation });
+  }
   if (rebuildWires) {
     for (const wire of Object.values(before.wires)) commands.push({ kind: 'wire.remove', id: wire.id as string });
   }
@@ -153,6 +172,12 @@ export function commandsFor(before: DiagramRecord, target: DiagramRecord): Recor
   }
   if (rebuildWires) {
     for (const wire of Object.values(target.wires)) commands.push({ kind: 'wire.add', wire });
+  }
+  if (!sameFlows(before, target)) {
+    commands.push({ kind: 'diagram.flows.replace', flows: structuredClone(target.flows ?? {}) });
+  }
+  if (targetFlow && targetFlow !== beforeFlow) {
+    commands.push({ kind: 'flow.activate', flowId: targetFlow as never });
   }
   const targetPresentation = presentationOf(target);
   if (rebuildWires || rebuiltIds.length > 0

@@ -1,0 +1,33 @@
+/* Boundaries remain quiet containers; crossing state is visible at the membrane and wire. */
+.scope-node--boundary {
+  border-color: color-mix(in srgb, var(--accent) 62%, var(--border-soft));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.scope-node--boundary .scope-node__title { color: var(--accent); }
+
+/* A gate is a property of any descendant node kind, so the React Flow wrapper owns the mark. */
+.canvas-surface .react-flow__node.is-boundary-gate::after {
+  position: absolute;
+  z-index: 8;
+  top: calc(-8px / var(--nvk-zoom, 1));
+  right: calc(10px / var(--nvk-zoom, 1));
+  width: calc(14px / var(--nvk-zoom, 1));
+  height: calc(14px / var(--nvk-zoom, 1));
+  border: calc(2px / var(--nvk-zoom, 1)) solid var(--accent-strong);
+  border-radius: 50%;
+  background: var(--bg);
+  content: '';
+  pointer-events: none;
+}
+
+.canvas-surface .react-flow__edge.is-crossing .react-flow__edge-path {
+  stroke: var(--accent);
+  opacity: 0.9;
+}
+
+/* A bypass is evidence, not an error state: colour distinguishes it without rerouting it. */
+.canvas-surface .react-flow__edge.is-crossing-bypass .react-flow__edge-path {
+  stroke: var(--danger-strong);
+  opacity: 1;
+}

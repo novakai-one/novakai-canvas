@@ -42,6 +42,6 @@ export function EntityNode({ data }: NodeProps<EntityFlowNode>) {
         })}
       </div>
     </article>
-    <NodePorts connectable={editable} />
+    <NodePorts connectable={editable} methods={data.interfaces} node={node} />
   </div>;
 }

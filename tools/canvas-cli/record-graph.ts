@@ -94,6 +94,9 @@ function documentFor(record: DiagramRecord): ArchitectureDocument {
     id: record.id as string,
     name: record.name,
     revision: record.revision,
+    // The axis authority reads orientation from the document; dropping it here would
+    // silently lay out every left-right map top-down.
+    ...(record.orientation === undefined ? {} : { orientation: record.orientation }),
     nodes: Object.fromEntries(Object.values(record.nodes).map((node) => [node.id, {
       ...node,
       // The record model renamed `scope` to `group`; layout still speaks the older word.

@@ -1,3 +1,4 @@
+import type { Orientation } from '../../../src/domain/orientation.ts';
 import type { CrossDiagramLink, DiagramRecord } from '../../../src/canvas.ts';
 import type { ContainerArrangement, NodeAppearance } from '../../../src/domain/canvas-presentation.ts';
 import type { WireAppearance } from '../../../src/domain/wire-appearance.ts';
@@ -8,16 +9,19 @@ import type { CrossDiagramWire, LinkEnd } from '../wire-authoring.ts';
 export type { CrossDiagramWire, LinkEnd } from '../wire-authoring.ts';
 
 /** A refusal to compile, always paired with the fix that would make it compile. */
-export interface CompileError { message: string; hint: string }
+export interface CompileError { message: string; hint: string; line?: number }
 
 /** One diagram's complete content, exactly as its scope block declares it. */
 export interface CompiledDiagram {
   /** Reuses the existing record's id when the scope already exists, so identity survives. */
   id: string;
   name: string;
+  /** Declared on the root scope. Omitted here means omitted in the file. */
+  orientation?: Orientation;
   rootNodeId: string;
   nodes: Record<string, RecordNode>;
   wires: Record<string, RecordWire>;
+  flows: NonNullable<DiagramRecord['flows']>;
   interfaces: DiagramRecord['interfaces'];
   types: DiagramRecord['types'];
   appearanceByNodeId: Record<string, NodeAppearance>;

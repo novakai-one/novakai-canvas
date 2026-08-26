@@ -1,6 +1,8 @@
 /** Prints records as canonical, round-trippable agent DSL. */
 
-import { printWireReference, wireReferenceFor } from '../authoring/wire-reference.ts';
+import {
+  printWireReference, wireReferenceFor, wireReferenceForEndpoint,
+} from '../authoring/wire-reference.ts';
 import type { DiagramRecord } from '../domain/records.ts';
 import {
   WIRE_APPEARANCE_SPECIFICATIONS, type WireAppearance,
@@ -11,6 +13,8 @@ import { printDeclarations } from './declarations.ts';
 import {
   arrangementAttributes, byWireOrder, exportNodes, quote, rootGroupId,
 } from './ordering.ts';
+import { compileFlows, stepsOf } from '../domain/flows.ts';
+import { slugify } from '../authoring/slug.ts';
 
 const CARDINALITY_ATTRIBUTES = [
   { key: 'source-cardinality', field: 'sourceCardinality' },
@@ -57,8 +61,8 @@ function printWires(record: DiagramRecord, context: DiagramExportContext): strin
     const source = record.nodes[wire.source.nodeId];
     const target = record.nodes[wire.target.nodeId];
     if (!source || !target) throw new Error(`diagram-export-missing-wire-end:${wire.id}`);
-    const sourceReference = wireReferenceFor(source);
-    const targetReference = wireReferenceFor(target);
+    const sourceReference = wireReferenceForEndpoint(record, wire.source);
+    const targetReference = wireReferenceForEndpoint(record, wire.target);
     if (!sourceReference || !targetReference) continue;
     lines.push(wireLine(
       sourceReference,
@@ -86,21 +90,35 @@ function printWires(record: DiagramRecord, context: DiagramExportContext): strin
   return lines;
 }
 
+function printFlows(record: DiagramRecord, rootId: string | undefined): string[] {
+  const lines: string[] = [];
+  for (const [id, flow] of compileFlows(record)) {
+    const generated = `${rootId ?? record.id}--flow-${slugify(flow.name)}`;
+    lines.push(`  flow ${quote(flow.name)}${id === generated ? '' : ` id=${quote(id)}`}`);
+    for (const step of stepsOf(flow)) lines.push(`    step ${step.ordinal} ${quote(step.ref)}`);
+    lines.push('  end');
+  }
+  return lines;
+}
+
 /** Prints one complete record, including nested declarations and outbound relationships. */
 export function printRecord(record: DiagramRecord, context: DiagramExportContext): string {
   const nodes = exportNodes(record);
   const rootId = rootGroupId(record);
   const root = rootId ? nodes[rootId] : undefined;
   const layout = record.layouts[record.views[record.activeViewId]?.layoutId];
-  const rootAttributes = arrangementAttributes(
-    rootId ? layout?.arrangementByContainerId?.[rootId] : undefined,
-  );
+  const rootAttributes = [
+    ...arrangementAttributes(rootId ? layout?.arrangementByContainerId?.[rootId] : undefined),
+    // Printed only when declared: writing the default would rewrite every existing map.
+    ...(record.orientation === undefined ? [] : [`orientation=${record.orientation}`]),
+  ];
   const title = root?.label ?? record.name;
   const lines = [
     `scope ${quote(title)}${root?.description ? ` ${quote(root.description)}` : ''}`
       + `${rootAttributes.length ? ` ${rootAttributes.join(' ')}` : ''}`,
     ...printDeclarations(record, nodes, layout, rootId),
     ...printWires(record, context),
+    ...printFlows(record, rootId),
   ];
   return `${lines.join('\n')}\n`;
 }

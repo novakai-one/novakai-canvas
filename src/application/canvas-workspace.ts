@@ -1,5 +1,6 @@
 import type { DiagramRecord } from '../domain/records.ts';
 import { executeRecordCommand } from './canvas-workspace/command.ts';
+import { diagramRecordSchema } from '../domain/record-schema.ts';
 import type {
   ActorContext, CanvasWorkspace, ChangeOutcome, RecordChangeSet, RecordCommand,
 } from './canvas-workspace/contract.ts';
@@ -97,6 +98,15 @@ class WorkspaceRuntime implements CanvasWorkspace {
       const execution = executeRecordCommand(candidate, commands[index]);
       if (!execution.applied) return { ...execution, commandIndex: index };
       candidate = execution.record;
+    }
+    try {
+      diagramRecordSchema.parse(candidate);
+    } catch (error) {
+      return {
+        applied: false,
+        reason: error instanceof Error ? error.message : String(error),
+        commandIndex: commands.length - 1,
+      };
     }
     return { applied: true, record: candidate };
   }

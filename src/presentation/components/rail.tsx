@@ -9,6 +9,9 @@ import type { CreatableNodeKind } from '../canvas-actions';
 import { BuildPalette } from './build-palette';
 import { contentIndent, type ContentRow } from './diagram-contents';
 import { LibraryOverlay } from './library-overlay';
+import type { FlowId } from '../../domain/ids.ts';
+import type { FlowLibrary } from '../../domain/flows.ts';
+import { FlowSwitcher } from './flow-switcher.tsx';
 
 /** The two things the left panel is for: changing the canvas, and finding what is on it. */
 const RAIL_TABS = ['build', 'contents'] as const;
@@ -19,6 +22,9 @@ export interface RailProps {
   diagrams: DiagramSummary[];
   activeDiagramId: string;
   activeDiagramName: string;
+  flows: FlowLibrary;
+  activeFlowId?: FlowId;
+  activateFlow: (flowId: FlowId | undefined) => void;
   changeDiagram: (diagramId: string) => void;
   createDiagram: () => void;
   /** Travel to one object a search named: opens its diagram and lands on it. */
@@ -135,6 +141,11 @@ export function Rail(props: RailProps) {
           />
         )}
       </div>
+      <FlowSwitcher
+        activeFlowId={props.activeFlowId}
+        flows={props.flows}
+        onSelect={props.activateFlow}
+      />
       <TabStrip active={tab} label="Left panel surfaces" onSelect={setTab} tabs={RAIL_TABS} />
       <PanelBody>
         {tab === 'build' ? <BuildPalette {...props} /> : <ContentsTab {...props} />}

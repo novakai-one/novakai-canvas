@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ORIENTATIONS } from './orientation.ts';
 import { allComponents, contentFieldsFor, kindList } from '../components/registry.ts';
 import type { DiagramRecord, LibraryIndex } from './records.ts';
 import {
@@ -26,6 +27,10 @@ const canvasNodeBase = {
   label: z.string(),
   description: z.string().optional(),
   parentId: z.string().min(1).optional(),
+  band: z.number().int().nonnegative().optional(),
+  lane: z.number().int().nonnegative().optional(),
+  crossing: z.enum(['gated', 'free']).optional(),
+  gate: z.string().min(1).optional(),
   interfaceIds: z.array(z.string().min(1)),
   typeIds: z.array(z.string().min(1)),
   subjectRef: canvasReference.optional(),
@@ -49,6 +54,15 @@ const canvasWire = z.object({
   label: z.string(),
   source: endpoint,
   target: endpoint,
+});
+
+const flow = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  steps: z.array(z.object({
+    ref: z.string().min(1),
+    ordinal: z.number().int(),
+  })),
 });
 
 const nodePlacement = z.object({
@@ -82,6 +96,7 @@ const canvasView = z.object({
   viewport: z.object({ x: z.number(), y: z.number(), zoom: z.number() }),
   collapsedNodeIds: z.array(z.string().min(1)),
   hiddenKinds: z.array(z.enum(kindList())),
+  flowId: z.string().min(1).optional(),
 });
 
 const interfaceObjects = z.record(z.string(), z.object({
@@ -116,10 +131,12 @@ const diagramRecord = z.object({
   schemaVersion: z.literal(3),
   id: z.string().min(1),
   name: z.string(),
+  orientation: z.enum(ORIENTATIONS).optional(),
   status: z.enum(['active', 'archived']),
   revision: z.number().int().nonnegative(),
   nodes: z.record(z.string(), canvasNode),
   wires: z.record(z.string(), canvasWire),
+  flows: z.record(z.string(), flow).optional(),
   interfaces: interfaceObjects,
   types: typeObjects,
   layouts: z.record(z.string(), canvasLayout),

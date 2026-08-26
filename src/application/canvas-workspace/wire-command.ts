@@ -1,9 +1,12 @@
 /** Complete validation and mutation policy for the workspace wire command family. */
 
 import { componentFor } from '../../components/registry.ts';
-import type { DiagramRecord, WireRouteHint } from '../../domain/records.ts';
+import type {
+  DiagramRecord, Endpoint, PortAnchor, WireRouteHint,
+} from '../../domain/records.ts';
 import type { RecordCommand } from './commands.ts';
 import { WIRE_CARDINALITIES } from '../../domain/wire-cardinality.ts';
+import { compileTopology } from '../../domain/topology.ts';
 
 type WireCommand = Extract<RecordCommand, { kind: `wire.${string}` }>;
 type Layout = DiagramRecord['layouts'][string];
@@ -31,18 +34,40 @@ function validateRoute(command: Extract<WireCommand, { kind: 'wire.setRoute' }>)
   }
 }
 
+function reconnectedEndpoint(
+  endpoint: Endpoint,
+  nodeId: string | undefined,
+  anchor: PortAnchor | null | undefined,
+): Endpoint {
+  const next = { ...endpoint, ...(nodeId ? { nodeId: nodeId as never } : {}) };
+  if (anchor === null || (nodeId && anchor === undefined)) delete next.anchor;
+  else if (anchor) next.anchor = anchor;
+  return next;
+}
+
+function validatePortResult(record: DiagramRecord, wire: DiagramRecord['wires'][string]): void {
+  compileTopology({ ...record, wires: { ...record.wires, [wire.id]: wire } });
+}
+
 /** Rejects an invalid wire command by throwing the existing stable internal reason. */
 export function validateWireCommand(record: DiagramRecord, command: WireCommand): void {
   if (command.kind === 'wire.add') {
     if (record.wires[command.wire.id]) throw new Error(`wire-already-exists:${command.wire.id}`);
     requireWireEndpoint(record, command.wire.source.nodeId);
     requireWireEndpoint(record, command.wire.target.nodeId);
+    validatePortResult(record, command.wire);
     return;
   }
   if (!record.wires[command.id]) throw new Error(`wire-not-found:${command.id}`);
   if (command.kind === 'wire.reconnect') {
     if (command.source) requireWireEndpoint(record, command.source);
     if (command.target) requireWireEndpoint(record, command.target);
+    const wire = record.wires[command.id];
+    validatePortResult(record, {
+      ...wire,
+      source: reconnectedEndpoint(wire.source, command.source, command.sourceAnchor),
+      target: reconnectedEndpoint(wire.target, command.target, command.targetAnchor),
+    });
   }
   if (command.kind === 'wire.setRoute') validateRoute(command);
   if (command.kind === 'wire.setCardinality') {
@@ -83,8 +108,8 @@ export function applyWireCommand(
     case 'wire.add': record.wires[command.wire.id] = command.wire; return;
     case 'wire.reconnect': {
       const wire = record.wires[command.id];
-      if (command.source) wire.source = { ...wire.source, nodeId: command.source as never };
-      if (command.target) wire.target = { ...wire.target, nodeId: command.target as never };
+      wire.source = reconnectedEndpoint(wire.source, command.source, command.sourceAnchor);
+      wire.target = reconnectedEndpoint(wire.target, command.target, command.targetAnchor);
       return;
     }
     case 'wire.setRoute': setWireRoute(layout, command); return;

@@ -31,7 +31,7 @@ export function parseWire(state: ParserState, line: string, lineNumber: number):
     return;
   }
   if (sourceTokens.tokens.length !== 1 || targetTokens.tokens.length < 1) {
-    state.fail(lineNumber, 'wire endpoints must each be one name', 'quote multi-word names: wire "browse CLI" -> Broker : ...');
+    state.fail(lineNumber, 'wire endpoints must each be one name', 'quote multi-word names and ports: wire "browse CLI" -> "Broker.acquire" : ...');
     return;
   }
   const attributes = parseWireAttributes(targetTokens.tokens.slice(1));

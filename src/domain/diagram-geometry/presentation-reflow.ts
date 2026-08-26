@@ -1,6 +1,7 @@
 import type { ArchitectureDocument, CanvasNode as LegacyNode, NodePlacement } from '../model.ts';
 import type { DiagramRecord } from '../records.ts';
 import { layoutContainer } from './container.ts';
+import { reconcileTopology } from './lane-edges.ts';
 import { LayoutState } from './state.ts';
 
 const GROUP_PADDING = 40;
@@ -29,6 +30,7 @@ function geometryDocument(record: DiagramRecord): ArchitectureDocument {
     schemaVersion: 2,
     id: record.id as string,
     name: record.name,
+    orientation: record.orientation,
     revision: record.revision,
     nodes: Object.fromEntries(Object.entries(record.nodes).map(([id, node]) => [id, {
       ...node,
@@ -128,6 +130,24 @@ export function reflowPresentation(
   }
   for (const id of resized) if (!arrangementRoot(record, id)) growAncestorBounds(state, id);
 
+  return {
+    ...record,
+    layouts: {
+      ...record.layouts,
+      [layout.id]: { ...layout, placements: placements(state) as typeof layout.placements },
+    },
+  };
+}
+
+/** Applies declared topology to current placements without re-running automatic ranking. */
+export function reflowTopology(record: DiagramRecord): DiagramRecord {
+  const { layout } = active(record);
+  const state = LayoutState.create(geometryDocument(record), layout.id, GROUP_PADDING);
+  for (const [id, node] of Object.entries(state.document.nodes)) {
+    if (node.kind !== 'scope' || node.parentId) continue;
+    const size = reconcileTopology(state, id);
+    if (size) state.document.nodes[id] = { ...node, size };
+  }
   return {
     ...record,
     layouts: {

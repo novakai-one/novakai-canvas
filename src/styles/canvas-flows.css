@@ -1,0 +1,51 @@
+/* A flow changes reading weight only; every wire and label remains interactive and present. */
+.flow-switcher {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border-soft);
+  color: var(--ink-muted);
+  font-size: var(--text-xs);
+}
+
+.flow-switcher select {
+  min-width: 0;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--control-radius);
+  color: var(--ink);
+  background: var(--surface-1);
+  font: inherit;
+}
+
+.legend-flow {
+  margin-bottom: var(--space-1);
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+.canvas-surface .react-flow__edge.has-flow-focal .react-flow__edge-path {
+  stroke: var(--accent-strong);
+  stroke-width: 2.4px !important;
+  opacity: 1;
+}
+
+.canvas-surface .react-flow__edge.has-flow-context .react-flow__edge-path { opacity: 0.55; }
+
+.canvas-surface .react-flow__edge.has-flow-muted .react-flow__edge-path {
+  stroke: var(--wire-dim);
+  stroke-width: 1.1px !important;
+  opacity: 0.28;
+}
+
+.wire-label.has-flow-focal { color: var(--accent-strong); opacity: 1; font-weight: 600; }
+.wire-label.has-flow-context { opacity: 0.72; }
+.wire-label.has-flow-muted { color: var(--ink-faint); opacity: 0.38; }
+
+/* Selection always wins; a muted relationship is still a first-class selectable object. */
+.canvas-surface .react-flow__edge.selected .react-flow__edge-path {
+  stroke: var(--gold);
+  opacity: 1;
+}
+
+.wire-label.is-selected { color: var(--gold); opacity: 1; }

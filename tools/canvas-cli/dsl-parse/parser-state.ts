@@ -1,4 +1,4 @@
-import type { NodeAst, ParseError, ParseResult, ScopeAst, ZoneAst } from '../dsl-ast.ts';
+import type { FlowAst, FlowStepAst, NodeAst, ParseError, ParseResult, ScopeAst, ZoneAst } from '../dsl-ast.ts';
 import type { WireAst } from '../wire-authoring.ts';
 
 /** Mutable cursor for one parse; grammar handlers mutate it through these operations only. */
@@ -8,6 +8,7 @@ export class ParserState {
   private scope: ScopeAst | null = null;
   private node: NodeAst | null = null;
   private zoneStack: ZoneAst[] = [];
+  private flow: FlowAst | null = null;
 
   fail(line: number, message: string, hint: string): void {
     this.errors.push({ line, message, hint });
@@ -21,7 +22,14 @@ export class ParserState {
     return this.node;
   }
 
+  currentFlow(): FlowAst | null { return this.flow; }
+
+  inZone(): boolean { return this.zoneStack.length > 0; }
+
   openScope(scope: ScopeAst, line: number): void {
+    if (this.flow) {
+      this.fail(line, `unclosed flow "${this.flow.label}" (line ${this.flow.line}) before new scope`, 'close the flow with end');
+    }
     if (this.zoneStack.length > 0 && this.scope) {
       const unclosed = this.zoneStack[this.zoneStack.length - 1];
       this.fail(
@@ -33,8 +41,19 @@ export class ParserState {
     this.scope = scope;
     this.node = null;
     this.zoneStack = [];
+    this.flow = null;
     this.scopes.push(scope);
   }
+
+  openFlow(flow: FlowAst): void {
+    (this.scope as ScopeAst).flows.push(flow);
+    this.flow = flow;
+    this.node = null;
+  }
+
+  appendFlowStep(step: FlowStepAst): void { (this.flow as FlowAst).steps.push(step); }
+
+  closeFlow(): void { this.flow = null; }
 
   appendWire(wire: WireAst): void {
     (this.scope as ScopeAst).wires.push(wire);
@@ -65,6 +84,9 @@ export class ParserState {
   }
 
   finish(lastLine: number): ParseResult {
+    if (this.flow) {
+      this.fail(lastLine, `unclosed flow "${this.flow.label}" (opened line ${this.flow.line})`, 'close the flow with end');
+    }
     if (this.zoneStack.length > 0 && this.scope) {
       const zone = this.zoneStack[this.zoneStack.length - 1];
       this.fail(

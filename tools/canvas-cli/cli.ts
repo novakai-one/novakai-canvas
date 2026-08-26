@@ -3,7 +3,7 @@
 import { parseArgs, fail } from './cli-args.ts';
 import { CLI_HELP, describeCapability } from './cli-contract.ts';
 import { runApply, runCheck, runSnapshot } from './cli-authoring.ts';
-import { runBatch, runMaps, runRead, runRemove } from './cli-library.ts';
+import { runBatch, runFlows, runMaps, runRead, runRemove } from './cli-library.ts';
 import { openLibrary } from './library-io.ts';
 
 async function main(): Promise<void> {
@@ -17,12 +17,13 @@ async function main(): Promise<void> {
     return;
   }
   if (args.verb === 'check') return runCheck(args);
-  if (!['maps', 'read', 'apply', 'rm', 'snapshot', 'batch'].includes(args.verb)) {
+  if (!['maps', 'flows', 'read', 'apply', 'rm', 'snapshot', 'batch'].includes(args.verb)) {
     process.stdout.write(CLI_HELP);
     fail(`unknown verb "${args.verb}"`);
   }
   const opened = await openLibrary(args.dataDir, args.positional[0] ?? 'stdin');
   if (args.verb === 'maps') return runMaps(opened);
+  if (args.verb === 'flows') return runFlows(opened, args);
   if (args.verb === 'read') return runRead(opened, args);
   if (args.verb === 'apply') return runApply(opened, args);
   if (args.verb === 'batch') return runBatch(opened, args);

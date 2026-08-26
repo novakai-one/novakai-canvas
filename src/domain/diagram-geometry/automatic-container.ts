@@ -1,7 +1,7 @@
 import dagre from '@dagrejs/dagre';
-import { ARCHITECTURE_FLOW } from '../flow.ts';
 import type { Size } from '../model.ts';
 import { enclosingSize, type Rect } from './geometry.ts';
+import { placeByTopology } from './lane-edges.ts';
 import { minimumConnectionSeparation } from './policy.ts';
 import type { LayoutNestedContainer, LayoutState } from './state.ts';
 
@@ -20,7 +20,7 @@ function layoutDagreChildren(state: LayoutState, childIds: readonly string[]): S
   const graph = new dagre.graphlib.Graph();
   const ranksep = state.hasInternalWire(childIds)
     ? Math.max(GRID_ROW_GAP, minimumConnectionSeparation()) : GRID_ROW_GAP;
-  graph.setGraph({ rankdir: ARCHITECTURE_FLOW.rankDirection, nodesep: GRID_COL_GAP, ranksep });
+  graph.setGraph({ rankdir: state.axis.rankDirection, nodesep: GRID_COL_GAP, ranksep });
   graph.setDefaultEdgeLabel(() => ({}));
   for (const id of childIds) graph.setNode(id, state.measureNode(id));
   const childSet = new Set(childIds);
@@ -162,12 +162,17 @@ export function layoutAutomaticContainer(
 ): Size {
   const childIds = state.orderedDirectChildIds(containerId);
   const zoneIds = childIds.filter((id) => state.document.nodes[id].kind === 'scope');
-  if (zoneIds.length === 0) return layoutDagreChildren(state, childIds);
+  if (zoneIds.length === 0) {
+    const size = layoutDagreChildren(state, childIds);
+    // The pin pass runs after the engine has placed every child; nothing declared, nothing moves.
+    return placeByTopology(state, childIds) ?? size;
+  }
   for (const zoneId of zoneIds) {
     const size = layoutNested(zoneId);
     if (!state.isPinned(zoneId)) {
       state.document.nodes[zoneId] = { ...state.document.nodes[zoneId], size };
     }
   }
-  return layoutRankedChildren(state, childIds);
+  const size = layoutRankedChildren(state, childIds);
+  return placeByTopology(state, childIds) ?? size;
 }

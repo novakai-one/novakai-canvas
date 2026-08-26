@@ -16,7 +16,7 @@ type ScopeFlowNode = Node<ArchitectureNodeData, 'scope'>;
 export function ScopeNode({ data, selected }: NodeProps<ScopeFlowNode>) {
   const standalone = data.node.label.startsWith('Standalone');
   return (
-    <section className={`scope-node${standalone ? ' scope-node--standalone' : ''}${selected ? ' is-selected' : ''}`}>
+    <section className={`scope-node${standalone ? ' scope-node--standalone' : ''}${data.node.crossing ? ' scope-node--boundary' : ''}${selected ? ' is-selected' : ''}`}>
       <NodePorts connectable={data.editable} />
       <span
         className="scope-node__title"

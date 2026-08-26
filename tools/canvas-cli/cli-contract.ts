@@ -38,6 +38,7 @@ export const CLI_HELP = `canvas — draw architecture maps from your terminal
 
 Usage
   ./canvas maps                     list maps (top-level scopes)
+  ./canvas flows <map>              list named flows and their ordered wire IDs
   ./canvas read [map] [--format dsl|agent|markdown|json]
                                     export one map (or all maps); default dsl
   ./canvas describe                 print the machine-readable command vocabulary
@@ -56,22 +57,28 @@ DSL — one statement per line; a scope block fully declares that map.
 New objects are placed automatically; saved placement is preserved. Never write coordinates or edit JSON by hand.
 Scope and zone containers share the zone.layout, zone.gap and zone.align vocabulary.
 
-  scope "Agent Browser Sessions"
+  scope "Agent Browser Sessions" [orientation=top-down|left-right]  # which way the map runs
     note "One session per instance; renders off-screen."
-    module "Session broker" "Owns leases and allocation"
+    module "Session broker" "Owns leases and allocation" [band=0|1|2|…] [lane=0|1|2|…]
       acquire(AgentId) -> SessionHandle
       release(SessionId) -> void
       type SessionHandle { sessionId, cdpEndpoint }
     runtime "Chrome instances"
     resource "sessions.json"
-    wire "browse CLI" -> "Session broker" : acquire(AgentId) -> SessionHandle [queries]
+    zone "Protected store" [crossing=gated|free] [gate="node label"] ... end
+    wire "browse CLI" -> "Session broker.acquire" : acquire(AgentId) -> SessionHandle [queries]
+    flow "Acquire a session"
+      step 1 "agent-browser-sessions--wire-1"
+    end
 
 ${componentHelp}
   methods       name(TypeA, TypeB) -> TypeC            under a node; bare type names
   types         type Name { fieldA, fieldB }           under a node
-  wires         wire A|@ref|#node-id -> B|@ref|#node-id ${wireAppearanceHelp} : <the actual call> [kind]
+  wires         wire A|A.method|@ref|#node-id -> B|B.method|@ref|#node-id ${wireAppearanceHelp} : <contract> [kind]
                 kind: owns|references|assigns|queries|executes|mentions|missing
+                A.method names one method declared directly under node A
                 an endpoint naming a node in another map becomes a cross-map link
+  flows         flow "Name" [id=stable-id] ... step 1 "existing-wire-id" ... end
   names         quote multi-word names: "browse CLI"; single tokens can go bare
 `;
 
@@ -79,7 +86,8 @@ export const COMMAND_KINDS = [
   'node.add', 'node.move', 'node.resize', 'node.autoSize', 'node.pin', 'node.update',
   'node.content.set', 'node.reparent',
   'node.remove', 'wire.add', 'wire.reconnect', 'wire.setCardinality', 'wire.remove', 'view.setCollapsed',
-  'view.setViewport', 'diagram.rename', 'diagram.definitions.replace', 'layout.presentation.replace',
+  'view.setViewport', 'diagram.rename', 'diagram.setOrientation',
+  'flow.activate', 'diagram.definitions.replace', 'diagram.flows.replace', 'layout.presentation.replace',
 ] as const;
 
 /** The vocabulary an unfamiliar agent needs to drive Canvas without reading code. */
@@ -105,9 +113,14 @@ export function describeCapability(): unknown {
       command: './canvas read [map] --format <format>',
     },
     dsl: {
+      flow: {
+        syntax: 'flow <name> [id=<stable-id>] ... step <positive ordinal> <wire-id> ... end',
+        ownership: 'diagram semantic data; creates no node, wire, layout, or view',
+        activationCommand: 'flow.activate',
+      },
       wire: {
-        syntax: `wire <label|@ref|#node-id> -> <label|@ref|#node-id> ${wireAppearanceHelp} : <contract> [kind]`,
-        endpoints: ['label', '@ref', '#node-id'],
+        syntax: `wire <label|node.method|@ref|#node-id> -> <label|node.method|@ref|#node-id> ${wireAppearanceHelp} : <contract> [kind]`,
+        endpoints: ['label', 'node.method', '@ref', '#node-id'],
         cardinality: {
           source: { key: 'source-cardinality', values: [...WIRE_CARDINALITIES], omitted: 'arrow' },
           target: { key: 'target-cardinality', values: [...WIRE_CARDINALITIES], omitted: 'arrow' },

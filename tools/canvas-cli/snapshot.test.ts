@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { planWireRoutes, projectView, type DiagramRecord } from '../../src/canvas.ts';
+import {
+  orientationOf, planWireRoutes, projectView, resolveAxis, type DiagramRecord,
+} from '../../src/canvas.ts';
 import { buildRecord } from './dsl-fixture.ts';
 import { blankRecord } from './record-apply.ts';
 import { asId, type RecordNode, type RecordPlacement, type RecordWire } from './record-graph.ts';
@@ -79,6 +81,25 @@ function buildNested(): DiagramRecord {
 }
 
 describe('renderRecordSvg', () => {
+  it('keeps dormant flows byte-identical and emits every active emphasis', () => {
+    const base = `scope "Flow Snapshot"
+  module A
+  module B
+  module C
+  module D
+  module E
+  wire A -> B : focal
+  wire B -> C : adjacent
+  wire D -> E : remote\n`;
+    const plain = buildRecord(base);
+    const flowed = buildRecord(`${base}  flow "Path"\n    step 1 "flow-snapshot--wire-1"\n  end\n`, { [plain.id]: plain });
+    expect(renderRecordSvg(flowed)).toBe(renderRecordSvg(plain));
+    flowed.views[flowed.activeViewId].flowId = Object.keys(flowed.flows ?? {})[0] as never;
+    const active = renderRecordSvg(flowed);
+    expect(['focal', 'context', 'muted'].every((value) => active.includes(`data-emphasis="${value}"`))).toBe(true);
+    expect(['focal', 'adjacent', 'remote'].every((label) => active.includes(`>${label}</text>`))).toBe(true);
+  });
+
   it('renders every label, signature, and contract, XML-escaped', () => {
     const svg = renderRecordSvg(build());
     expect(svg.startsWith('<svg')).toBe(true);
@@ -190,7 +211,9 @@ describe('renderRecordSvg with nested zones', () => {
     expect(svg).toContain('stroke-dasharray="7 5"');
     expect(svg).toContain('stroke-dasharray="9 4 2 4"');
     const layout = record.layouts[record.views[record.activeViewId].layoutId];
-    const plans = planWireRoutes(projectView(record), layout.wireRouteHints);
+    const plans = planWireRoutes(projectView(record), layout.wireRouteHints, {
+      axis: resolveAxis(orientationOf(record)),
+    });
     expect(Object.values(plans).every((plan) => plan.collisions === 0)).toBe(true);
     const points = plans['w-node-node'].points.map((point) => ({
       x: point.x + 24, y: point.y + 24,

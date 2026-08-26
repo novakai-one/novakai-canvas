@@ -16,8 +16,9 @@ export function renderSnapshotZones(scene: SnapshotScene): string[] {
     const { x, y } = scene.positionOf(zone.id as string);
     const { width, height } = zone.size;
     const dash = zone.label.startsWith('Standalone') ? ' stroke-dasharray="6 4"' : '';
+    const boundary = scene.topology.boundaries.some((item) => item.nodeId === zone.id);
     parts.push(
-      `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="none" stroke="${colors.border}"${dash} rx="6"/>`,
+      `<rect${boundary ? ' class="topology-boundary"' : ''} x="${x}" y="${y}" width="${width}" height="${height}" fill="none" stroke="${boundary ? colors.gold : colors.border}"${dash} rx="6"/>`,
       `<text x="${x + 14}" y="${y + 22}" fill="${colors.gold}" font-family="${font}" font-size="12" font-weight="600">${escapeSvg(zone.label)}</text>`,
     );
   }
@@ -104,12 +105,19 @@ function renderFallbackCard(
 /** Emits non-container descendants in preorder using component or shared card rendering. */
 export function renderSnapshotNodes(record: DiagramRecord, scene: SnapshotScene): string[] {
   const parts: string[] = [];
+  const gateIds = new Set(scene.topology.boundaries.flatMap((boundary) =>
+    boundary.gate ? [boundary.gate as string] : []));
   for (const node of scene.descendants) {
     if (node.kind === 'group') continue;
     const { x, y } = scene.positionOf(node.id as string);
     parts.push(...(node.kind === 'comment'
       ? renderComment(node, x, y)
       : renderFallbackCard(record, scene, node, x, y)));
+    if (gateIds.has(node.id as string)) {
+      parts.push(
+        `<circle class="topology-gate" cx="${x + node.size.width - 18}" cy="${y}" r="7" fill="${SNAPSHOT_STYLE.colors.page}" stroke="${SNAPSHOT_STYLE.colors.gold}" stroke-width="2"/>`,
+      );
+    }
   }
   return parts;
 }

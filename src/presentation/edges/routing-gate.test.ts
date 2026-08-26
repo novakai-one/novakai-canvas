@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { diagramRecordSchema, projectView } from '../../canvas';
+import { diagramRecordSchema, orientationOf, projectView, resolveAxis } from '../../canvas';
+import type { Axis } from '../../canvas';
 import type { DiagramRecord } from '../../canvas';
 import { chooseSides, nodeRects, wireObstacles } from '../projection';
 import {
@@ -29,14 +30,14 @@ const records: Array<[string, DiagramRecord]> = Object.entries(
 /*
  * The sides the application actually draws with.
  *
- * This used to pin ARCHITECTURE_FLOW's fixed bottom/top pair while `projectEdges` chose sides
+ * This used to pin one fixed bottom/top pair while `projectEdges` chose sides
  * from geometry — the same shape of mistake as routing without obstacles: a gate measuring a
  * route nobody renders. It asks the projection now, so the two cannot drift apart again.
  */
 const sidesFor = (
-  source: Rect, target: Rect, obstacles: ReturnType<typeof wireObstacles>,
+  source: Rect, target: Rect, obstacles: ReturnType<typeof wireObstacles>, axis: Axis,
 ): { sourceSide: RouteSide; targetSide: RouteSide } => {
-  const sides = chooseSides(source, target, obstacles);
+  const sides = chooseSides(source, target, obstacles, axis);
   return { sourceSide: sides.sourceSide as RouteSide, targetSide: sides.targetSide as RouteSide };
 };
 
@@ -70,7 +71,7 @@ function auditDiagram(record: DiagramRecord): Audit {
     const target = rects.get(wire.target.nodeId as string);
     if (!source || !target) continue;
     const obstacles = wireObstacles(view, rects, wire);
-    const { sourceSide, targetSide } = sidesFor(source, target, obstacles);
+    const { sourceSide, targetSide } = sidesFor(source, target, obstacles, resolveAxis(orientationOf(record)));
     const from = attachment(source, sourceSide);
     const to = attachment(target, targetSide);
     const route = routeWire({ source: from, sourceSide, target: to, targetSide, obstacles });
@@ -133,7 +134,7 @@ describe('obstacles are load-bearing', () => {
         const target = rects.get(wire.target.nodeId as string);
         if (!source || !target) continue;
         const obstacles = wireObstacles(view, rects, wire);
-        const { sourceSide, targetSide } = sidesFor(source, target, obstacles);
+        const { sourceSide, targetSide } = sidesFor(source, target, obstacles, resolveAxis(orientationOf(record)));
         const from = attachment(source, sourceSide);
         const to = attachment(target, targetSide);
         withObstacles += routeWire({

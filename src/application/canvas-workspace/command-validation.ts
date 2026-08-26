@@ -7,6 +7,7 @@ import {
   validatePresentation, validateTargetedPresentation,
 } from './presentation-validation.ts';
 import { validateWireCommand } from './wire-command.ts';
+import { compileFlows } from '../../domain/flows.ts';
 
 type ValidationResult = { valid: true } | { valid: false; reason: string };
 type NodeCommand = Extract<RecordCommand, { kind: `node.${string}` }>;
@@ -123,6 +124,13 @@ function validateView(record: DiagramRecord, command: ViewCommand): void {
 }
 
 function validateOrThrow(record: DiagramRecord, command: RecordCommand): void {
+  if (command.kind === 'flow.activate') {
+    const flows = compileFlows(record);
+    if (command.flowId !== undefined && !flows.has(command.flowId)) {
+      throw new Error(`flow-not-found:${command.flowId}`);
+    }
+    return;
+  }
   if (command.kind.startsWith('node.')) return validateNode(record, command as NodeCommand);
   if (command.kind.startsWith('wire.')) return validateWireCommand(record, command as WireCommand);
   if (command.kind.startsWith('interface.')) {
@@ -137,6 +145,10 @@ function validateOrThrow(record: DiagramRecord, command: RecordCommand): void {
   }
   if (command.kind === 'diagram.definitions.replace') {
     return validateDefinitionReplacement(record, command);
+  }
+  if (command.kind === 'diagram.flows.replace') {
+    compileFlows({ ...record, flows: command.flows });
+    return;
   }
   if (command.kind === 'diagram.rename' && command.name.trim().length === 0) {
     throw new Error('diagram-name-empty');

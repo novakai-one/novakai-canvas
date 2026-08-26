@@ -1,5 +1,5 @@
 import type {
-  DiagramId, InterfaceId, LinkId, NodeId, TypeId, ViewId, WireId,
+  DiagramId, FlowId, InterfaceId, LinkId, NodeId, TypeId, ViewId, WireId,
 } from './ids.ts';
 import type {
   CalloutItem, IconCardIcon, MetricStatus, TimelineStep, TreeRow,
@@ -8,6 +8,7 @@ import type {
   CanvasReference, InterfaceObject, SourceReference, TypeObject,
 } from './architecture-values.ts';
 import type { CanvasLayout, CanvasViewBase, PortSide } from './layout-record.ts';
+import type { Orientation } from './orientation.ts';
 import type { NodeKind } from './node-kind.ts';
 import type { OouxRow } from './ooux-object.ts';
 import type { EntityField } from './entity.ts';
@@ -58,6 +59,14 @@ export interface CanvasNode {
   description?: string;
   /** Resolves to a `group` node in the same diagram; the parent chain is acyclic. */
   parentId?: NodeId;
+  /** Declared rank along the axis among its siblings; absent means the engine ranks by wires. */
+  band?: number;
+  /** Declared column across the axis among its siblings; absent means the node floats. */
+  lane?: number;
+  /** A group with a crossing policy is a boundary; absence means an ordinary container. */
+  crossing?: 'gated' | 'free';
+  /** Durable identity of the descendant through which a gated boundary may be crossed. */
+  gate?: NodeId;
   interfaceIds: InterfaceId[];
   typeIds: TypeId[];
   /** Semantic hierarchy rows; present only on kind `tree`. */
@@ -97,6 +106,16 @@ export interface CanvasWire {
   target: Endpoint;
 }
 
+/** One ordered reference to a wire already owned by this diagram. */
+export interface FlowStep { ref: WireId; ordinal: number }
+
+/** A named semantic path over existing wires; it owns no graph or geometry. */
+export interface Flow {
+  id: FlowId;
+  name: string;
+  steps: FlowStep[];
+}
+
 /**
  * One saved reading view.
  *
@@ -124,10 +143,14 @@ export interface DiagramRecord {
   id: DiagramId;
   /** The diagram owns its own title; no node carries it. */
   name: string;
+  /** Which way this diagram runs. Absent means top-down; see `axis.ts`. */
+  orientation?: Orientation;
   status: 'active' | 'archived';
   revision: number;
   nodes: Record<string, CanvasNode>;
   wires: Record<string, CanvasWire>;
+  /** Optional so every pre-F5 v3 record remains byte-compatible. */
+  flows?: Record<string, Flow>;
   interfaces: Record<string, InterfaceObject>;
   types: Record<string, TypeObject>;
   layouts: Record<string, CanvasLayout>;

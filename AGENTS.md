@@ -22,6 +22,7 @@ layout is automatic, so never write coordinates.
 
 ```
 ./canvas maps                     list maps
+./canvas flows <map>              list named flows and their ordered wire IDs
 ./canvas read <map>               print a map as DSL (cheap context reload)
 ./canvas apply [dsl-file]         create/replace maps from DSL (file or stdin)
 ./canvas rm <map> [node]          remove a node or a whole map
@@ -31,18 +32,24 @@ layout is automatic, so never write coordinates.
 `./canvas help` prints the full DSL grammar. The one-screen version:
 
 ```
-scope "My System"                              # a scope block FULLY declares that map
+scope "My System" [orientation=top-down|left-right]   # a scope block FULLY declares that map
   note "Free-text remark."
   module "Session broker" "optional description"
     acquire(AgentId) -> SessionHandle          # methods: bare type names
     type Lease { agentId, ttl }
   runtime "Chrome instances"                   # kinds: module|object|runtime|resource
-  zone "Stores" ... end                        # nested containers; labels unique per map
-  wire "browse CLI" -> "Session broker" : acquire(AgentId) -> SessionHandle [queries]
+  zone "Stores" [crossing=gated|free] [gate="Node"] ... end
+                                                 # boundary attributes are optional
+  wire "browse CLI" -> "Session broker.acquire" : acquire(AgentId) -> SessionHandle [queries]
+  flow "Acquire a session"
+    step 1 "my-system--wire-1"             # references existing wire IDs only
+  end
 ```
 
 Every wire needs its contract (the actual call it carries). Quote multi-word
-names. Re-applying a scope replaces that map; other maps are untouched.
+names and `"Module.method"` port endpoints. Re-applying a scope replaces that
+map; other maps are untouched. Flows add no graph objects or geometry; select
+one in the app to emphasise its existing wires, or choose Structure only.
 
 Use `./canvas`, not `npm run canvas` (npm swallows flags). The dev server
 (`npm run dev`) binds IPv6 — open `http://localhost:5173`, not `127.0.0.1`.

@@ -5,6 +5,7 @@ import {
 } from '../../domain/canvas-presentation.ts';
 import { wireAppearanceSchema } from '../../domain/wire-appearance.ts';
 import type { DiagramRecord } from '../../domain/records.ts';
+import { compileTopology } from '../../domain/topology.ts';
 import { directChildIds } from './arrangement.ts';
 import type { RecordCommand } from './contract.ts';
 
@@ -57,6 +58,7 @@ function validateArrangements(
 
 /** Validates the complete presentation replacement against its record. */
 export function validatePresentation(record: DiagramRecord, command: PresentationCommand): void {
+  compileTopology(record);
   layoutPresentationSchema.parse({
     appearanceByNodeId: command.appearanceByNodeId,
     appearanceByWireId: command.appearanceByWireId,
@@ -74,6 +76,7 @@ export function validateTargetedPresentation(
   record: DiagramRecord,
   command: TargetedPresentationCommand,
 ): void {
+  compileTopology(record);
   if (command.kind === 'layout.nodeAppearance.set') {
     requireNode(record, command.id);
     nodeAppearanceSchema.parse(command.appearance);

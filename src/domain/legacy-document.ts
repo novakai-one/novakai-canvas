@@ -1,5 +1,6 @@
 /** V2 document contracts retained for migration and compatibility hosts. */
 
+import type { Orientation } from './orientation.ts';
 import type { ContainerArrangement, NodeAppearance } from './canvas-presentation.ts';
 import type {
   CanvasReference, InterfaceObject, SourceReference, TypeObject,
@@ -26,6 +27,14 @@ export interface CanvasNode {
   label: string;
   description?: string;
   parentId?: string;
+  /** Declared rank along the axis among its siblings; absent means the engine ranks by wires. */
+  band?: number;
+  /** Declared column across the axis among its siblings; absent means the node floats. */
+  lane?: number;
+  /** A scope with a crossing policy is a boundary; absent scopes remain ordinary containers. */
+  crossing?: 'gated' | 'free';
+  /** Durable identity of the descendant gate for a gated boundary. */
+  gate?: string;
   interfaceIds: string[];
   typeIds: string[];
   /** Semantic hierarchy rows; present only on kind "tree". */
@@ -127,6 +136,8 @@ export interface ArchitectureDocument {
   schemaVersion: 2;
   id: string;
   name: string;
+  /** Copied from the record; the geometry engine resolves its axis from this. */
+  orientation?: Orientation;
   revision: number;
   nodes: Record<string, CanvasNode>;
   interfaces: Record<string, InterfaceObject>;

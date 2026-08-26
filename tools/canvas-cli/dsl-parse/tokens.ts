@@ -7,6 +7,12 @@ export function tokenize(line: string): { tokens: string[]; error?: string } {
   while (index < line.length) {
     const char = line[index];
     if (/\s/.test(char)) { index += 1; continue; }
+    const quotedAttribute = /^([^\s"=]+)="([^"]*)"/.exec(line.slice(index));
+    if (quotedAttribute) {
+      tokens.push(`${quotedAttribute[1]}=${quotedAttribute[2]}`);
+      index += quotedAttribute[0].length;
+      continue;
+    }
     if (char === '"') {
       const close = line.indexOf('"', index + 1);
       if (close === -1) return { tokens, error: 'unbalanced quote' };

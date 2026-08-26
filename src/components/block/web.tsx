@@ -64,7 +64,7 @@ export function BlockNode({ data }: NodeProps<BlockFlowNode>) {
         <span className="block-line" key={`${index}-${line}`}>{line}</span>
       ))}
     </article>
-    <NodePorts connectable={editable} />
+    <NodePorts connectable={editable} methods={data.interfaces} node={node} />
     </div>
   );
 }

@@ -243,7 +243,7 @@ describe('canvas CLI', () => {
       }],
     });
     expect(dsl.wire).toMatchObject({
-      endpoints: ['label', '@ref', '#node-id'],
+      endpoints: ['label', 'node.method', '@ref', '#node-id'],
       cardinality: {
         source: { key: 'source-cardinality', values: ['one', 'zero-or-one', 'one-or-many', 'zero-or-many'] },
         target: { key: 'target-cardinality', values: ['one', 'zero-or-one', 'one-or-many', 'zero-or-many'] },

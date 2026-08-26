@@ -29,7 +29,7 @@ class DslGrammar {
     )));
     this.wireKinds = new Set(WIRE_KINDS);
     this.statements = [
-      'scope', ...components.map((component) => component.dslKeyword), 'end',
+      'scope', 'flow', ...components.map((component) => component.dslKeyword), 'end',
       ...this.children.keys(), 'type', 'wire',
     ].join(', ');
   }

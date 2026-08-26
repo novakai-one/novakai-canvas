@@ -244,7 +244,12 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
       {connections.pendingConnection && <ConnectionCreationPicker at={connections.pendingConnection.picker}
         cancel={connections.cancelPending} pick={connections.createFromPending}
       />}
-      <Legend preferences={preferences} view={view} />
+      <Legend
+        activeFlowName={record.views[record.activeViewId]?.flowId
+          ? record.flows?.[record.views[record.activeViewId].flowId as string]?.name : undefined}
+        preferences={preferences}
+        view={view}
+      />
       <CanvasToolbar props={props} />
       {/* Anchored to the canvas's own edges, which are exactly the seams the panels open on. */}
       <RailToggle />

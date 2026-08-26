@@ -36,6 +36,7 @@ function content(record: DiagramRecord) {
     interfaces: record.interfaces,
     types: record.types,
     wires: record.wires,
+    flows: record.flows,
   };
 }
 
@@ -54,6 +55,25 @@ describe('printRecord', () => {
     const record = buildRecord(DSL);
     const reapplied = buildRecord(printRecord(record), { [record.id]: record });
     expect(content(reapplied)).toEqual(content(record));
+  });
+
+  it('round-trips canonical flows without changing the basemap', () => {
+    const record = buildRecord(`scope "Flow Round Trip"
+  module A
+  module B
+  module C
+  wire A -> B : first
+  wire B -> C : second
+  flow "Delivery"
+    step 2 "flow-round-trip--wire-2"
+    step 1 "flow-round-trip--wire-1"
+  end`);
+    const basemap = JSON.stringify([record.nodes, record.wires, record.layouts, record.views]);
+    const printed = printRecord(record);
+    expect(printed).toContain('step 1 "flow-round-trip--wire-1"\n    step 2 "flow-round-trip--wire-2"');
+    const reapplied = buildRecord(printed, { [record.id]: record });
+    expect(reapplied.flows).toEqual(record.flows);
+    expect(JSON.stringify([reapplied.nodes, reapplied.wires, reapplied.layouts, reapplied.views])).toBe(basemap);
   });
 
   it('preserves node ids and placements for unchanged nodes across a re-apply', () => {

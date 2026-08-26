@@ -1,3 +1,4 @@
+import { orientationOf, resolveAxis } from './axis.ts';
 import dagre from '@dagrejs/dagre';
 import type {
   ArchitectureDocument, LayoutProposal, LayoutRequest, NodePlacement,
@@ -35,7 +36,8 @@ function layoutNamedNodes(
   if (movableIds.length < 2) return original;
 
   const graph = new dagre.graphlib.Graph();
-  graph.setGraph({ rankdir: 'TB', nodesep: 40, ranksep: 70 });
+  const { rankDirection } = resolveAxis(orientationOf(document));
+  graph.setGraph({ rankdir: rankDirection, nodesep: 40, ranksep: 70 });
   graph.setDefaultEdgeLabel(() => ({}));
   for (const id of movableIds) graph.setNode(id, original[id].size);
   const movable = new Set(movableIds);
