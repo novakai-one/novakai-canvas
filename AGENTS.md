@@ -29,6 +29,18 @@ layout is automatic, so never write coordinates.
 ./canvas snapshot <map> [-o out]  render a map to SVG
 ```
 
+To diagram this repo's own code (one node per folder, wires = imports,
+entry points on top), generate the map instead of authoring it:
+
+```
+npm run -s deps:json | node tools/deps-to-dsl.mjs | ./canvas apply            # flat dependency ladder
+npm run -s deps:json | node tools/deps-to-dsl.mjs --nested | ./canvas apply   # groups mirror the folder tree
+```
+
+They write the maps "Novakai Canvas — module map" / "— folder map".
+Re-running refreshes a map from the current code (`./canvas rm <map>` first,
+because apply never moves nodes that already exist).
+
 `./canvas help` prints the full DSL grammar. The one-screen version:
 
 ```
