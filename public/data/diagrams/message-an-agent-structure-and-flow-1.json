@@ -1,0 +1,2471 @@
+{
+  "schemaVersion": 3,
+  "id": "message-an-agent-structure-and-flow-1",
+  "name": "Message an Agent — structure and Flow 1",
+  "status": "active",
+  "revision": 2,
+  "nodes": {
+    "message-an-agent-structure-and-flow-1": {
+      "id": "message-an-agent-structure-and-flow-1",
+      "label": "Message an Agent — structure and Flow 1",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-structure-and-flow-1--note-1-layout-law-y-distance-fr": {
+      "id": "message-an-agent-structure-and-flow-1--note-1-layout-law-y-distance-fr",
+      "label": "LAYOUT LAW. Y = distance from the outside world: band 1 outside, band 2 boundary, band 3 core, band 4 stores. X = lane. Every crossing of the boundary happens at a named gate and nowhere else. AMBER thick wires = Flow 1 execution, numbered by step. Neutral wires = static structure. RED-DOTTED wires = holes in the spec.",
+      "parentId": "message-an-agent-structure-and-flow-1",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "message-an-agent-structure-and-flow-1--band-1-outside-novakai": {
+      "id": "message-an-agent-structure-and-flow-1--band-1-outside-novakai",
+      "label": "Band 1 — Outside Novakai",
+      "parentId": "message-an-agent-structure-and-flow-1",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing": {
+      "id": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing",
+      "label": "Band 2 — Boundary. One gate per crossing.",
+      "parentId": "message-an-agent-structure-and-flow-1",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-structure-and-flow-1--band-3-core": {
+      "id": "message-an-agent-structure-and-flow-1--band-3-core",
+      "label": "Band 3 — Core",
+      "parentId": "message-an-agent-structure-and-flow-1",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-structure-and-flow-1--band-4-stores": {
+      "id": "message-an-agent-structure-and-flow-1--band-4-stores",
+      "label": "Band 4 — Stores",
+      "parentId": "message-an-agent-structure-and-flow-1",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-structure-and-flow-1--note-2-structure-entity-relatio": {
+      "id": "message-an-agent-structure-and-flow-1--note-2-structure-entity-relatio",
+      "label": "STRUCTURE — entity relationships and cardinality, read source to target.",
+      "parentId": "message-an-agent-structure-and-flow-1",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "message-an-agent-structure-and-flow-1--note-3-flow-1-you-create-an-age": {
+      "id": "message-an-agent-structure-and-flow-1--note-3-flow-1-you-create-an-age",
+      "label": "FLOW 1 — you create an Agent and send its first message. Follow the amber numbers.",
+      "parentId": "message-an-agent-structure-and-flow-1",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "message-an-agent-structure-and-flow-1--note-4-holes-named-in-the-spec-": {
+      "id": "message-an-agent-structure-and-flow-1--note-4-holes-named-in-the-spec-",
+      "label": "HOLES — named in the spec as unresolved. Do not silently omit them.",
+      "parentId": "message-an-agent-structure-and-flow-1",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you": {
+      "id": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you",
+      "label": "You",
+      "parentId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world": {
+      "id": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world",
+      "label": "External provider world",
+      "parentId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate": {
+      "id": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate",
+      "label": "Human gate",
+      "parentId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate": {
+      "id": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate",
+      "label": "Provider egress gate",
+      "parentId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate": {
+      "id": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate",
+      "label": "Provider ingress gate",
+      "parentId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-structure-and-flow-1--band-3-core--messaging-core": {
+      "id": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core",
+      "label": "Messaging core",
+      "parentId": "message-an-agent-structure-and-flow-1--band-3-core",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-structure-and-flow-1--band-3-core--agents-core": {
+      "id": "message-an-agent-structure-and-flow-1--band-3-core--agents-core",
+      "label": "Agents core",
+      "parentId": "message-an-agent-structure-and-flow-1--band-3-core",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl": {
+      "id": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl",
+      "label": "Messaging DB — messagingStoreOps.jsonl",
+      "parentId": "message-an-agent-structure-and-flow-1--band-4-stores",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl": {
+      "id": "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl",
+      "label": "Agents store — agents.jsonl",
+      "parentId": "message-an-agent-structure-and-flow-1--band-4-stores",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen": {
+      "id": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen",
+      "label": "Messaging Screen",
+      "description": "packages/shell/ui/screens/messaging — plus-New, agent picker, composer, Bench projection",
+      "parentId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you",
+      "interfaceIds": [
+        "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen--if-createdraft",
+        "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen--if-acceptdraft",
+        "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen--if-sendmessage"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-cli-process": {
+      "id": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-cli-process",
+      "label": "Provider CLI Process",
+      "description": "local claude / codex / kimi child process",
+      "parentId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "runtime"
+    },
+    "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-server": {
+      "id": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-server",
+      "label": "Provider Server",
+      "description": "remote provider infrastructure, outside Novakai",
+      "parentId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "runtime"
+    },
+    "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-session-file": {
+      "id": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-session-file",
+      "label": "Provider Session File",
+      "description": "provider-owned local transcript in dot-claude, dot-codex, kimi dirs",
+      "parentId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate--server-methods": {
+      "id": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate--server-methods",
+      "label": "Server Methods",
+      "description": "packages/server/core/methods — the only way Shell reaches a capability",
+      "parentId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate",
+      "interfaceIds": [
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate--server-methods--if-spawnagentconversation",
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate--server-methods--if-sendmessage"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--one-shot-cli-send": {
+      "id": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--one-shot-cli-send",
+      "label": "One-shot CLI Send",
+      "description": "adapters/provider-send — the only code that starts a provider process",
+      "parentId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate",
+      "interfaceIds": [
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--one-shot-cli-send--if-dispatch"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--agent-identity-hook": {
+      "id": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--agent-identity-hook",
+      "label": "Agent Identity Hook",
+      "description": "adapters/provider-hooks — stamps AgentId into the provider's own file",
+      "parentId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate",
+      "interfaceIds": [
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--agent-identity-hook--if-run"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--ingestion": {
+      "id": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--ingestion",
+      "label": "Ingestion",
+      "description": "core/ingestion/ingest.ts — the ONLY reader of provider files",
+      "parentId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate",
+      "interfaceIds": [
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--ingestion--if-ingestnow"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--provider-transcript-adapters": {
+      "id": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--provider-transcript-adapters",
+      "label": "Provider Transcript Adapters",
+      "description": "adapters/provider-transcripts — hides each provider's format",
+      "parentId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate",
+      "interfaceIds": [
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--provider-transcript-adapters--if-normalize"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--conversation-views": {
+      "id": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--conversation-views",
+      "label": "Conversation Views",
+      "description": "core/conversations/views.ts",
+      "parentId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core",
+      "interfaceIds": [
+        "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--conversation-views--if-ensureconversationview"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--accept-send": {
+      "id": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--accept-send",
+      "label": "Accept Send",
+      "description": "core/send/accept.ts",
+      "parentId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core",
+      "interfaceIds": [
+        "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--accept-send--if-acceptsend"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--dispatch-send": {
+      "id": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--dispatch-send",
+      "label": "Dispatch Send",
+      "description": "core/send/dispatch.ts",
+      "parentId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core",
+      "interfaceIds": [
+        "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--dispatch-send--if-dispatchacceptedsend"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--session-assignment": {
+      "id": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--session-assignment",
+      "label": "Session Assignment",
+      "description": "core/ingestion/assign-session.ts — sole session-to-Agent writer",
+      "parentId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core",
+      "interfaceIds": [
+        "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--session-assignment--if-assignprovidersession"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--confirm-send": {
+      "id": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--confirm-send",
+      "label": "Confirm Send",
+      "description": "core/send/confirm.ts",
+      "parentId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core",
+      "interfaceIds": [
+        "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--confirm-send--if-confirmsendattempt"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--event-bus": {
+      "id": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--event-bus",
+      "label": "Event Bus",
+      "description": "core/event-bus.ts",
+      "parentId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--delivery-router": {
+      "id": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--delivery-router",
+      "label": "Delivery Router",
+      "description": "core/delivery/router.ts — idle-boundary delivery",
+      "parentId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-structure-and-flow-1--band-3-core--agents-core--agent-registry": {
+      "id": "message-an-agent-structure-and-flow-1--band-3-core--agents-core--agent-registry",
+      "label": "Agent Registry",
+      "description": "packages/agents/core/registry/registry.ts",
+      "parentId": "message-an-agent-structure-and-flow-1--band-3-core--agents-core",
+      "interfaceIds": [
+        "message-an-agent-structure-and-flow-1--band-3-core--agents-core--agent-registry--if-defineagent"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-conversation-view": {
+      "id": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-conversation-view",
+      "label": "Conversation View",
+      "parentId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "conversation-view",
+      "entityFields": [
+        {
+          "id": "cv-id",
+          "name": "conversationId",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "cv-participants",
+          "name": "participantIds",
+          "valueType": "AgentId[]",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "cv-pinned",
+          "name": "pinned",
+          "valueType": "boolean",
+          "keys": []
+        },
+        {
+          "id": "cv-archived",
+          "name": "archived",
+          "valueType": "boolean",
+          "keys": []
+        },
+        {
+          "id": "cv-lastread",
+          "name": "lastReadLineId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        }
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-send-journal": {
+      "id": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-send-journal",
+      "label": "Send Journal",
+      "parentId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "send-journal",
+      "entityFields": [
+        {
+          "id": "sj-id",
+          "name": "sendId",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "sj-conversation",
+          "name": "conversationId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "sj-agent",
+          "name": "targetAgentId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "sj-session",
+          "name": "targetSessionId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "sj-clientop",
+          "name": "clientOpId",
+          "valueType": "string",
+          "keys": [
+            "uk"
+          ]
+        },
+        {
+          "id": "sj-attempts",
+          "name": "attempts",
+          "valueType": "Attempt[]",
+          "keys": []
+        },
+        {
+          "id": "sj-state",
+          "name": "state",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-provider-session": {
+      "id": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-provider-session",
+      "label": "Provider Session",
+      "parentId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "provider-session",
+      "entityFields": [
+        {
+          "id": "ps-id",
+          "name": "sessionId",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "ps-agent",
+          "name": "agentId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "ps-provider",
+          "name": "provider",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "ps-resume",
+          "name": "resumeId",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "ps-status",
+          "name": "status",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-transcript-line": {
+      "id": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-transcript-line",
+      "label": "Transcript Line",
+      "parentId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "transcript-line",
+      "entityFields": [
+        {
+          "id": "tl-id",
+          "name": "id",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "tl-session",
+          "name": "sessionId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "tl-turn",
+          "name": "turnIndex",
+          "valueType": "number",
+          "keys": []
+        },
+        {
+          "id": "tl-role",
+          "name": "role",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "tl-text",
+          "name": "text",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "tl-raw",
+          "name": "raw",
+          "valueType": "verbatim",
+          "keys": []
+        }
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-ingest-checkpoint": {
+      "id": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-ingest-checkpoint",
+      "label": "Ingest Checkpoint",
+      "parentId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "ingest-checkpoint",
+      "entityFields": [
+        {
+          "id": "ic-source",
+          "name": "sourceId",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "ic-offset",
+          "name": "offset",
+          "valueType": "bytes",
+          "keys": []
+        },
+        {
+          "id": "ic-signature",
+          "name": "fileSignature",
+          "valueType": "device-inode-hash",
+          "keys": []
+        }
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-pending-delivery": {
+      "id": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-pending-delivery",
+      "label": "Pending Delivery",
+      "parentId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "pending-delivery",
+      "entityFields": [
+        {
+          "id": "pd-id",
+          "name": "id",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "pd-line",
+          "name": "transcriptLineId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "pd-recipient",
+          "name": "recipientAgentId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "pd-state",
+          "name": "state",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-usage-rollup": {
+      "id": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-usage-rollup",
+      "label": "Usage Rollup",
+      "parentId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "usage-rollup",
+      "entityFields": [
+        {
+          "id": "ur-session",
+          "name": "sessionId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "ur-tokens",
+          "name": "tokens",
+          "valueType": "number",
+          "keys": []
+        }
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-tool-call-index": {
+      "id": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-tool-call-index",
+      "label": "Tool Call Index",
+      "parentId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "tool-call-index",
+      "entityFields": [
+        {
+          "id": "tc-line",
+          "name": "transcriptLineId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "tc-tool",
+          "name": "toolName",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl--entity-agent": {
+      "id": "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl--entity-agent",
+      "label": "Agent",
+      "parentId": "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "agent",
+      "entityFields": [
+        {
+          "id": "ag-id",
+          "name": "agentId",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "ag-parent",
+          "name": "parentAgentId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "ag-session",
+          "name": "sessionId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "ag-provider",
+          "name": "provider",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "ag-model",
+          "name": "model",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "ag-origin",
+          "name": "origin",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "ag-team",
+          "name": "teamRef",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "ag-mission",
+          "name": "missionRef",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        }
+      ]
+    }
+  },
+  "wires": {
+    "message-an-agent-structure-and-flow-1--wire-1": {
+      "id": "message-an-agent-structure-and-flow-1--wire-1",
+      "kind": "references",
+      "label": "one Agent works sessions over time",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl--entity-agent",
+        "cardinality": "zero-or-one"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-provider-session",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-2": {
+      "id": "message-an-agent-structure-and-flow-1--wire-2",
+      "kind": "references",
+      "label": "parent spawns child",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl--entity-agent",
+        "cardinality": "zero-or-one"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl--entity-agent",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-3": {
+      "id": "message-an-agent-structure-and-flow-1--wire-3",
+      "kind": "owns",
+      "label": "session contains immutable lines",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-provider-session",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-transcript-line",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-4": {
+      "id": "message-an-agent-structure-and-flow-1--wire-4",
+      "kind": "queries",
+      "label": "renders content from the root",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-conversation-view",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-transcript-line",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-5": {
+      "id": "message-an-agent-structure-and-flow-1--wire-5",
+      "kind": "owns",
+      "label": "owns accepted sends",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-conversation-view",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-send-journal",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-6": {
+      "id": "message-an-agent-structure-and-flow-1--wire-6",
+      "kind": "references",
+      "label": "non-empty participants",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-conversation-view",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl--entity-agent",
+        "cardinality": "one-or-many"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-7": {
+      "id": "message-an-agent-structure-and-flow-1--wire-7",
+      "kind": "references",
+      "label": "issuer and required target",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-send-journal",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl--entity-agent",
+        "cardinality": "one"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-8": {
+      "id": "message-an-agent-structure-and-flow-1--wire-8",
+      "kind": "references",
+      "label": "null on first send, backfilled after assignment",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-send-journal",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-provider-session",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-9": {
+      "id": "message-an-agent-structure-and-flow-1--wire-9",
+      "kind": "owns",
+      "label": "addressed reply creates delivery work",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-transcript-line",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-pending-delivery",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-10": {
+      "id": "message-an-agent-structure-and-flow-1--wire-10",
+      "kind": "owns",
+      "label": "rebuild usage",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-transcript-line",
+        "cardinality": "one-or-many"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-usage-rollup",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-11": {
+      "id": "message-an-agent-structure-and-flow-1--wire-11",
+      "kind": "owns",
+      "label": "index tool-bearing lines",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-transcript-line",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-tool-call-index",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-12": {
+      "id": "message-an-agent-structure-and-flow-1--wire-12",
+      "kind": "queries",
+      "label": "claim eligible queued work",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--delivery-router",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-pending-delivery",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-13": {
+      "id": "message-an-agent-structure-and-flow-1--wire-13",
+      "kind": "executes",
+      "label": "same acceptance path as a human",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--delivery-router"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--accept-send"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-14": {
+      "id": "message-an-agent-structure-and-flow-1--wire-14",
+      "kind": "owns",
+      "label": "track progress per source",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--ingestion",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-ingest-checkpoint",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-15": {
+      "id": "message-an-agent-structure-and-flow-1--wire-15",
+      "kind": "executes",
+      "label": "6 and 16 · spawnAgentConversation then sendMessage",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate--server-methods"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-16": {
+      "id": "message-an-agent-structure-and-flow-1--wire-16",
+      "kind": "executes",
+      "label": "7 · defineAgent",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate--server-methods"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--agents-core--agent-registry"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-17": {
+      "id": "message-an-agent-structure-and-flow-1--wire-17",
+      "kind": "owns",
+      "label": "8 · append Agent",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--agents-core--agent-registry"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl--entity-agent"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-18": {
+      "id": "message-an-agent-structure-and-flow-1--wire-18",
+      "kind": "executes",
+      "label": "9 · ensureConversationView",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate--server-methods"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--conversation-views"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-19": {
+      "id": "message-an-agent-structure-and-flow-1--wire-19",
+      "kind": "owns",
+      "label": "10 · append ConversationView",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--conversation-views"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-conversation-view"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-20": {
+      "id": "message-an-agent-structure-and-flow-1--wire-20",
+      "kind": "executes",
+      "label": "17 · acceptSend validates conversation, agent, text, clientOpId",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate--server-methods"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--accept-send"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-21": {
+      "id": "message-an-agent-structure-and-flow-1--wire-21",
+      "kind": "owns",
+      "label": "18 · append SendJournal state accepted, targetSessionId null",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--accept-send"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-send-journal"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-22": {
+      "id": "message-an-agent-structure-and-flow-1--wire-22",
+      "kind": "executes",
+      "label": "19 · first send, no resume id",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--accept-send"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--dispatch-send"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-23": {
+      "id": "message-an-agent-structure-and-flow-1--wire-23",
+      "kind": "owns",
+      "label": "20 · update attempts and state dispatching",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--dispatch-send"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-send-journal"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-24": {
+      "id": "message-an-agent-structure-and-flow-1--wire-24",
+      "kind": "executes",
+      "label": "21 · dispatch text with AgentId in child env",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--dispatch-send"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--one-shot-cli-send"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-25": {
+      "id": "message-an-agent-structure-and-flow-1--wire-25",
+      "kind": "executes",
+      "label": "21 · OUT — start provider child process",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--one-shot-cli-send"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-cli-process"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-26": {
+      "id": "message-an-agent-structure-and-flow-1--wire-26",
+      "kind": "executes",
+      "label": "22 · hook runs before remote submission",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-cli-process"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--agent-identity-hook"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-27": {
+      "id": "message-an-agent-structure-and-flow-1--wire-27",
+      "kind": "executes",
+      "label": "23 and 24 · OUT — prompt to the provider, response back",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-cli-process"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-server"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-28": {
+      "id": "message-an-agent-structure-and-flow-1--wire-28",
+      "kind": "owns",
+      "label": "25 · provider writes sessionId, prompt, hook marker, response",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-cli-process"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-session-file"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-29": {
+      "id": "message-an-agent-structure-and-flow-1--wire-29",
+      "kind": "queries",
+      "label": "26 · IN — the only pathway into Novakai, tail bytes only",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-session-file",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--ingestion",
+        "cardinality": "one"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-30": {
+      "id": "message-an-agent-structure-and-flow-1--wire-30",
+      "kind": "executes",
+      "label": "27 · normalize provider JSON to candidates",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--ingestion"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--provider-transcript-adapters"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-31": {
+      "id": "message-an-agent-structure-and-flow-1--wire-31",
+      "kind": "owns",
+      "label": "28 and 29 · append ProviderSession, agentId still null",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--ingestion"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-provider-session"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-32": {
+      "id": "message-an-agent-structure-and-flow-1--wire-32",
+      "kind": "executes",
+      "label": "30 · hand over validated hook evidence",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--provider-transcript-adapters"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--session-assignment"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-33": {
+      "id": "message-an-agent-structure-and-flow-1--wire-33",
+      "kind": "assigns",
+      "label": "31 · fill agentId, backfill SendJournal targetSessionId",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--session-assignment"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-provider-session"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-34": {
+      "id": "message-an-agent-structure-and-flow-1--wire-34",
+      "kind": "owns",
+      "label": "33 and 34 · append TranscriptLines, advance IngestCheckpoint",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--ingestion"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-transcript-line"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-35": {
+      "id": "message-an-agent-structure-and-flow-1--wire-35",
+      "kind": "executes",
+      "label": "35 · ingested user line proves which turn accepted your message",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--ingestion"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--confirm-send"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-36": {
+      "id": "message-an-agent-structure-and-flow-1--wire-36",
+      "kind": "assigns",
+      "label": "36 · state awaiting-transcript to confirmed",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--confirm-send"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-send-journal"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-37": {
+      "id": "message-an-agent-structure-and-flow-1--wire-37",
+      "kind": "executes",
+      "label": "38, 39 and 40 · RETURN — subscription delivers new lines, window rerenders",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--event-bus"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-38": {
+      "id": "message-an-agent-structure-and-flow-1--wire-38",
+      "kind": "missing",
+      "label": "32 · update Agent.sessionId — FUNCTION MISSING FROM PLAN",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--session-assignment"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl--entity-agent"
+      }
+    },
+    "message-an-agent-structure-and-flow-1--wire-39": {
+      "id": "message-an-agent-structure-and-flow-1--wire-39",
+      "kind": "missing",
+      "label": "37 · publish transcript event — FUNCTION NAME MISSING FROM PLAN",
+      "source": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--confirm-send"
+      },
+      "target": {
+        "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--event-bus"
+      }
+    }
+  },
+  "interfaces": {
+    "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen--if-createdraft": {
+      "id": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen--if-createdraft",
+      "ownerId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen",
+      "name": "createDraft",
+      "accepts": [],
+      "returns": [
+        "Draft"
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen--if-acceptdraft": {
+      "id": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen--if-acceptdraft",
+      "ownerId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen",
+      "name": "acceptDraft",
+      "accepts": [
+        "Agent"
+      ],
+      "returns": [
+        "ConversationId"
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen--if-sendmessage": {
+      "id": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen--if-sendmessage",
+      "ownerId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen",
+      "name": "sendMessage",
+      "accepts": [
+        "ConversationId",
+        "Text"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate--server-methods--if-spawnagentconversation": {
+      "id": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate--server-methods--if-spawnagentconversation",
+      "ownerId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate--server-methods",
+      "name": "spawnAgentConversation",
+      "accepts": [
+        "Provider",
+        "Title",
+        "ConversationId"
+      ],
+      "returns": [
+        "ConversationView"
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate--server-methods--if-sendmessage": {
+      "id": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate--server-methods--if-sendmessage",
+      "ownerId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate--server-methods",
+      "name": "sendMessage",
+      "accepts": [
+        "ConversationId",
+        "Text",
+        "ClientOpId"
+      ],
+      "returns": [
+        "SendId"
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--one-shot-cli-send--if-dispatch": {
+      "id": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--one-shot-cli-send--if-dispatch",
+      "ownerId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--one-shot-cli-send",
+      "name": "dispatch",
+      "accepts": [
+        "SendId",
+        "Text",
+        "ResumeId"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--agent-identity-hook--if-run": {
+      "id": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--agent-identity-hook--if-run",
+      "ownerId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--agent-identity-hook",
+      "name": "run",
+      "accepts": [
+        "AgentId"
+      ],
+      "returns": [
+        "IdentityMarker"
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--ingestion--if-ingestnow": {
+      "id": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--ingestion--if-ingestnow",
+      "ownerId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--ingestion",
+      "name": "ingestNow",
+      "accepts": [],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--provider-transcript-adapters--if-normalize": {
+      "id": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--provider-transcript-adapters--if-normalize",
+      "ownerId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--provider-transcript-adapters",
+      "name": "normalize",
+      "accepts": [
+        "RawLine"
+      ],
+      "returns": [
+        "Candidate"
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--conversation-views--if-ensureconversationview": {
+      "id": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--conversation-views--if-ensureconversationview",
+      "ownerId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--conversation-views",
+      "name": "ensureConversationView",
+      "accepts": [
+        "ConversationId",
+        "AgentId"
+      ],
+      "returns": [
+        "ConversationView"
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--accept-send--if-acceptsend": {
+      "id": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--accept-send--if-acceptsend",
+      "ownerId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--accept-send",
+      "name": "acceptSend",
+      "accepts": [
+        "ConversationId",
+        "Text",
+        "ClientOpId"
+      ],
+      "returns": [
+        "SendId"
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--dispatch-send--if-dispatchacceptedsend": {
+      "id": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--dispatch-send--if-dispatchacceptedsend",
+      "ownerId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--dispatch-send",
+      "name": "dispatchAcceptedSend",
+      "accepts": [
+        "SendId"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--session-assignment--if-assignprovidersession": {
+      "id": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--session-assignment--if-assignprovidersession",
+      "ownerId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--session-assignment",
+      "name": "assignProviderSession",
+      "accepts": [
+        "SessionId",
+        "AgentId"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--confirm-send--if-confirmsendattempt": {
+      "id": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--confirm-send--if-confirmsendattempt",
+      "ownerId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--confirm-send",
+      "name": "confirmSendAttempt",
+      "accepts": [
+        "TranscriptLine"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-structure-and-flow-1--band-3-core--agents-core--agent-registry--if-defineagent": {
+      "id": "message-an-agent-structure-and-flow-1--band-3-core--agents-core--agent-registry--if-defineagent",
+      "ownerId": "message-an-agent-structure-and-flow-1--band-3-core--agents-core--agent-registry",
+      "name": "defineAgent",
+      "accepts": [
+        "Provider",
+        "Model",
+        "TeamRef",
+        "MissionRef"
+      ],
+      "returns": [
+        "AgentId"
+      ]
+    }
+  },
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "message-an-agent-structure-and-flow-1": {
+          "nodeId": "message-an-agent-structure-and-flow-1",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 4144,
+            "height": 3156
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--note-1-layout-law-y-distance-fr": {
+          "nodeId": "message-an-agent-structure-and-flow-1--note-1-layout-law-y-distance-fr",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 4064,
+            "height": 258
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-1-outside-novakai": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai",
+          "position": {
+            "x": 40,
+            "y": 346
+          },
+          "size": {
+            "width": 4064,
+            "height": 390
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing",
+          "position": {
+            "x": 40,
+            "y": 768
+          },
+          "size": {
+            "width": 4064,
+            "height": 556
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-3-core": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-3-core",
+          "position": {
+            "x": 40,
+            "y": 1356
+          },
+          "size": {
+            "width": 4064,
+            "height": 540
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores",
+          "position": {
+            "x": 40,
+            "y": 1928
+          },
+          "size": {
+            "width": 4064,
+            "height": 780
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--note-2-structure-entity-relatio": {
+          "nodeId": "message-an-agent-structure-and-flow-1--note-2-structure-entity-relatio",
+          "position": {
+            "x": 40,
+            "y": 2740
+          },
+          "size": {
+            "width": 4064,
+            "height": 111
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--note-3-flow-1-you-create-an-age": {
+          "nodeId": "message-an-agent-structure-and-flow-1--note-3-flow-1-you-create-an-age",
+          "position": {
+            "x": 40,
+            "y": 2883
+          },
+          "size": {
+            "width": 4064,
+            "height": 111
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--note-4-holes-named-in-the-spec-": {
+          "nodeId": "message-an-agent-structure-and-flow-1--note-4-holes-named-in-the-spec-",
+          "position": {
+            "x": 40,
+            "y": 3026
+          },
+          "size": {
+            "width": 4064,
+            "height": 90
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 1325,
+            "height": 294
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world",
+          "position": {
+            "x": 1397,
+            "y": 56
+          },
+          "size": {
+            "width": 1325,
+            "height": 216
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 500,
+            "height": 268
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate",
+          "position": {
+            "x": 572,
+            "y": 56
+          },
+          "size": {
+            "width": 500,
+            "height": 404
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate",
+          "position": {
+            "x": 1104,
+            "y": 56
+          },
+          "size": {
+            "width": 500,
+            "height": 460
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-3-core--messaging-core": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 1976,
+            "height": 444
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-3-core--agents-core": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--agents-core",
+          "position": {
+            "x": 2048,
+            "y": 56
+          },
+          "size": {
+            "width": 1976,
+            "height": 226
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 1616,
+            "height": 684
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl",
+          "position": {
+            "x": 1688,
+            "y": 56
+          },
+          "size": {
+            "width": 1616,
+            "height": 434
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 198
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-cli-process": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-cli-process",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 319,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-server": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-server",
+          "position": {
+            "x": 431,
+            "y": 56
+          },
+          "size": {
+            "width": 362,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-session-file": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-session-file",
+          "position": {
+            "x": 865,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate--server-methods": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate--server-methods",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 172
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--one-shot-cli-send": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--one-shot-cli-send",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--agent-identity-hook": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--agent-identity-hook",
+          "position": {
+            "x": 40,
+            "y": 218
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--ingestion": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--ingestion",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--provider-transcript-adapters": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--provider-transcript-adapters",
+          "position": {
+            "x": 40,
+            "y": 274
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--conversation-views": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--conversation-views",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--accept-send": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--accept-send",
+          "position": {
+            "x": 532,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--dispatch-send": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--dispatch-send",
+          "position": {
+            "x": 1024,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--session-assignment": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--session-assignment",
+          "position": {
+            "x": 1516,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--confirm-send": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--confirm-send",
+          "position": {
+            "x": 40,
+            "y": 274
+          },
+          "size": {
+            "width": 420,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--event-bus": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--event-bus",
+          "position": {
+            "x": 532,
+            "y": 274
+          },
+          "size": {
+            "width": 420,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--delivery-router": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--delivery-router",
+          "position": {
+            "x": 1024,
+            "y": 274
+          },
+          "size": {
+            "width": 420,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-3-core--agents-core--agent-registry": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-3-core--agents-core--agent-registry",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-conversation-view": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-conversation-view",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 330,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-send-journal": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-send-journal",
+          "position": {
+            "x": 442,
+            "y": 56
+          },
+          "size": {
+            "width": 330,
+            "height": 306
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-provider-session": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-provider-session",
+          "position": {
+            "x": 844,
+            "y": 56
+          },
+          "size": {
+            "width": 330,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-transcript-line": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-transcript-line",
+          "position": {
+            "x": 1246,
+            "y": 56
+          },
+          "size": {
+            "width": 330,
+            "height": 274
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-ingest-checkpoint": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-ingest-checkpoint",
+          "position": {
+            "x": 40,
+            "y": 434
+          },
+          "size": {
+            "width": 330,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-pending-delivery": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-pending-delivery",
+          "position": {
+            "x": 442,
+            "y": 434
+          },
+          "size": {
+            "width": 330,
+            "height": 210
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-usage-rollup": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-usage-rollup",
+          "position": {
+            "x": 844,
+            "y": 434
+          },
+          "size": {
+            "width": 330,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-tool-call-index": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-tool-call-index",
+          "position": {
+            "x": 1246,
+            "y": 434
+          },
+          "size": {
+            "width": 330,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl--entity-agent": {
+          "nodeId": "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl--entity-agent",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 338
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-conversation-view": {
+          "palette": "violet"
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-send-journal": {
+          "palette": "sage"
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-provider-session": {
+          "palette": "blue"
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-transcript-line": {
+          "palette": "blue"
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-ingest-checkpoint": {
+          "palette": "neutral"
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-pending-delivery": {
+          "palette": "sage"
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-usage-rollup": {
+          "palette": "neutral"
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-tool-call-index": {
+          "palette": "neutral"
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl--entity-agent": {
+          "palette": "blue"
+        }
+      },
+      "appearanceByWireId": {
+        "message-an-agent-structure-and-flow-1--wire-15": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-16": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-17": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-18": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-19": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-20": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-21": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-22": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-23": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-24": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-25": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-26": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-27": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-28": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-29": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-30": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-31": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-32": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-33": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-34": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-35": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-36": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-37": {
+          "width": "thick",
+          "color": "amber"
+        },
+        "message-an-agent-structure-and-flow-1--wire-38": {
+          "width": "thick",
+          "pattern": "dotted",
+          "color": "rose"
+        },
+        "message-an-agent-structure-and-flow-1--wire-39": {
+          "width": "thick",
+          "pattern": "dotted",
+          "color": "rose"
+        }
+      },
+      "arrangementByContainerId": {
+        "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you": {
+          "layout": "stack",
+          "childIds": [
+            "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you--messaging-screen"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world": {
+          "layout": "row",
+          "childIds": [
+            "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-cli-process",
+            "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-server",
+            "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world--provider-session-file"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "message-an-agent-structure-and-flow-1--band-1-outside-novakai": {
+          "layout": "grid",
+          "childIds": [
+            "message-an-agent-structure-and-flow-1--band-1-outside-novakai--you",
+            "message-an-agent-structure-and-flow-1--band-1-outside-novakai--external-provider-world"
+          ],
+          "gap": 32,
+          "align": "stretch",
+          "columns": 2
+        },
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate": {
+          "layout": "stack",
+          "childIds": [
+            "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate--server-methods"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate": {
+          "layout": "stack",
+          "childIds": [
+            "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--one-shot-cli-send",
+            "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate--agent-identity-hook"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate": {
+          "layout": "stack",
+          "childIds": [
+            "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--ingestion",
+            "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate--provider-transcript-adapters"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing": {
+          "layout": "grid",
+          "childIds": [
+            "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--human-gate",
+            "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-egress-gate",
+            "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing--provider-ingress-gate"
+          ],
+          "gap": 32,
+          "align": "stretch",
+          "columns": 3
+        },
+        "message-an-agent-structure-and-flow-1--band-3-core--messaging-core": {
+          "layout": "grid",
+          "childIds": [
+            "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--conversation-views",
+            "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--accept-send",
+            "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--dispatch-send",
+            "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--session-assignment",
+            "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--confirm-send",
+            "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--event-bus",
+            "message-an-agent-structure-and-flow-1--band-3-core--messaging-core--delivery-router"
+          ],
+          "gap": 16,
+          "align": "stretch",
+          "columns": 4
+        },
+        "message-an-agent-structure-and-flow-1--band-3-core--agents-core": {
+          "layout": "stack",
+          "childIds": [
+            "message-an-agent-structure-and-flow-1--band-3-core--agents-core--agent-registry"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "message-an-agent-structure-and-flow-1--band-3-core": {
+          "layout": "grid",
+          "childIds": [
+            "message-an-agent-structure-and-flow-1--band-3-core--messaging-core",
+            "message-an-agent-structure-and-flow-1--band-3-core--agents-core"
+          ],
+          "gap": 32,
+          "align": "stretch",
+          "columns": 2
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl": {
+          "layout": "grid",
+          "childIds": [
+            "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-conversation-view",
+            "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-send-journal",
+            "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-provider-session",
+            "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-transcript-line",
+            "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-ingest-checkpoint",
+            "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-pending-delivery",
+            "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-usage-rollup",
+            "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl--entity-tool-call-index"
+          ],
+          "gap": 16,
+          "align": "stretch",
+          "columns": 4
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl": {
+          "layout": "stack",
+          "childIds": [
+            "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl--entity-agent"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "message-an-agent-structure-and-flow-1--band-4-stores": {
+          "layout": "grid",
+          "childIds": [
+            "message-an-agent-structure-and-flow-1--band-4-stores--messaging-db-messagingstoreops-jsonl",
+            "message-an-agent-structure-and-flow-1--band-4-stores--agents-store-agents-jsonl"
+          ],
+          "gap": 32,
+          "align": "stretch",
+          "columns": 2
+        },
+        "message-an-agent-structure-and-flow-1": {
+          "layout": "stack",
+          "childIds": [
+            "message-an-agent-structure-and-flow-1--note-1-layout-law-y-distance-fr",
+            "message-an-agent-structure-and-flow-1--band-1-outside-novakai",
+            "message-an-agent-structure-and-flow-1--band-2-boundary-one-gate-per-crossing",
+            "message-an-agent-structure-and-flow-1--band-3-core",
+            "message-an-agent-structure-and-flow-1--band-4-stores",
+            "message-an-agent-structure-and-flow-1--note-2-structure-entity-relatio",
+            "message-an-agent-structure-and-flow-1--note-3-flow-1-you-create-an-age",
+            "message-an-agent-structure-and-flow-1--note-4-holes-named-in-the-spec-"
+          ],
+          "gap": 32,
+          "align": "stretch"
+        }
+      }
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-df51a671-851e-4f70-a2cf-58b4b0d5de99": {
+      "operationId": "cli-apply-df51a671-851e-4f70-a2cf-58b4b0d5de99",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-25T05:20:27.223Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command/00edba26-aba0-4d7a-be61-0a09d3d06b4c/scratchpad/message-agent.dsl"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "diagram.definitions.replace",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    },
+    "cli-apply-dbd3cf4e-1903-438d-ba30-17bab55b830d": {
+      "operationId": "cli-apply-dbd3cf4e-1903-438d-ba30-17bab55b830d",
+      "revision": 2,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-25T05:26:22.733Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command/00edba26-aba0-4d7a-be61-0a09d3d06b4c/scratchpad/message-agent-v2.dsl"
+      },
+      "commandKinds": [
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    }
+  }
+}

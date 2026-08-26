@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 3,
+  "id": "store-boundary",
+  "name": "Store Boundary",
+  "orientation": "left-right",
+  "status": "active",
+  "revision": 1,
+  "nodes": {
+    "store-boundary": {
+      "id": "store-boundary",
+      "label": "Store Boundary",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "store-boundary--nvk-cli": {
+      "id": "store-boundary--nvk-cli",
+      "label": "nvk CLI",
+      "parentId": "store-boundary",
+      "band": 0,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "store-boundary--agent-session": {
+      "id": "store-boundary--agent-session",
+      "label": "Agent session",
+      "parentId": "store-boundary",
+      "band": 0,
+      "lane": 1,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "store-boundary--durable-stores": {
+      "id": "store-boundary--durable-stores",
+      "label": "Durable stores",
+      "parentId": "store-boundary",
+      "crossing": "gated",
+      "gate": "store-boundary--durable-stores--store-facade",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "store-boundary--durable-stores--store-facade": {
+      "id": "store-boundary--durable-stores--store-facade",
+      "label": "Store facade",
+      "parentId": "store-boundary--durable-stores",
+      "band": 1,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "store-boundary--durable-stores--messages-jsonl": {
+      "id": "store-boundary--durable-stores--messages-jsonl",
+      "label": "messages.jsonl",
+      "parentId": "store-boundary--durable-stores",
+      "band": 2,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    }
+  },
+  "wires": {
+    "store-boundary--wire-1": {
+      "id": "store-boundary--wire-1",
+      "kind": "queries",
+      "label": "append",
+      "source": {
+        "nodeId": "store-boundary--nvk-cli"
+      },
+      "target": {
+        "nodeId": "store-boundary--durable-stores--store-facade"
+      }
+    },
+    "store-boundary--wire-2": {
+      "id": "store-boundary--wire-2",
+      "kind": "owns",
+      "label": "commit",
+      "source": {
+        "nodeId": "store-boundary--durable-stores--store-facade"
+      },
+      "target": {
+        "nodeId": "store-boundary--durable-stores--messages-jsonl"
+      }
+    },
+    "store-boundary--wire-3": {
+      "id": "store-boundary--wire-3",
+      "kind": "owns",
+      "label": "write",
+      "source": {
+        "nodeId": "store-boundary--agent-session"
+      },
+      "target": {
+        "nodeId": "store-boundary--durable-stores--messages-jsonl"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "store-boundary": {
+          "nodeId": "store-boundary",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 870,
+            "height": 264
+          },
+          "pinned": false
+        },
+        "store-boundary--nvk-cli": {
+          "nodeId": "store-boundary--nvk-cli",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 200,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "store-boundary--agent-session": {
+          "nodeId": "store-boundary--agent-session",
+          "position": {
+            "x": 40,
+            "y": 160
+          },
+          "size": {
+            "width": 200,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "store-boundary--durable-stores": {
+          "nodeId": "store-boundary--durable-stores",
+          "position": {
+            "x": 280,
+            "y": 0
+          },
+          "size": {
+            "width": 550,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "store-boundary--durable-stores--store-facade": {
+          "nodeId": "store-boundary--durable-stores--store-facade",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 200,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "store-boundary--durable-stores--messages-jsonl": {
+          "nodeId": "store-boundary--durable-stores--messages-jsonl",
+          "position": {
+            "x": 310,
+            "y": 56
+          },
+          "size": {
+            "width": 200,
+            "height": 64
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {},
+      "appearanceByWireId": {},
+      "arrangementByContainerId": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-ab1335d4-b69d-4476-a83f-bdc42dfad209": {
+      "operationId": "cli-apply-ab1335d4-b69d-4476-a83f-bdc42dfad209",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-25T18:17:21.971Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command/00edba26-aba0-4d7a-be61-0a09d3d06b4c/scratchpad/store-boundary.dsl"
+      },
+      "commandKinds": [
+        "diagram.setOrientation",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    }
+  }
+}

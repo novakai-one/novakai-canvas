@@ -26,7 +26,6 @@ export interface CanvasPreferences {
     snapToGrid: boolean;
     gridSize: number;
     showControls: boolean;
-    showLegend: boolean;
     groupPadding: number;
     /** How large the things you grab on the canvas are: ports, handles, wire ends. */
     targetSize?: 'small' | 'medium' | 'large';

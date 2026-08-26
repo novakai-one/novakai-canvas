@@ -1,0 +1,637 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2122" height="1968" viewBox="0 0 2122 1968">
+<defs><marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L8 4 L0 8 z" fill="#8b8b94"/></marker></defs>
+<rect x="0" y="0" width="2122" height="1968" fill="#0d0d0f"/>
+<rect x="24" y="24" width="2074" height="1920" fill="#1b1b1e" stroke="#2f2f34" rx="6"/>
+<text x="44" y="56" fill="#d0a14b" font-family="Inter, sans-serif" font-size="15" font-weight="600">Canvas target attempt</text>
+<rect x="64" y="80" width="994" height="252" fill="none" stroke="#2f2f34" rx="6"/>
+<text x="78" y="102" fill="#d0a14b" font-family="Inter, sans-serif" font-size="12" font-weight="600">Authoring · tools/canvas-cli</text>
+<rect x="404" y="402" width="1576" height="1088" fill="none" stroke="#2f2f34" rx="6"/>
+<text x="418" y="424" fill="#d0a14b" font-family="Inter, sans-serif" font-size="12" font-weight="600">Record model · src/domain/records.ts</text>
+<rect x="64" y="1560" width="1321" height="252" fill="none" stroke="#2f2f34" rx="6"/>
+<text x="78" y="1582" fill="#d0a14b" font-family="Inter, sans-serif" font-size="12" font-weight="600">Runtime · src</text>
+<rect x="1425" y="1560" width="320" height="344" fill="none" stroke="#2f2f34" rx="6"/>
+<text x="1439" y="1582" fill="#d0a14b" font-family="Inter, sans-serif" font-size="12" font-weight="600">Storage · public/data</text>
+<path d="M344,214L416,214" fill="none" stroke="#7c7583" stroke-width="1.4" marker-end="url(#arrow)"/>
+<text x="380" y="208" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">parse(DslText) -&gt; ScopeAst</text>
+<path d="M780,563L813,563" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<line x1="768" y1="558" x2="768" y2="568" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="775" y1="558" x2="775" y2="568" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="824" y1="563" x2="832" y2="569" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="824" y1="563" x2="832" y2="563" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="824" y1="563" x2="832" y2="557" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="817" cy="563" r="3.2" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<text x="800" y="557" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">contains</text>
+<path d="M780,563L783,563Q786,563 786,566L786,664Q786,670 792,670L1200,670Q1206,670 1206,664L1206,564" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<line x1="768" y1="558" x2="768" y2="568" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="775" y1="558" x2="775" y2="568" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1216" y1="563" x2="1224" y2="569" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1216" y1="563" x2="1224" y2="563" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1216" y1="563" x2="1224" y2="557" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="1209" cy="563" r="3.2" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<text x="996" y="664" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">contains</text>
+<path d="M604,684L604,717" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<line x1="609" y1="672" x2="599" y2="672" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="609" y1="679" x2="599" y2="679" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="604" y1="728" x2="598" y2="736" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="604" y1="728" x2="604" y2="736" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="604" y1="728" x2="610" y2="736" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="604" cy="721" r="3.2" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<text x="604" y="698" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">declares</text>
+<path d="M604,684L604,687Q604,690 601,690L444,690Q438,690 438,696L438,994Q438,1000 444,1000L603.5,1000Q604,1000 604,1000.5L604,1001" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<line x1="609" y1="672" x2="599" y2="672" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="609" y1="679" x2="599" y2="679" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="604" y1="1010" x2="598" y2="1018" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="604" y1="1010" x2="604" y2="1018" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="604" y1="1010" x2="610" y2="1018" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="599" y1="1003" x2="609" y2="1003" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<text x="438" y="839" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">arranges</text>
+<path d="M780,563L783,563Q786,563 786,566L786,720Q786,726 792,726L1592,726Q1598,726 1598,732L1598,1110.5Q1598,1111 1598.5,1111L1599,1111" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<line x1="768" y1="558" x2="768" y2="568" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="775" y1="558" x2="775" y2="568" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1608" y1="1111" x2="1616" y2="1117" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1608" y1="1111" x2="1616" y2="1111" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1608" y1="1111" x2="1616" y2="1105" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1601" y1="1116" x2="1601" y2="1106" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<text x="1303" y="720" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">reads</text>
+<path d="M1205,563L1172,563" fill="none" stroke="#748078" stroke-width="2.4"/>
+<line x1="1216" y1="563" x2="1224" y2="569" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1216" y1="563" x2="1224" y2="563" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1216" y1="563" x2="1224" y2="557" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1160" y1="558" x2="1160" y2="568" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1167" y1="558" x2="1167" y2="568" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="1209" cy="563" r="3.2" fill="none" stroke="#748078" stroke-width="2.4"/>
+<text x="1192" y="557" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">source</text>
+<path d="M1205,563L1172,563" fill="none" stroke="#748078" stroke-width="2.4"/>
+<line x1="1216" y1="563" x2="1224" y2="569" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1216" y1="563" x2="1224" y2="563" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1216" y1="563" x2="1224" y2="557" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1160" y1="558" x2="1160" y2="568" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1167" y1="558" x2="1167" y2="568" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="1209" cy="563" r="3.2" fill="none" stroke="#748078" stroke-width="2.4"/>
+<text x="1192" y="557" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">target</text>
+<path d="M1564,563L1578,563Q1584,563 1584,557L1584,553Q1584,547 1590,547L1597,547" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<line x1="1552" y1="558" x2="1552" y2="568" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1559" y1="558" x2="1559" y2="568" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1608" y1="547" x2="1616" y2="553" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1608" y1="547" x2="1616" y2="547" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1608" y1="547" x2="1616" y2="541" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="1601" cy="547" r="3.2" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<text x="1584" y="549" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">anchors</text>
+<path d="M1178,562L1178,541Q1178,535 1172,535L820,535Q814,535 814,541L814,560Q814,563 817,563L820,563" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<line x1="1168" y1="563" x2="1160" y2="557" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1168" y1="563" x2="1160" y2="563" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1168" y1="563" x2="1160" y2="569" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="832" y1="568" x2="832" y2="558" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="1175" cy="563" r="3.2" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<circle cx="824" cy="563" r="3.2" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<text x="996" y="529" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">parent</text>
+<path d="M1172,563L1186,563Q1192,563 1192,569L1192,839Q1192,845 1198,845L1205,845" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<line x1="1160" y1="558" x2="1160" y2="568" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1167" y1="558" x2="1167" y2="568" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1216" y1="845" x2="1224" y2="851" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1216" y1="845" x2="1224" y2="845" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1216" y1="845" x2="1224" y2="839" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="1209" cy="845" r="3.2" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<text x="1192" y="698" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">exposes</text>
+<path d="M663,214L735,214" fill="none" stroke="#7c7583" stroke-width="1.4" marker-end="url(#arrow)"/>
+<text x="699" y="208" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">compile(ScopeAst) -&gt; CompileResult</text>
+<path d="M813,563L780,563" fill="none" stroke="#748078" stroke-width="2.4"/>
+<line x1="824" y1="563" x2="832" y2="569" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="824" y1="563" x2="832" y2="563" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="824" y1="563" x2="832" y2="557" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="768" y1="558" x2="768" y2="568" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="817" cy="563" r="3.2" fill="none" stroke="#748078" stroke-width="2.4"/>
+<circle cx="776" cy="563" r="3.2" fill="none" stroke="#748078" stroke-width="2.4"/>
+<text x="800" y="557" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">expandsTo</text>
+<path d="M780,813L815,813" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<line x1="768" y1="808" x2="768" y2="818" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="775" y1="808" x2="775" y2="818" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="824" y1="813" x2="832" y2="819" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="824" y1="813" x2="832" y2="813" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="824" y1="813" x2="832" y2="807" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="817" y1="818" x2="817" y2="808" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<text x="800" y="807" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">orders</text>
+<path d="M1179,813L1186,813Q1192,813 1192,807L1192,569Q1192,563 1198,563L1212,563" fill="none" stroke="#748078" stroke-width="2.4"/>
+<line x1="1168" y1="813" x2="1160" y2="807" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1168" y1="813" x2="1160" y2="813" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1168" y1="813" x2="1160" y2="819" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1224" y1="568" x2="1224" y2="558" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1217" y1="568" x2="1217" y2="558" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="1175" cy="813" r="3.2" fill="none" stroke="#748078" stroke-width="2.4"/>
+<text x="1192" y="682" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">references</text>
+<path d="M1571,845L1578,845Q1584,845 1584,839L1584,835Q1584,829 1590,829L1597,829" fill="none" stroke="#748078" stroke-width="2.4"/>
+<line x1="1560" y1="845" x2="1552" y2="839" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1560" y1="845" x2="1552" y2="845" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1560" y1="845" x2="1552" y2="851" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1608" y1="829" x2="1616" y2="835" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1608" y1="829" x2="1616" y2="829" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1608" y1="829" x2="1616" y2="823" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="1567" cy="845" r="3.2" fill="none" stroke="#748078" stroke-width="2.4"/>
+<circle cx="1601" cy="829" r="3.2" fill="none" stroke="#748078" stroke-width="2.4"/>
+<text x="1584" y="831" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">acceptsReturns</text>
+<path d="M780,1095L794,1095Q800,1095 800,1101L800,1105Q800,1111 806,1111L813,1111" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<line x1="768" y1="1090" x2="768" y2="1100" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="775" y1="1090" x2="775" y2="1100" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="824" y1="1111" x2="832" y2="1117" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="824" y1="1111" x2="832" y2="1111" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="824" y1="1111" x2="832" y2="1105" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="817" cy="1111" r="3.2" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<text x="800" y="1097" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">places</text>
+<path d="M780,1095L783,1095Q786,1095 786,1092L786,1014Q786,1008 792,1008L1200,1008Q1206,1008 1206,1014L1206,1094" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<line x1="768" y1="1090" x2="768" y2="1100" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="775" y1="1090" x2="775" y2="1100" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1216" y1="1095" x2="1224" y2="1101" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1216" y1="1095" x2="1224" y2="1095" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1216" y1="1095" x2="1224" y2="1089" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="1209" cy="1095" r="3.2" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<text x="996" y="1002" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">routes</text>
+<path d="M996,1006L996,1003Q996,1000 993,1000L828,1000Q822,1000 822,994L822,696Q822,690 828,690L993,690Q996,690 996,687L996,684" fill="none" stroke="#748078" stroke-width="2.4"/>
+<line x1="991" y1="1018" x2="1001" y2="1018" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="991" y1="1011" x2="1001" y2="1011" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1001" y1="672" x2="991" y2="672" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1001" y1="679" x2="991" y2="679" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<text x="822" y="839" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">geometryFor</text>
+<path d="M1387,1000L1220,1000Q1214,1000 1214,994L1214,696Q1214,690 1220,690L1385,690Q1388,690 1388,687L1388,684" fill="none" stroke="#748078" stroke-width="2.4"/>
+<line x1="1388" y1="1010" x2="1382" y2="1018" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1388" y1="1010" x2="1388" y2="1018" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1388" y1="1010" x2="1394" y2="1018" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1393" y1="672" x2="1383" y2="672" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1393" y1="679" x2="1383" y2="679" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="1388" cy="1003" r="3.2" fill="none" stroke="#748078" stroke-width="2.4"/>
+<text x="1214" y="839" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">hints</text>
+<path d="M1598,1110L1598,1014Q1598,1008 1592,1008L792,1008Q786,1008 786,1014L786,1092Q786,1095 783,1095L780,1095" fill="none" stroke="#748078" stroke-width="2.4"/>
+<line x1="1608" y1="1111" x2="1616" y2="1117" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1608" y1="1111" x2="1616" y2="1111" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1608" y1="1111" x2="1616" y2="1105" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="768" y1="1090" x2="768" y2="1100" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="775" y1="1090" x2="775" y2="1100" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="1601" cy="1111" r="3.2" fill="none" stroke="#748078" stroke-width="2.4"/>
+<text x="1200" y="1002" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">uses</text>
+<path d="M1598,1110L1598,970Q1598,964 1592,964L792,964Q786,964 786,958L786,816Q786,813 783,813L780,813" fill="none" stroke="#748078" stroke-width="2.4"/>
+<line x1="1608" y1="1111" x2="1616" y2="1117" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1608" y1="1111" x2="1616" y2="1111" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1608" y1="1111" x2="1616" y2="1105" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="768" y1="808" x2="768" y2="818" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="1601" cy="1111" r="3.2" fill="none" stroke="#748078" stroke-width="2.4"/>
+<circle cx="776" cy="813" r="3.2" fill="none" stroke="#748078" stroke-width="2.4"/>
+<text x="1190" y="958" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">emphasises</text>
+<path d="M876.5,279L876.5,295Q876.5,301 882.5,301L2080,301Q2086,301 2086,307L2086,1588Q2086,1594 2080,1594L1577,1594Q1571,1594 1571,1600L1571,1616" fill="none" stroke="#6f7278" stroke-width="1.4" marker-end="url(#arrow)"/>
+<text x="2086" y="594.25" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">write(DiagramRecord) -&gt; void</text>
+<path d="M604,1256L604,1253Q604,1250 601,1250L444,1250Q438,1250 438,1244L438,696Q438,690 444,690L603,690" fill="none" stroke="#748078" stroke-width="2.4"/>
+<line x1="599" y1="1268" x2="609" y2="1268" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="599" y1="1261" x2="609" y2="1261" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="604" y1="680" x2="610" y2="672" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="604" y1="680" x2="604" y2="672" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="604" y1="680" x2="598" y2="672" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="604" cy="687" r="3.2" fill="none" stroke="#748078" stroke-width="2.4"/>
+<text x="438" y="964" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">indexes</text>
+<path d="M780,1345L794,1345Q800,1345 800,1351L800,1355Q800,1361 806,1361L813,1361" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<line x1="768" y1="1340" x2="768" y2="1350" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="775" y1="1340" x2="775" y2="1350" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="824" y1="1361" x2="832" y2="1367" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="824" y1="1361" x2="832" y2="1361" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="824" y1="1361" x2="832" y2="1355" stroke="#6f7278" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="817" cy="1361" r="3.2" fill="none" stroke="#6f7278" stroke-width="2.4"/>
+<text x="800" y="1347" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">owns</text>
+<path d="M995,1250L828,1250Q822,1250 822,1244L822,696Q822,690 828,690L993,690Q996,690 996,687L996,684" fill="none" stroke="#748078" stroke-width="2.4"/>
+<line x1="996" y1="1260" x2="990" y2="1268" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="996" y1="1260" x2="996" y2="1268" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="996" y1="1260" x2="1002" y2="1268" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1001" y1="672" x2="991" y2="672" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="1001" y1="679" x2="991" y2="679" stroke="#748078" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="996" cy="1253" r="3.2" fill="none" stroke="#748078" stroke-width="2.4"/>
+<text x="822" y="964" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">joinsAcrossMaps</text>
+<path d="M1469,1668L1453,1668Q1447,1668 1447,1662L1447,1608Q1447,1602 1441,1602L408,1602Q402,1602 402,1608L402,1688Q402,1694 396,1694L380,1694" fill="none" stroke="#777a82" stroke-dasharray="9 4 2 4" stroke-width="1.4" marker-end="url(#arrow)"/>
+<text x="911.5" y="1596" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">load(MapId) -&gt; DiagramRecord</text>
+<path d="M1465,1812L444,1812Q438,1812 438,1806L438,1700Q438,1694 432,1694L380,1694" fill="none" stroke="#777a82" stroke-dasharray="9 4 2 4" stroke-width="1.4" marker-end="url(#arrow)"/>
+<text x="863.5" y="1806" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">readIndex() -&gt; LibraryIndex</text>
+<path d="M380,1694L452,1694" fill="none" stroke="#7c7583" stroke-width="1.4" marker-end="url(#arrow)"/>
+<text x="416" y="1688" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">plan(Record) -&gt; LayoutPlan</text>
+<path d="M757,1694L829,1694" fill="none" stroke="#7c7583" stroke-width="1.4" marker-end="url(#arrow)"/>
+<text x="793" y="1688" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">projectView(Record, View) -&gt; ProjectedView</text>
+<path d="M1062,1694L1134,1694" fill="none" stroke="#7c7583" stroke-width="1.4" marker-end="url(#arrow)"/>
+<text x="1098" y="1688" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">render(Nodes, Edges) -&gt; Pixels</text>
+<defs><marker id="arrow-canvas-target-attempt--wire-9" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L8 4 L0 8 z" fill="#81786d"/></marker></defs>
+<path d="M364,529L398,529Q404,529 404,535L404,557Q404,563 410,563L444,563" fill="none" stroke="#81786d" stroke-dasharray="7 5" stroke-width="1.7" marker-end="url(#arrow-canvas-target-attempt--wire-9)"/>
+<text x="404" y="540" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11" text-anchor="middle">backedBy(Map) -&gt; DiagramRecord</text>
+<rect x="104" y="136" width="240" height="156" fill="#252529" stroke="#2f2f34" rx="6"/>
+<text x="118" y="160" fill="#ececee" font-family="Inter, sans-serif" font-size="13" font-weight="600">canvas CLI</text>
+<text x="330" y="160" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="9" text-anchor="end" letter-spacing="1">MODULE</text>
+<text x="118" y="180" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11">The only supported write path</text>
+<text x="118" y="204" fill="#ececee" font-family="Inter, sans-serif" font-size="12">apply(DslText) → WriteOutcome</text>
+<text x="118" y="230" fill="#ececee" font-family="Inter, sans-serif" font-size="12">snapshot(MapId) → Svg</text>
+<rect x="735" y="149" width="283" height="130" fill="#252529" stroke="#2f2f34" rx="6"/>
+<text x="749" y="173" fill="#ececee" font-family="Inter, sans-serif" font-size="13" font-weight="600">Compiler</text>
+<text x="1004" y="173" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="9" text-anchor="end" letter-spacing="1">MODULE</text>
+<text x="749" y="193" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11">compile/*: ScopeAst to DiagramRecord</text>
+<text x="749" y="217" fill="#ececee" font-family="Inter, sans-serif" font-size="12">compile(ScopeAst) → CompileResult</text>
+<rect x="416" y="149" width="247" height="130" fill="#252529" stroke="#2f2f34" rx="6"/>
+<text x="430" y="173" fill="#ececee" font-family="Inter, sans-serif" font-size="13" font-weight="600">DSL parser</text>
+<text x="649" y="173" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="9" text-anchor="end" letter-spacing="1">MODULE</text>
+<text x="430" y="193" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11">dsl-parse/*: tokens to ScopeAst</text>
+<text x="430" y="217" fill="#ececee" font-family="Inter, sans-serif" font-size="12">parse(DslText) → ScopeAst</text>
+<rect x="1098" y="80" width="320" height="157" fill="transparent" stroke="#a2a2aa" stroke-width="0" rx="0"/>
+<text x="1098" y="94" fill="#ececee" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">Legend</text>
+<text x="1098" y="113.6" fill="#ececee" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">owns solid · references green · queries</text>
+<text x="1098" y="133.2" fill="#ececee" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">blue</text>
+<text x="1098" y="152.8" fill="#ececee" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">executes violet · mentions amber ·</text>
+<text x="1098" y="172.39999999999998" fill="#ececee" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">missing dotted</text>
+<text x="1098" y="192" fill="#ececee" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">crow's foot: || one · o| zero-or-one · |{</text>
+<text x="1098" y="211.6" fill="#ececee" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">one-or-many · o{ zero-or-many</text>
+<text x="1098" y="231.2" fill="#ececee" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">gold: active flow</text>
+<rect x="1458" y="80" width="280" height="166" fill="#252529" stroke="#2f2f34" rx="6"/>
+<text x="1472" y="104" fill="#ececee" font-family="Inter, sans-serif" font-size="13" font-weight="600">Containment</text>
+<text x="1474" y="128" fill="#6ea08f" font-family="SFMono-Regular, Consolas, monospace" font-size="11" font-weight="600">Map (DiagramRecord)</text>
+<text x="1494" y="152" fill="#66625a" font-family="SFMono-Regular, Consolas, monospace" font-size="11">zone (group node)</text>
+<text x="1514" y="176" fill="#66625a" font-family="SFMono-Regular, Consolas, monospace" font-size="11">module / entity / ...</text>
+<text x="1534" y="200" fill="#8a857c" font-family="SFMono-Regular, Consolas, monospace" font-size="11" font-weight="600">method · field · row</text>
+<rect x="1778" y="80" width="280" height="132" fill="none" stroke="#2f2f34" stroke-dasharray="4 4" rx="6"/>
+<text x="1792" y="106" fill="#a2a2aa" font-family="Georgia, serif" font-size="13" font-style="italic">Attempt to reproduce the</text>
+<text x="1792" y="127" fill="#a2a2aa" font-family="Georgia, serif" font-size="13" font-style="italic">hand-drawn reading target using</text>
+<text x="1792" y="148" fill="#a2a2aa" font-family="Georgia, serif" font-size="13" font-style="italic">only app features. Gaps noted in</text>
+<text x="1792" y="169" fill="#a2a2aa" font-family="Georgia, serif" font-size="13" font-style="italic">the diagnosis.</text>
+<rect x="64" y="402" width="300" height="254" fill="#241f2b" stroke="#a08ac8" stroke-width="2" rx="8"/>
+<path d="M64,452H364" stroke="#a08ac8" stroke-width="2"/>
+<rect x="65" y="403" width="298" height="48" fill="#493f58" rx="7"/>
+<text x="214" y="425" text-anchor="middle" fill="#f8f5fc" font-family="Inter,sans-serif" font-size="15" font-weight="700">MAP</text>
+<text x="214" y="442" text-anchor="middle" fill="#d8caec" font-family="Inter,sans-serif" font-size="9">«object»</text>
+<rect x="74" y="462" width="280" height="25" fill="#31283d"/>
+<text x="82" y="479" fill="#f0ecf5" font-family="Inter,sans-serif" font-size="11">name : string</text>
+<text x="346" y="479" text-anchor="end" fill="#c5bbcf" font-family="Inter,sans-serif" font-size="9" font-style="italic">core</text>
+<rect x="74" y="494" width="280" height="25" fill="#31283d"/>
+<text x="82" y="511" fill="#f0ecf5" font-family="Inter,sans-serif" font-size="11">status : enum</text>
+<text x="346" y="511" text-anchor="end" fill="#c5bbcf" font-family="Inter,sans-serif" font-size="9" font-style="italic">filterable</text>
+<rect x="74" y="526" width="280" height="25" fill="#3a2f49"/>
+<text x="82" y="543" fill="#f0ecf5" font-family="Inter,sans-serif" font-size="11">revision : number</text>
+<text x="346" y="543" text-anchor="end" fill="#c5bbcf" font-family="Inter,sans-serif" font-size="9" font-style="italic">sortable</text>
+<rect x="74" y="558" width="280" height="25" fill="#443756"/>
+<text x="82" y="575" fill="#f0ecf5" font-family="Inter,sans-serif" font-size="11">ƒ  applyDSL()</text>
+<text x="346" y="575" text-anchor="end" fill="#c5bbcf" font-family="Inter,sans-serif" font-size="9" font-style="italic">@agent</text>
+<rect x="74" y="590" width="280" height="25" fill="#443756"/>
+<text x="82" y="607" fill="#f0ecf5" font-family="Inter,sans-serif" font-size="11">ƒ  snapshot()</text>
+<text x="346" y="607" text-anchor="end" fill="#c5bbcf" font-family="Inter,sans-serif" font-size="9" font-style="italic">@human</text>
+<rect x="74" y="622" width="280" height="25" fill="#443756"/>
+<text x="82" y="639" fill="#f0ecf5" font-family="Inter,sans-serif" font-size="11">ƒ  archive()</text>
+<text x="346" y="639" text-anchor="end" fill="#c5bbcf" font-family="Inter,sans-serif" font-size="9" font-style="italic">@owner</text>
+<rect x="444" y="1022" width="320" height="146" fill="#1b261f" stroke="#78a886" stroke-width="2" rx="7"/>
+<path d="M444,1072H764" stroke="#78a886"/>
+<rect x="445" y="1023" width="318" height="48" fill="#365a42" rx="6"/>
+<text x="604" y="1044" text-anchor="middle" fill="#f4f8f5" font-family="Inter,sans-serif" font-size="15" font-weight="700">CANVAS_LAYOUT</text>
+<text x="604" y="1061" text-anchor="middle" fill="#c9ddcf" font-family="Inter,sans-serif" font-size="9">«entity»</text>
+<text x="456" y="1088" fill="#b8c9bd" font-family="Inter,sans-serif" font-size="8" font-weight="700">TYPE</text>
+<text x="540.4" y="1088" fill="#b8c9bd" font-family="Inter,sans-serif" font-size="8" font-weight="700">FIELD</text>
+<text x="706.8" y="1088" fill="#b8c9bd" font-family="Inter,sans-serif" font-size="8" font-weight="700">KEYS</text>
+<path d="M444,1096H764" stroke="#78a886" stroke-opacity=".45"/>
+<rect x="445" y="1096" width="318" height="31" fill="#243329"/>
+<path d="M530.4,1096V1128M696.8,1096V1128" stroke="#78a886" stroke-opacity=".35"/>
+<text x="456" y="1117" fill="#edf3ef" font-family="SFMono-Regular,Consolas,monospace" font-size="10">LayoutId</text>
+<text x="540.4" y="1117" fill="#edf3ef" font-family="Inter,sans-serif" font-size="11">id</text>
+<text x="706.8" y="1117" fill="#b8c9bd" font-family="SFMono-Regular,Consolas,monospace" font-size="9">PK</text>
+<rect x="445" y="1128" width="318" height="31" fill="#243329"/>
+<path d="M530.4,1128V1160M696.8,1128V1160" stroke="#78a886" stroke-opacity=".35"/>
+<text x="456" y="1149" fill="#edf3ef" font-family="SFMono-Regular,Consolas,monospace" font-size="10">enum</text>
+<text x="540.4" y="1149" fill="#edf3ef" font-family="Inter,sans-serif" font-size="11">strategy</text>
+<text x="706.8" y="1149" fill="#b8c9bd" font-family="SFMono-Regular,Consolas,monospace" font-size="9"></text>
+<rect x="836" y="458" width="320" height="210" fill="#1b222b" stroke="#7f9fc7" stroke-width="2" rx="7"/>
+<path d="M836,508H1156" stroke="#7f9fc7"/>
+<rect x="837" y="459" width="318" height="48" fill="#34465a" rx="6"/>
+<text x="996" y="480" text-anchor="middle" fill="#f5f8fc" font-family="Inter,sans-serif" font-size="15" font-weight="700">CANVAS_NODE</text>
+<text x="996" y="497" text-anchor="middle" fill="#c7d9ee" font-family="Inter,sans-serif" font-size="9">«entity»</text>
+<text x="848" y="524" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">TYPE</text>
+<text x="932.4" y="524" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">FIELD</text>
+<text x="1098.8" y="524" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">KEYS</text>
+<path d="M836,532H1156" stroke="#7f9fc7" stroke-opacity=".45"/>
+<rect x="837" y="532" width="318" height="31" fill="#243142"/>
+<path d="M922.4,532V564M1088.8,532V564" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="848" y="553" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">NodeId</text>
+<text x="932.4" y="553" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">id</text>
+<text x="1098.8" y="553" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9">PK</text>
+<rect x="837" y="564" width="318" height="31" fill="#243142"/>
+<path d="M922.4,564V596M1088.8,564V596" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="848" y="585" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">NodeKind</text>
+<text x="932.4" y="585" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">kind</text>
+<text x="1098.8" y="585" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9"></text>
+<rect x="837" y="596" width="318" height="31" fill="#243142"/>
+<path d="M922.4,596V628M1088.8,596V628" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="848" y="617" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">NodeId</text>
+<text x="932.4" y="617" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">parentId</text>
+<text x="1098.8" y="617" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9">FK</text>
+<rect x="837" y="628" width="318" height="31" fill="#243142"/>
+<path d="M922.4,628V660M1088.8,628V660" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="848" y="649" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">DiagramId</text>
+<text x="932.4" y="649" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">expandsTo</text>
+<text x="1098.8" y="649" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9">FK</text>
+<rect x="1620" y="1022" width="320" height="178" fill="#1b261f" stroke="#78a886" stroke-width="2" rx="7"/>
+<path d="M1620,1072H1940" stroke="#78a886"/>
+<rect x="1621" y="1023" width="318" height="48" fill="#365a42" rx="6"/>
+<text x="1780" y="1044" text-anchor="middle" fill="#f4f8f5" font-family="Inter,sans-serif" font-size="15" font-weight="700">CANVAS_VIEW</text>
+<text x="1780" y="1061" text-anchor="middle" fill="#c9ddcf" font-family="Inter,sans-serif" font-size="9">«entity»</text>
+<text x="1632" y="1088" fill="#b8c9bd" font-family="Inter,sans-serif" font-size="8" font-weight="700">TYPE</text>
+<text x="1716.4" y="1088" fill="#b8c9bd" font-family="Inter,sans-serif" font-size="8" font-weight="700">FIELD</text>
+<text x="1882.8" y="1088" fill="#b8c9bd" font-family="Inter,sans-serif" font-size="8" font-weight="700">KEYS</text>
+<path d="M1620,1096H1940" stroke="#78a886" stroke-opacity=".45"/>
+<rect x="1621" y="1096" width="318" height="31" fill="#243329"/>
+<path d="M1706.4,1096V1128M1872.8,1096V1128" stroke="#78a886" stroke-opacity=".35"/>
+<text x="1632" y="1117" fill="#edf3ef" font-family="SFMono-Regular,Consolas,monospace" font-size="10">ViewId</text>
+<text x="1716.4" y="1117" fill="#edf3ef" font-family="Inter,sans-serif" font-size="11">id</text>
+<text x="1882.8" y="1117" fill="#b8c9bd" font-family="SFMono-Regular,Consolas,monospace" font-size="9">PK</text>
+<rect x="1621" y="1128" width="318" height="31" fill="#243329"/>
+<path d="M1706.4,1128V1160M1872.8,1128V1160" stroke="#78a886" stroke-opacity=".35"/>
+<text x="1632" y="1149" fill="#edf3ef" font-family="SFMono-Regular,Consolas,monospace" font-size="10">LayoutId</text>
+<text x="1716.4" y="1149" fill="#edf3ef" font-family="Inter,sans-serif" font-size="11">layoutId</text>
+<text x="1882.8" y="1149" fill="#b8c9bd" font-family="SFMono-Regular,Consolas,monospace" font-size="9">FK</text>
+<rect x="1621" y="1160" width="318" height="31" fill="#243329"/>
+<path d="M1706.4,1160V1192M1872.8,1160V1192" stroke="#78a886" stroke-opacity=".35"/>
+<text x="1632" y="1181" fill="#edf3ef" font-family="SFMono-Regular,Consolas,monospace" font-size="10">FlowId</text>
+<text x="1716.4" y="1181" fill="#edf3ef" font-family="Inter,sans-serif" font-size="11">flowId</text>
+<text x="1882.8" y="1181" fill="#b8c9bd" font-family="SFMono-Regular,Consolas,monospace" font-size="9">FK</text>
+<rect x="1228" y="458" width="320" height="210" fill="#1b222b" stroke="#7f9fc7" stroke-width="2" rx="7"/>
+<path d="M1228,508H1548" stroke="#7f9fc7"/>
+<rect x="1229" y="459" width="318" height="48" fill="#34465a" rx="6"/>
+<text x="1388" y="480" text-anchor="middle" fill="#f5f8fc" font-family="Inter,sans-serif" font-size="15" font-weight="700">CANVAS_WIRE</text>
+<text x="1388" y="497" text-anchor="middle" fill="#c7d9ee" font-family="Inter,sans-serif" font-size="9">«entity»</text>
+<text x="1240" y="524" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">TYPE</text>
+<text x="1324.4" y="524" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">FIELD</text>
+<text x="1490.8" y="524" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">KEYS</text>
+<path d="M1228,532H1548" stroke="#7f9fc7" stroke-opacity=".45"/>
+<rect x="1229" y="532" width="318" height="31" fill="#243142"/>
+<path d="M1314.4,532V564M1480.8,532V564" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="1240" y="553" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">WireId</text>
+<text x="1324.4" y="553" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">id</text>
+<text x="1490.8" y="553" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9">PK</text>
+<rect x="1229" y="564" width="318" height="31" fill="#243142"/>
+<path d="M1314.4,564V596M1480.8,564V596" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="1240" y="585" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">WireKind</text>
+<text x="1324.4" y="585" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">kind</text>
+<text x="1490.8" y="585" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9"></text>
+<rect x="1229" y="596" width="318" height="31" fill="#243142"/>
+<path d="M1314.4,596V628M1480.8,596V628" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="1240" y="617" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">Endpoint</text>
+<text x="1324.4" y="617" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">source</text>
+<text x="1490.8" y="617" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9">FK</text>
+<rect x="1229" y="628" width="318" height="31" fill="#243142"/>
+<path d="M1314.4,628V660M1480.8,628V660" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="1240" y="649" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">Endpoint</text>
+<text x="1324.4" y="649" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">target</text>
+<text x="1490.8" y="649" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9">FK</text>
+<rect x="836" y="1272" width="320" height="178" fill="#241f2b" stroke="#a08ac8" stroke-width="2" rx="7"/>
+<path d="M836,1322H1156" stroke="#a08ac8"/>
+<rect x="837" y="1273" width="318" height="48" fill="#493f58" rx="6"/>
+<text x="996" y="1294" text-anchor="middle" fill="#f8f5fc" font-family="Inter,sans-serif" font-size="15" font-weight="700">CROSS_DIAGRAM_LINK</text>
+<text x="996" y="1311" text-anchor="middle" fill="#d8caec" font-family="Inter,sans-serif" font-size="9">«entity»</text>
+<text x="848" y="1338" fill="#c5bbcf" font-family="Inter,sans-serif" font-size="8" font-weight="700">TYPE</text>
+<text x="932.4" y="1338" fill="#c5bbcf" font-family="Inter,sans-serif" font-size="8" font-weight="700">FIELD</text>
+<text x="1098.8" y="1338" fill="#c5bbcf" font-family="Inter,sans-serif" font-size="8" font-weight="700">KEYS</text>
+<path d="M836,1346H1156" stroke="#a08ac8" stroke-opacity=".45"/>
+<rect x="837" y="1346" width="318" height="31" fill="#31283d"/>
+<path d="M922.4,1346V1378M1088.8,1346V1378" stroke="#a08ac8" stroke-opacity=".35"/>
+<text x="848" y="1367" fill="#f0ecf5" font-family="SFMono-Regular,Consolas,monospace" font-size="10">LinkId</text>
+<text x="932.4" y="1367" fill="#f0ecf5" font-family="Inter,sans-serif" font-size="11">id</text>
+<text x="1098.8" y="1367" fill="#c5bbcf" font-family="SFMono-Regular,Consolas,monospace" font-size="9">PK</text>
+<rect x="837" y="1378" width="318" height="31" fill="#31283d"/>
+<path d="M922.4,1378V1410M1088.8,1378V1410" stroke="#a08ac8" stroke-opacity=".35"/>
+<text x="848" y="1399" fill="#f0ecf5" font-family="SFMono-Regular,Consolas,monospace" font-size="10">NodeRef</text>
+<text x="932.4" y="1399" fill="#f0ecf5" font-family="Inter,sans-serif" font-size="11">source</text>
+<text x="1098.8" y="1399" fill="#c5bbcf" font-family="SFMono-Regular,Consolas,monospace" font-size="9">FK</text>
+<rect x="837" y="1410" width="318" height="31" fill="#31283d"/>
+<path d="M922.4,1410V1442M1088.8,1410V1442" stroke="#a08ac8" stroke-opacity=".35"/>
+<text x="848" y="1431" fill="#f0ecf5" font-family="SFMono-Regular,Consolas,monospace" font-size="10">NodeRef</text>
+<text x="932.4" y="1431" fill="#f0ecf5" font-family="Inter,sans-serif" font-size="11">target</text>
+<text x="1098.8" y="1431" fill="#c5bbcf" font-family="SFMono-Regular,Consolas,monospace" font-size="9">FK</text>
+<rect x="444" y="458" width="320" height="210" fill="#1b222b" stroke="#7f9fc7" stroke-width="2" rx="7"/>
+<path d="M444,508H764" stroke="#7f9fc7"/>
+<rect x="445" y="459" width="318" height="48" fill="#34465a" rx="6"/>
+<text x="604" y="480" text-anchor="middle" fill="#f5f8fc" font-family="Inter,sans-serif" font-size="15" font-weight="700">DIAGRAM_RECORD</text>
+<text x="604" y="497" text-anchor="middle" fill="#c7d9ee" font-family="Inter,sans-serif" font-size="9">«entity»</text>
+<text x="456" y="524" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">TYPE</text>
+<text x="540.4" y="524" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">FIELD</text>
+<text x="706.8" y="524" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">KEYS</text>
+<path d="M444,532H764" stroke="#7f9fc7" stroke-opacity=".45"/>
+<rect x="445" y="532" width="318" height="31" fill="#243142"/>
+<path d="M530.4,532V564M696.8,532V564" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="456" y="553" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">DiagramId</text>
+<text x="540.4" y="553" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">id</text>
+<text x="706.8" y="553" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9">PK</text>
+<rect x="445" y="564" width="318" height="31" fill="#243142"/>
+<path d="M530.4,564V596M696.8,564V596" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="456" y="585" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">string</text>
+<text x="540.4" y="585" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">name</text>
+<text x="706.8" y="585" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9"></text>
+<rect x="445" y="596" width="318" height="31" fill="#243142"/>
+<path d="M530.4,596V628M696.8,596V628" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="456" y="617" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">3</text>
+<text x="540.4" y="617" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">schemaVersion</text>
+<text x="706.8" y="617" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9">UK</text>
+<rect x="445" y="628" width="318" height="31" fill="#243142"/>
+<path d="M530.4,628V660M696.8,628V660" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="456" y="649" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">int</text>
+<text x="540.4" y="649" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">revision</text>
+<text x="706.8" y="649" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9"></text>
+<rect x="1620" y="458" width="320" height="178" fill="#1b222b" stroke="#7f9fc7" stroke-width="2" rx="7"/>
+<path d="M1620,508H1940" stroke="#7f9fc7"/>
+<rect x="1621" y="459" width="318" height="48" fill="#34465a" rx="6"/>
+<text x="1780" y="480" text-anchor="middle" fill="#f5f8fc" font-family="Inter,sans-serif" font-size="15" font-weight="700">ENDPOINT</text>
+<text x="1780" y="497" text-anchor="middle" fill="#c7d9ee" font-family="Inter,sans-serif" font-size="9">«entity»</text>
+<text x="1632" y="524" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">TYPE</text>
+<text x="1716.4" y="524" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">FIELD</text>
+<text x="1882.8" y="524" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">KEYS</text>
+<path d="M1620,532H1940" stroke="#7f9fc7" stroke-opacity=".45"/>
+<rect x="1621" y="532" width="318" height="31" fill="#243142"/>
+<path d="M1706.4,532V564M1872.8,532V564" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="1632" y="553" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">NodeId</text>
+<text x="1716.4" y="553" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">nodeId</text>
+<text x="1882.8" y="553" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9">FK</text>
+<rect x="1621" y="564" width="318" height="31" fill="#243142"/>
+<path d="M1706.4,564V596M1872.8,564V596" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="1632" y="585" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">PortAnchor</text>
+<text x="1716.4" y="585" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">anchor</text>
+<text x="1882.8" y="585" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9"></text>
+<rect x="1621" y="596" width="318" height="31" fill="#243142"/>
+<path d="M1706.4,596V628M1872.8,596V628" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="1632" y="617" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">Cardinality</text>
+<text x="1716.4" y="617" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">cardinality</text>
+<text x="1882.8" y="617" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9"></text>
+<rect x="444" y="740" width="320" height="146" fill="#1b222b" stroke="#7f9fc7" stroke-width="2" rx="7"/>
+<path d="M444,790H764" stroke="#7f9fc7"/>
+<rect x="445" y="741" width="318" height="48" fill="#34465a" rx="6"/>
+<text x="604" y="762" text-anchor="middle" fill="#f5f8fc" font-family="Inter,sans-serif" font-size="15" font-weight="700">FLOW</text>
+<text x="604" y="779" text-anchor="middle" fill="#c7d9ee" font-family="Inter,sans-serif" font-size="9">«entity»</text>
+<text x="456" y="806" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">TYPE</text>
+<text x="540.4" y="806" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">FIELD</text>
+<text x="706.8" y="806" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">KEYS</text>
+<path d="M444,814H764" stroke="#7f9fc7" stroke-opacity=".45"/>
+<rect x="445" y="814" width="318" height="31" fill="#243142"/>
+<path d="M530.4,814V846M696.8,814V846" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="456" y="835" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">FlowId</text>
+<text x="540.4" y="835" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">id</text>
+<text x="706.8" y="835" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9">PK</text>
+<rect x="445" y="846" width="318" height="31" fill="#243142"/>
+<path d="M530.4,846V878M696.8,846V878" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="456" y="867" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">string</text>
+<text x="540.4" y="867" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">name</text>
+<text x="706.8" y="867" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9"></text>
+<rect x="836" y="740" width="320" height="146" fill="#1b222b" stroke="#7f9fc7" stroke-width="2" rx="7"/>
+<path d="M836,790H1156" stroke="#7f9fc7"/>
+<rect x="837" y="741" width="318" height="48" fill="#34465a" rx="6"/>
+<text x="996" y="762" text-anchor="middle" fill="#f5f8fc" font-family="Inter,sans-serif" font-size="15" font-weight="700">FLOW_STEP</text>
+<text x="996" y="779" text-anchor="middle" fill="#c7d9ee" font-family="Inter,sans-serif" font-size="9">«entity»</text>
+<text x="848" y="806" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">TYPE</text>
+<text x="932.4" y="806" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">FIELD</text>
+<text x="1098.8" y="806" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">KEYS</text>
+<path d="M836,814H1156" stroke="#7f9fc7" stroke-opacity=".45"/>
+<rect x="837" y="814" width="318" height="31" fill="#243142"/>
+<path d="M922.4,814V846M1088.8,814V846" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="848" y="835" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">WireId</text>
+<text x="932.4" y="835" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">ref</text>
+<text x="1098.8" y="835" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9">PK · FK</text>
+<rect x="837" y="846" width="318" height="31" fill="#243142"/>
+<path d="M922.4,846V878M1088.8,846V878" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="848" y="867" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">int</text>
+<text x="932.4" y="867" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">ordinal</text>
+<text x="1098.8" y="867" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9">PK</text>
+<rect x="1228" y="740" width="320" height="210" fill="#1b222b" stroke="#7f9fc7" stroke-width="2" rx="7"/>
+<path d="M1228,790H1548" stroke="#7f9fc7"/>
+<rect x="1229" y="741" width="318" height="48" fill="#34465a" rx="6"/>
+<text x="1388" y="762" text-anchor="middle" fill="#f5f8fc" font-family="Inter,sans-serif" font-size="15" font-weight="700">INTERFACE</text>
+<text x="1388" y="779" text-anchor="middle" fill="#c7d9ee" font-family="Inter,sans-serif" font-size="9">«entity»</text>
+<text x="1240" y="806" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">TYPE</text>
+<text x="1324.4" y="806" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">FIELD</text>
+<text x="1490.8" y="806" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">KEYS</text>
+<path d="M1228,814H1548" stroke="#7f9fc7" stroke-opacity=".45"/>
+<rect x="1229" y="814" width="318" height="31" fill="#243142"/>
+<path d="M1314.4,814V846M1480.8,814V846" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="1240" y="835" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">InterfaceId</text>
+<text x="1324.4" y="835" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">id</text>
+<text x="1490.8" y="835" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9">PK</text>
+<rect x="1229" y="846" width="318" height="31" fill="#243142"/>
+<path d="M1314.4,846V878M1480.8,846V878" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="1240" y="867" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">NodeId</text>
+<text x="1324.4" y="867" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">ownerId</text>
+<text x="1490.8" y="867" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9">FK</text>
+<rect x="1229" y="878" width="318" height="31" fill="#243142"/>
+<path d="M1314.4,878V910M1480.8,878V910" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="1240" y="899" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">Type[]</text>
+<text x="1324.4" y="899" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">accepts</text>
+<text x="1490.8" y="899" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9"></text>
+<rect x="1229" y="910" width="318" height="31" fill="#243142"/>
+<path d="M1314.4,910V942M1480.8,910V942" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="1240" y="931" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">Type[]</text>
+<text x="1324.4" y="931" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">returns</text>
+<text x="1490.8" y="931" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9"></text>
+<rect x="444" y="1272" width="320" height="146" fill="#241f2b" stroke="#a08ac8" stroke-width="2" rx="7"/>
+<path d="M444,1322H764" stroke="#a08ac8"/>
+<rect x="445" y="1273" width="318" height="48" fill="#493f58" rx="6"/>
+<text x="604" y="1294" text-anchor="middle" fill="#f8f5fc" font-family="Inter,sans-serif" font-size="15" font-weight="700">LIBRARY_INDEX</text>
+<text x="604" y="1311" text-anchor="middle" fill="#d8caec" font-family="Inter,sans-serif" font-size="9">«entity»</text>
+<text x="456" y="1338" fill="#c5bbcf" font-family="Inter,sans-serif" font-size="8" font-weight="700">TYPE</text>
+<text x="540.4" y="1338" fill="#c5bbcf" font-family="Inter,sans-serif" font-size="8" font-weight="700">FIELD</text>
+<text x="706.8" y="1338" fill="#c5bbcf" font-family="Inter,sans-serif" font-size="8" font-weight="700">KEYS</text>
+<path d="M444,1346H764" stroke="#a08ac8" stroke-opacity=".45"/>
+<rect x="445" y="1346" width="318" height="31" fill="#31283d"/>
+<path d="M530.4,1346V1378M696.8,1346V1378" stroke="#a08ac8" stroke-opacity=".35"/>
+<text x="456" y="1367" fill="#f0ecf5" font-family="SFMono-Regular,Consolas,monospace" font-size="10">int</text>
+<text x="540.4" y="1367" fill="#f0ecf5" font-family="Inter,sans-serif" font-size="11">revision</text>
+<text x="706.8" y="1367" fill="#c5bbcf" font-family="SFMono-Regular,Consolas,monospace" font-size="9"></text>
+<rect x="445" y="1378" width="318" height="31" fill="#31283d"/>
+<path d="M530.4,1378V1410M696.8,1378V1410" stroke="#a08ac8" stroke-opacity=".35"/>
+<text x="456" y="1399" fill="#f0ecf5" font-family="SFMono-Regular,Consolas,monospace" font-size="10">Link[]</text>
+<text x="540.4" y="1399" fill="#f0ecf5" font-family="Inter,sans-serif" font-size="11">links</text>
+<text x="706.8" y="1399" fill="#c5bbcf" font-family="SFMono-Regular,Consolas,monospace" font-size="9"></text>
+<rect x="836" y="1022" width="320" height="178" fill="#1b261f" stroke="#78a886" stroke-width="2" rx="7"/>
+<path d="M836,1072H1156" stroke="#78a886"/>
+<rect x="837" y="1023" width="318" height="48" fill="#365a42" rx="6"/>
+<text x="996" y="1044" text-anchor="middle" fill="#f4f8f5" font-family="Inter,sans-serif" font-size="15" font-weight="700">NODE_PLACEMENT</text>
+<text x="996" y="1061" text-anchor="middle" fill="#c9ddcf" font-family="Inter,sans-serif" font-size="9">«entity»</text>
+<text x="848" y="1088" fill="#b8c9bd" font-family="Inter,sans-serif" font-size="8" font-weight="700">TYPE</text>
+<text x="932.4" y="1088" fill="#b8c9bd" font-family="Inter,sans-serif" font-size="8" font-weight="700">FIELD</text>
+<text x="1098.8" y="1088" fill="#b8c9bd" font-family="Inter,sans-serif" font-size="8" font-weight="700">KEYS</text>
+<path d="M836,1096H1156" stroke="#78a886" stroke-opacity=".45"/>
+<rect x="837" y="1096" width="318" height="31" fill="#243329"/>
+<path d="M922.4,1096V1128M1088.8,1096V1128" stroke="#78a886" stroke-opacity=".35"/>
+<text x="848" y="1117" fill="#edf3ef" font-family="SFMono-Regular,Consolas,monospace" font-size="10">NodeId</text>
+<text x="932.4" y="1117" fill="#edf3ef" font-family="Inter,sans-serif" font-size="11">nodeId</text>
+<text x="1098.8" y="1117" fill="#b8c9bd" font-family="SFMono-Regular,Consolas,monospace" font-size="9">PK · FK</text>
+<rect x="837" y="1128" width="318" height="31" fill="#243329"/>
+<path d="M922.4,1128V1160M1088.8,1128V1160" stroke="#78a886" stroke-opacity=".35"/>
+<text x="848" y="1149" fill="#edf3ef" font-family="SFMono-Regular,Consolas,monospace" font-size="10">Point</text>
+<text x="932.4" y="1149" fill="#edf3ef" font-family="Inter,sans-serif" font-size="11">position</text>
+<text x="1098.8" y="1149" fill="#b8c9bd" font-family="SFMono-Regular,Consolas,monospace" font-size="9"></text>
+<rect x="837" y="1160" width="318" height="31" fill="#243329"/>
+<path d="M922.4,1160V1192M1088.8,1160V1192" stroke="#78a886" stroke-opacity=".35"/>
+<text x="848" y="1181" fill="#edf3ef" font-family="SFMono-Regular,Consolas,monospace" font-size="10">bool</text>
+<text x="932.4" y="1181" fill="#edf3ef" font-family="Inter,sans-serif" font-size="11">pinned</text>
+<text x="1098.8" y="1181" fill="#b8c9bd" font-family="SFMono-Regular,Consolas,monospace" font-size="9"></text>
+<rect x="1620" y="740" width="320" height="178" fill="#1b222b" stroke="#7f9fc7" stroke-width="2" rx="7"/>
+<path d="M1620,790H1940" stroke="#7f9fc7"/>
+<rect x="1621" y="741" width="318" height="48" fill="#34465a" rx="6"/>
+<text x="1780" y="762" text-anchor="middle" fill="#f5f8fc" font-family="Inter,sans-serif" font-size="15" font-weight="700">TYPE_OBJECT</text>
+<text x="1780" y="779" text-anchor="middle" fill="#c7d9ee" font-family="Inter,sans-serif" font-size="9">«entity»</text>
+<text x="1632" y="806" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">TYPE</text>
+<text x="1716.4" y="806" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">FIELD</text>
+<text x="1882.8" y="806" fill="#b8c5d3" font-family="Inter,sans-serif" font-size="8" font-weight="700">KEYS</text>
+<path d="M1620,814H1940" stroke="#7f9fc7" stroke-opacity=".45"/>
+<rect x="1621" y="814" width="318" height="31" fill="#243142"/>
+<path d="M1706.4,814V846M1872.8,814V846" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="1632" y="835" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">TypeId</text>
+<text x="1716.4" y="835" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">id</text>
+<text x="1882.8" y="835" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9">PK</text>
+<rect x="1621" y="846" width="318" height="31" fill="#243142"/>
+<path d="M1706.4,846V878M1872.8,846V878" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="1632" y="867" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">string</text>
+<text x="1716.4" y="867" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">name</text>
+<text x="1882.8" y="867" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9"></text>
+<rect x="1621" y="878" width="318" height="31" fill="#243142"/>
+<path d="M1706.4,878V910M1872.8,878V910" stroke="#7f9fc7" stroke-opacity=".35"/>
+<text x="1632" y="899" fill="#edf2f8" font-family="SFMono-Regular,Consolas,monospace" font-size="10">string[]</text>
+<text x="1716.4" y="899" fill="#edf2f8" font-family="Inter,sans-serif" font-size="11">fields</text>
+<text x="1882.8" y="899" fill="#b8c5d3" font-family="SFMono-Regular,Consolas,monospace" font-size="9"></text>
+<rect x="1228" y="1022" width="320" height="146" fill="#1b261f" stroke="#78a886" stroke-width="2" rx="7"/>
+<path d="M1228,1072H1548" stroke="#78a886"/>
+<rect x="1229" y="1023" width="318" height="48" fill="#365a42" rx="6"/>
+<text x="1388" y="1044" text-anchor="middle" fill="#f4f8f5" font-family="Inter,sans-serif" font-size="15" font-weight="700">WIRE_ROUTE_HINT</text>
+<text x="1388" y="1061" text-anchor="middle" fill="#c9ddcf" font-family="Inter,sans-serif" font-size="9">«entity»</text>
+<text x="1240" y="1088" fill="#b8c9bd" font-family="Inter,sans-serif" font-size="8" font-weight="700">TYPE</text>
+<text x="1324.4" y="1088" fill="#b8c9bd" font-family="Inter,sans-serif" font-size="8" font-weight="700">FIELD</text>
+<text x="1490.8" y="1088" fill="#b8c9bd" font-family="Inter,sans-serif" font-size="8" font-weight="700">KEYS</text>
+<path d="M1228,1096H1548" stroke="#78a886" stroke-opacity=".45"/>
+<rect x="1229" y="1096" width="318" height="31" fill="#243329"/>
+<path d="M1314.4,1096V1128M1480.8,1096V1128" stroke="#78a886" stroke-opacity=".35"/>
+<text x="1240" y="1117" fill="#edf3ef" font-family="SFMono-Regular,Consolas,monospace" font-size="10">WireId</text>
+<text x="1324.4" y="1117" fill="#edf3ef" font-family="Inter,sans-serif" font-size="11">wireId</text>
+<text x="1490.8" y="1117" fill="#b8c9bd" font-family="SFMono-Regular,Consolas,monospace" font-size="9">PK · FK</text>
+<rect x="1229" y="1128" width="318" height="31" fill="#243329"/>
+<path d="M1314.4,1128V1160M1480.8,1128V1160" stroke="#78a886" stroke-opacity=".35"/>
+<text x="1240" y="1149" fill="#edf3ef" font-family="SFMono-Regular,Consolas,monospace" font-size="10">Point[]</text>
+<text x="1324.4" y="1149" fill="#edf3ef" font-family="Inter,sans-serif" font-size="11">waypoints</text>
+<text x="1490.8" y="1149" fill="#b8c9bd" font-family="SFMono-Regular,Consolas,monospace" font-size="9"></text>
+<rect x="104" y="1616" width="276" height="156" fill="#252529" stroke="#2f2f34" rx="6"/>
+<text x="118" y="1640" fill="#ececee" font-family="Inter, sans-serif" font-size="13" font-weight="600">Canvas library</text>
+<text x="366" y="1640" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="9" text-anchor="end" letter-spacing="1">MODULE</text>
+<text x="118" y="1660" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11">application/canvas-library</text>
+<text x="118" y="1684" fill="#ececee" font-family="Inter, sans-serif" font-size="12">load(MapId) → DiagramRecord</text>
+<text x="118" y="1710" fill="#ececee" font-family="Inter, sans-serif" font-size="12">save(DiagramRecord) → WriteOutcome</text>
+<rect x="452" y="1616" width="305" height="156" fill="#252529" stroke="#2f2f34" rx="6"/>
+<text x="466" y="1640" fill="#ececee" font-family="Inter, sans-serif" font-size="13" font-weight="600">Geometry engine</text>
+<text x="743" y="1640" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="9" text-anchor="end" letter-spacing="1">MODULE</text>
+<text x="466" y="1660" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11">domain/diagram-geometry</text>
+<text x="466" y="1684" fill="#ececee" font-family="Inter, sans-serif" font-size="12">layoutScopes(Record) → Placements</text>
+<text x="466" y="1710" fill="#ececee" font-family="Inter, sans-serif" font-size="12">planWireRoutes(Topology) → WireRoute[]</text>
+<rect x="829" y="1616" width="233" height="156" fill="#252529" stroke="#2f2f34" rx="6"/>
+<text x="843" y="1640" fill="#ececee" font-family="Inter, sans-serif" font-size="13" font-weight="600">Projection</text>
+<text x="1048" y="1640" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="9" text-anchor="end" letter-spacing="1">MODULE</text>
+<text x="843" y="1660" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11">presentation/projection</text>
+<text x="843" y="1684" fill="#ececee" font-family="Inter, sans-serif" font-size="12">projectNodes(Input) → Node[]</text>
+<text x="843" y="1710" fill="#ececee" font-family="Inter, sans-serif" font-size="12">projectWires(Input) → Edge[]</text>
+<rect x="1134" y="1642" width="211" height="104" fill="#252529" stroke="#2f2f34" rx="6"/>
+<text x="1148" y="1666" fill="#ececee" font-family="Inter, sans-serif" font-size="13" font-weight="600">React Flow host</text>
+<text x="1331" y="1666" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="9" text-anchor="end" letter-spacing="1">MODULE</text>
+<text x="1148" y="1686" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11">presentation/nodes + edges</text>
+<rect x="1469" y="1616" width="204" height="104" fill="#252529" stroke="#2f2f34" rx="6"/>
+<text x="1483" y="1640" fill="#ececee" font-family="Inter, sans-serif" font-size="13" font-weight="600">diagrams/&lt;slug&gt;.json</text>
+<text x="1659" y="1640" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="9" text-anchor="end" letter-spacing="1">RESOURCE</text>
+<text x="1483" y="1660" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11">One DiagramRecord per map</text>
+<rect x="1465" y="1760" width="211" height="104" fill="#252529" stroke="#2f2f34" rx="6"/>
+<text x="1479" y="1784" fill="#ececee" font-family="Inter, sans-serif" font-size="13" font-weight="600">library.json</text>
+<text x="1662" y="1784" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="9" text-anchor="end" letter-spacing="1">RESOURCE</text>
+<text x="1479" y="1804" fill="#a2a2aa" font-family="Inter, sans-serif" font-size="11">Index plus cross-map links</text>
+</svg>

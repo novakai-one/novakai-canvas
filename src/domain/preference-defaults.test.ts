@@ -28,7 +28,13 @@ describe('preference defaults', () => {
     const old = {
       schemaVersion: 1,
       appearance: { density: 'comfortable', radius: 6, theme: 'dark', accent: 'gold' },
-      canvas: { showGrid: false, snapToGrid: true, gridSize: 8, showControls: true },
+      canvas: {
+        showGrid: false,
+        snapToGrid: true,
+        gridSize: 8,
+        showControls: true,
+        showLegend: true,
+      },
       nodes: {
         showKinds: true,
         showDescriptions: false,
@@ -47,6 +53,7 @@ describe('preference defaults', () => {
     expect(parsed.wires.maxLabelSize).toBeUndefined();
     expect(parsed.panel.sections).toBeUndefined();
     expect(parsed.canvas.targetSize).toBeUndefined();
+    expect('showLegend' in parsed.canvas).toBe(false);
   });
 
   it('refuses a text or label scale outside what the type system can carry', () => {

@@ -1,4 +1,4 @@
-/** The one kind→style mapping shared by edges, the legend, and SVG snapshots. */
+/** The one kind→style mapping shared by interactive edges and SVG snapshots. */
 
 import type { CanvasPreferences, CanvasTheme, WireKind } from '../domain/model.ts';
 import { WIRE_LABEL_SIZE_LIMITS } from '../domain/wire-label-size.ts';
@@ -10,19 +10,17 @@ type WireTone = 'neutral' | 'sage' | 'steel' | 'slate' | 'violet' | 'amber' | 'r
 interface WireKindStyle {
   dash: WireDash;
   tone: WireTone;
-  /** Legend wording for the relationship this kind carries. */
-  legend: string;
 }
 
 /** Every wire kind renders visibly distinct: dash pattern plus restrained colour. */
 export const WIRE_KIND_STYLES: Record<WireKind, WireKindStyle> = {
-  owns: { dash: 'solid', tone: 'neutral', legend: 'owns — structural parent' },
-  references: { dash: 'solid', tone: 'sage', legend: 'references — typed, machine-joinable' },
-  assigns: { dash: 'dashed', tone: 'steel', legend: 'assigns — pushes state' },
-  queries: { dash: 'dashdot', tone: 'slate', legend: 'queries — read-only composition' },
-  executes: { dash: 'solid', tone: 'violet', legend: 'executes — invokes behaviour' },
-  mentions: { dash: 'dashed', tone: 'amber', legend: 'mentions — free text, human-only' },
-  missing: { dash: 'dotted', tone: 'rust', legend: 'missing — no link exists' },
+  owns: { dash: 'solid', tone: 'neutral' },
+  references: { dash: 'solid', tone: 'sage' },
+  assigns: { dash: 'dashed', tone: 'steel' },
+  queries: { dash: 'dashdot', tone: 'slate' },
+  executes: { dash: 'solid', tone: 'violet' },
+  mentions: { dash: 'dashed', tone: 'amber' },
+  missing: { dash: 'dotted', tone: 'rust' },
 };
 
 /** SVG stroke-dasharray per dash pattern; empty string draws solid. */

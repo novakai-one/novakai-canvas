@@ -1,0 +1,1640 @@
+{
+  "schemaVersion": 3,
+  "id": "novakai-canvas-diagram-engine",
+  "name": "Novakai Canvas diagram engine",
+  "orientation": "left-right",
+  "status": "active",
+  "revision": 1,
+  "nodes": {
+    "novakai-canvas-diagram-engine": {
+      "id": "novakai-canvas-diagram-engine",
+      "label": "Novakai Canvas diagram engine",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "novakai-canvas-diagram-engine--note-1-self-diagnosis-how-this-": {
+      "id": "novakai-canvas-diagram-engine--note-1-self-diagnosis-how-this-",
+      "label": "Self-diagnosis: how this app models and draws entities, cardinality, modules, OOUX and flows — authored through ./canvas apply, the very pipeline it depicts.",
+      "parentId": "novakai-canvas-diagram-engine",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "novakai-canvas-diagram-engine--authoring-tools-canvas-cli": {
+      "id": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli",
+      "label": "Authoring · tools/canvas-cli",
+      "parentId": "novakai-canvas-diagram-engine",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "novakai-canvas-diagram-engine--storage-public-data": {
+      "id": "novakai-canvas-diagram-engine--storage-public-data",
+      "label": "Storage · public/data",
+      "parentId": "novakai-canvas-diagram-engine",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "novakai-canvas-diagram-engine--runtime-src": {
+      "id": "novakai-canvas-diagram-engine--runtime-src",
+      "label": "Runtime · src",
+      "parentId": "novakai-canvas-diagram-engine",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "novakai-canvas-diagram-engine--ooux-object-map": {
+      "id": "novakai-canvas-diagram-engine--ooux-object-map",
+      "label": "Map",
+      "parentId": "novakai-canvas-diagram-engine",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "ooux-object",
+      "objectRef": "map",
+      "oouxRows": [
+        {
+          "kind": "attribute",
+          "id": "map-name",
+          "name": "name",
+          "valueType": "string",
+          "role": "core",
+          "traits": []
+        },
+        {
+          "kind": "attribute",
+          "id": "map-status",
+          "name": "status",
+          "valueType": "enum",
+          "role": "core",
+          "traits": [
+            "filterable"
+          ]
+        },
+        {
+          "kind": "attribute",
+          "id": "map-orientation",
+          "name": "orientation",
+          "valueType": "enum",
+          "role": "metadata",
+          "traits": []
+        },
+        {
+          "kind": "attribute",
+          "id": "map-revision",
+          "name": "revision",
+          "valueType": "number",
+          "role": "metadata",
+          "traits": [
+            "sortable"
+          ]
+        },
+        {
+          "kind": "cta",
+          "id": "cta-apply",
+          "name": "applyDSL",
+          "role": "agent"
+        },
+        {
+          "kind": "cta",
+          "id": "cta-snapshot",
+          "name": "snapshot",
+          "role": "human"
+        },
+        {
+          "kind": "cta",
+          "id": "cta-archive",
+          "name": "archive",
+          "role": "owner"
+        }
+      ]
+    },
+    "novakai-canvas-diagram-engine--record-model-src-domain-records-ts": {
+      "id": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts",
+      "label": "Record model · src/domain/records.ts",
+      "parentId": "novakai-canvas-diagram-engine",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--canvas-cli": {
+      "id": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--canvas-cli",
+      "label": "canvas CLI",
+      "description": "The only supported write path",
+      "parentId": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli",
+      "interfaceIds": [
+        "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--canvas-cli--if-apply",
+        "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--canvas-cli--if-snapshot"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--dsl-parser": {
+      "id": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--dsl-parser",
+      "label": "DSL parser",
+      "description": "dsl-parse/*: tokens to statements to ScopeAst",
+      "parentId": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli",
+      "interfaceIds": [
+        "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--dsl-parser--if-parse"
+      ],
+      "typeIds": [
+        "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--dsl-parser--type-scopeast"
+      ],
+      "kind": "module"
+    },
+    "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--compiler": {
+      "id": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--compiler",
+      "label": "Compiler",
+      "description": "compile/*: ScopeAst to DiagramRecord; wires resolve against local nodes and foreign maps",
+      "parentId": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli",
+      "interfaceIds": [
+        "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--compiler--if-compile"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "novakai-canvas-diagram-engine--storage-public-data--diagrams-slug-json": {
+      "id": "novakai-canvas-diagram-engine--storage-public-data--diagrams-slug-json",
+      "label": "diagrams/<slug>.json",
+      "description": "One DiagramRecord per file, schemaVersion 3",
+      "parentId": "novakai-canvas-diagram-engine--storage-public-data",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "novakai-canvas-diagram-engine--storage-public-data--library-json": {
+      "id": "novakai-canvas-diagram-engine--storage-public-data--library-json",
+      "label": "library.json",
+      "description": "LibraryIndex: entries, cross-map links, migrated operations",
+      "parentId": "novakai-canvas-diagram-engine--storage-public-data",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "novakai-canvas-diagram-engine--runtime-src--canvas-library": {
+      "id": "novakai-canvas-diagram-engine--runtime-src--canvas-library",
+      "label": "Canvas library",
+      "description": "application/canvas-library: loads and saves records, owns link integrity",
+      "parentId": "novakai-canvas-diagram-engine--runtime-src",
+      "interfaceIds": [
+        "novakai-canvas-diagram-engine--runtime-src--canvas-library--if-load",
+        "novakai-canvas-diagram-engine--runtime-src--canvas-library--if-save"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "novakai-canvas-diagram-engine--runtime-src--geometry-engine": {
+      "id": "novakai-canvas-diagram-engine--runtime-src--geometry-engine",
+      "label": "Geometry engine",
+      "description": "domain/diagram-geometry + domain/layout: automatic placement and wire routing; semantic nodes never hold coordinates",
+      "parentId": "novakai-canvas-diagram-engine--runtime-src",
+      "interfaceIds": [
+        "novakai-canvas-diagram-engine--runtime-src--geometry-engine--if-layoutscopes",
+        "novakai-canvas-diagram-engine--runtime-src--geometry-engine--if-planwireroutes"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "novakai-canvas-diagram-engine--runtime-src--projection": {
+      "id": "novakai-canvas-diagram-engine--runtime-src--projection",
+      "label": "Projection",
+      "description": "presentation/projection: record plus view becomes React Flow nodes and edges",
+      "parentId": "novakai-canvas-diagram-engine--runtime-src",
+      "interfaceIds": [
+        "novakai-canvas-diagram-engine--runtime-src--projection--if-projectnodes",
+        "novakai-canvas-diagram-engine--runtime-src--projection--if-projectwires"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "novakai-canvas-diagram-engine--runtime-src--react-flow-host": {
+      "id": "novakai-canvas-diagram-engine--runtime-src--react-flow-host",
+      "label": "React Flow host",
+      "description": "presentation/nodes + edges: one renderer per registered kind; crow's-foot glyphs via wire-end-decorations",
+      "parentId": "novakai-canvas-diagram-engine--runtime-src",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-diagram-record": {
+      "id": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-diagram-record",
+      "label": "DIAGRAM_RECORD",
+      "parentId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "diagram-record",
+      "entityFields": [
+        {
+          "id": "diagram-id",
+          "name": "id",
+          "valueType": "DiagramId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "diagram-name",
+          "name": "name",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "schema-version",
+          "name": "schemaVersion",
+          "valueType": "3",
+          "keys": [
+            "uk"
+          ]
+        },
+        {
+          "id": "orientation",
+          "name": "orientation",
+          "valueType": "Orientation",
+          "keys": []
+        },
+        {
+          "id": "revision",
+          "name": "revision",
+          "valueType": "number",
+          "keys": []
+        }
+      ]
+    },
+    "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-node": {
+      "id": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-node",
+      "label": "CANVAS_NODE",
+      "parentId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "canvas-node",
+      "entityFields": [
+        {
+          "id": "node-id",
+          "name": "id",
+          "valueType": "NodeId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "node-kind",
+          "name": "kind",
+          "valueType": "NodeKind",
+          "keys": []
+        },
+        {
+          "id": "node-parent",
+          "name": "parentId",
+          "valueType": "NodeId",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "node-interfaces",
+          "name": "interfaceIds",
+          "valueType": "InterfaceId[]",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "node-expands",
+          "name": "expandsToDiagramId",
+          "valueType": "DiagramId",
+          "keys": [
+            "fk"
+          ]
+        }
+      ]
+    },
+    "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-wire": {
+      "id": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-wire",
+      "label": "CANVAS_WIRE",
+      "parentId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "canvas-wire",
+      "entityFields": [
+        {
+          "id": "wire-id",
+          "name": "id",
+          "valueType": "WireId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "wire-kind",
+          "name": "kind",
+          "valueType": "WireKind",
+          "keys": []
+        },
+        {
+          "id": "wire-source",
+          "name": "source",
+          "valueType": "Endpoint",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "wire-target",
+          "name": "target",
+          "valueType": "Endpoint",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "wire-cardinality",
+          "name": "cardinality",
+          "valueType": "Cardinality",
+          "keys": []
+        }
+      ]
+    },
+    "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-flow": {
+      "id": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-flow",
+      "label": "FLOW",
+      "parentId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "flow",
+      "entityFields": [
+        {
+          "id": "flow-id",
+          "name": "id",
+          "valueType": "FlowId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "flow-name",
+          "name": "name",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    },
+    "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-flow-step": {
+      "id": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-flow-step",
+      "label": "FLOW_STEP",
+      "parentId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "flow-step",
+      "entityFields": [
+        {
+          "id": "step-ref",
+          "name": "ref",
+          "valueType": "WireId",
+          "keys": [
+            "pk",
+            "fk"
+          ]
+        },
+        {
+          "id": "step-ordinal",
+          "name": "ordinal",
+          "valueType": "number",
+          "keys": [
+            "pk"
+          ]
+        }
+      ]
+    },
+    "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-interface": {
+      "id": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-interface",
+      "label": "INTERFACE",
+      "parentId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "interface",
+      "entityFields": [
+        {
+          "id": "interface-id",
+          "name": "id",
+          "valueType": "InterfaceId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "interface-owner",
+          "name": "ownerId",
+          "valueType": "NodeId",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "interface-accepts",
+          "name": "accepts",
+          "valueType": "TypeName[]",
+          "keys": []
+        },
+        {
+          "id": "interface-returns",
+          "name": "returns",
+          "valueType": "TypeName[]",
+          "keys": []
+        }
+      ]
+    },
+    "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-type-object": {
+      "id": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-type-object",
+      "label": "TYPE_OBJECT",
+      "parentId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "type-object",
+      "entityFields": [
+        {
+          "id": "type-id",
+          "name": "id",
+          "valueType": "TypeId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "type-name",
+          "name": "name",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "type-fields",
+          "name": "fields",
+          "valueType": "string[]",
+          "keys": []
+        }
+      ]
+    },
+    "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-layout": {
+      "id": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-layout",
+      "label": "CANVAS_LAYOUT",
+      "parentId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "canvas-layout",
+      "entityFields": [
+        {
+          "id": "layout-id",
+          "name": "id",
+          "valueType": "LayoutId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "layout-strategy",
+          "name": "strategy",
+          "valueType": "LayoutStrategy",
+          "keys": []
+        }
+      ]
+    },
+    "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-node-placement": {
+      "id": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-node-placement",
+      "label": "NODE_PLACEMENT",
+      "parentId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "node-placement",
+      "entityFields": [
+        {
+          "id": "placement-node",
+          "name": "nodeId",
+          "valueType": "NodeId",
+          "keys": [
+            "pk",
+            "fk"
+          ]
+        },
+        {
+          "id": "placement-position",
+          "name": "position",
+          "valueType": "Point",
+          "keys": []
+        },
+        {
+          "id": "placement-pinned",
+          "name": "pinned",
+          "valueType": "boolean",
+          "keys": []
+        }
+      ]
+    },
+    "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-view": {
+      "id": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-view",
+      "label": "CANVAS_VIEW",
+      "parentId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "canvas-view",
+      "entityFields": [
+        {
+          "id": "view-id",
+          "name": "id",
+          "valueType": "ViewId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "view-layout",
+          "name": "layoutId",
+          "valueType": "LayoutId",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "view-flow",
+          "name": "flowId",
+          "valueType": "FlowId",
+          "keys": [
+            "fk"
+          ]
+        }
+      ]
+    },
+    "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-library-index": {
+      "id": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-library-index",
+      "label": "LIBRARY_INDEX",
+      "parentId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "library-index",
+      "entityFields": [
+        {
+          "id": "index-revision",
+          "name": "revision",
+          "valueType": "number",
+          "keys": []
+        },
+        {
+          "id": "index-entries",
+          "name": "entries",
+          "valueType": "Entry[]",
+          "keys": []
+        },
+        {
+          "id": "index-links",
+          "name": "links",
+          "valueType": "CrossLink[]",
+          "keys": []
+        }
+      ]
+    }
+  },
+  "wires": {
+    "novakai-canvas-diagram-engine--wire-1": {
+      "id": "novakai-canvas-diagram-engine--wire-1",
+      "kind": "executes",
+      "label": "parse(DslText) -> ScopeAst",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--canvas-cli"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--dsl-parser"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-2": {
+      "id": "novakai-canvas-diagram-engine--wire-2",
+      "kind": "executes",
+      "label": "compile(ScopeAst) -> CompileResult",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--dsl-parser"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--compiler"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-3": {
+      "id": "novakai-canvas-diagram-engine--wire-3",
+      "kind": "owns",
+      "label": "write(DiagramRecord) -> void",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--compiler"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--storage-public-data--diagrams-slug-json"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-4": {
+      "id": "novakai-canvas-diagram-engine--wire-4",
+      "kind": "queries",
+      "label": "load(MapId) -> DiagramRecord",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--storage-public-data--diagrams-slug-json"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--runtime-src--canvas-library"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-5": {
+      "id": "novakai-canvas-diagram-engine--wire-5",
+      "kind": "queries",
+      "label": "readIndex() -> LibraryIndex",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--storage-public-data--library-json"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--runtime-src--canvas-library"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-6": {
+      "id": "novakai-canvas-diagram-engine--wire-6",
+      "kind": "executes",
+      "label": "plan(DiagramRecord) -> LayoutPlan",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--runtime-src--canvas-library"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--runtime-src--geometry-engine"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-7": {
+      "id": "novakai-canvas-diagram-engine--wire-7",
+      "kind": "executes",
+      "label": "projectView(Record, View) -> ProjectedView",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--runtime-src--geometry-engine"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--runtime-src--projection"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-8": {
+      "id": "novakai-canvas-diagram-engine--wire-8",
+      "kind": "executes",
+      "label": "render(FlowNodes, FlowEdges) -> Pixels",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--runtime-src--projection"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--runtime-src--react-flow-host"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-9": {
+      "id": "novakai-canvas-diagram-engine--wire-9",
+      "kind": "references",
+      "label": "oouxViewOf(DiagramRecord) -> Map",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--ooux-object-map"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-diagram-record"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-10": {
+      "id": "novakai-canvas-diagram-engine--wire-10",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-diagram-record",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-node",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-11": {
+      "id": "novakai-canvas-diagram-engine--wire-11",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-diagram-record",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-wire",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-12": {
+      "id": "novakai-canvas-diagram-engine--wire-12",
+      "kind": "owns",
+      "label": "declares",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-diagram-record",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-flow",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-13": {
+      "id": "novakai-canvas-diagram-engine--wire-13",
+      "kind": "owns",
+      "label": "orders",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-flow",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-flow-step",
+        "cardinality": "one-or-many"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-14": {
+      "id": "novakai-canvas-diagram-engine--wire-14",
+      "kind": "references",
+      "label": "references",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-flow-step",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-wire",
+        "cardinality": "one"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-15": {
+      "id": "novakai-canvas-diagram-engine--wire-15",
+      "kind": "references",
+      "label": "source",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-wire",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-node",
+        "cardinality": "one"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-16": {
+      "id": "novakai-canvas-diagram-engine--wire-16",
+      "kind": "references",
+      "label": "target",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-wire",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-node",
+        "cardinality": "one"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-17": {
+      "id": "novakai-canvas-diagram-engine--wire-17",
+      "kind": "owns",
+      "label": "parentId",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-node",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-node",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-18": {
+      "id": "novakai-canvas-diagram-engine--wire-18",
+      "kind": "owns",
+      "label": "exposes",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-node",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-interface",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-19": {
+      "id": "novakai-canvas-diagram-engine--wire-19",
+      "kind": "references",
+      "label": "acceptsReturns",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-interface",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-type-object",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-20": {
+      "id": "novakai-canvas-diagram-engine--wire-20",
+      "kind": "owns",
+      "label": "arranges",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-diagram-record",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-layout",
+        "cardinality": "one-or-many"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-21": {
+      "id": "novakai-canvas-diagram-engine--wire-21",
+      "kind": "owns",
+      "label": "places",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-layout",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-node-placement",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-22": {
+      "id": "novakai-canvas-diagram-engine--wire-22",
+      "kind": "references",
+      "label": "geometryFor",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-node-placement",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-node",
+        "cardinality": "one"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-23": {
+      "id": "novakai-canvas-diagram-engine--wire-23",
+      "kind": "owns",
+      "label": "reads",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-diagram-record",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-view",
+        "cardinality": "one-or-many"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-24": {
+      "id": "novakai-canvas-diagram-engine--wire-24",
+      "kind": "references",
+      "label": "uses",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-view",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-layout",
+        "cardinality": "one"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-25": {
+      "id": "novakai-canvas-diagram-engine--wire-25",
+      "kind": "references",
+      "label": "emphasises",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-view",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-flow",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-26": {
+      "id": "novakai-canvas-diagram-engine--wire-26",
+      "kind": "references",
+      "label": "indexes",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-library-index",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-diagram-record",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "novakai-canvas-diagram-engine--wire-27": {
+      "id": "novakai-canvas-diagram-engine--wire-27",
+      "kind": "references",
+      "label": "expandsTo",
+      "source": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-node",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-diagram-record",
+        "cardinality": "zero-or-one"
+      }
+    }
+  },
+  "flows": {
+    "novakai-canvas-diagram-engine--flow-from-dsl-line-to-pixels": {
+      "id": "novakai-canvas-diagram-engine--flow-from-dsl-line-to-pixels",
+      "name": "From DSL line to pixels",
+      "steps": [
+        {
+          "ref": "novakai-canvas-diagram-engine--wire-1",
+          "ordinal": 1
+        },
+        {
+          "ref": "novakai-canvas-diagram-engine--wire-2",
+          "ordinal": 2
+        },
+        {
+          "ref": "novakai-canvas-diagram-engine--wire-3",
+          "ordinal": 3
+        },
+        {
+          "ref": "novakai-canvas-diagram-engine--wire-4",
+          "ordinal": 4
+        },
+        {
+          "ref": "novakai-canvas-diagram-engine--wire-6",
+          "ordinal": 5
+        },
+        {
+          "ref": "novakai-canvas-diagram-engine--wire-7",
+          "ordinal": 6
+        },
+        {
+          "ref": "novakai-canvas-diagram-engine--wire-8",
+          "ordinal": 7
+        }
+      ]
+    }
+  },
+  "interfaces": {
+    "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--canvas-cli--if-apply": {
+      "id": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--canvas-cli--if-apply",
+      "ownerId": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--canvas-cli",
+      "name": "apply",
+      "accepts": [
+        "DslText"
+      ],
+      "returns": [
+        "WriteOutcome"
+      ]
+    },
+    "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--canvas-cli--if-snapshot": {
+      "id": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--canvas-cli--if-snapshot",
+      "ownerId": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--canvas-cli",
+      "name": "snapshot",
+      "accepts": [
+        "MapId"
+      ],
+      "returns": [
+        "Svg"
+      ]
+    },
+    "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--dsl-parser--if-parse": {
+      "id": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--dsl-parser--if-parse",
+      "ownerId": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--dsl-parser",
+      "name": "parse",
+      "accepts": [
+        "DslText"
+      ],
+      "returns": [
+        "ScopeAst"
+      ]
+    },
+    "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--compiler--if-compile": {
+      "id": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--compiler--if-compile",
+      "ownerId": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--compiler",
+      "name": "compile",
+      "accepts": [
+        "ScopeAst",
+        "ExistingRecords"
+      ],
+      "returns": [
+        "CompileResult"
+      ]
+    },
+    "novakai-canvas-diagram-engine--runtime-src--canvas-library--if-load": {
+      "id": "novakai-canvas-diagram-engine--runtime-src--canvas-library--if-load",
+      "ownerId": "novakai-canvas-diagram-engine--runtime-src--canvas-library",
+      "name": "load",
+      "accepts": [
+        "MapId"
+      ],
+      "returns": [
+        "DiagramRecord"
+      ]
+    },
+    "novakai-canvas-diagram-engine--runtime-src--canvas-library--if-save": {
+      "id": "novakai-canvas-diagram-engine--runtime-src--canvas-library--if-save",
+      "ownerId": "novakai-canvas-diagram-engine--runtime-src--canvas-library",
+      "name": "save",
+      "accepts": [
+        "DiagramRecord"
+      ],
+      "returns": [
+        "WriteOutcome"
+      ]
+    },
+    "novakai-canvas-diagram-engine--runtime-src--geometry-engine--if-layoutscopes": {
+      "id": "novakai-canvas-diagram-engine--runtime-src--geometry-engine--if-layoutscopes",
+      "ownerId": "novakai-canvas-diagram-engine--runtime-src--geometry-engine",
+      "name": "layoutScopes",
+      "accepts": [
+        "DiagramRecord"
+      ],
+      "returns": [
+        "Placements"
+      ]
+    },
+    "novakai-canvas-diagram-engine--runtime-src--geometry-engine--if-planwireroutes": {
+      "id": "novakai-canvas-diagram-engine--runtime-src--geometry-engine--if-planwireroutes",
+      "ownerId": "novakai-canvas-diagram-engine--runtime-src--geometry-engine",
+      "name": "planWireRoutes",
+      "accepts": [
+        "Topology"
+      ],
+      "returns": [
+        "WireRouteList"
+      ]
+    },
+    "novakai-canvas-diagram-engine--runtime-src--projection--if-projectnodes": {
+      "id": "novakai-canvas-diagram-engine--runtime-src--projection--if-projectnodes",
+      "ownerId": "novakai-canvas-diagram-engine--runtime-src--projection",
+      "name": "projectNodes",
+      "accepts": [
+        "ProjectionInput"
+      ],
+      "returns": [
+        "FlowNodes"
+      ]
+    },
+    "novakai-canvas-diagram-engine--runtime-src--projection--if-projectwires": {
+      "id": "novakai-canvas-diagram-engine--runtime-src--projection--if-projectwires",
+      "ownerId": "novakai-canvas-diagram-engine--runtime-src--projection",
+      "name": "projectWires",
+      "accepts": [
+        "ProjectionInput"
+      ],
+      "returns": [
+        "FlowEdges"
+      ]
+    }
+  },
+  "types": {
+    "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--dsl-parser--type-scopeast": {
+      "id": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--dsl-parser--type-scopeast",
+      "name": "ScopeAst",
+      "fields": [
+        "label",
+        "orientation",
+        "statements"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "novakai-canvas-diagram-engine": {
+          "nodeId": "novakai-canvas-diagram-engine",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 2056,
+            "height": 2340
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--note-1-self-diagnosis-how-this-": {
+          "nodeId": "novakai-canvas-diagram-engine--note-1-self-diagnosis-how-this-",
+          "position": {
+            "x": 1312,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 153
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--authoring-tools-canvas-cli": {
+          "nodeId": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 1232,
+            "height": 252
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--storage-public-data": {
+          "nodeId": "novakai-canvas-diagram-engine--storage-public-data",
+          "position": {
+            "x": 40,
+            "y": 1940
+          },
+          "size": {
+            "width": 500,
+            "height": 360
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--runtime-src": {
+          "nodeId": "novakai-canvas-diagram-engine--runtime-src",
+          "position": {
+            "x": 40,
+            "y": 1602
+          },
+          "size": {
+            "width": 1976,
+            "height": 268
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--ooux-object-map": {
+          "nodeId": "novakai-canvas-diagram-engine--ooux-object-map",
+          "position": {
+            "x": 1632,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 286
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts": {
+          "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts",
+          "position": {
+            "x": 40,
+            "y": 412
+          },
+          "size": {
+            "width": 1199,
+            "height": 1120
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--canvas-cli": {
+          "nodeId": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--canvas-cli",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 240,
+            "height": 156
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--dsl-parser": {
+          "nodeId": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--dsl-parser",
+          "position": {
+            "x": 352,
+            "y": 57
+          },
+          "size": {
+            "width": 348,
+            "height": 154
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--compiler": {
+          "nodeId": "novakai-canvas-diagram-engine--authoring-tools-canvas-cli--compiler",
+          "position": {
+            "x": 772,
+            "y": 61
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--storage-public-data--diagrams-slug-json": {
+          "nodeId": "novakai-canvas-diagram-engine--storage-public-data--diagrams-slug-json",
+          "position": {
+            "x": 83,
+            "y": 56
+          },
+          "size": {
+            "width": 334,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--storage-public-data--library-json": {
+          "nodeId": "novakai-canvas-diagram-engine--storage-public-data--library-json",
+          "position": {
+            "x": 40,
+            "y": 200
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--runtime-src--canvas-library": {
+          "nodeId": "novakai-canvas-diagram-engine--runtime-src--canvas-library",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 172
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--runtime-src--geometry-engine": {
+          "nodeId": "novakai-canvas-diagram-engine--runtime-src--geometry-engine",
+          "position": {
+            "x": 532,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 172
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--runtime-src--projection": {
+          "nodeId": "novakai-canvas-diagram-engine--runtime-src--projection",
+          "position": {
+            "x": 1024,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 172
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--runtime-src--react-flow-host": {
+          "nodeId": "novakai-canvas-diagram-engine--runtime-src--react-flow-host",
+          "position": {
+            "x": 1516,
+            "y": 82
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-diagram-record": {
+          "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-diagram-record",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 325,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-node": {
+          "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-node",
+          "position": {
+            "x": 437,
+            "y": 56
+          },
+          "size": {
+            "width": 325,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-wire": {
+          "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-wire",
+          "position": {
+            "x": 834,
+            "y": 56
+          },
+          "size": {
+            "width": 325,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-flow": {
+          "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-flow",
+          "position": {
+            "x": 40,
+            "y": 370
+          },
+          "size": {
+            "width": 325,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-flow-step": {
+          "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-flow-step",
+          "position": {
+            "x": 437,
+            "y": 370
+          },
+          "size": {
+            "width": 325,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-interface": {
+          "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-interface",
+          "position": {
+            "x": 834,
+            "y": 370
+          },
+          "size": {
+            "width": 325,
+            "height": 210
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-type-object": {
+          "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-type-object",
+          "position": {
+            "x": 40,
+            "y": 652
+          },
+          "size": {
+            "width": 325,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-layout": {
+          "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-layout",
+          "position": {
+            "x": 437,
+            "y": 652
+          },
+          "size": {
+            "width": 325,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-node-placement": {
+          "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-node-placement",
+          "position": {
+            "x": 834,
+            "y": 652
+          },
+          "size": {
+            "width": 325,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-view": {
+          "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-view",
+          "position": {
+            "x": 40,
+            "y": 902
+          },
+          "size": {
+            "width": 325,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-library-index": {
+          "nodeId": "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-library-index",
+          "position": {
+            "x": 437,
+            "y": 902
+          },
+          "size": {
+            "width": 325,
+            "height": 178
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {
+        "novakai-canvas-diagram-engine--ooux-object-map": {
+          "palette": "violet"
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-diagram-record": {
+          "palette": "blue"
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-node": {
+          "palette": "blue"
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-wire": {
+          "palette": "blue"
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-flow": {
+          "palette": "blue"
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-flow-step": {
+          "palette": "blue"
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-interface": {
+          "palette": "blue"
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-type-object": {
+          "palette": "blue"
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-layout": {
+          "palette": "sage"
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-node-placement": {
+          "palette": "sage"
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-view": {
+          "palette": "sage"
+        },
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-library-index": {
+          "palette": "violet"
+        }
+      },
+      "appearanceByWireId": {},
+      "arrangementByContainerId": {
+        "novakai-canvas-diagram-engine--record-model-src-domain-records-ts": {
+          "layout": "grid",
+          "childIds": [
+            "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-diagram-record",
+            "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-node",
+            "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-wire",
+            "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-flow",
+            "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-flow-step",
+            "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-interface",
+            "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-type-object",
+            "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-layout",
+            "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-node-placement",
+            "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-canvas-view",
+            "novakai-canvas-diagram-engine--record-model-src-domain-records-ts--entity-library-index"
+          ],
+          "gap": 16,
+          "align": "stretch",
+          "columns": 3
+        }
+      }
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-b922bb85-5b72-4176-aff1-e49e4a1bb780": {
+      "operationId": "cli-apply-b922bb85-5b72-4176-aff1-e49e4a1bb780",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-25T19:05:30.523Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "canvas-self-diagnosis.dsl"
+      },
+      "commandKinds": [
+        "diagram.setOrientation",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "diagram.definitions.replace",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "diagram.flows.replace",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    }
+  }
+}

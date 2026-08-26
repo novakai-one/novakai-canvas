@@ -1,0 +1,1516 @@
+{
+  "schemaVersion": 3,
+  "id": "message-an-agent-semantic-architecture-map",
+  "name": "Message an Agent — Semantic Architecture Map",
+  "orientation": "left-right",
+  "status": "active",
+  "revision": 2,
+  "nodes": {
+    "message-an-agent-semantic-architecture-map": {
+      "id": "message-an-agent-semantic-architecture-map",
+      "label": "Message an Agent — Semantic Architecture Map",
+      "description": "TARGET SPEC DEMO · position, territory, borders, and crossing carry meaning",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-semantic-architecture-map--shell-ui-packages-shell": {
+      "id": "message-an-agent-semantic-architecture-map--shell-ui-packages-shell",
+      "label": "Shell UI · packages/shell",
+      "description": "Owns the human-facing conversation window",
+      "parentId": "message-an-agent-semantic-architecture-map",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-semantic-architecture-map--server-boundary-packages-server": {
+      "id": "message-an-agent-semantic-architecture-map--server-boundary-packages-server",
+      "label": "Server boundary · packages/server",
+      "description": "The only Shell-to-capability crossing",
+      "parentId": "message-an-agent-semantic-architecture-map",
+      "crossing": "gated",
+      "gate": "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core": {
+      "id": "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core",
+      "label": "Messaging core · packages/messaging/core",
+      "description": "Accepts durable intent before provider work begins",
+      "parentId": "message-an-agent-semantic-architecture-map",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core": {
+      "id": "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core",
+      "label": "Agent identity · packages/agents/core",
+      "description": "Owns durable Agent identity",
+      "parentId": "message-an-agent-semantic-architecture-map",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send": {
+      "id": "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send",
+      "label": "Provider egress · messaging/adapters/provider-send",
+      "description": "The only provider-process launch crossing",
+      "parentId": "message-an-agent-semantic-architecture-map",
+      "crossing": "gated",
+      "gate": "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send--provider-send",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-semantic-architecture-map--external-provider-world": {
+      "id": "message-an-agent-semantic-architecture-map--external-provider-world",
+      "label": "External provider world",
+      "description": "Provider-owned runtime and persistence",
+      "parentId": "message-an-agent-semantic-architecture-map",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion": {
+      "id": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion",
+      "label": "Provider ingress · messaging/core/ingestion",
+      "description": "The only reader of provider transcript files",
+      "parentId": "message-an-agent-semantic-architecture-map",
+      "crossing": "gated",
+      "gate": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores": {
+      "id": "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores",
+      "label": "Durable records · local JSONL stores",
+      "description": "Authoritative application state",
+      "parentId": "message-an-agent-semantic-architecture-map",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api": {
+      "id": "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api",
+      "label": "Messaging events · packages/messaging/api",
+      "description": "Returns durable lines to the owning window",
+      "parentId": "message-an-agent-semantic-architecture-map",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-semantic-architecture-map--map-contract": {
+      "id": "message-an-agent-semantic-architecture-map--map-contract",
+      "label": "Map contract",
+      "description": "One stable basemap; the flow picker changes emphasis, never geometry",
+      "parentId": "message-an-agent-semantic-architecture-map",
+      "band": 0,
+      "lane": 3,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "territory",
+          "kind": "info",
+          "text": "Left to right is execution; containers are code ownership"
+        },
+        {
+          "id": "crossing",
+          "kind": "decision",
+          "text": "Ringed borders are legal crossings; the rose seam is unresolved"
+        }
+      ]
+    },
+    "message-an-agent-semantic-architecture-map--block-session-link-gap": {
+      "id": "message-an-agent-semantic-architecture-map--block-session-link-gap",
+      "label": "OPEN SPEC SEAM",
+      "parentId": "message-an-agent-semantic-architecture-map",
+      "band": 5,
+      "lane": 3,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Confirm the single writer for Agent ↔ ProviderSession attachment"
+      ],
+      "wireRef": "session-link-gap"
+    },
+    "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen": {
+      "id": "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen",
+      "label": "Messaging Screen",
+      "description": "Optimistic window, composer, durable transcript projection",
+      "parentId": "message-an-agent-semantic-architecture-map--shell-ui-packages-shell",
+      "band": 0,
+      "lane": 0,
+      "interfaceIds": [
+        "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen--if-startagent",
+        "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen--if-sendmessage",
+        "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen--if-receivetranscript"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods": {
+      "id": "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods",
+      "label": "Server Methods",
+      "description": "Translates Shell requests into capability calls",
+      "parentId": "message-an-agent-semantic-architecture-map--server-boundary-packages-server",
+      "band": 1,
+      "lane": 0,
+      "interfaceIds": [
+        "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods--if-startagent",
+        "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods--if-sendmessage"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core--message-intake": {
+      "id": "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core--message-intake",
+      "label": "Message Intake",
+      "description": "Validates, journals, then dispatches an accepted send",
+      "parentId": "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core",
+      "band": 2,
+      "lane": 0,
+      "interfaceIds": [
+        "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core--message-intake--if-accept",
+        "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core--message-intake--if-dispatch"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry": {
+      "id": "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry",
+      "label": "Agent Registry",
+      "description": "Creates the Agent before a provider session exists",
+      "parentId": "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core",
+      "band": 2,
+      "lane": 4,
+      "interfaceIds": [
+        "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry--if-create",
+        "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry--if-attachsession"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send--provider-send": {
+      "id": "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send--provider-send",
+      "label": "Provider Send",
+      "description": "Starts or resumes exactly one provider turn",
+      "parentId": "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send",
+      "band": 3,
+      "lane": 0,
+      "interfaceIds": [
+        "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send--provider-send--if-dispatch"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-semantic-architecture-map--external-provider-world--provider-cli": {
+      "id": "message-an-agent-semantic-architecture-map--external-provider-world--provider-cli",
+      "label": "Provider CLI",
+      "description": "Claude, Codex, or Kimi local runtime",
+      "parentId": "message-an-agent-semantic-architecture-map--external-provider-world",
+      "band": 4,
+      "lane": 0,
+      "interfaceIds": [
+        "message-an-agent-semantic-architecture-map--external-provider-world--provider-cli--if-run"
+      ],
+      "typeIds": [],
+      "kind": "runtime"
+    },
+    "message-an-agent-semantic-architecture-map--external-provider-world--provider-session-file": {
+      "id": "message-an-agent-semantic-architecture-map--external-provider-world--provider-session-file",
+      "label": "Provider Session File",
+      "description": "Provider-native transcript authority",
+      "parentId": "message-an-agent-semantic-architecture-map--external-provider-world",
+      "band": 4,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion": {
+      "id": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion",
+      "label": "Transcript Ingestion",
+      "description": "Tails, normalizes, links, persists, then publishes",
+      "parentId": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion",
+      "band": 5,
+      "lane": 0,
+      "interfaceIds": [
+        "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion--if-ingest",
+        "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion--if-attach",
+        "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion--if-append",
+        "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion--if-publish"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--agent-store": {
+      "id": "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--agent-store",
+      "label": "Agent Store",
+      "description": "Agent identity and provider-session link",
+      "parentId": "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores",
+      "band": 6,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--send-journal": {
+      "id": "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--send-journal",
+      "label": "Send Journal",
+      "description": "Accepted intent and dispatch state",
+      "parentId": "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores",
+      "band": 6,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--transcript-store": {
+      "id": "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--transcript-store",
+      "label": "Transcript Store",
+      "description": "Immutable normalized transcript lines",
+      "parentId": "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores",
+      "band": 6,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api--transcript-events": {
+      "id": "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api--transcript-events",
+      "label": "Transcript Events",
+      "description": "Publishes only after transcript persistence",
+      "parentId": "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api",
+      "band": 7,
+      "lane": 0,
+      "interfaceIds": [
+        "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api--transcript-events--if-publish",
+        "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api--transcript-events--if-subscribe"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    }
+  },
+  "wires": {
+    "message-an-agent-semantic-architecture-map--wire-1": {
+      "id": "message-an-agent-semantic-architecture-map--wire-1",
+      "kind": "executes",
+      "label": "request durable Agent identity",
+      "source": {
+        "nodeId": "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen",
+        "anchor": {
+          "side": "right",
+          "ordinal": 0
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods",
+        "anchor": {
+          "side": "left",
+          "ordinal": 0
+        }
+      }
+    },
+    "message-an-agent-semantic-architecture-map--wire-2": {
+      "id": "message-an-agent-semantic-architecture-map--wire-2",
+      "kind": "executes",
+      "label": "create Agent before provider startup",
+      "source": {
+        "nodeId": "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods",
+        "anchor": {
+          "side": "right",
+          "ordinal": 0
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry",
+        "anchor": {
+          "side": "left",
+          "ordinal": 0
+        }
+      }
+    },
+    "message-an-agent-semantic-architecture-map--wire-3": {
+      "id": "message-an-agent-semantic-architecture-map--wire-3",
+      "kind": "owns",
+      "label": "persist AgentId and provider",
+      "source": {
+        "nodeId": "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry",
+        "anchor": {
+          "side": "right",
+          "ordinal": 0
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--agent-store"
+      }
+    },
+    "message-an-agent-semantic-architecture-map--wire-4": {
+      "id": "message-an-agent-semantic-architecture-map--wire-4",
+      "kind": "executes",
+      "label": "submit first or resumed message",
+      "source": {
+        "nodeId": "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen",
+        "anchor": {
+          "side": "right",
+          "ordinal": 1
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods",
+        "anchor": {
+          "side": "left",
+          "ordinal": 1
+        }
+      }
+    },
+    "message-an-agent-semantic-architecture-map--wire-5": {
+      "id": "message-an-agent-semantic-architecture-map--wire-5",
+      "kind": "executes",
+      "label": "enter the Messaging capability",
+      "source": {
+        "nodeId": "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods",
+        "anchor": {
+          "side": "right",
+          "ordinal": 1
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core--message-intake",
+        "anchor": {
+          "side": "left",
+          "ordinal": 0
+        }
+      }
+    },
+    "message-an-agent-semantic-architecture-map--wire-6": {
+      "id": "message-an-agent-semantic-architecture-map--wire-6",
+      "kind": "owns",
+      "label": "journal accepted intent before dispatch",
+      "source": {
+        "nodeId": "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core--message-intake",
+        "anchor": {
+          "side": "right",
+          "ordinal": 0
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--send-journal"
+      }
+    },
+    "message-an-agent-semantic-architecture-map--wire-7": {
+      "id": "message-an-agent-semantic-architecture-map--wire-7",
+      "kind": "executes",
+      "label": "dispatch accepted SendId",
+      "source": {
+        "nodeId": "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core--message-intake",
+        "anchor": {
+          "side": "right",
+          "ordinal": 1
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send--provider-send",
+        "anchor": {
+          "side": "left",
+          "ordinal": 0
+        }
+      }
+    },
+    "message-an-agent-semantic-architecture-map--wire-8": {
+      "id": "message-an-agent-semantic-architecture-map--wire-8",
+      "kind": "executes",
+      "label": "start or resume one provider turn",
+      "source": {
+        "nodeId": "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send--provider-send",
+        "anchor": {
+          "side": "right",
+          "ordinal": 0
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-semantic-architecture-map--external-provider-world--provider-cli",
+        "anchor": {
+          "side": "left",
+          "ordinal": 0
+        }
+      }
+    },
+    "message-an-agent-semantic-architecture-map--wire-9": {
+      "id": "message-an-agent-semantic-architecture-map--wire-9",
+      "kind": "owns",
+      "label": "append prompt, marker, and reply",
+      "source": {
+        "nodeId": "message-an-agent-semantic-architecture-map--external-provider-world--provider-cli",
+        "anchor": {
+          "side": "right",
+          "ordinal": 0
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-semantic-architecture-map--external-provider-world--provider-session-file"
+      }
+    },
+    "message-an-agent-semantic-architecture-map--wire-10": {
+      "id": "message-an-agent-semantic-architecture-map--wire-10",
+      "kind": "queries",
+      "label": "tail new provider-owned bytes",
+      "source": {
+        "nodeId": "message-an-agent-semantic-architecture-map--external-provider-world--provider-session-file"
+      },
+      "target": {
+        "nodeId": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion",
+        "anchor": {
+          "side": "left",
+          "ordinal": 0
+        }
+      }
+    },
+    "message-an-agent-semantic-architecture-map--wire-11": {
+      "id": "message-an-agent-semantic-architecture-map--wire-11",
+      "kind": "executes",
+      "label": "present validated session identity",
+      "source": {
+        "nodeId": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion",
+        "anchor": {
+          "side": "right",
+          "ordinal": 1
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry",
+        "anchor": {
+          "side": "left",
+          "ordinal": 1
+        }
+      }
+    },
+    "message-an-agent-semantic-architecture-map--wire-12": {
+      "id": "message-an-agent-semantic-architecture-map--wire-12",
+      "kind": "assigns",
+      "label": "persist the Agent-to-session link",
+      "source": {
+        "nodeId": "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry",
+        "anchor": {
+          "side": "right",
+          "ordinal": 1
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--agent-store"
+      }
+    },
+    "message-an-agent-semantic-architecture-map--wire-13": {
+      "id": "message-an-agent-semantic-architecture-map--wire-13",
+      "kind": "missing",
+      "label": "unresolved single-writer decision",
+      "source": {
+        "nodeId": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion",
+        "anchor": {
+          "side": "right",
+          "ordinal": 1
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-semantic-architecture-map--block-session-link-gap"
+      }
+    },
+    "message-an-agent-semantic-architecture-map--wire-14": {
+      "id": "message-an-agent-semantic-architecture-map--wire-14",
+      "kind": "owns",
+      "label": "append immutable normalized line",
+      "source": {
+        "nodeId": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion",
+        "anchor": {
+          "side": "right",
+          "ordinal": 2
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--transcript-store"
+      }
+    },
+    "message-an-agent-semantic-architecture-map--wire-15": {
+      "id": "message-an-agent-semantic-architecture-map--wire-15",
+      "kind": "executes",
+      "label": "publish after persistence",
+      "source": {
+        "nodeId": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion",
+        "anchor": {
+          "side": "right",
+          "ordinal": 3
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api--transcript-events",
+        "anchor": {
+          "side": "left",
+          "ordinal": 0
+        }
+      }
+    },
+    "message-an-agent-semantic-architecture-map--wire-16": {
+      "id": "message-an-agent-semantic-architecture-map--wire-16",
+      "kind": "executes",
+      "label": "return line to the same Agent window",
+      "source": {
+        "nodeId": "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api--transcript-events",
+        "anchor": {
+          "side": "right",
+          "ordinal": 1
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen",
+        "anchor": {
+          "side": "left",
+          "ordinal": 2
+        }
+      }
+    },
+    "message-an-agent-semantic-architecture-map--wire-17": {
+      "id": "message-an-agent-semantic-architecture-map--wire-17",
+      "kind": "queries",
+      "label": "resolve target Agent and optional resume handle",
+      "source": {
+        "nodeId": "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--send-journal"
+      },
+      "target": {
+        "nodeId": "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--agent-store"
+      }
+    }
+  },
+  "flows": {
+    "first-message": {
+      "id": "first-message",
+      "name": "First message · create Agent and discover session",
+      "steps": [
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-1",
+          "ordinal": 1
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-2",
+          "ordinal": 2
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-3",
+          "ordinal": 3
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-4",
+          "ordinal": 4
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-5",
+          "ordinal": 5
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-6",
+          "ordinal": 6
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-7",
+          "ordinal": 7
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-8",
+          "ordinal": 8
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-9",
+          "ordinal": 9
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-10",
+          "ordinal": 10
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-11",
+          "ordinal": 11
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-12",
+          "ordinal": 12
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-14",
+          "ordinal": 13
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-15",
+          "ordinal": 14
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-16",
+          "ordinal": 15
+        }
+      ]
+    },
+    "provider-ingestion": {
+      "id": "provider-ingestion",
+      "name": "Provider ingestion · durable transcript",
+      "steps": [
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-10",
+          "ordinal": 1
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-11",
+          "ordinal": 2
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-12",
+          "ordinal": 3
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-14",
+          "ordinal": 4
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-15",
+          "ordinal": 5
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-16",
+          "ordinal": 6
+        }
+      ]
+    },
+    "resumed-message": {
+      "id": "resumed-message",
+      "name": "Resumed message · reuse provider session",
+      "steps": [
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-4",
+          "ordinal": 1
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-5",
+          "ordinal": 2
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-6",
+          "ordinal": 3
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-17",
+          "ordinal": 4
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-7",
+          "ordinal": 5
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-8",
+          "ordinal": 6
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-9",
+          "ordinal": 7
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-10",
+          "ordinal": 8
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-14",
+          "ordinal": 9
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-15",
+          "ordinal": 10
+        },
+        {
+          "ref": "message-an-agent-semantic-architecture-map--wire-16",
+          "ordinal": 11
+        }
+      ]
+    }
+  },
+  "interfaces": {
+    "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen--if-startagent": {
+      "id": "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen--if-startagent",
+      "ownerId": "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen",
+      "name": "startAgent",
+      "accepts": [
+        "Provider"
+      ],
+      "returns": [
+        "AgentId"
+      ]
+    },
+    "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen--if-sendmessage": {
+      "id": "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen--if-sendmessage",
+      "ownerId": "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen",
+      "name": "sendMessage",
+      "accepts": [
+        "AgentId",
+        "Text"
+      ],
+      "returns": [
+        "SendId"
+      ]
+    },
+    "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen--if-receivetranscript": {
+      "id": "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen--if-receivetranscript",
+      "ownerId": "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen",
+      "name": "receiveTranscript",
+      "accepts": [
+        "TranscriptLine"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods--if-startagent": {
+      "id": "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods--if-startagent",
+      "ownerId": "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods",
+      "name": "startAgent",
+      "accepts": [
+        "Provider"
+      ],
+      "returns": [
+        "AgentId"
+      ]
+    },
+    "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods--if-sendmessage": {
+      "id": "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods--if-sendmessage",
+      "ownerId": "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods",
+      "name": "sendMessage",
+      "accepts": [
+        "AgentId",
+        "Text"
+      ],
+      "returns": [
+        "SendId"
+      ]
+    },
+    "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core--message-intake--if-accept": {
+      "id": "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core--message-intake--if-accept",
+      "ownerId": "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core--message-intake",
+      "name": "accept",
+      "accepts": [
+        "AgentId",
+        "Text"
+      ],
+      "returns": [
+        "SendId"
+      ]
+    },
+    "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core--message-intake--if-dispatch": {
+      "id": "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core--message-intake--if-dispatch",
+      "ownerId": "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core--message-intake",
+      "name": "dispatch",
+      "accepts": [
+        "SendId"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry--if-create": {
+      "id": "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry--if-create",
+      "ownerId": "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry",
+      "name": "create",
+      "accepts": [
+        "Provider"
+      ],
+      "returns": [
+        "AgentId"
+      ]
+    },
+    "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry--if-attachsession": {
+      "id": "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry--if-attachsession",
+      "ownerId": "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry",
+      "name": "attachSession",
+      "accepts": [
+        "AgentId",
+        "SessionId"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send--provider-send--if-dispatch": {
+      "id": "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send--provider-send--if-dispatch",
+      "ownerId": "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send--provider-send",
+      "name": "dispatch",
+      "accepts": [
+        "SendId",
+        "Text",
+        "ResumeId"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-semantic-architecture-map--external-provider-world--provider-cli--if-run": {
+      "id": "message-an-agent-semantic-architecture-map--external-provider-world--provider-cli--if-run",
+      "ownerId": "message-an-agent-semantic-architecture-map--external-provider-world--provider-cli",
+      "name": "run",
+      "accepts": [
+        "Text",
+        "ResumeId"
+      ],
+      "returns": [
+        "ProviderReply"
+      ]
+    },
+    "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion--if-ingest": {
+      "id": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion--if-ingest",
+      "ownerId": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion",
+      "name": "ingest",
+      "accepts": [
+        "SourceId"
+      ],
+      "returns": [
+        "SessionId"
+      ]
+    },
+    "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion--if-attach": {
+      "id": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion--if-attach",
+      "ownerId": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion",
+      "name": "attach",
+      "accepts": [
+        "SessionId",
+        "AgentId"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion--if-append": {
+      "id": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion--if-append",
+      "ownerId": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion",
+      "name": "append",
+      "accepts": [
+        "SessionId"
+      ],
+      "returns": [
+        "TranscriptLine"
+      ]
+    },
+    "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion--if-publish": {
+      "id": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion--if-publish",
+      "ownerId": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion",
+      "name": "publish",
+      "accepts": [
+        "TranscriptLine"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api--transcript-events--if-publish": {
+      "id": "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api--transcript-events--if-publish",
+      "ownerId": "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api--transcript-events",
+      "name": "publish",
+      "accepts": [
+        "TranscriptLine"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api--transcript-events--if-subscribe": {
+      "id": "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api--transcript-events--if-subscribe",
+      "ownerId": "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api--transcript-events",
+      "name": "subscribe",
+      "accepts": [
+        "AgentId"
+      ],
+      "returns": [
+        "TranscriptLine"
+      ]
+    }
+  },
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "message-an-agent-semantic-architecture-map": {
+          "nodeId": "message-an-agent-semantic-architecture-map",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 4045,
+            "height": 736
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--shell-ui-packages-shell": {
+          "nodeId": "message-an-agent-semantic-architecture-map--shell-ui-packages-shell",
+          "position": {
+            "x": 40,
+            "y": 0
+          },
+          "size": {
+            "width": 500,
+            "height": 278
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--server-boundary-packages-server": {
+          "nodeId": "message-an-agent-semantic-architecture-map--server-boundary-packages-server",
+          "position": {
+            "x": 610,
+            "y": 0
+          },
+          "size": {
+            "width": 442,
+            "height": 252
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core": {
+          "nodeId": "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core",
+          "position": {
+            "x": 1122,
+            "y": 0
+          },
+          "size": {
+            "width": 486,
+            "height": 252
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core": {
+          "nodeId": "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core",
+          "position": {
+            "x": 1122,
+            "y": 444
+          },
+          "size": {
+            "width": 464,
+            "height": 252
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send": {
+          "nodeId": "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send",
+          "position": {
+            "x": 1678,
+            "y": 0
+          },
+          "size": {
+            "width": 414,
+            "height": 226
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--external-provider-world": {
+          "nodeId": "message-an-agent-semantic-architecture-map--external-provider-world",
+          "position": {
+            "x": 2162,
+            "y": 0
+          },
+          "size": {
+            "width": 363,
+            "height": 402
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion": {
+          "nodeId": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion",
+          "position": {
+            "x": 2595,
+            "y": 0
+          },
+          "size": {
+            "width": 464,
+            "height": 304
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores": {
+          "nodeId": "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores",
+          "position": {
+            "x": 3129,
+            "y": 0
+          },
+          "size": {
+            "width": 392,
+            "height": 552
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api": {
+          "nodeId": "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api",
+          "position": {
+            "x": 3591,
+            "y": 0
+          },
+          "size": {
+            "width": 414,
+            "height": 252
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--map-contract": {
+          "nodeId": "message-an-agent-semantic-architecture-map--map-contract",
+          "position": {
+            "x": 40,
+            "y": 304
+          },
+          "size": {
+            "width": 440,
+            "height": 156
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--block-session-link-gap": {
+          "nodeId": "message-an-agent-semantic-architecture-map--block-session-link-gap",
+          "position": {
+            "x": 2595,
+            "y": 304
+          },
+          "size": {
+            "width": 354,
+            "height": 93
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen": {
+          "nodeId": "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 182
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods": {
+          "nodeId": "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 362,
+            "height": 156
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core--message-intake": {
+          "nodeId": "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core--message-intake",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 406,
+            "height": 156
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry": {
+          "nodeId": "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 384,
+            "height": 156
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send--provider-send": {
+          "nodeId": "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send--provider-send",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 334,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--external-provider-world--provider-cli": {
+          "nodeId": "message-an-agent-semantic-architecture-map--external-provider-world--provider-cli",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 283,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--external-provider-world--provider-session-file": {
+          "nodeId": "message-an-agent-semantic-architecture-map--external-provider-world--provider-session-file",
+          "position": {
+            "x": 40,
+            "y": 258
+          },
+          "size": {
+            "width": 283,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion": {
+          "nodeId": "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 384,
+            "height": 208
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--agent-store": {
+          "nodeId": "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--agent-store",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 312,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--send-journal": {
+          "nodeId": "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--send-journal",
+          "position": {
+            "x": 40,
+            "y": 232
+          },
+          "size": {
+            "width": 312,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--transcript-store": {
+          "nodeId": "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--transcript-store",
+          "position": {
+            "x": 40,
+            "y": 408
+          },
+          "size": {
+            "width": 312,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api--transcript-events": {
+          "nodeId": "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api--transcript-events",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 334,
+            "height": 156
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {
+        "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen": {
+          "palette": "violet"
+        },
+        "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods": {
+          "palette": "blue"
+        },
+        "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core--message-intake": {
+          "palette": "blue"
+        },
+        "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry": {
+          "palette": "violet"
+        },
+        "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send--provider-send": {
+          "palette": "sage"
+        },
+        "message-an-agent-semantic-architecture-map--external-provider-world--provider-cli": {
+          "palette": "neutral"
+        },
+        "message-an-agent-semantic-architecture-map--external-provider-world--provider-session-file": {
+          "palette": "neutral"
+        },
+        "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion": {
+          "palette": "blue"
+        },
+        "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--agent-store": {
+          "palette": "violet"
+        },
+        "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--send-journal": {
+          "palette": "sage"
+        },
+        "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--transcript-store": {
+          "palette": "blue"
+        },
+        "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api--transcript-events": {
+          "palette": "sage"
+        },
+        "message-an-agent-semantic-architecture-map--block-session-link-gap": {
+          "icon": "shield",
+          "size": 14,
+          "weight": 600,
+          "text": "rose",
+          "background": "rose-soft",
+          "borderColor": "rose",
+          "border": 1,
+          "radius": 8,
+          "padding": 16
+        }
+      },
+      "appearanceByWireId": {
+        "message-an-agent-semantic-architecture-map--wire-13": {
+          "pattern": "dotted",
+          "color": "rose"
+        },
+        "message-an-agent-semantic-architecture-map--wire-15": {
+          "pattern": "dashed"
+        },
+        "message-an-agent-semantic-architecture-map--wire-16": {
+          "pattern": "dashed"
+        },
+        "message-an-agent-semantic-architecture-map--wire-17": {
+          "pattern": "dashed"
+        }
+      },
+      "arrangementByContainerId": {
+        "message-an-agent-semantic-architecture-map--shell-ui-packages-shell": {
+          "layout": "stack",
+          "childIds": [
+            "message-an-agent-semantic-architecture-map--shell-ui-packages-shell--messaging-screen"
+          ],
+          "gap": 24,
+          "align": "stretch"
+        },
+        "message-an-agent-semantic-architecture-map--server-boundary-packages-server": {
+          "layout": "stack",
+          "childIds": [
+            "message-an-agent-semantic-architecture-map--server-boundary-packages-server--server-methods"
+          ],
+          "gap": 24,
+          "align": "stretch"
+        },
+        "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core": {
+          "layout": "stack",
+          "childIds": [
+            "message-an-agent-semantic-architecture-map--messaging-core-packages-messaging-core--message-intake"
+          ],
+          "gap": 24,
+          "align": "stretch"
+        },
+        "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core": {
+          "layout": "stack",
+          "childIds": [
+            "message-an-agent-semantic-architecture-map--agent-identity-packages-agents-core--agent-registry"
+          ],
+          "gap": 24,
+          "align": "stretch"
+        },
+        "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send": {
+          "layout": "stack",
+          "childIds": [
+            "message-an-agent-semantic-architecture-map--provider-egress-messaging-adapters-provider-send--provider-send"
+          ],
+          "gap": 24,
+          "align": "stretch"
+        },
+        "message-an-agent-semantic-architecture-map--external-provider-world": {
+          "layout": "stack",
+          "childIds": [
+            "message-an-agent-semantic-architecture-map--external-provider-world--provider-cli",
+            "message-an-agent-semantic-architecture-map--external-provider-world--provider-session-file"
+          ],
+          "gap": 24,
+          "align": "stretch"
+        },
+        "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion": {
+          "layout": "stack",
+          "childIds": [
+            "message-an-agent-semantic-architecture-map--provider-ingress-messaging-core-ingestion--transcript-ingestion"
+          ],
+          "gap": 24,
+          "align": "stretch"
+        },
+        "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores": {
+          "layout": "stack",
+          "childIds": [
+            "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--agent-store",
+            "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--send-journal",
+            "message-an-agent-semantic-architecture-map--durable-records-local-jsonl-stores--transcript-store"
+          ],
+          "gap": 24,
+          "align": "stretch"
+        },
+        "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api": {
+          "layout": "stack",
+          "childIds": [
+            "message-an-agent-semantic-architecture-map--messaging-events-packages-messaging-api--transcript-events"
+          ],
+          "gap": 24,
+          "align": "stretch"
+        }
+      }
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": [],
+      "flowId": "first-message"
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-14f568e5-6b25-437a-a7a6-fe5b6ce8ef9f": {
+      "operationId": "cli-apply-14f568e5-6b25-437a-a7a6-fe5b6ce8ef9f",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-25T18:23:48.669Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/tmp/codex-message-agent-clean.dsl"
+      },
+      "commandKinds": [
+        "diagram.setOrientation",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "diagram.definitions.replace",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "diagram.flows.replace",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    },
+    "ui-391908b5-3b84-4449-95b0-b00e6ccc2306": {
+      "operationId": "ui-391908b5-3b84-4449-95b0-b00e6ccc2306",
+      "revision": 2,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-25T18:25:32.674Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    }
+  }
+}

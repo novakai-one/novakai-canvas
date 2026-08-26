@@ -3,7 +3,7 @@
   "appearance": {
     "density": "comfortable",
     "radius": 8,
-    "theme": "light",
+    "theme": "dark",
     "accent": "gold"
   },
   "canvas": {
@@ -11,7 +11,6 @@
     "snapToGrid": true,
     "gridSize": 12,
     "showControls": true,
-    "showLegend": true,
     "groupPadding": 40
   },
   "nodes": {
@@ -32,7 +31,7 @@
     "defaultTab": "inspect",
     "showEmptyFields": false,
     "railWidth": 387,
-    "railCollapsed": false,
+    "railCollapsed": true,
     "studioCollapsed": true,
     "reframeOnPanelMove": false
   },

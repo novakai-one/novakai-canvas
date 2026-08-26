@@ -19,7 +19,6 @@ import { applyFrame, clearInFlight, mergeInFlight, takeInFlight, type InFlight }
 import type { CanvasMode } from '../view-mode';
 import { webRenderers } from '../../components/web-registry.tsx';
 import { ElbowEdge } from '../edges/elbow-edge';
-import { Legend } from './legend';
 import { CanvasToolbar } from './canvas-toolbar';
 import { wireLabelSizing } from '../wire-styles';
 import { useCanvasActivity } from '../shell/canvas-activity-context';
@@ -244,12 +243,6 @@ export function CanvasSurface(props: CanvasSurfaceProps) {
       {connections.pendingConnection && <ConnectionCreationPicker at={connections.pendingConnection.picker}
         cancel={connections.cancelPending} pick={connections.createFromPending}
       />}
-      <Legend
-        activeFlowName={record.views[record.activeViewId]?.flowId
-          ? record.flows?.[record.views[record.activeViewId].flowId as string]?.name : undefined}
-        preferences={preferences}
-        view={view}
-      />
       <CanvasToolbar props={props} />
       {/* Anchored to the canvas's own edges, which are exactly the seams the panels open on. */}
       <RailToggle />
