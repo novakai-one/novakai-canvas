@@ -12,6 +12,7 @@ import { LibraryOverlay } from './library-overlay';
 import type { FlowId } from '@novakai/canvas';
 import type { FlowLibrary } from '@novakai/canvas';
 import { FlowSwitcher } from './flow-switcher.tsx';
+import { FlowPanel, type FlowStepRow } from './flow-panel.tsx';
 
 /** The two things the left panel is for: changing the canvas, and finding what is on it. */
 const RAIL_TABS = ['build', 'contents'] as const;
@@ -25,6 +26,8 @@ export interface RailProps {
   flows: FlowLibrary;
   activeFlowId?: FlowId;
   activateFlow: (flowId: FlowId | undefined) => void;
+  /** The active flow's resolved steps; empty in structure mode. */
+  flowSteps: readonly FlowStepRow[];
   changeDiagram: (diagramId: string) => void;
   createDiagram: () => void;
   /** Travel to one object a search named: opens its diagram and lands on it. */
@@ -145,6 +148,11 @@ export function Rail(props: RailProps) {
         activeFlowId={props.activeFlowId}
         flows={props.flows}
         onSelect={props.activateFlow}
+      />
+      <FlowPanel
+        onSelectWire={(wireId) => props.select({ kind: 'wire', id: wireId })}
+        rows={props.flowSteps}
+        selection={props.selection}
       />
       <TabStrip active={tab} label="Left panel surfaces" onSelect={setTab} tabs={RAIL_TABS} />
       <PanelBody>

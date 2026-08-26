@@ -15,7 +15,9 @@
     "check": "npm run lint && npm run test && tsc -p tsconfig.tools.json && npm run build",
     "canvas": "node packages/canvas/cli/canvas.ts",
     "check:canvas": "npm run test:canvas && tsc -p packages/canvas/tsconfig.json && tsc -p packages/canvas/tsconfig.tests.json && tsc -p tsconfig.canvas-host.json",
-    "test:canvas": "vitest run --config packages/canvas/vitest.config.ts"
+    "test:canvas": "vitest run --config packages/canvas/vitest.config.ts",
+    "deps": "depcruise src packages --no-config --ts-config tsconfig.app.json --include-only \"^(src|packages)\" --output-type text",
+    "deps:json": "depcruise src packages --no-config --ts-config tsconfig.app.json --include-only \"^(src|packages)\" --output-type json"
   },
   "dependencies": {
     "@xyflow/react": "^12.11.2",
@@ -29,6 +31,7 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
+    "dependency-cruiser": "^18.2.0",
     "oxlint": "^1.71.0",
     "typescript": "~6.0.2",
     "vite": "^8.1.1",
