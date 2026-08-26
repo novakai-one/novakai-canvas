@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import type {
   RecordEditorField, RecordEditorVariant, RecordListContentEditorDeclaration,
-} from '../../../components/component';
-import type { CanvasNode } from '../../../domain/records';
+} from '@novakai/canvas';
+import type { DiagramNode as CanvasNode } from '@novakai/canvas';
 import type { InspectPanelProps } from './contract';
 
 type DraftRecord = Record<string, unknown>;

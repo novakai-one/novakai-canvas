@@ -1,8 +1,8 @@
-import type { CanvasPreferences, PreferenceSection } from '../../domain/model';
-import { WIRE_LABEL_SIZE_LIMITS } from '../../domain/wire-label-size';
-import { WIRE_SHAPES } from '../../domain/wire-appearance';
+import type { CanvasPreferences, PreferenceSection } from '@novakai/canvas';
+import { WIRE_LABEL_SIZE_LIMITS } from '@novakai/canvas';
+import { WIRE_SHAPES } from '@novakai/canvas';
 import { FieldRow, PanelSection, SwitchRow, TARGET_SIZES, targetScale } from '../shell';
-import { WIRE_SHAPE_HINTS } from '../edges/wire-shape';
+import { WIRE_SHAPE_HINTS } from '@novakai/canvas';
 
 type Patch = <K extends keyof CanvasPreferences>(key: K, value: CanvasPreferences[K]) => void;
 

@@ -1,9 +1,9 @@
 /** Shared input contract for node and wire projection. */
 
-import type { RecordCommand } from '../application/canvas-workspace';
-import type { CanvasPreferences, Selection } from '../domain/model';
-import type { ProjectedView } from '../domain/project-view';
-import type { DiagramRecord } from '../domain/records';
+import type { RecordCommand } from '@novakai/canvas';
+import type { CanvasPreferences, Selection } from '@novakai/canvas';
+import type { ProjectedView } from '@novakai/canvas';
+import type { DiagramRecord } from '@novakai/canvas';
 
 /** Everything the React Flow projection reads. */
 export interface ProjectionInput {

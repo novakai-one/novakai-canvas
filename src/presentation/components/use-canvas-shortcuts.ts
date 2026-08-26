@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import type { Selection } from '../../domain/model';
-import type { DiagramRecord } from '../../domain/records';
+import type { Selection } from '@novakai/canvas';
+import type { DiagramRecord } from '@novakai/canvas';
 import { escapeStep, selectionResolves } from '../canvas-actions';
 
 /** True while the keystroke belongs to a field the user is typing in, not to the canvas. */

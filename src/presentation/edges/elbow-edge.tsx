@@ -3,11 +3,11 @@ import { useMemo, useState, type CSSProperties } from 'react';
 import type { ArchitectureEdgeData } from '../projection';
 import {
   routeWire, type RouteSide, type WireRouteEditResult,
-} from '../../domain/diagram-geometry';
-import { wirePath } from './wire-shape';
+} from '@novakai/canvas';
+import { wirePath } from '@novakai/canvas';
 import { useWireLabel } from './wire-label';
 import { WireRouteHandles } from './wire-route-handles';
-import { planWireEndDecorations } from './wire-end-decorations';
+import { planWireEndDecorations } from '@novakai/canvas';
 
 type ElbowFlowEdge = Edge<ArchitectureEdgeData, 'elbow'>;
 

@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
-import type { CanvasLibrary, DiagramSummary } from './application/canvas-library';
-import type { DiagramExportFormat, DiagramExportService } from './diagram-export/contract';
-import type { CanvasWorkspace, RecordCommand } from './application/canvas-workspace';
-import type { JsonRepository } from './application/json-repository';
-import { asId } from './domain/id-cast';
-import type { InterfaceId, NodeId } from './domain/ids';
-import type { CanvasPreferences, Selection } from './domain/model';
-import { projectView } from './canvas';
+import type { CanvasLibrary, DiagramSummary } from '@novakai/canvas';
+import type { DiagramExportFormat, DiagramExportService } from '@novakai/canvas';
+import type { CanvasWorkspace, RecordCommand } from '@novakai/canvas';
+import type { JsonRepository } from '@novakai/canvas';
+import { asId } from '@novakai/canvas';
+import type { InterfaceId, NodeId } from '@novakai/canvas';
+import type { CanvasPreferences, Selection } from '@novakai/canvas';
+import { projectView } from '@novakai/canvas';
 import { CanvasSurface } from './presentation/components/canvas-surface';
 import { Inspector } from './presentation/components/inspector';
 import { Rail } from './presentation/components/rail';
@@ -18,9 +18,9 @@ import {
 import { canvasCamera } from './presentation/canvas-camera';
 import { CanvasPortalProvider, ShellGeometryProvider, targetScale } from './presentation/shell';
 import { useWorkspaceRecord } from './presentation/use-workspace-record';
-import { wireToneCssVariables } from './presentation/wire-styles';
+import { wireToneCssVariables } from '@novakai/canvas';
 import { DEFAULT_CANVAS_MODE, type CanvasMode } from './presentation/view-mode';
-import { compileFlows } from './domain/flows.ts';
+import { compileFlows } from '@novakai/canvas';
 
 /** What the host hands the app once the library and the first diagram have been read. */
 export interface AppProps {

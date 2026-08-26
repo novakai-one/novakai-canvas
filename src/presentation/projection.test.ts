@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { defaultPreferences } from '../domain/defaults';
-import { asId } from '../domain/id-cast';
-import type { NodeId } from '../domain/ids';
-import { projectView } from '../domain/project-view';
-import type { CanvasNode, CanvasWire, DiagramRecord } from '../domain/records';
+import { defaultPreferences } from '@novakai/canvas';
+import { asId } from '@novakai/canvas';
+import type { NodeId } from '@novakai/canvas';
+import { projectView } from '@novakai/canvas';
+import type {
+  DiagramNode as CanvasNode,
+  DiagramWire as CanvasWire,
+  DiagramRecord,
+} from '@novakai/canvas';
 import { flowNodeType, projectEdges, projectNodes, scopeDepth } from './projection';
 import { mergeInFlight } from './in-flight';
 

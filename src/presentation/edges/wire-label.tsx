@@ -5,9 +5,9 @@ import {
 } from 'react';
 import {
   nearestPositionAlong, pointAlong, type Point, type RouteObstacle,
-} from '../../domain/diagram-geometry';
-import { wireLabelSpread } from '../../domain/wire-label-seed';
-import type { Emphasis } from '../../domain/flows.ts';
+} from '@novakai/canvas';
+import { wireLabelSpread } from '@novakai/canvas';
+import type { Emphasis } from '@novakai/canvas';
 
 const DEFAULT_LABEL_POSITION = 0.5;
 /** Gap between the wire's stroke and the nearest edge of its label. */

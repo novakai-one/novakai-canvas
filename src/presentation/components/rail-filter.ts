@@ -1,4 +1,4 @@
-import type { DiagramSummary } from '../../application/canvas-library';
+import type { DiagramSummary } from '@novakai/canvas';
 
 /** The rail's two groups: what you work in, and what you have put away. */
 export interface RailGroups {

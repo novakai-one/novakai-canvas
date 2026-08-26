@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
-import type { DiagramSummary } from '../../../application/canvas-library';
-import type { RecordCommand } from '../../../application/canvas-workspace';
-import type { Selection } from '../../../domain/model';
-import type { ProjectedView } from '../../../domain/project-view';
-import type { DiagramRecord } from '../../../domain/records';
+import type { DiagramSummary } from '@novakai/canvas';
+import type { RecordCommand } from '@novakai/canvas';
+import type { Selection } from '@novakai/canvas';
+import type { ProjectedView } from '@novakai/canvas';
+import type { DiagramRecord } from '@novakai/canvas';
 
 /** Host capabilities available to every inspection body. */
 export interface InspectPanelProps {

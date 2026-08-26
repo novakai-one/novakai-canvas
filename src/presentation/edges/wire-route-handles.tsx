@@ -5,7 +5,7 @@ import {
 import {
   editableRouteSegments, pointAlong, reshapeRouteSegment, type Point, type WireRoute,
   type WireRouteEditResult, type WireRouteRequest,
-} from '../../domain/diagram-geometry';
+} from '@novakai/canvas';
 
 interface RouteHandleProps {
   route: WireRoute;

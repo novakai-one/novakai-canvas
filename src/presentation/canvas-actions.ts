@@ -1,9 +1,9 @@
-import { asId } from '../domain/id-cast';
-import type { NodeId } from '../domain/ids';
-import type { Selection } from '../domain/model';
-import type { ProjectedView } from '../domain/project-view';
-import type { CanvasNode, DiagramRecord } from '../domain/records';
-import { componentFor } from '../components/registry';
+import { asId } from '@novakai/canvas';
+import type { NodeId } from '@novakai/canvas';
+import type { Selection } from '@novakai/canvas';
+import type { ProjectedView } from '@novakai/canvas';
+import type { DiagramNode as CanvasNode, DiagramRecord } from '@novakai/canvas';
+import { componentFor } from '@novakai/canvas';
 import { placeInWorld, type PlacedNode, type WorldPoint } from './canvas-placement';
 
 export {

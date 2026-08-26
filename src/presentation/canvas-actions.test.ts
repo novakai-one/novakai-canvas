@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { asId } from '../domain/id-cast';
-import type { NodeId } from '../domain/ids';
-import type { DiagramRecord } from '../domain/records';
+import { asId } from '@novakai/canvas';
+import type { NodeId } from '@novakai/canvas';
+import type { DiagramRecord } from '@novakai/canvas';
 import {
   containingGroup, createCanvasNode, escapeStep, resolveDrop, selectionResolves,
   type PlacedNode,

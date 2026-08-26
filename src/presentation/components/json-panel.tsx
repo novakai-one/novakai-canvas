@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { DiagramRecord } from '../../domain/records';
+import type { DiagramRecord } from '@novakai/canvas';
 import { PanelSection } from '../shell';
 
 /**

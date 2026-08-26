@@ -1,5 +1,9 @@
 import { createElement } from 'react';
-import type { CanvasLayout, DiagramRecord, NodePlacement } from '../../../domain/records';
+import type {
+  DiagramLayout as CanvasLayout,
+  DiagramNodePlacement as NodePlacement,
+  DiagramRecord,
+} from '@novakai/canvas';
 import { rootGroupId } from '../../canvas-actions';
 import type { InspectPanelProps, Inspection } from './contract';
 

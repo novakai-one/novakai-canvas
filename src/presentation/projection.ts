@@ -1,11 +1,11 @@
 /** Projects visible architecture nodes and re-exports wire projection. */
 
 import type { Node } from '@xyflow/react';
-import type { CanvasPreferences, InterfaceObject, Selection, TypeObject } from '../domain/model';
-import type { PositionedNode } from '../domain/project-view';
-import type { NodeKind } from '../domain/records';
-import { compileTopology } from '../domain/topology';
-import { resolveNodeAppearance, type ResolvedNodeAppearance } from '../domain/canvas-presentation';
+import type { CanvasPreferences, InterfaceObject, Selection, TypeObject } from '@novakai/canvas';
+import type { PositionedNode } from '@novakai/canvas';
+import type { NodeKind } from '@novakai/canvas';
+import { compileTopology } from '@novakai/canvas';
+import { resolveNodeAppearance, type ResolvedNodeAppearance } from '@novakai/canvas';
 import type { ProjectionInput } from './projection-contract';
 import { connectedIds } from './projection-selection';
 
@@ -102,4 +102,4 @@ export function projectNodes(input: ProjectionInput): Node<ArchitectureNodeData>
 export type { ProjectionInput } from './projection-contract';
 export { projectEdges } from './edges/wire-projection';
 export type { ArchitectureEdgeData, EdgeRoute } from './edges/wire-projection';
-export { chooseSides, facingSides, nodeRects, wireObstacles } from '../domain/diagram-geometry';
+export { chooseSides, facingSides, nodeRects, wireObstacles } from '@novakai/canvas';

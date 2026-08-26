@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import type { DiagramRecord } from '../../src/canvas.ts';
-import { diagramRecordSchema } from '../../src/domain/record-schema.ts';
-import { buildRecords } from '../canvas-cli/dsl-fixture.ts';
-import type { RecordNode, RecordWire } from '../canvas-cli/record-graph.ts';
+import {
+  diagramRecordSchema,
+  type DiagramRecord,
+  type RecordNode,
+  type RecordWire,
+} from '../../packages/canvas/contract/index.ts';
+import { buildRecords } from '../../packages/canvas/tests/fixtures/dsl.ts';
 import { rightNowSelection, storesToDsl, type MissionStores } from './stores-to-dsl.ts';
 
 const NOW = '2026-07-22T12:00:00.000Z';

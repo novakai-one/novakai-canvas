@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   editableRouteSegments, nearestPositionAlong, pointAlong, polylineLength, reshapeRouteSegment,
   routePath, routeWire, segmentIntersectsRect,
-} from '../../domain/diagram-geometry';
+} from '@novakai/canvas';
 
 /** Every routed wire must be orthogonal: each segment moves in exactly one axis. */
 function isOrthogonal(points: { x: number; y: number }[]): boolean {

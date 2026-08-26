@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import type { ActorContext } from '../../../../application/canvas-workspace';
+import type { ActorContext } from '@novakai/canvas';
 import './canvas-room.css';
 
 const CanvasStudioHost = lazy(async () => {

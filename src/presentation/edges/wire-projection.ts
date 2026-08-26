@@ -3,17 +3,17 @@
 import { MarkerType, type Edge } from '@xyflow/react';
 import {
   planWireRoutes, type Point, type RouteObstacle,
-} from '../../domain/diagram-geometry';
-import type { CanvasPreferences } from '../../domain/model';
-import type { WireKind } from '../../domain/records';
-import { orientationOf, resolveAxis } from '../../domain/axis';
-import { resolveWireAppearance, wireStrokeWidth, type ResolvedWireAppearance } from '../wire-styles';
+} from '@novakai/canvas';
+import type { CanvasPreferences } from '@novakai/canvas';
+import type { WireKind } from '@novakai/canvas';
+import { orientationOf, resolveAxis } from '@novakai/canvas';
+import { resolveWireAppearance, wireStrokeWidth, type ResolvedWireAppearance } from '@novakai/canvas';
 import type { ProjectionInput } from '../projection-contract';
 import { connectedIds, connectedWireIds } from '../projection-selection';
-import type { WireCardinality } from '../../domain/wire-cardinality';
-import { compileTopology, crossingsOf } from '../../domain/topology';
-import { portHandleId } from '../../domain/interface-signature';
-import { compileFlows, wireEmphasis, type Emphasis } from '../../domain/flows';
+import type { WireCardinality } from '@novakai/canvas';
+import { compileTopology, crossingsOf } from '@novakai/canvas';
+import { portHandleId } from '@novakai/canvas';
+import { compileFlows, wireEmphasis, type Emphasis } from '@novakai/canvas';
 
 /** How one wire is shaped by hand, read from the active layout route hint. */
 export interface EdgeRoute {

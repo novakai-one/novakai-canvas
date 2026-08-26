@@ -1,5 +1,5 @@
-import type { ProjectedView } from '../../domain/project-view';
-import type { DiagramRecord } from '../../domain/records';
+import type { ProjectedView } from '@novakai/canvas';
+import type { DiagramRecord } from '@novakai/canvas';
 import { scopeDepth } from '../projection';
 
 /** One row of the contents list: what it is, what it is called, how deep it sits. */

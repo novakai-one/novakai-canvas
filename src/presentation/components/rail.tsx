@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import type { DiagramSummary } from '../../application/canvas-library';
-import type { Selection } from '../../domain/model';
+import type { DiagramSummary } from '@novakai/canvas';
+import type { Selection } from '@novakai/canvas';
 import {
   ObjectRow, PanelBody, PanelCollapse, PanelHeader, PanelSection, PanelShell,
   RAIL_BOUNDS, TabStrip, clampPanelWidth,
@@ -9,8 +9,8 @@ import type { CreatableNodeKind } from '../canvas-actions';
 import { BuildPalette } from './build-palette';
 import { contentIndent, type ContentRow } from './diagram-contents';
 import { LibraryOverlay } from './library-overlay';
-import type { FlowId } from '../../domain/ids.ts';
-import type { FlowLibrary } from '../../domain/flows.ts';
+import type { FlowId } from '@novakai/canvas';
+import type { FlowLibrary } from '@novakai/canvas';
 import { FlowSwitcher } from './flow-switcher.tsx';
 
 /** The two things the left panel is for: changing the canvas, and finding what is on it. */

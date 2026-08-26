@@ -1,0 +1,12 @@
+{
+  "name": "@novakai/canvas",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./contract/index.ts"
+  },
+  "bin": {
+    "canvas": "./cli/canvas.ts"
+  }
+}

@@ -1,6 +1,6 @@
 import { useCallback, useSyncExternalStore } from 'react';
-import type { CanvasWorkspace } from '../application/canvas-workspace';
-import type { DiagramRecord } from '../domain/records';
+import type { CanvasWorkspace } from '@novakai/canvas';
+import type { DiagramRecord } from '@novakai/canvas';
 
 /**
  * Subscribes React to one framework-free workspace.

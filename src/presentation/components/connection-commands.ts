@@ -1,11 +1,11 @@
 /** Pure command plans for creating and reconnecting Canvas wires. */
 
-import type { RecordCommand } from '../../application/canvas-workspace.ts';
-import { NODE_PORTS } from '../../domain/node-port.ts';
-import { asId } from '../../domain/id-cast.ts';
-import type { NodeId, WireId } from '../../domain/ids.ts';
-import type { PortSide } from '../../domain/records.ts';
-import { portAnchorFromHandle } from '../../domain/interface-signature.ts';
+import type { RecordCommand } from '@novakai/canvas';
+import { NODE_PORTS } from '@novakai/canvas';
+import { asId } from '@novakai/canvas';
+import type { NodeId, WireId } from '@novakai/canvas';
+import type { PortSide } from '@novakai/canvas';
+import { portAnchorFromHandle } from '@novakai/canvas';
 import {
   createCanvasNode, type CreatableNodeKind, type PlacedNode, type WorldPoint,
 } from '../canvas-actions.ts';

@@ -1,4 +1,4 @@
-import { componentFor } from '../../../components/registry';
+import { componentFor } from '@novakai/canvas';
 import { FieldRow, ObjectRow, PanelSection } from '../../shell';
 import type { InspectPanelProps, Inspection } from './contract';
 import { SignatureInput } from './signature-input';

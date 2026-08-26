@@ -5,11 +5,11 @@ import {
   Background, BackgroundVariant, ConnectionMode, Controls, ReactFlow,
   type NodeChange,
 } from '@xyflow/react';
-import type { DiagramSummary } from '../../application/canvas-library';
-import type { RecordCommand } from '../../application/canvas-workspace';
-import type { CanvasPreferences, Selection } from '../../domain/model';
-import type { ProjectedView } from '../../domain/project-view';
-import type { DiagramRecord } from '../../domain/records';
+import type { DiagramSummary } from '@novakai/canvas';
+import type { RecordCommand } from '@novakai/canvas';
+import type { CanvasPreferences, Selection } from '@novakai/canvas';
+import type { ProjectedView } from '@novakai/canvas';
+import type { DiagramRecord } from '@novakai/canvas';
 import {
   placedNodes, resolveDrop, type WorldPoint,
 } from '../canvas-actions';
@@ -20,7 +20,7 @@ import type { CanvasMode } from '../view-mode';
 import { webRenderers } from '../../components/web-registry.tsx';
 import { ElbowEdge } from '../edges/elbow-edge';
 import { CanvasToolbar } from './canvas-toolbar';
-import { wireLabelSizing } from '../wire-styles';
+import { wireLabelSizing } from '@novakai/canvas';
 import { useCanvasActivity } from '../shell/canvas-activity-context';
 import { ConnectionCreationPicker } from './connection-creation-picker.tsx';
 import { useConnectionGestures } from './use-connection-gestures.ts';

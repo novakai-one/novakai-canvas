@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { isSignatureName } from '../../../application/canvas-workspace';
+import { isSignatureName } from '@novakai/canvas';
 import { inspectionSupport } from './support';
 
 /** Drafted signature input which commits only valid identifiers. */

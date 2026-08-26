@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import type { StringListContentEditorDeclaration } from '../../../components/component';
-import type { CanvasNode } from '../../../domain/records';
+import type { StringListContentEditorDeclaration } from '@novakai/canvas';
+import type { DiagramNode as CanvasNode } from '@novakai/canvas';
 import type { InspectPanelProps } from './contract';
 
 function stringList(node: CanvasNode, field: string): string[] {

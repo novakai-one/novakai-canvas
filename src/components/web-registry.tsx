@@ -11,9 +11,9 @@ import { CalloutStackNode } from './callout-stack/web.tsx';
 import { BlockNode } from './block/web.tsx';
 import { OouxObjectNode } from './ooux-object/web.tsx';
 import { EntityNode } from './entity/web.tsx';
-import type { CanvasNode } from '../domain/records.ts';
+import type { DiagramNode as CanvasNode } from '@novakai/canvas';
 import type { ArchitectureNodeData } from '../presentation/projection.ts';
-import { componentFor } from './registry.ts';
+import { componentFor } from '@novakai/canvas';
 
 function registeredRenderer<T extends Node<ArchitectureNodeData>>(
   kind: CanvasNode['kind'],

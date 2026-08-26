@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { asId } from '../../domain/id-cast';
-import type { NodeId } from '../../domain/ids';
-import type { ProjectedView } from '../../domain/project-view';
-import type { DiagramRecord } from '../../domain/records';
+import { asId } from '@novakai/canvas';
+import type { NodeId } from '@novakai/canvas';
+import type { ProjectedView } from '@novakai/canvas';
+import type { DiagramRecord } from '@novakai/canvas';
 import { oneLine } from '../shell';
 import { contentIndent, diagramContents } from './diagram-contents';
 

@@ -1,7 +1,7 @@
 import { type Node, type NodeProps } from '@xyflow/react';
 import { NodePorts } from '../../presentation/nodes/node-ports.tsx';
 import type { ArchitectureNodeData } from '../../presentation/projection.ts';
-import { GLYPHS } from '../glyphs.ts';
+import { GLYPHS } from '@novakai/canvas';
 
 type IconCardFlowNode = Node<ArchitectureNodeData, 'icon-card'>;
 

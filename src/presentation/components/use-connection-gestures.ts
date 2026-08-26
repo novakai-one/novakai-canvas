@@ -4,9 +4,9 @@ import {
   useCallback, useEffect, useRef, useState, type RefObject,
 } from 'react';
 import type { ReactFlowProps } from '@xyflow/react';
-import type { RecordCommand } from '../../application/canvas-workspace.ts';
-import type { Selection } from '../../domain/selection.ts';
-import type { ProjectedView } from '../../domain/project-view.ts';
+import type { RecordCommand } from '@novakai/canvas';
+import type { Selection } from '@novakai/canvas';
+import type { ProjectedView } from '@novakai/canvas';
 import { placedNodes, type CreatableNodeKind, type WorldPoint } from '../canvas-actions.ts';
 import {
   connectedNode, connectedWire, pickerPosition, reconnectedWire, sideOfHandle,

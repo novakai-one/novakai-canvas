@@ -2,10 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 import App, { type AppProps } from '../../App';
 import {
   createCanvasLibrary, createDiagramExportService, createFileLibraryRepository, type ActorContext,
-} from '../../canvas';
-import { createHttpJsonRepository } from '../../adapters/http-json-repository';
-import { canvasPreferencesSchema } from '../../domain/schema';
-import { defaultPreferences } from '../../domain/defaults';
+} from '@novakai/canvas';
+import { createHttpJsonRepository } from '@novakai/canvas';
+import { canvasPreferencesSchema } from '@novakai/canvas';
+import { defaultPreferences } from '@novakai/canvas';
 import { LoadFailure } from '../components/load-failure';
 import { CanvasActivityProvider } from '../shell/canvas-activity-provider';
 import '@xyflow/react/dist/style.css';

@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { validateRecordCommand } from '../../application/canvas-workspace/command-validation';
-import type { RecordCommand } from '../../application/canvas-workspace';
-import { componentFor } from '../../components/registry';
-import { asId } from '../../domain/id-cast';
-import type { NodeId } from '../../domain/ids';
-import type { ProjectedView } from '../../domain/project-view';
-import type { DiagramRecord } from '../../domain/records';
+import { validateRecordCommand } from '@novakai/canvas';
+import type { RecordCommand } from '@novakai/canvas';
+import { componentFor } from '@novakai/canvas';
+import { asId } from '@novakai/canvas';
+import type { NodeId } from '@novakai/canvas';
+import type { ProjectedView } from '@novakai/canvas';
+import type { DiagramRecord } from '@novakai/canvas';
 import { describeSelection, type InspectPanelProps } from './inspect-panel';
 
 const NODES = {

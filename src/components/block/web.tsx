@@ -2,8 +2,8 @@ import type { CSSProperties } from 'react';
 import type { Node, NodeProps } from '@xyflow/react';
 import type { ArchitectureNodeData } from '../../presentation/projection.ts';
 import { NodePorts } from '../../presentation/nodes/node-ports.tsx';
-import { GLYPHS } from '../glyphs.ts';
-import { layoutBlockText } from './component.ts';
+import { GLYPHS } from '@novakai/canvas';
+import { layoutBlockText } from '@novakai/canvas';
 
 type BlockFlowNode = Node<ArchitectureNodeData, 'block'>;
 

@@ -1,6 +1,6 @@
 import { type CSSProperties } from 'react';
 import { type Node, type NodeProps } from '@xyflow/react';
-import { paletteCssVariables, resolveComponentPalette } from '../component-palette.ts';
+import { paletteCssVariables, resolveComponentPalette } from '@novakai/canvas';
 import { NodeLabel } from '../../presentation/nodes/node-label.tsx';
 import { NodePorts } from '../../presentation/nodes/node-ports.tsx';
 import type { ArchitectureNodeData } from '../../presentation/projection.ts';

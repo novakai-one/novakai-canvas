@@ -1,11 +1,12 @@
 import { existsSync, watch } from 'node:fs';
-import { mkdir, readdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
+import { readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { Plugin } from 'vite';
-import { parseArchitectureDocument } from '../src/domain/schema.ts';
-import { migrateDocumentToLibrary } from '../src/domain/migrate/v2-to-v3.ts';
-import type { MigrationReport } from '../src/domain/records.ts';
+import { bootstrapLibrary } from '../packages/canvas/contract/compose/node.ts';
+import type { MigrationReport } from '../packages/canvas/contract/index.ts';
+
+export { bootstrapLibrary };
 
 const FILES = new Map<string, { file: string; fallback?: string }>([
   ['/api/architecture', {
@@ -105,31 +106,6 @@ export async function writeRecordFile(
   if (expectedRevision !== diskRevision) return { status: 'conflict', revision: diskRevision };
   await writeFile(file, canonicalJson(raw), 'utf8');
   return { status: 'written' };
-}
-
-/** Result of checking whether the one-time legacy-to-library migration ran. */
-export type BootstrapOutcome = { migrated: false } | { migrated: true; report: MigrationReport };
-
-/**
- * Runs the legacy-document-to-library migration exactly once per data directory.
- *
- * Idempotent by construction rather than by a lock: the presence of `library.json` is the only
- * signal consulted, and the migration's own last step renames the legacy file away, so a second
- * call finds nothing left to migrate and returns immediately.
- */
-export async function bootstrapLibrary(dataDir: string): Promise<BootstrapOutcome> {
-  const libraryPath = join(dataDir, 'library.json');
-  const legacyPath = join(dataDir, 'project-architecture.json');
-  if (existsSync(libraryPath) || !existsSync(legacyPath)) return { migrated: false };
-  const document = parseArchitectureDocument(JSON.parse(await readFile(legacyPath, 'utf8')));
-  const { index, records, report } = migrateDocumentToLibrary(document);
-  const diagramsDir = join(dataDir, 'diagrams');
-  await mkdir(diagramsDir, { recursive: true });
-  await Promise.all(Object.values(records).map((record) =>
-    writeFile(join(diagramsDir, `${record.id}.json`), `${JSON.stringify(record, null, 2)}\n`, 'utf8')));
-  await writeFile(libraryPath, `${JSON.stringify(index, null, 2)}\n`, 'utf8');
-  await rename(legacyPath, join(dataDir, 'project-architecture.pre-v3.json'));
-  return { migrated: true, report };
 }
 
 function logMigration(report: MigrationReport): void {

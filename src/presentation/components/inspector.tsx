@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
-import type { CanvasPreferences, PreferenceSection } from '../../domain/model';
-import type { DiagramExportFormat } from '../../diagram-export/contract';
+import type { CanvasPreferences, PreferenceSection } from '@novakai/canvas';
+import type { DiagramExportFormat } from '@novakai/canvas';
 import {
   Flyout, IconButton, PanelBody, PanelCollapse, PanelHeader, PanelShell, STUDIO_BOUNDS,
   TabStrip, clampPanelWidth, resolveOpenSection,
