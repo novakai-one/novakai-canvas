@@ -1,0 +1,1640 @@
+{
+  "schemaVersion": 3,
+  "id": "message-an-agent-flow-1-declared-frame",
+  "name": "Message an Agent — Flow 1 (declared frame)",
+  "orientation": "top-down",
+  "status": "active",
+  "revision": 4,
+  "nodes": {
+    "message-an-agent-flow-1-declared-frame": {
+      "id": "message-an-agent-flow-1-declared-frame",
+      "label": "Message an Agent — Flow 1 (declared frame)",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-flow-1-declared-frame--messaging-screen": {
+      "id": "message-an-agent-flow-1-declared-frame--messaging-screen",
+      "label": "Messaging Screen",
+      "description": "packages/shell/ui/screens/messaging",
+      "parentId": "message-an-agent-flow-1-declared-frame",
+      "band": 0,
+      "lane": 0,
+      "interfaceIds": [
+        "message-an-agent-flow-1-declared-frame--messaging-screen--if-createdraft",
+        "message-an-agent-flow-1-declared-frame--messaging-screen--if-acceptdraft",
+        "message-an-agent-flow-1-declared-frame--messaging-screen--if-sendmessage"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-flow-1-declared-frame--external-provider-world": {
+      "id": "message-an-agent-flow-1-declared-frame--external-provider-world",
+      "label": "External provider world",
+      "parentId": "message-an-agent-flow-1-declared-frame",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-flow-1-declared-frame--novakai": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai",
+      "label": "Novakai",
+      "parentId": "message-an-agent-flow-1-declared-frame",
+      "crossing": "gated",
+      "gate": "message-an-agent-flow-1-declared-frame--novakai--boundary--ingestion",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-flow-1-declared-frame--external-provider-world--provider-cli-process": {
+      "id": "message-an-agent-flow-1-declared-frame--external-provider-world--provider-cli-process",
+      "label": "Provider CLI Process",
+      "description": "local claude / codex / kimi child process",
+      "parentId": "message-an-agent-flow-1-declared-frame--external-provider-world",
+      "band": 0,
+      "lane": 2,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "runtime"
+    },
+    "message-an-agent-flow-1-declared-frame--external-provider-world--provider-server": {
+      "id": "message-an-agent-flow-1-declared-frame--external-provider-world--provider-server",
+      "label": "Provider Server",
+      "description": "remote provider infrastructure",
+      "parentId": "message-an-agent-flow-1-declared-frame--external-provider-world",
+      "band": 0,
+      "lane": 3,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "runtime"
+    },
+    "message-an-agent-flow-1-declared-frame--external-provider-world--provider-session-file": {
+      "id": "message-an-agent-flow-1-declared-frame--external-provider-world--provider-session-file",
+      "label": "Provider Session File",
+      "description": "provider-owned local transcript",
+      "parentId": "message-an-agent-flow-1-declared-frame--external-provider-world",
+      "band": 0,
+      "lane": 4,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--boundary": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--boundary",
+      "label": "Boundary",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--core": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--core",
+      "label": "Core",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--stores": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--stores",
+      "label": "Stores",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--boundary--server-methods": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--boundary--server-methods",
+      "label": "Server Methods",
+      "description": "packages/server/core/methods",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai--boundary",
+      "band": 1,
+      "lane": 0,
+      "interfaceIds": [
+        "message-an-agent-flow-1-declared-frame--novakai--boundary--server-methods--if-spawnagentconversation",
+        "message-an-agent-flow-1-declared-frame--novakai--boundary--server-methods--if-sendmessage"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--boundary--one-shot-cli-send": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--boundary--one-shot-cli-send",
+      "label": "One-shot CLI Send",
+      "description": "adapters/provider-send — only code that starts a provider process",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai--boundary",
+      "band": 1,
+      "lane": 2,
+      "interfaceIds": [
+        "message-an-agent-flow-1-declared-frame--novakai--boundary--one-shot-cli-send--if-dispatch"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--boundary--agent-identity-hook": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--boundary--agent-identity-hook",
+      "label": "Agent Identity Hook",
+      "description": "adapters/provider-hooks",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai--boundary",
+      "band": 1,
+      "lane": 3,
+      "interfaceIds": [
+        "message-an-agent-flow-1-declared-frame--novakai--boundary--agent-identity-hook--if-run"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--boundary--ingestion": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--boundary--ingestion",
+      "label": "Ingestion",
+      "description": "core/ingestion/ingest.ts — the ONLY reader of provider files",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai--boundary",
+      "band": 1,
+      "lane": 4,
+      "interfaceIds": [
+        "message-an-agent-flow-1-declared-frame--novakai--boundary--ingestion--if-ingestnow"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--boundary--provider-transcript-adapters": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--boundary--provider-transcript-adapters",
+      "label": "Provider Transcript Adapters",
+      "description": "adapters/provider-transcripts",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai--boundary",
+      "band": 1,
+      "lane": 5,
+      "interfaceIds": [
+        "message-an-agent-flow-1-declared-frame--novakai--boundary--provider-transcript-adapters--if-normalize"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--core--conversation-views": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--core--conversation-views",
+      "label": "Conversation Views",
+      "description": "core/conversations/views.ts",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai--core",
+      "band": 2,
+      "lane": 0,
+      "interfaceIds": [
+        "message-an-agent-flow-1-declared-frame--novakai--core--conversation-views--if-ensureconversationview"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--core--accept-send": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--core--accept-send",
+      "label": "Accept Send",
+      "description": "core/send/accept.ts",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai--core",
+      "band": 2,
+      "lane": 1,
+      "interfaceIds": [
+        "message-an-agent-flow-1-declared-frame--novakai--core--accept-send--if-acceptsend"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--core--dispatch-send": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--core--dispatch-send",
+      "label": "Dispatch Send",
+      "description": "core/send/dispatch.ts",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai--core",
+      "band": 2,
+      "lane": 2,
+      "interfaceIds": [
+        "message-an-agent-flow-1-declared-frame--novakai--core--dispatch-send--if-dispatchacceptedsend"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--core--session-assignment": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--core--session-assignment",
+      "label": "Session Assignment",
+      "description": "core/ingestion/assign-session.ts",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai--core",
+      "band": 2,
+      "lane": 3,
+      "interfaceIds": [
+        "message-an-agent-flow-1-declared-frame--novakai--core--session-assignment--if-assignprovidersession"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--core--confirm-send": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--core--confirm-send",
+      "label": "Confirm Send",
+      "description": "core/send/confirm.ts",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai--core",
+      "band": 2,
+      "lane": 4,
+      "interfaceIds": [
+        "message-an-agent-flow-1-declared-frame--novakai--core--confirm-send--if-confirmsendattempt"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--core--event-bus": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--core--event-bus",
+      "label": "Event Bus",
+      "description": "core/event-bus.ts",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai--core",
+      "band": 2,
+      "lane": 5,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--core--agent-registry": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--core--agent-registry",
+      "label": "Agent Registry",
+      "description": "packages/agents/core/registry/registry.ts",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai--core",
+      "band": 2,
+      "lane": 6,
+      "interfaceIds": [
+        "message-an-agent-flow-1-declared-frame--novakai--core--agent-registry--if-defineagent"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--stores--entity-conversation-view": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-conversation-view",
+      "label": "Conversation View",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai--stores",
+      "band": 3,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "conversation-view",
+      "entityFields": [
+        {
+          "id": "cv-id",
+          "name": "conversationId",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "cv-participants",
+          "name": "participantIds",
+          "valueType": "AgentId[]",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "cv-lastread",
+          "name": "lastReadLineId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        }
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--stores--entity-send-journal": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-send-journal",
+      "label": "Send Journal",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai--stores",
+      "band": 3,
+      "lane": 1,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "send-journal",
+      "entityFields": [
+        {
+          "id": "sj-id",
+          "name": "sendId",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "sj-conversation",
+          "name": "conversationId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "sj-agent",
+          "name": "targetAgentId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "sj-session",
+          "name": "targetSessionId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "sj-state",
+          "name": "state",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--stores--entity-provider-session": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-provider-session",
+      "label": "Provider Session",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai--stores",
+      "band": 3,
+      "lane": 2,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "provider-session",
+      "entityFields": [
+        {
+          "id": "ps-id",
+          "name": "sessionId",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "ps-agent",
+          "name": "agentId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "ps-resume",
+          "name": "resumeId",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--stores--entity-transcript-line": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-transcript-line",
+      "label": "Transcript Line",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai--stores",
+      "band": 3,
+      "lane": 3,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "transcript-line",
+      "entityFields": [
+        {
+          "id": "tl-id",
+          "name": "id",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "tl-session",
+          "name": "sessionId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "tl-role",
+          "name": "role",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "tl-text",
+          "name": "text",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--stores--entity-agent": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-agent",
+      "label": "Agent",
+      "parentId": "message-an-agent-flow-1-declared-frame--novakai--stores",
+      "band": 3,
+      "lane": 4,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "agent",
+      "entityFields": [
+        {
+          "id": "ag-id",
+          "name": "agentId",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "ag-session",
+          "name": "sessionId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "ag-provider",
+          "name": "provider",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "ag-model",
+          "name": "model",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    }
+  },
+  "wires": {
+    "message-an-agent-flow-1-declared-frame--wire-1": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-1",
+      "kind": "executes",
+      "label": "1 · send",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--messaging-screen",
+        "anchor": {
+          "side": "bottom",
+          "ordinal": 2
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--server-methods",
+        "anchor": {
+          "side": "top",
+          "ordinal": 1
+        }
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-2": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-2",
+      "kind": "executes",
+      "label": "2 · defineAgent",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--server-methods",
+        "anchor": {
+          "side": "bottom",
+          "ordinal": 0
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--agent-registry",
+        "anchor": {
+          "side": "top",
+          "ordinal": 0
+        }
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-3": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-3",
+      "kind": "owns",
+      "label": "3 · append Agent",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--agent-registry"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-agent"
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-4": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-4",
+      "kind": "executes",
+      "label": "4 · ensure view",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--server-methods",
+        "anchor": {
+          "side": "bottom",
+          "ordinal": 0
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--conversation-views",
+        "anchor": {
+          "side": "top",
+          "ordinal": 0
+        }
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-5": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-5",
+      "kind": "owns",
+      "label": "5 · append ConversationView",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--conversation-views"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-conversation-view"
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-6": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-6",
+      "kind": "executes",
+      "label": "6 · acceptSend",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--server-methods",
+        "anchor": {
+          "side": "bottom",
+          "ordinal": 1
+        }
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--accept-send",
+        "anchor": {
+          "side": "top",
+          "ordinal": 0
+        }
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-7": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-7",
+      "kind": "owns",
+      "label": "7 · append SendJournal",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--accept-send"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-send-journal"
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-8": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-8",
+      "kind": "executes",
+      "label": "8 · first send",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--accept-send"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--dispatch-send",
+        "anchor": {
+          "side": "top",
+          "ordinal": 0
+        }
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-9": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-9",
+      "kind": "executes",
+      "label": "9 · dispatch",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--dispatch-send"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--one-shot-cli-send",
+        "anchor": {
+          "side": "top",
+          "ordinal": 0
+        }
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-10": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-10",
+      "kind": "executes",
+      "label": "10 · OUT — start provider process",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--one-shot-cli-send"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--external-provider-world--provider-cli-process"
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-11": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-11",
+      "kind": "executes",
+      "label": "11 · hook stamps AgentId",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--external-provider-world--provider-cli-process"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--agent-identity-hook",
+        "anchor": {
+          "side": "top",
+          "ordinal": 0
+        }
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-12": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-12",
+      "kind": "executes",
+      "label": "12 · OUT — prompt and response",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--external-provider-world--provider-cli-process"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--external-provider-world--provider-server"
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-13": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-13",
+      "kind": "owns",
+      "label": "13 · provider writes its own file",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--external-provider-world--provider-cli-process"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--external-provider-world--provider-session-file"
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-14": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-14",
+      "kind": "queries",
+      "label": "14 · IN — the only pathway into Novakai",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--external-provider-world--provider-session-file"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--ingestion",
+        "anchor": {
+          "side": "top",
+          "ordinal": 0
+        }
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-15": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-15",
+      "kind": "executes",
+      "label": "15 · normalize",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--ingestion"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--provider-transcript-adapters",
+        "anchor": {
+          "side": "top",
+          "ordinal": 0
+        }
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-16": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-16",
+      "kind": "owns",
+      "label": "16 · append ProviderSession",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--ingestion"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-provider-session"
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-17": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-17",
+      "kind": "executes",
+      "label": "17 · hook evidence",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--provider-transcript-adapters"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--session-assignment",
+        "anchor": {
+          "side": "top",
+          "ordinal": 0
+        }
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-18": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-18",
+      "kind": "assigns",
+      "label": "18 · fill agentId",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--session-assignment"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-provider-session"
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-19": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-19",
+      "kind": "owns",
+      "label": "19 · append TranscriptLines",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--ingestion"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-transcript-line"
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-20": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-20",
+      "kind": "executes",
+      "label": "20 · proves the turn",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--ingestion"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--confirm-send",
+        "anchor": {
+          "side": "top",
+          "ordinal": 0
+        }
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-21": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-21",
+      "kind": "assigns",
+      "label": "21 · confirmed",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--confirm-send"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-send-journal"
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-22": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-22",
+      "kind": "executes",
+      "label": "22 · RETURN — window rerenders",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--event-bus"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--messaging-screen"
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-23": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-23",
+      "kind": "references",
+      "label": "works sessions over time",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-agent",
+        "cardinality": "zero-or-one"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-provider-session",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-24": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-24",
+      "kind": "owns",
+      "label": "contains lines",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-provider-session",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-transcript-line",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-25": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-25",
+      "kind": "owns",
+      "label": "owns accepted sends",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-conversation-view",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-send-journal",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "message-an-agent-flow-1-declared-frame--wire-26": {
+      "id": "message-an-agent-flow-1-declared-frame--wire-26",
+      "kind": "references",
+      "label": "required target",
+      "source": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-send-journal",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-agent",
+        "cardinality": "one"
+      }
+    }
+  },
+  "flows": {
+    "message-an-agent-flow-1-declared-frame--flow-flow-1-create-an-agent-and-send-its-first-message": {
+      "id": "message-an-agent-flow-1-declared-frame--flow-flow-1-create-an-agent-and-send-its-first-message",
+      "name": "Flow 1 — create an Agent and send its first message",
+      "steps": [
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-1",
+          "ordinal": 1
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-2",
+          "ordinal": 2
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-3",
+          "ordinal": 3
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-4",
+          "ordinal": 4
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-5",
+          "ordinal": 5
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-6",
+          "ordinal": 6
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-7",
+          "ordinal": 7
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-8",
+          "ordinal": 8
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-9",
+          "ordinal": 9
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-10",
+          "ordinal": 10
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-11",
+          "ordinal": 11
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-12",
+          "ordinal": 12
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-13",
+          "ordinal": 13
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-14",
+          "ordinal": 14
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-15",
+          "ordinal": 15
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-16",
+          "ordinal": 16
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-17",
+          "ordinal": 17
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-18",
+          "ordinal": 18
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-19",
+          "ordinal": 19
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-20",
+          "ordinal": 20
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-21",
+          "ordinal": 21
+        },
+        {
+          "ref": "message-an-agent-flow-1-declared-frame--wire-22",
+          "ordinal": 22
+        }
+      ]
+    }
+  },
+  "interfaces": {
+    "message-an-agent-flow-1-declared-frame--messaging-screen--if-createdraft": {
+      "id": "message-an-agent-flow-1-declared-frame--messaging-screen--if-createdraft",
+      "ownerId": "message-an-agent-flow-1-declared-frame--messaging-screen",
+      "name": "createDraft",
+      "accepts": [],
+      "returns": [
+        "Draft"
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--messaging-screen--if-acceptdraft": {
+      "id": "message-an-agent-flow-1-declared-frame--messaging-screen--if-acceptdraft",
+      "ownerId": "message-an-agent-flow-1-declared-frame--messaging-screen",
+      "name": "acceptDraft",
+      "accepts": [
+        "Agent"
+      ],
+      "returns": [
+        "ConversationId"
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--messaging-screen--if-sendmessage": {
+      "id": "message-an-agent-flow-1-declared-frame--messaging-screen--if-sendmessage",
+      "ownerId": "message-an-agent-flow-1-declared-frame--messaging-screen",
+      "name": "sendMessage",
+      "accepts": [
+        "ConversationId",
+        "Text"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--boundary--server-methods--if-spawnagentconversation": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--boundary--server-methods--if-spawnagentconversation",
+      "ownerId": "message-an-agent-flow-1-declared-frame--novakai--boundary--server-methods",
+      "name": "spawnAgentConversation",
+      "accepts": [
+        "Provider",
+        "Title",
+        "ConversationId"
+      ],
+      "returns": [
+        "ConversationView"
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--boundary--server-methods--if-sendmessage": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--boundary--server-methods--if-sendmessage",
+      "ownerId": "message-an-agent-flow-1-declared-frame--novakai--boundary--server-methods",
+      "name": "sendMessage",
+      "accepts": [
+        "ConversationId",
+        "Text",
+        "ClientOpId"
+      ],
+      "returns": [
+        "SendId"
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--boundary--one-shot-cli-send--if-dispatch": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--boundary--one-shot-cli-send--if-dispatch",
+      "ownerId": "message-an-agent-flow-1-declared-frame--novakai--boundary--one-shot-cli-send",
+      "name": "dispatch",
+      "accepts": [
+        "SendId",
+        "Text",
+        "ResumeId"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--boundary--agent-identity-hook--if-run": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--boundary--agent-identity-hook--if-run",
+      "ownerId": "message-an-agent-flow-1-declared-frame--novakai--boundary--agent-identity-hook",
+      "name": "run",
+      "accepts": [
+        "AgentId"
+      ],
+      "returns": [
+        "IdentityMarker"
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--boundary--ingestion--if-ingestnow": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--boundary--ingestion--if-ingestnow",
+      "ownerId": "message-an-agent-flow-1-declared-frame--novakai--boundary--ingestion",
+      "name": "ingestNow",
+      "accepts": [],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--boundary--provider-transcript-adapters--if-normalize": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--boundary--provider-transcript-adapters--if-normalize",
+      "ownerId": "message-an-agent-flow-1-declared-frame--novakai--boundary--provider-transcript-adapters",
+      "name": "normalize",
+      "accepts": [
+        "RawLine"
+      ],
+      "returns": [
+        "Candidate"
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--core--conversation-views--if-ensureconversationview": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--core--conversation-views--if-ensureconversationview",
+      "ownerId": "message-an-agent-flow-1-declared-frame--novakai--core--conversation-views",
+      "name": "ensureConversationView",
+      "accepts": [
+        "ConversationId",
+        "AgentId"
+      ],
+      "returns": [
+        "ConversationView"
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--core--accept-send--if-acceptsend": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--core--accept-send--if-acceptsend",
+      "ownerId": "message-an-agent-flow-1-declared-frame--novakai--core--accept-send",
+      "name": "acceptSend",
+      "accepts": [
+        "ConversationId",
+        "Text",
+        "ClientOpId"
+      ],
+      "returns": [
+        "SendId"
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--core--dispatch-send--if-dispatchacceptedsend": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--core--dispatch-send--if-dispatchacceptedsend",
+      "ownerId": "message-an-agent-flow-1-declared-frame--novakai--core--dispatch-send",
+      "name": "dispatchAcceptedSend",
+      "accepts": [
+        "SendId"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--core--session-assignment--if-assignprovidersession": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--core--session-assignment--if-assignprovidersession",
+      "ownerId": "message-an-agent-flow-1-declared-frame--novakai--core--session-assignment",
+      "name": "assignProviderSession",
+      "accepts": [
+        "SessionId",
+        "AgentId"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--core--confirm-send--if-confirmsendattempt": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--core--confirm-send--if-confirmsendattempt",
+      "ownerId": "message-an-agent-flow-1-declared-frame--novakai--core--confirm-send",
+      "name": "confirmSendAttempt",
+      "accepts": [
+        "TranscriptLine"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "message-an-agent-flow-1-declared-frame--novakai--core--agent-registry--if-defineagent": {
+      "id": "message-an-agent-flow-1-declared-frame--novakai--core--agent-registry--if-defineagent",
+      "ownerId": "message-an-agent-flow-1-declared-frame--novakai--core--agent-registry",
+      "name": "defineAgent",
+      "accepts": [
+        "Provider",
+        "Model",
+        "TeamRef",
+        "MissionRef"
+      ],
+      "returns": [
+        "AgentId"
+      ]
+    }
+  },
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "message-an-agent-flow-1-declared-frame": {
+          "nodeId": "message-an-agent-flow-1-declared-frame",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 3157,
+            "height": 1418
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--messaging-screen": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--messaging-screen",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 319,
+            "height": 182
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--external-provider-world": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--external-provider-world",
+          "position": {
+            "x": 913,
+            "y": 56
+          },
+          "size": {
+            "width": 1204,
+            "height": 200
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai",
+          "position": {
+            "x": 40,
+            "y": 326
+          },
+          "size": {
+            "width": 3077,
+            "height": 1052
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--external-provider-world--provider-cli-process": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--external-provider-world--provider-cli-process",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 319,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--external-provider-world--provider-server": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--external-provider-world--provider-server",
+          "position": {
+            "x": 500,
+            "y": 56
+          },
+          "size": {
+            "width": 240,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--external-provider-world--provider-session-file": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--external-provider-world--provider-session-file",
+          "position": {
+            "x": 917,
+            "y": 56
+          },
+          "size": {
+            "width": 247,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--boundary": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary",
+          "position": {
+            "x": 0,
+            "y": 56
+          },
+          "size": {
+            "width": 2577,
+            "height": 252
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--core": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core",
+          "position": {
+            "x": 0,
+            "y": 378
+          },
+          "size": {
+            "width": 3037,
+            "height": 226
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--stores": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores",
+          "position": {
+            "x": 0,
+            "y": 674
+          },
+          "size": {
+            "width": 2190,
+            "height": 338
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--boundary--server-methods": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--server-methods",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 156
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--boundary--one-shot-cli-send": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--one-shot-cli-send",
+          "position": {
+            "x": 953,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--boundary--agent-identity-hook": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--agent-identity-hook",
+          "position": {
+            "x": 1413,
+            "y": 56
+          },
+          "size": {
+            "width": 240,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--boundary--ingestion": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--ingestion",
+          "position": {
+            "x": 1830,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--boundary--provider-transcript-adapters": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--boundary--provider-transcript-adapters",
+          "position": {
+            "x": 2290,
+            "y": 56
+          },
+          "size": {
+            "width": 247,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--core--conversation-views": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--conversation-views",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--core--accept-send": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--accept-send",
+          "position": {
+            "x": 500,
+            "y": 56
+          },
+          "size": {
+            "width": 413,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--core--dispatch-send": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--dispatch-send",
+          "position": {
+            "x": 953,
+            "y": 56
+          },
+          "size": {
+            "width": 283,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--core--session-assignment": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--session-assignment",
+          "position": {
+            "x": 1413,
+            "y": 56
+          },
+          "size": {
+            "width": 377,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--core--confirm-send": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--confirm-send",
+          "position": {
+            "x": 1830,
+            "y": 56
+          },
+          "size": {
+            "width": 326,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--core--event-bus": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--event-bus",
+          "position": {
+            "x": 2290,
+            "y": 56
+          },
+          "size": {
+            "width": 200,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--core--agent-registry": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--core--agent-registry",
+          "position": {
+            "x": 2577,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--stores--entity-conversation-view": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-conversation-view",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--stores--entity-send-journal": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-send-journal",
+          "position": {
+            "x": 500,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--stores--entity-provider-session": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-provider-session",
+          "position": {
+            "x": 953,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--stores--entity-transcript-line": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-transcript-line",
+          "position": {
+            "x": 1413,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 210
+          },
+          "pinned": false
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--stores--entity-agent": {
+          "nodeId": "message-an-agent-flow-1-declared-frame--novakai--stores--entity-agent",
+          "position": {
+            "x": 1830,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 210
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {
+        "message-an-agent-flow-1-declared-frame--novakai--stores--entity-conversation-view": {
+          "palette": "violet"
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--stores--entity-send-journal": {
+          "palette": "sage"
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--stores--entity-provider-session": {
+          "palette": "blue"
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--stores--entity-transcript-line": {
+          "palette": "blue"
+        },
+        "message-an-agent-flow-1-declared-frame--novakai--stores--entity-agent": {
+          "palette": "blue"
+        }
+      },
+      "appearanceByWireId": {},
+      "arrangementByContainerId": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": [],
+      "flowId": "message-an-agent-flow-1-declared-frame--flow-flow-1-create-an-agent-and-send-its-first-message"
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-4cb23f45-bb9c-462c-9999-be01925720cf": {
+      "operationId": "cli-apply-4cb23f45-bb9c-462c-9999-be01925720cf",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-25T18:36:21.611Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command/00edba26-aba0-4d7a-be61-0a09d3d06b4c/scratchpad/flow1.dsl"
+      },
+      "commandKinds": [
+        "diagram.setOrientation",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "diagram.definitions.replace",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    },
+    "cli-apply-87263f6c-8e3d-418c-b8e3-284d4159c896": {
+      "operationId": "cli-apply-87263f6c-8e3d-418c-b8e3-284d4159c896",
+      "revision": 2,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-25T18:36:37.282Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command/00edba26-aba0-4d7a-be61-0a09d3d06b4c/scratchpad/flow1.dsl"
+      },
+      "commandKinds": [
+        "diagram.flows.replace"
+      ]
+    },
+    "ui-f0309bb2-bc99-4bcc-a316-9c7bff0cd1b5": {
+      "operationId": "ui-f0309bb2-bc99-4bcc-a316-9c7bff0cd1b5",
+      "revision": 3,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-25T18:37:21.609Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-ee2b9f2c-8e95-4173-8501-f1db99cb73b6": {
+      "operationId": "ui-ee2b9f2c-8e95-4173-8501-f1db99cb73b6",
+      "revision": 4,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-25T18:37:35.044Z",
+      "provenance": {
+        "source": "ui"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    }
+  }
+}

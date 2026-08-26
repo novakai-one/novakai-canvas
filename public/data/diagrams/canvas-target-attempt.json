@@ -1,0 +1,1979 @@
+{
+  "schemaVersion": 3,
+  "id": "canvas-target-attempt",
+  "name": "Canvas target attempt",
+  "orientation": "left-right",
+  "status": "active",
+  "revision": 1,
+  "nodes": {
+    "canvas-target-attempt": {
+      "id": "canvas-target-attempt",
+      "label": "Canvas target attempt",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "canvas-target-attempt--note-1-attempt-to-reproduce-the": {
+      "id": "canvas-target-attempt--note-1-attempt-to-reproduce-the",
+      "label": "Attempt to reproduce the hand-drawn reading target using only app features. Gaps noted in the diagnosis.",
+      "parentId": "canvas-target-attempt",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "canvas-target-attempt--authoring-tools-canvas-cli": {
+      "id": "canvas-target-attempt--authoring-tools-canvas-cli",
+      "label": "Authoring · tools/canvas-cli",
+      "parentId": "canvas-target-attempt",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "canvas-target-attempt--storage-public-data": {
+      "id": "canvas-target-attempt--storage-public-data",
+      "label": "Storage · public/data",
+      "parentId": "canvas-target-attempt",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "canvas-target-attempt--runtime-src": {
+      "id": "canvas-target-attempt--runtime-src",
+      "label": "Runtime · src",
+      "parentId": "canvas-target-attempt",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "canvas-target-attempt--ooux-object-map": {
+      "id": "canvas-target-attempt--ooux-object-map",
+      "label": "Map",
+      "parentId": "canvas-target-attempt",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "ooux-object",
+      "objectRef": "map",
+      "oouxRows": [
+        {
+          "kind": "attribute",
+          "id": "map-name",
+          "name": "name",
+          "valueType": "string",
+          "role": "core",
+          "traits": []
+        },
+        {
+          "kind": "attribute",
+          "id": "map-status",
+          "name": "status",
+          "valueType": "enum",
+          "role": "core",
+          "traits": [
+            "filterable"
+          ]
+        },
+        {
+          "kind": "attribute",
+          "id": "map-revision",
+          "name": "revision",
+          "valueType": "number",
+          "role": "metadata",
+          "traits": [
+            "sortable"
+          ]
+        },
+        {
+          "kind": "cta",
+          "id": "cta-apply",
+          "name": "applyDSL",
+          "role": "agent"
+        },
+        {
+          "kind": "cta",
+          "id": "cta-snapshot",
+          "name": "snapshot",
+          "role": "human"
+        },
+        {
+          "kind": "cta",
+          "id": "cta-archive",
+          "name": "archive",
+          "role": "owner"
+        }
+      ]
+    },
+    "canvas-target-attempt--record-model-src-domain-records-ts": {
+      "id": "canvas-target-attempt--record-model-src-domain-records-ts",
+      "label": "Record model · src/domain/records.ts",
+      "parentId": "canvas-target-attempt",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "canvas-target-attempt--block-legend": {
+      "id": "canvas-target-attempt--block-legend",
+      "label": "Legend",
+      "parentId": "canvas-target-attempt",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "owns solid · references green · queries blue",
+        "executes violet · mentions amber · missing dotted",
+        "crow's foot: || one · o| zero-or-one · |{ one-or-many · o{ zero-or-many",
+        "gold: active flow"
+      ]
+    },
+    "canvas-target-attempt--containment": {
+      "id": "canvas-target-attempt--containment",
+      "label": "Containment",
+      "parentId": "canvas-target-attempt",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "tree",
+      "rows": [
+        {
+          "id": "map",
+          "kind": "project",
+          "badges": [],
+          "label": "Map (DiagramRecord)"
+        },
+        {
+          "id": "zone",
+          "kind": "mission",
+          "parentRowId": "map",
+          "badges": [],
+          "label": "zone (group node)"
+        },
+        {
+          "id": "node",
+          "kind": "task",
+          "parentRowId": "zone",
+          "badges": [],
+          "label": "module / entity / ..."
+        },
+        {
+          "id": "leaf",
+          "kind": "bucket",
+          "parentRowId": "node",
+          "badges": [],
+          "label": "method · field · row"
+        }
+      ]
+    },
+    "canvas-target-attempt--authoring-tools-canvas-cli--canvas-cli": {
+      "id": "canvas-target-attempt--authoring-tools-canvas-cli--canvas-cli",
+      "label": "canvas CLI",
+      "description": "The only supported write path",
+      "parentId": "canvas-target-attempt--authoring-tools-canvas-cli",
+      "interfaceIds": [
+        "canvas-target-attempt--authoring-tools-canvas-cli--canvas-cli--if-apply",
+        "canvas-target-attempt--authoring-tools-canvas-cli--canvas-cli--if-snapshot"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "canvas-target-attempt--authoring-tools-canvas-cli--dsl-parser": {
+      "id": "canvas-target-attempt--authoring-tools-canvas-cli--dsl-parser",
+      "label": "DSL parser",
+      "description": "dsl-parse/*: tokens to ScopeAst",
+      "parentId": "canvas-target-attempt--authoring-tools-canvas-cli",
+      "interfaceIds": [
+        "canvas-target-attempt--authoring-tools-canvas-cli--dsl-parser--if-parse"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "canvas-target-attempt--authoring-tools-canvas-cli--compiler": {
+      "id": "canvas-target-attempt--authoring-tools-canvas-cli--compiler",
+      "label": "Compiler",
+      "description": "compile/*: ScopeAst to DiagramRecord",
+      "parentId": "canvas-target-attempt--authoring-tools-canvas-cli",
+      "interfaceIds": [
+        "canvas-target-attempt--authoring-tools-canvas-cli--compiler--if-compile"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "canvas-target-attempt--storage-public-data--diagrams-slug-json": {
+      "id": "canvas-target-attempt--storage-public-data--diagrams-slug-json",
+      "label": "diagrams/<slug>.json",
+      "description": "One DiagramRecord per map",
+      "parentId": "canvas-target-attempt--storage-public-data",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "canvas-target-attempt--storage-public-data--library-json": {
+      "id": "canvas-target-attempt--storage-public-data--library-json",
+      "label": "library.json",
+      "description": "Index plus cross-map links",
+      "parentId": "canvas-target-attempt--storage-public-data",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "canvas-target-attempt--runtime-src--canvas-library": {
+      "id": "canvas-target-attempt--runtime-src--canvas-library",
+      "label": "Canvas library",
+      "description": "application/canvas-library",
+      "parentId": "canvas-target-attempt--runtime-src",
+      "interfaceIds": [
+        "canvas-target-attempt--runtime-src--canvas-library--if-load",
+        "canvas-target-attempt--runtime-src--canvas-library--if-save"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "canvas-target-attempt--runtime-src--geometry-engine": {
+      "id": "canvas-target-attempt--runtime-src--geometry-engine",
+      "label": "Geometry engine",
+      "description": "domain/diagram-geometry",
+      "parentId": "canvas-target-attempt--runtime-src",
+      "interfaceIds": [
+        "canvas-target-attempt--runtime-src--geometry-engine--if-layoutscopes",
+        "canvas-target-attempt--runtime-src--geometry-engine--if-planwireroutes"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "canvas-target-attempt--runtime-src--projection": {
+      "id": "canvas-target-attempt--runtime-src--projection",
+      "label": "Projection",
+      "description": "presentation/projection",
+      "parentId": "canvas-target-attempt--runtime-src",
+      "interfaceIds": [
+        "canvas-target-attempt--runtime-src--projection--if-projectnodes",
+        "canvas-target-attempt--runtime-src--projection--if-projectwires"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "canvas-target-attempt--runtime-src--react-flow-host": {
+      "id": "canvas-target-attempt--runtime-src--react-flow-host",
+      "label": "React Flow host",
+      "description": "presentation/nodes + edges",
+      "parentId": "canvas-target-attempt--runtime-src",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "canvas-target-attempt--record-model-src-domain-records-ts--entity-diagram-record": {
+      "id": "canvas-target-attempt--record-model-src-domain-records-ts--entity-diagram-record",
+      "label": "DIAGRAM_RECORD",
+      "parentId": "canvas-target-attempt--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "diagram-record",
+      "entityFields": [
+        {
+          "id": "diagram-id",
+          "name": "id",
+          "valueType": "DiagramId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "diagram-name",
+          "name": "name",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "schema-version",
+          "name": "schemaVersion",
+          "valueType": "3",
+          "keys": [
+            "uk"
+          ]
+        },
+        {
+          "id": "revision",
+          "name": "revision",
+          "valueType": "int",
+          "keys": []
+        }
+      ]
+    },
+    "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-node": {
+      "id": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-node",
+      "label": "CANVAS_NODE",
+      "parentId": "canvas-target-attempt--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "canvas-node",
+      "entityFields": [
+        {
+          "id": "node-id",
+          "name": "id",
+          "valueType": "NodeId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "node-kind",
+          "name": "kind",
+          "valueType": "NodeKind",
+          "keys": []
+        },
+        {
+          "id": "node-parent",
+          "name": "parentId",
+          "valueType": "NodeId",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "node-expands",
+          "name": "expandsTo",
+          "valueType": "DiagramId",
+          "keys": [
+            "fk"
+          ]
+        }
+      ]
+    },
+    "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-wire": {
+      "id": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-wire",
+      "label": "CANVAS_WIRE",
+      "parentId": "canvas-target-attempt--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "canvas-wire",
+      "entityFields": [
+        {
+          "id": "wire-id",
+          "name": "id",
+          "valueType": "WireId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "wire-kind",
+          "name": "kind",
+          "valueType": "WireKind",
+          "keys": []
+        },
+        {
+          "id": "wire-source",
+          "name": "source",
+          "valueType": "Endpoint",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "wire-target",
+          "name": "target",
+          "valueType": "Endpoint",
+          "keys": [
+            "fk"
+          ]
+        }
+      ]
+    },
+    "canvas-target-attempt--record-model-src-domain-records-ts--entity-endpoint": {
+      "id": "canvas-target-attempt--record-model-src-domain-records-ts--entity-endpoint",
+      "label": "ENDPOINT",
+      "parentId": "canvas-target-attempt--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "endpoint",
+      "entityFields": [
+        {
+          "id": "ep-node",
+          "name": "nodeId",
+          "valueType": "NodeId",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "ep-anchor",
+          "name": "anchor",
+          "valueType": "PortAnchor",
+          "keys": []
+        },
+        {
+          "id": "ep-card",
+          "name": "cardinality",
+          "valueType": "Cardinality",
+          "keys": []
+        }
+      ]
+    },
+    "canvas-target-attempt--record-model-src-domain-records-ts--entity-flow": {
+      "id": "canvas-target-attempt--record-model-src-domain-records-ts--entity-flow",
+      "label": "FLOW",
+      "parentId": "canvas-target-attempt--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "flow",
+      "entityFields": [
+        {
+          "id": "flow-id",
+          "name": "id",
+          "valueType": "FlowId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "flow-name",
+          "name": "name",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    },
+    "canvas-target-attempt--record-model-src-domain-records-ts--entity-flow-step": {
+      "id": "canvas-target-attempt--record-model-src-domain-records-ts--entity-flow-step",
+      "label": "FLOW_STEP",
+      "parentId": "canvas-target-attempt--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "flow-step",
+      "entityFields": [
+        {
+          "id": "step-ref",
+          "name": "ref",
+          "valueType": "WireId",
+          "keys": [
+            "pk",
+            "fk"
+          ]
+        },
+        {
+          "id": "step-ordinal",
+          "name": "ordinal",
+          "valueType": "int",
+          "keys": [
+            "pk"
+          ]
+        }
+      ]
+    },
+    "canvas-target-attempt--record-model-src-domain-records-ts--entity-interface": {
+      "id": "canvas-target-attempt--record-model-src-domain-records-ts--entity-interface",
+      "label": "INTERFACE",
+      "parentId": "canvas-target-attempt--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "interface",
+      "entityFields": [
+        {
+          "id": "interface-id",
+          "name": "id",
+          "valueType": "InterfaceId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "interface-owner",
+          "name": "ownerId",
+          "valueType": "NodeId",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "interface-accepts",
+          "name": "accepts",
+          "valueType": "Type[]",
+          "keys": []
+        },
+        {
+          "id": "interface-returns",
+          "name": "returns",
+          "valueType": "Type[]",
+          "keys": []
+        }
+      ]
+    },
+    "canvas-target-attempt--record-model-src-domain-records-ts--entity-type-object": {
+      "id": "canvas-target-attempt--record-model-src-domain-records-ts--entity-type-object",
+      "label": "TYPE_OBJECT",
+      "parentId": "canvas-target-attempt--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "type-object",
+      "entityFields": [
+        {
+          "id": "type-id",
+          "name": "id",
+          "valueType": "TypeId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "type-name",
+          "name": "name",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "type-fields",
+          "name": "fields",
+          "valueType": "string[]",
+          "keys": []
+        }
+      ]
+    },
+    "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-layout": {
+      "id": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-layout",
+      "label": "CANVAS_LAYOUT",
+      "parentId": "canvas-target-attempt--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "canvas-layout",
+      "entityFields": [
+        {
+          "id": "layout-id",
+          "name": "id",
+          "valueType": "LayoutId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "layout-strategy",
+          "name": "strategy",
+          "valueType": "enum",
+          "keys": []
+        }
+      ]
+    },
+    "canvas-target-attempt--record-model-src-domain-records-ts--entity-node-placement": {
+      "id": "canvas-target-attempt--record-model-src-domain-records-ts--entity-node-placement",
+      "label": "NODE_PLACEMENT",
+      "parentId": "canvas-target-attempt--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "node-placement",
+      "entityFields": [
+        {
+          "id": "placement-node",
+          "name": "nodeId",
+          "valueType": "NodeId",
+          "keys": [
+            "pk",
+            "fk"
+          ]
+        },
+        {
+          "id": "placement-position",
+          "name": "position",
+          "valueType": "Point",
+          "keys": []
+        },
+        {
+          "id": "placement-pinned",
+          "name": "pinned",
+          "valueType": "bool",
+          "keys": []
+        }
+      ]
+    },
+    "canvas-target-attempt--record-model-src-domain-records-ts--entity-wire-route-hint": {
+      "id": "canvas-target-attempt--record-model-src-domain-records-ts--entity-wire-route-hint",
+      "label": "WIRE_ROUTE_HINT",
+      "parentId": "canvas-target-attempt--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "wire-route-hint",
+      "entityFields": [
+        {
+          "id": "hint-wire",
+          "name": "wireId",
+          "valueType": "WireId",
+          "keys": [
+            "pk",
+            "fk"
+          ]
+        },
+        {
+          "id": "hint-waypoints",
+          "name": "waypoints",
+          "valueType": "Point[]",
+          "keys": []
+        }
+      ]
+    },
+    "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-view": {
+      "id": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-view",
+      "label": "CANVAS_VIEW",
+      "parentId": "canvas-target-attempt--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "canvas-view",
+      "entityFields": [
+        {
+          "id": "view-id",
+          "name": "id",
+          "valueType": "ViewId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "view-layout",
+          "name": "layoutId",
+          "valueType": "LayoutId",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "view-flow",
+          "name": "flowId",
+          "valueType": "FlowId",
+          "keys": [
+            "fk"
+          ]
+        }
+      ]
+    },
+    "canvas-target-attempt--record-model-src-domain-records-ts--entity-library-index": {
+      "id": "canvas-target-attempt--record-model-src-domain-records-ts--entity-library-index",
+      "label": "LIBRARY_INDEX",
+      "parentId": "canvas-target-attempt--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "library-index",
+      "entityFields": [
+        {
+          "id": "index-revision",
+          "name": "revision",
+          "valueType": "int",
+          "keys": []
+        },
+        {
+          "id": "index-links",
+          "name": "links",
+          "valueType": "Link[]",
+          "keys": []
+        }
+      ]
+    },
+    "canvas-target-attempt--record-model-src-domain-records-ts--entity-cross-link": {
+      "id": "canvas-target-attempt--record-model-src-domain-records-ts--entity-cross-link",
+      "label": "CROSS_DIAGRAM_LINK",
+      "parentId": "canvas-target-attempt--record-model-src-domain-records-ts",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "cross-link",
+      "entityFields": [
+        {
+          "id": "link-id",
+          "name": "id",
+          "valueType": "LinkId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "link-source",
+          "name": "source",
+          "valueType": "NodeRef",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "link-target",
+          "name": "target",
+          "valueType": "NodeRef",
+          "keys": [
+            "fk"
+          ]
+        }
+      ]
+    }
+  },
+  "wires": {
+    "canvas-target-attempt--wire-1": {
+      "id": "canvas-target-attempt--wire-1",
+      "kind": "executes",
+      "label": "parse(DslText) -> ScopeAst",
+      "source": {
+        "nodeId": "canvas-target-attempt--authoring-tools-canvas-cli--canvas-cli"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--authoring-tools-canvas-cli--dsl-parser"
+      }
+    },
+    "canvas-target-attempt--wire-2": {
+      "id": "canvas-target-attempt--wire-2",
+      "kind": "executes",
+      "label": "compile(ScopeAst) -> CompileResult",
+      "source": {
+        "nodeId": "canvas-target-attempt--authoring-tools-canvas-cli--dsl-parser"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--authoring-tools-canvas-cli--compiler"
+      }
+    },
+    "canvas-target-attempt--wire-3": {
+      "id": "canvas-target-attempt--wire-3",
+      "kind": "owns",
+      "label": "write(DiagramRecord) -> void",
+      "source": {
+        "nodeId": "canvas-target-attempt--authoring-tools-canvas-cli--compiler"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--storage-public-data--diagrams-slug-json"
+      }
+    },
+    "canvas-target-attempt--wire-4": {
+      "id": "canvas-target-attempt--wire-4",
+      "kind": "queries",
+      "label": "load(MapId) -> DiagramRecord",
+      "source": {
+        "nodeId": "canvas-target-attempt--storage-public-data--diagrams-slug-json"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--runtime-src--canvas-library"
+      }
+    },
+    "canvas-target-attempt--wire-5": {
+      "id": "canvas-target-attempt--wire-5",
+      "kind": "queries",
+      "label": "readIndex() -> LibraryIndex",
+      "source": {
+        "nodeId": "canvas-target-attempt--storage-public-data--library-json"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--runtime-src--canvas-library"
+      }
+    },
+    "canvas-target-attempt--wire-6": {
+      "id": "canvas-target-attempt--wire-6",
+      "kind": "executes",
+      "label": "plan(Record) -> LayoutPlan",
+      "source": {
+        "nodeId": "canvas-target-attempt--runtime-src--canvas-library"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--runtime-src--geometry-engine"
+      }
+    },
+    "canvas-target-attempt--wire-7": {
+      "id": "canvas-target-attempt--wire-7",
+      "kind": "executes",
+      "label": "projectView(Record, View) -> ProjectedView",
+      "source": {
+        "nodeId": "canvas-target-attempt--runtime-src--geometry-engine"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--runtime-src--projection"
+      }
+    },
+    "canvas-target-attempt--wire-8": {
+      "id": "canvas-target-attempt--wire-8",
+      "kind": "executes",
+      "label": "render(Nodes, Edges) -> Pixels",
+      "source": {
+        "nodeId": "canvas-target-attempt--runtime-src--projection"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--runtime-src--react-flow-host"
+      }
+    },
+    "canvas-target-attempt--wire-9": {
+      "id": "canvas-target-attempt--wire-9",
+      "kind": "mentions",
+      "label": "backedBy(Map) -> DiagramRecord",
+      "source": {
+        "nodeId": "canvas-target-attempt--ooux-object-map"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-diagram-record"
+      }
+    },
+    "canvas-target-attempt--wire-10": {
+      "id": "canvas-target-attempt--wire-10",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-diagram-record",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-node",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "canvas-target-attempt--wire-11": {
+      "id": "canvas-target-attempt--wire-11",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-diagram-record",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-wire",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "canvas-target-attempt--wire-12": {
+      "id": "canvas-target-attempt--wire-12",
+      "kind": "owns",
+      "label": "declares",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-diagram-record",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-flow",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "canvas-target-attempt--wire-13": {
+      "id": "canvas-target-attempt--wire-13",
+      "kind": "owns",
+      "label": "arranges",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-diagram-record",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-layout",
+        "cardinality": "one-or-many"
+      }
+    },
+    "canvas-target-attempt--wire-14": {
+      "id": "canvas-target-attempt--wire-14",
+      "kind": "owns",
+      "label": "reads",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-diagram-record",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-view",
+        "cardinality": "one-or-many"
+      }
+    },
+    "canvas-target-attempt--wire-15": {
+      "id": "canvas-target-attempt--wire-15",
+      "kind": "references",
+      "label": "source",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-wire",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-node",
+        "cardinality": "one"
+      }
+    },
+    "canvas-target-attempt--wire-16": {
+      "id": "canvas-target-attempt--wire-16",
+      "kind": "references",
+      "label": "target",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-wire",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-node",
+        "cardinality": "one"
+      }
+    },
+    "canvas-target-attempt--wire-17": {
+      "id": "canvas-target-attempt--wire-17",
+      "kind": "owns",
+      "label": "anchors",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-wire",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-endpoint",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "canvas-target-attempt--wire-18": {
+      "id": "canvas-target-attempt--wire-18",
+      "kind": "owns",
+      "label": "parent",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-node",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-node",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "canvas-target-attempt--wire-19": {
+      "id": "canvas-target-attempt--wire-19",
+      "kind": "owns",
+      "label": "exposes",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-node",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-interface",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "canvas-target-attempt--wire-20": {
+      "id": "canvas-target-attempt--wire-20",
+      "kind": "references",
+      "label": "expandsTo",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-node",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-diagram-record",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "canvas-target-attempt--wire-21": {
+      "id": "canvas-target-attempt--wire-21",
+      "kind": "owns",
+      "label": "orders",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-flow",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-flow-step",
+        "cardinality": "one-or-many"
+      }
+    },
+    "canvas-target-attempt--wire-22": {
+      "id": "canvas-target-attempt--wire-22",
+      "kind": "references",
+      "label": "references",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-flow-step",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-wire",
+        "cardinality": "one"
+      }
+    },
+    "canvas-target-attempt--wire-23": {
+      "id": "canvas-target-attempt--wire-23",
+      "kind": "references",
+      "label": "acceptsReturns",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-interface",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-type-object",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "canvas-target-attempt--wire-24": {
+      "id": "canvas-target-attempt--wire-24",
+      "kind": "owns",
+      "label": "places",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-layout",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-node-placement",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "canvas-target-attempt--wire-25": {
+      "id": "canvas-target-attempt--wire-25",
+      "kind": "owns",
+      "label": "routes",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-layout",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-wire-route-hint",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "canvas-target-attempt--wire-26": {
+      "id": "canvas-target-attempt--wire-26",
+      "kind": "references",
+      "label": "geometryFor",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-node-placement",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-node",
+        "cardinality": "one"
+      }
+    },
+    "canvas-target-attempt--wire-27": {
+      "id": "canvas-target-attempt--wire-27",
+      "kind": "references",
+      "label": "hints",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-wire-route-hint",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-wire",
+        "cardinality": "one"
+      }
+    },
+    "canvas-target-attempt--wire-28": {
+      "id": "canvas-target-attempt--wire-28",
+      "kind": "references",
+      "label": "uses",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-view",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-layout",
+        "cardinality": "one"
+      }
+    },
+    "canvas-target-attempt--wire-29": {
+      "id": "canvas-target-attempt--wire-29",
+      "kind": "references",
+      "label": "emphasises",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-view",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-flow",
+        "cardinality": "zero-or-one"
+      }
+    },
+    "canvas-target-attempt--wire-30": {
+      "id": "canvas-target-attempt--wire-30",
+      "kind": "references",
+      "label": "indexes",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-library-index",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-diagram-record",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "canvas-target-attempt--wire-31": {
+      "id": "canvas-target-attempt--wire-31",
+      "kind": "owns",
+      "label": "owns",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-library-index",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-cross-link",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "canvas-target-attempt--wire-32": {
+      "id": "canvas-target-attempt--wire-32",
+      "kind": "references",
+      "label": "joinsAcrossMaps",
+      "source": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-cross-link",
+        "cardinality": "zero-or-many"
+      },
+      "target": {
+        "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-node",
+        "cardinality": "one"
+      }
+    }
+  },
+  "flows": {
+    "canvas-target-attempt--flow-from-dsl-line-to-pixels": {
+      "id": "canvas-target-attempt--flow-from-dsl-line-to-pixels",
+      "name": "From DSL line to pixels",
+      "steps": [
+        {
+          "ref": "canvas-target-attempt--wire-1",
+          "ordinal": 1
+        },
+        {
+          "ref": "canvas-target-attempt--wire-2",
+          "ordinal": 2
+        },
+        {
+          "ref": "canvas-target-attempt--wire-3",
+          "ordinal": 3
+        },
+        {
+          "ref": "canvas-target-attempt--wire-4",
+          "ordinal": 4
+        },
+        {
+          "ref": "canvas-target-attempt--wire-6",
+          "ordinal": 5
+        },
+        {
+          "ref": "canvas-target-attempt--wire-7",
+          "ordinal": 6
+        },
+        {
+          "ref": "canvas-target-attempt--wire-8",
+          "ordinal": 7
+        }
+      ]
+    }
+  },
+  "interfaces": {
+    "canvas-target-attempt--authoring-tools-canvas-cli--canvas-cli--if-apply": {
+      "id": "canvas-target-attempt--authoring-tools-canvas-cli--canvas-cli--if-apply",
+      "ownerId": "canvas-target-attempt--authoring-tools-canvas-cli--canvas-cli",
+      "name": "apply",
+      "accepts": [
+        "DslText"
+      ],
+      "returns": [
+        "WriteOutcome"
+      ]
+    },
+    "canvas-target-attempt--authoring-tools-canvas-cli--canvas-cli--if-snapshot": {
+      "id": "canvas-target-attempt--authoring-tools-canvas-cli--canvas-cli--if-snapshot",
+      "ownerId": "canvas-target-attempt--authoring-tools-canvas-cli--canvas-cli",
+      "name": "snapshot",
+      "accepts": [
+        "MapId"
+      ],
+      "returns": [
+        "Svg"
+      ]
+    },
+    "canvas-target-attempt--authoring-tools-canvas-cli--dsl-parser--if-parse": {
+      "id": "canvas-target-attempt--authoring-tools-canvas-cli--dsl-parser--if-parse",
+      "ownerId": "canvas-target-attempt--authoring-tools-canvas-cli--dsl-parser",
+      "name": "parse",
+      "accepts": [
+        "DslText"
+      ],
+      "returns": [
+        "ScopeAst"
+      ]
+    },
+    "canvas-target-attempt--authoring-tools-canvas-cli--compiler--if-compile": {
+      "id": "canvas-target-attempt--authoring-tools-canvas-cli--compiler--if-compile",
+      "ownerId": "canvas-target-attempt--authoring-tools-canvas-cli--compiler",
+      "name": "compile",
+      "accepts": [
+        "ScopeAst"
+      ],
+      "returns": [
+        "CompileResult"
+      ]
+    },
+    "canvas-target-attempt--runtime-src--canvas-library--if-load": {
+      "id": "canvas-target-attempt--runtime-src--canvas-library--if-load",
+      "ownerId": "canvas-target-attempt--runtime-src--canvas-library",
+      "name": "load",
+      "accepts": [
+        "MapId"
+      ],
+      "returns": [
+        "DiagramRecord"
+      ]
+    },
+    "canvas-target-attempt--runtime-src--canvas-library--if-save": {
+      "id": "canvas-target-attempt--runtime-src--canvas-library--if-save",
+      "ownerId": "canvas-target-attempt--runtime-src--canvas-library",
+      "name": "save",
+      "accepts": [
+        "DiagramRecord"
+      ],
+      "returns": [
+        "WriteOutcome"
+      ]
+    },
+    "canvas-target-attempt--runtime-src--geometry-engine--if-layoutscopes": {
+      "id": "canvas-target-attempt--runtime-src--geometry-engine--if-layoutscopes",
+      "ownerId": "canvas-target-attempt--runtime-src--geometry-engine",
+      "name": "layoutScopes",
+      "accepts": [
+        "Record"
+      ],
+      "returns": [
+        "Placements"
+      ]
+    },
+    "canvas-target-attempt--runtime-src--geometry-engine--if-planwireroutes": {
+      "id": "canvas-target-attempt--runtime-src--geometry-engine--if-planwireroutes",
+      "ownerId": "canvas-target-attempt--runtime-src--geometry-engine",
+      "name": "planWireRoutes",
+      "accepts": [
+        "Topology"
+      ],
+      "returns": [
+        "WireRoute[]"
+      ]
+    },
+    "canvas-target-attempt--runtime-src--projection--if-projectnodes": {
+      "id": "canvas-target-attempt--runtime-src--projection--if-projectnodes",
+      "ownerId": "canvas-target-attempt--runtime-src--projection",
+      "name": "projectNodes",
+      "accepts": [
+        "Input"
+      ],
+      "returns": [
+        "Node[]"
+      ]
+    },
+    "canvas-target-attempt--runtime-src--projection--if-projectwires": {
+      "id": "canvas-target-attempt--runtime-src--projection--if-projectwires",
+      "ownerId": "canvas-target-attempt--runtime-src--projection",
+      "name": "projectWires",
+      "accepts": [
+        "Input"
+      ],
+      "returns": [
+        "Edge[]"
+      ]
+    }
+  },
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "canvas-target-attempt": {
+          "nodeId": "canvas-target-attempt",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 2074,
+            "height": 1920
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--note-1-attempt-to-reproduce-the": {
+          "nodeId": "canvas-target-attempt--note-1-attempt-to-reproduce-the",
+          "position": {
+            "x": 1754,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--authoring-tools-canvas-cli": {
+          "nodeId": "canvas-target-attempt--authoring-tools-canvas-cli",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 994,
+            "height": 252
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--storage-public-data": {
+          "nodeId": "canvas-target-attempt--storage-public-data",
+          "position": {
+            "x": 1401,
+            "y": 1536
+          },
+          "size": {
+            "width": 320,
+            "height": 344
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--runtime-src": {
+          "nodeId": "canvas-target-attempt--runtime-src",
+          "position": {
+            "x": 40,
+            "y": 1536
+          },
+          "size": {
+            "width": 1321,
+            "height": 252
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--ooux-object-map": {
+          "nodeId": "canvas-target-attempt--ooux-object-map",
+          "position": {
+            "x": 40,
+            "y": 378
+          },
+          "size": {
+            "width": 300,
+            "height": 254
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts": {
+          "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts",
+          "position": {
+            "x": 380,
+            "y": 378
+          },
+          "size": {
+            "width": 1576,
+            "height": 1088
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--block-legend": {
+          "nodeId": "canvas-target-attempt--block-legend",
+          "position": {
+            "x": 1074,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 157
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--containment": {
+          "nodeId": "canvas-target-attempt--containment",
+          "position": {
+            "x": 1434,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 166
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--authoring-tools-canvas-cli--canvas-cli": {
+          "nodeId": "canvas-target-attempt--authoring-tools-canvas-cli--canvas-cli",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 240,
+            "height": 156
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--authoring-tools-canvas-cli--dsl-parser": {
+          "nodeId": "canvas-target-attempt--authoring-tools-canvas-cli--dsl-parser",
+          "position": {
+            "x": 352,
+            "y": 69
+          },
+          "size": {
+            "width": 247,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--authoring-tools-canvas-cli--compiler": {
+          "nodeId": "canvas-target-attempt--authoring-tools-canvas-cli--compiler",
+          "position": {
+            "x": 671,
+            "y": 69
+          },
+          "size": {
+            "width": 283,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--storage-public-data--diagrams-slug-json": {
+          "nodeId": "canvas-target-attempt--storage-public-data--diagrams-slug-json",
+          "position": {
+            "x": 44,
+            "y": 56
+          },
+          "size": {
+            "width": 204,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--storage-public-data--library-json": {
+          "nodeId": "canvas-target-attempt--storage-public-data--library-json",
+          "position": {
+            "x": 40,
+            "y": 200
+          },
+          "size": {
+            "width": 211,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--runtime-src--canvas-library": {
+          "nodeId": "canvas-target-attempt--runtime-src--canvas-library",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 276,
+            "height": 156
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--runtime-src--geometry-engine": {
+          "nodeId": "canvas-target-attempt--runtime-src--geometry-engine",
+          "position": {
+            "x": 388,
+            "y": 56
+          },
+          "size": {
+            "width": 305,
+            "height": 156
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--runtime-src--projection": {
+          "nodeId": "canvas-target-attempt--runtime-src--projection",
+          "position": {
+            "x": 765,
+            "y": 56
+          },
+          "size": {
+            "width": 233,
+            "height": 156
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--runtime-src--react-flow-host": {
+          "nodeId": "canvas-target-attempt--runtime-src--react-flow-host",
+          "position": {
+            "x": 1070,
+            "y": 82
+          },
+          "size": {
+            "width": 211,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-diagram-record": {
+          "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-diagram-record",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 210
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-node": {
+          "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-node",
+          "position": {
+            "x": 432,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 210
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-wire": {
+          "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-wire",
+          "position": {
+            "x": 824,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 210
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-endpoint": {
+          "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-endpoint",
+          "position": {
+            "x": 1216,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-flow": {
+          "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-flow",
+          "position": {
+            "x": 40,
+            "y": 338
+          },
+          "size": {
+            "width": 320,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-flow-step": {
+          "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-flow-step",
+          "position": {
+            "x": 432,
+            "y": 338
+          },
+          "size": {
+            "width": 320,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-interface": {
+          "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-interface",
+          "position": {
+            "x": 824,
+            "y": 338
+          },
+          "size": {
+            "width": 320,
+            "height": 210
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-type-object": {
+          "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-type-object",
+          "position": {
+            "x": 1216,
+            "y": 338
+          },
+          "size": {
+            "width": 320,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-layout": {
+          "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-layout",
+          "position": {
+            "x": 40,
+            "y": 620
+          },
+          "size": {
+            "width": 320,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-node-placement": {
+          "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-node-placement",
+          "position": {
+            "x": 432,
+            "y": 620
+          },
+          "size": {
+            "width": 320,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-wire-route-hint": {
+          "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-wire-route-hint",
+          "position": {
+            "x": 824,
+            "y": 620
+          },
+          "size": {
+            "width": 320,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-view": {
+          "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-view",
+          "position": {
+            "x": 1216,
+            "y": 620
+          },
+          "size": {
+            "width": 320,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-library-index": {
+          "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-library-index",
+          "position": {
+            "x": 40,
+            "y": 870
+          },
+          "size": {
+            "width": 320,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-cross-link": {
+          "nodeId": "canvas-target-attempt--record-model-src-domain-records-ts--entity-cross-link",
+          "position": {
+            "x": 432,
+            "y": 870
+          },
+          "size": {
+            "width": 320,
+            "height": 178
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {
+        "canvas-target-attempt--ooux-object-map": {
+          "palette": "violet"
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-diagram-record": {
+          "palette": "blue"
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-node": {
+          "palette": "blue"
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-wire": {
+          "palette": "blue"
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-endpoint": {
+          "palette": "blue"
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-flow": {
+          "palette": "blue"
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-flow-step": {
+          "palette": "blue"
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-interface": {
+          "palette": "blue"
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-type-object": {
+          "palette": "blue"
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-layout": {
+          "palette": "sage"
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-node-placement": {
+          "palette": "sage"
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-wire-route-hint": {
+          "palette": "sage"
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-view": {
+          "palette": "sage"
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-library-index": {
+          "palette": "violet"
+        },
+        "canvas-target-attempt--record-model-src-domain-records-ts--entity-cross-link": {
+          "palette": "violet"
+        }
+      },
+      "appearanceByWireId": {
+        "canvas-target-attempt--wire-9": {
+          "width": "thin",
+          "pattern": "dashed",
+          "color": "amber"
+        },
+        "canvas-target-attempt--wire-10": {
+          "width": "medium"
+        },
+        "canvas-target-attempt--wire-11": {
+          "width": "medium"
+        },
+        "canvas-target-attempt--wire-12": {
+          "width": "medium"
+        },
+        "canvas-target-attempt--wire-13": {
+          "width": "medium"
+        },
+        "canvas-target-attempt--wire-14": {
+          "width": "medium"
+        },
+        "canvas-target-attempt--wire-15": {
+          "width": "medium",
+          "color": "green"
+        },
+        "canvas-target-attempt--wire-16": {
+          "width": "medium",
+          "color": "green"
+        },
+        "canvas-target-attempt--wire-17": {
+          "width": "medium"
+        },
+        "canvas-target-attempt--wire-18": {
+          "width": "medium"
+        },
+        "canvas-target-attempt--wire-19": {
+          "width": "medium"
+        },
+        "canvas-target-attempt--wire-20": {
+          "width": "medium",
+          "color": "green"
+        },
+        "canvas-target-attempt--wire-21": {
+          "width": "medium"
+        },
+        "canvas-target-attempt--wire-22": {
+          "width": "medium",
+          "color": "green"
+        },
+        "canvas-target-attempt--wire-23": {
+          "width": "medium",
+          "color": "green"
+        },
+        "canvas-target-attempt--wire-24": {
+          "width": "medium"
+        },
+        "canvas-target-attempt--wire-25": {
+          "width": "medium"
+        },
+        "canvas-target-attempt--wire-26": {
+          "width": "medium",
+          "color": "green"
+        },
+        "canvas-target-attempt--wire-27": {
+          "width": "medium",
+          "color": "green"
+        },
+        "canvas-target-attempt--wire-28": {
+          "width": "medium",
+          "color": "green"
+        },
+        "canvas-target-attempt--wire-29": {
+          "width": "medium",
+          "color": "green"
+        },
+        "canvas-target-attempt--wire-30": {
+          "width": "medium",
+          "color": "green"
+        },
+        "canvas-target-attempt--wire-31": {
+          "width": "medium"
+        },
+        "canvas-target-attempt--wire-32": {
+          "width": "medium",
+          "color": "green"
+        }
+      },
+      "arrangementByContainerId": {
+        "canvas-target-attempt--record-model-src-domain-records-ts": {
+          "layout": "grid",
+          "childIds": [
+            "canvas-target-attempt--record-model-src-domain-records-ts--entity-diagram-record",
+            "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-node",
+            "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-wire",
+            "canvas-target-attempt--record-model-src-domain-records-ts--entity-endpoint",
+            "canvas-target-attempt--record-model-src-domain-records-ts--entity-flow",
+            "canvas-target-attempt--record-model-src-domain-records-ts--entity-flow-step",
+            "canvas-target-attempt--record-model-src-domain-records-ts--entity-interface",
+            "canvas-target-attempt--record-model-src-domain-records-ts--entity-type-object",
+            "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-layout",
+            "canvas-target-attempt--record-model-src-domain-records-ts--entity-node-placement",
+            "canvas-target-attempt--record-model-src-domain-records-ts--entity-wire-route-hint",
+            "canvas-target-attempt--record-model-src-domain-records-ts--entity-canvas-view",
+            "canvas-target-attempt--record-model-src-domain-records-ts--entity-library-index",
+            "canvas-target-attempt--record-model-src-domain-records-ts--entity-cross-link"
+          ],
+          "gap": 16,
+          "align": "stretch",
+          "columns": 4
+        }
+      }
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-12d72d21-5809-4a18-8e85-a97e835421d6": {
+      "operationId": "cli-apply-12d72d21-5809-4a18-8e85-a97e835421d6",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-25T19:56:48.379Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "canvas-target-attempt.dsl"
+      },
+      "commandKinds": [
+        "diagram.setOrientation",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "diagram.definitions.replace",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "diagram.flows.replace",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    }
+  }
+}
