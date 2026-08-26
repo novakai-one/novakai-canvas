@@ -147,6 +147,16 @@ function parseAttributes(
 /** Strips and validates shared presentation tokens against component metadata. */
 export function splitPresentation(component: DiagramComponent, tokens: string[]): SplitResult {
   const context = contextFor(component, tokens);
+  // The help renders optional attributes as "[key=value]"; catch an author typing the brackets.
+  for (const token of tokens.slice(2)) {
+    const bracketed = /^\[([A-Za-z-]+)=([^\]]*)\]$/.exec(token);
+    if (bracketed) {
+      return {
+        error: `square brackets in the help mean "optional" — don't type them: "${token}"`,
+        hint: `write ${bracketed[1]}=${bracketed[2]}`,
+      };
+    }
+  }
   const firstAttribute = tokens.findIndex((token, index) => {
     if (index < 2) return false;
     const key = attributeKey(token) ?? '';
