@@ -46,6 +46,13 @@ scope "My System" [orientation=top-down|left-right]   # a scope block FULLY decl
   end
 ```
 
+In the grammar above, square brackets mean "optional" — never type the
+brackets. Write `band=0`, not `[band=0]` (the CLI rejects the bracketed form).
+
+`apply` places only brand-new nodes. Nodes that already exist on the map never
+move, so a layout someone arranged by hand survives every apply. To lay a whole
+map out fresh: `./canvas rm <map>`, then `apply`.
+
 Every wire needs its contract (the actual call it carries). Quote multi-word
 names and `"Module.method"` port endpoints. Re-applying a scope replaces that
 map; other maps are untouched. Flows add no graph objects or geometry; select

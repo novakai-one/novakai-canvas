@@ -168,3 +168,32 @@ describe('parseDsl', () => {
     expect(errors.some((error) => error.message.includes('end without an open zone'))).toBe(true);
   });
 });
+
+describe('bracketed attributes', () => {
+  it('rejects [band=0] on a module and says to drop the brackets', () => {
+    const { errors } = parseDsl('scope Demo\n  module Broker "desc" [band=0]\n');
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toContain("don't type them");
+    expect(errors[0].hint).toBe('write band=0');
+  });
+
+  it('rejects [width=thick] on a wire and says to drop the brackets', () => {
+    const { errors } = parseDsl('scope Demo\n  module A\n  module B\n  wire A -> B [width=thick] : call [references]\n');
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toContain("don't type them");
+    expect(errors[0].hint).toBe('write width=thick');
+  });
+
+  it('accepts bare band and lane and stores them on the node', () => {
+    const { scopes, errors } = parseDsl('scope Demo\n  module Broker "desc" band=1 lane=2\n');
+    expect(errors).toEqual([]);
+    expect(scopes[0].nodes[0].band).toBe(1);
+    expect(scopes[0].nodes[0].lane).toBe(2);
+  });
+
+  it('still allows brackets inside quoted names and descriptions', () => {
+    const { scopes, errors } = parseDsl('scope Demo\n  module "Broker [beta]" "notes [draft]"\n');
+    expect(errors).toEqual([]);
+    expect(scopes[0].nodes[0].label).toBe('Broker [beta]');
+  });
+});

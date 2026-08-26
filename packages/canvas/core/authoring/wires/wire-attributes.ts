@@ -41,6 +41,14 @@ export function parseWireAttributes(tokens: string[]): WireAttributeParseResult 
     ...WIRE_APPEARANCE_SPECIFICATIONS.map((entry) => `${entry.key}=${entry.values.join('|')}`),
   ].join(' ');
   for (const token of tokens) {
+    const bracketed = /^\[([A-Za-z-]+)=([^\]]*)\]$/.exec(token);
+    if (bracketed) {
+      return {
+        valid: false,
+        error: `square brackets in the help mean "optional" — don't type them: "${token}"`,
+        hint: `write ${bracketed[1]}=${bracketed[2]}`,
+      };
+    }
     const equals = token.indexOf('=');
     const rawKey = token.slice(0, Math.max(0, equals));
     const cardinalitySpec = CARDINALITY_ATTRIBUTES.find((entry) => entry.key === rawKey);
