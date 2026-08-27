@@ -41,6 +41,9 @@ export {
 export { projectView } from '../core/domain/project-view.ts';
 export type { PositionedNode, ProjectedView } from '../core/domain/project-view.ts';
 export {
+  applyViewType, availableViewTypes, VIEW_TYPES, type ViewTypeId,
+} from '../core/domain/view-types.ts';
+export {
   layoutScopes, planWireRoutes, reflowPresentation, reflowTopology, routeWire,
 } from '../core/domain/diagram-geometry.ts';
 export type {

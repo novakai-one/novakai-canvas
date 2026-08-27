@@ -1,8 +1,10 @@
 import {
-  useCallback, useMemo, useRef, useState,
+  useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
-import type { RecordCommand, Selection } from '@novakai/canvas';
-import { compileFlows, projectView } from '@novakai/canvas';
+import type { RecordCommand, Selection, ViewTypeId } from '@novakai/canvas';
+import {
+  applyViewType, availableViewTypes, compileFlows, projectView,
+} from '@novakai/canvas';
 import { CanvasAppView } from './presentation/canvas-app/canvas-app-view';
 import type { AppProps, OpenDiagram } from './presentation/canvas-app/app-contract';
 import { SAVE_STATUS } from './presentation/canvas-app/save-status';
@@ -26,10 +28,21 @@ export default function App(props: AppProps) {
     () => ({ id: initialDiagramId, workspace: initialWorkspace }),
   );
   const record = useWorkspaceRecord(open.workspace);
-  const view = useMemo(() => projectView(record), [record]);
+  const projected = useMemo(() => projectView(record), [record]);
   const flows = useMemo(() => compileFlows(record), [record]);
-  const contents = useMemo(() => diagramContents(record, view), [record, view]);
   const activeFlowId = record.views[record.activeViewId]?.flowId;
+  // The view type is a lens, not content: host state only, back to Full on diagram change.
+  const [viewTypeId, setViewTypeId] = useState<ViewTypeId>('full');
+  useEffect(() => setViewTypeId('full'), [open.id]);
+  const view = useMemo(
+    () => applyViewType(projected, record, viewTypeId, activeFlowId),
+    [activeFlowId, projected, record, viewTypeId],
+  );
+  const viewTypes = useMemo(
+    () => availableViewTypes(record, activeFlowId),
+    [activeFlowId, record],
+  );
+  const contents = useMemo(() => diagramContents(record, view), [record, view]);
   const [selection, setSelection] = useState<Selection>(null);
   const [saveStatus, setSaveStatus] = useState<string>(SAVE_STATUS.saved);
   const [mode, setMode] = useState<CanvasMode>(DEFAULT_CANVAS_MODE);
@@ -53,7 +66,7 @@ export default function App(props: AppProps) {
     setSaveStatus,
   });
   const actions = useWorkspaceActions({
-    diagramExporter, record, select, setSaveStatus, view, workspace: open.workspace,
+    diagramExporter, record, select, setSaveStatus, view: projected, workspace: open.workspace,
   });
   const { executeAll } = actions;
   const { setFreshDiagramId } = navigation;
@@ -88,6 +101,9 @@ export default function App(props: AppProps) {
       shellStyle={preferenceState.shellStyle}
       theme={preferenceState.theme}
       view={view}
+      viewTypeId={viewTypeId}
+      viewTypes={viewTypes}
+      selectViewType={setViewTypeId}
     />
   );
 }

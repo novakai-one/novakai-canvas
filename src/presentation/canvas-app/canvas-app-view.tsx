@@ -4,7 +4,7 @@ import type {
 import { ReactFlowProvider } from '@xyflow/react';
 import type {
   CanvasPreferences, DiagramRecord, FlowId, FlowLibrary, ProjectedView, RecordCommand, Selection,
-  ResolvedCanvasTheme,
+  ResolvedCanvasTheme, ViewTypeId,
 } from '@novakai/canvas';
 import { CanvasSurface } from '../components/canvas-surface';
 import { flowStepRows } from '../components/flow-panel';
@@ -38,6 +38,9 @@ interface CanvasAppViewProps {
   shellStyle: CSSProperties;
   theme: ResolvedCanvasTheme;
   view: ProjectedView;
+  viewTypeId: ViewTypeId;
+  viewTypes: ReadonlySet<ViewTypeId>;
+  selectViewType: (viewTypeId: ViewTypeId) => void;
 }
 
 /** The three-panel Canvas shell, rendered from already-composed state and commands. */
@@ -84,6 +87,9 @@ export function CanvasAppView(props: CanvasAppViewProps) {
             editable={mode === 'edit'}
             flows={flows}
             flowSteps={flowStepRows(activeFlowId ? flows.get(activeFlowId) : undefined, record)}
+            viewTypeId={props.viewTypeId}
+            viewTypes={props.viewTypes}
+            selectViewType={props.selectViewType}
             jumpTo={actions.jumpTo}
             openAtObject={navigation.openAtObject}
             select={select}
