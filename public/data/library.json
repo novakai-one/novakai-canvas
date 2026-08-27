@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "revision": 387,
+  "revision": 404,
   "entries": {
     "agent-visual-authoring-poc": {
       "id": "agent-visual-authoring-poc",
@@ -292,6 +292,26 @@
         "Version control",
         "View panel",
         "Workspace"
+      ]
+    },
+    "conversation-lens-demo": {
+      "id": "conversation-lens-demo",
+      "name": "Conversation Lens Demo",
+      "status": "active",
+      "revision": 4,
+      "nodeLabels": [
+        "Conversation",
+        "Conversation Lens Demo",
+        "Delivery receipt",
+        "Delivery workers",
+        "Ingest API",
+        "Message",
+        "Message router",
+        "Notifier",
+        "Session",
+        "Ten nodes across kinds: modules, runtime, resource, entities with PK/FK, an OOUX object, plain objects. Two flows share the wires.",
+        "Thread",
+        "conversations.db"
       ]
     },
     "diagram-06d510a2": {

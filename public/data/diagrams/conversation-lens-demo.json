@@ -1,0 +1,678 @@
+{
+  "schemaVersion": 3,
+  "id": "conversation-lens-demo",
+  "name": "Conversation Lens Demo",
+  "orientation": "top-down",
+  "status": "active",
+  "revision": 4,
+  "nodes": {
+    "conversation-lens-demo": {
+      "id": "conversation-lens-demo",
+      "label": "Conversation Lens Demo",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "conversation-lens-demo--note-1-ten-nodes-across-kinds-m": {
+      "id": "conversation-lens-demo--note-1-ten-nodes-across-kinds-m",
+      "label": "Ten nodes across kinds: modules, runtime, resource, entities with PK/FK, an OOUX object, plain objects. Two flows share the wires.",
+      "parentId": "conversation-lens-demo",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "conversation-lens-demo--session": {
+      "id": "conversation-lens-demo--session",
+      "label": "Session",
+      "description": "A user's live connection",
+      "parentId": "conversation-lens-demo",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "object"
+    },
+    "conversation-lens-demo--ingest-api": {
+      "id": "conversation-lens-demo--ingest-api",
+      "label": "Ingest API",
+      "description": "Accepts inbound messages",
+      "parentId": "conversation-lens-demo",
+      "interfaceIds": [
+        "conversation-lens-demo--ingest-api--if-send"
+      ],
+      "typeIds": [
+        "conversation-lens-demo--ingest-api--type-messagedraft"
+      ],
+      "kind": "module"
+    },
+    "conversation-lens-demo--message-router": {
+      "id": "conversation-lens-demo--message-router",
+      "label": "Message router",
+      "description": "Validates and fans out",
+      "parentId": "conversation-lens-demo",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "conversation-lens-demo--notifier": {
+      "id": "conversation-lens-demo--notifier",
+      "label": "Notifier",
+      "description": "Builds notifications",
+      "parentId": "conversation-lens-demo",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "conversation-lens-demo--delivery-workers": {
+      "id": "conversation-lens-demo--delivery-workers",
+      "label": "Delivery workers",
+      "parentId": "conversation-lens-demo",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "runtime"
+    },
+    "conversation-lens-demo--conversations-db": {
+      "id": "conversation-lens-demo--conversations-db",
+      "label": "conversations.db",
+      "parentId": "conversation-lens-demo",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "conversation-lens-demo--entity-conversation": {
+      "id": "conversation-lens-demo--entity-conversation",
+      "label": "Conversation",
+      "parentId": "conversation-lens-demo",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "conversation",
+      "entityFields": [
+        {
+          "id": "conv-id",
+          "name": "id",
+          "valueType": "uuid",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "conv-title",
+          "name": "title",
+          "valueType": "string",
+          "keys": []
+        },
+        {
+          "id": "conv-created",
+          "name": "createdAt",
+          "valueType": "timestamp",
+          "keys": []
+        }
+      ]
+    },
+    "conversation-lens-demo--entity-message": {
+      "id": "conversation-lens-demo--entity-message",
+      "label": "Message",
+      "parentId": "conversation-lens-demo",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "message",
+      "entityFields": [
+        {
+          "id": "msg-id",
+          "name": "id",
+          "valueType": "uuid",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "msg-conv",
+          "name": "conversationId",
+          "valueType": "uuid",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "msg-body",
+          "name": "body",
+          "valueType": "text",
+          "keys": []
+        }
+      ]
+    },
+    "conversation-lens-demo--ooux-object-thread": {
+      "id": "conversation-lens-demo--ooux-object-thread",
+      "label": "Thread",
+      "parentId": "conversation-lens-demo",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "ooux-object",
+      "objectRef": "thread",
+      "oouxRows": [
+        {
+          "kind": "attribute",
+          "id": "thread-topic",
+          "name": "topic",
+          "valueType": "string",
+          "role": "core",
+          "traits": [
+            "filterable"
+          ]
+        },
+        {
+          "kind": "attribute",
+          "id": "thread-unread",
+          "name": "unreadCount",
+          "valueType": "number",
+          "role": "metadata",
+          "traits": [
+            "sortable"
+          ]
+        },
+        {
+          "kind": "cta",
+          "id": "thread-archive",
+          "name": "archive",
+          "role": "owner"
+        }
+      ]
+    },
+    "conversation-lens-demo--delivery-receipt": {
+      "id": "conversation-lens-demo--delivery-receipt",
+      "label": "Delivery receipt",
+      "description": "Proof a message arrived",
+      "parentId": "conversation-lens-demo",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "object"
+    }
+  },
+  "wires": {
+    "conversation-lens-demo--wire-1": {
+      "id": "conversation-lens-demo--wire-1",
+      "kind": "executes",
+      "label": "send(MessageDraft) -> Ack",
+      "source": {
+        "nodeId": "conversation-lens-demo--session"
+      },
+      "target": {
+        "nodeId": "conversation-lens-demo--ingest-api",
+        "anchor": {
+          "side": "top",
+          "ordinal": 0
+        }
+      }
+    },
+    "conversation-lens-demo--wire-2": {
+      "id": "conversation-lens-demo--wire-2",
+      "kind": "executes",
+      "label": "route(MessageDraft) -> Delivery",
+      "source": {
+        "nodeId": "conversation-lens-demo--ingest-api"
+      },
+      "target": {
+        "nodeId": "conversation-lens-demo--message-router"
+      }
+    },
+    "conversation-lens-demo--wire-3": {
+      "id": "conversation-lens-demo--wire-3",
+      "kind": "assigns",
+      "label": "append(MessageDraft) -> MessageId",
+      "source": {
+        "nodeId": "conversation-lens-demo--message-router"
+      },
+      "target": {
+        "nodeId": "conversation-lens-demo--entity-conversation"
+      }
+    },
+    "conversation-lens-demo--wire-4": {
+      "id": "conversation-lens-demo--wire-4",
+      "kind": "queries",
+      "label": "persist(Message) -> void",
+      "source": {
+        "nodeId": "conversation-lens-demo--message-router"
+      },
+      "target": {
+        "nodeId": "conversation-lens-demo--conversations-db"
+      }
+    },
+    "conversation-lens-demo--wire-5": {
+      "id": "conversation-lens-demo--wire-5",
+      "kind": "owns",
+      "label": "contains",
+      "source": {
+        "nodeId": "conversation-lens-demo--entity-conversation",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "conversation-lens-demo--entity-message",
+        "cardinality": "one-or-many"
+      }
+    },
+    "conversation-lens-demo--wire-6": {
+      "id": "conversation-lens-demo--wire-6",
+      "kind": "references",
+      "label": "groups(ConversationId)",
+      "source": {
+        "nodeId": "conversation-lens-demo--ooux-object-thread",
+        "cardinality": "one"
+      },
+      "target": {
+        "nodeId": "conversation-lens-demo--entity-conversation",
+        "cardinality": "zero-or-many"
+      }
+    },
+    "conversation-lens-demo--wire-7": {
+      "id": "conversation-lens-demo--wire-7",
+      "kind": "executes",
+      "label": "notify(MessageId) -> void",
+      "source": {
+        "nodeId": "conversation-lens-demo--message-router"
+      },
+      "target": {
+        "nodeId": "conversation-lens-demo--notifier"
+      }
+    },
+    "conversation-lens-demo--wire-8": {
+      "id": "conversation-lens-demo--wire-8",
+      "kind": "executes",
+      "label": "dispatch(Notification)",
+      "source": {
+        "nodeId": "conversation-lens-demo--notifier"
+      },
+      "target": {
+        "nodeId": "conversation-lens-demo--delivery-workers"
+      }
+    },
+    "conversation-lens-demo--wire-9": {
+      "id": "conversation-lens-demo--wire-9",
+      "kind": "assigns",
+      "label": "confirm(DeliveryId) -> Receipt",
+      "source": {
+        "nodeId": "conversation-lens-demo--delivery-workers"
+      },
+      "target": {
+        "nodeId": "conversation-lens-demo--delivery-receipt"
+      }
+    },
+    "conversation-lens-demo--wire-10": {
+      "id": "conversation-lens-demo--wire-10",
+      "kind": "references",
+      "label": "acknowledges",
+      "source": {
+        "nodeId": "conversation-lens-demo--delivery-receipt",
+        "cardinality": "zero-or-one"
+      },
+      "target": {
+        "nodeId": "conversation-lens-demo--entity-message",
+        "cardinality": "one"
+      }
+    }
+  },
+  "flows": {
+    "conversation-lens-demo--flow-inbound-message": {
+      "id": "conversation-lens-demo--flow-inbound-message",
+      "name": "Inbound message",
+      "steps": [
+        {
+          "ref": "conversation-lens-demo--wire-1",
+          "ordinal": 1,
+          "label": "send()"
+        },
+        {
+          "ref": "conversation-lens-demo--wire-2",
+          "ordinal": 2,
+          "label": "route()"
+        },
+        {
+          "ref": "conversation-lens-demo--wire-3",
+          "ordinal": 3,
+          "label": "append()"
+        },
+        {
+          "ref": "conversation-lens-demo--wire-4",
+          "ordinal": 4,
+          "label": "persist()"
+        }
+      ]
+    },
+    "conversation-lens-demo--flow-notify-delivery": {
+      "id": "conversation-lens-demo--flow-notify-delivery",
+      "name": "Notify delivery",
+      "steps": [
+        {
+          "ref": "conversation-lens-demo--wire-7",
+          "ordinal": 1,
+          "label": "notify()"
+        },
+        {
+          "ref": "conversation-lens-demo--wire-8",
+          "ordinal": 2,
+          "label": "dispatch()"
+        },
+        {
+          "ref": "conversation-lens-demo--wire-9",
+          "ordinal": 3,
+          "label": "confirm()"
+        },
+        {
+          "ref": "conversation-lens-demo--wire-10",
+          "ordinal": 4,
+          "label": "ack"
+        }
+      ]
+    }
+  },
+  "interfaces": {
+    "conversation-lens-demo--ingest-api--if-send": {
+      "id": "conversation-lens-demo--ingest-api--if-send",
+      "ownerId": "conversation-lens-demo--ingest-api",
+      "name": "send",
+      "accepts": [
+        "MessageDraft"
+      ],
+      "returns": [
+        "Ack"
+      ]
+    }
+  },
+  "types": {
+    "conversation-lens-demo--ingest-api--type-messagedraft": {
+      "id": "conversation-lens-demo--ingest-api--type-messagedraft",
+      "name": "MessageDraft",
+      "fields": [
+        "conversationId",
+        "body"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "conversation-lens-demo": {
+          "nodeId": "conversation-lens-demo",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 850,
+            "height": 1536
+          },
+          "pinned": false
+        },
+        "conversation-lens-demo--note-1-ten-nodes-across-kinds-m": {
+          "nodeId": "conversation-lens-demo--note-1-ten-nodes-across-kinds-m",
+          "position": {
+            "x": 60,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "conversation-lens-demo--session": {
+          "nodeId": "conversation-lens-demo--session",
+          "position": {
+            "x": 380,
+            "y": 70
+          },
+          "size": {
+            "width": 240,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "conversation-lens-demo--ingest-api": {
+          "nodeId": "conversation-lens-demo--ingest-api",
+          "position": {
+            "x": 355,
+            "y": 260
+          },
+          "size": {
+            "width": 290,
+            "height": 154
+          },
+          "pinned": false
+        },
+        "conversation-lens-demo--message-router": {
+          "nodeId": "conversation-lens-demo--message-router",
+          "position": {
+            "x": 380,
+            "y": 486
+          },
+          "size": {
+            "width": 240,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "conversation-lens-demo--notifier": {
+          "nodeId": "conversation-lens-demo--notifier",
+          "position": {
+            "x": 40,
+            "y": 662
+          },
+          "size": {
+            "width": 240,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "conversation-lens-demo--delivery-workers": {
+          "nodeId": "conversation-lens-demo--delivery-workers",
+          "position": {
+            "x": 40,
+            "y": 885
+          },
+          "size": {
+            "width": 240,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "conversation-lens-demo--conversations-db": {
+          "nodeId": "conversation-lens-demo--conversations-db",
+          "position": {
+            "x": 380,
+            "y": 682
+          },
+          "size": {
+            "width": 240,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "conversation-lens-demo--entity-conversation": {
+          "nodeId": "conversation-lens-demo--entity-conversation",
+          "position": {
+            "x": 490,
+            "y": 1068
+          },
+          "size": {
+            "width": 320,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "conversation-lens-demo--entity-message": {
+          "nodeId": "conversation-lens-demo--entity-message",
+          "position": {
+            "x": 390,
+            "y": 1318
+          },
+          "size": {
+            "width": 320,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "conversation-lens-demo--ooux-object-thread": {
+          "nodeId": "conversation-lens-demo--ooux-object-thread",
+          "position": {
+            "x": 320,
+            "y": 838
+          },
+          "size": {
+            "width": 300,
+            "height": 158
+          },
+          "pinned": false
+        },
+        "conversation-lens-demo--delivery-receipt": {
+          "nodeId": "conversation-lens-demo--delivery-receipt",
+          "position": {
+            "x": 40,
+            "y": 1105
+          },
+          "size": {
+            "width": 240,
+            "height": 104
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {},
+      "appearanceByWireId": {},
+      "arrangementByContainerId": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-1d302452-7d4c-4505-bbe7-89666f798987": {
+      "operationId": "cli-apply-1d302452-7d4c-4505-bbe7-89666f798987",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-27T06:18:51.945Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Canvas/95712b84-acdb-425e-a983-ed6e5b2c8b74/scratchpad/lens-demo.dsl"
+      },
+      "commandKinds": [
+        "diagram.setOrientation",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "diagram.definitions.replace",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "diagram.flows.replace",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    },
+    "ui-bf0104d8-25cd-4998-b069-2a1b1f00ee17": {
+      "operationId": "ui-bf0104d8-25cd-4998-b069-2a1b1f00ee17",
+      "revision": 2,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T06:19:52.834Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-fe2e83cb-573a-4506-ad7e-ee3d79144314": {
+      "operationId": "ui-fe2e83cb-573a-4506-ad7e-ee3d79144314",
+      "revision": 3,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T06:20:06.921Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-d6ad3740-f778-4792-b476-16c51a092bbd": {
+      "operationId": "ui-d6ad3740-f778-4792-b476-16c51a092bbd",
+      "revision": 4,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T06:20:24.049Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    }
+  }
+}
