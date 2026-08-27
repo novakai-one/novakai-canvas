@@ -11,8 +11,10 @@ import { contentIndent, type ContentRow } from './diagram-contents';
 import { LibraryOverlay } from './library-overlay';
 import type { FlowId } from '@novakai/canvas';
 import type { FlowLibrary } from '@novakai/canvas';
+import type { ViewTypeId } from '@novakai/canvas';
 import { FlowSwitcher } from './flow-switcher.tsx';
 import { FlowPanel, type FlowStepRow } from './flow-panel.tsx';
+import { ViewTypeSwitcher } from './view-type-switcher.tsx';
 
 /** The two things the left panel is for: changing the canvas, and finding what is on it. */
 const RAIL_TABS = ['build', 'contents'] as const;
@@ -26,6 +28,9 @@ export interface RailProps {
   flows: FlowLibrary;
   activeFlowId?: FlowId;
   activateFlow: (flowId: FlowId | undefined) => void;
+  viewTypeId: ViewTypeId;
+  viewTypes: ReadonlySet<ViewTypeId>;
+  selectViewType: (viewTypeId: ViewTypeId) => void;
   /** The active flow's resolved steps; empty in structure mode. */
   flowSteps: readonly FlowStepRow[];
   changeDiagram: (diagramId: string) => void;
@@ -144,6 +149,11 @@ export function Rail(props: RailProps) {
           />
         )}
       </div>
+      <ViewTypeSwitcher
+        active={props.viewTypeId}
+        available={props.viewTypes}
+        onSelect={props.selectViewType}
+      />
       <FlowSwitcher
         activeFlowId={props.activeFlowId}
         flows={props.flows}
