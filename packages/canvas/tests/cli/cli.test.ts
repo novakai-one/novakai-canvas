@@ -124,4 +124,24 @@ describe('canvas CLI', () => {
     expect(Object.values(record.wires).some((wire) => wire.target.nodeId === 'msg-agents')).toBe(false);
   });
 
+  it('applies module definitions inside an arranged zone', async () => {
+    const result = await runCli(['apply', '--file', dataDir], `
+scope "Arranged definitions"
+  zone "Flow" layout=stack gap=16 align=stretch
+    module "Send service"
+      send(Message) -> Receipt
+      type Message { id, body }
+  end
+`);
+
+    expect(result.code, result.stderr).toBe(0);
+    const record = await readRecord('arranged-definitions');
+    const module = Object.values(record.nodes).find((node) => node.label === 'Send service');
+    expect(module).toBeDefined();
+    expect(module!.interfaceIds).toHaveLength(1);
+    expect(module!.typeIds).toHaveLength(1);
+    expect(record.interfaces[module!.interfaceIds[0]]?.name).toBe('send');
+    expect(record.types[module!.typeIds[0]]?.name).toBe('Message');
+  });
+
 });
