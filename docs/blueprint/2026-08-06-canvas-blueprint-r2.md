@@ -1,3 +1,5 @@
+> Historical only. For current instructions use `../../AGENTS.md` and `../architecture.md`.
+
 # Canvas Blueprint — Revision 2 (post-ratification) + Pass 2 contracts
 
 > **Status:** Builder decisions — **not laws.** Revision 2 supersedes Revision 1 wherever they

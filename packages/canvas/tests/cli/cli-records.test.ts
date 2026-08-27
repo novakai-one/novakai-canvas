@@ -11,7 +11,16 @@ describe('canvas CLI', () => {
       unit: 'diagram-record',
       nodeAliases: { group: 'scope' },
     });
-    expect(description.commandKinds).toContain('node.add');
+    expect(description.commandKinds).toEqual([
+      'node.add', 'node.move', 'node.resize', 'node.autoSize', 'node.pin', 'node.update',
+      'node.content.set', 'node.reparent', 'node.remove',
+      'wire.add', 'wire.reconnect', 'wire.setRoute', 'wire.setCardinality', 'wire.update', 'wire.remove',
+      'interface.add', 'interface.update', 'interface.remove',
+      'view.setCollapsed', 'view.setViewport', 'flow.activate',
+      'layout.presentation.replace', 'layout.nodeAppearance.set', 'layout.wireAppearance.set',
+      'layout.arrangement.set',
+      'diagram.definitions.replace', 'diagram.flows.replace', 'diagram.rename', 'diagram.setOrientation',
+    ]);
     const dsl = description.dsl as {
       components: Array<Record<string, unknown>>;
       wire: Record<string, unknown>;

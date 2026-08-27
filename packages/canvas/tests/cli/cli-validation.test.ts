@@ -88,4 +88,19 @@ scope "Callout Diagnostics"
     });
   });
 
+  it('accepts a workspace command that was previously missing from describe', async () => {
+    await runCli(['apply', '--file', dataDir], DEMO);
+    const before = await readRecord('cli-demo');
+    const wireId = Object.keys(before.wires)[0];
+    const result = await runCli(['batch', 'cli-demo', '--file', dataDir], JSON.stringify({
+      operationId: 'cli-wire-update',
+      expectedRevision: before.revision,
+      commands: [{ kind: 'wire.update', id: wireId, patch: { label: 'Renamed wire' } }],
+    }));
+
+    expect(result.code, result.stderr).toBe(0);
+    expect(JSON.parse(result.stdout)).toMatchObject({ status: 'applied' });
+    expect((await readRecord('cli-demo')).wires[wireId].label).toBe('Renamed wire');
+  });
+
 });

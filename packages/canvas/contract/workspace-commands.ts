@@ -85,3 +85,20 @@ export type RecordCommand =
   | { kind: 'diagram.flows.replace'; flows: NonNullable<DiagramRecord['flows']> }
   | { kind: 'diagram.rename'; name: string }
   | { kind: 'diagram.setOrientation'; orientation?: Orientation };
+
+/** Runtime list used by CLI discovery and validation. Keep it beside the public command type. */
+export const RECORD_COMMAND_KINDS = [
+  'node.add', 'node.move', 'node.resize', 'node.autoSize', 'node.pin', 'node.update',
+  'node.content.set', 'node.reparent', 'node.remove',
+  'wire.add', 'wire.reconnect', 'wire.setRoute', 'wire.setCardinality', 'wire.update', 'wire.remove',
+  'interface.add', 'interface.update', 'interface.remove',
+  'view.setCollapsed', 'view.setViewport',
+  'flow.activate',
+  'layout.presentation.replace', 'layout.nodeAppearance.set', 'layout.wireAppearance.set',
+  'layout.arrangement.set',
+  'diagram.definitions.replace', 'diagram.flows.replace', 'diagram.rename', 'diagram.setOrientation',
+] as const satisfies readonly RecordCommand['kind'][];
+
+type MissingCommandKind = Exclude<RecordCommand['kind'], (typeof RECORD_COMMAND_KINDS)[number]>;
+const allCommandKindsAreListed: MissingCommandKind extends never ? true : never = true;
+void allCommandKindsAreListed;

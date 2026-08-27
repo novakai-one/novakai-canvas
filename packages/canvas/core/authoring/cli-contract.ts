@@ -7,6 +7,7 @@ import {
 } from '../../contract/schemas/presentation.ts';
 import { WIRE_APPEARANCE_SPECIFICATIONS } from '../../contract/schemas/wire-appearance.ts';
 import { WIRE_CARDINALITIES } from '../../contract/schemas/wire-cardinality.ts';
+import { RECORD_COMMAND_KINDS } from '../../contract/workspace-commands.ts';
 import { wireAttributeHelp } from './wires/wire-attributes.ts';
 
 const wireAppearanceHelp = wireAttributeHelp();
@@ -83,13 +84,7 @@ ${componentHelp}
   names         quote multi-word names: "browse CLI"; single tokens can go bare
 `;
 
-export const COMMAND_KINDS = [
-  'node.add', 'node.move', 'node.resize', 'node.autoSize', 'node.pin', 'node.update',
-  'node.content.set', 'node.reparent',
-  'node.remove', 'wire.add', 'wire.reconnect', 'wire.setCardinality', 'wire.remove', 'view.setCollapsed',
-  'view.setViewport', 'diagram.rename', 'diagram.setOrientation',
-  'flow.activate', 'diagram.definitions.replace', 'diagram.flows.replace', 'layout.presentation.replace',
-] as const;
+export const COMMAND_KINDS = RECORD_COMMAND_KINDS;
 
 /** The vocabulary an unfamiliar agent needs to drive Canvas without reading code. */
 export function describeCapability(): unknown {

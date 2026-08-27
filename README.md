@@ -1,6 +1,6 @@
 # Novakai Canvas
 
-Selectable architecture maps backed by editable JSON.
+Novakai Canvas is an editable diagram app with a CLI for agent-authored maps.
 
 ## Run
 
@@ -9,33 +9,40 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173` (the server binds IPv6 — `127.0.0.1` refuses).
+Open `http://localhost:5173`. The server binds IPv6, so `127.0.0.1` does not work.
 
-## Author maps from the terminal
+## Use the CLI
 
 ```bash
-./canvas maps                     # list maps
-./canvas read <map>               # print a map as DSL
-./canvas apply [dsl-file]         # create/replace maps from DSL (file or stdin)
-./canvas rm <map> [node]          # remove a node or a whole map
-./canvas snapshot <map> [-o out]  # render a map to SVG
+./canvas maps                         # list maps
+./canvas flows <map>                  # list a map's named flows
+./canvas read <map> --format dsl      # inspect one map
+./canvas check [dsl-file]             # validate without writing
+./canvas apply [dsl-file]             # create or replace maps
+./canvas batch <map> [json-file]      # apply typed changes
+./canvas rm <map> [node|zone]         # remove content or a map
+./canvas snapshot <map> [-o out]      # write an SVG
+./canvas help                         # DSL syntax
+./canvas describe                     # typed command JSON
 ```
 
-`./canvas help` prints the DSL grammar. Layout is automatic; the open app
-live-reloads when the CLI writes. See `AGENTS.md` for the authoring contract.
+Use `./canvas`, not `npm run canvas`. See [AGENTS.md](AGENTS.md) for rules and examples.
 
 ## Data
 
-- `public/data/project-architecture.json` owns map meaning.
-- `public/data/canvas-preferences.json` owns presentation preferences.
+- `public/data/library.json` lists diagrams.
+- `public/data/diagrams/*.json` stores each diagram's meaning and layout.
+- `public/data/canvas-preferences.json` stores app display choices.
 
-Canvas edits write back through the development file adapter. Never edit the
-data files by hand — go through the app or the CLI.
+Do not edit these files by hand. Use the app or CLI.
+
+## Build
+
+Import the reusable package only through `@novakai/canvas`, exported by
+`packages/canvas/contract/index.ts`. See [docs/architecture.md](docs/architecture.md).
 
 ## Validate
 
 ```bash
 npm run check
 ```
-
-This runs linting, tests, typechecking, and production building.

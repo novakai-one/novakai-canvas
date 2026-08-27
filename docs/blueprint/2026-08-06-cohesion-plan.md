@@ -1,3 +1,5 @@
+> Historical only. For current instructions use `../../AGENTS.md` and `../architecture.md`.
+
 # Cohesion plan — one app, not three
 
 > **Status:** PLAN — awaiting Chris's approval before any implementation.

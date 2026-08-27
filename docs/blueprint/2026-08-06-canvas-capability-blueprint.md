@@ -1,3 +1,5 @@
+> Historical only. For current instructions use `../../AGENTS.md` and `../architecture.md`.
+
 # Novakai Canvas — Capability Architecture Blueprint (Pass 1)
 
 > **Status:** Builder decisions — **not laws, not a ratified specification.**

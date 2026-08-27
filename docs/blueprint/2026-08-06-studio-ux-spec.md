@@ -1,3 +1,5 @@
+> Historical only. For current instructions use `../../AGENTS.md` and `../architecture.md`.
+
 # Novakai Canvas — Studio UX Spec
 
 **Status:** FROZEN at first write. No build beyond what is specified here.

@@ -1,104 +1,99 @@
-Creating New Prototypes.
+# Novakai Canvas
 
-New UI Component prototypes are to be created in /src/presentation/prototype/rooms
+Canvas turns JSON records into editable diagrams.
+
+## Use Canvas
+
+- Run commands from the repo root with `./canvas`. Do not use `npm run canvas`; npm swallows flags.
+- `public/data/library.json` lists diagrams. `public/data/diagrams/*.json` stores their meaning and layout.
+- `public/data/canvas-preferences.json` stores app display choices.
+- Change those files only through the app or `./canvas`. Never write coordinates in DSL.
+- `./canvas help` gives DSL syntax. `./canvas describe` lists command names; exact fields are in `packages/canvas/contract/workspace-commands.ts`.
+- Run `./canvas read <map> --format dsl|agent|markdown|json` before changing a map.
+
+Use DSL to declare or replace a whole map. Use `batch` for small changes to an existing map.
+Use the app for hand placement. Use `check` before `apply` when the input is new or generated.
+
+### Example: declare a map
+
+Write `/tmp/payments.canvas`:
+
+```text
+scope "Payments"
+  module "API"
+  resource "Ledger"
+  wire "API" -> "Ledger" : write(Payment) -> Receipt [executes]
+```
+
+```bash
+./canvas check /tmp/payments.canvas
+./canvas apply /tmp/payments.canvas
+./canvas read payments --format dsl
+```
+
+`apply` replaces that map's meaning. Existing nodes keep their saved placement. New nodes are placed.
+
+### Example: change one fact
+
+Read the current `revision` with `./canvas read payments --format json`. If it is `4`, write `/tmp/change.json`:
+
+```json
+{"operationId":"rename-payments-v2","expectedRevision":4,"commands":[{"kind":"diagram.rename","name":"Payments v2"}]}
+```
+
+Run `./canvas batch payments /tmp/change.json`. `applied` means saved. `duplicate` means that
+operation ID was already saved. On `conflict`, read again and rebuild the change. `rejected` means fix the command.
+
+### Example: generate a repo map
+
+```bash
+npm run -s deps:json | node tools/deps-to-dsl.mjs --nested > /tmp/folders.canvas
+./canvas check /tmp/folders.canvas
+./canvas apply /tmp/folders.canvas
+```
+
+This writes `Novakai Canvas — folder map`. Without `--nested` it writes `— module map`.
+Mission maps come from `node tools/mission-view/translate.ts --root <Novakai-Command> | ./canvas apply`.
+
+### Rules that prevent lost work
+
+- A `scope` fully declares one map. Other maps are untouched.
+- `apply` does not move existing nodes. Run `./canvas rm <map>` first only when a fresh layout is wanted.
+- Removing a zone removes its contents. Removing a map fails while another map links to it.
+- Reuse the same `operationId` when retrying the same batch. Use a new ID for a new change.
+- A flow names existing wire IDs. It adds no nodes, wires, or layout.
+- Option brackets such as `[orientation=...]` are not typed. Wire kinds such as `[executes]` are typed.
+
+## Build Canvas
+
+- CLI command or help: `packages/canvas/cli/`, `packages/canvas/core/authoring/cli-contract.ts`, CLI tests.
+- Typed command: `packages/canvas/contract/workspace-commands.ts`, `packages/canvas/core/application/canvas-workspace/`, CLI discovery, tests.
+- DSL or node kind: `packages/canvas/core/authoring/`, `packages/canvas/core/components/`, authoring tests.
+- Public import: `packages/canvas/contract/index.ts`, `api.ts`, `compose.ts`, contract tests.
+- Record or migration: `packages/canvas/contract/records/`, `packages/canvas/contract/schemas/`, `packages/canvas/core/domain/migrate/`, `tools/json-file-bridge.ts`.
+- App interaction: `src/presentation/`; verify it in the shared browser.
+- Generator: `tools/`, `package.json`, and the command list in this file.
+- New UI component prototype: `src/presentation/prototype/rooms`.
+
+Keep `./canvas help`, `./canvas describe`, public types, tests, and this route map consistent.
+Current architecture is in `docs/architecture.md`. Files marked historical are not current instructions.
+
+## Product constraints
+
+- Keep every meaningful object selectable.
+- Diagram records own meaning. Layout records own coordinates. Preferences own display choices.
+- Keep styling restrained. Do not introduce neon colours.
 
 ## Browser verification
 
-- Read `~/.agents/browse/README.md` before the first browser check.
-- Use only the shared browser driver: `node ~/.agents/browse/browse.mjs <command>`.
-- Run browser commands with the working directory set to `~/.agents/browse`.
-- Do not use, install, or invoke repo-local Playwright, `playwright-cli`, or `npx playwright`.
-- Inspect `~/.agents/browse/latest.png`; preserve evidence with `shot <name>`.
-- Finish with `node browse.mjs close`. The watchdog closes forgotten headless sessions after 15 idle minutes.
-- When several agents are active, take turns using the shared browser because it drives one canonical page.
+- Read `~/.agents/browse/README.md` first.
+- From `~/.agents/browse`, use only `node browse.mjs <command>`.
+- Do not use repo Playwright, `playwright-cli`, or `npx playwright`.
+- Inspect `latest.png`; keep evidence with `shot <name>`; finish with `node browse.mjs close`.
+- The dev server binds IPv6. Open `http://localhost:5173`, not `127.0.0.1`.
 
----
-# Novakai Canvas
-
-## Authoring maps (agents: start here)
-
-Author maps only through the CLI — never hand-edit `public/data/*.json`;
-layout is automatic, so never write coordinates.
-
-```
-./canvas maps                     list maps
-./canvas flows <map>              list named flows and their ordered wire IDs
-./canvas read <map>               print a map as DSL (cheap context reload)
-./canvas apply [dsl-file]         create/replace maps from DSL (file or stdin)
-./canvas rm <map> [node]          remove a node or a whole map
-./canvas snapshot <map> [-o out]  render a map to SVG
-```
-
-To diagram this repo's own code (one node per folder, wires = imports,
-entry points on top), generate the map instead of authoring it:
-
-```
-npm run -s deps:json | node tools/deps-to-dsl.mjs | ./canvas apply            # flat dependency ladder
-npm run -s deps:json | node tools/deps-to-dsl.mjs --nested | ./canvas apply   # groups mirror the folder tree
-```
-
-They write the maps "Novakai Canvas — module map" / "— folder map".
-Re-running refreshes a map from the current code (`./canvas rm <map>` first,
-because apply never moves nodes that already exist).
-
-`./canvas help` prints the full DSL grammar. The one-screen version:
-
-```
-scope "My System" [orientation=top-down|left-right]   # a scope block FULLY declares that map
-  note "Free-text remark."
-  module "Session broker" "optional description"
-    acquire(AgentId) -> SessionHandle          # methods: bare type names
-    type Lease { agentId, ttl }
-  runtime "Chrome instances"                   # kinds: module|object|runtime|resource
-  zone "Stores" [crossing=gated|free] [gate="Node"] ... end
-                                                 # boundary attributes are optional
-  wire "browse CLI" -> "Session broker.acquire" : acquire(AgentId) -> SessionHandle [queries]
-  flow "Acquire a session"
-    step 1 "my-system--wire-1"             # references existing wire IDs only
-  end
-```
-
-In the grammar above, square brackets mean "optional" — never type the
-brackets. Write `band=0`, not `[band=0]` (the CLI rejects the bracketed form).
-
-`apply` places only brand-new nodes. Nodes that already exist on the map never
-move, so a layout someone arranged by hand survives every apply. To lay a whole
-map out fresh: `./canvas rm <map>`, then `apply`.
-
-Every wire needs its contract (the actual call it carries). Quote multi-word
-names and `"Module.method"` port endpoints. Re-applying a scope replaces that
-map; other maps are untouched. Flows add no graph objects or geometry; select
-one in the app to emphasise its existing wires, or choose Structure only.
-
-Use `./canvas`, not `npm run canvas` (npm swallows flags). The dev server
-(`npm run dev`) binds IPv6 — open `http://localhost:5173`, not `127.0.0.1`.
-The open app live-reloads when the CLI writes.
-
-## Product rules
-
-- Everything meaningful remains selectable.
-- JSON owns architecture meaning.
-- Layout records own coordinates; semantic nodes never do.
-- Preferences own presentation choices.
-- Canvas objects explain themselves.
-- Visual styling stays restrained.
-- Never introduce neon colours.
-
-## Design rules
-
-- Keep modules cohesive.
-- Minimise dependency direction.
-- Hide implementations behind small interfaces.
-- Keep impure work at adapters.
-- Keep domain transformations pure.
-- Store each fact once.
-- Prefer composition over inheritance.
-- Avoid speculative abstractions.
-- Document exported declarations directly.
-- Test through module interfaces.
-
-## Completion
+## Finish
 
 - Run `npm run check`.
-- Inspect interactions in a real browser.
-- Verify production-shaped JSON.
+- Check changed interactions in the browser.
+- Verify saved JSON has the production schema.

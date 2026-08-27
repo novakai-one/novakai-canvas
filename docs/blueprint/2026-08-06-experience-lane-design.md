@@ -1,3 +1,5 @@
+> Historical only. For current instructions use `../../AGENTS.md` and `../architecture.md`.
+
 # Experience Lane — design reference and lane briefs
 
 > **Status:** Lead's design pass, 2026-08-06. Builds against

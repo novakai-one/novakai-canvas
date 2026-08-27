@@ -1,3 +1,5 @@
+> Historical only. For current instructions use `../../AGENTS.md` and `../architecture.md`.
+
 # Canvas Experience Requirements — the missing gate
 
 > **Status:** Chris's experience requirements, captured 2026-08-06. These bind the same way

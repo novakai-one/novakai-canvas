@@ -1,3 +1,5 @@
+> Historical only. For current instructions use `AGENTS.md` and `docs/architecture.md`.
+
 # Novakai Canvas — Product Direction and Engineering Decisions
 
 > **Status:** Proposed agent notes — **not laws, not a ratified specification, and not authority to build**

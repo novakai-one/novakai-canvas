@@ -1,3 +1,5 @@
+> Historical only. For current instructions use `../../AGENTS.md` and `../architecture.md`.
+
 # Selection contract + P0 fixes — implementation plan
 
 > **Companion to** `2026-08-06-cohesion-plan.md` (Fable's W-1…W-5). That plan fixes the

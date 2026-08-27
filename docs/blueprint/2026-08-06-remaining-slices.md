@@ -1,3 +1,5 @@
+> Historical only. For current instructions use `../../AGENTS.md` and `../architecture.md`.
+
 # Remaining slices — Chris's outstanding list
 
 Continues `2026-08-06-selection-contract-and-p0-fixes.md`. Each slice is one commit, browser-verified

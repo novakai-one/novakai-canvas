@@ -1,3 +1,5 @@
+> Historical only. For current instructions use `../../AGENTS.md` and `../architecture.md`.
+
 # The Bench CSS modularisation plan
 
 > **Status:** Implemented on `codex/the-bench-css-modularisation`.

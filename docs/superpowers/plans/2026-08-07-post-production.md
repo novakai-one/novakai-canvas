@@ -1,3 +1,5 @@
+> Historical only. For current instructions use `../../../AGENTS.md` and `../../architecture.md`.
+
 # Post-production — canvas gesture + rename fixes (branch fix/canvas-gesture-rename)
 
 Date: 2026-08-07. Scope delivered: drag preview, resize anchor, batched resize undo, diagram rename + naming at creation, save-integrity fix, title-field draft editing. All findings below are DEFERRED — none were in scope.

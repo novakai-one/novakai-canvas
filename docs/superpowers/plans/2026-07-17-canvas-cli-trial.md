@@ -1,3 +1,5 @@
+> Historical only. For current instructions use `../../../AGENTS.md` and `../../architecture.md`.
+
 # Canvas CLI — zero-context agent trial results (2026-07-17)
 
 **Setup:** a fresh general-purpose agent was given only the worktree path and a

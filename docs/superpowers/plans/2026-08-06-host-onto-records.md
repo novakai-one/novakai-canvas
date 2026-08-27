@@ -1,3 +1,5 @@
+> Historical only. For current instructions use `../../../AGENTS.md` and `../../architecture.md`.
+
 # Plan — move the running app onto independent diagram records
 
 > **Status:** Builder plan, not law. Author: Claude (Anthropic), 2026-08-06.
