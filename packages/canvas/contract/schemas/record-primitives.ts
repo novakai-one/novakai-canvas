@@ -28,9 +28,9 @@ export const canvasLayoutSchema = z.object({
   id: z.string().min(1), name: z.string(), strategy: z.enum(['manual', 'hierarchy', 'flow']),
   placements: z.record(z.string(), nodePlacementSchema),
   wireRouteHints: z.record(z.string(), wireRouteHintSchema),
-  appearanceByNodeId: z.record(z.string(), nodeAppearanceSchema).default({}),
-  appearanceByWireId: z.record(z.string(), wireAppearanceSchema).default({}),
-  arrangementByContainerId: z.record(z.string(), containerArrangementSchema).default({}),
+  appearanceByNodeId: z.record(z.string(), nodeAppearanceSchema).optional(),
+  appearanceByWireId: z.record(z.string(), wireAppearanceSchema).optional(),
+  arrangementByContainerId: z.record(z.string(), containerArrangementSchema).optional(),
 });
 
 export const interfaceObjectsSchema = z.record(z.string(), z.object({

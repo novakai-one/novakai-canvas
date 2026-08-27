@@ -5,20 +5,20 @@ import { fullyPopulatedRecord } from './fully-populated-record.ts';
 describe('migrated record round-trip', () => {
   const migrated = migrateDocumentToLibrary(parseArchitectureDocument(working as unknown));
 
-  it('defaults missing presentation maps and rejects invalid stored presentation', () => {
+  it('keeps missing presentation maps absent and rejects invalid stored presentation', () => {
     const withoutMaps = sampleRecord();
     const parsed = diagramRecordSchema.parse(JSON.parse(JSON.stringify(withoutMaps)));
-    expect(parsed.layouts['layout-default'].appearanceByNodeId).toEqual({});
-    expect(parsed.layouts['layout-default'].arrangementByContainerId).toEqual({});
+    expect(parsed.layouts['layout-default'].appearanceByNodeId).toBeUndefined();
+    expect(parsed.layouts['layout-default'].arrangementByContainerId).toBeUndefined();
 
     const invalidAppearance = JSON.parse(JSON.stringify(parsed));
-    invalidAppearance.layouts['layout-default'].appearanceByNodeId.root = { text: 'neon' };
+    invalidAppearance.layouts['layout-default'].appearanceByNodeId = { root: { text: 'neon' } };
     expect(() => diagramRecordSchema.parse(invalidAppearance)).toThrow();
 
     const invalidArrangement = JSON.parse(JSON.stringify(parsed));
-    invalidArrangement.layouts['layout-default'].arrangementByContainerId.root = {
+    invalidArrangement.layouts['layout-default'].arrangementByContainerId = { root: {
       layout: 'grid', columns: 7, gap: 16, align: 'stretch', childIds: [],
-    };
+    } };
     expect(() => diagramRecordSchema.parse(invalidArrangement)).toThrow();
   });
 
