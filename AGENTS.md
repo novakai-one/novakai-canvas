@@ -5,33 +5,39 @@ Canvas turns JSON records into editable diagrams.
 ## Use Canvas
 
 - Run commands from the repo root with `./canvas`. Do not use `npm run canvas`; npm swallows flags.
-- `public/data/library.json` lists diagrams. `public/data/diagrams/*.json` stores their meaning and layout.
-- `public/data/canvas-preferences.json` stores app display choices.
+- Data: `public/data/library.json` lists diagrams; `public/data/diagrams/*.json` stores meaning and layout; `public/data/canvas-preferences.json` stores display choices.
 - Change those files only through the app or `./canvas`. Never write coordinates in DSL.
 - `./canvas help` gives DSL syntax. `./canvas describe` lists command names; exact fields are in `packages/canvas/contract/workspace-commands.ts`.
 - Run `./canvas read <map> --format dsl|agent|markdown|json` before changing a map.
 
-Use DSL to declare or replace a whole map. Use `batch` for small changes to an existing map.
-Use the app for hand placement. Use `check` before `apply` when the input is new or generated.
+Use DSL to replace a whole map, `batch` for small changes, the app for hand placement, and `check` before `apply`.
 
-### Example: declare a map
+### Example: build a complete map
 
 Write `/tmp/payments.canvas`:
 
 ```text
-scope "Payments"
-  module "API"
-  resource "Ledger"
-  wire "API" -> "Ledger" : write(Payment) -> Receipt [executes]
+scope "Payments" orientation=left-right
+  zone "Processing" layout=row gap=16
+    module "API" palette=blue
+    block "Approved" text=green background=green-soft weight=600
+      line "Ready to settle"
+  end
+  resource "Ledger" palette=sage
+  wire "API" -> "Ledger" color=blue width=medium : write(Payment) -> Receipt [executes]
+  flow "Take payment" id=take-payment
+    step 1 "payments--wire-1" "Write ledger"
+  end
 ```
 
 ```bash
 ./canvas check /tmp/payments.canvas
 ./canvas apply /tmp/payments.canvas
 ./canvas read payments --format dsl
+./canvas flows payments
 ```
 
-`apply` replaces that map's meaning. Existing nodes keep their saved placement. New nodes are placed.
+This sets direction, group layout, colours, a wire, and a flow. `check` lays out without saving; `apply` saves and places new nodes; `flows` lists the flow and wire ID.
 
 ### Example: change one fact
 
@@ -44,15 +50,9 @@ Read the current `revision` with `./canvas read payments --format json`. If it i
 Run `./canvas batch payments /tmp/change.json`. `applied` means saved. `duplicate` means that
 operation ID was already saved. On `conflict`, read again and rebuild the change. `rejected` means fix the command.
 
-### Example: generate a repo map
+### Generate maps
 
-```bash
-npm run -s deps:json | node tools/deps-to-dsl.mjs --nested > /tmp/folders.canvas
-./canvas check /tmp/folders.canvas
-./canvas apply /tmp/folders.canvas
-```
-
-This writes `Novakai Canvas — folder map`. Without `--nested` it writes `— module map`.
+`npm run -s deps:json | node tools/deps-to-dsl.mjs --nested | ./canvas apply` writes the folder map; omit `--nested` for the module map.
 Mission maps come from `node tools/mission-view/translate.ts --root <Novakai-Command> | ./canvas apply`.
 
 ### Rules that prevent lost work
