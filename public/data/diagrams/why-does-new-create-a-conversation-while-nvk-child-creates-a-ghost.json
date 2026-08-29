@@ -1,0 +1,3391 @@
+{
+  "schemaVersion": 3,
+  "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost",
+  "name": "Why does + New create a conversation while nvk child creates a ghost?",
+  "orientation": "left-right",
+  "status": "active",
+  "revision": 2,
+  "nodes": {
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost",
+      "label": "Why does + New create a conversation while nvk child creates a ghost?",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--note-1-current-state-evidence-n": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--note-1-current-state-evidence-n",
+      "label": "Current-state evidence: Novakai Command revision d1faccbe, inspected 2026-08-28. Every architecture object is one source or persistent-state file; folder zones mirror the directory tree.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--block-legend": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--block-legend",
+      "label": "Legend",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "blue = app command path · green = authoritative creation/persistence",
+        "rose = observed ghost-state path or failed ownership lookup",
+        "violet/amber = existing integrated child seam that the CLI does not call",
+        "thick wire = material state write · dashed wire = missing connection"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--block-finding": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--block-finding",
+      "label": "Finding",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "+ New creates the canonical Agent, Person binding, ConversationView, and SendJournal before provider effects.",
+        "nvk child writes the child Agent to .novakai/agents.jsonl, then launches Claude directly.",
+        "The Claude identity hook is valid, but ingestion cannot resolve that Agent in .novakai/stores/agents.jsonl.",
+        "Ownership must exist in the app's canonical Agent directory before transcript ingestion can attach the provider session.",
+        "Existing repair seam: packages/agent-runtime/core/headless-child.ts → packages/server/core/b3/headless-child-messaging.ts."
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--scripts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--scripts",
+      "label": "scripts",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages",
+      "label": "packages",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai",
+      "label": ".novakai",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude",
+      "label": "~/.claude",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--scripts--nvk-mjs": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--scripts--nvk-mjs",
+      "label": "nvk [mjs]",
+      "description": "Routes `nvk child ...` into the packages/agents child CLI.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--scripts",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--scripts--nvk-mjs--if-dispatch"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell",
+      "label": "shell",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server",
+      "label": "server",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging",
+      "label": "packages/messaging",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents",
+      "label": "agents",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime",
+      "label": "agent-runtime",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--entity-ghost-agents": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--entity-ghost-agents",
+      "label": "ghost agents.jsonl",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "ghost-agents",
+      "entityFields": [
+        {
+          "id": "ghost-agent-id",
+          "name": "id",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "ghost-parent-agent-id",
+          "name": "parentAgentId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "ghost-origin",
+          "name": "origin",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--entity-store-identity": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--entity-store-identity",
+      "label": "store-identity.jsonl",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "store-identity",
+      "entityFields": [
+        {
+          "id": "owned-store-id",
+          "name": "storeId",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        }
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores",
+      "label": "stores",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude--projects": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude--projects",
+      "label": "projects",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui",
+      "label": "ui",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app",
+      "label": "app",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core",
+      "label": "server/core",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core",
+      "label": "messaging/core",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters",
+      "label": "adapters",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli",
+      "label": "cli",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core",
+      "label": "agents/core",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core",
+      "label": "agent-runtime/core",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-canonical-agents": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-canonical-agents",
+      "label": "canonical agents.jsonl",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "canonical-agents",
+      "entityFields": [
+        {
+          "id": "canonical-agent-id",
+          "name": "id",
+          "valueType": "string",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "canonical-person-id",
+          "name": "personId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "canonical-session-id",
+          "name": "sessionId",
+          "valueType": "string",
+          "keys": [
+            "fk"
+          ]
+        }
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-canonical-config": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-canonical-config",
+      "label": "config.jsonl",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "canonical-config",
+      "entityFields": [
+        {
+          "id": "human-principal",
+          "name": "principal",
+          "valueType": "record",
+          "keys": []
+        },
+        {
+          "id": "agent-person-binding",
+          "name": "agentPersonBinding",
+          "valueType": "record",
+          "keys": []
+        }
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-messaging-store": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-messaging-store",
+      "label": "messagingStoreOps.jsonl",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "messaging-store",
+      "entityFields": [
+        {
+          "id": "conversation-view-op",
+          "name": "ConversationView",
+          "valueType": "record",
+          "keys": []
+        },
+        {
+          "id": "send-journal-op",
+          "name": "SendJournal",
+          "valueType": "record",
+          "keys": []
+        },
+        {
+          "id": "provider-session-op",
+          "name": "ProviderSession",
+          "valueType": "record",
+          "keys": []
+        },
+        {
+          "id": "transcript-line-op",
+          "name": "TranscriptLine",
+          "valueType": "record",
+          "keys": []
+        }
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude--projects--claude-provider-session-jsonl": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude--projects--claude-provider-session-jsonl",
+      "label": "Claude provider-session [jsonl]",
+      "description": "Contains the hook identity marker and provider turn transcript.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude--projects",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "resource"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs",
+      "label": "messages-designs",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens",
+      "label": "screens",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts",
+      "label": "serverClient [ts]",
+      "description": "Sends spawnAgentConversation and sendMessage over the app protocol.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts--if-spawnagentconversation",
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts--if-sendmessage"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods",
+      "label": "methods",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door",
+      "label": "door",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3",
+      "label": "b3",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send",
+      "label": "send",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion",
+      "label": "ingestion",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send",
+      "label": "provider-send",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts",
+      "label": "provider-transcripts",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts",
+      "label": "nvk-child [ts]",
+      "description": "Creates a child in its own root store and runs a custom direct Claude turn.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts--if-spawnchild",
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts--if-sendchild"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--contract-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--contract-ts",
+      "label": "contract [ts]",
+      "description": "Exposes logical-session spawn/resume with Agent and Store identity.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--contract-ts--if-spawnlogicalsession",
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--contract-ts--if-resumelogicalsession"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions",
+      "label": "sessions",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers",
+      "label": "providers",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core--headless-child-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core--headless-child-ts",
+      "label": "headless-child [ts]",
+      "description": "Provisions the child, delegates ConversationView + SendJournal work, and tracks the provider session.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core--headless-child-ts--if-spawnheadlesschild"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench",
+      "label": "the-bench",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging",
+      "label": "shell/ui/screens/messaging",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--spawn-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--spawn-ts",
+      "label": "spawn [ts]",
+      "description": "Owns app-first conversation spawning.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--spawn-ts--if-spawnagentconversation"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts",
+      "label": "messages [ts]",
+      "description": "Accepts message sends and projects conversation messages.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts--if-sendmessage",
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts--if-listmessages"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--runtime-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--runtime-ts",
+      "label": "runtime [ts]",
+      "description": "Ensures and reads the ConversationView.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--runtime-ts--if-ensureconversationview",
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--runtime-ts--if-readconversationview"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door--provision-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door--provision-ts",
+      "label": "provision [ts]",
+      "description": "Ensures the canonical Agent and its Person binding.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door--provision-ts--if-ensureagentandperson"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3--headless-child-messaging-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3--headless-child-messaging-ts",
+      "label": "headless-child-messaging [ts]",
+      "description": "Existing seam: prepares a ConversationView and delivers the child brief through Messaging.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3--headless-child-messaging-ts--if-preparechildconversation",
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3--headless-child-messaging-ts--if-deliverbrief"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--send-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--send-ts",
+      "label": "send [ts]",
+      "description": "Runs accept-before-effect and dispatches the accepted send.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--send-ts--if-sendconversationmessage"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--accept-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--accept-ts",
+      "label": "accept [ts]",
+      "description": "Appends SendJournal state=accepted before provider execution.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--accept-ts--if-acceptsend"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--dispatch-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--dispatch-ts",
+      "label": "dispatch [ts]",
+      "description": "Routes the accepted send through the provider adapter.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--dispatch-ts--if-dispatchacceptedsend"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion--assign-session-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion--assign-session-ts",
+      "label": "assign-session [ts]",
+      "description": "Resolves hook identity against the canonical Agent store, then attaches ProviderSession and transcript lines.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion--assign-session-ts--if-assignsession"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send--agents-provider-send-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send--agents-provider-send-ts",
+      "label": "agents-provider-send [ts]",
+      "description": "Bridges Messaging dispatch into the Agents provider-turn capability.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send--agents-provider-send-ts--if-sendproviderturn"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers",
+      "label": "normalizers",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions--provider-turn-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions--provider-turn-ts",
+      "label": "provider-turn [ts]",
+      "description": "Executes a provider turn through the canonical Agents session path.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions--provider-turn-ts--if-executeproviderturn"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers--claude-provider-adapter-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers--claude-provider-adapter-ts",
+      "label": "Claude provider adapter [ts]",
+      "description": "Launches Claude with NOVAKAI_AGENT_ID and NOVAKAI_STORE_ID.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers--claude-provider-adapter-ts--if-launch"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--thebench-tsx": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--thebench-tsx",
+      "label": "TheBench [tsx]",
+      "description": "Renders the agent bench and the + New control.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--thebench-tsx--if-render"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument",
+      "label": "conversation-instrument",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model",
+      "label": "model",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts",
+      "label": "benchCommands [ts]",
+      "description": "Mints the Conversation ID, requests spawn, and sends the first message.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts--if-startconversation",
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts--if-sendmessage"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers--claude-transcript-normalizer-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers--claude-transcript-normalizer-ts",
+      "label": "Claude transcript normalizer [ts]",
+      "description": "Parses Claude hook markers and transcript events into owned identity evidence.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers--claude-transcript-normalizer-ts--if-normalize"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument--conversationinstrument-tsx": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument--conversationinstrument-tsx",
+      "label": "ConversationInstrument [tsx]",
+      "description": "Opens the draft conversation picker.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument--conversationinstrument-tsx--if-opendraft"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model--usebenchcontroller-ts": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model--usebenchcontroller-ts",
+      "label": "useBenchController [ts]",
+      "description": "Chooses the provider and starts the conversation.",
+      "parentId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model",
+      "interfaceIds": [
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model--usebenchcontroller-ts--if-startconversation"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    }
+  },
+  "wires": {
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-1": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-1",
+      "kind": "executes",
+      "label": "clickPlusNew() -> DraftPicker",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--thebench-tsx"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument--conversationinstrument-tsx"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-2": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-2",
+      "kind": "executes",
+      "label": "chooseNewClaudeAgent",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument--conversationinstrument-tsx"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model--usebenchcontroller-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-3": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-3",
+      "kind": "executes",
+      "label": "startConversation(Provider)",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model--usebenchcontroller-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-4": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-4",
+      "kind": "executes",
+      "label": "spawnAgentConversation(ConversationId)",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-5": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-5",
+      "kind": "executes",
+      "label": "appProtocol.spawnAgentConversation",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--spawn-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-6": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-6",
+      "kind": "executes",
+      "label": "ensureCanonicalAgentAndPerson",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--spawn-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door--provision-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-7": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-7",
+      "kind": "assigns",
+      "label": "appendCanonicalAgent",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door--provision-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-canonical-agents"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-8": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-8",
+      "kind": "assigns",
+      "label": "persistAgentPersonBinding",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door--provision-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-canonical-config"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-9": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-9",
+      "kind": "executes",
+      "label": "ensureConversationView",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--spawn-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--runtime-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-10": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-10",
+      "kind": "assigns",
+      "label": "appendConversationView",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--runtime-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-messaging-store"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-11": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-11",
+      "kind": "executes",
+      "label": "sendMessage(ClientOpId, Text)",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-12": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-12",
+      "kind": "executes",
+      "label": "appProtocol.sendMessage",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-13": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-13",
+      "kind": "executes",
+      "label": "sendConversationMessage",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--send-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-14": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-14",
+      "kind": "executes",
+      "label": "acceptBeforeEffect",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--send-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--accept-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-15": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-15",
+      "kind": "assigns",
+      "label": "appendSendJournalAccepted",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--accept-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-messaging-store"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-16": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-16",
+      "kind": "executes",
+      "label": "dispatchAcceptedSend",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--send-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--dispatch-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-17": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-17",
+      "kind": "executes",
+      "label": "providerDispatch",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--dispatch-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send--agents-provider-send-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-18": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-18",
+      "kind": "executes",
+      "label": "executeProviderTurn",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send--agents-provider-send-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions--provider-turn-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-19": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-19",
+      "kind": "executes",
+      "label": "spawnOrResumeLogicalSession",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions--provider-turn-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--contract-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-20": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-20",
+      "kind": "executes",
+      "label": "launchWithAgentAndStoreIdentity",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--contract-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers--claude-provider-adapter-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-21": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-21",
+      "kind": "assigns",
+      "label": "claudeHeadlessTurnWritesTranscript",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers--claude-provider-adapter-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude--projects--claude-provider-session-jsonl"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-22": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-22",
+      "kind": "queries",
+      "label": "normalizeNewTranscriptTail",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude--projects--claude-provider-session-jsonl"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers--claude-transcript-normalizer-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-23": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-23",
+      "kind": "executes",
+      "label": "ownedIdentityEvidence",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers--claude-transcript-normalizer-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion--assign-session-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-24": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-24",
+      "kind": "assigns",
+      "label": "resolveAndAttachCanonicalAgent",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion--assign-session-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-canonical-agents"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-25": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-25",
+      "kind": "assigns",
+      "label": "commitSessionLinesAndConfirmSend",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion--assign-session-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-messaging-store"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-26": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-26",
+      "kind": "queries",
+      "label": "projectConversationMessages",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-messaging-store"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-27": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-27",
+      "kind": "executes",
+      "label": "websocketOrRefetchProjection",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-28": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-28",
+      "kind": "executes",
+      "label": "dispatchChildSpawn",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--scripts--nvk-mjs"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-29": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-29",
+      "kind": "assigns",
+      "label": "appendChildOutsideCanonicalStore",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--entity-ghost-agents"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-30": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-30",
+      "kind": "queries",
+      "label": "stampValidOwnedStoreId",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--entity-store-identity"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-31": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-31",
+      "kind": "assigns",
+      "label": "directClaudeTurnWithoutConversationOrJournal",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude--projects--claude-provider-session-jsonl"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-32": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-32",
+      "kind": "missing",
+      "label": "childAgentIdLookupMisses",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion--assign-session-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-canonical-agents"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-33": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-33",
+      "kind": "missing",
+      "label": "sameChildIdIsAbsentFromAuthority",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--entity-ghost-agents"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-canonical-agents"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-34": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-34",
+      "kind": "missing",
+      "label": "existingIntegratedRuntimeIsNotCalled",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core--headless-child-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-35": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-35",
+      "kind": "executes",
+      "label": "prepareChildConversationAndDelivery",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core--headless-child-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3--headless-child-messaging-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-36": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-36",
+      "kind": "executes",
+      "label": "ensureConversationView",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3--headless-child-messaging-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--runtime-ts"
+      }
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-37": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-37",
+      "kind": "executes",
+      "label": "deliverBriefThroughMessaging",
+      "source": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3--headless-child-messaging-ts"
+      },
+      "target": {
+        "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--send-ts"
+      }
+    }
+  },
+  "flows": {
+    "app-create-conversation": {
+      "id": "app-create-conversation",
+      "name": "+ New — create the owned conversation",
+      "steps": [
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-1",
+          "ordinal": 1,
+          "label": "Open + New"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-2",
+          "ordinal": 2,
+          "label": "Choose New Claude agent"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-3",
+          "ordinal": 3,
+          "label": "Start conversation"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-4",
+          "ordinal": 4,
+          "label": "Request app spawn"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-5",
+          "ordinal": 5,
+          "label": "Enter server method"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-6",
+          "ordinal": 6,
+          "label": "Provision ownership"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-7",
+          "ordinal": 7,
+          "label": "Write canonical Agent"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-8",
+          "ordinal": 8,
+          "label": "Bind Person"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-9",
+          "ordinal": 9,
+          "label": "Create ConversationView"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-10",
+          "ordinal": 10,
+          "label": "Persist conversation"
+        }
+      ]
+    },
+    "app-first-message": {
+      "id": "app-first-message",
+      "name": "+ New — send, ingest, and render the first message",
+      "steps": [
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-11",
+          "ordinal": 1,
+          "label": "Send with client operation ID"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-12",
+          "ordinal": 2,
+          "label": "Enter message method"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-13",
+          "ordinal": 3,
+          "label": "Enter Messaging"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-14",
+          "ordinal": 4,
+          "label": "Accept before effect"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-15",
+          "ordinal": 5,
+          "label": "Journal accepted send"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-16",
+          "ordinal": 6,
+          "label": "Dispatch accepted send"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-17",
+          "ordinal": 7,
+          "label": "Bridge to Agents"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-18",
+          "ordinal": 8,
+          "label": "Execute provider turn"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-19",
+          "ordinal": 9,
+          "label": "Resolve logical session"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-20",
+          "ordinal": 10,
+          "label": "Inject Agent + Store identity"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-21",
+          "ordinal": 11,
+          "label": "Write provider transcript"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-22",
+          "ordinal": 12,
+          "label": "Read transcript tail"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-23",
+          "ordinal": 13,
+          "label": "Normalize hook identity"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-24",
+          "ordinal": 14,
+          "label": "Attach canonical Agent"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-25",
+          "ordinal": 15,
+          "label": "Commit lines and confirm send"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-26",
+          "ordinal": 16,
+          "label": "Project conversation"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-27",
+          "ordinal": 17,
+          "label": "Render in the app"
+        }
+      ]
+    },
+    "cli-ghost-outcome": {
+      "id": "cli-ghost-outcome",
+      "name": "nvk child — observed ghost outcome",
+      "steps": [
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-28",
+          "ordinal": 1,
+          "label": "Dispatch child spawn"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-29",
+          "ordinal": 2,
+          "label": "Write child outside authority"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-30",
+          "ordinal": 3,
+          "label": "Use a valid Store ID"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-31",
+          "ordinal": 4,
+          "label": "Launch Claude directly"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-22",
+          "ordinal": 5,
+          "label": "Hook transcript is readable"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-23",
+          "ordinal": 6,
+          "label": "Identity marker normalizes"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-32",
+          "ordinal": 7,
+          "label": "Canonical Agent lookup fails"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-33",
+          "ordinal": 8,
+          "label": "Store split is the cause"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-34",
+          "ordinal": 9,
+          "label": "Integrated seam was bypassed"
+        }
+      ]
+    },
+    "integrated-child-seam": {
+      "id": "integrated-child-seam",
+      "name": "Proposal — wire the existing integrated child seam",
+      "steps": [
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-34",
+          "ordinal": 1,
+          "label": "Replace the missing call"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-35",
+          "ordinal": 2,
+          "label": "Enter integrated child runtime"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-36",
+          "ordinal": 3,
+          "label": "Ensure ConversationView"
+        },
+        {
+          "ref": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-37",
+          "ordinal": 4,
+          "label": "Deliver brief through Messaging"
+        }
+      ]
+    }
+  },
+  "interfaces": {
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--scripts--nvk-mjs--if-dispatch": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--scripts--nvk-mjs--if-dispatch",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--scripts--nvk-mjs",
+      "name": "dispatch",
+      "accepts": [
+        "ChildCommand"
+      ],
+      "returns": [
+        "ChildCliInvocation"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--thebench-tsx--if-render": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--thebench-tsx--if-render",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--thebench-tsx",
+      "name": "render",
+      "accepts": [
+        "BenchState"
+      ],
+      "returns": [
+        "BenchView"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument--conversationinstrument-tsx--if-opendraft": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument--conversationinstrument-tsx--if-opendraft",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument--conversationinstrument-tsx",
+      "name": "openDraft",
+      "accepts": [],
+      "returns": [
+        "DraftConversation"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model--usebenchcontroller-ts--if-startconversation": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model--usebenchcontroller-ts--if-startconversation",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model--usebenchcontroller-ts",
+      "name": "startConversation",
+      "accepts": [
+        "Provider"
+      ],
+      "returns": [
+        "ConversationId"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts--if-startconversation": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts--if-startconversation",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts",
+      "name": "startConversation",
+      "accepts": [
+        "Provider"
+      ],
+      "returns": [
+        "ConversationId"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts--if-sendmessage": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts--if-sendmessage",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts",
+      "name": "sendMessage",
+      "accepts": [
+        "ConversationId",
+        "ClientOpId",
+        "Text"
+      ],
+      "returns": [
+        "SendReceipt"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts--if-spawnagentconversation": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts--if-spawnagentconversation",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts",
+      "name": "spawnAgentConversation",
+      "accepts": [
+        "ConversationId",
+        "Provider"
+      ],
+      "returns": [
+        "AgentId"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts--if-sendmessage": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts--if-sendmessage",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts",
+      "name": "sendMessage",
+      "accepts": [
+        "ConversationId",
+        "ClientOpId",
+        "Text"
+      ],
+      "returns": [
+        "SendReceipt"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--spawn-ts--if-spawnagentconversation": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--spawn-ts--if-spawnagentconversation",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--spawn-ts",
+      "name": "spawnAgentConversation",
+      "accepts": [
+        "ConversationId",
+        "Provider"
+      ],
+      "returns": [
+        "ConversationView"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts--if-sendmessage": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts--if-sendmessage",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts",
+      "name": "sendMessage",
+      "accepts": [
+        "ConversationId",
+        "ClientOpId",
+        "Text"
+      ],
+      "returns": [
+        "SendReceipt"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts--if-listmessages": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts--if-listmessages",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts",
+      "name": "listMessages",
+      "accepts": [
+        "ConversationId"
+      ],
+      "returns": [
+        "TranscriptLine[]"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--runtime-ts--if-ensureconversationview": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--runtime-ts--if-ensureconversationview",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--runtime-ts",
+      "name": "ensureConversationView",
+      "accepts": [
+        "ConversationId",
+        "AgentId"
+      ],
+      "returns": [
+        "ConversationView"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--runtime-ts--if-readconversationview": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--runtime-ts--if-readconversationview",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--runtime-ts",
+      "name": "readConversationView",
+      "accepts": [
+        "ConversationId"
+      ],
+      "returns": [
+        "ConversationView"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door--provision-ts--if-ensureagentandperson": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door--provision-ts--if-ensureagentandperson",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door--provision-ts",
+      "name": "ensureAgentAndPerson",
+      "accepts": [
+        "AgentId",
+        "Provider"
+      ],
+      "returns": [
+        "Agent"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3--headless-child-messaging-ts--if-preparechildconversation": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3--headless-child-messaging-ts--if-preparechildconversation",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3--headless-child-messaging-ts",
+      "name": "prepareChildConversation",
+      "accepts": [
+        "AgentId",
+        "Brief"
+      ],
+      "returns": [
+        "ConversationId"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3--headless-child-messaging-ts--if-deliverbrief": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3--headless-child-messaging-ts--if-deliverbrief",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3--headless-child-messaging-ts",
+      "name": "deliverBrief",
+      "accepts": [
+        "ConversationId",
+        "AgentId",
+        "Brief"
+      ],
+      "returns": [
+        "SendReceipt"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--send-ts--if-sendconversationmessage": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--send-ts--if-sendconversationmessage",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--send-ts",
+      "name": "sendConversationMessage",
+      "accepts": [
+        "SendRequest"
+      ],
+      "returns": [
+        "SendReceipt"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--accept-ts--if-acceptsend": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--accept-ts--if-acceptsend",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--accept-ts",
+      "name": "acceptSend",
+      "accepts": [
+        "SendRequest"
+      ],
+      "returns": [
+        "SendJournal"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--dispatch-ts--if-dispatchacceptedsend": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--dispatch-ts--if-dispatchacceptedsend",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--dispatch-ts",
+      "name": "dispatchAcceptedSend",
+      "accepts": [
+        "SendId"
+      ],
+      "returns": [
+        "ProviderTurn"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion--assign-session-ts--if-assignsession": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion--assign-session-ts--if-assignsession",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion--assign-session-ts",
+      "name": "assignSession",
+      "accepts": [
+        "IdentityEvidence"
+      ],
+      "returns": [
+        "ProviderSession"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send--agents-provider-send-ts--if-sendproviderturn": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send--agents-provider-send-ts--if-sendproviderturn",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send--agents-provider-send-ts",
+      "name": "sendProviderTurn",
+      "accepts": [
+        "AgentId",
+        "Text"
+      ],
+      "returns": [
+        "ProviderTurn"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers--claude-transcript-normalizer-ts--if-normalize": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers--claude-transcript-normalizer-ts--if-normalize",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers--claude-transcript-normalizer-ts",
+      "name": "normalize",
+      "accepts": [
+        "TranscriptTail"
+      ],
+      "returns": [
+        "IdentityEvidence"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts--if-spawnchild": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts--if-spawnchild",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts",
+      "name": "spawnChild",
+      "accepts": [
+        "ParentAgentId",
+        "Brief"
+      ],
+      "returns": [
+        "ChildTurnResult"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts--if-sendchild": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts--if-sendchild",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts",
+      "name": "sendChild",
+      "accepts": [
+        "SessionId",
+        "AgentId",
+        "Text"
+      ],
+      "returns": [
+        "ChildTurnResult"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--contract-ts--if-spawnlogicalsession": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--contract-ts--if-spawnlogicalsession",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--contract-ts",
+      "name": "spawnLogicalSession",
+      "accepts": [
+        "AgentId",
+        "Provider"
+      ],
+      "returns": [
+        "SessionId"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--contract-ts--if-resumelogicalsession": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--contract-ts--if-resumelogicalsession",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--contract-ts",
+      "name": "resumeLogicalSession",
+      "accepts": [
+        "SessionId",
+        "Text"
+      ],
+      "returns": [
+        "ProviderTurn"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions--provider-turn-ts--if-executeproviderturn": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions--provider-turn-ts--if-executeproviderturn",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions--provider-turn-ts",
+      "name": "executeProviderTurn",
+      "accepts": [
+        "AgentId",
+        "Text"
+      ],
+      "returns": [
+        "ProviderTurn"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers--claude-provider-adapter-ts--if-launch": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers--claude-provider-adapter-ts--if-launch",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers--claude-provider-adapter-ts",
+      "name": "launch",
+      "accepts": [
+        "AgentId",
+        "StoreId",
+        "Text"
+      ],
+      "returns": [
+        "ProviderSession"
+      ]
+    },
+    "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core--headless-child-ts--if-spawnheadlesschild": {
+      "id": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core--headless-child-ts--if-spawnheadlesschild",
+      "ownerId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core--headless-child-ts",
+      "name": "spawnHeadlessChild",
+      "accepts": [
+        "ParentAgentId",
+        "Brief"
+      ],
+      "returns": [
+        "ChildTurnResult"
+      ]
+    }
+  },
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 3148,
+            "height": 4011
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--note-1-current-state-evidence-n": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--note-1-current-state-evidence-n",
+          "position": {
+            "x": 1330,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 174
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--block-legend": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--block-legend",
+          "position": {
+            "x": 436,
+            "y": 56
+          },
+          "size": {
+            "width": 354,
+            "height": 211
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--block-finding": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--block-finding",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 356,
+            "height": 409
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--scripts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--scripts",
+          "position": {
+            "x": 40,
+            "y": 3729
+          },
+          "size": {
+            "width": 380,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages",
+          "position": {
+            "x": 40,
+            "y": 1703
+          },
+          "size": {
+            "width": 3068,
+            "height": 1956
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai",
+          "position": {
+            "x": 40,
+            "y": 535
+          },
+          "size": {
+            "width": 480,
+            "height": 1098
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude",
+          "position": {
+            "x": 830,
+            "y": 56
+          },
+          "size": {
+            "width": 460,
+            "height": 312
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--scripts--nvk-mjs": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--scripts--nvk-mjs",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 700,
+            "height": 1860
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server",
+          "position": {
+            "x": 772,
+            "y": 56
+          },
+          "size": {
+            "width": 540,
+            "height": 1860
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging",
+          "position": {
+            "x": 1344,
+            "y": 56
+          },
+          "size": {
+            "width": 620,
+            "height": 1860
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents",
+          "position": {
+            "x": 1996,
+            "y": 56
+          },
+          "size": {
+            "width": 540,
+            "height": 1860
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime",
+          "position": {
+            "x": 2568,
+            "y": 56
+          },
+          "size": {
+            "width": 460,
+            "height": 1860
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--entity-ghost-agents": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--entity-ghost-agents",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 400,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--entity-store-identity": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--entity-store-identity",
+          "position": {
+            "x": 40,
+            "y": 258
+          },
+          "size": {
+            "width": 400,
+            "height": 114
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores",
+          "position": {
+            "x": 40,
+            "y": 396
+          },
+          "size": {
+            "width": 400,
+            "height": 662
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude--projects": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude--projects",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 380,
+            "height": 216
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 620,
+            "height": 1314
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app",
+          "position": {
+            "x": 40,
+            "y": 1394
+          },
+          "size": {
+            "width": 620,
+            "height": 268
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 460,
+            "height": 1352
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 540,
+            "height": 1048
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters",
+          "position": {
+            "x": 40,
+            "y": 1128
+          },
+          "size": {
+            "width": 540,
+            "height": 692
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 460,
+            "height": 268
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core",
+          "position": {
+            "x": 40,
+            "y": 348
+          },
+          "size": {
+            "width": 460,
+            "height": 784
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 380,
+            "height": 258
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-canonical-agents": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-canonical-agents",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-canonical-config": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-canonical-config",
+          "position": {
+            "x": 40,
+            "y": 250
+          },
+          "size": {
+            "width": 320,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-messaging-store": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-messaging-store",
+          "position": {
+            "x": 40,
+            "y": 412
+          },
+          "size": {
+            "width": 320,
+            "height": 210
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude--projects--claude-provider-session-jsonl": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude--projects--claude-provider-session-jsonl",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 540,
+            "height": 838
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens",
+          "position": {
+            "x": 40,
+            "y": 910
+          },
+          "size": {
+            "width": 540,
+            "height": 364
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 172
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 380,
+            "height": 698
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door",
+          "position": {
+            "x": 40,
+            "y": 770
+          },
+          "size": {
+            "width": 380,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3",
+          "position": {
+            "x": 40,
+            "y": 1028
+          },
+          "size": {
+            "width": 380,
+            "height": 284
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 380,
+            "height": 678
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion",
+          "position": {
+            "x": 40,
+            "y": 750
+          },
+          "size": {
+            "width": 380,
+            "height": 258
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 460,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts",
+          "position": {
+            "x": 40,
+            "y": 314
+          },
+          "size": {
+            "width": 460,
+            "height": 338
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 172
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--contract-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--contract-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 380,
+            "height": 172
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions",
+          "position": {
+            "x": 40,
+            "y": 244
+          },
+          "size": {
+            "width": 380,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers",
+          "position": {
+            "x": 40,
+            "y": 502
+          },
+          "size": {
+            "width": 380,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core--headless-child-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core--headless-child-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 162
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 460,
+            "height": 742
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 380,
+            "height": 268
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--spawn-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--spawn-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts",
+          "position": {
+            "x": 40,
+            "y": 258
+          },
+          "size": {
+            "width": 300,
+            "height": 172
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--runtime-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--runtime-ts",
+          "position": {
+            "x": 40,
+            "y": 502
+          },
+          "size": {
+            "width": 300,
+            "height": 156
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door--provision-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door--provision-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3--headless-child-messaging-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3--headless-child-messaging-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 188
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--send-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--send-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--accept-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--accept-ts",
+          "position": {
+            "x": 40,
+            "y": 274
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--dispatch-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--dispatch-ts",
+          "position": {
+            "x": 40,
+            "y": 492
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion--assign-session-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion--assign-session-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 162
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send--agents-provider-send-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send--agents-provider-send-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 380,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions--provider-turn-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions--provider-turn-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers--claude-provider-adapter-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers--claude-provider-adapter-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--thebench-tsx": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--thebench-tsx",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 380,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument",
+          "position": {
+            "x": 40,
+            "y": 218
+          },
+          "size": {
+            "width": 380,
+            "height": 226
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model",
+          "position": {
+            "x": 40,
+            "y": 460
+          },
+          "size": {
+            "width": 380,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 172
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers--claude-transcript-normalizer-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers--claude-transcript-normalizer-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument--conversationinstrument-tsx": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument--conversationinstrument-tsx",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 283,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model--usebenchcontroller-ts": {
+          "nodeId": "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model--usebenchcontroller-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--block-legend": {
+          "background": "blue-soft",
+          "borderColor": "blue",
+          "border": 1,
+          "radius": 8,
+          "padding": 16
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--block-finding": {
+          "background": "amber-soft",
+          "borderColor": "amber",
+          "border": 2,
+          "radius": 12,
+          "padding": 16
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--scripts--nvk-mjs": {
+          "palette": "violet"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--thebench-tsx": {
+          "palette": "blue"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument--conversationinstrument-tsx": {
+          "palette": "blue"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model--usebenchcontroller-ts": {
+          "palette": "blue"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts": {
+          "palette": "blue"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts": {
+          "palette": "blue"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--spawn-ts": {
+          "palette": "sage"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts": {
+          "palette": "sage"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--runtime-ts": {
+          "palette": "sage"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door--provision-ts": {
+          "palette": "sage"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3--headless-child-messaging-ts": {
+          "palette": "violet"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--send-ts": {
+          "palette": "sage"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--accept-ts": {
+          "palette": "sage"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--dispatch-ts": {
+          "palette": "sage"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion--assign-session-ts": {
+          "palette": "sage"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send--agents-provider-send-ts": {
+          "palette": "sage"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers--claude-transcript-normalizer-ts": {
+          "palette": "sage"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts": {
+          "palette": "violet"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--contract-ts": {
+          "palette": "sage"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions--provider-turn-ts": {
+          "palette": "sage"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers--claude-provider-adapter-ts": {
+          "palette": "sage"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core--headless-child-ts": {
+          "palette": "violet"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--entity-ghost-agents": {
+          "palette": "violet"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--entity-store-identity": {
+          "palette": "neutral"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-canonical-agents": {
+          "palette": "sage"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-canonical-config": {
+          "palette": "sage"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-messaging-store": {
+          "palette": "sage"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude--projects--claude-provider-session-jsonl": {
+          "palette": "neutral"
+        }
+      },
+      "appearanceByWireId": {
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-1": {
+          "color": "blue"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-2": {
+          "color": "blue"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-3": {
+          "color": "blue"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-4": {
+          "color": "blue"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-5": {
+          "color": "blue"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-6": {
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-7": {
+          "width": "thick",
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-8": {
+          "width": "thick",
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-9": {
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-10": {
+          "width": "thick",
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-11": {
+          "color": "blue"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-12": {
+          "color": "blue"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-13": {
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-14": {
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-15": {
+          "width": "thick",
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-16": {
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-17": {
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-18": {
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-19": {
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-20": {
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-21": {
+          "width": "thick",
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-22": {
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-23": {
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-24": {
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-25": {
+          "width": "thick",
+          "color": "green"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-26": {
+          "color": "blue"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-27": {
+          "pattern": "dashed",
+          "color": "blue"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-28": {
+          "color": "rose"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-29": {
+          "width": "thick",
+          "color": "rose"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-30": {
+          "color": "violet"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-31": {
+          "width": "thick",
+          "color": "rose"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-32": {
+          "width": "thick",
+          "pattern": "dashed",
+          "color": "rose"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-33": {
+          "width": "thick",
+          "pattern": "dashed",
+          "color": "rose"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-34": {
+          "width": "thick",
+          "pattern": "dashed",
+          "color": "amber"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-35": {
+          "width": "medium",
+          "color": "violet"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-36": {
+          "color": "violet"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--wire-37": {
+          "color": "violet"
+        }
+      },
+      "arrangementByContainerId": {
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--scripts": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--scripts--nvk-mjs"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument--conversationinstrument-tsx"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model--usebenchcontroller-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--thebench-tsx",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--conversation-instrument",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench--model"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs--the-bench"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging--benchcommands-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens--shell-ui-screens-messaging"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--messages-designs",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui--screens"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app--serverclient-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--ui",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell--app"
+          ],
+          "gap": 24,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--spawn-ts",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--messages-ts",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods--runtime-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door--provision-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3--headless-child-messaging-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--methods",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--door",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core--b3"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server--server-core"
+          ],
+          "gap": 24,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--send-ts",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--accept-ts",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send--dispatch-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion--assign-session-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--send",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core--ingestion"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send--agents-provider-send-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers--claude-transcript-normalizer-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts--normalizers"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-send",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters--provider-transcripts"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--messaging-core",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging--adapters"
+          ],
+          "gap": 24,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli--nvk-child-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions--provider-turn-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers--claude-provider-adapter-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--contract-ts",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--sessions",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core--providers"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--cli",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents--agents-core"
+          ],
+          "gap": 24,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core--headless-child-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime--agent-runtime-core"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages": {
+          "layout": "row",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--shell",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--server",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--packages-messaging",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agents",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--packages--agent-runtime"
+          ],
+          "gap": 32,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-canonical-agents",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-canonical-config",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores--entity-messaging-store"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--entity-ghost-agents",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--entity-store-identity",
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--novakai--stores"
+          ],
+          "gap": 24,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude--projects": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude--projects--claude-provider-session-jsonl"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude": {
+          "layout": "stack",
+          "childIds": [
+            "why-does-new-create-a-conversation-while-nvk-child-creates-a-ghost--claude--projects"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        }
+      }
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": [],
+      "flowId": "cli-ghost-outcome"
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "interfaces-not-guillemets-recreate-v1": {
+      "operationId": "interfaces-not-guillemets-recreate-v1",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-27T22:58:40.329Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "docs/why-new-works-but-nvk-child-creates-a-ghost.dsl"
+      },
+      "commandKinds": [
+        "diagram.setOrientation",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "diagram.definitions.replace",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "diagram.flows.replace",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    },
+    "ui-a49ae637-6035-415c-8aa1-ddc502743553": {
+      "operationId": "ui-a49ae637-6035-415c-8aa1-ddc502743553",
+      "revision": 2,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T22:59:40.404Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    }
+  }
+}

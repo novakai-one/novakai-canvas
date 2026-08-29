@@ -1,0 +1,1303 @@
+{
+  "schemaVersion": 3,
+  "id": "ingestion-offset-fix",
+  "name": "Ingestion Offset Fix",
+  "orientation": "left-right",
+  "status": "active",
+  "revision": 3,
+  "nodes": {
+    "ingestion-offset-fix": {
+      "id": "ingestion-offset-fix",
+      "label": "Ingestion Offset Fix",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ingestion-offset-fix--note-1-offsets-lead-the-directo": {
+      "id": "ingestion-offset-fix--note-1-offsets-lead-the-directo",
+      "label": "Offsets lead. The directory walk is demoted: it runs only when the watcher fires or the 60s sweep is due — never every second.",
+      "parentId": "ingestion-offset-fix",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "ingestion-offset-fix--block-legend": {
+      "id": "ingestion-offset-fix--block-legend",
+      "label": "Legend",
+      "parentId": "ingestion-offset-fix",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Blue = every-second path: one stat per known file",
+        "Green = read only the new bytes",
+        "Amber = the demoted walk (watcher event or 60s sweep only)",
+        "Violet node = new file · Blue node = changed file · Grey = unchanged"
+      ]
+    },
+    "ingestion-offset-fix--your-home-dir": {
+      "id": "ingestion-offset-fix--your-home-dir",
+      "label": "~ your home dir",
+      "parentId": "ingestion-offset-fix",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ingestion-offset-fix--packages-messaging": {
+      "id": "ingestion-offset-fix--packages-messaging",
+      "label": "packages/messaging",
+      "parentId": "ingestion-offset-fix",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ingestion-offset-fix--novakai-stores": {
+      "id": "ingestion-offset-fix--novakai-stores",
+      "label": ".novakai/stores",
+      "parentId": "ingestion-offset-fix",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ingestion-offset-fix--your-home-dir--claude-projects": {
+      "id": "ingestion-offset-fix--your-home-dir--claude-projects",
+      "label": "~/.claude/projects",
+      "parentId": "ingestion-offset-fix--your-home-dir",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ingestion-offset-fix--your-home-dir--codex-sessions": {
+      "id": "ingestion-offset-fix--your-home-dir--codex-sessions",
+      "label": "~/.codex/sessions",
+      "parentId": "ingestion-offset-fix--your-home-dir",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ingestion-offset-fix--your-home-dir--codex-archived-sessions": {
+      "id": "ingestion-offset-fix--your-home-dir--codex-archived-sessions",
+      "label": "~/.codex/archived_sessions",
+      "parentId": "ingestion-offset-fix--your-home-dir",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ingestion-offset-fix--your-home-dir--kimi-code-sessions": {
+      "id": "ingestion-offset-fix--your-home-dir--kimi-code-sessions",
+      "label": "~/.kimi-code/sessions",
+      "parentId": "ingestion-offset-fix--your-home-dir",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ingestion-offset-fix--packages-messaging--core-ingestion": {
+      "id": "ingestion-offset-fix--packages-messaging--core-ingestion",
+      "label": "core/ingestion",
+      "parentId": "ingestion-offset-fix--packages-messaging",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts": {
+      "id": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts",
+      "label": "adapters/provider-transcripts",
+      "parentId": "ingestion-offset-fix--packages-messaging",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ingestion-offset-fix--packages-messaging--contract-records": {
+      "id": "ingestion-offset-fix--packages-messaging--contract-records",
+      "label": "contract/records",
+      "parentId": "ingestion-offset-fix--packages-messaging",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ingestion-offset-fix--packages-messaging--adapters-stores": {
+      "id": "ingestion-offset-fix--packages-messaging--adapters-stores",
+      "label": "adapters/stores",
+      "parentId": "ingestion-offset-fix--packages-messaging",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ingestion-offset-fix--novakai-stores--entity-messaging-store-ops": {
+      "id": "ingestion-offset-fix--novakai-stores--entity-messaging-store-ops",
+      "label": "messagingStoreOps.jsonl",
+      "parentId": "ingestion-offset-fix--novakai-stores",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "messaging-store-ops",
+      "entityFields": [
+        {
+          "id": "store-checkpoint",
+          "name": "checkpoint (+filePath)",
+          "valueType": "record",
+          "keys": []
+        },
+        {
+          "id": "store-lines",
+          "name": "transcript lines",
+          "valueType": "record",
+          "keys": []
+        }
+      ]
+    },
+    "ingestion-offset-fix--your-home-dir--claude-projects--entity-claude-sessions": {
+      "id": "ingestion-offset-fix--your-home-dir--claude-projects--entity-claude-sessions",
+      "label": "claude sessions *.jsonl",
+      "parentId": "ingestion-offset-fix--your-home-dir--claude-projects",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "claude-sessions",
+      "entityFields": [
+        {
+          "id": "claude-lines",
+          "name": "jsonl lines",
+          "valueType": "text",
+          "keys": []
+        }
+      ]
+    },
+    "ingestion-offset-fix--your-home-dir--codex-sessions--entity-codex-sessions": {
+      "id": "ingestion-offset-fix--your-home-dir--codex-sessions--entity-codex-sessions",
+      "label": "codex sessions *.jsonl",
+      "parentId": "ingestion-offset-fix--your-home-dir--codex-sessions",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "codex-sessions",
+      "entityFields": [
+        {
+          "id": "codex-lines",
+          "name": "jsonl lines",
+          "valueType": "text",
+          "keys": []
+        }
+      ]
+    },
+    "ingestion-offset-fix--your-home-dir--codex-archived-sessions--entity-codex-archived": {
+      "id": "ingestion-offset-fix--your-home-dir--codex-archived-sessions--entity-codex-archived",
+      "label": "codex archived *.jsonl",
+      "parentId": "ingestion-offset-fix--your-home-dir--codex-archived-sessions",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "codex-archived",
+      "entityFields": [
+        {
+          "id": "codex-archived-lines",
+          "name": "jsonl lines",
+          "valueType": "text",
+          "keys": []
+        }
+      ]
+    },
+    "ingestion-offset-fix--your-home-dir--kimi-code-sessions--entity-kimi-wire": {
+      "id": "ingestion-offset-fix--your-home-dir--kimi-code-sessions--entity-kimi-wire",
+      "label": "kimi wire.jsonl",
+      "parentId": "ingestion-offset-fix--your-home-dir--kimi-code-sessions",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "kimi-wire",
+      "entityFields": [
+        {
+          "id": "kimi-lines",
+          "name": "jsonl lines",
+          "valueType": "text",
+          "keys": []
+        }
+      ]
+    },
+    "ingestion-offset-fix--packages-messaging--core-ingestion--watch-ts": {
+      "id": "ingestion-offset-fix--packages-messaging--core-ingestion--watch-ts",
+      "label": "watch.ts",
+      "description": "CHANGED — tick asks: anything dirty? known files only otherwise",
+      "parentId": "ingestion-offset-fix--packages-messaging--core-ingestion",
+      "interfaceIds": [
+        "ingestion-offset-fix--packages-messaging--core-ingestion--watch-ts--if-tick"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "ingestion-offset-fix--packages-messaging--core-ingestion--ingest-ts": {
+      "id": "ingestion-offset-fix--packages-messaging--core-ingestion--ingest-ts",
+      "label": "ingest.ts",
+      "description": "CHANGED — feeds from checkpoint table, not from a scan",
+      "parentId": "ingestion-offset-fix--packages-messaging--core-ingestion",
+      "interfaceIds": [
+        "ingestion-offset-fix--packages-messaging--core-ingestion--ingest-ts--if-ingestnow"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "ingestion-offset-fix--packages-messaging--core-ingestion--select-sources-ts": {
+      "id": "ingestion-offset-fix--packages-messaging--core-ingestion--select-sources-ts",
+      "label": "select-sources.ts",
+      "description": "unchanged",
+      "parentId": "ingestion-offset-fix--packages-messaging--core-ingestion",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts": {
+      "id": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts",
+      "label": "source.ts",
+      "description": "CHANGED — stats known paths directly; scan becomes on-demand",
+      "parentId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts",
+      "interfaceIds": [
+        "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts--if-statknown",
+        "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts--if-readgrowth",
+        "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts--if-scan"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--roots-watcher-ts": {
+      "id": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--roots-watcher-ts",
+      "label": "roots-watcher.ts",
+      "description": "NEW — fs.watch on the 4 roots + 60s fallback sweep",
+      "parentId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts",
+      "interfaceIds": [
+        "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--roots-watcher-ts--if-watchroots",
+        "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--roots-watcher-ts--if-sweepdue"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "ingestion-offset-fix--packages-messaging--contract-records--ingest-checkpoint-ts": {
+      "id": "ingestion-offset-fix--packages-messaging--contract-records--ingest-checkpoint-ts",
+      "label": "ingest-checkpoint.ts",
+      "description": "CHANGED — checkpoint now remembers where the file lives",
+      "parentId": "ingestion-offset-fix--packages-messaging--contract-records",
+      "interfaceIds": [],
+      "typeIds": [
+        "ingestion-offset-fix--packages-messaging--contract-records--ingest-checkpoint-ts--type-ingestcheckpoint"
+      ],
+      "kind": "module"
+    },
+    "ingestion-offset-fix--packages-messaging--adapters-stores--jsonl-ts": {
+      "id": "ingestion-offset-fix--packages-messaging--adapters-stores--jsonl-ts",
+      "label": "jsonl.ts",
+      "description": "unchanged — commits lines + checkpoint atomically",
+      "parentId": "ingestion-offset-fix--packages-messaging--adapters-stores",
+      "interfaceIds": [
+        "ingestion-offset-fix--packages-messaging--adapters-stores--jsonl-ts--if-commitingestbatch"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    }
+  },
+  "wires": {
+    "ingestion-offset-fix--wire-1": {
+      "id": "ingestion-offset-fix--wire-1",
+      "kind": "executes",
+      "label": "tick, every 1s",
+      "source": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--core-ingestion--watch-ts"
+      },
+      "target": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--core-ingestion--ingest-ts"
+      }
+    },
+    "ingestion-offset-fix--wire-2": {
+      "id": "ingestion-offset-fix--wire-2",
+      "kind": "queries",
+      "label": "list known files (path + offset)",
+      "source": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--core-ingestion--ingest-ts"
+      },
+      "target": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--contract-records--ingest-checkpoint-ts"
+      }
+    },
+    "ingestion-offset-fix--wire-3": {
+      "id": "ingestion-offset-fix--wire-3",
+      "kind": "executes",
+      "label": "statKnown(known paths)",
+      "source": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--core-ingestion--ingest-ts"
+      },
+      "target": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts"
+      }
+    },
+    "ingestion-offset-fix--wire-4": {
+      "id": "ingestion-offset-fix--wire-4",
+      "kind": "queries",
+      "label": "lstat each known file; size == offset means skip",
+      "source": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts"
+      },
+      "target": {
+        "nodeId": "ingestion-offset-fix--your-home-dir--claude-projects--entity-claude-sessions"
+      }
+    },
+    "ingestion-offset-fix--wire-5": {
+      "id": "ingestion-offset-fix--wire-5",
+      "kind": "queries",
+      "label": "lstat known files",
+      "source": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts"
+      },
+      "target": {
+        "nodeId": "ingestion-offset-fix--your-home-dir--codex-sessions--entity-codex-sessions"
+      }
+    },
+    "ingestion-offset-fix--wire-6": {
+      "id": "ingestion-offset-fix--wire-6",
+      "kind": "queries",
+      "label": "lstat known files",
+      "source": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts"
+      },
+      "target": {
+        "nodeId": "ingestion-offset-fix--your-home-dir--codex-archived-sessions--entity-codex-archived"
+      }
+    },
+    "ingestion-offset-fix--wire-7": {
+      "id": "ingestion-offset-fix--wire-7",
+      "kind": "queries",
+      "label": "lstat known files",
+      "source": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts"
+      },
+      "target": {
+        "nodeId": "ingestion-offset-fix--your-home-dir--kimi-code-sessions--entity-kimi-wire"
+      }
+    },
+    "ingestion-offset-fix--wire-8": {
+      "id": "ingestion-offset-fix--wire-8",
+      "kind": "queries",
+      "label": "readGrowth: bytes offset to end, changed files only",
+      "source": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts"
+      },
+      "target": {
+        "nodeId": "ingestion-offset-fix--your-home-dir--claude-projects--entity-claude-sessions"
+      }
+    },
+    "ingestion-offset-fix--wire-9": {
+      "id": "ingestion-offset-fix--wire-9",
+      "kind": "queries",
+      "label": "fs.watch on all 4 roots",
+      "source": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--roots-watcher-ts"
+      },
+      "target": {
+        "nodeId": "ingestion-offset-fix--your-home-dir--claude-projects--entity-claude-sessions"
+      }
+    },
+    "ingestion-offset-fix--wire-10": {
+      "id": "ingestion-offset-fix--wire-10",
+      "kind": "mentions",
+      "label": "dirty flag, or 60s sweep due",
+      "source": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--roots-watcher-ts"
+      },
+      "target": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--core-ingestion--watch-ts"
+      }
+    },
+    "ingestion-offset-fix--wire-11": {
+      "id": "ingestion-offset-fix--wire-11",
+      "kind": "executes",
+      "label": "scan: the full walk, ONLY when dirty",
+      "source": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--core-ingestion--ingest-ts"
+      },
+      "target": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts"
+      }
+    },
+    "ingestion-offset-fix--wire-12": {
+      "id": "ingestion-offset-fix--wire-12",
+      "kind": "owns",
+      "label": "commitIngestBatch(lines, checkpoint + filePath)",
+      "source": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--core-ingestion--ingest-ts"
+      },
+      "target": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--adapters-stores--jsonl-ts"
+      }
+    },
+    "ingestion-offset-fix--wire-13": {
+      "id": "ingestion-offset-fix--wire-13",
+      "kind": "owns",
+      "label": "append",
+      "source": {
+        "nodeId": "ingestion-offset-fix--packages-messaging--adapters-stores--jsonl-ts"
+      },
+      "target": {
+        "nodeId": "ingestion-offset-fix--novakai-stores--entity-messaging-store-ops"
+      }
+    }
+  },
+  "flows": {
+    "flow-every-second": {
+      "id": "flow-every-second",
+      "name": "1 Every second, known files",
+      "steps": [
+        {
+          "ref": "ingestion-offset-fix--wire-1",
+          "ordinal": 1,
+          "label": "tick: watch.ts wakes ingest.ts"
+        },
+        {
+          "ref": "ingestion-offset-fix--wire-2",
+          "ordinal": 2,
+          "label": "ingest.ts loads the offset table"
+        },
+        {
+          "ref": "ingestion-offset-fix--wire-3",
+          "ordinal": 3,
+          "label": "ingest.ts hands known paths to source.ts"
+        },
+        {
+          "ref": "ingestion-offset-fix--wire-4",
+          "ordinal": 4,
+          "label": "source.ts stats each file — unchanged = skip"
+        },
+        {
+          "ref": "ingestion-offset-fix--wire-8",
+          "ordinal": 5,
+          "label": "source.ts reads only the new bytes"
+        },
+        {
+          "ref": "ingestion-offset-fix--wire-12",
+          "ordinal": 6,
+          "label": "ingest.ts commits lines + moves the offset"
+        }
+      ]
+    },
+    "flow-new-file": {
+      "id": "flow-new-file",
+      "name": "2 New file appears",
+      "steps": [
+        {
+          "ref": "ingestion-offset-fix--wire-9",
+          "ordinal": 1,
+          "label": "roots-watcher sees the roots change"
+        },
+        {
+          "ref": "ingestion-offset-fix--wire-10",
+          "ordinal": 2,
+          "label": "roots-watcher flags watch.ts dirty"
+        },
+        {
+          "ref": "ingestion-offset-fix--wire-1",
+          "ordinal": 3,
+          "label": "next tick runs with dirty set"
+        },
+        {
+          "ref": "ingestion-offset-fix--wire-11",
+          "ordinal": 4,
+          "label": "ingest.ts asks source.ts for ONE full walk"
+        },
+        {
+          "ref": "ingestion-offset-fix--wire-12",
+          "ordinal": 5,
+          "label": "new file gets a checkpoint + first ingest"
+        }
+      ]
+    },
+    "flow-offset-fails": {
+      "id": "flow-offset-fails",
+      "name": "3 Offset fails",
+      "steps": [
+        {
+          "ref": "ingestion-offset-fix--wire-4",
+          "ordinal": 1,
+          "label": "stat mismatch — file shrank or inode changed"
+        },
+        {
+          "ref": "ingestion-offset-fix--wire-8",
+          "ordinal": 2,
+          "label": "source.ts re-reads that ONE file from zero"
+        },
+        {
+          "ref": "ingestion-offset-fix--wire-12",
+          "ordinal": 3,
+          "label": "ingest.ts commits under a new epoch"
+        }
+      ]
+    }
+  },
+  "interfaces": {
+    "ingestion-offset-fix--packages-messaging--core-ingestion--watch-ts--if-tick": {
+      "id": "ingestion-offset-fix--packages-messaging--core-ingestion--watch-ts--if-tick",
+      "ownerId": "ingestion-offset-fix--packages-messaging--core-ingestion--watch-ts",
+      "name": "tick",
+      "accepts": [],
+      "returns": [
+        "void"
+      ]
+    },
+    "ingestion-offset-fix--packages-messaging--core-ingestion--ingest-ts--if-ingestnow": {
+      "id": "ingestion-offset-fix--packages-messaging--core-ingestion--ingest-ts--if-ingestnow",
+      "ownerId": "ingestion-offset-fix--packages-messaging--core-ingestion--ingest-ts",
+      "name": "ingestNow",
+      "accepts": [
+        "knownFiles",
+        "dirty"
+      ],
+      "returns": [
+        "IngestResult"
+      ]
+    },
+    "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts--if-statknown": {
+      "id": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts--if-statknown",
+      "ownerId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts",
+      "name": "statKnown",
+      "accepts": [
+        "checkpoints"
+      ],
+      "returns": [
+        "ChangedFiles"
+      ]
+    },
+    "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts--if-readgrowth": {
+      "id": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts--if-readgrowth",
+      "ownerId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts",
+      "name": "readGrowth",
+      "accepts": [
+        "path",
+        "checkpoint"
+      ],
+      "returns": [
+        "NewBytes"
+      ]
+    },
+    "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts--if-scan": {
+      "id": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts--if-scan",
+      "ownerId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts",
+      "name": "scan",
+      "accepts": [],
+      "returns": [
+        "DiscoveredFiles"
+      ]
+    },
+    "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--roots-watcher-ts--if-watchroots": {
+      "id": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--roots-watcher-ts--if-watchroots",
+      "ownerId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--roots-watcher-ts",
+      "name": "watchRoots",
+      "accepts": [
+        "roots"
+      ],
+      "returns": [
+        "dirtyFlag"
+      ]
+    },
+    "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--roots-watcher-ts--if-sweepdue": {
+      "id": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--roots-watcher-ts--if-sweepdue",
+      "ownerId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--roots-watcher-ts",
+      "name": "sweepDue",
+      "accepts": [
+        "60s"
+      ],
+      "returns": [
+        "dirtyFlag"
+      ]
+    },
+    "ingestion-offset-fix--packages-messaging--adapters-stores--jsonl-ts--if-commitingestbatch": {
+      "id": "ingestion-offset-fix--packages-messaging--adapters-stores--jsonl-ts--if-commitingestbatch",
+      "ownerId": "ingestion-offset-fix--packages-messaging--adapters-stores--jsonl-ts",
+      "name": "commitIngestBatch",
+      "accepts": [
+        "lines",
+        "checkpoint"
+      ],
+      "returns": [
+        "Committed"
+      ]
+    }
+  },
+  "types": {
+    "ingestion-offset-fix--packages-messaging--contract-records--ingest-checkpoint-ts--type-ingestcheckpoint": {
+      "id": "ingestion-offset-fix--packages-messaging--contract-records--ingest-checkpoint-ts--type-ingestcheckpoint",
+      "name": "IngestCheckpoint",
+      "fields": [
+        "offset",
+        "device",
+        "inode",
+        "tailHash",
+        "filePath"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "ingestion-offset-fix": {
+          "nodeId": "ingestion-offset-fix",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 1808,
+            "height": 1516
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--note-1-offsets-lead-the-directo": {
+          "nodeId": "ingestion-offset-fix--note-1-offsets-lead-the-directo",
+          "position": {
+            "x": 426,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--block-legend": {
+          "nodeId": "ingestion-offset-fix--block-legend",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 346,
+            "height": 183
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--your-home-dir": {
+          "nodeId": "ingestion-offset-fix--your-home-dir",
+          "position": {
+            "x": 40,
+            "y": 1170
+          },
+          "size": {
+            "width": 1728,
+            "height": 306
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--packages-messaging": {
+          "nodeId": "ingestion-offset-fix--packages-messaging",
+          "position": {
+            "x": 40,
+            "y": 368
+          },
+          "size": {
+            "width": 1672,
+            "height": 732
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--novakai-stores": {
+          "nodeId": "ingestion-offset-fix--novakai-stores",
+          "position": {
+            "x": 746,
+            "y": 56
+          },
+          "size": {
+            "width": 400,
+            "height": 242
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--your-home-dir--claude-projects": {
+          "nodeId": "ingestion-offset-fix--your-home-dir--claude-projects",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 400,
+            "height": 210
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--your-home-dir--codex-sessions": {
+          "nodeId": "ingestion-offset-fix--your-home-dir--codex-sessions",
+          "position": {
+            "x": 456,
+            "y": 56
+          },
+          "size": {
+            "width": 400,
+            "height": 210
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--your-home-dir--codex-archived-sessions": {
+          "nodeId": "ingestion-offset-fix--your-home-dir--codex-archived-sessions",
+          "position": {
+            "x": 872,
+            "y": 56
+          },
+          "size": {
+            "width": 400,
+            "height": 210
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--your-home-dir--kimi-code-sessions": {
+          "nodeId": "ingestion-offset-fix--your-home-dir--kimi-code-sessions",
+          "position": {
+            "x": 1288,
+            "y": 56
+          },
+          "size": {
+            "width": 400,
+            "height": 210
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--packages-messaging--core-ingestion": {
+          "nodeId": "ingestion-offset-fix--packages-messaging--core-ingestion",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 380,
+            "height": 636
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts": {
+          "nodeId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts",
+          "position": {
+            "x": 444,
+            "y": 56
+          },
+          "size": {
+            "width": 380,
+            "height": 636
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--packages-messaging--contract-records": {
+          "nodeId": "ingestion-offset-fix--packages-messaging--contract-records",
+          "position": {
+            "x": 848,
+            "y": 56
+          },
+          "size": {
+            "width": 380,
+            "height": 636
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--packages-messaging--adapters-stores": {
+          "nodeId": "ingestion-offset-fix--packages-messaging--adapters-stores",
+          "position": {
+            "x": 1252,
+            "y": 56
+          },
+          "size": {
+            "width": 380,
+            "height": 636
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--novakai-stores--entity-messaging-store-ops": {
+          "nodeId": "ingestion-offset-fix--novakai-stores--entity-messaging-store-ops",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--your-home-dir--claude-projects--entity-claude-sessions": {
+          "nodeId": "ingestion-offset-fix--your-home-dir--claude-projects--entity-claude-sessions",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 114
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--your-home-dir--codex-sessions--entity-codex-sessions": {
+          "nodeId": "ingestion-offset-fix--your-home-dir--codex-sessions--entity-codex-sessions",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 114
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--your-home-dir--codex-archived-sessions--entity-codex-archived": {
+          "nodeId": "ingestion-offset-fix--your-home-dir--codex-archived-sessions--entity-codex-archived",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 114
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--your-home-dir--kimi-code-sessions--entity-kimi-wire": {
+          "nodeId": "ingestion-offset-fix--your-home-dir--kimi-code-sessions--entity-kimi-wire",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 114
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--packages-messaging--core-ingestion--watch-ts": {
+          "nodeId": "ingestion-offset-fix--packages-messaging--core-ingestion--watch-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--packages-messaging--core-ingestion--ingest-ts": {
+          "nodeId": "ingestion-offset-fix--packages-messaging--core-ingestion--ingest-ts",
+          "position": {
+            "x": 40,
+            "y": 274
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--packages-messaging--core-ingestion--select-sources-ts": {
+          "nodeId": "ingestion-offset-fix--packages-messaging--core-ingestion--select-sources-ts",
+          "position": {
+            "x": 40,
+            "y": 492
+          },
+          "size": {
+            "width": 300,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts": {
+          "nodeId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 198
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--roots-watcher-ts": {
+          "nodeId": "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--roots-watcher-ts",
+          "position": {
+            "x": 40,
+            "y": 266
+          },
+          "size": {
+            "width": 300,
+            "height": 172
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--packages-messaging--contract-records--ingest-checkpoint-ts": {
+          "nodeId": "ingestion-offset-fix--packages-messaging--contract-records--ingest-checkpoint-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "ingestion-offset-fix--packages-messaging--adapters-stores--jsonl-ts": {
+          "nodeId": "ingestion-offset-fix--packages-messaging--adapters-stores--jsonl-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {
+        "ingestion-offset-fix--block-legend": {
+          "weight": 600,
+          "text": "ink",
+          "background": "surface",
+          "border": 1,
+          "radius": 8,
+          "padding": 12
+        },
+        "ingestion-offset-fix--your-home-dir--claude-projects--entity-claude-sessions": {
+          "palette": "neutral"
+        },
+        "ingestion-offset-fix--your-home-dir--codex-sessions--entity-codex-sessions": {
+          "palette": "neutral"
+        },
+        "ingestion-offset-fix--your-home-dir--codex-archived-sessions--entity-codex-archived": {
+          "palette": "neutral"
+        },
+        "ingestion-offset-fix--your-home-dir--kimi-code-sessions--entity-kimi-wire": {
+          "palette": "neutral"
+        },
+        "ingestion-offset-fix--packages-messaging--core-ingestion--watch-ts": {
+          "palette": "blue"
+        },
+        "ingestion-offset-fix--packages-messaging--core-ingestion--ingest-ts": {
+          "palette": "blue"
+        },
+        "ingestion-offset-fix--packages-messaging--core-ingestion--select-sources-ts": {
+          "palette": "neutral"
+        },
+        "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts": {
+          "palette": "blue"
+        },
+        "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--roots-watcher-ts": {
+          "palette": "violet"
+        },
+        "ingestion-offset-fix--packages-messaging--contract-records--ingest-checkpoint-ts": {
+          "palette": "blue"
+        },
+        "ingestion-offset-fix--packages-messaging--adapters-stores--jsonl-ts": {
+          "palette": "neutral"
+        },
+        "ingestion-offset-fix--novakai-stores--entity-messaging-store-ops": {
+          "palette": "sage"
+        }
+      },
+      "appearanceByWireId": {
+        "ingestion-offset-fix--wire-1": {
+          "width": "medium"
+        },
+        "ingestion-offset-fix--wire-2": {
+          "color": "blue"
+        },
+        "ingestion-offset-fix--wire-3": {
+          "width": "medium",
+          "color": "blue"
+        },
+        "ingestion-offset-fix--wire-4": {
+          "color": "blue"
+        },
+        "ingestion-offset-fix--wire-5": {
+          "width": "thin",
+          "color": "blue"
+        },
+        "ingestion-offset-fix--wire-6": {
+          "width": "thin",
+          "color": "blue"
+        },
+        "ingestion-offset-fix--wire-7": {
+          "width": "thin",
+          "color": "blue"
+        },
+        "ingestion-offset-fix--wire-8": {
+          "width": "medium",
+          "color": "green"
+        },
+        "ingestion-offset-fix--wire-9": {
+          "pattern": "dashed"
+        },
+        "ingestion-offset-fix--wire-10": {
+          "pattern": "dashed",
+          "color": "amber"
+        },
+        "ingestion-offset-fix--wire-11": {
+          "width": "thick",
+          "color": "amber"
+        }
+      },
+      "arrangementByContainerId": {
+        "ingestion-offset-fix--your-home-dir--claude-projects": {
+          "layout": "stack",
+          "childIds": [
+            "ingestion-offset-fix--your-home-dir--claude-projects--entity-claude-sessions"
+          ],
+          "gap": 8,
+          "align": "stretch"
+        },
+        "ingestion-offset-fix--your-home-dir--codex-sessions": {
+          "layout": "stack",
+          "childIds": [
+            "ingestion-offset-fix--your-home-dir--codex-sessions--entity-codex-sessions"
+          ],
+          "gap": 8,
+          "align": "stretch"
+        },
+        "ingestion-offset-fix--your-home-dir--codex-archived-sessions": {
+          "layout": "stack",
+          "childIds": [
+            "ingestion-offset-fix--your-home-dir--codex-archived-sessions--entity-codex-archived"
+          ],
+          "gap": 8,
+          "align": "stretch"
+        },
+        "ingestion-offset-fix--your-home-dir--kimi-code-sessions": {
+          "layout": "stack",
+          "childIds": [
+            "ingestion-offset-fix--your-home-dir--kimi-code-sessions--entity-kimi-wire"
+          ],
+          "gap": 8,
+          "align": "stretch"
+        },
+        "ingestion-offset-fix--your-home-dir": {
+          "layout": "row",
+          "childIds": [
+            "ingestion-offset-fix--your-home-dir--claude-projects",
+            "ingestion-offset-fix--your-home-dir--codex-sessions",
+            "ingestion-offset-fix--your-home-dir--codex-archived-sessions",
+            "ingestion-offset-fix--your-home-dir--kimi-code-sessions"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "ingestion-offset-fix--packages-messaging--core-ingestion": {
+          "layout": "stack",
+          "childIds": [
+            "ingestion-offset-fix--packages-messaging--core-ingestion--watch-ts",
+            "ingestion-offset-fix--packages-messaging--core-ingestion--ingest-ts",
+            "ingestion-offset-fix--packages-messaging--core-ingestion--select-sources-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts": {
+          "layout": "stack",
+          "childIds": [
+            "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--source-ts",
+            "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts--roots-watcher-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "ingestion-offset-fix--packages-messaging--contract-records": {
+          "layout": "stack",
+          "childIds": [
+            "ingestion-offset-fix--packages-messaging--contract-records--ingest-checkpoint-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "ingestion-offset-fix--packages-messaging--adapters-stores": {
+          "layout": "stack",
+          "childIds": [
+            "ingestion-offset-fix--packages-messaging--adapters-stores--jsonl-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "ingestion-offset-fix--packages-messaging": {
+          "layout": "row",
+          "childIds": [
+            "ingestion-offset-fix--packages-messaging--core-ingestion",
+            "ingestion-offset-fix--packages-messaging--adapters-provider-transcripts",
+            "ingestion-offset-fix--packages-messaging--contract-records",
+            "ingestion-offset-fix--packages-messaging--adapters-stores"
+          ],
+          "gap": 24,
+          "align": "stretch"
+        },
+        "ingestion-offset-fix--novakai-stores": {
+          "layout": "stack",
+          "childIds": [
+            "ingestion-offset-fix--novakai-stores--entity-messaging-store-ops"
+          ],
+          "gap": 8,
+          "align": "stretch"
+        }
+      }
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": [],
+      "flowId": "flow-every-second"
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "ingestion-offset-fix-v1": {
+      "operationId": "ingestion-offset-fix-v1",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-27T22:57:17.033Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command--claude-worktrees-transcript-ingestion-perf-5a00e4/5edf6cc7-a96f-4b72-b2d2-5bd4754c5949/scratchpad/ingestion-offset-fix.canvas"
+      },
+      "commandKinds": [
+        "diagram.setOrientation",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "diagram.definitions.replace",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "diagram.flows.replace",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    },
+    "ui-07190e70-076c-4820-9686-bcdacaaf8a1c": {
+      "operationId": "ui-07190e70-076c-4820-9686-bcdacaaf8a1c",
+      "revision": 2,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:00:02.988Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ingestion-offset-fix-v2-connected-flows": {
+      "operationId": "ingestion-offset-fix-v2-connected-flows",
+      "revision": 3,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-27T23:27:18.427Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command--claude-worktrees-transcript-ingestion-perf-5a00e4/5edf6cc7-a96f-4b72-b2d2-5bd4754c5949/scratchpad/ingestion-offset-fix.canvas"
+      },
+      "commandKinds": [
+        "diagram.flows.replace"
+      ]
+    }
+  }
+}

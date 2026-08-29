@@ -1,0 +1,1272 @@
+{
+  "schemaVersion": 3,
+  "id": "who-owns-canvas-surface-responsibilities-today",
+  "name": "Who Owns Canvas Surface Responsibilities Today?",
+  "orientation": "left-right",
+  "status": "active",
+  "revision": 13,
+  "nodes": {
+    "who-owns-canvas-surface-responsibilities-today": {
+      "id": "who-owns-canvas-surface-responsibilities-today",
+      "label": "Who Owns Canvas Surface Responsibilities Today?",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "who-owns-canvas-surface-responsibilities-today--audit-findings": {
+      "id": "who-owns-canvas-surface-responsibilities-today--audit-findings",
+      "label": "Audit findings",
+      "description": "Evidence-backed responsibility assessment.",
+      "parentId": "who-owns-canvas-surface-responsibilities-today",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "authority",
+          "kind": "success",
+          "text": "Strong: domain truth stays behind workspace commands."
+        },
+        {
+          "id": "broad-contract",
+          "kind": "warning",
+          "text": "Concern: CanvasSurfaceProps exposes navigation fields unused by the surface."
+        },
+        {
+          "id": "split-planning",
+          "kind": "warning",
+          "text": "Concern: node gesture command planning remains inside the surface while connection planning is extracted."
+        }
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-capability": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-capability",
+      "label": "Canvas capability",
+      "parentId": "who-owns-canvas-surface-responsibilities-today",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter",
+      "label": "Canvas presentation adapter",
+      "parentId": "who-owns-canvas-surface-responsibilities-today",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "who-owns-canvas-surface-responsibilities-today--external-runtime": {
+      "id": "who-owns-canvas-surface-responsibilities-today--external-runtime",
+      "label": "External runtime",
+      "parentId": "who-owns-canvas-surface-responsibilities-today",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "who-owns-canvas-surface-responsibilities-today--host-composition": {
+      "id": "who-owns-canvas-surface-responsibilities-today--host-composition",
+      "label": "Host composition",
+      "parentId": "who-owns-canvas-surface-responsibilities-today",
+      "crossing": "free",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "who-owns-canvas-surface-responsibilities-today--note-1-current-state-at-revisio": {
+      "id": "who-owns-canvas-surface-responsibilities-today--note-1-current-state-at-revisio",
+      "label": "Current state at revision 99aaf37. Solid wires are synchronous calls or dependencies. Canvas workspace owns committed truth; the in-flight overlay is temporary projection state.",
+      "parentId": "who-owns-canvas-surface-responsibilities-today",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace",
+      "label": "Canvas workspace",
+      "description": "Owns accepted record commands, revisions, undo, and the authoritative diagram snapshot.",
+      "parentId": "who-owns-canvas-surface-responsibilities-today--canvas-capability",
+      "interfaceIds": [
+        "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace--if-execute",
+        "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace--if-submit",
+        "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace--if-snapshot",
+        "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace--if-undo"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-capability--diagram-record": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-capability--diagram-record",
+      "label": "Diagram record",
+      "description": "Authoritative committed diagram state; never includes transient gesture frames.",
+      "parentId": "who-owns-canvas-surface-responsibilities-today--canvas-capability",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "object"
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface",
+      "label": "Canvas surface",
+      "description": "Coordinates one React Flow surface, committed projections, transient frames, and interaction adapters.",
+      "parentId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter",
+      "interfaceIds": [
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface--if-render",
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface--if-onnodeschange",
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface--if-onnodedragstop",
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface--if-commitresize"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-toolbar": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-toolbar",
+      "label": "Canvas toolbar",
+      "description": "Renders mode, back-navigation, and save-status controls.",
+      "parentId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter",
+      "interfaceIds": [
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-toolbar--if-render"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--view-projection": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--view-projection",
+      "label": "View projection",
+      "description": "Projects diagram records and preferences into React Flow nodes and edges.",
+      "parentId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter",
+      "interfaceIds": [
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--view-projection--if-projectnodes",
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--view-projection--if-projectedges"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--in-flight-overlay": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--in-flight-overlay",
+      "label": "In-flight overlay",
+      "description": "Owns uncommitted drag and resize frames until one gesture commits.",
+      "parentId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter",
+      "interfaceIds": [
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--in-flight-overlay--if-applyframe",
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--in-flight-overlay--if-mergeinflight"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--connection-gestures": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--connection-gestures",
+      "label": "Connection gestures",
+      "description": "Owns create and reconnect gesture lifecycle and plans accepted command batches.",
+      "parentId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter",
+      "interfaceIds": [
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--connection-gestures--if-bind",
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--connection-gestures--if-handle"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera",
+      "label": "Canvas camera",
+      "description": "Owns per-diagram viewport memory, semantic zoom, and screen-to-world translation.",
+      "parentId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter",
+      "interfaceIds": [
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera--if-open",
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera--if-attach",
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera--if-toworld"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-shortcuts": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-shortcuts",
+      "label": "Canvas shortcuts",
+      "description": "Owns Escape, undo shortcuts, and selection lifetime.",
+      "parentId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter",
+      "interfaceIds": [
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-shortcuts--if-bind"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--web-renderer-registry": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--web-renderer-registry",
+      "label": "Web renderer registry",
+      "description": "Maps every diagram node kind to its React renderer and resize chrome.",
+      "parentId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter",
+      "interfaceIds": [
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--web-renderer-registry--if-nodetypes"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "who-owns-canvas-surface-responsibilities-today--external-runtime--react-flow": {
+      "id": "who-owns-canvas-surface-responsibilities-today--external-runtime--react-flow",
+      "label": "React Flow",
+      "parentId": "who-owns-canvas-surface-responsibilities-today--external-runtime",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "runtime"
+    },
+    "who-owns-canvas-surface-responsibilities-today--host-composition--canvas-app-composition": {
+      "id": "who-owns-canvas-surface-responsibilities-today--host-composition--canvas-app-composition",
+      "label": "Canvas app composition",
+      "description": "App and CanvasAppView assemble workspace state, navigation, preferences, and surface callbacks.",
+      "parentId": "who-owns-canvas-surface-responsibilities-today--host-composition",
+      "interfaceIds": [
+        "who-owns-canvas-surface-responsibilities-today--host-composition--canvas-app-composition--if-render"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "who-owns-canvas-surface-responsibilities-today--host-composition--workspace-actions": {
+      "id": "who-owns-canvas-surface-responsibilities-today--host-composition--workspace-actions",
+      "label": "Workspace actions",
+      "description": "Translates UI intentions into workspace commands and reports refused outcomes.",
+      "parentId": "who-owns-canvas-surface-responsibilities-today--host-composition",
+      "interfaceIds": [
+        "who-owns-canvas-surface-responsibilities-today--host-composition--workspace-actions--if-execute",
+        "who-owns-canvas-surface-responsibilities-today--host-composition--workspace-actions--if-executeall"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    }
+  },
+  "wires": {
+    "who-owns-canvas-surface-responsibilities-today--wire-1": {
+      "id": "who-owns-canvas-surface-responsibilities-today--wire-1",
+      "kind": "executes",
+      "label": "render(CanvasSurfaceProps) -> CanvasElement",
+      "source": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--host-composition--canvas-app-composition",
+        "anchor": {
+          "side": "right",
+          "ordinal": 0
+        }
+      },
+      "target": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface",
+        "anchor": {
+          "side": "left",
+          "ordinal": 0
+        }
+      }
+    },
+    "who-owns-canvas-surface-responsibilities-today--wire-2": {
+      "id": "who-owns-canvas-surface-responsibilities-today--wire-2",
+      "kind": "queries",
+      "label": "projectNodes / projectEdges(ProjectionInput) -> FlowGraph",
+      "source": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface"
+      },
+      "target": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--view-projection"
+      }
+    },
+    "who-owns-canvas-surface-responsibilities-today--wire-3": {
+      "id": "who-owns-canvas-surface-responsibilities-today--wire-3",
+      "kind": "queries",
+      "label": "mergeInFlight(FlowNodes, InFlight) -> FlowNodes",
+      "source": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface"
+      },
+      "target": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--in-flight-overlay",
+        "anchor": {
+          "side": "left",
+          "ordinal": 1
+        }
+      }
+    },
+    "who-owns-canvas-surface-responsibilities-today--wire-4": {
+      "id": "who-owns-canvas-surface-responsibilities-today--wire-4",
+      "kind": "executes",
+      "label": "bind(ConnectionGestureInput) -> ConnectionGestureHandlers",
+      "source": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface"
+      },
+      "target": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--connection-gestures",
+        "anchor": {
+          "side": "left",
+          "ordinal": 0
+        }
+      }
+    },
+    "who-owns-canvas-surface-responsibilities-today--wire-5": {
+      "id": "who-owns-canvas-surface-responsibilities-today--wire-5",
+      "kind": "executes",
+      "label": "open(DiagramId) -> CanvasCamera",
+      "source": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface"
+      },
+      "target": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera",
+        "anchor": {
+          "side": "left",
+          "ordinal": 0
+        }
+      }
+    },
+    "who-owns-canvas-surface-responsibilities-today--wire-6": {
+      "id": "who-owns-canvas-surface-responsibilities-today--wire-6",
+      "kind": "executes",
+      "label": "bind(ShortcutOptions) -> void",
+      "source": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface"
+      },
+      "target": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-shortcuts",
+        "anchor": {
+          "side": "left",
+          "ordinal": 0
+        }
+      }
+    },
+    "who-owns-canvas-surface-responsibilities-today--wire-7": {
+      "id": "who-owns-canvas-surface-responsibilities-today--wire-7",
+      "kind": "queries",
+      "label": "nodeTypes(NodeKind) -> Renderer",
+      "source": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface"
+      },
+      "target": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--web-renderer-registry",
+        "anchor": {
+          "side": "left",
+          "ordinal": 0
+        }
+      }
+    },
+    "who-owns-canvas-surface-responsibilities-today--wire-8": {
+      "id": "who-owns-canvas-surface-responsibilities-today--wire-8",
+      "kind": "executes",
+      "label": "render(ToolbarProps) -> ToolbarElement",
+      "source": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface"
+      },
+      "target": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-toolbar",
+        "anchor": {
+          "side": "left",
+          "ordinal": 0
+        }
+      }
+    },
+    "who-owns-canvas-surface-responsibilities-today--wire-9": {
+      "id": "who-owns-canvas-surface-responsibilities-today--wire-9",
+      "kind": "executes",
+      "label": "render(FlowGraph, ConnectionGestureHandlers) -> CanvasElement",
+      "source": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface"
+      },
+      "target": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--external-runtime--react-flow"
+      }
+    },
+    "who-owns-canvas-surface-responsibilities-today--wire-10": {
+      "id": "who-owns-canvas-surface-responsibilities-today--wire-10",
+      "kind": "executes",
+      "label": "execute(RecordCommand) / executeAll(RecordCommandBatch) -> void",
+      "source": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface"
+      },
+      "target": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--host-composition--workspace-actions"
+      }
+    },
+    "who-owns-canvas-surface-responsibilities-today--wire-11": {
+      "id": "who-owns-canvas-surface-responsibilities-today--wire-11",
+      "kind": "executes",
+      "label": "executeAll(RecordCommandBatch) -> void",
+      "source": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--connection-gestures"
+      },
+      "target": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--host-composition--workspace-actions",
+        "anchor": {
+          "side": "left",
+          "ordinal": 1
+        }
+      }
+    },
+    "who-owns-canvas-surface-responsibilities-today--wire-12": {
+      "id": "who-owns-canvas-surface-responsibilities-today--wire-12",
+      "kind": "executes",
+      "label": "execute(RecordCommand) / submit(RecordChangeSet) -> ChangeOutcome",
+      "source": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--host-composition--workspace-actions"
+      },
+      "target": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace"
+      }
+    },
+    "who-owns-canvas-surface-responsibilities-today--wire-13": {
+      "id": "who-owns-canvas-surface-responsibilities-today--wire-13",
+      "kind": "owns",
+      "label": "snapshot() -> DiagramRecord",
+      "source": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace",
+        "anchor": {
+          "side": "right",
+          "ordinal": 2
+        }
+      },
+      "target": {
+        "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-capability--diagram-record"
+      }
+    }
+  },
+  "interfaces": {
+    "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace--if-execute": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace--if-execute",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace",
+      "name": "execute",
+      "accepts": [
+        "RecordCommand"
+      ],
+      "returns": [
+        "ChangeOutcome"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace--if-submit": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace--if-submit",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace",
+      "name": "submit",
+      "accepts": [
+        "RecordChangeSet"
+      ],
+      "returns": [
+        "ChangeOutcome"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace--if-snapshot": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace--if-snapshot",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace",
+      "name": "snapshot",
+      "accepts": [],
+      "returns": [
+        "DiagramRecord"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace--if-undo": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace--if-undo",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace",
+      "name": "undo",
+      "accepts": [],
+      "returns": [
+        "void"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface--if-render": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface--if-render",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface",
+      "name": "render",
+      "accepts": [
+        "CanvasSurfaceProps"
+      ],
+      "returns": [
+        "CanvasElement"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface--if-onnodeschange": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface--if-onnodeschange",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface",
+      "name": "onNodesChange",
+      "accepts": [
+        "NodeChangeBatch"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface--if-onnodedragstop": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface--if-onnodedragstop",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface",
+      "name": "onNodeDragStop",
+      "accepts": [
+        "NodeDrag"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface--if-commitresize": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface--if-commitresize",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface",
+      "name": "commitResize",
+      "accepts": [
+        "NodeId"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-toolbar--if-render": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-toolbar--if-render",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-toolbar",
+      "name": "render",
+      "accepts": [
+        "ToolbarProps"
+      ],
+      "returns": [
+        "ToolbarElement"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--view-projection--if-projectnodes": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--view-projection--if-projectnodes",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--view-projection",
+      "name": "projectNodes",
+      "accepts": [
+        "ProjectionInput"
+      ],
+      "returns": [
+        "FlowNodes"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--view-projection--if-projectedges": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--view-projection--if-projectedges",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--view-projection",
+      "name": "projectEdges",
+      "accepts": [
+        "ProjectionInput"
+      ],
+      "returns": [
+        "FlowEdges"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--in-flight-overlay--if-applyframe": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--in-flight-overlay--if-applyframe",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--in-flight-overlay",
+      "name": "applyFrame",
+      "accepts": [
+        "InFlight",
+        "NodeChange"
+      ],
+      "returns": [
+        "InFlight"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--in-flight-overlay--if-mergeinflight": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--in-flight-overlay--if-mergeinflight",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--in-flight-overlay",
+      "name": "mergeInFlight",
+      "accepts": [
+        "FlowNodes",
+        "InFlight"
+      ],
+      "returns": [
+        "FlowNodes"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--connection-gestures--if-bind": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--connection-gestures--if-bind",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--connection-gestures",
+      "name": "bind",
+      "accepts": [
+        "ConnectionGestureInput"
+      ],
+      "returns": [
+        "ConnectionGestureHandlers"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--connection-gestures--if-handle": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--connection-gestures--if-handle",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--connection-gestures",
+      "name": "handle",
+      "accepts": [
+        "FlowConnectionEvent"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera--if-open": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera--if-open",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera",
+      "name": "open",
+      "accepts": [
+        "DiagramId"
+      ],
+      "returns": [
+        "CanvasCamera"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera--if-attach": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera--if-attach",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera",
+      "name": "attach",
+      "accepts": [
+        "FlowInstance"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera--if-toworld": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera--if-toworld",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera",
+      "name": "toWorld",
+      "accepts": [
+        "ScreenPoint"
+      ],
+      "returns": [
+        "WorldPoint"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-shortcuts--if-bind": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-shortcuts--if-bind",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-shortcuts",
+      "name": "bind",
+      "accepts": [
+        "ShortcutOptions"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--web-renderer-registry--if-nodetypes": {
+      "id": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--web-renderer-registry--if-nodetypes",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--web-renderer-registry",
+      "name": "nodeTypes",
+      "accepts": [
+        "NodeKind"
+      ],
+      "returns": [
+        "Renderer"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--host-composition--canvas-app-composition--if-render": {
+      "id": "who-owns-canvas-surface-responsibilities-today--host-composition--canvas-app-composition--if-render",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--host-composition--canvas-app-composition",
+      "name": "render",
+      "accepts": [
+        "CanvasSurfaceProps"
+      ],
+      "returns": [
+        "CanvasElement"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--host-composition--workspace-actions--if-execute": {
+      "id": "who-owns-canvas-surface-responsibilities-today--host-composition--workspace-actions--if-execute",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--host-composition--workspace-actions",
+      "name": "execute",
+      "accepts": [
+        "RecordCommand"
+      ],
+      "returns": [
+        "void"
+      ]
+    },
+    "who-owns-canvas-surface-responsibilities-today--host-composition--workspace-actions--if-executeall": {
+      "id": "who-owns-canvas-surface-responsibilities-today--host-composition--workspace-actions--if-executeall",
+      "ownerId": "who-owns-canvas-surface-responsibilities-today--host-composition--workspace-actions",
+      "name": "executeAll",
+      "accepts": [
+        "RecordCommandBatch"
+      ],
+      "returns": [
+        "void"
+      ]
+    }
+  },
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "who-owns-canvas-surface-responsibilities-today": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 2056,
+            "height": 1612
+          },
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--audit-findings": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--audit-findings",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 440,
+            "height": 198
+          },
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--canvas-capability": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-capability",
+          "position": {
+            "x": 520,
+            "y": 56
+          },
+          "size": {
+            "width": 500,
+            "height": 512
+          },
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter",
+          "position": {
+            "x": 40,
+            "y": 638
+          },
+          "size": {
+            "width": 1496,
+            "height": 622
+          },
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--external-runtime": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--external-runtime",
+          "position": {
+            "x": 40,
+            "y": 1298
+          },
+          "size": {
+            "width": 320,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--host-composition": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--host-composition",
+          "position": {
+            "x": 400,
+            "y": 1298
+          },
+          "size": {
+            "width": 556,
+            "height": 274
+          },
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--note-1-current-state-at-revisio": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--note-1-current-state-at-revisio",
+          "position": {
+            "x": 1376,
+            "y": 1298
+          },
+          "size": {
+            "width": 280,
+            "height": 174
+          },
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 420,
+            "height": 224
+          },
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--canvas-capability--diagram-record": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-capability--diagram-record",
+          "position": {
+            "x": 40,
+            "y": 352
+          },
+          "size": {
+            "width": 420,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 256
+          },
+          "sizeMode": "manual",
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-toolbar": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-toolbar",
+          "position": {
+            "x": 412,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "sizeMode": "manual",
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--view-projection": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--view-projection",
+          "position": {
+            "x": 784,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 172
+          },
+          "sizeMode": "manual",
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--in-flight-overlay": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--in-flight-overlay",
+          "position": {
+            "x": 1156,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 172
+          },
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--connection-gestures": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--connection-gestures",
+          "position": {
+            "x": 40,
+            "y": 384
+          },
+          "size": {
+            "width": 300,
+            "height": 172
+          },
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera",
+          "position": {
+            "x": 412,
+            "y": 384
+          },
+          "size": {
+            "width": 300,
+            "height": 198
+          },
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-shortcuts": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-shortcuts",
+          "position": {
+            "x": 784,
+            "y": 384
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--web-renderer-registry": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--web-renderer-registry",
+          "position": {
+            "x": 1156,
+            "y": 384
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--external-runtime--react-flow": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--external-runtime--react-flow",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 240,
+            "height": 64
+          },
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--host-composition--canvas-app-composition": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--host-composition--canvas-app-composition",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 160,
+            "height": 178
+          },
+          "sizeMode": "manual",
+          "pinned": false
+        },
+        "who-owns-canvas-surface-responsibilities-today--host-composition--workspace-actions": {
+          "nodeId": "who-owns-canvas-surface-responsibilities-today--host-composition--workspace-actions",
+          "position": {
+            "x": 216,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 178
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {
+        "who-owns-canvas-surface-responsibilities-today--wire-8": {
+          "wireId": "who-owns-canvas-surface-responsibilities-today--wire-8",
+          "waypoints": [],
+          "labelPosition": 0.08930281800848866
+        },
+        "who-owns-canvas-surface-responsibilities-today--wire-6": {
+          "wireId": "who-owns-canvas-surface-responsibilities-today--wire-6",
+          "waypoints": [],
+          "labelPosition": 0.4539182404329383
+        }
+      },
+      "appearanceByNodeId": {},
+      "appearanceByWireId": {},
+      "arrangementByContainerId": {
+        "who-owns-canvas-surface-responsibilities-today--canvas-capability": {
+          "layout": "stack",
+          "childIds": [
+            "who-owns-canvas-surface-responsibilities-today--canvas-capability--canvas-workspace",
+            "who-owns-canvas-surface-responsibilities-today--canvas-capability--diagram-record"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter": {
+          "layout": "grid",
+          "childIds": [
+            "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-surface",
+            "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-toolbar",
+            "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--view-projection",
+            "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--in-flight-overlay",
+            "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--connection-gestures",
+            "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-camera",
+            "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--canvas-shortcuts",
+            "who-owns-canvas-surface-responsibilities-today--canvas-presentation-adapter--web-renderer-registry"
+          ],
+          "gap": 16,
+          "align": "stretch",
+          "columns": 4
+        },
+        "who-owns-canvas-surface-responsibilities-today--external-runtime": {
+          "layout": "stack",
+          "childIds": [
+            "who-owns-canvas-surface-responsibilities-today--external-runtime--react-flow"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "who-owns-canvas-surface-responsibilities-today--host-composition": {
+          "layout": "row",
+          "childIds": [
+            "who-owns-canvas-surface-responsibilities-today--host-composition--canvas-app-composition",
+            "who-owns-canvas-surface-responsibilities-today--host-composition--workspace-actions"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        }
+      }
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-30cde6ce-ef55-4f7b-aa0f-7e0b87379e09": {
+      "operationId": "cli-apply-30cde6ce-ef55-4f7b-aa0f-7e0b87379e09",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-26T12:24:03.126Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/dev/fd/11"
+      },
+      "commandKinds": [
+        "diagram.setOrientation",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "diagram.definitions.replace",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    },
+    "studio-d0a916d7-7422-4e86-8f8d-ba46f6dee7e9": {
+      "operationId": "studio-d0a916d7-7422-4e86-8f8d-ba46f6dee7e9",
+      "revision": 2,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T00:41:05.434Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "studio-60a8d63c-26c4-4847-af21-5d2dd1c14f51": {
+      "operationId": "studio-60a8d63c-26c4-4847-af21-5d2dd1c14f51",
+      "revision": 3,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T00:41:11.751Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "studio-0e7045f8-1edf-4ac7-ad36-7b83047e44fe": {
+      "operationId": "studio-0e7045f8-1edf-4ac7-ad36-7b83047e44fe",
+      "revision": 4,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T00:41:13.383Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "studio-9296d36a-dd52-4792-8c12-60c60423ba6b": {
+      "operationId": "studio-9296d36a-dd52-4792-8c12-60c60423ba6b",
+      "revision": 5,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T00:41:17.283Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-e253bd39-62f1-4bea-9e7d-5239589fd538": {
+      "operationId": "studio-e253bd39-62f1-4bea-9e7d-5239589fd538",
+      "revision": 7,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T00:41:23.935Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "studio-eaf241b7-8edc-4522-9aa1-7914e194b527": {
+      "operationId": "studio-eaf241b7-8edc-4522-9aa1-7914e194b527",
+      "revision": 8,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T00:41:39.601Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "studio-ffa7db85-16bd-4c47-831b-9cbe101fb0ea": {
+      "operationId": "studio-ffa7db85-16bd-4c47-831b-9cbe101fb0ea",
+      "revision": 9,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T00:46:02.019Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "studio-8fee2f3b-7c9a-4b95-ab56-cd2862898440": {
+      "operationId": "studio-8fee2f3b-7c9a-4b95-ab56-cd2862898440",
+      "revision": 10,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T00:46:07.971Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "studio-3e51b49a-e7dd-4f87-8f23-dbca53845636": {
+      "operationId": "studio-3e51b49a-e7dd-4f87-8f23-dbca53845636",
+      "revision": 11,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T00:46:22.069Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-35c1c787-ba2d-4e21-8e11-b93612632421": {
+      "operationId": "ui-35c1c787-ba2d-4e21-8e11-b93612632421",
+      "revision": 12,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T00:47:35.737Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-c8291a33-3f0d-4311-982f-33e101b624c8": {
+      "operationId": "ui-c8291a33-3f0d-4311-982f-33e101b624c8",
+      "revision": 13,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T00:47:47.721Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    }
+  }
+}

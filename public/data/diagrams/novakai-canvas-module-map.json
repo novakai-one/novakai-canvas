@@ -2,13 +2,13 @@
   "schemaVersion": 3,
   "id": "novakai-canvas-module-map",
   "name": "Novakai Canvas — module map",
+  "orientation": "top-down",
   "status": "active",
-  "revision": 1,
+  "revision": 2,
   "nodes": {
     "novakai-canvas-module-map": {
       "id": "novakai-canvas-module-map",
       "label": "Novakai Canvas — module map",
-      "description": "[orientation=top-down]",
       "interfaceIds": [],
       "typeIds": [],
       "kind": "group"
@@ -21,24 +21,13 @@
       "typeIds": [],
       "kind": "comment"
     },
-    "novakai-canvas-module-map--canvas-cli": {
-      "id": "novakai-canvas-module-map--canvas-cli",
-      "label": "canvas/cli",
-      "description": "packages/canvas/cli - 4 files",
-      "parentId": "novakai-canvas-module-map",
-      "band": 0,
-      "lane": 2,
-      "interfaceIds": [],
-      "typeIds": [],
-      "kind": "module"
-    },
     "novakai-canvas-module-map--canvas-contract-ports": {
       "id": "novakai-canvas-module-map--canvas-contract-ports",
       "label": "canvas/contract/ports",
       "description": "packages/canvas/contract/ports - 3 files",
       "parentId": "novakai-canvas-module-map",
       "band": 0,
-      "lane": 3,
+      "lane": 0,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -49,7 +38,18 @@
       "description": "src/presentation/prototype - 4 files",
       "parentId": "novakai-canvas-module-map",
       "band": 0,
-      "lane": 4,
+      "lane": 19,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "novakai-canvas-module-map--canvas-cli": {
+      "id": "novakai-canvas-module-map--canvas-cli",
+      "label": "canvas/cli",
+      "description": "packages/canvas/cli - 4 files",
+      "parentId": "novakai-canvas-module-map",
+      "band": 0,
+      "lane": 26,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -60,18 +60,7 @@
       "description": "src (entry) - 2 files",
       "parentId": "novakai-canvas-module-map",
       "band": 1,
-      "lane": 1,
-      "interfaceIds": [],
-      "typeIds": [],
-      "kind": "module"
-    },
-    "novakai-canvas-module-map--canvas-contract-compose": {
-      "id": "novakai-canvas-module-map--canvas-contract-compose",
-      "label": "canvas/contract/compose",
-      "description": "packages/canvas/contract/compose - 1 file",
-      "parentId": "novakai-canvas-module-map",
-      "band": 1,
-      "lane": 2,
+      "lane": 18,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -82,7 +71,18 @@
       "description": "src/presentation/canvas-host - 1 file",
       "parentId": "novakai-canvas-module-map",
       "band": 1,
-      "lane": 3,
+      "lane": 19,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "novakai-canvas-module-map--canvas-contract-compose": {
+      "id": "novakai-canvas-module-map--canvas-contract-compose",
+      "label": "canvas/contract/compose",
+      "description": "packages/canvas/contract/compose - 1 file",
+      "parentId": "novakai-canvas-module-map",
+      "band": 1,
+      "lane": 23,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -90,21 +90,10 @@
     "novakai-canvas-module-map--presentation-canvas-app": {
       "id": "novakai-canvas-module-map--presentation-canvas-app",
       "label": "presentation/canvas-app",
-      "description": "src/presentation/canvas-app - 7 files",
+      "description": "src/presentation/canvas-app - 8 files",
       "parentId": "novakai-canvas-module-map",
       "band": 2,
-      "lane": 1,
-      "interfaceIds": [],
-      "typeIds": [],
-      "kind": "module"
-    },
-    "novakai-canvas-module-map--canvas-adapters-node": {
-      "id": "novakai-canvas-module-map--canvas-adapters-node",
-      "label": "canvas/adapters/node",
-      "description": "packages/canvas/adapters/node - 2 files",
-      "parentId": "novakai-canvas-module-map",
-      "band": 2,
-      "lane": 2,
+      "lane": 17,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -115,7 +104,18 @@
       "description": "packages/canvas/adapters/stores - 1 file",
       "parentId": "novakai-canvas-module-map",
       "band": 2,
-      "lane": 3,
+      "lane": 18,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "novakai-canvas-module-map--canvas-adapters-node": {
+      "id": "novakai-canvas-module-map--canvas-adapters-node",
+      "label": "canvas/adapters/node",
+      "description": "packages/canvas/adapters/node - 2 files",
+      "parentId": "novakai-canvas-module-map",
+      "band": 2,
+      "lane": 22,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -123,32 +123,10 @@
     "novakai-canvas-module-map--presentation-components": {
       "id": "novakai-canvas-module-map--presentation-components",
       "label": "presentation/components",
-      "description": "src/presentation/components - 31 files",
+      "description": "src/presentation/components - 33 files",
       "parentId": "novakai-canvas-module-map",
       "band": 3,
-      "lane": 1,
-      "interfaceIds": [],
-      "typeIds": [],
-      "kind": "module"
-    },
-    "novakai-canvas-module-map--presentation": {
-      "id": "novakai-canvas-module-map--presentation",
-      "label": "presentation",
-      "description": "src/presentation - 10 files",
-      "parentId": "novakai-canvas-module-map",
-      "band": 4,
-      "lane": 0,
-      "interfaceIds": [],
-      "typeIds": [],
-      "kind": "module"
-    },
-    "novakai-canvas-module-map--presentation-edges": {
-      "id": "novakai-canvas-module-map--presentation-edges",
-      "label": "presentation/edges",
-      "description": "src/presentation/edges - 4 files",
-      "parentId": "novakai-canvas-module-map",
-      "band": 4,
-      "lane": 1,
+      "lane": 17,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -159,7 +137,18 @@
       "description": "src/presentation/shell - 20 files",
       "parentId": "novakai-canvas-module-map",
       "band": 4,
-      "lane": 2,
+      "lane": 13,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "novakai-canvas-module-map--presentation": {
+      "id": "novakai-canvas-module-map--presentation",
+      "label": "presentation",
+      "description": "src/presentation - 10 files",
+      "parentId": "novakai-canvas-module-map",
+      "band": 4,
+      "lane": 17,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -170,7 +159,18 @@
       "description": "src/components - 1 file",
       "parentId": "novakai-canvas-module-map",
       "band": 4,
-      "lane": 5,
+      "lane": 20,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "novakai-canvas-module-map--presentation-edges": {
+      "id": "novakai-canvas-module-map--presentation-edges",
+      "label": "presentation/edges",
+      "description": "src/presentation/edges - 4 files",
+      "parentId": "novakai-canvas-module-map",
+      "band": 4,
+      "lane": 21,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -181,7 +181,7 @@
       "description": "src/components/callout-stack - 1 file",
       "parentId": "novakai-canvas-module-map",
       "band": 5,
-      "lane": 3,
+      "lane": 17,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -192,7 +192,7 @@
       "description": "src/components/metric - 1 file",
       "parentId": "novakai-canvas-module-map",
       "band": 5,
-      "lane": 4,
+      "lane": 18,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -203,7 +203,7 @@
       "description": "src/components/timeline - 1 file",
       "parentId": "novakai-canvas-module-map",
       "band": 5,
-      "lane": 5,
+      "lane": 19,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -214,7 +214,7 @@
       "description": "src/components/block - 1 file",
       "parentId": "novakai-canvas-module-map",
       "band": 5,
-      "lane": 6,
+      "lane": 21,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -225,7 +225,7 @@
       "description": "src/components/entity - 1 file",
       "parentId": "novakai-canvas-module-map",
       "band": 5,
-      "lane": 7,
+      "lane": 22,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -236,7 +236,7 @@
       "description": "src/components/icon-card - 1 file",
       "parentId": "novakai-canvas-module-map",
       "band": 5,
-      "lane": 8,
+      "lane": 23,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -247,7 +247,7 @@
       "description": "src/components/ooux-object - 1 file",
       "parentId": "novakai-canvas-module-map",
       "band": 5,
-      "lane": 9,
+      "lane": 24,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -258,7 +258,7 @@
       "description": "src/presentation/nodes - 6 files",
       "parentId": "novakai-canvas-module-map",
       "band": 6,
-      "lane": 4,
+      "lane": 18,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -269,7 +269,40 @@
       "description": "packages/canvas/adapters - 4 files",
       "parentId": "novakai-canvas-module-map",
       "band": 7,
-      "lane": 1,
+      "lane": 24,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "novakai-canvas-module-map--canvas-core-components": {
+      "id": "novakai-canvas-module-map--canvas-core-components",
+      "label": "canvas/core/components",
+      "description": "packages/canvas/core/components - 20 files",
+      "parentId": "novakai-canvas-module-map",
+      "band": 7,
+      "lane": 25,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "novakai-canvas-module-map--canvas-core-domain": {
+      "id": "novakai-canvas-module-map--canvas-core-domain",
+      "label": "canvas/core/domain",
+      "description": "packages/canvas/core/domain - 53 files",
+      "parentId": "novakai-canvas-module-map",
+      "band": 7,
+      "lane": 26,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "novakai-canvas-module-map--canvas-core-authoring": {
+      "id": "novakai-canvas-module-map--canvas-core-authoring",
+      "label": "canvas/core/authoring",
+      "description": "packages/canvas/core/authoring - 33 files",
+      "parentId": "novakai-canvas-module-map",
+      "band": 7,
+      "lane": 27,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -280,7 +313,7 @@
       "description": "packages/canvas/contract - 13 files",
       "parentId": "novakai-canvas-module-map",
       "band": 7,
-      "lane": 2,
+      "lane": 28,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -290,41 +323,8 @@
       "label": "canvas/core/application",
       "description": "packages/canvas/core/application - 15 files",
       "parentId": "novakai-canvas-module-map",
-      "band": 8,
-      "lane": 3,
-      "interfaceIds": [],
-      "typeIds": [],
-      "kind": "module"
-    },
-    "novakai-canvas-module-map--canvas-core-components": {
-      "id": "novakai-canvas-module-map--canvas-core-components",
-      "label": "canvas/core/components",
-      "description": "packages/canvas/core/components - 20 files",
-      "parentId": "novakai-canvas-module-map",
-      "band": 9,
-      "lane": 3,
-      "interfaceIds": [],
-      "typeIds": [],
-      "kind": "module"
-    },
-    "novakai-canvas-module-map--canvas-core-authoring": {
-      "id": "novakai-canvas-module-map--canvas-core-authoring",
-      "label": "canvas/core/authoring",
-      "description": "packages/canvas/core/authoring - 33 files",
-      "parentId": "novakai-canvas-module-map",
-      "band": 9,
-      "lane": 4,
-      "interfaceIds": [],
-      "typeIds": [],
-      "kind": "module"
-    },
-    "novakai-canvas-module-map--canvas-core-domain": {
-      "id": "novakai-canvas-module-map--canvas-core-domain",
-      "label": "canvas/core/domain",
-      "description": "packages/canvas/core/domain - 50 files",
-      "parentId": "novakai-canvas-module-map",
-      "band": 9,
-      "lane": 5,
+      "band": 7,
+      "lane": 29,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -334,8 +334,8 @@
       "label": "canvas/core/export",
       "description": "packages/canvas/core/export - 7 files",
       "parentId": "novakai-canvas-module-map",
-      "band": 9,
-      "lane": 6,
+      "band": 7,
+      "lane": 30,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -345,8 +345,8 @@
       "label": "canvas/core/rendering",
       "description": "packages/canvas/core/rendering - 9 files",
       "parentId": "novakai-canvas-module-map",
-      "band": 9,
-      "lane": 7,
+      "band": 7,
+      "lane": 31,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -356,8 +356,8 @@
       "label": "canvas/contract/schemas",
       "description": "packages/canvas/contract/schemas - 14 files",
       "parentId": "novakai-canvas-module-map",
-      "band": 10,
-      "lane": 2,
+      "band": 8,
+      "lane": 23,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -367,8 +367,8 @@
       "label": "canvas/contract/records",
       "description": "packages/canvas/contract/records - 12 files",
       "parentId": "novakai-canvas-module-map",
-      "band": 11,
-      "lane": 1,
+      "band": 9,
+      "lane": 22,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -378,8 +378,8 @@
       "label": "canvas/contract/types",
       "description": "packages/canvas/contract/types - 4 files",
       "parentId": "novakai-canvas-module-map",
-      "band": 12,
-      "lane": 1,
+      "band": 10,
+      "lane": 22,
       "interfaceIds": [],
       "typeIds": [],
       "kind": "module"
@@ -389,7 +389,7 @@
     "novakai-canvas-module-map--wire-1": {
       "id": "novakai-canvas-module-map--wire-1",
       "kind": "references",
-      "label": "imports (26 files)",
+      "label": "imports (30 files)",
       "source": {
         "nodeId": "novakai-canvas-module-map--canvas-contract"
       },
@@ -400,6 +400,28 @@
     "novakai-canvas-module-map--wire-2": {
       "id": "novakai-canvas-module-map--wire-2",
       "kind": "references",
+      "label": "imports (15 files)",
+      "source": {
+        "nodeId": "novakai-canvas-module-map--presentation-components"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-module-map--presentation-shell"
+      }
+    },
+    "novakai-canvas-module-map--wire-3": {
+      "id": "novakai-canvas-module-map--wire-3",
+      "kind": "references",
+      "label": "imports (14 files)",
+      "source": {
+        "nodeId": "novakai-canvas-module-map--canvas-core-rendering"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-module-map--canvas-core-domain"
+      }
+    },
+    "novakai-canvas-module-map--wire-4": {
+      "id": "novakai-canvas-module-map--wire-4",
+      "kind": "references",
       "label": "imports (14 files)",
       "source": {
         "nodeId": "novakai-canvas-module-map--canvas-contract"
@@ -408,19 +430,19 @@
         "nodeId": "novakai-canvas-module-map--canvas-core-authoring"
       }
     },
-    "novakai-canvas-module-map--wire-3": {
-      "id": "novakai-canvas-module-map--wire-3",
+    "novakai-canvas-module-map--wire-5": {
+      "id": "novakai-canvas-module-map--wire-5",
       "kind": "references",
-      "label": "imports (14 files)",
+      "label": "imports (13 files)",
       "source": {
         "nodeId": "novakai-canvas-module-map--presentation-components"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--presentation-shell"
+        "nodeId": "novakai-canvas-module-map--canvas-contract"
       }
     },
-    "novakai-canvas-module-map--wire-4": {
-      "id": "novakai-canvas-module-map--wire-4",
+    "novakai-canvas-module-map--wire-6": {
+      "id": "novakai-canvas-module-map--wire-6",
       "kind": "references",
       "label": "imports (11 files)",
       "source": {
@@ -430,8 +452,8 @@
         "nodeId": "novakai-canvas-module-map--canvas-core-domain"
       }
     },
-    "novakai-canvas-module-map--wire-5": {
-      "id": "novakai-canvas-module-map--wire-5",
+    "novakai-canvas-module-map--wire-7": {
+      "id": "novakai-canvas-module-map--wire-7",
       "kind": "references",
       "label": "imports (11 files)",
       "source": {
@@ -441,19 +463,8 @@
         "nodeId": "novakai-canvas-module-map--presentation"
       }
     },
-    "novakai-canvas-module-map--wire-6": {
-      "id": "novakai-canvas-module-map--wire-6",
-      "kind": "references",
-      "label": "imports (11 files)",
-      "source": {
-        "nodeId": "novakai-canvas-module-map--presentation-components"
-      },
-      "target": {
-        "nodeId": "novakai-canvas-module-map--canvas-contract"
-      }
-    },
-    "novakai-canvas-module-map--wire-7": {
-      "id": "novakai-canvas-module-map--wire-7",
+    "novakai-canvas-module-map--wire-8": {
+      "id": "novakai-canvas-module-map--wire-8",
       "kind": "references",
       "label": "imports (10 files)",
       "source": {
@@ -461,17 +472,6 @@
       },
       "target": {
         "nodeId": "novakai-canvas-module-map--canvas-contract-schemas"
-      }
-    },
-    "novakai-canvas-module-map--wire-8": {
-      "id": "novakai-canvas-module-map--wire-8",
-      "kind": "references",
-      "label": "imports (10 files)",
-      "source": {
-        "nodeId": "novakai-canvas-module-map--canvas-core-rendering"
-      },
-      "target": {
-        "nodeId": "novakai-canvas-module-map--canvas-core-domain"
       }
     },
     "novakai-canvas-module-map--wire-9": {
@@ -675,9 +675,9 @@
     "novakai-canvas-module-map--wire-27": {
       "id": "novakai-canvas-module-map--wire-27",
       "kind": "references",
-      "label": "imports (3 files)",
+      "label": "imports (4 files)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--canvas-adapters"
+        "nodeId": "novakai-canvas-module-map--presentation-canvas-app"
       },
       "target": {
         "nodeId": "novakai-canvas-module-map--canvas-contract"
@@ -688,14 +688,36 @@
       "kind": "references",
       "label": "imports (3 files)",
       "source": {
+        "nodeId": "novakai-canvas-module-map--canvas-adapters"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-module-map--canvas-contract"
+      }
+    },
+    "novakai-canvas-module-map--wire-29": {
+      "id": "novakai-canvas-module-map--wire-29",
+      "kind": "references",
+      "label": "imports (3 files)",
+      "source": {
+        "nodeId": "novakai-canvas-module-map--canvas-contract-schemas"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-module-map--canvas-contract-records"
+      }
+    },
+    "novakai-canvas-module-map--wire-30": {
+      "id": "novakai-canvas-module-map--wire-30",
+      "kind": "references",
+      "label": "imports (3 files)",
+      "source": {
         "nodeId": "novakai-canvas-module-map--canvas-contract"
       },
       "target": {
         "nodeId": "novakai-canvas-module-map--canvas-core-export"
       }
     },
-    "novakai-canvas-module-map--wire-29": {
-      "id": "novakai-canvas-module-map--wire-29",
+    "novakai-canvas-module-map--wire-31": {
+      "id": "novakai-canvas-module-map--wire-31",
       "kind": "references",
       "label": "imports (3 files)",
       "source": {
@@ -705,34 +727,12 @@
         "nodeId": "novakai-canvas-module-map--canvas-core-authoring"
       }
     },
-    "novakai-canvas-module-map--wire-30": {
-      "id": "novakai-canvas-module-map--wire-30",
-      "kind": "references",
-      "label": "imports (3 files)",
-      "source": {
-        "nodeId": "novakai-canvas-module-map--presentation-nodes"
-      },
-      "target": {
-        "nodeId": "novakai-canvas-module-map--canvas-contract"
-      }
-    },
-    "novakai-canvas-module-map--wire-31": {
-      "id": "novakai-canvas-module-map--wire-31",
-      "kind": "references",
-      "label": "imports (3 files)",
-      "source": {
-        "nodeId": "novakai-canvas-module-map--presentation"
-      },
-      "target": {
-        "nodeId": "novakai-canvas-module-map--canvas-contract"
-      }
-    },
     "novakai-canvas-module-map--wire-32": {
       "id": "novakai-canvas-module-map--wire-32",
       "kind": "references",
       "label": "imports (3 files)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--presentation-canvas-app"
+        "nodeId": "novakai-canvas-module-map--presentation-nodes"
       },
       "target": {
         "nodeId": "novakai-canvas-module-map--canvas-contract"
@@ -743,21 +743,21 @@
       "kind": "references",
       "label": "imports (3 files)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--presentation-canvas-app"
+        "nodeId": "novakai-canvas-module-map--presentation"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--presentation"
+        "nodeId": "novakai-canvas-module-map--canvas-contract"
       }
     },
     "novakai-canvas-module-map--wire-34": {
       "id": "novakai-canvas-module-map--wire-34",
       "kind": "references",
-      "label": "imports (2 files)",
+      "label": "imports (3 files)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--canvas-contract-schemas"
+        "nodeId": "novakai-canvas-module-map--presentation-canvas-app"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--canvas-contract-types"
+        "nodeId": "novakai-canvas-module-map--presentation"
       }
     },
     "novakai-canvas-module-map--wire-35": {
@@ -768,7 +768,7 @@
         "nodeId": "novakai-canvas-module-map--canvas-contract-schemas"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--canvas-contract-records"
+        "nodeId": "novakai-canvas-module-map--canvas-contract-types"
       }
     },
     "novakai-canvas-module-map--wire-36": {
@@ -922,11 +922,33 @@
         "nodeId": "novakai-canvas-module-map--canvas-core-components"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--canvas-core-rendering"
+        "nodeId": "novakai-canvas-module-map--canvas-core-domain"
       }
     },
     "novakai-canvas-module-map--wire-50": {
       "id": "novakai-canvas-module-map--wire-50",
+      "kind": "references",
+      "label": "imports (1 file)",
+      "source": {
+        "nodeId": "novakai-canvas-module-map--canvas-core-domain"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-module-map--canvas-contract-records"
+      }
+    },
+    "novakai-canvas-module-map--wire-51": {
+      "id": "novakai-canvas-module-map--wire-51",
+      "kind": "references",
+      "label": "imports (1 file)",
+      "source": {
+        "nodeId": "novakai-canvas-module-map--canvas-core-components"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-module-map--canvas-core-rendering"
+      }
+    },
+    "novakai-canvas-module-map--wire-52": {
+      "id": "novakai-canvas-module-map--wire-52",
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
@@ -936,8 +958,19 @@
         "nodeId": "novakai-canvas-module-map--canvas-core-domain"
       }
     },
-    "novakai-canvas-module-map--wire-51": {
-      "id": "novakai-canvas-module-map--wire-51",
+    "novakai-canvas-module-map--wire-53": {
+      "id": "novakai-canvas-module-map--wire-53",
+      "kind": "references",
+      "label": "imports (1 file)",
+      "source": {
+        "nodeId": "novakai-canvas-module-map--canvas-core-authoring"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-module-map--canvas-contract"
+      }
+    },
+    "novakai-canvas-module-map--wire-54": {
+      "id": "novakai-canvas-module-map--wire-54",
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
@@ -947,8 +980,8 @@
         "nodeId": "novakai-canvas-module-map--canvas-core-export"
       }
     },
-    "novakai-canvas-module-map--wire-52": {
-      "id": "novakai-canvas-module-map--wire-52",
+    "novakai-canvas-module-map--wire-55": {
+      "id": "novakai-canvas-module-map--wire-55",
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
@@ -958,8 +991,8 @@
         "nodeId": "novakai-canvas-module-map--canvas-contract-types"
       }
     },
-    "novakai-canvas-module-map--wire-53": {
-      "id": "novakai-canvas-module-map--wire-53",
+    "novakai-canvas-module-map--wire-56": {
+      "id": "novakai-canvas-module-map--wire-56",
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
@@ -969,48 +1002,15 @@
         "nodeId": "novakai-canvas-module-map--canvas-core-authoring"
       }
     },
-    "novakai-canvas-module-map--wire-54": {
-      "id": "novakai-canvas-module-map--wire-54",
-      "kind": "references",
-      "label": "imports (1 file)",
-      "source": {
-        "nodeId": "novakai-canvas-module-map--canvas-contract-compose"
-      },
-      "target": {
-        "nodeId": "novakai-canvas-module-map--canvas-adapters-node"
-      }
-    },
-    "novakai-canvas-module-map--wire-55": {
-      "id": "novakai-canvas-module-map--wire-55",
-      "kind": "references",
-      "label": "imports (1 file)",
-      "source": {
-        "nodeId": "novakai-canvas-module-map--canvas-contract-compose"
-      },
-      "target": {
-        "nodeId": "novakai-canvas-module-map--canvas-adapters-stores"
-      }
-    },
-    "novakai-canvas-module-map--wire-56": {
-      "id": "novakai-canvas-module-map--wire-56",
-      "kind": "references",
-      "label": "imports (1 file)",
-      "source": {
-        "nodeId": "novakai-canvas-module-map--canvas-contract-compose"
-      },
-      "target": {
-        "nodeId": "novakai-canvas-module-map--canvas-core-application"
-      }
-    },
     "novakai-canvas-module-map--wire-57": {
       "id": "novakai-canvas-module-map--wire-57",
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--canvas-contract-compose"
+        "nodeId": "novakai-canvas-module-map--canvas-contract"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--canvas-core-domain"
+        "nodeId": "novakai-canvas-module-map--canvas-contract-records"
       }
     },
     "novakai-canvas-module-map--wire-58": {
@@ -1021,11 +1021,55 @@
         "nodeId": "novakai-canvas-module-map--canvas-contract-compose"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--canvas-contract-schemas"
+        "nodeId": "novakai-canvas-module-map--canvas-adapters-node"
       }
     },
     "novakai-canvas-module-map--wire-59": {
       "id": "novakai-canvas-module-map--wire-59",
+      "kind": "references",
+      "label": "imports (1 file)",
+      "source": {
+        "nodeId": "novakai-canvas-module-map--canvas-contract-compose"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-module-map--canvas-adapters-stores"
+      }
+    },
+    "novakai-canvas-module-map--wire-60": {
+      "id": "novakai-canvas-module-map--wire-60",
+      "kind": "references",
+      "label": "imports (1 file)",
+      "source": {
+        "nodeId": "novakai-canvas-module-map--canvas-contract-compose"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-module-map--canvas-core-application"
+      }
+    },
+    "novakai-canvas-module-map--wire-61": {
+      "id": "novakai-canvas-module-map--wire-61",
+      "kind": "references",
+      "label": "imports (1 file)",
+      "source": {
+        "nodeId": "novakai-canvas-module-map--canvas-contract-compose"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-module-map--canvas-core-domain"
+      }
+    },
+    "novakai-canvas-module-map--wire-62": {
+      "id": "novakai-canvas-module-map--wire-62",
+      "kind": "references",
+      "label": "imports (1 file)",
+      "source": {
+        "nodeId": "novakai-canvas-module-map--canvas-contract-compose"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-module-map--canvas-contract-schemas"
+      }
+    },
+    "novakai-canvas-module-map--wire-63": {
+      "id": "novakai-canvas-module-map--wire-63",
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
@@ -1035,8 +1079,8 @@
         "nodeId": "novakai-canvas-module-map--presentation-components"
       }
     },
-    "novakai-canvas-module-map--wire-60": {
-      "id": "novakai-canvas-module-map--wire-60",
+    "novakai-canvas-module-map--wire-64": {
+      "id": "novakai-canvas-module-map--wire-64",
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
@@ -1046,59 +1090,15 @@
         "nodeId": "novakai-canvas-module-map--canvas-contract"
       }
     },
-    "novakai-canvas-module-map--wire-61": {
-      "id": "novakai-canvas-module-map--wire-61",
-      "kind": "references",
-      "label": "imports (1 file)",
-      "source": {
-        "nodeId": "novakai-canvas-module-map--presentation-components"
-      },
-      "target": {
-        "nodeId": "novakai-canvas-module-map--components"
-      }
-    },
-    "novakai-canvas-module-map--wire-62": {
-      "id": "novakai-canvas-module-map--wire-62",
-      "kind": "references",
-      "label": "imports (1 file)",
-      "source": {
-        "nodeId": "novakai-canvas-module-map--presentation-components"
-      },
-      "target": {
-        "nodeId": "novakai-canvas-module-map--presentation-edges"
-      }
-    },
-    "novakai-canvas-module-map--wire-63": {
-      "id": "novakai-canvas-module-map--wire-63",
-      "kind": "references",
-      "label": "imports (1 file)",
-      "source": {
-        "nodeId": "novakai-canvas-module-map--components"
-      },
-      "target": {
-        "nodeId": "novakai-canvas-module-map--components-block"
-      }
-    },
-    "novakai-canvas-module-map--wire-64": {
-      "id": "novakai-canvas-module-map--wire-64",
-      "kind": "references",
-      "label": "imports (1 file)",
-      "source": {
-        "nodeId": "novakai-canvas-module-map--components"
-      },
-      "target": {
-        "nodeId": "novakai-canvas-module-map--components-callout-stack"
-      }
-    },
     "novakai-canvas-module-map--wire-65": {
       "id": "novakai-canvas-module-map--wire-65",
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--components"
+        "nodeId": "novakai-canvas-module-map--presentation-components"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--components-entity"
+        "nodeId": "novakai-canvas-module-map--components"
       }
     },
     "novakai-canvas-module-map--wire-66": {
@@ -1106,10 +1106,10 @@
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--components"
+        "nodeId": "novakai-canvas-module-map--presentation-components"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--components-icon-card"
+        "nodeId": "novakai-canvas-module-map--presentation-edges"
       }
     },
     "novakai-canvas-module-map--wire-67": {
@@ -1120,7 +1120,7 @@
         "nodeId": "novakai-canvas-module-map--components"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--components-metric"
+        "nodeId": "novakai-canvas-module-map--components-block"
       }
     },
     "novakai-canvas-module-map--wire-68": {
@@ -1131,7 +1131,7 @@
         "nodeId": "novakai-canvas-module-map--components"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--components-ooux-object"
+        "nodeId": "novakai-canvas-module-map--components-callout-stack"
       }
     },
     "novakai-canvas-module-map--wire-69": {
@@ -1142,7 +1142,7 @@
         "nodeId": "novakai-canvas-module-map--components"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--components-timeline"
+        "nodeId": "novakai-canvas-module-map--components-entity"
       }
     },
     "novakai-canvas-module-map--wire-70": {
@@ -1153,7 +1153,7 @@
         "nodeId": "novakai-canvas-module-map--components"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--canvas-contract"
+        "nodeId": "novakai-canvas-module-map--components-icon-card"
       }
     },
     "novakai-canvas-module-map--wire-71": {
@@ -1161,10 +1161,10 @@
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--components-block"
+        "nodeId": "novakai-canvas-module-map--components"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--presentation-nodes"
+        "nodeId": "novakai-canvas-module-map--components-metric"
       }
     },
     "novakai-canvas-module-map--wire-72": {
@@ -1172,10 +1172,10 @@
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--components-block"
+        "nodeId": "novakai-canvas-module-map--components"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--canvas-contract"
+        "nodeId": "novakai-canvas-module-map--components-ooux-object"
       }
     },
     "novakai-canvas-module-map--wire-73": {
@@ -1183,10 +1183,10 @@
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--components-callout-stack"
+        "nodeId": "novakai-canvas-module-map--components"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--presentation-nodes"
+        "nodeId": "novakai-canvas-module-map--components-timeline"
       }
     },
     "novakai-canvas-module-map--wire-74": {
@@ -1194,7 +1194,7 @@
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--components-entity"
+        "nodeId": "novakai-canvas-module-map--components"
       },
       "target": {
         "nodeId": "novakai-canvas-module-map--canvas-contract"
@@ -1205,7 +1205,7 @@
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--components-icon-card"
+        "nodeId": "novakai-canvas-module-map--components-block"
       },
       "target": {
         "nodeId": "novakai-canvas-module-map--presentation-nodes"
@@ -1216,7 +1216,7 @@
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--components-icon-card"
+        "nodeId": "novakai-canvas-module-map--components-block"
       },
       "target": {
         "nodeId": "novakai-canvas-module-map--canvas-contract"
@@ -1227,7 +1227,7 @@
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--components-metric"
+        "nodeId": "novakai-canvas-module-map--components-callout-stack"
       },
       "target": {
         "nodeId": "novakai-canvas-module-map--presentation-nodes"
@@ -1238,7 +1238,7 @@
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--components-ooux-object"
+        "nodeId": "novakai-canvas-module-map--components-entity"
       },
       "target": {
         "nodeId": "novakai-canvas-module-map--canvas-contract"
@@ -1249,7 +1249,7 @@
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--components-timeline"
+        "nodeId": "novakai-canvas-module-map--components-icon-card"
       },
       "target": {
         "nodeId": "novakai-canvas-module-map--presentation-nodes"
@@ -1260,10 +1260,10 @@
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--presentation"
+        "nodeId": "novakai-canvas-module-map--components-icon-card"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--presentation-edges"
+        "nodeId": "novakai-canvas-module-map--canvas-contract"
       }
     },
     "novakai-canvas-module-map--wire-81": {
@@ -1271,10 +1271,10 @@
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
-        "nodeId": "novakai-canvas-module-map--presentation-edges"
+        "nodeId": "novakai-canvas-module-map--components-metric"
       },
       "target": {
-        "nodeId": "novakai-canvas-module-map--presentation"
+        "nodeId": "novakai-canvas-module-map--presentation-nodes"
       }
     },
     "novakai-canvas-module-map--wire-82": {
@@ -1282,14 +1282,58 @@
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
+        "nodeId": "novakai-canvas-module-map--components-ooux-object"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-module-map--canvas-contract"
+      }
+    },
+    "novakai-canvas-module-map--wire-83": {
+      "id": "novakai-canvas-module-map--wire-83",
+      "kind": "references",
+      "label": "imports (1 file)",
+      "source": {
+        "nodeId": "novakai-canvas-module-map--components-timeline"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-module-map--presentation-nodes"
+      }
+    },
+    "novakai-canvas-module-map--wire-84": {
+      "id": "novakai-canvas-module-map--wire-84",
+      "kind": "references",
+      "label": "imports (1 file)",
+      "source": {
+        "nodeId": "novakai-canvas-module-map--presentation"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-module-map--presentation-edges"
+      }
+    },
+    "novakai-canvas-module-map--wire-85": {
+      "id": "novakai-canvas-module-map--wire-85",
+      "kind": "references",
+      "label": "imports (1 file)",
+      "source": {
+        "nodeId": "novakai-canvas-module-map--presentation-edges"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-module-map--presentation"
+      }
+    },
+    "novakai-canvas-module-map--wire-86": {
+      "id": "novakai-canvas-module-map--wire-86",
+      "kind": "references",
+      "label": "imports (1 file)",
+      "source": {
         "nodeId": "novakai-canvas-module-map--src-entry"
       },
       "target": {
         "nodeId": "novakai-canvas-module-map--presentation-canvas-host"
       }
     },
-    "novakai-canvas-module-map--wire-83": {
-      "id": "novakai-canvas-module-map--wire-83",
+    "novakai-canvas-module-map--wire-87": {
+      "id": "novakai-canvas-module-map--wire-87",
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
@@ -1299,8 +1343,19 @@
         "nodeId": "novakai-canvas-module-map--src-entry"
       }
     },
-    "novakai-canvas-module-map--wire-84": {
-      "id": "novakai-canvas-module-map--wire-84",
+    "novakai-canvas-module-map--wire-88": {
+      "id": "novakai-canvas-module-map--wire-88",
+      "kind": "references",
+      "label": "imports (1 file)",
+      "source": {
+        "nodeId": "novakai-canvas-module-map--presentation-canvas-host"
+      },
+      "target": {
+        "nodeId": "novakai-canvas-module-map--presentation-canvas-app"
+      }
+    },
+    "novakai-canvas-module-map--wire-89": {
+      "id": "novakai-canvas-module-map--wire-89",
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
@@ -1310,8 +1365,8 @@
         "nodeId": "novakai-canvas-module-map--presentation-components"
       }
     },
-    "novakai-canvas-module-map--wire-85": {
-      "id": "novakai-canvas-module-map--wire-85",
+    "novakai-canvas-module-map--wire-90": {
+      "id": "novakai-canvas-module-map--wire-90",
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
@@ -1321,8 +1376,8 @@
         "nodeId": "novakai-canvas-module-map--presentation-shell"
       }
     },
-    "novakai-canvas-module-map--wire-86": {
-      "id": "novakai-canvas-module-map--wire-86",
+    "novakai-canvas-module-map--wire-91": {
+      "id": "novakai-canvas-module-map--wire-91",
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
@@ -1332,8 +1387,8 @@
         "nodeId": "novakai-canvas-module-map--canvas-contract"
       }
     },
-    "novakai-canvas-module-map--wire-87": {
-      "id": "novakai-canvas-module-map--wire-87",
+    "novakai-canvas-module-map--wire-92": {
+      "id": "novakai-canvas-module-map--wire-92",
       "kind": "references",
       "label": "imports (1 file)",
       "source": {
@@ -1359,8 +1414,8 @@
             "y": 80
           },
           "size": {
-            "width": 5224,
-            "height": 2288
+            "width": 5604,
+            "height": 1988
           },
           "pinned": false
         },
@@ -1376,26 +1431,14 @@
           },
           "pinned": false
         },
-        "novakai-canvas-module-map--canvas-cli": {
-          "nodeId": "novakai-canvas-module-map--canvas-cli",
-          "position": {
-            "x": 672,
-            "y": 56
-          },
-          "size": {
-            "width": 233,
-            "height": 104
-          },
-          "pinned": false
-        },
         "novakai-canvas-module-map--canvas-contract-ports": {
           "nodeId": "novakai-canvas-module-map--canvas-contract-ports",
           "position": {
-            "x": 1046,
+            "x": 40,
             "y": 56
           },
           "size": {
-            "width": 312,
+            "width": 300,
             "height": 104
           },
           "pinned": false
@@ -1403,7 +1446,7 @@
         "novakai-canvas-module-map--presentation-prototype": {
           "nodeId": "novakai-canvas-module-map--presentation-prototype",
           "position": {
-            "x": 1420,
+            "x": 1360,
             "y": 56
           },
           "size": {
@@ -1412,26 +1455,26 @@
           },
           "pinned": false
         },
-        "novakai-canvas-module-map--src-entry": {
-          "nodeId": "novakai-canvas-module-map--src-entry",
+        "novakai-canvas-module-map--canvas-cli": {
+          "nodeId": "novakai-canvas-module-map--canvas-cli",
           "position": {
-            "x": 298,
-            "y": 230
+            "x": 3600,
+            "y": 56
           },
           "size": {
-            "width": 200,
+            "width": 240,
             "height": 104
           },
           "pinned": false
         },
-        "novakai-canvas-module-map--canvas-contract-compose": {
-          "nodeId": "novakai-canvas-module-map--canvas-contract-compose",
+        "novakai-canvas-module-map--src-entry": {
+          "nodeId": "novakai-canvas-module-map--src-entry",
           "position": {
-            "x": 672,
+            "x": 1020,
             "y": 230
           },
           "size": {
-            "width": 319,
+            "width": 240,
             "height": 104
           },
           "pinned": false
@@ -1439,7 +1482,7 @@
         "novakai-canvas-module-map--presentation-canvas-host": {
           "nodeId": "novakai-canvas-module-map--presentation-canvas-host",
           "position": {
-            "x": 1046,
+            "x": 1360,
             "y": 230
           },
           "size": {
@@ -1448,10 +1491,22 @@
           },
           "pinned": false
         },
+        "novakai-canvas-module-map--canvas-contract-compose": {
+          "nodeId": "novakai-canvas-module-map--canvas-contract-compose",
+          "position": {
+            "x": 2604,
+            "y": 230
+          },
+          "size": {
+            "width": 300,
+            "height": 104
+          },
+          "pinned": false
+        },
         "novakai-canvas-module-map--presentation-canvas-app": {
           "nodeId": "novakai-canvas-module-map--presentation-canvas-app",
           "position": {
-            "x": 298,
+            "x": 682,
             "y": 404
           },
           "size": {
@@ -1460,26 +1515,26 @@
           },
           "pinned": false
         },
-        "novakai-canvas-module-map--canvas-adapters-node": {
-          "nodeId": "novakai-canvas-module-map--canvas-adapters-node",
+        "novakai-canvas-module-map--canvas-adapters-stores": {
+          "nodeId": "novakai-canvas-module-map--canvas-adapters-stores",
           "position": {
-            "x": 672,
+            "x": 1020,
             "y": 404
           },
           "size": {
-            "width": 305,
+            "width": 300,
             "height": 104
           },
           "pinned": false
         },
-        "novakai-canvas-module-map--canvas-adapters-stores": {
-          "nodeId": "novakai-canvas-module-map--canvas-adapters-stores",
+        "novakai-canvas-module-map--canvas-adapters-node": {
+          "nodeId": "novakai-canvas-module-map--canvas-adapters-node",
           "position": {
-            "x": 1046,
+            "x": 2264,
             "y": 404
           },
           "size": {
-            "width": 312,
+            "width": 300,
             "height": 104
           },
           "pinned": false
@@ -1487,7 +1542,7 @@
         "novakai-canvas-module-map--presentation-components": {
           "nodeId": "novakai-canvas-module-map--presentation-components",
           "position": {
-            "x": 298,
+            "x": 682,
             "y": 578
           },
           "size": {
@@ -1496,34 +1551,10 @@
           },
           "pinned": false
         },
-        "novakai-canvas-module-map--presentation": {
-          "nodeId": "novakai-canvas-module-map--presentation",
-          "position": {
-            "x": 40,
-            "y": 752
-          },
-          "size": {
-            "width": 218,
-            "height": 104
-          },
-          "pinned": false
-        },
-        "novakai-canvas-module-map--presentation-edges": {
-          "nodeId": "novakai-canvas-module-map--presentation-edges",
-          "position": {
-            "x": 298,
-            "y": 752
-          },
-          "size": {
-            "width": 254,
-            "height": 104
-          },
-          "pinned": false
-        },
         "novakai-canvas-module-map--presentation-shell": {
           "nodeId": "novakai-canvas-module-map--presentation-shell",
           "position": {
-            "x": 672,
+            "x": 380,
             "y": 752
           },
           "size": {
@@ -1532,14 +1563,38 @@
           },
           "pinned": false
         },
-        "novakai-canvas-module-map--components": {
-          "nodeId": "novakai-canvas-module-map--components",
+        "novakai-canvas-module-map--presentation": {
+          "nodeId": "novakai-canvas-module-map--presentation",
           "position": {
-            "x": 1779,
+            "x": 682,
             "y": 752
           },
           "size": {
-            "width": 200,
+            "width": 240,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "novakai-canvas-module-map--components": {
+          "nodeId": "novakai-canvas-module-map--components",
+          "position": {
+            "x": 1690,
+            "y": 752
+          },
+          "size": {
+            "width": 240,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "novakai-canvas-module-map--presentation-edges": {
+          "nodeId": "novakai-canvas-module-map--presentation-edges",
+          "position": {
+            "x": 1970,
+            "y": 752
+          },
+          "size": {
+            "width": 254,
             "height": 104
           },
           "pinned": false
@@ -1547,7 +1602,7 @@
         "novakai-canvas-module-map--components-callout-stack": {
           "nodeId": "novakai-canvas-module-map--components-callout-stack",
           "position": {
-            "x": 1046,
+            "x": 682,
             "y": 926
           },
           "size": {
@@ -1559,7 +1614,7 @@
         "novakai-canvas-module-map--components-metric": {
           "nodeId": "novakai-canvas-module-map--components-metric",
           "position": {
-            "x": 1420,
+            "x": 1020,
             "y": 926
           },
           "size": {
@@ -1571,7 +1626,7 @@
         "novakai-canvas-module-map--components-timeline": {
           "nodeId": "novakai-canvas-module-map--components-timeline",
           "position": {
-            "x": 1779,
+            "x": 1360,
             "y": 926
           },
           "size": {
@@ -1583,11 +1638,11 @@
         "novakai-canvas-module-map--components-block": {
           "nodeId": "novakai-canvas-module-map--components-block",
           "position": {
-            "x": 2117,
+            "x": 1970,
             "y": 926
           },
           "size": {
-            "width": 233,
+            "width": 240,
             "height": 104
           },
           "pinned": false
@@ -1595,7 +1650,7 @@
         "novakai-canvas-module-map--components-entity": {
           "nodeId": "novakai-canvas-module-map--components-entity",
           "position": {
-            "x": 2447,
+            "x": 2264,
             "y": 926
           },
           "size": {
@@ -1607,7 +1662,7 @@
         "novakai-canvas-module-map--components-icon-card": {
           "nodeId": "novakai-canvas-module-map--components-icon-card",
           "position": {
-            "x": 2799,
+            "x": 2604,
             "y": 926
           },
           "size": {
@@ -1619,7 +1674,7 @@
         "novakai-canvas-module-map--components-ooux-object": {
           "nodeId": "novakai-canvas-module-map--components-ooux-object",
           "position": {
-            "x": 3101,
+            "x": 2944,
             "y": 926
           },
           "size": {
@@ -1631,7 +1686,7 @@
         "novakai-canvas-module-map--presentation-nodes": {
           "nodeId": "novakai-canvas-module-map--presentation-nodes",
           "position": {
-            "x": 1420,
+            "x": 1020,
             "y": 1100
           },
           "size": {
@@ -1643,7 +1698,7 @@
         "novakai-canvas-module-map--canvas-adapters": {
           "nodeId": "novakai-canvas-module-map--canvas-adapters",
           "position": {
-            "x": 298,
+            "x": 2944,
             "y": 1274
           },
           "size": {
@@ -1652,10 +1707,46 @@
           },
           "pinned": false
         },
+        "novakai-canvas-module-map--canvas-core-components": {
+          "nodeId": "novakai-canvas-module-map--canvas-core-components",
+          "position": {
+            "x": 3260,
+            "y": 1274
+          },
+          "size": {
+            "width": 300,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "novakai-canvas-module-map--canvas-core-domain": {
+          "nodeId": "novakai-canvas-module-map--canvas-core-domain",
+          "position": {
+            "x": 3600,
+            "y": 1274
+          },
+          "size": {
+            "width": 298,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "novakai-canvas-module-map--canvas-core-authoring": {
+          "nodeId": "novakai-canvas-module-map--canvas-core-authoring",
+          "position": {
+            "x": 3938,
+            "y": 1274
+          },
+          "size": {
+            "width": 300,
+            "height": 104
+          },
+          "pinned": false
+        },
         "novakai-canvas-module-map--canvas-contract": {
           "nodeId": "novakai-canvas-module-map--canvas-contract",
           "position": {
-            "x": 672,
+            "x": 4278,
             "y": 1274
           },
           "size": {
@@ -1667,56 +1758,20 @@
         "novakai-canvas-module-map--canvas-core-application": {
           "nodeId": "novakai-canvas-module-map--canvas-core-application",
           "position": {
-            "x": 1046,
-            "y": 1448
+            "x": 4594,
+            "y": 1274
           },
           "size": {
-            "width": 334,
-            "height": 104
-          },
-          "pinned": false
-        },
-        "novakai-canvas-module-map--canvas-core-components": {
-          "nodeId": "novakai-canvas-module-map--canvas-core-components",
-          "position": {
-            "x": 1046,
-            "y": 1622
-          },
-          "size": {
-            "width": 326,
-            "height": 104
-          },
-          "pinned": false
-        },
-        "novakai-canvas-module-map--canvas-core-authoring": {
-          "nodeId": "novakai-canvas-module-map--canvas-core-authoring",
-          "position": {
-            "x": 1420,
-            "y": 1622
-          },
-          "size": {
-            "width": 319,
-            "height": 104
-          },
-          "pinned": false
-        },
-        "novakai-canvas-module-map--canvas-core-domain": {
-          "nodeId": "novakai-canvas-module-map--canvas-core-domain",
-          "position": {
-            "x": 1779,
-            "y": 1622
-          },
-          "size": {
-            "width": 298,
-            "height": 104
+            "width": 300,
+            "height": 120
           },
           "pinned": false
         },
         "novakai-canvas-module-map--canvas-core-export": {
           "nodeId": "novakai-canvas-module-map--canvas-core-export",
           "position": {
-            "x": 2117,
-            "y": 1622
+            "x": 4934,
+            "y": 1274
           },
           "size": {
             "width": 290,
@@ -1727,11 +1782,11 @@
         "novakai-canvas-module-map--canvas-core-rendering": {
           "nodeId": "novakai-canvas-module-map--canvas-core-rendering",
           "position": {
-            "x": 2447,
-            "y": 1622
+            "x": 5264,
+            "y": 1274
           },
           "size": {
-            "width": 312,
+            "width": 300,
             "height": 104
           },
           "pinned": false
@@ -1739,35 +1794,35 @@
         "novakai-canvas-module-map--canvas-contract-schemas": {
           "nodeId": "novakai-canvas-module-map--canvas-contract-schemas",
           "position": {
-            "x": 672,
-            "y": 1796
+            "x": 2604,
+            "y": 1464
           },
           "size": {
-            "width": 334,
-            "height": 104
+            "width": 300,
+            "height": 120
           },
           "pinned": false
         },
         "novakai-canvas-module-map--canvas-contract-records": {
           "nodeId": "novakai-canvas-module-map--canvas-contract-records",
           "position": {
-            "x": 298,
-            "y": 1970
+            "x": 2264,
+            "y": 1654
           },
           "size": {
-            "width": 334,
-            "height": 104
+            "width": 300,
+            "height": 120
           },
           "pinned": false
         },
         "novakai-canvas-module-map--canvas-contract-types": {
           "nodeId": "novakai-canvas-module-map--canvas-contract-types",
           "position": {
-            "x": 298,
-            "y": 2144
+            "x": 2264,
+            "y": 1844
           },
           "size": {
-            "width": 312,
+            "width": 300,
             "height": 104
           },
           "pinned": false
@@ -1855,7 +1910,7 @@
           "width": "medium"
         },
         "novakai-canvas-module-map--wire-27": {
-          "width": "thin"
+          "width": "medium"
         },
         "novakai-canvas-module-map--wire-28": {
           "width": "thin"
@@ -2035,6 +2090,21 @@
           "width": "thin"
         },
         "novakai-canvas-module-map--wire-87": {
+          "width": "thin"
+        },
+        "novakai-canvas-module-map--wire-88": {
+          "width": "thin"
+        },
+        "novakai-canvas-module-map--wire-89": {
+          "width": "thin"
+        },
+        "novakai-canvas-module-map--wire-90": {
+          "width": "thin"
+        },
+        "novakai-canvas-module-map--wire-91": {
+          "width": "thin"
+        },
+        "novakai-canvas-module-map--wire-92": {
           "width": "thin"
         }
       },
@@ -2231,6 +2301,336 @@
         "node.resize",
         "node.move",
         "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    },
+    "cli-apply-5283de39-9db9-47b9-9139-9519d6c3b89f": {
+      "operationId": "cli-apply-5283de39-9db9-47b9-9139-9519d6c3b89f",
+      "revision": 2,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-27T11:46:01.230Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Canvas/95712b84-acdb-425e-a983-ed6e5b2c8b74/scratchpad/module-map.dsl"
+      },
+      "commandKinds": [
+        "diagram.setOrientation",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.update",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
         "node.move",
         "node.move",
         "node.move",

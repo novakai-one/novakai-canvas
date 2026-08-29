@@ -1,0 +1,568 @@
+{
+  "schemaVersion": 3,
+  "id": "flow-deployrelease",
+  "name": "Flow — deployRelease",
+  "orientation": "top-down",
+  "status": "active",
+  "revision": 2,
+  "nodes": {
+    "flow-deployrelease": {
+      "id": "flow-deployrelease",
+      "label": "Flow — deployRelease",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "flow-deployrelease--note-1-each-node-is-one-step-of": {
+      "id": "flow-deployrelease--note-1-each-node-is-one-step-of",
+      "label": "Each node is one step of deployRelease, in execution order. Red text in a description = a failure there leaves the system broken.",
+      "parentId": "flow-deployrelease",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "flow-deployrelease--1-resolveproddataroot": {
+      "id": "flow-deployrelease--1-resolveproddataroot",
+      "label": "1. resolveProdDataRoot",
+      "description": "fails → NOTHING catches it",
+      "parentId": "flow-deployrelease",
+      "band": 0,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "flow-deployrelease--2-describecheckout": {
+      "id": "flow-deployrelease--2-describecheckout",
+      "label": "2. describeCheckout",
+      "description": "process-spawn ×3 — fails → NOTHING catches it",
+      "parentId": "flow-deployrelease",
+      "band": 1,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "flow-deployrelease--3-build": {
+      "id": "flow-deployrelease--3-build",
+      "label": "3. build",
+      "description": "process-spawn ×2 — fails → NOTHING catches it",
+      "parentId": "flow-deployrelease",
+      "band": 2,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "flow-deployrelease--4-snapshotchecked": {
+      "id": "flow-deployrelease--4-snapshotchecked",
+      "label": "4. snapshotChecked",
+      "description": "fails → NOTHING catches it",
+      "parentId": "flow-deployrelease",
+      "band": 3,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "flow-deployrelease--5-stamp": {
+      "id": "flow-deployrelease--5-stamp",
+      "label": "5. stamp",
+      "description": "fs-read ×2, fs-write — !! fails after the point of no return — system left broken, nothing recovers",
+      "parentId": "flow-deployrelease",
+      "band": 4,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "flow-deployrelease--6-killpreviousservers": {
+      "id": "flow-deployrelease--6-killpreviousservers",
+      "label": "6. killPreviousServers",
+      "description": "!! fails after the point of no return — system left broken, nothing recovers",
+      "parentId": "flow-deployrelease",
+      "band": 5,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "flow-deployrelease--7-startjob": {
+      "id": "flow-deployrelease--7-startjob",
+      "label": "7. startJob",
+      "description": "fs-write ×2, process-spawn — !! fails after the point of no return — system left broken, nothing recovers",
+      "parentId": "flow-deployrelease",
+      "band": 6,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "flow-deployrelease--8-waithealthy": {
+      "id": "flow-deployrelease--8-waithealthy",
+      "label": "8. waitHealthy",
+      "description": "!! fails after the point of no return — system left broken, nothing recovers",
+      "parentId": "flow-deployrelease",
+      "band": 7,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "flow-deployrelease--9-rollback": {
+      "id": "flow-deployrelease--9-rollback",
+      "label": "9. rollback",
+      "description": "!! fails after the point of no return — system left broken, nothing recovers — cond",
+      "parentId": "flow-deployrelease",
+      "band": 8,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "flow-deployrelease--10-recordlastgood": {
+      "id": "flow-deployrelease--10-recordlastgood",
+      "label": "10. recordLastGood",
+      "description": "fs-write — !! fails after the point of no return — system left broken, nothing recovers",
+      "parentId": "flow-deployrelease",
+      "band": 9,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "flow-deployrelease--11-prune": {
+      "id": "flow-deployrelease--11-prune",
+      "label": "11. prune",
+      "description": "!! fails after the point of no return — system left broken, nothing recovers",
+      "parentId": "flow-deployrelease",
+      "band": 10,
+      "lane": 0,
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    }
+  },
+  "wires": {
+    "flow-deployrelease--wire-1": {
+      "id": "flow-deployrelease--wire-1",
+      "kind": "references",
+      "label": "then",
+      "source": {
+        "nodeId": "flow-deployrelease--1-resolveproddataroot"
+      },
+      "target": {
+        "nodeId": "flow-deployrelease--2-describecheckout"
+      }
+    },
+    "flow-deployrelease--wire-2": {
+      "id": "flow-deployrelease--wire-2",
+      "kind": "references",
+      "label": "then",
+      "source": {
+        "nodeId": "flow-deployrelease--2-describecheckout"
+      },
+      "target": {
+        "nodeId": "flow-deployrelease--3-build"
+      }
+    },
+    "flow-deployrelease--wire-3": {
+      "id": "flow-deployrelease--wire-3",
+      "kind": "references",
+      "label": "then",
+      "source": {
+        "nodeId": "flow-deployrelease--3-build"
+      },
+      "target": {
+        "nodeId": "flow-deployrelease--4-snapshotchecked"
+      }
+    },
+    "flow-deployrelease--wire-4": {
+      "id": "flow-deployrelease--wire-4",
+      "kind": "references",
+      "label": "then",
+      "source": {
+        "nodeId": "flow-deployrelease--4-snapshotchecked"
+      },
+      "target": {
+        "nodeId": "flow-deployrelease--5-stamp"
+      }
+    },
+    "flow-deployrelease--wire-5": {
+      "id": "flow-deployrelease--wire-5",
+      "kind": "references",
+      "label": "then",
+      "source": {
+        "nodeId": "flow-deployrelease--5-stamp"
+      },
+      "target": {
+        "nodeId": "flow-deployrelease--6-killpreviousservers"
+      }
+    },
+    "flow-deployrelease--wire-6": {
+      "id": "flow-deployrelease--wire-6",
+      "kind": "references",
+      "label": "then",
+      "source": {
+        "nodeId": "flow-deployrelease--6-killpreviousservers"
+      },
+      "target": {
+        "nodeId": "flow-deployrelease--7-startjob"
+      }
+    },
+    "flow-deployrelease--wire-7": {
+      "id": "flow-deployrelease--wire-7",
+      "kind": "references",
+      "label": "then",
+      "source": {
+        "nodeId": "flow-deployrelease--7-startjob"
+      },
+      "target": {
+        "nodeId": "flow-deployrelease--8-waithealthy"
+      }
+    },
+    "flow-deployrelease--wire-8": {
+      "id": "flow-deployrelease--wire-8",
+      "kind": "references",
+      "label": "then",
+      "source": {
+        "nodeId": "flow-deployrelease--8-waithealthy"
+      },
+      "target": {
+        "nodeId": "flow-deployrelease--9-rollback"
+      }
+    },
+    "flow-deployrelease--wire-9": {
+      "id": "flow-deployrelease--wire-9",
+      "kind": "references",
+      "label": "then",
+      "source": {
+        "nodeId": "flow-deployrelease--9-rollback"
+      },
+      "target": {
+        "nodeId": "flow-deployrelease--10-recordlastgood"
+      }
+    },
+    "flow-deployrelease--wire-10": {
+      "id": "flow-deployrelease--wire-10",
+      "kind": "references",
+      "label": "then",
+      "source": {
+        "nodeId": "flow-deployrelease--10-recordlastgood"
+      },
+      "target": {
+        "nodeId": "flow-deployrelease--11-prune"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "flow-deployrelease": {
+          "nodeId": "flow-deployrelease",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 670,
+            "height": 2148
+          },
+          "pinned": false
+        },
+        "flow-deployrelease--note-1-each-node-is-one-step-of": {
+          "nodeId": "flow-deployrelease--note-1-each-node-is-one-step-of",
+          "position": {
+            "x": 350,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "flow-deployrelease--1-resolveproddataroot": {
+          "nodeId": "flow-deployrelease--1-resolveproddataroot",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 240,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "flow-deployrelease--2-describecheckout": {
+          "nodeId": "flow-deployrelease--2-describecheckout",
+          "position": {
+            "x": 40,
+            "y": 230
+          },
+          "size": {
+            "width": 300,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "flow-deployrelease--3-build": {
+          "nodeId": "flow-deployrelease--3-build",
+          "position": {
+            "x": 40,
+            "y": 420
+          },
+          "size": {
+            "width": 300,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "flow-deployrelease--4-snapshotchecked": {
+          "nodeId": "flow-deployrelease--4-snapshotchecked",
+          "position": {
+            "x": 40,
+            "y": 610
+          },
+          "size": {
+            "width": 240,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "flow-deployrelease--5-stamp": {
+          "nodeId": "flow-deployrelease--5-stamp",
+          "position": {
+            "x": 40,
+            "y": 784
+          },
+          "size": {
+            "width": 300,
+            "height": 136
+          },
+          "pinned": false
+        },
+        "flow-deployrelease--6-killpreviousservers": {
+          "nodeId": "flow-deployrelease--6-killpreviousservers",
+          "position": {
+            "x": 40,
+            "y": 990
+          },
+          "size": {
+            "width": 300,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "flow-deployrelease--7-startjob": {
+          "nodeId": "flow-deployrelease--7-startjob",
+          "position": {
+            "x": 40,
+            "y": 1180
+          },
+          "size": {
+            "width": 300,
+            "height": 136
+          },
+          "pinned": false
+        },
+        "flow-deployrelease--8-waithealthy": {
+          "nodeId": "flow-deployrelease--8-waithealthy",
+          "position": {
+            "x": 40,
+            "y": 1386
+          },
+          "size": {
+            "width": 300,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "flow-deployrelease--9-rollback": {
+          "nodeId": "flow-deployrelease--9-rollback",
+          "position": {
+            "x": 40,
+            "y": 1576
+          },
+          "size": {
+            "width": 300,
+            "height": 136
+          },
+          "pinned": false
+        },
+        "flow-deployrelease--10-recordlastgood": {
+          "nodeId": "flow-deployrelease--10-recordlastgood",
+          "position": {
+            "x": 40,
+            "y": 1782
+          },
+          "size": {
+            "width": 300,
+            "height": 136
+          },
+          "pinned": false
+        },
+        "flow-deployrelease--11-prune": {
+          "nodeId": "flow-deployrelease--11-prune",
+          "position": {
+            "x": 40,
+            "y": 1988
+          },
+          "size": {
+            "width": 300,
+            "height": 120
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {},
+      "appearanceByWireId": {},
+      "arrangementByContainerId": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-7acec49b-eb62-497a-91b5-e722d29dc9a5": {
+      "operationId": "cli-apply-7acec49b-eb62-497a-91b5-e722d29dc9a5",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-28T12:41:22.008Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Canvas/95712b84-acdb-425e-a983-ed6e5b2c8b74/scratchpad/flow-deploy.dsl"
+      },
+      "commandKinds": [
+        "diagram.setOrientation",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    },
+    "cli-apply-442a3bee-3ce7-42ca-b74e-d7a05b49c2b0": {
+      "operationId": "cli-apply-442a3bee-3ce7-42ca-b74e-d7a05b49c2b0",
+      "revision": 2,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-28T12:42:18.287Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Canvas/95712b84-acdb-425e-a983-ed6e5b2c8b74/scratchpad/flow-deploy.dsl"
+      },
+      "commandKinds": [
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "node.remove",
+        "node.remove",
+        "node.remove",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.update",
+        "node.update",
+        "node.update",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    }
+  }
+}

@@ -1,0 +1,1865 @@
+{
+  "schemaVersion": 3,
+  "id": "ram-blast-radius",
+  "name": "RAM Blast Radius",
+  "orientation": "left-right",
+  "status": "active",
+  "revision": 24,
+  "nodes": {
+    "ram-blast-radius": {
+      "id": "ram-blast-radius",
+      "label": "RAM Blast Radius",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ram-blast-radius--note-1-the-3-5-gb-problem-boot-": {
+      "id": "ram-blast-radius--note-1-the-3-5-gb-problem-boot-",
+      "label": "The 3.5 GB problem: boot replays all history into RAM maps, and every read path serves from RAM only. Law: bound what RAM holds, never what queries can see.",
+      "parentId": "ram-blast-radius",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "ram-blast-radius--block-legend": {
+      "id": "ram-blast-radius--block-legend",
+      "label": "Legend",
+      "parentId": "ram-blast-radius",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Rose wire = fills RAM today and never lets go",
+        "Amber wire = RAM-only read: trim RAM and this path loses history",
+        "Green wire = the fix: disk fallback, bounded RAM",
+        "Violet node = holds the RAM · Blue node = blast radius reader"
+      ]
+    },
+    "ram-blast-radius--if-we-only-replay-a-window": {
+      "id": "ram-blast-radius--if-we-only-replay-a-window",
+      "label": "If we only replay a window",
+      "description": "What breaks when RAM is trimmed naively",
+      "parentId": "ram-blast-radius",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "cut-history",
+          "kind": "warning",
+          "text": "Conversation UI cuts off at an arbitrary point. listTranscriptLines reads RAM only — older messages exist on disk but never render."
+        },
+        {
+          "id": "broken-cursors",
+          "kind": "warning",
+          "text": "Event cursors and pending deliveries hold line ids. Evict those lines and live streams + delivery lookups break."
+        },
+        {
+          "id": "the-law",
+          "kind": "decision",
+          "text": "Bound what RAM holds, never what queries can see. Every read path needs a disk fallback before any trimming ships."
+        },
+        {
+          "id": "existing-pattern",
+          "kind": "info",
+          "text": "The engine already has the pattern: heavy-payload kinds keep payloads on disk (built Aug 9 for transcriptLine). Extend it to the live kinds."
+        }
+      ]
+    },
+    "ram-blast-radius--novakai-stores": {
+      "id": "ram-blast-radius--novakai-stores",
+      "label": ".novakai/stores",
+      "parentId": "ram-blast-radius",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ram-blast-radius--packages-foundation-core-store-engine": {
+      "id": "ram-blast-radius--packages-foundation-core-store-engine",
+      "label": "packages/foundation/core/store-engine",
+      "parentId": "ram-blast-radius",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ram-blast-radius--packages-messaging-adapters-stores": {
+      "id": "ram-blast-radius--packages-messaging-adapters-stores",
+      "label": "packages/messaging/adapters/stores",
+      "parentId": "ram-blast-radius",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ram-blast-radius--packages-messaging-core": {
+      "id": "ram-blast-radius--packages-messaging-core",
+      "label": "packages/messaging/core",
+      "parentId": "ram-blast-radius",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ram-blast-radius--packages-server-core-methods": {
+      "id": "ram-blast-radius--packages-server-core-methods",
+      "label": "packages/server/core/methods",
+      "parentId": "ram-blast-radius",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ram-blast-radius--packages-shell-ui-screens-messaging": {
+      "id": "ram-blast-radius--packages-shell-ui-screens-messaging",
+      "label": "packages/shell/ui/screens/messaging",
+      "parentId": "ram-blast-radius",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ram-blast-radius--packages-terminal-supervision": {
+      "id": "ram-blast-radius--packages-terminal-supervision",
+      "label": "packages/terminal + supervision",
+      "parentId": "ram-blast-radius",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ram-blast-radius--novakai-stores--entity-store-ops": {
+      "id": "ram-blast-radius--novakai-stores--entity-store-ops",
+      "label": "messagingStoreOps.jsonl",
+      "parentId": "ram-blast-radius--novakai-stores",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "store-ops",
+      "entityFields": [
+        {
+          "id": "ops-lines",
+          "name": "every transcript line ever",
+          "valueType": "record",
+          "keys": []
+        },
+        {
+          "id": "ops-meta",
+          "name": "checkpoints + sessions",
+          "valueType": "record",
+          "keys": []
+        }
+      ]
+    },
+    "ram-blast-radius--novakai-stores--entity-legacy-lines": {
+      "id": "ram-blast-radius--novakai-stores--entity-legacy-lines",
+      "label": "transcriptLines.jsonl",
+      "parentId": "ram-blast-radius--novakai-stores",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "legacy-lines",
+      "entityFields": [
+        {
+          "id": "legacy-size",
+          "name": "3.0 GB legacy, orphaned",
+          "valueType": "record",
+          "keys": []
+        }
+      ]
+    },
+    "ram-blast-radius--novakai-stores--entity-receipts": {
+      "id": "ram-blast-radius--novakai-stores--entity-receipts",
+      "label": "commandReceipts.jsonl",
+      "parentId": "ram-blast-radius--novakai-stores",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "receipts",
+      "entityFields": [
+        {
+          "id": "receipts-size",
+          "name": "628 MB, live",
+          "valueType": "record",
+          "keys": []
+        }
+      ]
+    },
+    "ram-blast-radius--novakai-stores--entity-traces": {
+      "id": "ram-blast-radius--novakai-stores--entity-traces",
+      "label": "traces.jsonl",
+      "parentId": "ram-blast-radius--novakai-stores",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "traces",
+      "entityFields": [
+        {
+          "id": "traces-size",
+          "name": "496 MB, live",
+          "valueType": "record",
+          "keys": []
+        }
+      ]
+    },
+    "ram-blast-radius--packages-foundation-core-store-engine--engine-ts": {
+      "id": "ram-blast-radius--packages-foundation-core-store-engine--engine-ts",
+      "label": "engine.ts",
+      "description": "HOLDS RAM — builds a full in-memory index per kind on first read; payloads stay on disk only for legacy transcriptLine",
+      "parentId": "ram-blast-radius--packages-foundation-core-store-engine",
+      "interfaceIds": [
+        "ram-blast-radius--packages-foundation-core-store-engine--engine-ts--if-readallrecords",
+        "ram-blast-radius--packages-foundation-core-store-engine--engine-ts--if-detachpayload"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "ram-blast-radius--packages-messaging-adapters-stores--foundation-replay-ts": {
+      "id": "ram-blast-radius--packages-messaging-adapters-stores--foundation-replay-ts",
+      "label": "foundation-replay.ts",
+      "description": "HOLDS RAM — boot loads up to 1,000,000 records in ONE page",
+      "parentId": "ram-blast-radius--packages-messaging-adapters-stores",
+      "interfaceIds": [
+        "ram-blast-radius--packages-messaging-adapters-stores--foundation-replay-ts--if-restore"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "ram-blast-radius--packages-messaging-adapters-stores--transcript-state-ts": {
+      "id": "ram-blast-radius--packages-messaging-adapters-stores--transcript-state-ts",
+      "label": "transcript-state.ts",
+      "description": "THE holder — maps never pruned, grow with history forever",
+      "parentId": "ram-blast-radius--packages-messaging-adapters-stores",
+      "interfaceIds": [],
+      "typeIds": [
+        "ram-blast-radius--packages-messaging-adapters-stores--transcript-state-ts--type-transcriptstate"
+      ],
+      "kind": "module"
+    },
+    "ram-blast-radius--packages-messaging-core--conversations": {
+      "id": "ram-blast-radius--packages-messaging-core--conversations",
+      "label": "conversations",
+      "parentId": "ram-blast-radius--packages-messaging-core",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ram-blast-radius--packages-messaging-core--delivery-send": {
+      "id": "ram-blast-radius--packages-messaging-core--delivery-send",
+      "label": "delivery + send",
+      "parentId": "ram-blast-radius--packages-messaging-core",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ram-blast-radius--packages-messaging-core--events": {
+      "id": "ram-blast-radius--packages-messaging-core--events",
+      "label": "events",
+      "parentId": "ram-blast-radius--packages-messaging-core",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "ram-blast-radius--packages-server-core-methods--methods-messages-ts": {
+      "id": "ram-blast-radius--packages-server-core-methods--methods-messages-ts",
+      "label": "methods/messages.ts",
+      "description": "ws methods the shell calls",
+      "parentId": "ram-blast-radius--packages-server-core-methods",
+      "interfaceIds": [
+        "ram-blast-radius--packages-server-core-methods--methods-messages-ts--if-messageslist"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "ram-blast-radius--packages-shell-ui-screens-messaging--ooux-object-messaging-screen": {
+      "id": "ram-blast-radius--packages-shell-ui-screens-messaging--ooux-object-messaging-screen",
+      "label": "MessagingScreen.tsx",
+      "parentId": "ram-blast-radius--packages-shell-ui-screens-messaging",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "ooux-object",
+      "objectRef": "messaging-screen",
+      "oouxRows": [
+        {
+          "kind": "attribute",
+          "id": "attr-conversations",
+          "name": "conversation list",
+          "valueType": "list",
+          "role": "core",
+          "traits": []
+        },
+        {
+          "kind": "attribute",
+          "id": "attr-thread",
+          "name": "thread history",
+          "valueType": "list",
+          "role": "core",
+          "traits": []
+        },
+        {
+          "kind": "cta",
+          "id": "cta-history",
+          "name": "scroll back in history",
+          "role": "reader"
+        }
+      ]
+    },
+    "ram-blast-radius--packages-terminal-supervision--sessions-ts": {
+      "id": "ram-blast-radius--packages-terminal-supervision--sessions-ts",
+      "label": "sessions.ts",
+      "description": "terminal receipts reader",
+      "parentId": "ram-blast-radius--packages-terminal-supervision",
+      "interfaceIds": [
+        "ram-blast-radius--packages-terminal-supervision--sessions-ts--if-listreceipts"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "ram-blast-radius--packages-terminal-supervision--notifications-ts": {
+      "id": "ram-blast-radius--packages-terminal-supervision--notifications-ts",
+      "label": "notifications.ts",
+      "description": "supervision watch + notification kinds",
+      "parentId": "ram-blast-radius--packages-terminal-supervision",
+      "interfaceIds": [
+        "ram-blast-radius--packages-terminal-supervision--notifications-ts--if-evaluate"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "ram-blast-radius--packages-messaging-core--conversations--conversations-messages-ts": {
+      "id": "ram-blast-radius--packages-messaging-core--conversations--conversations-messages-ts",
+      "label": "conversations/messages.ts",
+      "description": "projects UI messages from transcript lines, per query",
+      "parentId": "ram-blast-radius--packages-messaging-core--conversations",
+      "interfaceIds": [
+        "ram-blast-radius--packages-messaging-core--conversations--conversations-messages-ts--if-listagentconversationmessages"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "ram-blast-radius--packages-messaging-core--conversations--message-stream-ts": {
+      "id": "ram-blast-radius--packages-messaging-core--conversations--message-stream-ts",
+      "label": "message-stream.ts",
+      "description": "live message subscription",
+      "parentId": "ram-blast-radius--packages-messaging-core--conversations",
+      "interfaceIds": [
+        "ram-blast-radius--packages-messaging-core--conversations--message-stream-ts--if-subscribe"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "ram-blast-radius--packages-messaging-core--delivery-send--router-ts": {
+      "id": "ram-blast-radius--packages-messaging-core--delivery-send--router-ts",
+      "label": "router.ts",
+      "description": "pending delivery looks lines up by id",
+      "parentId": "ram-blast-radius--packages-messaging-core--delivery-send",
+      "interfaceIds": [
+        "ram-blast-radius--packages-messaging-core--delivery-send--router-ts--if-gettranscriptline"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "ram-blast-radius--packages-messaging-core--delivery-send--confirm-ts": {
+      "id": "ram-blast-radius--packages-messaging-core--delivery-send--confirm-ts",
+      "label": "confirm.ts",
+      "description": "matches sends against ingested lines",
+      "parentId": "ram-blast-radius--packages-messaging-core--delivery-send",
+      "interfaceIds": [
+        "ram-blast-radius--packages-messaging-core--delivery-send--confirm-ts--if-confirmsendforlines"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "ram-blast-radius--packages-messaging-core--events--event-bus-ts": {
+      "id": "ram-blast-radius--packages-messaging-core--events--event-bus-ts",
+      "label": "event-bus.ts",
+      "description": "durable event fan-out, cursor into the RAM array",
+      "parentId": "ram-blast-radius--packages-messaging-core--events",
+      "interfaceIds": [
+        "ram-blast-radius--packages-messaging-core--events--event-bus-ts--if-scanevents"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    }
+  },
+  "wires": {
+    "ram-blast-radius--wire-1": {
+      "id": "ram-blast-radius--wire-1",
+      "kind": "executes",
+      "label": "restore(handle) pulls ONE page of 1,000,000 records",
+      "source": {
+        "nodeId": "ram-blast-radius--novakai-stores--entity-store-ops"
+      },
+      "target": {
+        "nodeId": "ram-blast-radius--packages-messaging-adapters-stores--foundation-replay-ts"
+      }
+    },
+    "ram-blast-radius--wire-2": {
+      "id": "ram-blast-radius--wire-2",
+      "kind": "executes",
+      "label": "replays every line ever into RAM maps",
+      "source": {
+        "nodeId": "ram-blast-radius--packages-messaging-adapters-stores--foundation-replay-ts"
+      },
+      "target": {
+        "nodeId": "ram-blast-radius--packages-messaging-adapters-stores--transcript-state-ts"
+      }
+    },
+    "ram-blast-radius--wire-3": {
+      "id": "ram-blast-radius--wire-3",
+      "kind": "queries",
+      "label": "first read builds a full index, held for process life",
+      "source": {
+        "nodeId": "ram-blast-radius--packages-foundation-core-store-engine--engine-ts"
+      },
+      "target": {
+        "nodeId": "ram-blast-radius--novakai-stores--entity-receipts"
+      }
+    },
+    "ram-blast-radius--wire-4": {
+      "id": "ram-blast-radius--wire-4",
+      "kind": "queries",
+      "label": "same — index never released",
+      "source": {
+        "nodeId": "ram-blast-radius--packages-foundation-core-store-engine--engine-ts"
+      },
+      "target": {
+        "nodeId": "ram-blast-radius--novakai-stores--entity-traces"
+      }
+    },
+    "ram-blast-radius--wire-5": {
+      "id": "ram-blast-radius--wire-5",
+      "kind": "queries",
+      "label": "receipt queries",
+      "source": {
+        "nodeId": "ram-blast-radius--packages-terminal-supervision--sessions-ts"
+      },
+      "target": {
+        "nodeId": "ram-blast-radius--packages-foundation-core-store-engine--engine-ts"
+      }
+    },
+    "ram-blast-radius--wire-6": {
+      "id": "ram-blast-radius--wire-6",
+      "kind": "queries",
+      "label": "watch kind queries",
+      "source": {
+        "nodeId": "ram-blast-radius--packages-terminal-supervision--notifications-ts"
+      },
+      "target": {
+        "nodeId": "ram-blast-radius--packages-foundation-core-store-engine--engine-ts"
+      }
+    },
+    "ram-blast-radius--wire-7": {
+      "id": "ram-blast-radius--wire-7",
+      "kind": "queries",
+      "label": "ws: list conversation messages",
+      "source": {
+        "nodeId": "ram-blast-radius--packages-shell-ui-screens-messaging--ooux-object-messaging-screen"
+      },
+      "target": {
+        "nodeId": "ram-blast-radius--packages-server-core-methods--methods-messages-ts"
+      }
+    },
+    "ram-blast-radius--wire-8": {
+      "id": "ram-blast-radius--wire-8",
+      "kind": "queries",
+      "label": "listAgentConversationMessages",
+      "source": {
+        "nodeId": "ram-blast-radius--packages-server-core-methods--methods-messages-ts"
+      },
+      "target": {
+        "nodeId": "ram-blast-radius--packages-messaging-core--conversations--conversations-messages-ts"
+      }
+    },
+    "ram-blast-radius--wire-9": {
+      "id": "ram-blast-radius--wire-9",
+      "kind": "queries",
+      "label": "listTranscriptLines — RAM ONLY, no disk fallback",
+      "source": {
+        "nodeId": "ram-blast-radius--packages-messaging-core--conversations--conversations-messages-ts"
+      },
+      "target": {
+        "nodeId": "ram-blast-radius--packages-messaging-adapters-stores--transcript-state-ts"
+      }
+    },
+    "ram-blast-radius--wire-10": {
+      "id": "ram-blast-radius--wire-10",
+      "kind": "queries",
+      "label": "subscribe",
+      "source": {
+        "nodeId": "ram-blast-radius--packages-messaging-core--conversations--message-stream-ts"
+      },
+      "target": {
+        "nodeId": "ram-blast-radius--packages-messaging-core--events--event-bus-ts"
+      }
+    },
+    "ram-blast-radius--wire-11": {
+      "id": "ram-blast-radius--wire-11",
+      "kind": "queries",
+      "label": "scanEvents(cursor) into the RAM array",
+      "source": {
+        "nodeId": "ram-blast-radius--packages-messaging-core--events--event-bus-ts"
+      },
+      "target": {
+        "nodeId": "ram-blast-radius--packages-messaging-adapters-stores--transcript-state-ts"
+      }
+    },
+    "ram-blast-radius--wire-12": {
+      "id": "ram-blast-radius--wire-12",
+      "kind": "queries",
+      "label": "getTranscriptLine(id) — evicted id = failed delivery",
+      "source": {
+        "nodeId": "ram-blast-radius--packages-messaging-core--delivery-send--router-ts"
+      },
+      "target": {
+        "nodeId": "ram-blast-radius--packages-messaging-adapters-stores--transcript-state-ts"
+      }
+    },
+    "ram-blast-radius--wire-13": {
+      "id": "ram-blast-radius--wire-13",
+      "kind": "queries",
+      "label": "confirmSendForLines",
+      "source": {
+        "nodeId": "ram-blast-radius--packages-messaging-core--delivery-send--confirm-ts"
+      },
+      "target": {
+        "nodeId": "ram-blast-radius--packages-messaging-adapters-stores--transcript-state-ts"
+      }
+    },
+    "ram-blast-radius--wire-14": {
+      "id": "ram-blast-radius--wire-14",
+      "kind": "queries",
+      "label": "FIX: stream replay — keep checkpoints, sessions, recent tail",
+      "source": {
+        "nodeId": "ram-blast-radius--packages-messaging-adapters-stores--foundation-replay-ts"
+      },
+      "target": {
+        "nodeId": "ram-blast-radius--novakai-stores--entity-store-ops"
+      }
+    },
+    "ram-blast-radius--wire-15": {
+      "id": "ram-blast-radius--wire-15",
+      "kind": "queries",
+      "label": "FIX: page older lines from disk on demand",
+      "source": {
+        "nodeId": "ram-blast-radius--packages-messaging-core--conversations--conversations-messages-ts"
+      },
+      "target": {
+        "nodeId": "ram-blast-radius--novakai-stores--entity-store-ops"
+      }
+    }
+  },
+  "flows": {
+    "flow-target": {
+      "id": "flow-target",
+      "name": "Target — full history",
+      "steps": [
+        {
+          "ref": "ram-blast-radius--wire-7",
+          "ordinal": 1,
+          "label": "you scroll back in a thread"
+        },
+        {
+          "ref": "ram-blast-radius--wire-8",
+          "ordinal": 2,
+          "label": "server asks the projection"
+        },
+        {
+          "ref": "ram-blast-radius--wire-15",
+          "ordinal": 3,
+          "label": "projection pages older lines from disk — nothing is ever cut"
+        }
+      ]
+    },
+    "flow-today": {
+      "id": "flow-today",
+      "name": "Today — history cut",
+      "steps": [
+        {
+          "ref": "ram-blast-radius--wire-7",
+          "ordinal": 1,
+          "label": "you scroll back in a thread"
+        },
+        {
+          "ref": "ram-blast-radius--wire-8",
+          "ordinal": 2,
+          "label": "server asks the projection"
+        },
+        {
+          "ref": "ram-blast-radius--wire-9",
+          "ordinal": 3,
+          "label": "projection reads RAM maps only — anything trimmed is gone from the app"
+        }
+      ]
+    }
+  },
+  "interfaces": {
+    "ram-blast-radius--packages-foundation-core-store-engine--engine-ts--if-readallrecords": {
+      "id": "ram-blast-radius--packages-foundation-core-store-engine--engine-ts--if-readallrecords",
+      "ownerId": "ram-blast-radius--packages-foundation-core-store-engine--engine-ts",
+      "name": "readAllRecords",
+      "accepts": [
+        "kind"
+      ],
+      "returns": [
+        "IndexInRAM"
+      ]
+    },
+    "ram-blast-radius--packages-foundation-core-store-engine--engine-ts--if-detachpayload": {
+      "id": "ram-blast-radius--packages-foundation-core-store-engine--engine-ts--if-detachpayload",
+      "ownerId": "ram-blast-radius--packages-foundation-core-store-engine--engine-ts",
+      "name": "detachPayload",
+      "accepts": [
+        "heavyKind"
+      ],
+      "returns": [
+        "DiskStub"
+      ]
+    },
+    "ram-blast-radius--packages-messaging-adapters-stores--foundation-replay-ts--if-restore": {
+      "id": "ram-blast-radius--packages-messaging-adapters-stores--foundation-replay-ts--if-restore",
+      "ownerId": "ram-blast-radius--packages-messaging-adapters-stores--foundation-replay-ts",
+      "name": "restore",
+      "accepts": [
+        "handle"
+      ],
+      "returns": [
+        "FullHistoryInRAM"
+      ]
+    },
+    "ram-blast-radius--packages-messaging-core--conversations--conversations-messages-ts--if-listagentconversationmessages": {
+      "id": "ram-blast-radius--packages-messaging-core--conversations--conversations-messages-ts--if-listagentconversationmessages",
+      "ownerId": "ram-blast-radius--packages-messaging-core--conversations--conversations-messages-ts",
+      "name": "listAgentConversationMessages",
+      "accepts": [
+        "sessionId"
+      ],
+      "returns": [
+        "Messages"
+      ]
+    },
+    "ram-blast-radius--packages-messaging-core--conversations--message-stream-ts--if-subscribe": {
+      "id": "ram-blast-radius--packages-messaging-core--conversations--message-stream-ts--if-subscribe",
+      "ownerId": "ram-blast-radius--packages-messaging-core--conversations--message-stream-ts",
+      "name": "subscribe",
+      "accepts": [
+        "sink"
+      ],
+      "returns": [
+        "LiveMessages"
+      ]
+    },
+    "ram-blast-radius--packages-messaging-core--delivery-send--router-ts--if-gettranscriptline": {
+      "id": "ram-blast-radius--packages-messaging-core--delivery-send--router-ts--if-gettranscriptline",
+      "ownerId": "ram-blast-radius--packages-messaging-core--delivery-send--router-ts",
+      "name": "getTranscriptLine",
+      "accepts": [
+        "lineId"
+      ],
+      "returns": [
+        "Line"
+      ]
+    },
+    "ram-blast-radius--packages-messaging-core--delivery-send--confirm-ts--if-confirmsendforlines": {
+      "id": "ram-blast-radius--packages-messaging-core--delivery-send--confirm-ts--if-confirmsendforlines",
+      "ownerId": "ram-blast-radius--packages-messaging-core--delivery-send--confirm-ts",
+      "name": "confirmSendForLines",
+      "accepts": [
+        "sessionId"
+      ],
+      "returns": [
+        "Confirmed"
+      ]
+    },
+    "ram-blast-radius--packages-messaging-core--events--event-bus-ts--if-scanevents": {
+      "id": "ram-blast-radius--packages-messaging-core--events--event-bus-ts--if-scanevents",
+      "ownerId": "ram-blast-radius--packages-messaging-core--events--event-bus-ts",
+      "name": "scanEvents",
+      "accepts": [
+        "cursor"
+      ],
+      "returns": [
+        "Events"
+      ]
+    },
+    "ram-blast-radius--packages-server-core-methods--methods-messages-ts--if-messageslist": {
+      "id": "ram-blast-radius--packages-server-core-methods--methods-messages-ts--if-messageslist",
+      "ownerId": "ram-blast-radius--packages-server-core-methods--methods-messages-ts",
+      "name": "messagesList",
+      "accepts": [
+        "conversationId"
+      ],
+      "returns": [
+        "Page"
+      ]
+    },
+    "ram-blast-radius--packages-terminal-supervision--sessions-ts--if-listreceipts": {
+      "id": "ram-blast-radius--packages-terminal-supervision--sessions-ts--if-listreceipts",
+      "ownerId": "ram-blast-radius--packages-terminal-supervision--sessions-ts",
+      "name": "listReceipts",
+      "accepts": [
+        "sessionId"
+      ],
+      "returns": [
+        "Receipts"
+      ]
+    },
+    "ram-blast-radius--packages-terminal-supervision--notifications-ts--if-evaluate": {
+      "id": "ram-blast-radius--packages-terminal-supervision--notifications-ts--if-evaluate",
+      "ownerId": "ram-blast-radius--packages-terminal-supervision--notifications-ts",
+      "name": "evaluate",
+      "accepts": [
+        "rules"
+      ],
+      "returns": [
+        "Notifications"
+      ]
+    }
+  },
+  "types": {
+    "ram-blast-radius--packages-messaging-adapters-stores--transcript-state-ts--type-transcriptstate": {
+      "id": "ram-blast-radius--packages-messaging-adapters-stores--transcript-state-ts--type-transcriptstate",
+      "name": "TranscriptState",
+      "fields": [
+        "linesMap",
+        "eventsArray",
+        "sessionsMap",
+        "checkpointsMap"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "ram-blast-radius": {
+          "nodeId": "ram-blast-radius",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 2038,
+            "height": 1980
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--note-1-the-3-5-gb-problem-boot-": {
+          "nodeId": "ram-blast-radius--note-1-the-3-5-gb-problem-boot-",
+          "position": {
+            "x": 906,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 153
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--block-legend": {
+          "nodeId": "ram-blast-radius--block-legend",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 346,
+            "height": 203
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--if-we-only-replay-a-window": {
+          "nodeId": "ram-blast-radius--if-we-only-replay-a-window",
+          "position": {
+            "x": 426,
+            "y": 56
+          },
+          "size": {
+            "width": 440,
+            "height": 240
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--novakai-stores": {
+          "nodeId": "ram-blast-radius--novakai-stores",
+          "position": {
+            "x": 1226,
+            "y": 56
+          },
+          "size": {
+            "width": 772,
+            "height": 368
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-foundation-core-store-engine": {
+          "nodeId": "ram-blast-radius--packages-foundation-core-store-engine",
+          "position": {
+            "x": 40,
+            "y": 494
+          },
+          "size": {
+            "width": 380,
+            "height": 284
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-messaging-adapters-stores": {
+          "nodeId": "ram-blast-radius--packages-messaging-adapters-stores",
+          "position": {
+            "x": 460,
+            "y": 494
+          },
+          "size": {
+            "width": 380,
+            "height": 458
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-messaging-core": {
+          "nodeId": "ram-blast-radius--packages-messaging-core",
+          "position": {
+            "x": 40,
+            "y": 1022
+          },
+          "size": {
+            "width": 1268,
+            "height": 480
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-server-core-methods": {
+          "nodeId": "ram-blast-radius--packages-server-core-methods",
+          "position": {
+            "x": 1348,
+            "y": 1022
+          },
+          "size": {
+            "width": 363,
+            "height": 226
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-shell-ui-screens-messaging": {
+          "nodeId": "ram-blast-radius--packages-shell-ui-screens-messaging",
+          "position": {
+            "x": 40,
+            "y": 1572
+          },
+          "size": {
+            "width": 382,
+            "height": 254
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-terminal-supervision": {
+          "nodeId": "ram-blast-radius--packages-terminal-supervision",
+          "position": {
+            "x": 462,
+            "y": 1572
+          },
+          "size": {
+            "width": 378,
+            "height": 368
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--novakai-stores--entity-store-ops": {
+          "nodeId": "ram-blast-radius--novakai-stores--entity-store-ops",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 340,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--novakai-stores--entity-legacy-lines": {
+          "nodeId": "ram-blast-radius--novakai-stores--entity-legacy-lines",
+          "position": {
+            "x": 392,
+            "y": 56
+          },
+          "size": {
+            "width": 340,
+            "height": 114
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--novakai-stores--entity-receipts": {
+          "nodeId": "ram-blast-radius--novakai-stores--entity-receipts",
+          "position": {
+            "x": 40,
+            "y": 214
+          },
+          "size": {
+            "width": 340,
+            "height": 114
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--novakai-stores--entity-traces": {
+          "nodeId": "ram-blast-radius--novakai-stores--entity-traces",
+          "position": {
+            "x": 392,
+            "y": 214
+          },
+          "size": {
+            "width": 340,
+            "height": 114
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-foundation-core-store-engine--engine-ts": {
+          "nodeId": "ram-blast-radius--packages-foundation-core-store-engine--engine-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 188
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-messaging-adapters-stores--foundation-replay-ts": {
+          "nodeId": "ram-blast-radius--packages-messaging-adapters-stores--foundation-replay-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-messaging-adapters-stores--transcript-state-ts": {
+          "nodeId": "ram-blast-radius--packages-messaging-adapters-stores--transcript-state-ts",
+          "position": {
+            "x": 40,
+            "y": 274
+          },
+          "size": {
+            "width": 300,
+            "height": 144
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-messaging-core--conversations": {
+          "nodeId": "ram-blast-radius--packages-messaging-core--conversations",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 380,
+            "height": 384
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-messaging-core--delivery-send": {
+          "nodeId": "ram-blast-radius--packages-messaging-core--delivery-send",
+          "position": {
+            "x": 444,
+            "y": 56
+          },
+          "size": {
+            "width": 380,
+            "height": 384
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-messaging-core--events": {
+          "nodeId": "ram-blast-radius--packages-messaging-core--events",
+          "position": {
+            "x": 848,
+            "y": 56
+          },
+          "size": {
+            "width": 380,
+            "height": 384
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-server-core-methods--methods-messages-ts": {
+          "nodeId": "ram-blast-radius--packages-server-core-methods--methods-messages-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 283,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-shell-ui-screens-messaging--ooux-object-messaging-screen": {
+          "nodeId": "ram-blast-radius--packages-shell-ui-screens-messaging--ooux-object-messaging-screen",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 302,
+            "height": 158
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-terminal-supervision--sessions-ts": {
+          "nodeId": "ram-blast-radius--packages-terminal-supervision--sessions-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 298,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-terminal-supervision--notifications-ts": {
+          "nodeId": "ram-blast-radius--packages-terminal-supervision--notifications-ts",
+          "position": {
+            "x": 40,
+            "y": 198
+          },
+          "size": {
+            "width": 298,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-messaging-core--conversations--conversations-messages-ts": {
+          "nodeId": "ram-blast-radius--packages-messaging-core--conversations--conversations-messages-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-messaging-core--conversations--message-stream-ts": {
+          "nodeId": "ram-blast-radius--packages-messaging-core--conversations--message-stream-ts",
+          "position": {
+            "x": 40,
+            "y": 214
+          },
+          "size": {
+            "width": 300,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-messaging-core--delivery-send--router-ts": {
+          "nodeId": "ram-blast-radius--packages-messaging-core--delivery-send--router-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-messaging-core--delivery-send--confirm-ts": {
+          "nodeId": "ram-blast-radius--packages-messaging-core--delivery-send--confirm-ts",
+          "position": {
+            "x": 40,
+            "y": 198
+          },
+          "size": {
+            "width": 300,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "ram-blast-radius--packages-messaging-core--events--event-bus-ts": {
+          "nodeId": "ram-blast-radius--packages-messaging-core--events--event-bus-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 146
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {
+        "ram-blast-radius--wire-1": {
+          "wireId": "ram-blast-radius--wire-1",
+          "waypoints": [],
+          "labelPosition": 0.4910664815903311
+        },
+        "ram-blast-radius--wire-4": {
+          "wireId": "ram-blast-radius--wire-4",
+          "waypoints": [],
+          "labelPosition": 0.6161199208393519
+        },
+        "ram-blast-radius--wire-9": {
+          "wireId": "ram-blast-radius--wire-9",
+          "waypoints": [],
+          "labelPosition": 0.5547963810659537
+        }
+      },
+      "appearanceByNodeId": {
+        "ram-blast-radius--block-legend": {
+          "weight": 600,
+          "text": "ink",
+          "background": "surface",
+          "border": 1,
+          "radius": 8,
+          "padding": 12
+        },
+        "ram-blast-radius--novakai-stores--entity-store-ops": {
+          "palette": "sage"
+        },
+        "ram-blast-radius--novakai-stores--entity-legacy-lines": {
+          "palette": "neutral"
+        },
+        "ram-blast-radius--novakai-stores--entity-receipts": {
+          "palette": "neutral"
+        },
+        "ram-blast-radius--novakai-stores--entity-traces": {
+          "palette": "neutral"
+        },
+        "ram-blast-radius--packages-foundation-core-store-engine--engine-ts": {
+          "palette": "violet"
+        },
+        "ram-blast-radius--packages-messaging-adapters-stores--foundation-replay-ts": {
+          "palette": "violet"
+        },
+        "ram-blast-radius--packages-messaging-adapters-stores--transcript-state-ts": {
+          "palette": "violet"
+        },
+        "ram-blast-radius--packages-messaging-core--conversations--conversations-messages-ts": {
+          "palette": "blue"
+        },
+        "ram-blast-radius--packages-messaging-core--conversations--message-stream-ts": {
+          "palette": "blue"
+        },
+        "ram-blast-radius--packages-messaging-core--delivery-send--router-ts": {
+          "palette": "blue"
+        },
+        "ram-blast-radius--packages-messaging-core--delivery-send--confirm-ts": {
+          "palette": "blue"
+        },
+        "ram-blast-radius--packages-messaging-core--events--event-bus-ts": {
+          "palette": "blue"
+        },
+        "ram-blast-radius--packages-server-core-methods--methods-messages-ts": {
+          "palette": "blue"
+        },
+        "ram-blast-radius--packages-shell-ui-screens-messaging--ooux-object-messaging-screen": {
+          "palette": "blue"
+        },
+        "ram-blast-radius--packages-terminal-supervision--sessions-ts": {
+          "palette": "blue"
+        },
+        "ram-blast-radius--packages-terminal-supervision--notifications-ts": {
+          "palette": "blue"
+        }
+      },
+      "appearanceByWireId": {
+        "ram-blast-radius--wire-1": {
+          "width": "thick",
+          "color": "rose"
+        },
+        "ram-blast-radius--wire-2": {
+          "width": "thick",
+          "color": "rose"
+        },
+        "ram-blast-radius--wire-3": {
+          "color": "rose"
+        },
+        "ram-blast-radius--wire-4": {
+          "color": "rose"
+        },
+        "ram-blast-radius--wire-5": {
+          "width": "thin",
+          "color": "blue"
+        },
+        "ram-blast-radius--wire-6": {
+          "width": "thin",
+          "color": "blue"
+        },
+        "ram-blast-radius--wire-7": {
+          "width": "medium",
+          "color": "blue"
+        },
+        "ram-blast-radius--wire-8": {
+          "color": "blue"
+        },
+        "ram-blast-radius--wire-9": {
+          "width": "medium",
+          "color": "amber"
+        },
+        "ram-blast-radius--wire-10": {
+          "width": "thin",
+          "color": "blue"
+        },
+        "ram-blast-radius--wire-11": {
+          "color": "blue"
+        },
+        "ram-blast-radius--wire-12": {
+          "width": "thin",
+          "color": "blue"
+        },
+        "ram-blast-radius--wire-13": {
+          "width": "thin",
+          "color": "blue"
+        },
+        "ram-blast-radius--wire-14": {
+          "pattern": "dashed",
+          "color": "green"
+        },
+        "ram-blast-radius--wire-15": {
+          "width": "medium",
+          "pattern": "dashed",
+          "color": "green"
+        }
+      },
+      "arrangementByContainerId": {
+        "ram-blast-radius--novakai-stores": {
+          "layout": "grid",
+          "childIds": [
+            "ram-blast-radius--novakai-stores--entity-store-ops",
+            "ram-blast-radius--novakai-stores--entity-legacy-lines",
+            "ram-blast-radius--novakai-stores--entity-receipts",
+            "ram-blast-radius--novakai-stores--entity-traces"
+          ],
+          "gap": 12,
+          "align": "stretch",
+          "columns": 2
+        },
+        "ram-blast-radius--packages-foundation-core-store-engine": {
+          "layout": "stack",
+          "childIds": [
+            "ram-blast-radius--packages-foundation-core-store-engine--engine-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "ram-blast-radius--packages-messaging-adapters-stores": {
+          "layout": "stack",
+          "childIds": [
+            "ram-blast-radius--packages-messaging-adapters-stores--foundation-replay-ts",
+            "ram-blast-radius--packages-messaging-adapters-stores--transcript-state-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "ram-blast-radius--packages-messaging-core--conversations": {
+          "layout": "stack",
+          "childIds": [
+            "ram-blast-radius--packages-messaging-core--conversations--conversations-messages-ts",
+            "ram-blast-radius--packages-messaging-core--conversations--message-stream-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "ram-blast-radius--packages-messaging-core--delivery-send": {
+          "layout": "stack",
+          "childIds": [
+            "ram-blast-radius--packages-messaging-core--delivery-send--router-ts",
+            "ram-blast-radius--packages-messaging-core--delivery-send--confirm-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "ram-blast-radius--packages-messaging-core--events": {
+          "layout": "stack",
+          "childIds": [
+            "ram-blast-radius--packages-messaging-core--events--event-bus-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "ram-blast-radius--packages-messaging-core": {
+          "layout": "row",
+          "childIds": [
+            "ram-blast-radius--packages-messaging-core--conversations",
+            "ram-blast-radius--packages-messaging-core--delivery-send",
+            "ram-blast-radius--packages-messaging-core--events"
+          ],
+          "gap": 24,
+          "align": "stretch"
+        },
+        "ram-blast-radius--packages-server-core-methods": {
+          "layout": "stack",
+          "childIds": [
+            "ram-blast-radius--packages-server-core-methods--methods-messages-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "ram-blast-radius--packages-shell-ui-screens-messaging": {
+          "layout": "stack",
+          "childIds": [
+            "ram-blast-radius--packages-shell-ui-screens-messaging--ooux-object-messaging-screen"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "ram-blast-radius--packages-terminal-supervision": {
+          "layout": "stack",
+          "childIds": [
+            "ram-blast-radius--packages-terminal-supervision--sessions-ts",
+            "ram-blast-radius--packages-terminal-supervision--notifications-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        }
+      }
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": [],
+      "flowId": "flow-today"
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "ram-blast-radius-v1": {
+      "operationId": "ram-blast-radius-v1",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-27T23:03:39.754Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command--claude-worktrees-transcript-ingestion-perf-5a00e4/5edf6cc7-a96f-4b72-b2d2-5bd4754c5949/scratchpad/ram-blast-radius.canvas"
+      },
+      "commandKinds": [
+        "diagram.setOrientation",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "diagram.definitions.replace",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "diagram.flows.replace",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    },
+    "ui-6f594f14-a314-4b9e-bad7-d975e8fd7392": {
+      "operationId": "ui-6f594f14-a314-4b9e-bad7-d975e8fd7392",
+      "revision": 2,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:04:22.026Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-2d29a0a5-3b01-4281-bbd0-149ab277688e": {
+      "operationId": "ui-2d29a0a5-3b01-4281-bbd0-149ab277688e",
+      "revision": 3,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:21:50.863Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-a360286b-8c85-4402-9c63-a70265db0924": {
+      "operationId": "ui-a360286b-8c85-4402-9c63-a70265db0924",
+      "revision": 4,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:22:00.440Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-5d20ebca-814e-478d-a170-955ec43f479e": {
+      "operationId": "ui-5d20ebca-814e-478d-a170-955ec43f479e",
+      "revision": 5,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:22:05.252Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-f74160cf-0429-4dff-b591-f0e6e990ead0": {
+      "operationId": "ui-f74160cf-0429-4dff-b591-f0e6e990ead0",
+      "revision": 6,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:22:07.784Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-abfdbbd0-7262-42fe-abab-b22e80abb371": {
+      "operationId": "ui-abfdbbd0-7262-42fe-abab-b22e80abb371",
+      "revision": 7,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:22:14.588Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-752f761c-128e-4311-b3d4-efec3569845e": {
+      "operationId": "ui-752f761c-128e-4311-b3d4-efec3569845e",
+      "revision": 8,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:22:28.100Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-82153964-ee4d-444a-90ec-cf011b73b1b4": {
+      "operationId": "ui-82153964-ee4d-444a-90ec-cf011b73b1b4",
+      "revision": 9,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:22:30.185Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ram-blast-radius-v2-flip-boot-wire": {
+      "operationId": "ram-blast-radius-v2-flip-boot-wire",
+      "revision": 10,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-27T23:24:23.726Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command--claude-worktrees-transcript-ingestion-perf-5a00e4/5edf6cc7-a96f-4b72-b2d2-5bd4754c5949/scratchpad/ram-blast-radius.canvas"
+      },
+      "commandKinds": [
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace",
+        "wire.setRoute",
+        "wire.setRoute"
+      ]
+    },
+    "ui-29b63c11-ad4a-4bbf-b709-6bf9d290b574": {
+      "operationId": "ui-29b63c11-ad4a-4bbf-b709-6bf9d290b574",
+      "revision": 11,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:25:11.080Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ram-blast-radius-v3-connected-flows": {
+      "operationId": "ram-blast-radius-v3-connected-flows",
+      "revision": 12,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-27T23:27:18.224Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command--claude-worktrees-transcript-ingestion-perf-5a00e4/5edf6cc7-a96f-4b72-b2d2-5bd4754c5949/scratchpad/ram-blast-radius.canvas"
+      },
+      "commandKinds": [
+        "diagram.flows.replace"
+      ]
+    },
+    "ui-1d633ebb-f50b-468d-993d-23ac25b4f580": {
+      "operationId": "ui-1d633ebb-f50b-468d-993d-23ac25b4f580",
+      "revision": 13,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:27:36.821Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-ee69472c-84c9-4954-8789-f1c7a2338474": {
+      "operationId": "ui-ee69472c-84c9-4954-8789-f1c7a2338474",
+      "revision": 14,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:34:42.079Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-67309b2f-cdc4-4487-8629-ada5e3e4c739": {
+      "operationId": "ui-67309b2f-cdc4-4487-8629-ada5e3e4c739",
+      "revision": 15,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:34:46.514Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-bed41b72-a54c-4bb4-b229-f71cb8bb36c6": {
+      "operationId": "ui-bed41b72-a54c-4bb4-b229-f71cb8bb36c6",
+      "revision": 16,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:36:10.673Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-4011adae-56fb-4a66-b8bd-1b6dd3275cff": {
+      "operationId": "ui-4011adae-56fb-4a66-b8bd-1b6dd3275cff",
+      "revision": 17,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:36:48.003Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ram-blast-radius-v4-one-flow": {
+      "operationId": "ram-blast-radius-v4-one-flow",
+      "revision": 18,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-27T23:37:02.345Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command--claude-worktrees-transcript-ingestion-perf-5a00e4/5edf6cc7-a96f-4b72-b2d2-5bd4754c5949/scratchpad/ram-blast-radius.canvas"
+      },
+      "commandKinds": [
+        "flow.activate",
+        "diagram.flows.replace"
+      ]
+    },
+    "ui-0b3b4f34-7990-4779-b53a-740c8a3ee691": {
+      "operationId": "ui-0b3b4f34-7990-4779-b53a-740c8a3ee691",
+      "revision": 19,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:37:20.781Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ram-blast-radius-v5-two-flows": {
+      "operationId": "ram-blast-radius-v5-two-flows",
+      "revision": 20,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-27T23:39:28.081Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/private/tmp/claude-501/-Users-christopherdasca-Programming-Novakai-Command--claude-worktrees-transcript-ingestion-perf-5a00e4/5edf6cc7-a96f-4b72-b2d2-5bd4754c5949/scratchpad/ram-blast-radius.canvas"
+      },
+      "commandKinds": [
+        "flow.activate",
+        "diagram.flows.replace"
+      ]
+    },
+    "ui-f13b2878-a65a-45bd-983d-29ec4f4e500c": {
+      "operationId": "ui-f13b2878-a65a-45bd-983d-29ec4f4e500c",
+      "revision": 21,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:39:57.937Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-dc076c7e-fb28-4fd0-91b7-412915fdf041": {
+      "operationId": "ui-dc076c7e-fb28-4fd0-91b7-412915fdf041",
+      "revision": 22,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:43:17.013Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-ceb500ec-c142-428b-9a43-1050ed9676fe": {
+      "operationId": "ui-ceb500ec-c142-428b-9a43-1050ed9676fe",
+      "revision": 23,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:43:19.399Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-25d8fc73-69f0-4849-991d-aecd040112fb": {
+      "operationId": "ui-25d8fc73-69f0-4849-991d-aecd040112fb",
+      "revision": 24,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:43:49.571Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    }
+  }
+}

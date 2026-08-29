@@ -30,9 +30,9 @@
     "width": 457,
     "defaultTab": "inspect",
     "showEmptyFields": false,
-    "railWidth": 387,
+    "railWidth": 400,
     "railCollapsed": true,
-    "studioCollapsed": true,
+    "studioCollapsed": false,
     "reframeOnPanelMove": false
   },
   "files": {
