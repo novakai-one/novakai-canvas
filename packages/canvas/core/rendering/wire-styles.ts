@@ -50,12 +50,6 @@ export interface ResolvedWireAppearance {
   shape: WireShape;
 }
 
-/**
- * Rendered stroke width.
- *
- * The stored preference is a taste dial, not a licence to draw an invisible wire: below the floor
- * a wire disappears into the background at the zoom real diagrams are read at.
- */
 const MINIMUM_STROKE = 1.7;
 
 /** Label type sizing; visibility remains solely under the explicit wire-label preference. */

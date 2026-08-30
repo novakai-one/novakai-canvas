@@ -9,7 +9,7 @@ export interface ThemePreset {
   colors: ThemePalette;
 }
 
-/** Six restrained starting points. These are the only authored base colour values. */
+/** Six theme starting points. */
 export const THEME_PRESETS: Record<ThemePresetId, ThemePreset> = {
   carbon: {
     id: 'carbon', label: 'Carbon', mode: 'dark',
@@ -55,7 +55,7 @@ export const THEME_PRESETS: Record<ThemePresetId, ThemePreset> = {
   },
 };
 
-/** Status colours are semantic, mode-aware, and deliberately absent from user settings. */
+/** Semantic status colours per mode. */
 export const THEME_SEMANTICS: Record<CanvasTheme, ThemeSemanticPalette> = {
   dark: {
     blue: '#78A7D1', violet: '#AA91D1', sage: '#7CAD8A', rose: '#C58E9D',

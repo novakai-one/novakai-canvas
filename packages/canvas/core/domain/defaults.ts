@@ -64,11 +64,6 @@ export const defaultPreferences: CanvasPreferences = {
     sections: 'accordion',
     showDividers: true,
     leftDefaultTab: 'build',
-    /*
-     * Off, and off is the law. Chris, twice: the camera must never move except by his own
-     * zoom, pan, fit, or an explicit travel. It stays available because some people like the
-     * canvas re-fitting into the space a panel just freed; it is simply never the default.
-     */
     reframeOnPanelMove: false,
   },
   files: { autoSave: true, saveDelay: 500 },
