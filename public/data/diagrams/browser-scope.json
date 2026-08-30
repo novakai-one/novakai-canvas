@@ -3,47 +3,46 @@
   "id": "browser-scope",
   "name": "Agent Browser Sessions",
   "status": "active",
-  "revision": 2435,
+  "revision": 2437,
   "nodes": {
     "browser-scope": {
       "id": "browser-scope",
-      "kind": "group",
       "label": "Agent Browser Sessions",
       "description": "Isolated per-agent browser + live off-screen mirror",
       "interfaceIds": [],
-      "typeIds": []
+      "typeIds": [],
+      "kind": "group"
     },
     "bs-cli": {
       "id": "bs-cli",
-      "kind": "module",
       "label": "browse CLI",
       "description": "Agent-facing: browse --session <id> goto|click|shot",
       "interfaceIds": [],
-      "typeIds": []
+      "typeIds": [],
+      "kind": "module"
     },
     "bs-mirror": {
       "id": "bs-mirror",
-      "kind": "module",
       "label": "Mirror viewer",
       "description": "Off-screen screencast grid + copyable page URL",
       "parentId": "browser-scope",
       "interfaceIds": [],
-      "typeIds": []
+      "typeIds": [],
+      "kind": "module"
     },
     "bs-session": {
       "id": "bs-session",
-      "kind": "object",
       "label": "Session",
       "description": "Agent ↔ instance binding and lifecycle",
       "interfaceIds": [],
       "typeIds": [
         "bs-t-session",
         "bs-t-handle"
-      ]
+      ],
+      "kind": "object"
     },
     "bs-broker": {
       "id": "bs-broker",
-      "kind": "module",
       "label": "Session broker",
       "description": "acquire / release / lookup; owns pool state",
       "parentId": "browser-scope",
@@ -51,31 +50,31 @@
         "bs-acquire",
         "bs-release"
       ],
-      "typeIds": []
+      "typeIds": [],
+      "kind": "module"
     },
     "bs-policy": {
       "id": "bs-policy",
-      "kind": "object",
       "label": "Allocation policy",
       "description": "Pure: choose free instance, grow or evict",
       "parentId": "browser-scope",
       "interfaceIds": [],
-      "typeIds": []
+      "typeIds": [],
+      "kind": "object"
     },
     "bs-lease": {
       "id": "bs-lease",
-      "kind": "object",
       "label": "Lease",
       "description": "TTL claim; reclaims a dead agent's instance",
       "parentId": "browser-scope",
       "interfaceIds": [],
       "typeIds": [
         "bs-t-lease"
-      ]
+      ],
+      "kind": "object"
     },
     "bs-pool": {
       "id": "bs-pool",
-      "kind": "module",
       "label": "Chrome pool",
       "description": "Adapter: launches headless Chrome, own user-data-dir + port",
       "interfaceIds": [
@@ -83,11 +82,11 @@
       ],
       "typeIds": [
         "bs-t-instance"
-      ]
+      ],
+      "kind": "module"
     },
     "bs-control": {
       "id": "bs-control",
-      "kind": "module",
       "label": "CDP control",
       "description": "Adapter: Playwright over CDP, target-scoped, never bringToFront",
       "parentId": "browser-scope",
@@ -96,11 +95,11 @@
       ],
       "typeIds": [
         "bs-t-command"
-      ]
+      ],
+      "kind": "module"
     },
     "bs-screencast": {
       "id": "bs-screencast",
-      "kind": "module",
       "label": "CDP screencast",
       "description": "Adapter: Page.startScreencast → JPEG frames",
       "parentId": "browser-scope",
@@ -109,18 +108,19 @@
       ],
       "typeIds": [
         "bs-t-frame"
-      ]
+      ],
+      "kind": "module"
     },
     "bs-chrome": {
       "id": "bs-chrome",
-      "kind": "runtime",
       "label": "Chrome instances",
       "description": "N isolated processes, off-screen",
       "parentId": "browser-scope",
       "interfaceIds": [],
       "typeIds": [
         "bs-t-instance"
-      ]
+      ],
+      "kind": "runtime"
     }
   },
   "wires": {
@@ -435,7 +435,7 @@
           },
           "size": {
             "width": 300,
-            "height": 224
+            "height": 172
           },
           "pinned": false
         },
@@ -518,7 +518,8 @@
           "waypoints": [],
           "labelPosition": 0.48189651622336516
         }
-      }
+      },
+      "appearanceByNodeId": {}
     }
   },
   "views": {
@@ -1349,6 +1350,38 @@
       },
       "commandKinds": [
         "wire.setRoute"
+      ]
+    },
+    "ui-f8940b72-cae7-4f15-9c60-65391f09c4f7": {
+      "operationId": "ui-f8940b72-cae7-4f15-9c60-65391f09c4f7",
+      "revision": 2436,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T04:23:22.752Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "layout.nodeAppearance.set"
+      ]
+    },
+    "ui-407a827e-3fd3-4474-bddf-5561ac93fe45": {
+      "operationId": "ui-407a827e-3fd3-4474-bddf-5561ac93fe45",
+      "revision": 2437,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T04:23:37.321Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "layout.nodeAppearance.set"
       ]
     }
   }

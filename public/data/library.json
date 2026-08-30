@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "revision": 468,
+  "revision": 481,
   "entries": {
     "agent-visual-authoring-poc": {
       "id": "agent-visual-authoring-poc",
@@ -126,7 +126,7 @@
       "id": "browser-scope",
       "name": "Agent Browser Sessions",
       "status": "active",
-      "revision": 2435,
+      "revision": 2437,
       "nodeLabels": [
         "Agent Browser Sessions",
         "Allocation policy",
@@ -1193,6 +1193,22 @@
         "session-xyz789"
       ]
     },
+    "shape-proof": {
+      "id": "shape-proof",
+      "name": "Shape Proof",
+      "status": "active",
+      "revision": 8,
+      "nodeLabels": [
+        "Decision?",
+        "Fast",
+        "Harness qualities",
+        "Model",
+        "Plain rect",
+        "Secure",
+        "Shape Proof",
+        "Start"
+      ]
+    },
     "store-boundary": {
       "id": "store-boundary",
       "name": "Store Boundary",
@@ -1354,6 +1370,36 @@
         "Signature check",
         "Webhook Relay",
         "relay-log.json"
+      ]
+    },
+    "what-is-harness-engineering": {
+      "id": "what-is-harness-engineering",
+      "name": "What is Harness Engineering?",
+      "status": "active",
+      "revision": 1,
+      "nodeLabels": [
+        "1 · Context Builder",
+        "2 · «module» LLM",
+        "3 · «interface» Policy Gate",
+        "4 · Tools / Runtime",
+        "5 · «module» Verify",
+        "6 · «domain concept» Accepted Result",
+        "APIs",
+        "CRM",
+        "Data",
+        "Docs",
+        "Execution path",
+        "Guardrails & telemetry",
+        "History",
+        "Legend",
+        "MCP",
+        "Reference reconstruction from IMG_1648.PNG · The reliability layer around an LLM turns intent into a bounded, checked result.",
+        "THE HARNESS",
+        "What is Harness Engineering?",
+        "What the harness provides",
+        "«actor» User Goal",
+        "«module» Constraints",
+        "«module» Observability"
       ]
     },
     "who-owns-canvas-surface-responsibilities-today": {
