@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { ICON_NAMES } from '../../contract/records/components.ts';
 import { dataDir, readRecord, dataHashes, runCli } from './cli-fixture.ts';
 
 describe('canvas CLI', () => {
@@ -59,7 +60,7 @@ scope "Icon Diagnostics"
       errors: [{
         line: 3,
         reason: 'icon-card needs description="text"',
-        correction: 'icon-card "title" icon=check|clock|people|shield|target|trend description="text"',
+        correction: `icon-card "title" icon=${ICON_NAMES.join('|')} description="text"`,
       }],
     });
 
@@ -72,8 +73,8 @@ scope "Icon Diagnostics"
       status: 'invalid',
       errors: [{
         line: 3,
-        reason: 'unknown icon "rocket"; use one of: check|clock|people|shield|target|trend',
-        correction: 'icon-card "title" icon=check|clock|people|shield|target|trend description="text"',
+        reason: `unknown icon "rocket"; use one of: ${ICON_NAMES.join('|')}`,
+        correction: `icon-card "title" icon=${ICON_NAMES.join('|')} description="text"`,
       }],
     });
   });
