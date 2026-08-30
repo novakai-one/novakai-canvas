@@ -4,7 +4,7 @@
   "name": "Shape Proof",
   "orientation": "left-right",
   "status": "active",
-  "revision": 8,
+  "revision": 19,
   "nodes": {
     "shape-proof": {
       "id": "shape-proof",
@@ -134,7 +134,7 @@
           },
           "size": {
             "width": 589,
-            "height": 554
+            "height": 566
           },
           "pinned": false
         },
@@ -217,9 +217,10 @@
             "y": 328
           },
           "size": {
-            "width": 268,
-            "height": 186
+            "width": 472,
+            "height": 198
           },
+          "sizeMode": "manual",
           "pinned": false
         }
       },
@@ -443,6 +444,183 @@
       },
       "commandKinds": [
         "node.content.set"
+      ]
+    },
+    "studio-f9e0ba4b-d01b-4cc4-b995-22334554b7df": {
+      "operationId": "studio-f9e0ba4b-d01b-4cc4-b995-22334554b7df",
+      "revision": 9,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T06:59:05.634Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-f0acd852-ab3b-4aa4-882b-b01e00d11e5a": {
+      "operationId": "ui-f0acd852-ab3b-4aa4-882b-b01e00d11e5a",
+      "revision": 10,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:00:22.068Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "studio-abf0939e-7aa2-410b-95f6-5a2b2d6c5451": {
+      "operationId": "studio-abf0939e-7aa2-410b-95f6-5a2b2d6c5451",
+      "revision": 11,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:00:23.501Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-d067aeab-675c-4437-beb8-a10f436e543d": {
+      "operationId": "ui-d067aeab-675c-4437-beb8-a10f436e543d",
+      "revision": 12,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:00:23.919Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.remove"
+      ]
+    },
+    "ui-9e04d5fc-bd57-433f-86ae-c7ad651482c5": {
+      "operationId": "ui-9e04d5fc-bd57-433f-86ae-c7ad651482c5",
+      "revision": 13,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:00:36.185Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "studio-68afc910-4c26-4654-bed6-61ee0088562b": {
+      "operationId": "studio-68afc910-4c26-4654-bed6-61ee0088562b",
+      "revision": 14,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:00:37.453Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-c5932871-8914-4789-82d8-af7092e335a7": {
+      "operationId": "studio-c5932871-8914-4789-82d8-af7092e335a7",
+      "revision": 15,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:00:46.905Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-1fc59005-870f-4c1b-9eae-810a0269e392": {
+      "operationId": "ui-1fc59005-870f-4c1b-9eae-810a0269e392",
+      "revision": 16,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:00:47.286Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.remove"
+      ]
+    },
+    "ui-bd95b5e3-fa52-4118-a89d-0abf813ed46d": {
+      "operationId": "ui-bd95b5e3-fa52-4118-a89d-0abf813ed46d",
+      "revision": 17,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:01:22.802Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "studio-ed0f3418-e469-4206-88e5-3488f82a41b0": {
+      "operationId": "studio-ed0f3418-e469-4206-88e5-3488f82a41b0",
+      "revision": 18,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:01:24.235Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "ui-3a972d8a-9db8-4ffb-88d7-0b9867bce515": {
+      "operationId": "ui-3a972d8a-9db8-4ffb-88d7-0b9867bce515",
+      "revision": 19,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:01:24.644Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.remove"
       ]
     }
   }

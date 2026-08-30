@@ -3,7 +3,7 @@
   "id": "browser-scope",
   "name": "Agent Browser Sessions",
   "status": "active",
-  "revision": 2437,
+  "revision": 2439,
   "nodes": {
     "browser-scope": {
       "id": "browser-scope",
@@ -121,6 +121,13 @@
         "bs-t-instance"
       ],
       "kind": "runtime"
+    },
+    "icon-grid-5c42029f": {
+      "id": "icon-grid-5c42029f",
+      "label": "New icon grid",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "icon-grid"
     }
   },
   "wires": {
@@ -508,6 +515,18 @@
           "size": {
             "width": 230,
             "height": 132
+          },
+          "pinned": false
+        },
+        "icon-grid-5c42029f": {
+          "nodeId": "icon-grid-5c42029f",
+          "position": {
+            "x": 288,
+            "y": 1860
+          },
+          "size": {
+            "width": 280,
+            "height": 150
           },
           "pinned": false
         }
@@ -1382,6 +1401,39 @@
       },
       "commandKinds": [
         "layout.nodeAppearance.set"
+      ]
+    },
+    "ui-2b2d29eb-f6f7-413a-bd89-17ed40fc628f": {
+      "operationId": "ui-2b2d29eb-f6f7-413a-bd89-17ed40fc628f",
+      "revision": 2438,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T06:58:12.768Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "studio-23af3880-3867-475c-9662-458d6ef5dcc1": {
+      "operationId": "studio-23af3880-3867-475c-9662-458d6ef5dcc1",
+      "revision": 2439,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T06:58:15.051Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
       ]
     }
   }

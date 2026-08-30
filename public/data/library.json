@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "revision": 481,
+  "revision": 492,
   "entries": {
     "agent-visual-authoring-poc": {
       "id": "agent-visual-authoring-poc",
@@ -126,7 +126,7 @@
       "id": "browser-scope",
       "name": "Agent Browser Sessions",
       "status": "active",
-      "revision": 2437,
+      "revision": 2439,
       "nodeLabels": [
         "Agent Browser Sessions",
         "Allocation policy",
@@ -136,6 +136,7 @@
         "Chrome pool",
         "Lease",
         "Mirror viewer",
+        "New icon grid",
         "Session",
         "Session broker",
         "browse CLI"
@@ -328,13 +329,6 @@
         "New object",
         "New resource"
       ]
-    },
-    "diagram-7e3076ae": {
-      "id": "diagram-7e3076ae",
-      "name": "Untitled diagram",
-      "status": "active",
-      "revision": 0,
-      "nodeLabels": []
     },
     "diagram-a781512a": {
       "id": "diagram-a781512a",
@@ -1197,7 +1191,7 @@
       "id": "shape-proof",
       "name": "Shape Proof",
       "status": "active",
-      "revision": 8,
+      "revision": 19,
       "nodeLabels": [
         "Decision?",
         "Fast",
