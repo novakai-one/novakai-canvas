@@ -27,7 +27,7 @@ export const BADGES = ['default', 'hide'] as const;
 export const NODE_SHAPES = ['ellipse', 'diamond'] as const;
 
 /** Closed card-wide treatments available to opted-in registered components. */
-export const COMPONENT_PALETTES = ['neutral', 'blue', 'violet', 'sage'] as const;
+export const COMPONENT_PALETTES = ['neutral', 'blue', 'violet', 'sage', 'amber', 'rose'] as const;
 
 /** Strict runtime boundary for stored per-node presentation. */
 export const nodeAppearanceSchema = z.strictObject({

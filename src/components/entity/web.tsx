@@ -1,6 +1,6 @@
 import { type CSSProperties } from 'react';
 import { type Node, type NodeProps } from '@xyflow/react';
-import { paletteCssVariables, resolveComponentPalette } from '@novakai/canvas';
+import { paletteCssVariables } from '@novakai/canvas';
 import { NodeLabel } from '../node-label.tsx';
 import { NodePorts } from '../node-ports.tsx';
 import type { ArchitectureNodeData } from '../../presentation/projection.ts';
@@ -10,8 +10,8 @@ type EntityFlowNode = Node<ArchitectureNodeData, 'entity'>;
 /** Selectable fixed-column Entity backed by stable structured field identities. */
 export function EntityNode({ data }: NodeProps<EntityFlowNode>) {
   const { node, selection, preferences, editable, select, appearance } = data;
-  const colors = resolveComponentPalette(appearance.palette, appearance.theme, 'entity');
-  const style = colors ? paletteCssVariables(colors) as CSSProperties : undefined;
+  const style = appearance.paletteColors
+    ? paletteCssVariables(appearance.paletteColors) as CSSProperties : undefined;
   return <div className={`entity-shell${preferences.nodes.showPorts === 'always' ? ' ports-always' : ''}`}>
     <article className="entity-node" style={style}>
       <header className="entity-header semantic-summary">

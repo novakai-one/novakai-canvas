@@ -56,7 +56,7 @@ describe('canvas CLI', () => {
         syntax: 'field "name" id=stable-id type=value-type [keys=pk,fk,uk]',
       }],
       appearance: [{
-        key: 'palette', values: ['neutral', 'blue', 'violet', 'sage'],
+        key: 'palette', values: ['neutral', 'blue', 'violet', 'sage', 'amber', 'rose'],
         omitted: 'component default',
       }],
     });

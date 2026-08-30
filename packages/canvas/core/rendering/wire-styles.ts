@@ -96,17 +96,17 @@ export function resolveWireAppearance(
   };
 }
 
-/** Restrained wire tones derived from one theme; dash patterns carry the semantic distinction. */
+/** Wire tones derived from one theme; dash pattern and hue together carry the wire kind. */
 export function resolveWireToneColors(theme: ResolvedCanvasTheme): Record<WireTone, string> {
   const muted = theme.colors.muted;
   return {
     neutral: mixThemeColors(muted, theme.colors.border, 0.28),
-    sage: mixThemeColors(muted, theme.semantic.sage, 0.22),
-    steel: mixThemeColors(muted, theme.semantic.blue, 0.22),
-    slate: mixThemeColors(muted, theme.colors.text, 0.08),
-    violet: mixThemeColors(muted, theme.semantic.violet, 0.2),
-    amber: mixThemeColors(muted, theme.semantic.amber, 0.18),
-    rust: mixThemeColors(muted, theme.semantic.danger, 0.2),
+    sage: mixThemeColors(muted, theme.semantic.sage, 0.62),
+    steel: mixThemeColors(muted, theme.semantic.blue, 0.62),
+    slate: mixThemeColors(muted, theme.colors.text, 0.26),
+    violet: mixThemeColors(muted, theme.semantic.violet, 0.6),
+    amber: mixThemeColors(muted, theme.semantic.amber, 0.56),
+    rust: mixThemeColors(muted, theme.semantic.danger, 0.6),
   };
 }
 

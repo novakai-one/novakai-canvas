@@ -1,51 +1,47 @@
 import type { ResolvedCanvasTheme } from '../../contract/records/preferences.ts';
 import type { ComponentPalette } from '../../contract/schemas/node-appearance.ts';
+import type { ComponentPaletteColors } from '../../contract/schemas/node-appearance-resolved.ts';
+import type { NodeKind } from '../../contract/types/node-kind.ts';
 import { mixThemeColors } from '../domain/theme-resolver.ts';
 
-export type ComponentPaletteFamily = 'entity' | 'ooux' | 'standard';
-
-/** Concrete card slots shared by browser CSS variables and SVG attributes. */
-export interface ComponentPaletteColors {
-  frame: string;
-  surface: string;
-  header: string;
-  headerText: string;
-  headerMuted: string;
-  text: string;
-  muted: string;
-  core: string;
-  metadata: string;
-  action: string;
-}
+/** Kinds whose cards are coloured with no authored palette; absent kinds render plain. */
+const KIND_PALETTES: Partial<Record<NodeKind, ComponentPalette>> = {
+  module: 'blue',
+  object: 'violet',
+  runtime: 'amber',
+  resource: 'sage',
+  entity: 'sage',
+  'ooux-object': 'blue',
+};
 
 function paletteHue(theme: ResolvedCanvasTheme, palette: ComponentPalette): string {
   if (palette === 'neutral') return theme.colors.muted;
   return theme.semantic[palette];
 }
 
-/** Resolves component slots from the active theme instead of owning a second palette table. */
+/** Card colour slots for one node: the authored palette first, then the kind's default. */
 export function resolveComponentPalette(
-  palette: ComponentPalette | undefined,
+  kind: NodeKind,
+  authored: ComponentPalette | undefined,
   theme: ResolvedCanvasTheme,
-  family: ComponentPaletteFamily,
 ): ComponentPaletteColors | undefined {
-  if (palette === undefined && family === 'standard') return undefined;
-  const resolved = palette ?? (family === 'entity' ? 'violet' : 'blue');
-  const hue = paletteHue(theme, resolved);
+  const palette = authored ?? KIND_PALETTES[kind];
+  if (palette === undefined) return undefined;
+  const hue = paletteHue(theme, palette);
   const dark = theme.mode === 'dark';
   return {
     frame: mixThemeColors(theme.colors.border, hue, dark ? 0.72 : 0.8),
-    surface: mixThemeColors(theme.colors.surface, hue, dark ? 0.07 : 0.035),
-    header: mixThemeColors(theme.colors.raised, hue, dark ? 0.38 : 0.74),
+    surface: mixThemeColors(theme.colors.surface, hue, dark ? 0.18 : 0.12),
+    header: mixThemeColors(theme.colors.raised, hue, dark ? 0.45 : 0.74),
     headerText: dark ? theme.colors.text : theme.colors.raised,
     headerMuted: dark
       ? mixThemeColors(theme.colors.text, hue, 0.18)
       : mixThemeColors(theme.colors.raised, theme.colors.text, 0.12),
     text: theme.colors.text,
     muted: theme.colors.muted,
-    core: mixThemeColors(theme.colors.surface, hue, dark ? 0.15 : 0.09),
-    metadata: mixThemeColors(theme.colors.surface, hue, dark ? 0.22 : 0.14),
-    action: mixThemeColors(theme.colors.surface, hue, dark ? 0.3 : 0.2),
+    core: mixThemeColors(theme.colors.surface, hue, dark ? 0.24 : 0.16),
+    metadata: mixThemeColors(theme.colors.surface, hue, dark ? 0.3 : 0.2),
+    action: mixThemeColors(theme.colors.surface, hue, dark ? 0.36 : 0.26),
   };
 }
 

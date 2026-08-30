@@ -9,7 +9,6 @@ import type {
   ComponentItem, DiagramComponent, DslChildStatement, DslNodeDeclaration,
 } from '../component.ts';
 import { parseAssignedFields } from '../dsl-fields.ts';
-import { resolveComponentPalette } from '../component-palette.ts';
 
 const DECLARATION = 'ooux-object "name" ref=kebab-case';
 const DECLARATION_EXAMPLE = 'ooux-object "Organization" ref=organization';
@@ -154,7 +153,7 @@ export const oouxObjectComponent: DiagramComponent<'ooux-object'> = {
     return { width: Math.min(460, Math.max(300, 170 + longest * 6)), height: 62 + (node.oouxRows?.length ?? 0) * 32 };
   },
   renderSvg(node, box, appearance) {
-    const colors = resolveComponentPalette(appearance.palette, appearance.theme, 'ooux');
+    const colors = appearance.paletteColors;
     if (!colors) return '';
     const parts = [
       `<rect x="${box.x}" y="${box.y}" width="${box.width}" height="${box.height}" fill="${colors.surface}" stroke="${colors.frame}" stroke-width="2" rx="8"/>`,

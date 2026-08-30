@@ -1,10 +1,9 @@
 import { componentFor } from '../../components/registry.ts';
-import {
-  resolveComponentPalette, type ComponentPaletteColors,
-} from '../../components/component-palette.ts';
 import { outlinePath } from '../../components/outline.ts';
 import { resolveNodeAppearance } from '../../domain/node-appearance.ts';
-import type { ResolvedNodeAppearance } from '../../../contract/schemas/node-appearance-resolved.ts';
+import type {
+  ComponentPaletteColors, ResolvedNodeAppearance,
+} from '../../../contract/schemas/node-appearance-resolved.ts';
 import type { DiagramRecord } from '../../../contract/records/index.ts';
 import type { PlacedNode } from '../../authoring/records/record-graph.ts';
 import type { SnapshotScene } from './contract.ts';
@@ -108,7 +107,7 @@ function renderFallbackCard(
     node, { x, y, width: node.size.width, height: node.size.height }, appearance,
   );
   if (custom !== undefined) return [custom];
-  const palette = resolveComponentPalette(appearance.palette, appearance.theme, 'standard');
+  const palette = appearance.paletteColors;
   const parts = [
     cardBorder(appearance, node, x, y, palette?.surface ?? colors.card, palette?.frame ?? colors.border),
     ...(palette && appearance.shape === 'rect' ? [`<path d="M${x + 1},${y + 6}Q${x + 1},${y + 1} ${x + 6},${y + 1}H${x + node.size.width - 6}Q${x + node.size.width - 1},${y + 1} ${x + node.size.width - 1},${y + 6}V${y + 42}H${x + 1}Z" fill="${palette.header}"/>`] : []),

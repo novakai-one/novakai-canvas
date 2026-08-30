@@ -60,10 +60,7 @@ export { GLYPHS } from '../core/components/glyphs.ts';
 export { iconGridColumns } from '../core/components/icon-grid/component.ts';
 export { inscribedContentBox, outlinePath } from '../core/components/outline.ts';
 export { layoutBlockText } from '../core/components/block/text-layout.ts';
-export {
-  paletteCssVariables,
-  resolveComponentPalette,
-} from '../core/components/component-palette.ts';
+export { paletteCssVariables } from '../core/components/component-palette.ts';
 export {
   orderedTreeRows,
   treeRowDepth,

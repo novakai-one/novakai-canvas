@@ -14,6 +14,20 @@ export type BlockIcon = IconName;
 
 export interface PresentationContext { theme: ResolvedCanvasTheme; showKinds: boolean }
 
+/** Concrete card colour slots shared by browser CSS variables and SVG attributes. */
+export interface ComponentPaletteColors {
+  frame: string;
+  surface: string;
+  header: string;
+  headerText: string;
+  headerMuted: string;
+  text: string;
+  muted: string;
+  core: string;
+  metadata: string;
+  action: string;
+}
+
 /** Concrete values consumed verbatim by measurement and both render hosts. */
 export interface ResolvedNodeAppearance {
   icon?: BlockIcon;
@@ -33,5 +47,7 @@ export interface ResolvedNodeAppearance {
   badge: Badge;
   showKindBadge: boolean;
   palette?: ComponentPalette;
+  /** Card colour slots from the authored palette or the kind's default; absent = plain card. */
+  paletteColors?: ComponentPaletteColors;
   theme: ResolvedCanvasTheme;
 }
