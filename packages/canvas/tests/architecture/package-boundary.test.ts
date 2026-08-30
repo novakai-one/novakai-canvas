@@ -9,6 +9,7 @@ const SHAPES = [
 const COMMON_SEAMS = [
   'packages/canvas/core/components/registry.ts',
   'packages/canvas/core/components/component-palette.ts',
+  'packages/canvas/core/domain/view-types.ts',
   'packages/canvas/contract/records/components.ts',
   'packages/canvas/contract/records/legacy-document.ts',
   'packages/canvas/contract/records/legacy.ts',
