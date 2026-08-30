@@ -4,11 +4,14 @@ import type { CanvasNode } from '../../../contract/records/index.ts';
 import {
   BLOCK_WIRE_REF as WIRE_REF, nodeContentFields,
 } from '../../../contract/schemas/content.ts';
+import { ICON_NAMES } from '../../../contract/records/components.ts';
+import { NODE_SHAPES } from '../../../contract/schemas/node-appearance.ts';
 import type { DiagramComponent, DslNodeDeclaration } from '../component.ts';
 import { GLYPHS } from '../glyphs.ts';
+import { inscribedContentBox, outlinePath } from '../outline.ts';
 import { layoutBlockText, measureBlockTextWidth } from './text-layout.ts';
 
-const SYNTAX = 'block "label" [ref=kebab-case] [icon=check|clock|people|shield|target|trend font=… size=… weight=… align=… vertical-align=… text=… background=… border-color=… border=… radius=… padding=…]';
+const SYNTAX = `block "label" [ref=kebab-case] [icon=${ICON_NAMES.join('|')} shape=${NODE_SHAPES.join('|')} font=… size=… weight=… align=… vertical-align=… text=… background=… border-color=… border=… radius=… padding=…]`;
 const EXAMPLE = 'block "Refusal rate" ref=refusal-rate icon=target size=14 weight=600 align=center vertical-align=center text=green border-color=green border=1 radius=8 padding=12';
 
 function escapeXml(text: string): string {
@@ -59,7 +62,7 @@ export const blockComponent: DiagramComponent<'block'> = {
     preserveDeclarationOrder: true,
   },
   appearanceKeys: [
-    'icon', 'font', 'size', 'weight', 'align', 'vertical-align', 'text', 'background',
+    'icon', 'shape', 'font', 'size', 'weight', 'align', 'vertical-align', 'text', 'background',
     'border-color', 'border', 'radius', 'padding',
   ],
   contentFields: nodeContentFields('block'),
@@ -85,28 +88,35 @@ export const blockComponent: DiagramComponent<'block'> = {
   renderSvg(node: CanvasNode, box, appearance) {
     const layout = layoutBlockText(node.label, node.lines ?? [], appearance);
     const inset = appearance.padding + appearance.borderWidth;
+    const inner = inscribedContentBox(appearance.shape, box);
+    const area = {
+      x: box.x + inner.x + inset,
+      y: box.y + inner.y + inset,
+      width: Math.max(0, inner.width - inset * 2),
+      height: Math.max(0, inner.height - inset * 2),
+    };
     const anchor = appearance.textAlign === 'left' ? 'start'
       : appearance.textAlign === 'right' ? 'end' : 'middle';
-    const x = appearance.textAlign === 'left' ? box.x + inset
-      : appearance.textAlign === 'right' ? box.x + box.width - inset : box.x + box.width / 2;
+    const x = appearance.textAlign === 'left' ? area.x
+      : appearance.textAlign === 'right' ? area.x + area.width : area.x + area.width / 2;
     const lineHeight = appearance.fontSize * 1.4;
-    const availableHeight = Math.max(0, box.height - inset * 2);
     const verticalOffset = appearance.verticalAlign === 'center'
-      ? Math.max(0, (availableHeight - layout.contentHeight) / 2)
+      ? Math.max(0, (area.height - layout.contentHeight) / 2)
       : appearance.verticalAlign === 'bottom'
-        ? Math.max(0, availableHeight - layout.contentHeight)
+        ? Math.max(0, area.height - layout.contentHeight)
         : 0;
-    const contentTop = box.y + inset + verticalOffset;
-    const parts = [
-      `<rect x="${box.x}" y="${box.y}" width="${box.width}" height="${box.height}" fill="${appearance.backgroundColor}" stroke="${appearance.borderColor}" stroke-width="${appearance.borderWidth}" rx="${appearance.borderRadius}"/>`,
-    ];
+    const contentTop = area.y + verticalOffset;
+    const border = appearance.shape === 'rect'
+      ? `<rect x="${box.x}" y="${box.y}" width="${box.width}" height="${box.height}" fill="${appearance.backgroundColor}" stroke="${appearance.borderColor}" stroke-width="${appearance.borderWidth}" rx="${appearance.borderRadius}"/>`
+      : `<path transform="translate(${box.x} ${box.y})" d="${outlinePath(appearance.shape, box)}" fill="${appearance.backgroundColor}" stroke="${appearance.borderColor}" stroke-width="${appearance.borderWidth}"/>`;
+    const parts = [border];
     let firstTextX = x;
     if (appearance.icon) {
       const firstLineWidth = measureBlockTextWidth(layout.lines[0] ?? '', appearance);
       const firstRowWidth = layout.iconSize + layout.iconGap + firstLineWidth;
-      const rowX = appearance.textAlign === 'left' ? box.x + inset
-        : appearance.textAlign === 'right' ? box.x + box.width - inset - firstRowWidth
-          : box.x + (box.width - firstRowWidth) / 2;
+      const rowX = appearance.textAlign === 'left' ? area.x
+        : appearance.textAlign === 'right' ? area.x + area.width - firstRowWidth
+          : area.x + (area.width - firstRowWidth) / 2;
       const iconY = contentTop + (layout.firstRowHeight - layout.iconSize) / 2;
       firstTextX = rowX + layout.iconSize + layout.iconGap;
       parts.push(`<g data-icon="${appearance.icon}" transform="translate(${rowX} ${iconY}) scale(${layout.iconSize / 24})" fill="none" stroke="${appearance.textColor}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><title>${appearance.icon} icon</title><path d="${GLYPHS[appearance.icon]}"/></g>`);

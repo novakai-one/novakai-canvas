@@ -20,8 +20,8 @@ const componentHelp = [
     ...(component.dslChildren ?? []).map((child) => `  ${child.contentKey.padEnd(12)} ${child.syntax}`),
     ...(component.appearanceKeys ?? []).map((key) => {
       const specification = appearanceSpecification(key);
-      const omission = specification.default === undefined
-        ? 'component default' : `default ${specification.default}`;
+      const omission = specification.omitted === undefined
+        ? 'component default' : `default ${specification.omitted}`;
       return `  ${(component.dslKeyword + '.' + key).padEnd(12)} ${specification.values.join('|')} (${omission})`;
     }),
     ...((component.arrangementModes?.length ?? 0) > 0 ? [
@@ -137,8 +137,8 @@ export function describeCapability(): unknown {
           const specification = appearanceSpecification(key);
           return {
             key, values: [...specification.values],
-            ...(specification.default === undefined
-              ? { omitted: 'component default' } : { default: specification.default }),
+            ...(specification.omitted === undefined
+              ? { omitted: 'component default' } : { default: specification.omitted }),
           };
         }),
         ...(component.arrangementModes ? {

@@ -56,6 +56,7 @@ export type {
   StringListContentEditorDeclaration,
 } from '../core/components/component.ts';
 export { GLYPHS } from '../core/components/glyphs.ts';
+export { inscribedContentBox, outlinePath } from '../core/components/outline.ts';
 export { layoutBlockText } from '../core/components/block/text-layout.ts';
 export {
   paletteCssVariables,
@@ -67,7 +68,7 @@ export {
 } from '../core/components/tree/content.ts';
 export type { TreeRow } from './records/components.ts';
 export {
-  APPEARANCE_SPECIFICATIONS,
+  appearanceSpecifications,
   CONTAINER_ALIGNS,
   GRID_COLUMNS,
   SPACINGS,

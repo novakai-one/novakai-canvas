@@ -1,5 +1,5 @@
 import { type Node, type NodeProps } from '@xyflow/react';
-import type { ArchitectureNodeData } from '../projection';
+import type { ArchitectureNodeData } from '../../presentation/projection';
 
 type CommentFlowNode = Node<ArchitectureNodeData, 'comment'>;
 

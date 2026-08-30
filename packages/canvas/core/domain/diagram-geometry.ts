@@ -5,7 +5,7 @@ export {
   reflowPresentation, reflowTopology, type PresentationReflowRequest,
 } from './diagram-geometry/presentation-reflow.ts';
 export { planWireRoutes } from './diagram-geometry/wire-plan.ts';
-export { anchorFor } from './diagram-geometry/view-geometry.ts';
+export { anchorFor } from './diagram-geometry/anchor.ts';
 export { routeWire } from './diagram-geometry/wire-router.ts';
 export {
   editableRouteSegments, reshapeRouteSegment,

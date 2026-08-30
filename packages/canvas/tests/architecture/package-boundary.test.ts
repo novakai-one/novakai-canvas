@@ -105,7 +105,7 @@ describe('Canvas package boundaries', () => {
       'src/presentation/projection.ts',
       'src/presentation/components/inspect-panel.tsx',
       'src/components/timeline/web.tsx',
-      'src/presentation/nodes/tree-node.tsx',
+      'src/components/tree/web.tsx',
     ]) {
       const source = sourceOf(file);
       expect(source.includes("'tree-row'"), file).toBe(false);

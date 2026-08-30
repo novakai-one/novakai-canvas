@@ -1,8 +1,6 @@
 import { crossAxis, type Axis } from '../axis.ts';
-import { interfaceRowCenter } from '../../components/card/measure.ts';
-import { portAxisFraction } from '../interface-signature.ts';
 import type { ProjectedView, PositionedNode } from '../project-view.ts';
-import type { CanvasNode, Endpoint, PortAnchor, PortSide } from '../../../contract/records/index.ts';
+import type { PortSide } from '../../../contract/records/index.ts';
 import type { Point, Rect, RouteObstacle } from './contract.ts';
 import { routeWire } from './wire-router.ts';
 
@@ -40,28 +38,6 @@ export function attachmentPoint(rect: Rect, side: PortSide): Point {
   if (side === 'bottom') return { x: rect.x + rect.width / 2, y: rect.y + rect.height };
   if (side === 'left') return { x: rect.x, y: rect.y + rect.height / 2 };
   return { x: rect.x + rect.width, y: rect.y + rect.height / 2 };
-}
-
-/** Point for a durable method ordinal; absent anchors preserve the centre-edge attachment. */
-export function anchorFor(
-  endpoint: Pick<Endpoint, 'anchor'>,
-  rect: Rect,
-  defaultSide: PortSide,
-  methodCount: number,
-  node?: Pick<CanvasNode, 'description'>,
-): Point {
-  if (!endpoint.anchor) return attachmentPoint(rect, defaultSide);
-  const anchor: PortAnchor = endpoint.anchor;
-  const fraction = portAxisFraction(anchor.ordinal, methodCount);
-  if (anchor.side === 'top') return { x: rect.x + rect.width * fraction, y: rect.y };
-  if (anchor.side === 'bottom') {
-    return { x: rect.x + rect.width * fraction, y: rect.y + rect.height };
-  }
-  const row = node
-    ? Math.min(rect.height - 8, Math.max(8, interfaceRowCenter(node.description, rect.width, anchor.ordinal)))
-    : rect.height * fraction;
-  if (anchor.side === 'left') return { x: rect.x, y: rect.y + row };
-  return { x: rect.x + rect.width, y: rect.y + row };
 }
 
 /** Chooses the natural side pair unless another pair is the first collision-free route. */

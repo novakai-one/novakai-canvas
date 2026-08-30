@@ -1,6 +1,6 @@
 import { type Node, type NodeProps } from '@xyflow/react';
-import { NodePorts } from './node-ports';
-import type { ArchitectureNodeData } from '../projection';
+import { NodePorts } from '../node-ports.tsx';
+import type { ArchitectureNodeData } from '../../presentation/projection';
 
 type ScopeFlowNode = Node<ArchitectureNodeData, 'scope'>;
 

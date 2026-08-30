@@ -1,9 +1,9 @@
 import type { ComponentType } from 'react';
 import { NodeResizer, type Node, type NodeProps } from '@xyflow/react';
-import { ArchitectureNode } from '../presentation/nodes/architecture-node.tsx';
-import { CommentNode } from '../presentation/nodes/comment-node.tsx';
-import { ScopeNode } from '../presentation/nodes/scope-node.tsx';
-import { TreeNode } from '../presentation/nodes/tree-node.tsx';
+import { ArchitectureNode } from './card/web.tsx';
+import { CommentNode } from './comment/web.tsx';
+import { ScopeNode } from './group/web.tsx';
+import { TreeNode } from './tree/web.tsx';
 import { TimelineNode } from './timeline/web.tsx';
 import { MetricNode } from './metric/web.tsx';
 import { IconCardNode } from './icon-card/web.tsx';

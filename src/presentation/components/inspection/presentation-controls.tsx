@@ -1,6 +1,6 @@
 import { componentFor } from '@novakai/canvas';
 import {
-  APPEARANCE_SPECIFICATIONS, CONTAINER_ALIGNS, GRID_COLUMNS, SPACINGS,
+  appearanceSpecifications, CONTAINER_ALIGNS, GRID_COLUMNS, SPACINGS,
   type AppearanceSpecification,
   type AuthoredArrangement, type GridColumns, type NodeAppearance, type Spacing,
 } from '@novakai/canvas';
@@ -38,7 +38,7 @@ function SelectValue({ disabled, label, onChange, value, values }: {
 
 function specsFor(record: DiagramRecord, nodeId: string, text: boolean) {
   const allowed = componentFor(record.nodes[nodeId].kind).appearanceKeys ?? [];
-  return APPEARANCE_SPECIFICATIONS.filter((spec) =>
+  return appearanceSpecifications().filter((spec) =>
     allowed.includes(spec.key) && TEXT_KEYS.has(spec.key) === text);
 }
 

@@ -1,10 +1,13 @@
 import { z } from 'zod';
 import {
-  SPACINGS, isAppearanceKey, nodeAppearanceSchema, type NodeAppearance, type Spacing,
+  SPACINGS, nodeAppearanceSchema, type NodeAppearance, type Spacing,
 } from './node-appearance.ts';
+import { isAppearanceKey } from './node-appearance-authoring.ts';
 import { wireAppearanceSchema } from './wire-appearance.ts';
 
 export * from './node-appearance.ts';
+export * from './node-appearance-authoring.ts';
+export * from './node-appearance-resolved.ts';
 
 export const LAYOUT_MODES = ['stack', 'row', 'grid'] as const;
 export const CONTAINER_ALIGNS = ['stretch', 'start', 'center', 'end'] as const;

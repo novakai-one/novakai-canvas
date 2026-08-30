@@ -1,5 +1,5 @@
 import { type Node, type NodeProps } from '@xyflow/react';
-import { NodePorts } from '../../presentation/nodes/node-ports.tsx';
+import { NodePorts } from '../node-ports.tsx';
 import type { ArchitectureNodeData } from '../../presentation/projection.ts';
 
 type MetricFlowNode = Node<ArchitectureNodeData, 'metric'>;
