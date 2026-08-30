@@ -4,7 +4,7 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const SHAPES = [
-  'timeline', 'metric', 'icon-card', 'callout-stack', 'block', 'ooux-object', 'entity',
+  'timeline', 'metric', 'icon-card', 'icon-grid', 'callout-stack', 'block', 'ooux-object', 'entity',
 ] as const;
 const COMMON_SEAMS = [
   'packages/canvas/core/components/registry.ts',

@@ -29,6 +29,9 @@ export const ICON_NAMES = [
 export type IconName = (typeof ICON_NAMES)[number];
 export type IconCardIcon = IconName;
 
+/** One icon-with-caption cell inside an icon grid, addressed by position, never by id. */
+export interface IconGridItem { icon: IconName; caption: string }
+
 /** Semantic emphasis of one callout; presentation derives from this value. */
 export type CalloutKind = 'info' | 'warning' | 'decision' | 'success';
 

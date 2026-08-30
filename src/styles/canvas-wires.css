@@ -43,6 +43,8 @@
 .metric-node-shell.ports-always .react-flow__handle,
 .icon-card-node-shell:hover .react-flow__handle,
 .icon-card-node-shell.ports-always .react-flow__handle,
+.icon-grid-node-shell:hover .react-flow__handle,
+.icon-grid-node-shell.ports-always .react-flow__handle,
 .callout-stack-node-shell:hover .react-flow__handle,
 .callout-stack-node-shell.ports-always .react-flow__handle,
 .block-node-shell:hover .react-flow__handle,

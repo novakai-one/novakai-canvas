@@ -28,7 +28,7 @@ describe('canvas CLI', () => {
     };
     expect(dsl.components.map((component) => component.kind)).toEqual([
       'group', 'module', 'object', 'runtime', 'resource', 'comment', 'tree', 'timeline',
-      'metric', 'icon-card', 'callout-stack', 'block', 'ooux-object', 'entity',
+      'metric', 'icon-card', 'icon-grid', 'callout-stack', 'block', 'ooux-object', 'entity',
     ]);
     expect(dsl.components.find((component) => component.kind === 'group')).toMatchObject({
       keyword: 'zone',

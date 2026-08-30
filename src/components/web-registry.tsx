@@ -7,6 +7,7 @@ import { TreeNode } from './tree/web.tsx';
 import { TimelineNode } from './timeline/web.tsx';
 import { MetricNode } from './metric/web.tsx';
 import { IconCardNode } from './icon-card/web.tsx';
+import { IconGridNode } from './icon-grid/web.tsx';
 import { CalloutStackNode } from './callout-stack/web.tsx';
 import { BlockNode } from './block/web.tsx';
 import { OouxObjectNode } from './ooux-object/web.tsx';
@@ -61,6 +62,7 @@ export const webRenderers = {
   timeline: registeredRenderer('timeline', TimelineNode),
   metric: registeredRenderer('metric', MetricNode),
   'icon-card': registeredRenderer('icon-card', IconCardNode),
+  'icon-grid': registeredRenderer('icon-grid', IconGridNode),
   'callout-stack': registeredRenderer('callout-stack', CalloutStackNode),
   block: registeredRenderer('block', BlockNode),
   'ooux-object': registeredRenderer('ooux-object', OouxObjectNode),

@@ -52,10 +52,12 @@ export type {
   DiagramComponent,
   RecordEditorField,
   RecordEditorVariant,
+  ItemListContentEditorDeclaration,
   RecordListContentEditorDeclaration,
   StringListContentEditorDeclaration,
 } from '../core/components/component.ts';
 export { GLYPHS } from '../core/components/glyphs.ts';
+export { iconGridColumns } from '../core/components/icon-grid/component.ts';
 export { inscribedContentBox, outlinePath } from '../core/components/outline.ts';
 export { layoutBlockText } from '../core/components/block/text-layout.ts';
 export {

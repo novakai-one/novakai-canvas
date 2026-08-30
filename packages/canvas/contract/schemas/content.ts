@@ -5,6 +5,8 @@ import { entityFieldsSchema, entityRefSchema } from './entity.ts';
 import { oouxObjectRefSchema, oouxRowsSchema } from './ooux-object.ts';
 
 export const TREE_ROW_KINDS = ['project', 'mission', 'task', 'bucket'] as const;
+/** The one statement of how many items an icon grid may carry. */
+export const ICON_GRID_ITEM_LIMIT = 6;
 export const METRIC_STATUSES = ['neutral', 'success', 'warning', 'critical'] as const;
 export const CALLOUT_KINDS = ['info', 'warning', 'decision', 'success'] as const;
 export const BLOCK_WIRE_REF = /^[a-z][a-z0-9-]{0,63}$/;
@@ -48,6 +50,12 @@ const CONTENT_FIELDS: Record<NodeKind, Record<string, z.ZodTypeAny>> = {
     status: z.enum(METRIC_STATUSES).optional(),
   },
   'icon-card': { icon: z.enum(ICON_NAMES), description: z.string().min(1) },
+  'icon-grid': {
+    iconItems: z.array(z.strictObject({
+      icon: z.enum(ICON_NAMES),
+      caption: z.string().min(1),
+    })).min(1).max(ICON_GRID_ITEM_LIMIT).optional(),
+  },
   'callout-stack': { callouts: calloutsSchema.optional() },
   block: {
     lines: z.array(z.string().min(1)).optional(),

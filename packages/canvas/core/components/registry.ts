@@ -14,6 +14,7 @@ import { treeComponent } from './tree/component.ts';
 import { timelineComponent } from './timeline/component.ts';
 import { metricComponent } from './metric/component.ts';
 import { iconCardComponent } from './icon-card/component.ts';
+import { iconGridComponent } from './icon-grid/component.ts';
 import { calloutStackComponent } from './callout-stack/component.ts';
 import { blockComponent } from './block/component.ts';
 import { oouxObjectComponent } from './ooux-object/component.ts';
@@ -31,6 +32,7 @@ const components = [
   timelineComponent,
   metricComponent,
   iconCardComponent,
+  iconGridComponent,
   calloutStackComponent,
   blockComponent,
   oouxObjectComponent,
