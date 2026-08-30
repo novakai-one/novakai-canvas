@@ -4,7 +4,7 @@
   "name": "Canvas — target architecture",
   "orientation": "left-right",
   "status": "active",
-  "revision": 5,
+  "revision": 10,
   "nodes": {
     "canvas-target-architecture": {
       "id": "canvas-target-architecture",
@@ -1977,7 +1977,13 @@
           "pinned": false
         }
       },
-      "wireRouteHints": {},
+      "wireRouteHints": {
+        "canvas-target-architecture--wire-2": {
+          "wireId": "canvas-target-architecture--wire-2",
+          "waypoints": [],
+          "labelPosition": 0.4544660928187243
+        }
+      },
       "appearanceByNodeId": {},
       "appearanceByWireId": {
         "canvas-target-architecture--wire-26": {
@@ -2260,6 +2266,86 @@
         "kind": "human"
       },
       "timestamp": "2026-08-30T11:30:11.093Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-8b03b5d9-95eb-43e7-a209-803fab275738": {
+      "operationId": "ui-8b03b5d9-95eb-43e7-a209-803fab275738",
+      "revision": 6,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T22:28:12.392Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-57d1336b-ce59-4835-b4a1-6f796898dd08": {
+      "operationId": "ui-57d1336b-ce59-4835-b4a1-6f796898dd08",
+      "revision": 7,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T22:28:45.779Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "wire.setRoute"
+      ]
+    },
+    "ui-0eac0d9c-ec35-4604-9baf-f64104190d83": {
+      "operationId": "ui-0eac0d9c-ec35-4604-9baf-f64104190d83",
+      "revision": 8,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T22:30:15.590Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-4ea053b4-ba04-410a-92fd-4c607724e4f1": {
+      "operationId": "ui-4ea053b4-ba04-410a-92fd-4c607724e4f1",
+      "revision": 9,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T22:31:26.039Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-463dbb4a-b389-4751-aa9a-2625860a4d13": {
+      "operationId": "ui-463dbb4a-b389-4751-aa9a-2625860a4d13",
+      "revision": 10,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T22:32:17.523Z",
       "provenance": {
         "source": "ui",
         "sourceRef": "prototype:canvas-room"

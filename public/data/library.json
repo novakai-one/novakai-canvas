@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "revision": 501,
+  "revision": 506,
   "entries": {
     "agent-visual-authoring-poc": {
       "id": "agent-visual-authoring-poc",
@@ -146,7 +146,7 @@
       "id": "canvas-target-architecture",
       "name": "Canvas — target architecture",
       "status": "active",
-      "revision": 5,
+      "revision": 10,
       "nodeLabels": [
         "Agent",
         "CANVAS_LAYOUT",

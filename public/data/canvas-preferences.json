@@ -32,7 +32,7 @@
     "showEmptyFields": false,
     "railWidth": 400,
     "railCollapsed": false,
-    "studioCollapsed": true,
+    "studioCollapsed": false,
     "reframeOnPanelMove": false
   },
   "files": {
