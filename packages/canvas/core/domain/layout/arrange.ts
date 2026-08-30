@@ -4,7 +4,7 @@ import type { Position } from '../../../contract/types/spatial.ts';
 import type { NodePlacement } from '../../../contract/records/index.ts';
 import type { LayoutGraph, LayoutOptions, LayoutSliceTarget } from './contract.ts';
 import { topLeftOf, workingPlacements } from './placements.ts';
-import { childIdsOf, containedIdsOf, namedIdsOf } from './selection.ts';
+import { childIdsOf, containedIdsOf, namedIdsOf, rollupToSiblings } from './selection.ts';
 import { rankedPositions, sizeContaining } from './rank.ts';
 
 /** Extra top padding inside a group, leaving room for its title. */
@@ -38,7 +38,9 @@ function arrangeContainer(
     const origin = containerId === undefined
       ? topLeftOf(movableIds, working)
       : { x: options.groupPadding, y: options.groupPadding + GROUP_TITLE_SPACE };
-    const ranked = rankedPositions(graph, movableIds, working, options);
+    const ranked = rankedPositions(
+      graph, movableIds, working, options, rollupToSiblings(graph, childIds),
+    );
     for (const id of movableIds) {
       const placement = working.get(id) as NodePlacement;
       const position = ranked.get(id) as Position;

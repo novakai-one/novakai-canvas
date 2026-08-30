@@ -18,6 +18,7 @@ export function rankedPositions(
   ids: string[],
   working: Map<string, NodePlacement>,
   options: LayoutOptions,
+  rollup?: ReadonlyMap<string, string>,
 ): Map<string, Position> {
   const ranked = new dagre.graphlib.Graph();
   ranked.setGraph({
@@ -29,12 +30,20 @@ export function rankedPositions(
     ranked.setNode(id, { width: size.width, height: size.height });
   }
 
+  // With a rollup, a wire between two siblings' descendants ranks those siblings against
+  // each other, so groups are arranged by the wires their members send and receive.
   const within = new Set(ids);
+  const endpointOf = (nodeId: string): string | undefined => {
+    const rolled = rollup?.get(nodeId) ?? nodeId;
+    return within.has(rolled) ? rolled : undefined;
+  };
   for (const wireId of Object.keys(graph.wires).sort()) {
     const wire = graph.wires[wireId];
-    const source = wire.source.nodeId as string;
-    const target = wire.target.nodeId as string;
-    if (source !== target && within.has(source) && within.has(target)) ranked.setEdge(source, target);
+    const source = endpointOf(wire.source.nodeId as string);
+    const target = endpointOf(wire.target.nodeId as string);
+    if (source !== undefined && target !== undefined && source !== target) {
+      ranked.setEdge(source, target);
+    }
   }
   dagre.layout(ranked);
 
