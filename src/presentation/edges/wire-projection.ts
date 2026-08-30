@@ -73,14 +73,18 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
   const authoredAppearance = record.layouts[record.views[record.activeViewId]?.layoutId]
     ?.appearanceByWireId ?? {};
   return view.wires.map((wire) => {
-    const wireLabel = wireLabelOf(wire, flowSteps);
+    const selected = selection?.kind === 'wire' && selection.id === wire.id;
+    const related = selection !== null && connectedWires.has(wire.id as string);
+    const wireLabel = wireLabelOf(wire, flowSteps, {
+      preference: preferences.wires.showLabels,
+      focused: selected || related,
+    });
     const plan = plans[wire.id];
     const appearance = resolveWireAppearance(wire.kind, authoredAppearance[wire.id], {
       theme,
       fallbackWidth: wireStrokeWidth(preferences.wires.width),
       fallbackShape: preferences.wires.shape,
     });
-    const related = selection !== null && connectedWires.has(wire.id as string);
     const crossings = crossingsByWire.get(wire.id as string) ?? [];
     const bypassesGate = crossings.some((crossing) =>
       boundaryById.get(crossing.boundaryId)?.crossing === 'gated' && crossing.gateNodeId === null);
@@ -93,8 +97,8 @@ export function projectEdges(input: ProjectionInput): Edge<ArchitectureEdgeData>
     targetHandle: wire.target.anchor
       ? portHandleId(wire.target.anchor) : plan?.targetSide ?? axis.targetPort,
     type: 'elbow',
-    selected: selection?.kind === 'wire' && selection.id === wire.id,
-    zIndex: selection?.kind === 'wire' && selection.id === wire.id ? 1000 : 0,
+    selected,
+    zIndex: selected ? 1000 : 0,
     markerEnd: wire.source.cardinality || wire.target.cardinality ? undefined : {
       type: MarkerType.ArrowClosed,
       color: appearance.strokeColor,

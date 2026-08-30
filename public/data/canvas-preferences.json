@@ -21,7 +21,7 @@
     "showPorts": "hover"
   },
   "wires": {
-    "showLabels": "always",
+    "showLabels": "selected",
     "width": 1.25,
     "dimUnrelated": true,
     "labelScale": 1
@@ -32,7 +32,7 @@
     "showEmptyFields": false,
     "railWidth": 400,
     "railCollapsed": false,
-    "studioCollapsed": false,
+    "studioCollapsed": true,
     "reframeOnPanelMove": false
   },
   "files": {
