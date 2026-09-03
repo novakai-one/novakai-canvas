@@ -1,0 +1,627 @@
+{
+  "schemaVersion": 3,
+  "id": "shape-proof",
+  "name": "Shape Proof",
+  "orientation": "left-right",
+  "status": "active",
+  "revision": 19,
+  "nodes": {
+    "shape-proof": {
+      "id": "shape-proof",
+      "label": "Shape Proof",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "shape-proof--block-start": {
+      "id": "shape-proof--block-start",
+      "label": "Start",
+      "parentId": "shape-proof",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "wireRef": "start"
+    },
+    "shape-proof--block-decision": {
+      "id": "shape-proof--block-decision",
+      "label": "Decision?",
+      "parentId": "shape-proof",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "wireRef": "decision"
+    },
+    "shape-proof--block-plain": {
+      "id": "shape-proof--block-plain",
+      "label": "Plain rect",
+      "parentId": "shape-proof",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "wireRef": "plain"
+    },
+    "shape-proof--block-model": {
+      "id": "shape-proof--block-model",
+      "label": "Model",
+      "parentId": "shape-proof",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "wireRef": "model"
+    },
+    "shape-proof--block-secure": {
+      "id": "shape-proof--block-secure",
+      "label": "Secure",
+      "parentId": "shape-proof",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "wireRef": "secure"
+    },
+    "shape-proof--block-fast": {
+      "id": "shape-proof--block-fast",
+      "label": "Fast",
+      "parentId": "shape-proof",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "wireRef": "fast"
+    },
+    "shape-proof--harness-qualities": {
+      "id": "shape-proof--harness-qualities",
+      "label": "Harness qualities",
+      "parentId": "shape-proof",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "icon-grid",
+      "iconItems": [
+        {
+          "icon": "brain",
+          "caption": "Reasoning model"
+        },
+        {
+          "icon": "lock",
+          "caption": "Sandboxed"
+        },
+        {
+          "icon": "gauge",
+          "caption": "Fast"
+        },
+        {
+          "icon": "shield",
+          "caption": "Safe"
+        }
+      ]
+    }
+  },
+  "wires": {
+    "shape-proof--wire-1": {
+      "id": "shape-proof--wire-1",
+      "kind": "references",
+      "label": "leads to",
+      "source": {
+        "nodeId": "shape-proof--block-start"
+      },
+      "target": {
+        "nodeId": "shape-proof--block-decision"
+      }
+    },
+    "shape-proof--wire-2": {
+      "id": "shape-proof--wire-2",
+      "kind": "references",
+      "label": "yes",
+      "source": {
+        "nodeId": "shape-proof--block-decision"
+      },
+      "target": {
+        "nodeId": "shape-proof--block-plain"
+      }
+    }
+  },
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "shape-proof": {
+          "nodeId": "shape-proof",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 589,
+            "height": 566
+          },
+          "pinned": false
+        },
+        "shape-proof--block-start": {
+          "nodeId": "shape-proof--block-start",
+          "position": {
+            "x": 40,
+            "y": 67
+          },
+          "size": {
+            "width": 87,
+            "height": 54
+          },
+          "pinned": false
+        },
+        "shape-proof--block-decision": {
+          "nodeId": "shape-proof--block-decision",
+          "position": {
+            "x": 199,
+            "y": 56
+          },
+          "size": {
+            "width": 176,
+            "height": 76
+          },
+          "pinned": false
+        },
+        "shape-proof--block-plain": {
+          "nodeId": "shape-proof--block-plain",
+          "position": {
+            "x": 447,
+            "y": 71
+          },
+          "size": {
+            "width": 102,
+            "height": 46
+          },
+          "pinned": false
+        },
+        "shape-proof--block-model": {
+          "nodeId": "shape-proof--block-model",
+          "position": {
+            "x": 40,
+            "y": 212
+          },
+          "size": {
+            "width": 86,
+            "height": 36
+          },
+          "pinned": false
+        },
+        "shape-proof--block-secure": {
+          "nodeId": "shape-proof--block-secure",
+          "position": {
+            "x": 166,
+            "y": 212
+          },
+          "size": {
+            "width": 94,
+            "height": 36
+          },
+          "pinned": false
+        },
+        "shape-proof--block-fast": {
+          "nodeId": "shape-proof--block-fast",
+          "position": {
+            "x": 300,
+            "y": 212
+          },
+          "size": {
+            "width": 77,
+            "height": 36
+          },
+          "pinned": false
+        },
+        "shape-proof--harness-qualities": {
+          "nodeId": "shape-proof--harness-qualities",
+          "position": {
+            "x": 40,
+            "y": 328
+          },
+          "size": {
+            "width": 472,
+            "height": 198
+          },
+          "sizeMode": "manual",
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {
+        "shape-proof--block-start": {
+          "align": "center",
+          "verticalAlign": "center",
+          "background": "blue-soft",
+          "shape": "ellipse",
+          "borderColor": "blue",
+          "border": 1,
+          "padding": 8
+        },
+        "shape-proof--block-decision": {
+          "align": "center",
+          "verticalAlign": "center",
+          "background": "amber-soft",
+          "shape": "diamond",
+          "borderColor": "amber",
+          "border": 1,
+          "padding": 8
+        },
+        "shape-proof--block-plain": {
+          "background": "surface",
+          "border": 1,
+          "radius": 8,
+          "padding": 12
+        },
+        "shape-proof--block-model": {
+          "icon": "brain",
+          "align": "center",
+          "background": "violet-soft",
+          "padding": 8
+        },
+        "shape-proof--block-secure": {
+          "icon": "lock",
+          "align": "center",
+          "background": "green-soft",
+          "padding": 8
+        },
+        "shape-proof--block-fast": {
+          "icon": "gauge",
+          "align": "center",
+          "background": "rose-soft",
+          "padding": 8
+        }
+      },
+      "appearanceByWireId": {},
+      "arrangementByContainerId": {}
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-c234d727-2631-47f9-a806-2f7aee50f78f": {
+      "operationId": "cli-apply-c234d727-2631-47f9-a806-2f7aee50f78f",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-30T05:49:31.944Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "stdin"
+      },
+      "commandKinds": [
+        "diagram.setOrientation",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    },
+    "ui-51b682b4-aa55-4042-82c3-91257b168aa4": {
+      "operationId": "ui-51b682b4-aa55-4042-82c3-91257b168aa4",
+      "revision": 2,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T05:56:31.613Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "layout.nodeAppearance.set"
+      ]
+    },
+    "ui-5e3b2c64-133d-4cce-9977-fdf25976fecd": {
+      "operationId": "ui-5e3b2c64-133d-4cce-9977-fdf25976fecd",
+      "revision": 3,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T05:56:49.598Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "layout.nodeAppearance.set"
+      ]
+    },
+    "cli-apply-219fcbb1-3beb-4603-85c8-3f261998b3c7": {
+      "operationId": "cli-apply-219fcbb1-3beb-4603-85c8-3f261998b3c7",
+      "revision": 4,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-30T06:00:52.352Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "stdin"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.add",
+        "node.add",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    },
+    "cli-apply-9ad07e85-84d4-48a0-b16c-1a05e5d959b1": {
+      "operationId": "cli-apply-9ad07e85-84d4-48a0-b16c-1a05e5d959b1",
+      "revision": 5,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-30T06:13:31.302Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "stdin"
+      },
+      "commandKinds": [
+        "node.add",
+        "node.resize",
+        "node.resize",
+        "node.move"
+      ]
+    },
+    "ui-6c0253dd-820c-4f1d-aa31-3aa8851a2bc9": {
+      "operationId": "ui-6c0253dd-820c-4f1d-aa31-3aa8851a2bc9",
+      "revision": 6,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T06:24:21.396Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.content.set"
+      ]
+    },
+    "ui-9abd24f7-7d7f-40d7-95a0-8c67065514db": {
+      "operationId": "ui-9abd24f7-7d7f-40d7-95a0-8c67065514db",
+      "revision": 7,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T06:25:03.359Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.content.set"
+      ]
+    },
+    "ui-ba0860fd-cc68-4ba6-be38-92dccf7e41ce": {
+      "operationId": "ui-ba0860fd-cc68-4ba6-be38-92dccf7e41ce",
+      "revision": 8,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T06:25:21.435Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.content.set"
+      ]
+    },
+    "studio-f9e0ba4b-d01b-4cc4-b995-22334554b7df": {
+      "operationId": "studio-f9e0ba4b-d01b-4cc4-b995-22334554b7df",
+      "revision": 9,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T06:59:05.634Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.resize"
+      ]
+    },
+    "ui-f0acd852-ab3b-4aa4-882b-b01e00d11e5a": {
+      "operationId": "ui-f0acd852-ab3b-4aa4-882b-b01e00d11e5a",
+      "revision": 10,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:00:22.068Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "studio-abf0939e-7aa2-410b-95f6-5a2b2d6c5451": {
+      "operationId": "studio-abf0939e-7aa2-410b-95f6-5a2b2d6c5451",
+      "revision": 11,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:00:23.501Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-d067aeab-675c-4437-beb8-a10f436e543d": {
+      "operationId": "ui-d067aeab-675c-4437-beb8-a10f436e543d",
+      "revision": 12,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:00:23.919Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.remove"
+      ]
+    },
+    "ui-9e04d5fc-bd57-433f-86ae-c7ad651482c5": {
+      "operationId": "ui-9e04d5fc-bd57-433f-86ae-c7ad651482c5",
+      "revision": 13,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:00:36.185Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "studio-68afc910-4c26-4654-bed6-61ee0088562b": {
+      "operationId": "studio-68afc910-4c26-4654-bed6-61ee0088562b",
+      "revision": 14,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:00:37.453Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "studio-c5932871-8914-4789-82d8-af7092e335a7": {
+      "operationId": "studio-c5932871-8914-4789-82d8-af7092e335a7",
+      "revision": 15,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:00:46.905Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    },
+    "ui-1fc59005-870f-4c1b-9eae-810a0269e392": {
+      "operationId": "ui-1fc59005-870f-4c1b-9eae-810a0269e392",
+      "revision": 16,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:00:47.286Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.remove"
+      ]
+    },
+    "ui-bd95b5e3-fa52-4118-a89d-0abf813ed46d": {
+      "operationId": "ui-bd95b5e3-fa52-4118-a89d-0abf813ed46d",
+      "revision": 17,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:01:22.802Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.add"
+      ]
+    },
+    "studio-ed0f3418-e469-4206-88e5-3488f82a41b0": {
+      "operationId": "studio-ed0f3418-e469-4206-88e5-3488f82a41b0",
+      "revision": 18,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:01:24.235Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.reparent",
+        "node.move"
+      ]
+    },
+    "ui-3a972d8a-9db8-4ffb-88d7-0b9867bce515": {
+      "operationId": "ui-3a972d8a-9db8-4ffb-88d7-0b9867bce515",
+      "revision": 19,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-30T07:01:24.644Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.remove"
+      ]
+    }
+  }
+}

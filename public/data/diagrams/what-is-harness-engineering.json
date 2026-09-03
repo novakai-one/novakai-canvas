@@ -1,0 +1,1135 @@
+{
+  "schemaVersion": 3,
+  "id": "what-is-harness-engineering",
+  "name": "What is Harness Engineering?",
+  "orientation": "top-down",
+  "status": "active",
+  "revision": 1,
+  "nodes": {
+    "what-is-harness-engineering": {
+      "id": "what-is-harness-engineering",
+      "label": "What is Harness Engineering?",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "what-is-harness-engineering--note-1-reference-reconstruction": {
+      "id": "what-is-harness-engineering--note-1-reference-reconstruction",
+      "label": "Reference reconstruction from IMG_1648.PNG · The reliability layer around an LLM turns intent into a bounded, checked result.",
+      "parentId": "what-is-harness-engineering",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "what-is-harness-engineering--block-user-goal": {
+      "id": "what-is-harness-engineering--block-user-goal",
+      "label": "«actor» User Goal",
+      "parentId": "what-is-harness-engineering",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "wireRef": "user-goal"
+    },
+    "what-is-harness-engineering--the-harness": {
+      "id": "what-is-harness-engineering--the-harness",
+      "label": "THE HARNESS",
+      "description": "Reliability layer around the LLM",
+      "parentId": "what-is-harness-engineering",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "what-is-harness-engineering--block-accepted-result": {
+      "id": "what-is-harness-engineering--block-accepted-result",
+      "label": "6 · «domain concept» Accepted Result",
+      "parentId": "what-is-harness-engineering",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "bounded + checked"
+      ],
+      "wireRef": "accepted-result"
+    },
+    "what-is-harness-engineering--what-the-harness-provides": {
+      "id": "what-is-harness-engineering--what-the-harness-provides",
+      "label": "What the harness provides",
+      "parentId": "what-is-harness-engineering",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "icon-grid",
+      "iconItems": [
+        {
+          "icon": "brain",
+          "caption": "Grounded reasoning"
+        },
+        {
+          "icon": "lock",
+          "caption": "Enforced constraints"
+        },
+        {
+          "icon": "gauge",
+          "caption": "Full telemetry"
+        },
+        {
+          "icon": "check",
+          "caption": "Verified results"
+        }
+      ]
+    },
+    "what-is-harness-engineering--block-legend": {
+      "id": "what-is-harness-engineering--block-legend",
+      "label": "Legend",
+      "parentId": "what-is-harness-engineering",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Role labels classify actors, modules, interfaces, and domain concepts.",
+        "Ellipse = start/end · diamond = decision · solid = execution · dashed = control · dotted = observation."
+      ]
+    },
+    "what-is-harness-engineering--the-harness--execution-path": {
+      "id": "what-is-harness-engineering--the-harness--execution-path",
+      "label": "Execution path",
+      "parentId": "what-is-harness-engineering--the-harness",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "what-is-harness-engineering--the-harness--guardrails-telemetry": {
+      "id": "what-is-harness-engineering--the-harness--guardrails-telemetry",
+      "label": "Guardrails & telemetry",
+      "parentId": "what-is-harness-engineering--the-harness",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "what-is-harness-engineering--the-harness--execution-path--1-context-builder": {
+      "id": "what-is-harness-engineering--the-harness--execution-path--1-context-builder",
+      "label": "1 · Context Builder",
+      "description": "live facts + state",
+      "parentId": "what-is-harness-engineering--the-harness--execution-path",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "what-is-harness-engineering--the-harness--execution-path--block-llm": {
+      "id": "what-is-harness-engineering--the-harness--execution-path--block-llm",
+      "label": "2 · «module» LLM",
+      "parentId": "what-is-harness-engineering--the-harness--execution-path",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "reasoning"
+      ],
+      "wireRef": "llm"
+    },
+    "what-is-harness-engineering--the-harness--execution-path--block-policy-gate": {
+      "id": "what-is-harness-engineering--the-harness--execution-path--block-policy-gate",
+      "label": "3 · «interface» Policy Gate",
+      "parentId": "what-is-harness-engineering--the-harness--execution-path",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "allow / block"
+      ],
+      "wireRef": "policy-gate"
+    },
+    "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime": {
+      "id": "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime",
+      "label": "4 · Tools / Runtime",
+      "description": "guarded execution",
+      "parentId": "what-is-harness-engineering--the-harness--execution-path",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "what-is-harness-engineering--the-harness--execution-path--block-verify": {
+      "id": "what-is-harness-engineering--the-harness--execution-path--block-verify",
+      "label": "5 · «module» Verify",
+      "parentId": "what-is-harness-engineering--the-harness--execution-path",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "tests + validation"
+      ],
+      "wireRef": "verify"
+    },
+    "what-is-harness-engineering--the-harness--guardrails-telemetry--block-observability": {
+      "id": "what-is-harness-engineering--the-harness--guardrails-telemetry--block-observability",
+      "label": "«module» Observability",
+      "parentId": "what-is-harness-engineering--the-harness--guardrails-telemetry",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "traces + metrics + errors",
+        "watches every stage"
+      ],
+      "wireRef": "observability"
+    },
+    "what-is-harness-engineering--the-harness--guardrails-telemetry--block-constraints": {
+      "id": "what-is-harness-engineering--the-harness--guardrails-telemetry--block-constraints",
+      "label": "«module» Constraints",
+      "parentId": "what-is-harness-engineering--the-harness--guardrails-telemetry",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "rules + permissions"
+      ],
+      "wireRef": "constraints"
+    },
+    "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-docs": {
+      "id": "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-docs",
+      "label": "Docs",
+      "parentId": "what-is-harness-engineering--the-harness--execution-path--1-context-builder",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "wireRef": "context-docs"
+    },
+    "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-data": {
+      "id": "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-data",
+      "label": "Data",
+      "parentId": "what-is-harness-engineering--the-harness--execution-path--1-context-builder",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "wireRef": "context-data"
+    },
+    "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-history": {
+      "id": "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-history",
+      "label": "History",
+      "parentId": "what-is-harness-engineering--the-harness--execution-path--1-context-builder",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "wireRef": "context-history"
+    },
+    "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-crm": {
+      "id": "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-crm",
+      "label": "CRM",
+      "parentId": "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "wireRef": "tool-crm"
+    },
+    "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-apis": {
+      "id": "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-apis",
+      "label": "APIs",
+      "parentId": "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "wireRef": "tool-apis"
+    },
+    "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-mcp": {
+      "id": "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-mcp",
+      "label": "MCP",
+      "parentId": "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "wireRef": "tool-mcp"
+    }
+  },
+  "wires": {
+    "what-is-harness-engineering--wire-1": {
+      "id": "what-is-harness-engineering--wire-1",
+      "kind": "executes",
+      "label": "send intent",
+      "source": {
+        "nodeId": "what-is-harness-engineering--block-user-goal"
+      },
+      "target": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--1-context-builder"
+      }
+    },
+    "what-is-harness-engineering--wire-2": {
+      "id": "what-is-harness-engineering--wire-2",
+      "kind": "executes",
+      "label": "provide grounded input",
+      "source": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--1-context-builder"
+      },
+      "target": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--block-llm"
+      }
+    },
+    "what-is-harness-engineering--wire-3": {
+      "id": "what-is-harness-engineering--wire-3",
+      "kind": "executes",
+      "label": "propose action",
+      "source": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--block-llm"
+      },
+      "target": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--block-policy-gate"
+      }
+    },
+    "what-is-harness-engineering--wire-4": {
+      "id": "what-is-harness-engineering--wire-4",
+      "kind": "executes",
+      "label": "approve action",
+      "source": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--block-policy-gate"
+      },
+      "target": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime"
+      }
+    },
+    "what-is-harness-engineering--wire-5": {
+      "id": "what-is-harness-engineering--wire-5",
+      "kind": "executes",
+      "label": "return result",
+      "source": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime"
+      },
+      "target": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--block-verify"
+      }
+    },
+    "what-is-harness-engineering--wire-6": {
+      "id": "what-is-harness-engineering--wire-6",
+      "kind": "executes",
+      "label": "accept validated result",
+      "source": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--block-verify"
+      },
+      "target": {
+        "nodeId": "what-is-harness-engineering--block-accepted-result"
+      }
+    },
+    "what-is-harness-engineering--wire-7": {
+      "id": "what-is-harness-engineering--wire-7",
+      "kind": "executes",
+      "label": "return tool result",
+      "source": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime"
+      },
+      "target": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--block-llm"
+      }
+    },
+    "what-is-harness-engineering--wire-8": {
+      "id": "what-is-harness-engineering--wire-8",
+      "kind": "assigns",
+      "label": "emit feedback signals",
+      "source": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--block-verify"
+      },
+      "target": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--1-context-builder"
+      }
+    },
+    "what-is-harness-engineering--wire-9": {
+      "id": "what-is-harness-engineering--wire-9",
+      "kind": "assigns",
+      "label": "enforce rules",
+      "source": {
+        "nodeId": "what-is-harness-engineering--the-harness--guardrails-telemetry--block-constraints"
+      },
+      "target": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--block-policy-gate"
+      }
+    },
+    "what-is-harness-engineering--wire-10": {
+      "id": "what-is-harness-engineering--wire-10",
+      "kind": "assigns",
+      "label": "limit tool access",
+      "source": {
+        "nodeId": "what-is-harness-engineering--the-harness--guardrails-telemetry--block-constraints"
+      },
+      "target": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime"
+      }
+    },
+    "what-is-harness-engineering--wire-11": {
+      "id": "what-is-harness-engineering--wire-11",
+      "kind": "mentions",
+      "label": "observe context",
+      "source": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--1-context-builder"
+      },
+      "target": {
+        "nodeId": "what-is-harness-engineering--the-harness--guardrails-telemetry--block-observability"
+      }
+    },
+    "what-is-harness-engineering--wire-12": {
+      "id": "what-is-harness-engineering--wire-12",
+      "kind": "mentions",
+      "label": "observe reasoning",
+      "source": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--block-llm"
+      },
+      "target": {
+        "nodeId": "what-is-harness-engineering--the-harness--guardrails-telemetry--block-observability"
+      }
+    },
+    "what-is-harness-engineering--wire-13": {
+      "id": "what-is-harness-engineering--wire-13",
+      "kind": "mentions",
+      "label": "observe policy",
+      "source": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--block-policy-gate"
+      },
+      "target": {
+        "nodeId": "what-is-harness-engineering--the-harness--guardrails-telemetry--block-observability"
+      }
+    },
+    "what-is-harness-engineering--wire-14": {
+      "id": "what-is-harness-engineering--wire-14",
+      "kind": "mentions",
+      "label": "observe runtime",
+      "source": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime"
+      },
+      "target": {
+        "nodeId": "what-is-harness-engineering--the-harness--guardrails-telemetry--block-observability"
+      }
+    },
+    "what-is-harness-engineering--wire-15": {
+      "id": "what-is-harness-engineering--wire-15",
+      "kind": "mentions",
+      "label": "observe verification",
+      "source": {
+        "nodeId": "what-is-harness-engineering--the-harness--execution-path--block-verify"
+      },
+      "target": {
+        "nodeId": "what-is-harness-engineering--the-harness--guardrails-telemetry--block-observability"
+      }
+    }
+  },
+  "flows": {
+    "intent-to-result": {
+      "id": "intent-to-result",
+      "name": "From intent to accepted result",
+      "steps": [
+        {
+          "ref": "what-is-harness-engineering--wire-1",
+          "ordinal": 1,
+          "label": "Intent"
+        },
+        {
+          "ref": "what-is-harness-engineering--wire-2",
+          "ordinal": 2,
+          "label": "Ground"
+        },
+        {
+          "ref": "what-is-harness-engineering--wire-3",
+          "ordinal": 3,
+          "label": "Propose"
+        },
+        {
+          "ref": "what-is-harness-engineering--wire-4",
+          "ordinal": 4,
+          "label": "Approve"
+        },
+        {
+          "ref": "what-is-harness-engineering--wire-5",
+          "ordinal": 5,
+          "label": "Execute"
+        },
+        {
+          "ref": "what-is-harness-engineering--wire-6",
+          "ordinal": 6,
+          "label": "Accept"
+        }
+      ]
+    }
+  },
+  "interfaces": {},
+  "types": {},
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "what-is-harness-engineering": {
+          "nodeId": "what-is-harness-engineering",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 1194,
+            "height": 1998
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--note-1-reference-reconstruction": {
+          "nodeId": "what-is-harness-engineering--note-1-reference-reconstruction",
+          "position": {
+            "x": 457,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 132
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--block-user-goal": {
+          "nodeId": "what-is-harness-engineering--block-user-goal",
+          "position": {
+            "x": 401,
+            "y": 212
+          },
+          "size": {
+            "width": 392,
+            "height": 91
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--the-harness": {
+          "nodeId": "what-is-harness-engineering--the-harness",
+          "position": {
+            "x": 40,
+            "y": 327
+          },
+          "size": {
+            "width": 1114,
+            "height": 1142
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--block-accepted-result": {
+          "nodeId": "what-is-harness-engineering--block-accepted-result",
+          "position": {
+            "x": 419,
+            "y": 1493
+          },
+          "size": {
+            "width": 356,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--what-the-harness-provides": {
+          "nodeId": "what-is-harness-engineering--what-the-harness-provides",
+          "position": {
+            "x": 431,
+            "y": 1621
+          },
+          "size": {
+            "width": 332,
+            "height": 186
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--block-legend": {
+          "nodeId": "what-is-harness-engineering--block-legend",
+          "position": {
+            "x": 424,
+            "y": 1831
+          },
+          "size": {
+            "width": 346,
+            "height": 127
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--the-harness--execution-path": {
+          "nodeId": "what-is-harness-engineering--the-harness--execution-path",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 686,
+            "height": 1046
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--the-harness--guardrails-telemetry": {
+          "nodeId": "what-is-harness-engineering--the-harness--guardrails-telemetry",
+          "position": {
+            "x": 750,
+            "y": 434
+          },
+          "size": {
+            "width": 324,
+            "height": 291
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--the-harness--execution-path--1-context-builder": {
+          "nodeId": "what-is-harness-engineering--the-harness--execution-path--1-context-builder",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 606,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--the-harness--execution-path--block-llm": {
+          "nodeId": "what-is-harness-engineering--the-harness--execution-path--block-llm",
+          "position": {
+            "x": 40,
+            "y": 288
+          },
+          "size": {
+            "width": 606,
+            "height": 131
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--the-harness--execution-path--block-policy-gate": {
+          "nodeId": "what-is-harness-engineering--the-harness--execution-path--block-policy-gate",
+          "position": {
+            "x": 40,
+            "y": 491
+          },
+          "size": {
+            "width": 606,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime": {
+          "nodeId": "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime",
+          "position": {
+            "x": 40,
+            "y": 693
+          },
+          "size": {
+            "width": 606,
+            "height": 160
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--the-harness--execution-path--block-verify": {
+          "nodeId": "what-is-harness-engineering--the-harness--execution-path--block-verify",
+          "position": {
+            "x": 40,
+            "y": 925
+          },
+          "size": {
+            "width": 606,
+            "height": 81
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--the-harness--guardrails-telemetry--block-observability": {
+          "nodeId": "what-is-harness-engineering--the-harness--guardrails-telemetry--block-observability",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 244,
+            "height": 95
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--the-harness--guardrails-telemetry--block-constraints": {
+          "nodeId": "what-is-harness-engineering--the-harness--guardrails-telemetry--block-constraints",
+          "position": {
+            "x": 40,
+            "y": 175
+          },
+          "size": {
+            "width": 244,
+            "height": 76
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-docs": {
+          "nodeId": "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-docs",
+          "position": {
+            "x": 40,
+            "y": 65
+          },
+          "size": {
+            "width": 88,
+            "height": 46
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-data": {
+          "nodeId": "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-data",
+          "position": {
+            "x": 140,
+            "y": 65
+          },
+          "size": {
+            "width": 88,
+            "height": 46
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-history": {
+          "nodeId": "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-history",
+          "position": {
+            "x": 240,
+            "y": 65
+          },
+          "size": {
+            "width": 111,
+            "height": 46
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-crm": {
+          "nodeId": "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-crm",
+          "position": {
+            "x": 40,
+            "y": 65
+          },
+          "size": {
+            "width": 84,
+            "height": 46
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-apis": {
+          "nodeId": "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-apis",
+          "position": {
+            "x": 136,
+            "y": 65
+          },
+          "size": {
+            "width": 84,
+            "height": 46
+          },
+          "pinned": false
+        },
+        "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-mcp": {
+          "nodeId": "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-mcp",
+          "position": {
+            "x": 232,
+            "y": 65
+          },
+          "size": {
+            "width": 84,
+            "height": 46
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {
+        "what-is-harness-engineering--block-user-goal": {
+          "icon": "target",
+          "size": 20,
+          "weight": 700,
+          "align": "center",
+          "verticalAlign": "center",
+          "background": "surface",
+          "shape": "ellipse",
+          "borderColor": "muted",
+          "border": 2,
+          "padding": 16
+        },
+        "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-docs": {
+          "icon": "target",
+          "weight": 600,
+          "align": "center",
+          "background": "blue-soft",
+          "borderColor": "blue",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-data": {
+          "icon": "target",
+          "weight": 600,
+          "align": "center",
+          "background": "blue-soft",
+          "borderColor": "blue",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-history": {
+          "icon": "clock",
+          "weight": 600,
+          "align": "center",
+          "background": "blue-soft",
+          "borderColor": "blue",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "what-is-harness-engineering--the-harness--execution-path--block-llm": {
+          "icon": "brain",
+          "size": 20,
+          "weight": 700,
+          "align": "center",
+          "verticalAlign": "center",
+          "text": "violet",
+          "background": "violet-soft",
+          "shape": "ellipse",
+          "borderColor": "violet",
+          "border": 2,
+          "padding": 16
+        },
+        "what-is-harness-engineering--the-harness--execution-path--block-policy-gate": {
+          "icon": "shield",
+          "size": 16,
+          "weight": 700,
+          "align": "center",
+          "verticalAlign": "center",
+          "text": "amber",
+          "background": "amber-soft",
+          "shape": "diamond",
+          "borderColor": "amber",
+          "border": 2,
+          "padding": 8
+        },
+        "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-crm": {
+          "icon": "people",
+          "weight": 600,
+          "align": "center",
+          "background": "amber-soft",
+          "borderColor": "amber",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-apis": {
+          "icon": "target",
+          "weight": 600,
+          "align": "center",
+          "background": "amber-soft",
+          "borderColor": "amber",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-mcp": {
+          "icon": "trend",
+          "weight": 600,
+          "align": "center",
+          "background": "amber-soft",
+          "borderColor": "amber",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        },
+        "what-is-harness-engineering--the-harness--execution-path--block-verify": {
+          "icon": "check",
+          "size": 16,
+          "weight": 700,
+          "align": "center",
+          "verticalAlign": "center",
+          "text": "rose",
+          "background": "rose-soft",
+          "borderColor": "rose",
+          "border": 2,
+          "radius": 16,
+          "padding": 16
+        },
+        "what-is-harness-engineering--the-harness--guardrails-telemetry--block-observability": {
+          "icon": "gauge",
+          "weight": 700,
+          "align": "center",
+          "text": "blue",
+          "background": "blue-soft",
+          "borderColor": "blue",
+          "border": 2,
+          "radius": 16,
+          "padding": 16
+        },
+        "what-is-harness-engineering--the-harness--guardrails-telemetry--block-constraints": {
+          "icon": "lock",
+          "weight": 700,
+          "align": "center",
+          "text": "amber",
+          "background": "amber-soft",
+          "borderColor": "amber",
+          "border": 2,
+          "radius": 16,
+          "padding": 16
+        },
+        "what-is-harness-engineering--block-accepted-result": {
+          "icon": "check",
+          "size": 16,
+          "weight": 700,
+          "align": "center",
+          "verticalAlign": "center",
+          "text": "green",
+          "background": "green-soft",
+          "borderColor": "green",
+          "border": 2,
+          "radius": 16,
+          "padding": 16
+        },
+        "what-is-harness-engineering--block-legend": {
+          "size": 12,
+          "weight": 600,
+          "background": "surface",
+          "borderColor": "muted",
+          "border": 1,
+          "radius": 12,
+          "padding": 12
+        }
+      },
+      "appearanceByWireId": {
+        "what-is-harness-engineering--wire-1": {
+          "width": "medium",
+          "color": "neutral"
+        },
+        "what-is-harness-engineering--wire-2": {
+          "width": "medium",
+          "color": "blue"
+        },
+        "what-is-harness-engineering--wire-3": {
+          "width": "medium",
+          "color": "violet"
+        },
+        "what-is-harness-engineering--wire-4": {
+          "width": "medium",
+          "color": "amber"
+        },
+        "what-is-harness-engineering--wire-5": {
+          "width": "medium",
+          "color": "amber"
+        },
+        "what-is-harness-engineering--wire-6": {
+          "width": "medium",
+          "color": "green"
+        },
+        "what-is-harness-engineering--wire-7": {
+          "width": "medium",
+          "pattern": "solid",
+          "color": "neutral",
+          "shape": "stepped"
+        },
+        "what-is-harness-engineering--wire-8": {
+          "width": "medium",
+          "pattern": "dashed",
+          "color": "rose",
+          "shape": "stepped"
+        },
+        "what-is-harness-engineering--wire-9": {
+          "width": "medium",
+          "pattern": "dashed",
+          "color": "amber"
+        },
+        "what-is-harness-engineering--wire-10": {
+          "width": "medium",
+          "pattern": "dashed",
+          "color": "amber"
+        },
+        "what-is-harness-engineering--wire-11": {
+          "width": "thin",
+          "pattern": "dotted",
+          "color": "blue"
+        },
+        "what-is-harness-engineering--wire-12": {
+          "width": "thin",
+          "pattern": "dotted",
+          "color": "blue"
+        },
+        "what-is-harness-engineering--wire-13": {
+          "width": "thin",
+          "pattern": "dotted",
+          "color": "blue"
+        },
+        "what-is-harness-engineering--wire-14": {
+          "width": "thin",
+          "pattern": "dotted",
+          "color": "blue"
+        },
+        "what-is-harness-engineering--wire-15": {
+          "width": "thin",
+          "pattern": "dotted",
+          "color": "blue"
+        }
+      },
+      "arrangementByContainerId": {
+        "what-is-harness-engineering--the-harness--execution-path--1-context-builder": {
+          "layout": "row",
+          "childIds": [
+            "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-docs",
+            "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-data",
+            "what-is-harness-engineering--the-harness--execution-path--1-context-builder--block-context-history"
+          ],
+          "gap": 12,
+          "align": "center"
+        },
+        "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime": {
+          "layout": "row",
+          "childIds": [
+            "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-crm",
+            "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-apis",
+            "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime--block-tool-mcp"
+          ],
+          "gap": 12,
+          "align": "center"
+        },
+        "what-is-harness-engineering--the-harness--execution-path": {
+          "layout": "stack",
+          "childIds": [
+            "what-is-harness-engineering--the-harness--execution-path--1-context-builder",
+            "what-is-harness-engineering--the-harness--execution-path--block-llm",
+            "what-is-harness-engineering--the-harness--execution-path--block-policy-gate",
+            "what-is-harness-engineering--the-harness--execution-path--4-tools-runtime",
+            "what-is-harness-engineering--the-harness--execution-path--block-verify"
+          ],
+          "gap": 16,
+          "align": "stretch"
+        },
+        "what-is-harness-engineering--the-harness--guardrails-telemetry": {
+          "layout": "stack",
+          "childIds": [
+            "what-is-harness-engineering--the-harness--guardrails-telemetry--block-observability",
+            "what-is-harness-engineering--the-harness--guardrails-telemetry--block-constraints"
+          ],
+          "gap": 24,
+          "align": "stretch"
+        },
+        "what-is-harness-engineering--the-harness": {
+          "layout": "row",
+          "childIds": [
+            "what-is-harness-engineering--the-harness--execution-path",
+            "what-is-harness-engineering--the-harness--guardrails-telemetry"
+          ],
+          "gap": 24,
+          "align": "center"
+        },
+        "what-is-harness-engineering": {
+          "layout": "stack",
+          "childIds": [
+            "what-is-harness-engineering--note-1-reference-reconstruction",
+            "what-is-harness-engineering--block-user-goal",
+            "what-is-harness-engineering--the-harness",
+            "what-is-harness-engineering--block-accepted-result",
+            "what-is-harness-engineering--what-the-harness-provides",
+            "what-is-harness-engineering--block-legend"
+          ],
+          "gap": 24,
+          "align": "center"
+        }
+      }
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "cli-apply-3faf9bb5-5a21-484e-ab9c-fcb12a348958": {
+      "operationId": "cli-apply-3faf9bb5-5a21-484e-ab9c-fcb12a348958",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-30T06:30:35.723Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/Users/christopherdasca/.claude/jobs/58c63390/tmp/harness.dsl"
+      },
+      "commandKinds": [
+        "diagram.setOrientation",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "diagram.flows.replace",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import { type Node, type NodeProps } from '@xyflow/react';
 import type { TreeRow } from '@novakai/canvas';
 import { orderedTreeRows, treeRowDepth } from '@novakai/canvas';
-import type { ArchitectureNodeData } from '../projection';
+import type { ArchitectureNodeData } from '../../presentation/projection';
 
 type TreeFlowNode = Node<ArchitectureNodeData, 'tree'>;
 

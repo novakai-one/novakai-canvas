@@ -1,6 +1,5 @@
 /** Registry-owned ERD Entity with fixed Type, Field and Keys columns. */
 
-import { resolveComponentPalette } from '../component-palette.ts';
 import type {
   ComponentItem, DiagramComponent, DslChildStatement, DslNodeDeclaration,
 } from '../component.ts';
@@ -122,7 +121,7 @@ export const entityComponent: DiagramComponent<'entity'> = {
     return { width: Math.min(540, Math.max(320, 180 + longest * 5)), height: 82 + fields.length * 32 };
   },
   renderSvg(node, box, appearance) {
-    const colors = resolveComponentPalette(appearance.palette, appearance.theme, 'entity');
+    const colors = appearance.paletteColors;
     if (!colors) return '';
     const headerBottom = box.y + 50;
     const labelsBottom = headerBottom + 24;

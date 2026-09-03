@@ -4,7 +4,7 @@
   "name": "Novakai Canvas diagram engine",
   "orientation": "left-right",
   "status": "active",
-  "revision": 5,
+  "revision": 14,
   "nodes": {
     "novakai-canvas-diagram-engine": {
       "id": "novakai-canvas-diagram-engine",
@@ -1503,7 +1503,8 @@
         "zoom": 1
       },
       "collapsedNodeIds": [],
-      "hiddenKinds": []
+      "hiddenKinds": [],
+      "flowId": "novakai-canvas-diagram-engine--flow-from-dsl-line-to-pixels"
     }
   },
   "activeViewId": "view-default",
@@ -1692,6 +1693,150 @@
         "kind": "human"
       },
       "timestamp": "2026-08-26T22:00:17.206Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-7af21562-5f36-472c-a3bc-dad39c032572": {
+      "operationId": "ui-7af21562-5f36-472c-a3bc-dad39c032572",
+      "revision": 6,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-26T23:08:25.344Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-ef8c8455-ae2f-4538-977a-626a043fa4bc": {
+      "operationId": "ui-ef8c8455-ae2f-4538-977a-626a043fa4bc",
+      "revision": 7,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-26T23:10:00.823Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-562f864b-39f6-459e-a0ed-30f9f32fd8bd": {
+      "operationId": "ui-562f864b-39f6-459e-a0ed-30f9f32fd8bd",
+      "revision": 8,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-26T23:10:05.822Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-435495e5-a652-4ab0-95c5-736c980a5842": {
+      "operationId": "ui-435495e5-a652-4ab0-95c5-736c980a5842",
+      "revision": 9,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-26T23:10:07.693Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-b475d8c1-a773-4a2b-bb95-a003cdb60133": {
+      "operationId": "ui-b475d8c1-a773-4a2b-bb95-a003cdb60133",
+      "revision": 10,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-26T23:10:10.876Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-15530e5e-6d94-4766-9c7f-3e5c9b4a8111": {
+      "operationId": "ui-15530e5e-6d94-4766-9c7f-3e5c9b4a8111",
+      "revision": 11,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-26T23:10:15.041Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-71bc6474-0a8f-4a48-86d8-d11268257aba": {
+      "operationId": "ui-71bc6474-0a8f-4a48-86d8-d11268257aba",
+      "revision": 12,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-26T23:15:13.321Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-6e663f01-d307-4f5d-8630-3bf2156293fa": {
+      "operationId": "ui-6e663f01-d307-4f5d-8630-3bf2156293fa",
+      "revision": 13,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-26T23:15:18.075Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "flow.activate"
+      ]
+    },
+    "ui-77562f24-8b2f-4b91-8e78-57ab1c07c933": {
+      "operationId": "ui-77562f24-8b2f-4b91-8e78-57ab1c07c933",
+      "revision": 14,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-26T23:15:22.305Z",
       "provenance": {
         "source": "ui",
         "sourceRef": "prototype:canvas-room"

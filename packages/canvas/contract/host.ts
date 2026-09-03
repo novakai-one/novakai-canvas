@@ -52,22 +52,22 @@ export type {
   DiagramComponent,
   RecordEditorField,
   RecordEditorVariant,
+  ItemListContentEditorDeclaration,
   RecordListContentEditorDeclaration,
   StringListContentEditorDeclaration,
 } from '../core/components/component.ts';
 export { GLYPHS } from '../core/components/glyphs.ts';
+export { iconGridColumns } from '../core/components/icon-grid/component.ts';
+export { inscribedContentBox, outlinePath } from '../core/components/outline.ts';
 export { layoutBlockText } from '../core/components/block/text-layout.ts';
-export {
-  paletteCssVariables,
-  resolveComponentPalette,
-} from '../core/components/component-palette.ts';
+export { paletteCssVariables } from '../core/components/component-palette.ts';
 export {
   orderedTreeRows,
   treeRowDepth,
 } from '../core/components/tree/content.ts';
 export type { TreeRow } from './records/components.ts';
 export {
-  APPEARANCE_SPECIFICATIONS,
+  appearanceSpecifications,
   CONTAINER_ALIGNS,
   GRID_COLUMNS,
   SPACINGS,

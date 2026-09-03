@@ -1,10 +1,15 @@
 import type { WireRouteHint } from '../../../contract/records/layout.ts';
-import type { ProjectedView } from '../project-view.ts';
+import { resolveAppearanceTokens } from '../../components/appearance.ts';
+import type { ProjectedView, PositionedNode } from '../project-view.ts';
 import type { PlannedWireRoute, WirePlanOptions } from './contract.ts';
 import { routeWire } from './wire-router.ts';
-import {
-  anchorFor, chooseSides, laneOffsets, nodeRects, wireObstacles,
-} from './view-geometry.ts';
+import { anchorFor, type ShapedBox } from './anchor.ts';
+import { chooseSides, laneOffsets, nodeRects, wireObstacles } from './view-geometry.ts';
+
+/** One wire end's node with the geometry the router needs: its box and its outline shape. */
+function shapedBox(node: PositionedNode, rect: ShapedBox['rect']): ShapedBox {
+  return { rect, shape: resolveAppearanceTokens(node.appearance).shape };
+}
 
 /** Plans every visible wire once from committed geometry and deliberate route hints. */
 export function planWireRoutes(
@@ -21,7 +26,7 @@ export function planWireRoutes(
     const target = rects.get(wire.target.nodeId as string);
     const sourceNode = nodes.get(wire.source.nodeId as string);
     const targetNode = nodes.get(wire.target.nodeId as string);
-    if (!source || !target) continue;
+    if (!source || !target || !sourceNode || !targetNode) continue;
     const obstacles = options.avoidObstacles === false
       ? [] : wireObstacles(view, rects, wire);
     const automatic = chooseSides(source, target, obstacles, options.axis);
@@ -31,13 +36,13 @@ export function planWireRoutes(
     const lane = lanes.get(wire.id) ?? 0;
     const route = routeWire({
       source: anchorFor(
-        wire.source, source, sourceSide,
-        sourceNode?.interfaceIds.length ?? 0, sourceNode,
+        wire.source, shapedBox(sourceNode, source), sourceSide,
+        sourceNode.interfaceIds.length, sourceNode,
       ),
       sourceSide,
       target: anchorFor(
-        wire.target, target, targetSide,
-        targetNode?.interfaceIds.length ?? 0, targetNode,
+        wire.target, shapedBox(targetNode, target), targetSide,
+        targetNode.interfaceIds.length, targetNode,
       ),
       targetSide,
       obstacles,

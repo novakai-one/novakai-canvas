@@ -56,7 +56,8 @@ export function renderSnapshotWires(scene: SnapshotScene): string[] {
       ...decorations.lines.map((line) => `<line${flowAttribute} x1="${line.from.x}" y1="${line.from.y}" x2="${line.to.x}" y2="${line.to.y}" stroke="${stroke}" stroke-width="${strokeWidth}"${opacity} stroke-linecap="round"/>`),
       ...decorations.circles.map((circle) => `<circle${flowAttribute} cx="${circle.center.x}" cy="${circle.center.y}" r="${circle.radius}" fill="none" stroke="${stroke}" stroke-width="${strokeWidth}"${opacity}/>`),
     );
-    const wireLabel = wireLabelOf(wire, flowSteps);
+    // A static export has no selection to reveal labels, so it always prints them.
+    const wireLabel = wireLabelOf(wire, flowSteps, { preference: 'always', focused: false });
     const text = wireLabelText(wireLabel);
     if (text) {
       parts.push(

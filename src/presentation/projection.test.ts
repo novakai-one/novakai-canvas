@@ -88,6 +88,18 @@ function input(source: DiagramRecord) {
   };
 }
 
+/** The same input with structural wire labels always drawn, for label-content tests. */
+function alwaysLabelled(source: DiagramRecord) {
+  const base = input(source);
+  return {
+    ...base,
+    preferences: {
+      ...defaultPreferences,
+      wires: { ...defaultPreferences.wires, showLabels: 'always' as const },
+    },
+  };
+}
+
 describe('scopeDepth', () => {
   it('walks the parent chain and stops on missing parents and cycles', () => {
     const nodes = {
@@ -228,8 +240,9 @@ describe('projectEdges', () => {
       ['map', 'a', 'b', 'c'].map((id) => node(id, id === 'map' ? 'group' : 'module', id === 'map' ? undefined : 'map')),
       [wire('ab', 'a', 'b'), wire('bc', 'b', 'c')],
     );
-    expect(projectEdges(input(wired)).map((edge) => [edge.data?.label, edge.data?.labelKind]))
+    expect(projectEdges(alwaysLabelled(wired)).map((edge) => [edge.data?.label, edge.data?.labelKind]))
       .toEqual([['ab', 'wire'], ['bc', 'wire']]);
+    expect(projectEdges(input(wired)).map((edge) => edge.data?.label)).toEqual(['', '']);
     wired.flows = {
       path: { id: asId('path'), name: 'Path', steps: [{ ref: asId('ab'), ordinal: 1 }] },
     };
@@ -242,7 +255,7 @@ describe('projectEdges', () => {
       [node('map', 'group'), node('a', 'module', 'map'), node('b', 'module', 'map')],
       [wire('wire-1', 'a', 'b')],
     );
-    const [edge] = projectEdges(input(wired));
+    const [edge] = projectEdges(alwaysLabelled(wired));
     expect(edge).toMatchObject({ id: 'wire-1', source: 'a', target: 'b', type: 'elbow' });
     expect(edge.data?.label).toBe('wire-1');
   });

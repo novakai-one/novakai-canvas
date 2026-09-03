@@ -4,11 +4,12 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const SHAPES = [
-  'timeline', 'metric', 'icon-card', 'callout-stack', 'block', 'ooux-object', 'entity',
+  'timeline', 'metric', 'icon-card', 'icon-grid', 'callout-stack', 'block', 'ooux-object', 'entity',
 ] as const;
 const COMMON_SEAMS = [
   'packages/canvas/core/components/registry.ts',
   'packages/canvas/core/components/component-palette.ts',
+  'packages/canvas/core/domain/view-types.ts',
   'packages/canvas/contract/records/components.ts',
   'packages/canvas/contract/records/legacy-document.ts',
   'packages/canvas/contract/records/legacy.ts',
@@ -105,7 +106,7 @@ describe('Canvas package boundaries', () => {
       'src/presentation/projection.ts',
       'src/presentation/components/inspect-panel.tsx',
       'src/components/timeline/web.tsx',
-      'src/presentation/nodes/tree-node.tsx',
+      'src/components/tree/web.tsx',
     ]) {
       const source = sourceOf(file);
       expect(source.includes("'tree-row'"), file).toBe(false);

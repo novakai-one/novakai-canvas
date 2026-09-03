@@ -1,0 +1,1494 @@
+{
+  "schemaVersion": 3,
+  "id": "store-ram-why-the-server-holds-3-3-gb",
+  "name": "Store RAM — why the server holds 3.3 GB",
+  "orientation": "left-right",
+  "status": "active",
+  "revision": 5,
+  "nodes": {
+    "store-ram-why-the-server-holds-3-3-gb": {
+      "id": "store-ram-why-the-server-holds-3-3-gb",
+      "label": "Store RAM — why the server holds 3.3 GB",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--note-1-measured-2026-08-28-on-t": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--note-1-measured-2026-08-28-on-t",
+      "label": "Measured 2026-08-28 on the live deployed server: ONE process, 3.3 GB resident, flat over time. Not ghosts (deploy fixed that), not a leak. Every byte is an in-memory index rebuilt from disk at every boot and then held forever.",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "comment"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk",
+      "label": ".novakai/stores — the truth on disk",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine",
+      "label": "packages/foundation/core/store-engine",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores",
+      "label": "packages/messaging/adapters/stores",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core",
+      "label": "packages/messaging/core",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-supervision": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-supervision",
+      "label": "packages/supervision",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see",
+      "label": "packages/shell — what you see",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--the-fix": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--the-fix",
+      "label": "THE FIX",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-transcript-lines": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-transcript-lines",
+      "label": "transcriptLines.jsonl",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "transcript-lines",
+      "entityFields": [
+        {
+          "id": "tl-size",
+          "name": "on disk",
+          "valueType": "3.0 GB",
+          "keys": []
+        },
+        {
+          "id": "tl-id",
+          "name": "id",
+          "valueType": "TranscriptLineId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "tl-session",
+          "name": "sessionId",
+          "valueType": "ProviderSessionId",
+          "keys": [
+            "fk"
+          ]
+        },
+        {
+          "id": "tl-payload",
+          "name": "payload (full line text)",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-command-receipts": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-command-receipts",
+      "label": "commandReceipts.jsonl",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "command-receipts",
+      "entityFields": [
+        {
+          "id": "cr-size",
+          "name": "on disk",
+          "valueType": "644 MB",
+          "keys": []
+        },
+        {
+          "id": "cr-id",
+          "name": "id",
+          "valueType": "ReceiptId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "cr-payload",
+          "name": "payload",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-traces": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-traces",
+      "label": "traces.jsonl",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "traces",
+      "entityFields": [
+        {
+          "id": "tr-size",
+          "name": "on disk",
+          "valueType": "512 MB",
+          "keys": []
+        },
+        {
+          "id": "tr-op",
+          "name": "opId",
+          "valueType": "OpId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "tr-cop",
+          "name": "clientOpId",
+          "valueType": "ClientOpId",
+          "keys": []
+        }
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-transcript-journal": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-transcript-journal",
+      "label": "transcriptJournal.jsonl",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "entity",
+      "entityRef": "transcript-journal",
+      "entityFields": [
+        {
+          "id": "tj-size",
+          "name": "on disk",
+          "valueType": "422 MB",
+          "keys": []
+        },
+        {
+          "id": "tj-id",
+          "name": "id",
+          "valueType": "JournalId",
+          "keys": [
+            "pk"
+          ]
+        },
+        {
+          "id": "tj-payload",
+          "name": "payload",
+          "valueType": "string",
+          "keys": []
+        }
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts",
+      "label": "engine.ts",
+      "description": "The one store engine. Boot: chunked re-index of every file from byte 0 (no persisted index). Retains the result forever.",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine",
+      "interfaceIds": [
+        "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts--if-foreachcompleteline",
+        "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts--if-detachpayload"
+      ],
+      "typeIds": [
+        "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts--type-recordindex",
+        "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts--type-traceindex"
+      ],
+      "kind": "module"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--block-heavy-payload-kinds-transcriptline-only": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--block-heavy-payload-kinds-transcriptline-only",
+      "label": "HEAVY_PAYLOAD_KINDS = { transcriptLine } only",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Only transcriptLine gets lazy payloads. Receipts, journal and traces keep FULL payloads in RAM."
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--jsonl-ts": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--jsonl-ts",
+      "label": "jsonl.ts",
+      "description": "openFoundationTranscriptStore() — replays ALL transcript, send and delivery facts at boot",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores",
+      "interfaceIds": [
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--jsonl-ts--if-openfoundationtranscriptstore"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--transcript-state-ts": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--transcript-state-ts",
+      "label": "transcript-state.ts",
+      "description": "THE GUILTY PARTY",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores",
+      "interfaceIds": [
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--transcript-state-ts--if-listtranscriptlines"
+      ],
+      "typeIds": [
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--transcript-state-ts--type-transcriptstate"
+      ],
+      "kind": "module"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--block-holds-all-3-gb-of-lines-every-event-forever": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--block-holds-all-3-gb-of-lines-every-event-forever",
+      "label": "holds ALL 3 GB of lines + every event, forever",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "line 65: lines = new Map over every TranscriptLine",
+        "line 66: events array never bounded",
+        "line 187: every history query copies the whole map, then filters"
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history",
+      "label": "conversations — serves history",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick",
+      "label": "ingestion — the 1 s tick",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "group"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-supervision--transcript-observation-ts": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-supervision--transcript-observation-ts",
+      "label": "transcript-observation.ts",
+      "description": "Watches transcripts + traces for agent health",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--packages-supervision",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see--ooux-object-conversation-view": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see--ooux-object-conversation-view",
+      "label": "Conversation View",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "ooux-object",
+      "objectRef": "conversation-view",
+      "oouxRows": [
+        {
+          "kind": "attribute",
+          "id": "cv-history",
+          "name": "history",
+          "valueType": "TranscriptLine[]",
+          "role": "core",
+          "traits": [
+            "filterable"
+          ]
+        },
+        {
+          "kind": "cta",
+          "id": "cv-scroll",
+          "name": "scroll back",
+          "role": "reader"
+        }
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see--your-worry-answered": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see--your-worry-answered",
+      "label": "Your worry, answered",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "callout-stack",
+      "callouts": [
+        {
+          "id": "cw-today",
+          "kind": "info",
+          "text": "Today the UI gets history from the full in-memory map — it works BECAUSE everything is in RAM."
+        },
+        {
+          "id": "cw-after",
+          "kind": "success",
+          "text": "After the fix, history pages through the byte-range index — every old line is still reachable on demand. Nothing is cut off."
+        },
+        {
+          "id": "cw-risk",
+          "kind": "warning",
+          "text": "RISK: only if the fix naively keeps 'the last N lines' would history look cut off at an arbitrary point. The fix must page, not truncate."
+        }
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--the-fix--block-1-lazy-payloads-for-receipts-journal-traces": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--the-fix--block-1-lazy-payloads-for-receipts-journal-traces",
+      "label": "1. Lazy payloads for receipts, journal, traces",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--the-fix",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Extend HEAVY_PAYLOAD_KINDS — envelope in RAM, payload re-read by byte range on demand. Pattern already exists."
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--the-fix--block-2-transcriptstate-index-not-haystack": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--the-fix--block-2-transcriptstate-index-not-haystack",
+      "label": "2. TranscriptState: index, not haystack",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--the-fix",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "lines: Map<id, full record> -> Map<id, byte range>. History queries become paged index lookups."
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--the-fix--block-3-persist-the-index-across-restarts": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--the-fix--block-3-persist-the-index-across-restarts",
+      "label": "3. Persist the index across restarts",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--the-fix",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "Boot validates a saved index instead of re-parsing 4.6 GB of JSONL every time."
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--the-fix--block-4-rotate-transcriptlines-jsonl": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--the-fix--block-4-rotate-transcriptlines-jsonl",
+      "label": "4. Rotate transcriptLines.jsonl",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--the-fix",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "block",
+      "lines": [
+        "3 GB append-only doubles every few weeks. Cold history moves to an archive file."
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history--messages-ts": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history--messages-ts",
+      "label": "messages.ts",
+      "description": "Conversation history for the UI",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history",
+      "interfaceIds": [
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history--messages-ts--if-listtranscriptlines"
+      ],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history--views-ts": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history--views-ts",
+      "label": "views.ts",
+      "description": "Conversation metadata",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick--watch-ts": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick--watch-ts",
+      "label": "watch.ts",
+      "description": "Walks provider transcript dirs every second. Burns CPU/disk — NOT the RAM problem.",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick--ingest-ts": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick--ingest-ts",
+      "label": "ingest.ts",
+      "description": "Appends new lines only (cheap)",
+      "parentId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick",
+      "interfaceIds": [],
+      "typeIds": [],
+      "kind": "module"
+    }
+  },
+  "wires": {
+    "store-ram-why-the-server-holds-3-3-gb--wire-1": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--wire-1",
+      "kind": "queries",
+      "label": "boot re-index from byte 0, every restart",
+      "source": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts"
+      },
+      "target": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-transcript-lines"
+      }
+    },
+    "store-ram-why-the-server-holds-3-3-gb--wire-2": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--wire-2",
+      "kind": "queries",
+      "label": "every trace parsed + held forever",
+      "source": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts"
+      },
+      "target": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-traces"
+      }
+    },
+    "store-ram-why-the-server-holds-3-3-gb--wire-3": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--wire-3",
+      "kind": "queries",
+      "label": "full payloads retained (not a heavy kind)",
+      "source": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts"
+      },
+      "target": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-command-receipts"
+      }
+    },
+    "store-ram-why-the-server-holds-3-3-gb--wire-4": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--wire-4",
+      "kind": "queries",
+      "label": "full payloads retained (not a heavy kind)",
+      "source": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts"
+      },
+      "target": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-transcript-journal"
+      }
+    },
+    "store-ram-why-the-server-holds-3-3-gb--wire-5": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--wire-5",
+      "kind": "executes",
+      "label": "replay all facts at open",
+      "source": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--jsonl-ts"
+      },
+      "target": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts"
+      }
+    },
+    "store-ram-why-the-server-holds-3-3-gb--wire-6": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--wire-6",
+      "kind": "owns",
+      "label": "hydrate",
+      "source": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--jsonl-ts"
+      },
+      "target": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--transcript-state-ts"
+      }
+    },
+    "store-ram-why-the-server-holds-3-3-gb--wire-7": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--wire-7",
+      "kind": "owns",
+      "label": "all 3 GB mirrored into RAM",
+      "source": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--transcript-state-ts"
+      },
+      "target": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-transcript-lines"
+      }
+    },
+    "store-ram-why-the-server-holds-3-3-gb--wire-8": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--wire-8",
+      "kind": "executes",
+      "label": "1 s tick, appends new lines only",
+      "source": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick--watch-ts"
+      },
+      "target": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-transcript-lines"
+      }
+    },
+    "store-ram-why-the-server-holds-3-3-gb--wire-9": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--wire-9",
+      "kind": "queries",
+      "label": "history query = full map scan",
+      "source": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history--messages-ts"
+      },
+      "target": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--transcript-state-ts"
+      }
+    },
+    "store-ram-why-the-server-holds-3-3-gb--wire-10": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--wire-10",
+      "kind": "queries",
+      "label": "scroll back",
+      "source": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see--ooux-object-conversation-view"
+      },
+      "target": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history--messages-ts"
+      }
+    },
+    "store-ram-why-the-server-holds-3-3-gb--wire-11": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--wire-11",
+      "kind": "queries",
+      "label": "traces + transcripts",
+      "source": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-supervision--transcript-observation-ts"
+      },
+      "target": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts"
+      }
+    },
+    "store-ram-why-the-server-holds-3-3-gb--wire-12": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--wire-12",
+      "kind": "mentions",
+      "label": "extend HEAVY_PAYLOAD_KINDS",
+      "source": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--the-fix--block-1-lazy-payloads-for-receipts-journal-traces"
+      },
+      "target": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts"
+      }
+    },
+    "store-ram-why-the-server-holds-3-3-gb--wire-13": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--wire-13",
+      "kind": "mentions",
+      "label": "Map<id, record> becomes Map<id, byteRange>",
+      "source": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--the-fix--block-2-transcriptstate-index-not-haystack"
+      },
+      "target": {
+        "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--transcript-state-ts"
+      }
+    }
+  },
+  "flows": {
+    "boot-today": {
+      "id": "boot-today",
+      "name": "Boot today: 3 minutes to 3.3 GB",
+      "steps": [
+        {
+          "ref": "store-ram-why-the-server-holds-3-3-gb--wire-1",
+          "ordinal": 1,
+          "label": "re-index every store from byte 0"
+        },
+        {
+          "ref": "store-ram-why-the-server-holds-3-3-gb--wire-5",
+          "ordinal": 2,
+          "label": "replay all facts"
+        },
+        {
+          "ref": "store-ram-why-the-server-holds-3-3-gb--wire-6",
+          "ordinal": 3,
+          "label": "hydrate messaging state"
+        },
+        {
+          "ref": "store-ram-why-the-server-holds-3-3-gb--wire-7",
+          "ordinal": 4,
+          "label": "3 GB mirrored into RAM, held forever"
+        }
+      ]
+    },
+    "fix-path": {
+      "id": "fix-path",
+      "name": "The fix",
+      "steps": [
+        {
+          "ref": "store-ram-why-the-server-holds-3-3-gb--wire-12",
+          "ordinal": 1,
+          "label": "lazy payloads for every big store"
+        },
+        {
+          "ref": "store-ram-why-the-server-holds-3-3-gb--wire-13",
+          "ordinal": 2,
+          "label": "index, not haystack"
+        }
+      ]
+    },
+    "history-today": {
+      "id": "history-today",
+      "name": "You scroll back in the UI — today",
+      "steps": [
+        {
+          "ref": "store-ram-why-the-server-holds-3-3-gb--wire-10",
+          "ordinal": 1,
+          "label": "scroll back"
+        },
+        {
+          "ref": "store-ram-why-the-server-holds-3-3-gb--wire-9",
+          "ordinal": 2,
+          "label": "whole map copied + filtered"
+        }
+      ]
+    }
+  },
+  "interfaces": {
+    "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts--if-foreachcompleteline": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts--if-foreachcompleteline",
+      "ownerId": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts",
+      "name": "forEachCompleteLine",
+      "accepts": [
+        "file",
+        "from",
+        "size"
+      ],
+      "returns": [
+        "lines with byte offsets"
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts--if-detachpayload": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts--if-detachpayload",
+      "ownerId": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts",
+      "name": "detachPayload",
+      "accepts": [
+        "record",
+        "file",
+        "offset",
+        "len"
+      ],
+      "returns": [
+        "lazy payload"
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--jsonl-ts--if-openfoundationtranscriptstore": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--jsonl-ts--if-openfoundationtranscriptstore",
+      "ownerId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--jsonl-ts",
+      "name": "openFoundationTranscriptStore",
+      "accepts": [
+        "root"
+      ],
+      "returns": [
+        "TranscriptStore"
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--transcript-state-ts--if-listtranscriptlines": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--transcript-state-ts--if-listtranscriptlines",
+      "ownerId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--transcript-state-ts",
+      "name": "listTranscriptLines",
+      "accepts": [
+        "query"
+      ],
+      "returns": [
+        "full in-memory scan"
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history--messages-ts--if-listtranscriptlines": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history--messages-ts--if-listtranscriptlines",
+      "ownerId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history--messages-ts",
+      "name": "listTranscriptLines",
+      "accepts": [
+        "query"
+      ],
+      "returns": [
+        "ALL matching lines",
+        "no paging"
+      ]
+    }
+  },
+  "types": {
+    "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts--type-recordindex": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts--type-recordindex",
+      "name": "RecordIndex",
+      "fields": [
+        "latest: Map<id",
+        "record>",
+        "byClientOpId"
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts--type-traceindex": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts--type-traceindex",
+      "name": "TraceIndex",
+      "fields": [
+        "traces: ALL parsed lines",
+        "held forever"
+      ]
+    },
+    "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--transcript-state-ts--type-transcriptstate": {
+      "id": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--transcript-state-ts--type-transcriptstate",
+      "name": "TranscriptState",
+      "fields": [
+        "lines: Map<id",
+        "TranscriptLine>",
+        "events: unbounded[]"
+      ]
+    }
+  },
+  "layouts": {
+    "layout-default": {
+      "id": "layout-default",
+      "name": "Default",
+      "strategy": "manual",
+      "placements": {
+        "store-ram-why-the-server-holds-3-3-gb": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb",
+          "position": {
+            "x": 40,
+            "y": 80
+          },
+          "size": {
+            "width": 1960,
+            "height": 1816
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--note-1-measured-2026-08-28-on-t": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--note-1-measured-2026-08-28-on-t",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 280,
+            "height": 195
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk",
+          "position": {
+            "x": 360,
+            "y": 56
+          },
+          "size": {
+            "width": 410,
+            "height": 876
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine",
+          "position": {
+            "x": 810,
+            "y": 56
+          },
+          "size": {
+            "width": 400,
+            "height": 442
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores",
+          "position": {
+            "x": 1250,
+            "y": 56
+          },
+          "size": {
+            "width": 400,
+            "height": 694
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core",
+          "position": {
+            "x": 40,
+            "y": 1002
+          },
+          "size": {
+            "width": 460,
+            "height": 774
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-supervision": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-supervision",
+          "position": {
+            "x": 1100,
+            "y": 1002
+          },
+          "size": {
+            "width": 380,
+            "height": 216
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see",
+          "position": {
+            "x": 540,
+            "y": 1002
+          },
+          "size": {
+            "width": 520,
+            "height": 432
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--the-fix": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--the-fix",
+          "position": {
+            "x": 1520,
+            "y": 1002
+          },
+          "size": {
+            "width": 400,
+            "height": 447
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-transcript-lines": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-transcript-lines",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 330,
+            "height": 210
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-command-receipts": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-command-receipts",
+          "position": {
+            "x": 40,
+            "y": 278
+          },
+          "size": {
+            "width": 330,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-traces": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-traces",
+          "position": {
+            "x": 40,
+            "y": 468
+          },
+          "size": {
+            "width": 330,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-transcript-journal": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-transcript-journal",
+          "position": {
+            "x": 40,
+            "y": 658
+          },
+          "size": {
+            "width": 330,
+            "height": 178
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 236
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--block-heavy-payload-kinds-transcriptline-only": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--block-heavy-payload-kinds-transcriptline-only",
+          "position": {
+            "x": 40,
+            "y": 304
+          },
+          "size": {
+            "width": 320,
+            "height": 98
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--jsonl-ts": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--jsonl-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 162
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--transcript-state-ts": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--transcript-state-ts",
+          "position": {
+            "x": 40,
+            "y": 290
+          },
+          "size": {
+            "width": 320,
+            "height": 154
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--block-holds-all-3-gb-of-lines-every-event-forever": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--block-holds-all-3-gb-of-lines-every-event-forever",
+          "position": {
+            "x": 40,
+            "y": 516
+          },
+          "size": {
+            "width": 320,
+            "height": 138
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 380,
+            "height": 338
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick",
+          "position": {
+            "x": 40,
+            "y": 406
+          },
+          "size": {
+            "width": 380,
+            "height": 328
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-supervision--transcript-observation-ts": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-supervision--transcript-observation-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see--ooux-object-conversation-view": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see--ooux-object-conversation-view",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 440,
+            "height": 126
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see--your-worry-answered": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see--your-worry-answered",
+          "position": {
+            "x": 40,
+            "y": 194
+          },
+          "size": {
+            "width": 440,
+            "height": 198
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--the-fix--block-1-lazy-payloads-for-receipts-journal-traces": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--the-fix--block-1-lazy-payloads-for-receipts-journal-traces",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 320,
+            "height": 98
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--the-fix--block-2-transcriptstate-index-not-haystack": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--the-fix--block-2-transcriptstate-index-not-haystack",
+          "position": {
+            "x": 40,
+            "y": 166
+          },
+          "size": {
+            "width": 320,
+            "height": 79
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--the-fix--block-3-persist-the-index-across-restarts": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--the-fix--block-3-persist-the-index-across-restarts",
+          "position": {
+            "x": 40,
+            "y": 257
+          },
+          "size": {
+            "width": 320,
+            "height": 59
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--the-fix--block-4-rotate-transcriptlines-jsonl": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--the-fix--block-4-rotate-transcriptlines-jsonl",
+          "position": {
+            "x": 40,
+            "y": 328
+          },
+          "size": {
+            "width": 320,
+            "height": 79
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history--messages-ts": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history--messages-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 130
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history--views-ts": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history--views-ts",
+          "position": {
+            "x": 40,
+            "y": 194
+          },
+          "size": {
+            "width": 300,
+            "height": 104
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick--watch-ts": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick--watch-ts",
+          "position": {
+            "x": 40,
+            "y": 56
+          },
+          "size": {
+            "width": 300,
+            "height": 120
+          },
+          "pinned": false
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick--ingest-ts": {
+          "nodeId": "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick--ingest-ts",
+          "position": {
+            "x": 40,
+            "y": 184
+          },
+          "size": {
+            "width": 300,
+            "height": 104
+          },
+          "pinned": false
+        }
+      },
+      "wireRouteHints": {},
+      "appearanceByNodeId": {
+        "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--block-heavy-payload-kinds-transcriptline-only": {
+          "weight": 600,
+          "text": "amber",
+          "background": "amber-soft"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--block-holds-all-3-gb-of-lines-every-event-forever": {
+          "weight": 700,
+          "text": "rose",
+          "background": "rose-soft"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--the-fix--block-1-lazy-payloads-for-receipts-journal-traces": {
+          "weight": 600,
+          "text": "green",
+          "background": "green-soft"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--the-fix--block-2-transcriptstate-index-not-haystack": {
+          "weight": 600,
+          "text": "green",
+          "background": "green-soft"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--the-fix--block-3-persist-the-index-across-restarts": {
+          "weight": 600,
+          "text": "green",
+          "background": "green-soft"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--the-fix--block-4-rotate-transcriptlines-jsonl": {
+          "weight": 600,
+          "text": "green",
+          "background": "green-soft"
+        }
+      },
+      "appearanceByWireId": {
+        "store-ram-why-the-server-holds-3-3-gb--wire-1": {
+          "width": "thick",
+          "color": "rose"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--wire-2": {
+          "color": "rose"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--wire-3": {
+          "color": "rose"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--wire-4": {
+          "color": "rose"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--wire-5": {
+          "color": "rose"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--wire-6": {
+          "color": "rose"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--wire-7": {
+          "width": "thick",
+          "color": "rose"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--wire-8": {
+          "pattern": "dashed",
+          "color": "neutral"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--wire-9": {
+          "color": "amber"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--wire-10": {
+          "color": "blue"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--wire-11": {
+          "color": "neutral"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--wire-12": {
+          "pattern": "dashed",
+          "color": "green"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--wire-13": {
+          "pattern": "dashed",
+          "color": "green"
+        }
+      },
+      "arrangementByContainerId": {
+        "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk": {
+          "layout": "stack",
+          "childIds": [
+            "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-transcript-lines",
+            "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-command-receipts",
+            "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-traces",
+            "store-ram-why-the-server-holds-3-3-gb--novakai-stores-the-truth-on-disk--entity-transcript-journal"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine": {
+          "layout": "stack",
+          "childIds": [
+            "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--engine-ts",
+            "store-ram-why-the-server-holds-3-3-gb--packages-foundation-core-store-engine--block-heavy-payload-kinds-transcriptline-only"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores": {
+          "layout": "stack",
+          "childIds": [
+            "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--jsonl-ts",
+            "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--transcript-state-ts",
+            "store-ram-why-the-server-holds-3-3-gb--packages-messaging-adapters-stores--block-holds-all-3-gb-of-lines-every-event-forever"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history": {
+          "layout": "stack",
+          "childIds": [
+            "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history--messages-ts",
+            "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history--views-ts"
+          ],
+          "gap": 8,
+          "align": "stretch"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick": {
+          "layout": "stack",
+          "childIds": [
+            "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick--watch-ts",
+            "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick--ingest-ts"
+          ],
+          "gap": 8,
+          "align": "stretch"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core": {
+          "layout": "stack",
+          "childIds": [
+            "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--conversations-serves-history",
+            "store-ram-why-the-server-holds-3-3-gb--packages-messaging-core--ingestion-the-1-s-tick"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-supervision": {
+          "layout": "stack",
+          "childIds": [
+            "store-ram-why-the-server-holds-3-3-gb--packages-supervision--transcript-observation-ts"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see": {
+          "layout": "stack",
+          "childIds": [
+            "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see--ooux-object-conversation-view",
+            "store-ram-why-the-server-holds-3-3-gb--packages-shell-what-you-see--your-worry-answered"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        },
+        "store-ram-why-the-server-holds-3-3-gb--the-fix": {
+          "layout": "stack",
+          "childIds": [
+            "store-ram-why-the-server-holds-3-3-gb--the-fix--block-1-lazy-payloads-for-receipts-journal-traces",
+            "store-ram-why-the-server-holds-3-3-gb--the-fix--block-2-transcriptstate-index-not-haystack",
+            "store-ram-why-the-server-holds-3-3-gb--the-fix--block-3-persist-the-index-across-restarts",
+            "store-ram-why-the-server-holds-3-3-gb--the-fix--block-4-rotate-transcriptlines-jsonl"
+          ],
+          "gap": 12,
+          "align": "stretch"
+        }
+      }
+    }
+  },
+  "views": {
+    "view-default": {
+      "id": "view-default",
+      "name": "Default",
+      "layoutId": "layout-default",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1
+      },
+      "collapsedNodeIds": [],
+      "hiddenKinds": []
+    }
+  },
+  "activeViewId": "view-default",
+  "sourceRefs": [],
+  "appliedOperations": {
+    "store-ram-v1": {
+      "operationId": "store-ram-v1",
+      "revision": 1,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-27T23:15:40.744Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/tmp/store-ram.canvas"
+      },
+      "commandKinds": [
+        "diagram.setOrientation",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "node.add",
+        "diagram.definitions.replace",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.resize",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move",
+        "node.move"
+      ]
+    },
+    "store-ram-v2-flows": {
+      "operationId": "store-ram-v2-flows",
+      "revision": 2,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-27T23:16:24.296Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/tmp/store-ram.canvas"
+      },
+      "commandKinds": [
+        "diagram.flows.replace"
+      ]
+    },
+    "store-ram-v3-wireattrs": {
+      "operationId": "store-ram-v3-wireattrs",
+      "revision": 3,
+      "actor": {
+        "id": "canvas-cli",
+        "kind": "system"
+      },
+      "timestamp": "2026-08-27T23:18:09.598Z",
+      "provenance": {
+        "source": "cli",
+        "sourceRef": "/tmp/store-ram.canvas"
+      },
+      "commandKinds": [
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.remove",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "wire.add",
+        "layout.presentation.replace"
+      ]
+    },
+    "studio-119abc82-73a6-4f7e-b072-47e341c554c0": {
+      "operationId": "studio-119abc82-73a6-4f7e-b072-47e341c554c0",
+      "revision": 4,
+      "actor": {
+        "id": "local-user",
+        "kind": "human"
+      },
+      "timestamp": "2026-08-27T23:33:24.149Z",
+      "provenance": {
+        "source": "ui",
+        "sourceRef": "prototype:canvas-room"
+      },
+      "commandKinds": [
+        "node.move"
+      ]
+    }
+  }
+}

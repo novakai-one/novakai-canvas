@@ -13,18 +13,31 @@ export type WireLabel =
   | { kind: 'wire'; text: string }
   | { kind: 'step'; steps: readonly Readonly<FlowStep>[] };
 
+/** When a wire's structural label is drawn. Step badges ignore this: they are the flow. */
+export interface WireLabelVisibility {
+  preference: 'always' | 'selected' | 'never';
+  /** The wire is selected, or touches the selection. Hosts without selection pass false. */
+  focused: boolean;
+}
+
 /**
- * The single decision for a wire's label. No active flow → the structural
- * label. Active flow → the wire's steps, or undefined when the flow does
- * not ride it. Pass the map from stepsByWire, or undefined for no flow.
+ * The single decision for a wire's label, for every host. Active flow → the
+ * wire's steps, or undefined when the flow does not ride it. No active flow →
+ * the structural label when the visibility rule lets this wire speak.
+ * Pass the map from stepsByWire, or undefined for no flow.
  */
 export function wireLabelOf(
   wire: Pick<CanvasWire, 'id' | 'label'>,
   activeSteps: ReadonlyMap<WireId, readonly Readonly<FlowStep>[]> | undefined,
+  visibility: WireLabelVisibility,
 ): WireLabel | undefined {
-  if (!activeSteps) return { kind: 'wire', text: wire.label };
-  const steps = activeSteps.get(wire.id);
-  return steps ? { kind: 'step', steps } : undefined;
+  if (activeSteps) {
+    const steps = activeSteps.get(wire.id);
+    return steps ? { kind: 'step', steps } : undefined;
+  }
+  if (visibility.preference === 'never') return undefined;
+  if (visibility.preference === 'selected' && !visibility.focused) return undefined;
+  return { kind: 'wire', text: wire.label };
 }
 
 /**

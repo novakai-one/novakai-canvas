@@ -1,8 +1,9 @@
 import { componentFor } from '../../components/registry.ts';
-import {
-  resolveComponentPalette, type ComponentPaletteColors,
-} from '../../components/component-palette.ts';
+import { outlinePath } from '../../components/outline.ts';
 import { resolveNodeAppearance } from '../../domain/node-appearance.ts';
+import type {
+  ComponentPaletteColors, ResolvedNodeAppearance,
+} from '../../../contract/schemas/node-appearance-resolved.ts';
 import type { DiagramRecord } from '../../../contract/records/index.ts';
 import type { PlacedNode } from '../../authoring/records/record-graph.ts';
 import type { SnapshotScene } from './contract.ts';
@@ -73,6 +74,22 @@ function appendMembers(
   }
 }
 
+/** The card's border from the one shape table; only the rectangle keeps its rounded corners. */
+function cardBorder(
+  appearance: ResolvedNodeAppearance,
+  node: PlacedNode,
+  x: number,
+  y: number,
+  fill: string,
+  stroke: string,
+): string {
+  if (appearance.shape === 'rect') {
+    return `<rect x="${x}" y="${y}" width="${node.size.width}" height="${node.size.height}" fill="${fill}" stroke="${stroke}" rx="6"/>`;
+  }
+  const path = outlinePath(appearance.shape, node.size);
+  return `<path transform="translate(${x} ${y})" d="${path}" fill="${fill}" stroke="${stroke}"/>`;
+}
+
 function renderFallbackCard(
   record: DiagramRecord,
   scene: SnapshotScene,
@@ -90,10 +107,10 @@ function renderFallbackCard(
     node, { x, y, width: node.size.width, height: node.size.height }, appearance,
   );
   if (custom !== undefined) return [custom];
-  const palette = resolveComponentPalette(appearance.palette, appearance.theme, 'standard');
+  const palette = appearance.paletteColors;
   const parts = [
-    `<rect x="${x}" y="${y}" width="${node.size.width}" height="${node.size.height}" fill="${palette?.surface ?? colors.card}" stroke="${palette?.frame ?? colors.border}" rx="6"/>`,
-    ...(palette ? [`<path d="M${x + 1},${y + 6}Q${x + 1},${y + 1} ${x + 6},${y + 1}H${x + node.size.width - 6}Q${x + node.size.width - 1},${y + 1} ${x + node.size.width - 1},${y + 6}V${y + 42}H${x + 1}Z" fill="${palette.header}"/>`] : []),
+    cardBorder(appearance, node, x, y, palette?.surface ?? colors.card, palette?.frame ?? colors.border),
+    ...(palette && appearance.shape === 'rect' ? [`<path d="M${x + 1},${y + 6}Q${x + 1},${y + 1} ${x + 6},${y + 1}H${x + node.size.width - 6}Q${x + node.size.width - 1},${y + 1} ${x + node.size.width - 1},${y + 6}V${y + 42}H${x + 1}Z" fill="${palette.header}"/>`] : []),
     `<text x="${x + 14}" y="${y + 24}" fill="${palette?.headerText ?? colors.ink}" font-family="${font}" font-size="13" font-weight="600">${escapeSvg(node.label)}</text>`,
   ];
   if (appearance.showKindBadge) {

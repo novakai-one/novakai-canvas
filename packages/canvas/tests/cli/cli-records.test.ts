@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { ICON_NAMES } from '../../contract/records/components.ts';
 import { DEMO, dataDir, dataHashes, runCli, writeFile, join } from './cli-fixture.ts';
 
 describe('canvas CLI', () => {
@@ -27,7 +28,7 @@ describe('canvas CLI', () => {
     };
     expect(dsl.components.map((component) => component.kind)).toEqual([
       'group', 'module', 'object', 'runtime', 'resource', 'comment', 'tree', 'timeline',
-      'metric', 'icon-card', 'callout-stack', 'block', 'ooux-object', 'entity',
+      'metric', 'icon-card', 'icon-grid', 'callout-stack', 'block', 'ooux-object', 'entity',
     ]);
     expect(dsl.components.find((component) => component.kind === 'group')).toMatchObject({
       keyword: 'zone',
@@ -36,7 +37,7 @@ describe('canvas CLI', () => {
     expect(dsl.components.find((component) => component.kind === 'icon-card')).toMatchObject({
       keyword: 'icon-card',
       declaration: {
-        syntax: 'icon-card "title" icon=check|clock|people|shield|target|trend description="text"',
+        syntax: `icon-card "title" icon=${ICON_NAMES.join('|')} description="text"`,
       },
       appearance: [],
     });
@@ -44,7 +45,7 @@ describe('canvas CLI', () => {
     expect(block).toMatchObject({ keyword: 'block' });
     expect(block?.appearance).toEqual(expect.arrayContaining([
       expect.objectContaining({
-        key: 'icon', values: ['check', 'clock', 'people', 'shield', 'target', 'trend'],
+        key: 'icon', values: [...ICON_NAMES],
       }),
       expect.objectContaining({ key: 'vertical-align', values: ['top', 'center', 'bottom'] }),
     ]));
@@ -55,7 +56,7 @@ describe('canvas CLI', () => {
         syntax: 'field "name" id=stable-id type=value-type [keys=pk,fk,uk]',
       }],
       appearance: [{
-        key: 'palette', values: ['neutral', 'blue', 'violet', 'sage'],
+        key: 'palette', values: ['neutral', 'blue', 'violet', 'sage', 'amber', 'rose'],
         omitted: 'component default',
       }],
     });

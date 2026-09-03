@@ -1,9 +1,9 @@
 import { type CSSProperties } from 'react';
 import { type NodeProps, type Node } from '@xyflow/react';
-import { paletteCssVariables, resolveComponentPalette } from '@novakai/canvas';
-import { NodePorts } from './node-ports';
-import { NodeLabel } from './node-label';
-import type { ArchitectureNodeData } from '../projection';
+import { paletteCssVariables } from '@novakai/canvas';
+import { NodePorts } from '../node-ports.tsx';
+import { NodeLabel } from '../node-label.tsx';
+import type { ArchitectureNodeData } from '../../presentation/projection';
 
 type ArchitectureFlowNode = Node<ArchitectureNodeData, 'architecture'>;
 
@@ -13,8 +13,8 @@ export function ArchitectureNode({ data, selected }: NodeProps<ArchitectureFlowN
   const showInterfaces = !editable || preferences.nodes.showInterfaces === 'always'
     || (preferences.nodes.showInterfaces === 'selected' && selected);
   const portsClass = preferences.nodes.showPorts === 'always' ? 'ports-always' : '';
-  const palette = resolveComponentPalette(appearance.palette, appearance.theme, 'standard');
-  const style = palette ? paletteCssVariables(palette) as CSSProperties : undefined;
+  const style = appearance.paletteColors
+    ? paletteCssVariables(appearance.paletteColors) as CSSProperties : undefined;
 
   return (
     /*

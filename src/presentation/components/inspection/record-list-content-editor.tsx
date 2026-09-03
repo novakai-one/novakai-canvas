@@ -4,22 +4,13 @@ import type {
 } from '@novakai/canvas';
 import type { DiagramNode as CanvasNode } from '@novakai/canvas';
 import type { InspectPanelProps } from './contract';
-
-type DraftRecord = Record<string, unknown>;
+import { fieldInvalid, moveItem, type DraftRecord } from './content-editor-support';
 
 function recordList(node: CanvasNode, field: string): DraftRecord[] {
   const value = (node as unknown as Record<string, unknown>)[field];
   return Array.isArray(value)
     ? value.filter((item): item is DraftRecord => Boolean(item) && typeof item === 'object' && !Array.isArray(item))
     : [];
-}
-
-function moveItem(items: DraftRecord[], index: number, offset: -1 | 1): DraftRecord[] {
-  const target = index + offset;
-  if (target < 0 || target >= items.length) return items;
-  const next = [...items];
-  [next[index], next[target]] = [next[target], next[index]];
-  return next;
 }
 
 function variantFor(
@@ -40,20 +31,6 @@ function newItem(
     ...(declaration.discriminator ? { [declaration.discriminator]: variant.key } : {}),
     [declaration.identity.field]: `${declaration.identity.prefix}-${crypto.randomUUID()}`,
   };
-}
-
-function fieldInvalid(field: RecordEditorField, value: unknown): boolean {
-  if (field.control === 'text') {
-    if (value === undefined && !field.required) return false;
-    return typeof value !== 'string' || (field.required && value.length === 0)
-      || (field.maxLength !== undefined && value.length > field.maxLength);
-  }
-  if (field.control === 'select') {
-    if ((value === undefined || value === '') && !field.required) return false;
-    return typeof value !== 'string' || !field.values.includes(value);
-  }
-  return !Array.isArray(value) || new Set(value).size !== value.length
-    || value.some((entry) => typeof entry !== 'string' || !field.values.includes(entry));
 }
 
 function invalidDraft(
@@ -120,7 +97,8 @@ function MultiSelectField({ disabled, field, item, setField }: {
   </fieldset>;
 }
 
-function RecordField({ disabled, field, item, setField }: {
+/** Shared by every collection editor: renders one declared field with the right control. */
+export function RecordField({ disabled, field, item, setField }: {
   disabled: boolean; field: RecordEditorField; item: DraftRecord;
   setField: (value: unknown) => void;
 }) {

@@ -1,7 +1,12 @@
 import type { NodeKind } from '../../contract/types/node-kind.ts';
 import type {
-  FontFamily, NodeAppearance, PresentationContext, ResolvedNodeAppearance,
+  FontFamily, NodeAppearance,
 } from '../../contract/schemas/node-appearance.ts';
+import type {
+  PresentationContext, ResolvedNodeAppearance,
+} from '../../contract/schemas/node-appearance-resolved.ts';
+import { resolveAppearanceTokens } from '../components/appearance.ts';
+import { resolveComponentPalette } from '../components/component-palette.ts';
 import { defaultPreferences } from './defaults.ts';
 import { resolveCanvasTheme, themeTokenColor } from './theme-resolver.ts';
 
@@ -13,35 +18,37 @@ const FONT_STACKS: Record<FontFamily, string> = {
 
 const DEFAULT_THEME = resolveCanvasTheme(defaultPreferences.appearance);
 
-/** The single owner of defaults and concrete browser/SVG values. */
+/** Turns filled appearance tokens into the concrete browser/SVG values renderers consume. */
 export function resolveNodeAppearance(
-  _kind: NodeKind,
+  kind: NodeKind,
   authored: NodeAppearance = {},
   context: PresentationContext = { theme: DEFAULT_THEME, showKinds: true },
 ): ResolvedNodeAppearance {
-  const font = authored.font ?? 'sans';
-  const text = authored.text ?? 'ink';
-  const background = authored.background ?? 'transparent';
-  const borderColor = authored.borderColor ?? 'muted';
-  const radius = authored.radius ?? 0;
-  const badge = authored.badge ?? 'default';
+  const tokens = resolveAppearanceTokens(authored);
+  const paletteColors = resolveComponentPalette(
+    kind,
+    tokens.palette === 'none' ? undefined : tokens.palette,
+    context.theme,
+  );
   return {
-    ...(authored.icon === undefined ? {} : { icon: authored.icon }),
-    ...(authored.palette === undefined ? {} : { palette: authored.palette }),
-    font,
-    fontFamily: FONT_STACKS[font],
-    fontSize: authored.size ?? 14,
-    fontWeight: authored.weight ?? 400,
-    textAlign: authored.align ?? 'left',
-    verticalAlign: authored.verticalAlign ?? 'top',
-    textColor: themeTokenColor(context.theme, text),
-    backgroundColor: themeTokenColor(context.theme, background),
-    borderColor: themeTokenColor(context.theme, borderColor),
-    borderWidth: authored.border ?? 0,
-    borderRadius: radius === 'pill' ? 999 : radius,
-    padding: authored.padding ?? 0,
-    badge,
-    showKindBadge: badge !== 'hide' && context.showKinds,
+    ...(tokens.icon === 'none' ? {} : { icon: tokens.icon }),
+    ...(tokens.palette === 'none' ? {} : { palette: tokens.palette }),
+    ...(paletteColors === undefined ? {} : { paletteColors }),
+    shape: tokens.shape,
+    font: tokens.font,
+    fontFamily: FONT_STACKS[tokens.font],
+    fontSize: tokens.size,
+    fontWeight: tokens.weight,
+    textAlign: tokens.align,
+    verticalAlign: tokens.verticalAlign,
+    textColor: themeTokenColor(context.theme, tokens.text),
+    backgroundColor: themeTokenColor(context.theme, tokens.background),
+    borderColor: themeTokenColor(context.theme, tokens.borderColor),
+    borderWidth: tokens.border,
+    borderRadius: tokens.radius === 'pill' ? 999 : tokens.radius,
+    padding: tokens.padding,
+    badge: tokens.badge,
+    showKindBadge: tokens.badge !== 'hide' && context.showKinds,
     theme: context.theme,
   };
 }

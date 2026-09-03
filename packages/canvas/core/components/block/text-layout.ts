@@ -1,6 +1,7 @@
 /** Deterministic text measurement and wrapping shared by block renderers. */
 
 import type { ResolvedNodeAppearance } from '../../../contract/schemas/presentation.ts';
+import { contentInset } from '../outline.ts';
 import type { Size } from '../component.ts';
 
 const MAX_CONTENT_WIDTH = 320;
@@ -90,10 +91,12 @@ export function layoutBlockText(
   const firstRowHeight = Math.max(lineHeight, iconSize);
   const contentHeight = firstRowHeight + Math.max(0, lines.length - 1) * lineHeight;
   const inset = appearance.padding + appearance.borderWidth;
+  // The shape's inscribed-box fraction grows the border until the padded content fits inside it.
+  const fraction = contentInset(appearance.shape);
   return {
     size: {
-      width: Math.ceil(contentWidth + inset * 2),
-      height: Math.ceil(contentHeight + inset * 2),
+      width: Math.ceil((contentWidth + inset * 2) / fraction),
+      height: Math.ceil((contentHeight + inset * 2) / fraction),
     },
     lines,
     iconSize,

@@ -52,15 +52,10 @@ export function ElbowEdge(props: EdgeProps<ElbowFlowEdge>) {
     () => wirePath(decorations.bodyPoints, shape), [decorations.bodyPoints, shape],
   );
 
-  const visibility = props.data?.preferences.wires.showLabels;
-  // Step badges are the point of flow mode, so they ignore the label preference.
-  const showLabel = props.data?.flowActive
-    || (visibility !== 'never' && (!props.data?.editable || visibility === 'always'
-      || (visibility === 'selected' && props.selected)));
   const setRoute = props.data?.setRoute;
   const label = useWireLabel({
     seed: props.id,
-    label: showLabel ? props.data?.label ?? '' : '',
+    label: props.data?.label ?? '',
     kind: props.data?.labelKind ?? 'wire',
     points: route.points,
     obstacles: props.data?.obstacles,

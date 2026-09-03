@@ -2,7 +2,8 @@ import type {
   DiagramId, FlowId, InterfaceId, NodeId, TypeId, ViewId, WireId,
 } from '../brands.ts';
 import type {
-  CalloutItem, EntityField, IconCardIcon, MetricStatus, OouxRow, TimelineStep, TreeRow,
+  CalloutItem, EntityField, IconCardIcon, IconGridItem, MetricStatus, OouxRow, TimelineStep,
+  TreeRow,
 } from './components.ts';
 import type {
   CanvasReference, InterfaceObject, SourceReference, TypeObject,
@@ -46,6 +47,7 @@ export interface CanvasNode {
   detail?: string;
   status?: MetricStatus;
   icon?: IconCardIcon;
+  iconItems?: IconGridItem[];
   callouts?: CalloutItem[];
   lines?: string[];
   wireRef?: string;

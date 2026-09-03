@@ -1,12 +1,13 @@
 import type { ComponentType } from 'react';
 import { NodeResizer, type Node, type NodeProps } from '@xyflow/react';
-import { ArchitectureNode } from '../presentation/nodes/architecture-node.tsx';
-import { CommentNode } from '../presentation/nodes/comment-node.tsx';
-import { ScopeNode } from '../presentation/nodes/scope-node.tsx';
-import { TreeNode } from '../presentation/nodes/tree-node.tsx';
+import { ArchitectureNode } from './card/web.tsx';
+import { CommentNode } from './comment/web.tsx';
+import { ScopeNode } from './group/web.tsx';
+import { TreeNode } from './tree/web.tsx';
 import { TimelineNode } from './timeline/web.tsx';
 import { MetricNode } from './metric/web.tsx';
 import { IconCardNode } from './icon-card/web.tsx';
+import { IconGridNode } from './icon-grid/web.tsx';
 import { CalloutStackNode } from './callout-stack/web.tsx';
 import { BlockNode } from './block/web.tsx';
 import { OouxObjectNode } from './ooux-object/web.tsx';
@@ -61,6 +62,7 @@ export const webRenderers = {
   timeline: registeredRenderer('timeline', TimelineNode),
   metric: registeredRenderer('metric', MetricNode),
   'icon-card': registeredRenderer('icon-card', IconCardNode),
+  'icon-grid': registeredRenderer('icon-grid', IconGridNode),
   'callout-stack': registeredRenderer('callout-stack', CalloutStackNode),
   block: registeredRenderer('block', BlockNode),
   'ooux-object': registeredRenderer('ooux-object', OouxObjectNode),

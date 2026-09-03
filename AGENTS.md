@@ -76,13 +76,12 @@ Mission maps come from `node tools/mission-view/translate.ts --root <Novakai-Com
 - New UI component prototype: `src/presentation/prototype/rooms`.
 
 Keep `./canvas help`, `./canvas describe`, public types, tests, and this route map consistent.
-Current architecture is in `docs/architecture.md`. Files marked historical are not current instructions.
+Current architecture is in `docs/architecture.md`.
 
 ## Product constraints
 
 - Keep every meaningful object selectable.
 - Diagram records own meaning. Layout records own coordinates. Preferences own display choices.
-- Keep styling restrained. Do not introduce neon colours.
 
 ## Browser verification
 

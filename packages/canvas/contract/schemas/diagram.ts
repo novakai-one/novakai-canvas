@@ -24,7 +24,7 @@ const canvasNodeBase = {
 };
 const NODE_KINDS: [NodeKind, ...NodeKind[]] = [
   'group', 'module', 'object', 'runtime', 'resource', 'comment', 'tree', 'timeline',
-  'metric', 'icon-card', 'callout-stack', 'block', 'ooux-object', 'entity',
+  'metric', 'icon-card', 'icon-grid', 'callout-stack', 'block', 'ooux-object', 'entity',
 ];
 const canvasNodeOptions = NODE_KINDS.map((kind) => z.object({
   ...canvasNodeBase, kind: z.literal(kind), ...nodeContentFields(kind),

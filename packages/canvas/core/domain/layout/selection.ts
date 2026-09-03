@@ -23,3 +23,25 @@ export function containedIdsOf(graph: LayoutGraph, containerId: string): string[
 export function namedIdsOf(graph: LayoutGraph, nodeIds: readonly NodeId[]): string[] {
   return [...new Set<string>(nodeIds)].filter((id) => graph.nodes[id]).sort();
 }
+
+/**
+ * Maps every node to the nearest of the given siblings on its parent chain — itself included.
+ * Lets a wire between two groups' members count as a wire between the groups themselves.
+ */
+export function rollupToSiblings(
+  graph: LayoutGraph,
+  siblingIds: readonly string[],
+): ReadonlyMap<string, string> {
+  const siblings = new Set(siblingIds);
+  const rollup = new Map<string, string>();
+  for (const id of Object.keys(graph.nodes)) {
+    let cursor: string | undefined = id;
+    const seen = new Set<string>();
+    while (cursor !== undefined && !seen.has(cursor) && !siblings.has(cursor)) {
+      seen.add(cursor);
+      cursor = graph.nodes[cursor]?.parentId ?? undefined;
+    }
+    if (cursor !== undefined && siblings.has(cursor)) rollup.set(id, cursor);
+  }
+  return rollup;
+}
